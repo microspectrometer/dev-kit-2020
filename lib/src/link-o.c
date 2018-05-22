@@ -80,7 +80,7 @@ int main()
     setUp = SetUp_Mock; tearDown = TearDown_Mock;
     setUp();
     printf("# Example using a mock object\n");
-    printf("## Recorded Call Lists\n");
+    printf("## Print the *Recorded Call* Lists\n");
     //=====[ Generate the list of expected calls ]=====
     Expect_TakesOneArg(0x12);
     //=====[ Simulate stubbed DOF calls that happen when FUT is called ]=====
@@ -88,7 +88,8 @@ int main()
     //=====[ Walk the lists of calls ]=====
     PrintAllCalls(mock);
     if (RanAsHoped(mock)) printf("\n---Ran as hoped.---\n");
-    else printf("\n## Why it failed\n%s\n", WhyDidItFail(mock));
+    else printf(
+        "\n## Print the *Why it failed* message\n%s\n", WhyDidItFail(mock));
     tearDown();
     PrintDocumentation();
 }

@@ -1,11 +1,11 @@
 # Example using a mock object
-## Recorded Call Lists
+## Print the *Recorded Call* Lists
 - Expected calls:
     - "TakesOneArg", 0x12
 - Actual calls:
     - "TakesOneArg", 0x21
 
-## Why it failed
+## Print the *Why it failed* message
 Why it failed: Call #1: expected '0x12', was '0x21'. 
 # Linking object files
 ## The right way

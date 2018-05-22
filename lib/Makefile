@@ -1,5 +1,9 @@
-#=====[ Targets ]=====
-${file-stem}: build/${file-stem}.md
+# variable for my test output name that is stupidly coupled to my .vimrc
+test-output := build/TestSuite-results.md
+
+#=====[ Targets (the first target is the default target) ]=====
+unit-test: ${test-output}
+file-in-current-window: build/${file-stem}.md
 
 #=====[ Default: build and run stand-alone .c files, view .md output ]=====
     # move the file to be the first target in the list above
@@ -11,36 +15,69 @@ ${file-stem}: build/${file-stem}.md
     # ${compiler} to pass the compiler (this is how `c` `l` `+` work)
 
 #=====[ Compiler and Linker flags ]=====
-mock-c-lib := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/
+slib-mock-c := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/
 CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
-	-I ${mock-c-lib}include/ \
+	-I${slib-mock-c}include -I${slib-mock-c}test/unity \
+	-Iinclude -Isrc \
 	-g -Wall -Wextra -pedantic
 LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
-#	-L ${mock-c-lib}build/
-#	For this to work, you need to make a static library:
-#https://medium.com/@meghamohan/everything-you-need-to-know-about-libraries-in-c-e8ad6138cbb4
-#Hack for now: create a variable to the path of the .o files to put in recipe
 
-mock-c-lib-names := Mock RecordedCall RecordedArg
-mock-c-lib-objects := $(addsuffix .o,${mock-c-lib-names})
-mock-c-lib-objects := $(addprefix ${mock-c-lib}build/,${mock-c-lib-objects})
-unity-lib-object := ${mock-c-lib}build/unity.o
-unit-test-lib-objects := ${mock-c-lib-objects} ${unity-lib-object}
+# List the libs under dev:
+dev-libs := ReadWriteBits
+# List the dev libs that have mocked versions to remove dependencies:
+mocked-dev-libs := 
 
-#=====[ generic build recipe for ${file-stem} target above ]=====
+# variables for             dev lib      object prerequisites
+dev-lib-objects := $(addsuffix .o,${dev-libs})
+dev-lib-objects := $(addprefix build/,${dev-lib-objects})
+# name convention for dev libs that are mocked
+mocked-names := $(addprefix mock_,${mocked-dev-libs})
+# variables for      mocked dev lib      object prerequisites
+mocked-lib-objects := $(addsuffix .o,${mocked-names})
+mocked-lib-objects := $(addprefix build/,${mocked-lib-objects})
+# name convention for dev lib tests
+test-names   := $(addprefix test_,${dev-libs})
+# variables for             dev lib test object prerequisites
+test-lib-objects := $(addsuffix .o,${test-names})
+test-lib-objects := $(addprefix build/,${test-lib-objects})
+
+# behold my static library hack:
+# variables for unit testing with shared lib mock-c
+mock-c-libs    := Mock RecordedCall RecordedArg
+mock-c-objects := $(addsuffix .o,${mock-c-libs})
+mock-c-objects := $(addprefix ${slib-mock-c}build/,${mock-c-objects})
+unity-object := ${slib-mock-c}build/unity.o
+slib-mock-c-objects := ${mock-c-objects} ${unity-object}
+
+#=====[ generic build recipe for file in current window ]=====
 build/%.md: build/%.exe
 	$^ > $@
-build/%.exe: src/%.c ${unit-test-lib-objects}
-	${compiler} $^ -o $@ $(LFLAGS) $(CFLAGS) \
-		-I src/
+build/%.exe: src/%.c ${slib-mock-c-objects}
+	${compiler} $^ -o $@ $(LFLAGS) $(CFLAGS)
 
+#=====[ unit-test recipe ]=====
+${test-output}: build/TestSuite.exe
+	$^ > $@
+test-runner := test/test_runner.c
+build/TestSuite.exe: ${test-runner} \
+${test-lib-objects} ${dev-lib-objects} ${mocked-lib-objects} ${slib-mock-c-objects}
+	${compiler} $^ -o $@ $(LFLAGS) $(CFLAGS) \
+		-Itest
+
+#=====[ Explicit rule for test-lib-objects ]=====
+${test-lib-objects}: build/%.o: test/%.c
+	${compiler} -c $^ -o $@ $(CFLAGS)
+
+#=====[ Explicit rule for dev-lib-objects ]=====
+${dev-lib-objects}: build/%.o: src/%.c
+	${compiler} -c $^ -o $@ $(CFLAGS)
 
 #;mc
 .PHONY: clean-all-builds
 clean-all-builds:
 	rm -f build/${file-stem}.exe
 	rm -f build/TestSuite.exe
-	rm -f ${lib-objects}
-	rm -f ${lib-test-objects}
-
+	rm -f ${dev-lib-objects}
+	rm -f ${test-lib-objects}
+	rm -f ${mocked-lib-objects}
 
