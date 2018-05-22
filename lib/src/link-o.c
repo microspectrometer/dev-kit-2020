@@ -15,8 +15,12 @@ int main()
     printf("# Linking object files.\n");
     printf(
         "\nThe right way to link in the unit test libs I created in `mock-c`\n"
-        "is to turn those `.o` files into a *Static Library* and link that\n"
-        "library with `-llibrary`:\n"
+        "is to turn those `.o` files into a *Static Library*:\n"
+        "https://medium.com/@meghamohan/"
+        "everything-you-need-to-know-about-libraries-in-c-e8ad6138cbb4\n"
+        "and link that library with `-llibrary`.\n"
+        "Note there is *no space* between `-l` and the library name.\n"
+        "Here is *GNU* documentation on the `-l` flag for `gcc`:\n"
         "> Search the library named library when linking.\n"
         "> \n"
         "> The linker searches a standard list of directories for the\n"

@@ -1,8 +1,11 @@
 # Linking object files.
 
 The right way to link in the unit test libs I created in `mock-c`
-is to turn those `.o` files into a *Static Library* and link that
-library with `-llibrary`:
+is to turn those `.o` files into a *Static Library*:
+https://medium.com/@meghamohan/everything-you-need-to-know-about-libraries-in-c-e8ad6138cbb4
+and link that library with `-llibrary`.
+Note there is *no space* between `-l` and the library name.
+Here is *GNU* documentation on the `-l` flag for `gcc`:
 > Search the library named library when linking.
 > 
 > The linker searches a standard list of directories for the
