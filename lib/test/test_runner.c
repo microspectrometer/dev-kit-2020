@@ -5,6 +5,8 @@
 #include <RecordedCall.h>   // used by *DOF* `mock_lib.c`
 #include <RecordedArg.h>    // used by *DOF* `mock_lib.c`
 #include "test_ReadWriteBits.h"
+#include "test_DebugLed.h"
+#include "test_Ft1248.h"
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -25,9 +27,16 @@ void DevelopingReadWriteBits(bool run_test) { if (run_test) {
     RUN_TEST(BitIsClear_is_true_if_bit_is_clear);
     RUN_TEST(BitIsClear_is_false_if_bit_is_set);
 }}
+void DevelopingDebugLed(bool run_test) { if (run_test) {
+    setUp = SetUp_DebugLedInit; tearDown = TearDown_DebugLedInit;
+    RUN_TEST(DebugLedInit_turns_debug_led_on_and_green);
+}}
 int main()
 {
     UNITY_BEGIN();
-    DevelopingReadWriteBits(Nope);
+    DevelopingReadWriteBits (Nope);
+    DevelopingDebugLed      (Nope);
+    setUp = SetUp_FtSendCommand; tearDown = TearDown_FtSendCommand;
+    RUN_TEST(FtSendCommand_Read_does_entire_command_phase_for_ReadCmd);
     return UNITY_END();
 }

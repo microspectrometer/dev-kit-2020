@@ -2,10 +2,10 @@
 #include <ReadWriteBits.h>
 #include <unity.h>
 
-uint8_t reg; uint8_t *reg_address=&reg; uint8_t bit;
-
 void SetUp_libReadWriteBits(void){}
 void TearDown_libReadWriteBits(void){}
+
+uint8_t reg; uint8_t *reg_address=&reg; uint8_t bit;
 
 void SetBit_sets_a_bit(void) {
     reg=0x00; bit=4; uint8_t reg_bit4_is_set=0x10;
