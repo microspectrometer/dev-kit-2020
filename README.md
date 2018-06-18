@@ -1,5 +1,17 @@
 # Table of Contents
 - [Repo links](#markdown-header-repo-links)
+- [FT1248](#markdown-header-ft1248)
+    - [How FT1248 relates to USB](#markdown-header-how-ft1248-relates-to-usb)
+    - [FT1248 overview](#markdown-header-ft1248-overview)
+    - [FT1248 protocol and Ft1248 C library](#markdown-header-ft1248-protocol-and-ft1248-c-library)
+    - [FT1248 setup](#markdown-header-ft1248-setup)
+    - [FT1248 starts communication with a combined command and bus-width byte](#markdown-header-ft1248-starts-communication-with-a-combined-command-and-bus-width-byte)
+    - [How the MCU manages USB communication using FT1248 ](#markdown-header-how-the-mcu-manages-usb-communication-using-ft1248-)
+        - [Check if there is any unread data from the USB host](#markdown-header-check-if-there-is-any-unread-data-from-the-usb-host)
+        - [Read the data from the USB host](#markdown-header-read-the-data-from-the-usb-host)
+    - FT1248 reference
+        - [FT1248 format of combined command and bus-width byte](#markdown-header-ft1248-format-of-combined-command-and-bus-width-byte)
+        - [FT1248 combined command and bus-width byte for an 8-bit bus](#markdown-header-ft1248-combined-command-and-bus-width-byte-for-an-8-bit-bus)
 - [LIS-770i project code organization](#markdown-header-lis-770i-project-code-organization)
 
 ---e-n-d---
@@ -15,6 +27,570 @@ Libraries are shared:
 - libraries are not in a project folder
 - the libraries are developed in their own folder called `lib`
 - the projects link against the object files in `lib`
+
+# FT1248
+
+## How FT1248 relates to USB
+There is one FT1248 master, usually a microcontroller (MCU), communicating with
+one or more FT1248 slaves. Each slave is a USB-bridge IC made by FTDI. Multiple
+slaves means the FT1248 master can communicate with multiple USB hosts. In my
+setup, there is only one USB host. The USB host is a Windows PC.
+
+Even though the MCU is the FT1248 master, from the perspective of USB
+communication, the MCU is a *USB device*, while the USB host is, well, the USB
+host. A USB host initiates communication with its device. But at the lower level
+of USB implementation, the FT1248 master initiates communication with the
+USB-bridge! How does this play out? Who is actually initiating communication?
+
+The USB host initiates the top-level conversation with the USB device. Always.
+The USB device is a combination of USB-bridge IC and MCU. And viewing the USB
+device as the combined effect of those two chips is the key to explaining the
+seeming contradiction:
+
+### USB
+
+USB Host (the one that initiates)    |   USB Device (the one that responds)
+:----------------------------------: | :-----------------------------------:
+Windows PC                           |   USB-bridge + MCU
+
+### FT1248
+
+FT1248 Master (the one that initiates)  |   FT1248 Slave (the one that responds)
+:-------------------------------------: | :------------------------------------:
+MCU                                     |   USB-bridge
+
+### The USB-bridge abstracts the USB hardware interface
+Taking a page from the last *SOLID* principle, *Dependency Injection*, the
+USB-bridge is an interface that abstracts the details of USB communication.
+The interface lets the USB-host and the MCU both think they are the one to
+initiate communication, and even lets them use different communication
+protocols!
+
+The MCU does not know it is talking to a USB host, i.e., I *do not
+know how USB works*, and yet I wrote a library called `UsbDriver`! The USB host
+*does know* it is talking to an FTDI device, because it uses the `d2xx.dll`
+library and its associated FTDI API. But *I can forget the details of FT1248
+communication* when I write the USB Host application.
+
+### USB host and FT1248 master both initiate communication with the USB-bridge
+The USB host writes to the USB device. The USB host trusts that the USB device
+will respond, but like with any device, it *has to wait* for that response. It
+cannot clock or drive the USB device. The USB-bridge IC tells the USB host when
+a response arrives.
+
+After the host writes to the USB device, the data sent is sitting in the
+USB-bridge receive buffer. The USB-bridge signals to the MCU that there is data
+in the receive buffer. Because the MCU is the FT1248 master, *it is responsible
+for polling this receive buffer signal*. When it sees there is data in the
+receive buffer, it initiates communication with the USB-bridge to read that
+data.
+
+If the USB host sent a command requesting data from the USB device, that means
+the USB host is now waiting on a response. Because my USB device (the USB-Bridge
+plus MCU) responds *quickly*, I write the USB host application to simply block
+until it receives the transmission. The USB Host application continues to
+*register* user events like a button press and provide some feedback to the user
+that the button was pressed. But the application does not act on those commands
+until it receives all of the expected data from the USB device.
+
+### Contract between the USB host application and the FT1248 master firmware
+As the FT1248 master, the MCU is in charge of delivering the data to the
+USB-bridge. The USB host expects this data to be delivered promptly and
+correctly. This is a *contract* between the USB host and the USB device.
+When the USB host requests data, the MCU must respond promptly and with the
+requested amount of data. This is the contract. The application on the USB host
+only runs smoothly if the MCU firmware upholds its side of the contract.
+
+The USB host initiates all USB communication, but it has no way to enforce the
+contract. What if the USB device *does not* respond **promptly** and
+**correctly**?
+
+If the USB device does not respond **promptly**, the host can set a timeout. I
+do this when I talk to the FTDI chip in our monochromator. The response time can
+vary quite a bit, so I need to allow for this while guarding against
+communication completely hanging.
+
+There are several ways to ensure the USB device responds **correctly**:
+
+- the USB host application requests a specific amount of data
+- the USB host application reads until there is no more data in the USB buffer
+- the data from the USB device always ends with a byte sequence that indicates
+  the end of a transmission
+- the data from the USB device has a header that identifies it as the response
+  to a specific request from the host
+
+These are not mutually exclusive. A good strategy would use some combination. I
+think up until now, I've mostly relied on the *expect a certain number of bytes*
+method, and that has actually never failed! I'll continue doing that. I set up
+the communication to include a header, but I never actually implemented unique
+header IDs, I just ignore the initial sequence of bytes. I might have also added
+a sanity check that the USB host checks to see the the receive buffer is empty.
+The point is it should not be difficult to make a robust communication protocol
+given all of these options. It may even be possible to make a composable
+protocol. Decide on the allowed options beforehand. State at the beginning of
+each data frame which options are used. Program the USB host to compose a
+`DetectEndOfFrame` function on-the-fly based on the data at the start of the
+frame.
+
+## FT1248 overview
+The FT1248 interface consists of:
+
+- **clock** and **slave select** signals driven by the FT1248 master
+- a **data line** driven by the FT1248 slave
+- 1, 2, 4, or 8 **bi-directional data lines** driven by the master or the slave,
+  depending on the command issued by the master at the start of communication
+    - The *Earhart* used **one** *bi-directional data line*.
+    - The *LIS USB interface board* uses **eight** *bi-directional data lines*.
+
+The FT1248 interface has *two states*: **inactive** and **active**.
+
+In the **inactive state**, there is *no clock*. All communication is via the
+signal on *two data lines driven by the slave*. One is the dedicated slave data
+line, `MISO` *master-in-slave-out*. The other is the *LSB* of the
+*bi-directional data port*, `MIOSIO[0]` *master-io-slave-io-bit-0*.
+
+`MISO` indicates *if there is data in the receive buffer*. The master polls
+`MISO`. If there is data in the receive buffer, the *master initiates a read*.
+
+`MIOSIO[0]` indicates *if there is room in the transmit buffer*. If the *master
+wishes to initiate a write*, it polls `MIOSIO[0]`. Once the transmit buffer has
+room, the master initiates a write.
+
+The **transmit** and **receive buffers** are each **1kByte**. If there is *at
+least one byte of data* in the receive buffer, the slave *indicates there is
+data to read*. If there is *at least one empty byte* in the transmit buffer, the
+slave *indicates there is room to write*.
+
+In the **active state** the master is clocking the slave to transfer data
+between master and slave. On a read, the slave writes data to the bus. On a
+write, the master writes data to the bus.
+
+Aside: the FT1248 master has nothing to do with the data once it is written to
+the slave's transmit buffer. At that point it is between the USB Host and the
+USB-bridge to negotiate reading the data out to the USB Host application.
+
+---
+
+The **active state** is further divided into a **command phase** and a **data
+phase**.
+
+In the **command phase**, the master sends a byte that tells the slave whether
+it is *reading* (from the receive buffer) or *writing* (to the transmit buffer),
+and how many pins (1, 2, 4, or 8) to use for the data transfer.
+
+Following the *command phase* there are one or more **data phases** during which
+the actual data is transferred. Once data transfer starts, the interface remains
+in the *active* state, transferring data according to the command, until the
+master returns the interface to the *inactive* state.
+
+### Bus-turnaround
+After the *command phase* and before the first *data phase*, there is a
+**bus-turnaround**. During bus-turnaround, if the command was a *write*, the
+slave uses `MISO` to *indicate whether the transmit buffer is full*. If the
+command was a *read*, the slave uses `MISO` to *indicate whether the receive
+buffer is empty*. 
+
+There is a subtle difference in how the *transmit buffer is full* signal is
+communicated during the *active* and *inactive* states. During the inactive
+state, the slave uses `MIOSIO[0]` to indicate when the *transmit buffer is
+full*, and `MISO` to indicate when there is *data in the receive buffer*. During
+the active state, the slave uses `MISO` for both *transmit buffer full* and
+*receive buffer empty*. This happends during the *bus-turnaround*. Which signal
+is communicated on `MISO` depends on whether the command was a *write* (goes
+with *transmit buffer full*) or a *read* (goes with *receive buffer empty*). And
+during the actual *data phase*, the slave is essentially doing the same thing on
+`MISO`, but the signals are called `ACK` and `NAK`. Again, the thing being
+*acknowledge* or *not acknowledge* depends on whether the command was a *read*
+or a *write*.
+
+### ACK and NAK
+During the *data phase*, the slave uses `MISO` to indicate either an
+**`ACK`** or a **`NAK`**.
+
+If the command is a *write*, the `ACK` means the transmit buffer has at least
+one more byte of space. On the rising clock edge, the master pushes its data,
+and the slave pushes its `ACK` or `NAK`. On the falling clock edge, the slave
+pulls in the data, and the master reads the `ACK` or `NAK` to determine whether
+that byte was successfully written.
+
+If the command is a *read*, the `ACK` means the receive buffer has at least one
+more byte of data to read. On the rising clock edge, the slave pushes the byte
+of data along with the `ACK` signal indicating that this is valid data. If the
+slave sends the `NAK` signal, it means this byte is whatever garbage you get
+from reading an empty buffer.
+
+Anytime the FT1248 master receives a `NAK` it returns the interface to the
+inactive state. 
+
+## FT1248 protocol and Ft1248 C library
+- FT1248 is the FTDI protocol.
+- Ft1248 is my C library that implements the FT1248
+protocol.
+
+Summarizing the behavior, using the Ft1248 function names.
+
+### Polling in the inactive state
+In the inactive state, the master is always checking `MISO` to see if there is
+data to read:
+
+    FtIsReadyToRead
+
+These are the other names I considered: `!FtIsRxBufferEmpty`, `!FtIsRxEmpty`,
+`FtIsDataAvailable`.
+
+After reading data from the USB host, the master is back in the inactive state.
+If the data from the USB host was a request for the master to transmit data, the
+master first checks `MIOSIO[0]` to see if the transmit buffer has room for new
+data:
+
+    FtIsReadyToWrite
+
+These are the other names I considered: `!FtIsTxBufferFull`,
+`FtTxBufferHasRoom`, `!FtIsTxFull`, `FtIsReadyToSend`
+
+### Activate the interface
+Whether the master wishes to do a write or a read, the master first activates
+the interface by pulling `!SS!` low:
+
+    FtActivateInterface
+
+The master clocks the interface to push data onto the bus by pulling `SCK` high:
+
+    FtPushData
+
+The master has to wait to output on the `MIOSIO` port until after pulling `SCK`
+high. The slave releases `MIOSIO[0]` on the rising edge of `SCK`. The master can
+take as long as it needs to push the data and then pull `SCK` low. The slave
+will not read the data until the falling edge of `SCK`.
+
+---
+
+### Read Command
+After activating the interface and raising `SCK` to signal pushing data, the
+master outputs the *read* command on the `MIOSIO` port:
+
+    FtLetMasterDriveBus
+    FtReadCommand
+
+The master clocks the slave with a falling edge, telling it to pull the command
+from the `MIOSIO` port:
+
+    FtPullData
+
+### Bus-turnaround after the read command
+The master releases the `MIOSIO` port:
+
+    FtLetSlaveDriveBus
+
+The master clocks the slave with a rising edge, telling it to drive `MISO` with
+the `RxBufferEmpty` signal:
+
+    FtPushData
+
+The master clocks the slave with a falling edge, indicating that it is going to
+pull data from `MISO`:
+
+    FtPullData
+
+The master checks `MISO` to see if it is OK to continue with the data transfer:
+
+    FtIsBusOk
+
+Note this is actually the same as `FtIsReadyToRead`, but I am using a new name
+because the master is going to call this same function whether the command is a
+*read* or a *write*.
+During the `bus-turnaround`, the slave uses `MISO` for both *receive buffer
+empty* and *transmit buffer full*.
+
+The master clocks out the data from the slave. First a rising clock edge to tell
+the slave to push data onto the bus and to drive `MISO` with an `ACK` or `NAK`:
+
+    FtPushData
+
+Then a falling clock edge to tell the slave that it is pulling the slave's data
+from the bus:
+
+    FtPullData
+
+The master checks `MISO` for an `ACK` to see if this is a valid byte of data:
+
+    FtIsBusOk
+
+Then reads the data from the MIOSIO port:
+
+    FtReadData
+
+The master continues the **push-pull-isOk-readData** loop as long as it wishes
+or until it receives a `NAK`.
+
+When the master is done, it does a final pull:
+
+    FtPullData
+    FtIsBusOk
+    FtReadData
+
+And it leaves `SCK` low.
+
+Lastly, the master pulls `!SS!` high again to return to the *inactive state*:
+
+    FtDeactivateInterface
+
+### Write Command
+After activating the interface and raising `SCK` to signal pushing data, the
+master outputs the *write* command on the `MIOSIO` port:
+
+    FtLetMasterDriveBus
+    FtWriteCommand
+
+The master clocks the slave with a falling edge, telling it to pull the command
+from the `MIOSIO` port:
+
+    FtPullData
+
+### Bus-turnaround after the write command
+The master releases the `MIOSIO` port:
+
+    FtLetSlaveDriveBus
+
+The master clocks the slave with a rising edge, telling it to drive `MISO` with
+the `TxBufferFull` signal:
+
+    FtPushData
+
+The master clocks the slave with a falling edge, indicating that it is going to
+pull data from `MISO`:
+
+    FtPullData
+
+The master checks `MISO` to see if it is OK to continue with the data transfer:
+
+    FtIsBusOk
+
+Note this is *not* the same as `FtIsReadyToWrite`. That function checks
+`MIOSIO[0]`, this one checks `MISO`.
+During the `bus-turnaround`, the slave uses `MISO` for both *receive buffer
+empty* and *transmit buffer full*.
+
+The master clocks the data into the slave's transmit buffer. First a rising
+clock edge to tell the slave to drive `MISO` with an `ACK` or `NAK`:
+
+    FtPushData
+
+The master pushes its data onto `MIOSIO`:
+
+    FtWriteData
+
+Then a falling clock edge to tell the slave to pull the data from the bus:
+
+    FtPullData
+
+The master checks `MISO` for an `ACK` to see if the data successfully entered
+the transmit buffer:
+
+    FtIsBusOk
+
+The master continues the **push-pull-isOk-readData** loop as long as it wishes
+or until it receives a `NAK`.
+
+When the master is done, it does a final pull to tell the slave to read the last
+byte into the transmit buffer:
+
+    FtPullData
+
+It checks that the buffer had room to write that last byte:
+
+    FtIsBusOk
+
+And it leaves `SCK` low.
+
+The master then releases the `MIOSIO` port:
+
+    FtLetSlaveDriveBus
+
+Lastly, the master pulls `!SS!` high again to return to the *inactive state*:
+
+    FtDeactivateInterface
+
+## FT1248 setup
+
+- `SCK`     : clock signal driven by the master
+- `!SS!`    : slave select signal driven by the master
+- `MISO`    : master-in-slave-out, *always* driven by the slave
+- `MIOSIO`  : eight bi-directional lines
+
+The eight bi-directional lines are driven by the master during a write, and
+driven by the slave during a read.
+
+The first bi-directional line, `MIOSIO[0]`, has an additional function. The
+slave only drives this line during the inactive state. If LOW, the
+transmit buffer is full. During the active state, the slave indicates a full
+transmit buffer using `MISO`.
+
+=====[ Summary of MCU pin configuration to be an FT1248 master ]=====
+```c
+// MISO   is an       input pin
+// MIOSIO is an 8-bit input port
+// SCK  is an output signal that idles LOW.
+// !SS! is an output signal that idles HIGH.
+
+// MISO is always an input.
+clr_bit(FT1248_DDR,FT1248_MISO);    // cfg miso as an input pin
+set_bit(FT1248_PORT,FT1248_MISO);   // enable pull-up on miso
+
+// MIOSIO is always an input port while in the inactive state.
+// MIOSIO is an input in the active state, except during the command phase
+// and during the data phase for a write.
+MIOSIO_DDR = 0x00;                  // cfg miosio0:7 as an input port
+MIOSIO_PORT = 0XFF;                 // enable pull-ups on miosio
+
+// SCK remains low while in the inactive state.
+// The first clock edge in the active state is a rising edge.
+clr_bit(FT1248_PORT,FT1248_SCK);    // Drive SCK low.
+set_bit(FT1248_DDR,FT1248_SCK);     // Make SCK an output.
+
+// !SS! controls whether the interface is in the active or inactive stage.
+// !SS! remains high while in the inactive state.
+// !SS! goes low to initiate the active state.
+set_bit(FT1248_PORT,FT1248_SS);     // Drive !SS! high.
+set_bit(FT1248_DDR,FT1248_SS);      // Make !SS! an output.
+```
+
+## FT1248 starts communication with a combined command and bus-width byte
+FT1248 communication is initiated by the FT1248 master (the MCU). The FT1248
+slave (the FTDI chip) signals when there is data in the receive buffer from the
+USB host, but it is up to the master to decide when to read the data.
+
+The master initiates communication by sending a single byte that is a
+complicated combination of two nibbles:
+
+- one nibble represents a command: 0 for write, 1 for read
+- the other nibble represents the bus-width.
+
+This is described on *p.6 of FTDI application note #167*.
+
+See [FT1248 format of combined command and bus-width byte][ft1248-cmd-bw-byte].
+[ft1248-cmd-bw-byte]: #markdown-header-ft1248-format-of-combined-command-and-bus-width-byte
+
+## How the MCU manages USB communication using FT1248 
+### Check if there is any unread data from the USB host
+```c
+!chk_bit(FT1248_PIN,FT1248_MISO);   // true:    there is unread data from the
+                                    //          USB host in the receive buffer
+```
+### Read the data from the USB host
+Activate the interface by pulling `!SS!` low:
+```c
+clr_bit(FT1248_PORT,FT1248_SS);     // Pull !SS! low to signal the FT1248 slave
+                                    // (the FTDI chip) to release MIOSIO[0].
+```
+Ft1248 function:
+
+    FtActivateInterface_SsLow
+
+Clock the interface to push data onto the bus by pulling `SCK` high:
+```c
+set_bit(FT1248_PORT,FT1248_SCK);    // Pull SCK high to signal the FT1248
+                                    // master (the MCU) and slave (the FTDI
+                                    // chip) to shift their data onto the bus.
+```
+Ft1248 function:
+
+    FtPushData_SckHigh
+
+Output the command to read by outputting byte `0xC6` on the `MIOSIO` port:
+```c
+MIOSIO_DDR = 0xFF;                  // First the master drives the data lines.
+MIOSIO_PORT = FT1248_CMD_READ8;     // The master outputs the read command
+                                    // and specifies an 8-bit-wide bus.
+```
+Ft1248 function:
+
+    FtOutputTheReadCommand
+
+---
+## FT1248 reference
+### FT1248 format of combined command and bus-width byte
+The *bus-width* (*BW*) and command are sent in a byte on a subset of the
+`MIOSIO[7:0]` pins over one or more clock cycles.
+
+For example, if *BW* is 1-bit:
+
+- bit[7..0] is clocked out on MIOSIO[0]
+- takes eight clock cycles
+
+And the opposite example, if *BW* is 8-bit:
+
+- `bit[7..0]` is clocked out on `MIOSIO[7:0]`
+- takes one clock cycle
+
+On the **first falling edge** of `SCK`, the FTDI chip gets the **bus-width ID**
+and therefore knows whether it's clocking out more bits, or reading the entire
+`CMD[3..0]` on the `MIOSIO` pins.
+
+    Note that in the Earhart design, `CPOL = 1` (`SCK` idles `HIGH`), so it
+    would be the first rising edge of `SCK` when the FTDI chip reads the
+    bus-width.
+
+- command/bus-width byte format:
+    - bit[7] = X
+    - bit[6] = CMD[0]
+    - bit[5] = CMD[1]
+    - bit[4] = 0 if BW=8, X otherwise
+    - bit[3] = CMD[2]
+    - bit[2] = 0 if BW=4, X otherwise
+    - bit[1] = 0 if BW=2, X otherwise
+    - bit[0] = CMD[3]
+    - if bits[4,2,1] are all X, the BW=1
+
+- if BW=8, all eight pins are used:
+    - MIOSIO[7] = X
+    - MIOSIO[6] = CMD[0]
+    - MIOSIO[5] = CMD[1]
+    - MIOSIO[4] = 0 (BW=8)
+    - MIOSIO[3] = CMD[2]
+    - MIOSIO[2] = X
+    - MIOSIO[1] = X
+    - MIOSIO[0] = CMD[3]
+- if BW=4, only MIOSIO[3:0] are used:
+    - MIOSIO[7] = X
+    - MIOSIO[6] = X
+    - MIOSIO[5] = X
+    - MIOSIO[4] = X
+    - on 1st clock:
+        - MIOSIO[3] = CMD[2]
+        - MIOSIO[2] = 0 if BW=4
+        - MIOSIO[1] = X
+        - MIOSIO[0] = CMD[3]
+    - on 2nd clock:
+        - MIOSIO[3] = X
+        - MIOSIO[2] = CMD[0]
+        - MIOSIO[1] = CMD[1]
+        - MIOSIO[0] = X
+
+list of commands:
+
+
+    write                 0x0
+    read                  0x1
+    write buffer flush    0x4
+
+### FT1248 combined command and bus-width byte for an 8-bit bus
+Here are the bytes to output on the MIOSIO port to specify 8-bit-wide read and
+write:
+```c
+                                    // BW:8 (0)────────┐
+                                    //                 │
+                                    // CMD-nibble:  -01▾ 2--3
+#define FT1248_CMD_WRITE8   0x86    //              1000 0110
+#define FT1248_CMD_READ8    0xC6    //              1100 0110
+                                    // Bit numbers: 7654 3210
+```
+There are four bits for the *command* nibble and four for the *bus-width*
+nibble. A **low** on a particular bus-width bit indicates the bus width. The
+other bits in the bus-width nibble should not matter, but to play it safe, the
+other bits in the bus-width nibble are pulled high.
+
+
 
 # Repo links
 Link to this repo: https://bitbucket.org/rainbots/lis-770i/src/master/
