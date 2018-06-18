@@ -10,10 +10,28 @@
 uint8_t const FtCmd_Read  = 0xC6;
 void FtSendCommand(uint8_t FtCmd)
 {
-    FtOutputCmdOnMiosio(FtCmd);
+    FtActivateInterface();
+    FtPushData();
+    FtOutputByte(FtCmd);
+    FtPullData();
 }
 
-static void FtOutputCmdOnMiosio_Implementation(uint8_t FtCmd)
+static void FtActivateInterface_Implementation(void)
 {}
-void (*FtOutputCmdOnMiosio)(uint8_t FtCmd) = FtOutputCmdOnMiosio_Implementation;
 
+void (*FtActivateInterface)(void) = FtActivateInterface_Implementation;
+
+static void FtPushData_Implementation(void)
+{}
+
+void (*FtPushData)(void) = FtPushData_Implementation;
+
+static void FtOutputByte_Implementation(uint8_t FtCmd)
+{}
+
+void (*FtOutputByte)(uint8_t) = FtOutputByte_Implementation;
+
+static void FtPullData_Implementation(void)
+{}
+
+void (*FtPullData)(void) = FtPullData_Implementation;

@@ -3,24 +3,54 @@
 #include "mock_Ft1248.h"            // lib DOF_Stubbed
 #include <Mock.h>                   // Class: Mock
 
-static void (*FtOutputCmdOnMiosio_Saved)(uint8_t FtCmd);
-static void Stub_FtOutputCmdOnMiosio(void) {
-    FtOutputCmdOnMiosio_Saved = FtOutputCmdOnMiosio;
-    FtOutputCmdOnMiosio = FtOutputCmdOnMiosio_Stubbed;
+static void (*FtActivateInterface_Saved)(void);
+static void Stub_FtActivateInterface(void) {
+    FtActivateInterface_Saved = FtActivateInterface;
+    FtActivateInterface = FtActivateInterface_Stubbed;
 }
-static void Unstub_FtOutputCmdOnMiosio(void) {
-    FtOutputCmdOnMiosio = FtOutputCmdOnMiosio_Saved;
+static void Unstub_FtActivateInterface(void) {
+    FtActivateInterface = FtActivateInterface_Saved;
 }
-void SetUpMock_FtSendCommand(void)
+static void (*FtPushData_Saved)(void);
+static void Stub_FtPushData(void) {
+    FtPushData_Saved = FtPushData;
+    FtPushData = FtPushData_Stubbed;
+}
+static void Unstub_FtPushData(void) {
+    FtPushData = FtPushData_Saved;
+}
+static void (*FtOutputByte_Saved)(uint8_t);
+static void Stub_FtOutputByte(void) {
+    FtOutputByte_Saved = FtOutputByte;
+    FtOutputByte = FtOutputByte_Stubbed;
+}
+static void Unstub_FtOutputByte(void) {
+    FtOutputByte = FtOutputByte_Saved;
+}
+static void (*FtPullData_Saved)(void);
+static void Stub_FtPullData(void) {
+    FtPullData_Saved = FtPullData;
+    FtPullData = FtPullData_Stubbed;
+}
+static void Unstub_FtPullData(void) {
+    FtPullData = FtPullData_Saved;
+}
+void SetUpMock_FtSendCommand(void)  // FUT
 {
     mock = Mock_new();
     //
-    Stub_FtOutputCmdOnMiosio();
+    Stub_FtActivateInterface();  // DOF
+    Stub_FtPushData();  // DOF
+    Stub_FtOutputByte();  // DOF
+    Stub_FtPullData();  // DOF
 }
-void TearDownMock_FtSendCommand(void)
+void TearDownMock_FtSendCommand(void)  // FUT
 {
-    Unstub_FtOutputCmdOnMiosio();
+    Mock_destroy(mock); mock = NULL;
     //
-    Mock_destroy(mock); mock=NULL;
+    Unstub_FtActivateInterface();  // DOF
+    Unstub_FtPushData();  // DOF
+    Unstub_FtOutputByte();  // DOF
+    Unstub_FtPullData();  // DOF
 }
 

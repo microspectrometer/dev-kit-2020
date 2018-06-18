@@ -1,21 +1,59 @@
+#include <Mock.h>
+#include <RecordedCall.h>
+#include <RecordedArg.h>
 #include "mock_Ft1248.h"
-#include <Mock.h>           // RecordExpectedCall, RecordActualCall
-#include <RecordedCall.h>   // Class: RecordedCall
-#include <RecordedArg.h>    // Class: RecordedArg
 
-static RecordedCall * Mock_FtOutputCmdOnMiosio(uint8_t arg1)
+static RecordedCall * Mock_FtActivateInterface(void)
 {
-    char const *call_name = "FtOutputCmdOnMiosio";
+    char const *call_name = "FtActivateInterface";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
-    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8);
+    return record_of_this_call;
+}
+void Expect_FtActivateInterface(void) {
+    RecordExpectedCall(mock, Mock_FtActivateInterface());
+}
+void FtActivateInterface_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtActivateInterface());
+}
+
+static RecordedCall * Mock_FtPushData(void)
+{
+    char const *call_name = "FtPushData";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtPushData(void) {
+    RecordExpectedCall(mock, Mock_FtPushData());
+}
+void FtPushData_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtPushData());
+}
+
+static RecordedCall * Mock_FtOutputByte(uint8_t arg1)
+{
+    char const *call_name = "FtOutputByte";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
     *((uint8_t *)record_of_arg1->pArg) = arg1;
     RecordArg(record_of_this_call, record_of_arg1);
     return record_of_this_call;
 }
-void Expect_FtOutputCmdOnMiosio(uint8_t arg1) {
-    RecordExpectedCall(mock, Mock_FtOutputCmdOnMiosio(arg1));
+void Expect_FtOutputByte(uint8_t arg1) {
+    RecordExpectedCall(mock, Mock_FtOutputByte(arg1));
 }
-void FtOutputCmdOnMiosio_Stubbed(uint8_t arg1) {
-    RecordActualCall(mock, Mock_FtOutputCmdOnMiosio(arg1));
+void FtOutputByte_Stubbed(uint8_t arg1) {
+    RecordActualCall(mock, Mock_FtOutputByte(arg1));
 }
 
+static RecordedCall * Mock_FtPullData(void)
+{
+    char const *call_name = "FtPullData";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtPullData(void) {
+    RecordExpectedCall(mock, Mock_FtPullData());
+}
+void FtPullData_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtPullData());
+}

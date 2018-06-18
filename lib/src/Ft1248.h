@@ -8,5 +8,9 @@
 extern uint8_t const FtCmd_Read;
 void FtSendCommand(uint8_t FtCmd);
 extern void (*FtOutputCmdOnMiosio)(uint8_t FtCmd);
+extern void (*FtActivateInterface)(void);
+extern void (*FtPushData)(void);
+extern void (*FtOutputByte)(uint8_t);
+extern void (*FtPullData)(void);
 
 #endif // _FT1248_H

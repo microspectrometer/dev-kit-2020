@@ -195,7 +195,7 @@ communicated during the *active* and *inactive* states. During the inactive
 state, the slave uses `MIOSIO[0]` to indicate when the *transmit buffer is
 full*, and `MISO` to indicate when there is *data in the receive buffer*. During
 the active state, the slave uses `MISO` for both *transmit buffer full* and
-*receive buffer empty*. This happends during the *bus-turnaround*. Which signal
+*receive buffer empty*. This happens during the *bus-turnaround*. Which signal
 is communicated on `MISO` depends on whether the command was a *write* (goes
 with *transmit buffer full*) or a *read* (goes with *receive buffer empty*). And
 during the actual *data phase*, the slave is essentially doing the same thing on
@@ -233,17 +233,17 @@ Summarizing the behavior, using the Ft1248 function names.
 In the inactive state, the master is always checking `MISO` to see if there is
 data to read:
 
-    FtIsReadyToRead
+    FtHasDataToRead
 
 These are the other names I considered: `!FtIsRxBufferEmpty`, `!FtIsRxEmpty`,
-`FtIsDataAvailable`.
+`FtIsDataAvailable`, `FtIsReadyToRead`.
 
 After reading data from the USB host, the master is back in the inactive state.
 If the data from the USB host was a request for the master to transmit data, the
 master first checks `MIOSIO[0]` to see if the transmit buffer has room for new
 data:
 
-    FtIsReadyToWrite
+    FtHasRoomToWrite
 
 These are the other names I considered: `!FtIsTxBufferFull`,
 `FtTxBufferHasRoom`, `!FtIsTxFull`, `FtIsReadyToSend`
@@ -296,7 +296,7 @@ The master checks `MISO` to see if it is OK to continue with the data transfer:
 
     FtIsBusOk
 
-Note this is actually the same as `FtIsReadyToRead`, but I am using a new name
+Note this is actually the same as `FtHasDataToRead`, but I am using a new name
 because the master is going to call this same function whether the command is a
 *read* or a *write*.
 During the `bus-turnaround`, the slave uses `MISO` for both *receive buffer
@@ -366,7 +366,7 @@ The master checks `MISO` to see if it is OK to continue with the data transfer:
 
     FtIsBusOk
 
-Note this is *not* the same as `FtIsReadyToWrite`. That function checks
+Note this is *not* the same as `FtHasRoomToWrite`. That function checks
 `MIOSIO[0]`, this one checks `MISO`.
 During the `bus-turnaround`, the slave uses `MISO` for both *receive buffer
 empty* and *transmit buffer full*.
