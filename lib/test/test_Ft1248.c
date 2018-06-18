@@ -17,10 +17,11 @@ void TearDown_FtSendCommand(void){
 void FtSendCommand_Read_does_entire_command_phase_for_ReadCmd(void)
 {
     //ExpectCall(mock, "FtPushData");
+    //Expect_FtPushData();
     //ExpectCall(mock, "FtLetMasterDriveBus");
-    //Expect_FtLetMasterDriveBus();
-    //Expect_FtOutputCmdOnMiosio(FtCmd_Read);
-    _MOCK_FT1248_H; Expect_FtOutputCmdOnMiosio(FtCmd_Read);
+    Expect_FtOutputCmdOnMiosio(FtCmd_Read);
+    //Example of what to do if there is more than one mocked lib:
+    //_MOCK_FT1248_H; Expect_FtOutputCmdOnMiosio(FtCmd_Read);
     //ExpectCall(mock, "FtPullData");
     //=====[ Operate ]=====
     FtSendCommand(FtCmd_Read);
