@@ -1,5 +1,7 @@
 # Table of Contents
 - [Repo links](#markdown-header-repo-links)
+- [Abstract memory-mapped-io for tests](#markdown-header-abstract-memory-mapped-io-for-tests)
+- [Mockist TDD](#markdown-header-mockist-tdd)
 - [FT1248](#markdown-header-ft1248)
     - [How FT1248 relates to USB](#markdown-header-how-ft1248-relates-to-usb)
     - [FT1248 overview](#markdown-header-ft1248-overview)
