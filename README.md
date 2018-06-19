@@ -28,6 +28,143 @@ Libraries are shared:
 - the libraries are developed in their own folder called `lib`
 - the projects link against the object files in `lib`
 
+# Abstract memory-mapped-io for tests
+## Faking registers: use macros
+*This section was copied from repo `mock-object`*
+
+Embedded design has *hardware dependencies*. The hardware dependency is a
+memory-mapped I/O register. The dependency is *faked* by creating a variable
+that occupies the same number of bytes as the memory-mapped I/O register. The
+variable is created in static memory. For me, that means getting an address
+starting with `0x1004` such as `0x100403120`. The *ATmega328P* is an 8-bit MCU,
+so the fake registers are 8-bit unsigned integers: `uint8_t`.
+
+The `avr` headers and libraries set up the memory-mapped I/O registers as if
+their name is a dereferenced pointer. For example, `DDRC = 0xFF` sets the value
+in register `DDRC` to `0xFF`. This is equivalent to creating a pointer to a fake
+register and dereferencing it to write to the fake register:
+```c
+uint8_t volatile * const fake_LedRegister;
+*fake_LedRegister = 0xFF;
+```
+- The fake register is *volatile* because the compiler should never assume it
+  knows the value. The value might be altered by an interrupt.
+- The pointer to the fake register is *const* because `fake_LedRegister` will
+  never point to anything else in this executable, just as `DDRC` is the
+  permanent alias to a specific address on this microcontroller.
+
+*Faking enables testing on a development system.* It is much faster to compile
+and test on the development system than on the target embedded system.
+
+Faking forces writing the project code base in a way that is independent of the
+hardware. The hardware details are stored in static memory and injected at run
+time when the hardware library's `Init` function is called.
+
+The alternative, which is the default for the avr libs, is that the
+register names and pin names are macros. The macros are substituted by the
+preprocessor, so they do not need to be stored in static memory. This saves on
+memory. The price paid is that the hardware-dependency macro names are sprinkled
+throughout the codebase:
+
+- *The code is harder to re-use because all the names have to change.*
+  Abstracting the names to something not hardware dependent means just switching
+  out a single header file to reuse the lib on a different embedded project.
+  Another version of the board might use different pins.
+  That should be a simple and obvious swap of one lib header, not a
+  search-and-replace throughout the entire project.
+- *The code is less readable.*
+  For example, a register that controls a bank of LEDs on one project might be
+  switch inputs on another project. The fact the LEDs connect to PORTB or
+  whatever is just noise.
+- *The code is harder to test*. If the code uses the avr lib macro names, the
+  test needs to redefine these macros. It's not impossible: just make header
+  files that make the same macro substitutions but assign the macros to fake
+  registers as described above. The messy part is that now the test code needs
+  to use the register names. This is noise in the test code.
+
+A happy medium between the two is to use the macro method but simply define a
+new set of macros that are project-specific. I suppose there really is no reason
+for me to store the register addresses in static memory and load them into
+variables at runtime. It would save on both static memory and program memory to
+let the preprocessor substitute the final addresses before the code is compiled.
+Then there is also no reason to have these `Init` functions.
+
+In fact, the only benefit of loading the values at runtime is that I could then
+instantiate multiple times. For example, if there are two debug LEDs, the one
+debug LED lib can be used with both. Except that it can't. The one lib still
+stores the addresses in static memory. If I attempt to instantiate a second
+debug LED, I'll just overwrite information initialized for the first debug LED.
+The only way to have multiple instances is to use the heap. OK, forget that
+argument then.
+
+Now the question is whether the compiler is smart enough to see that the
+register addresses are `const` and hardcode them directly as if they were
+macros. I should investigate this. Even if the compiler does do this, the need
+to create an `Init` function does seem like a lot of extra work for no reason.
+The tests need to worry about initialization.
+
+To be honest, I'm just sticking with this method out of inertia at this point.
+The important point from the above is to define register faking.
+
+# Mockist TDD
+## Mocks are not fakes
+*This section was copied from repo `mock-object`*
+
+This register faking is not mocking. The fake register is just another
+dependency. Mocking is a way to pretend that the dependency exists without it
+actually existing. This is done with expectations and stubs.
+
+The test code generates a list of expectations for which functions are called,
+the values passed in, and the values returned. This list represents the
+developer's intended outcomes for a single path through the code under test.
+That single path is the specific case handled by this test. Each test handles a
+single path.
+
+All of the functions called by the code under test are stubbed. Create stubbed
+implementations of these depended-on-functions. The stubs record how they were
+called and they return values specific to the test case. The test ends by
+comparing the list of expectations with the list populated by the stubs.
+
+The stubbed implementations are written specifically for a given test case. If
+the stub just records that it was called and does nothing else, then the same
+stubbed implementation could be used for all test cases. Either way, the setUp
+for each test redirects the function names to point at the stubbed
+implementations, and the tearDown redirects the function names to point back at
+the production code.
+
+Stubbing requires the DOFs are public. This brings up an interesting point about
+how test development drives interface design.
+
+I ran into a problem where I could not test that a DOF was called. The DOF was
+private, and the only way to check the function was doing what I wanted it to
+was to check the DOF was called. I already tested the DOF by writing a
+test-wrapper. But now I was calling a function that called the DOF. It doesn't
+call the test-wrapper. I didn't want to make the function public just to be able
+to stub it from the test code for a client lib.
+
+The other option was to check the value of the register manipulated by the
+function. But this requires accessing hardware. I can fake the hardware, but
+that is not the right solution. That is testing at the wrong level. I already
+know the DOF works. What I am really supposed to be checking is whether the
+correct functions are called.
+
+In fact, attempting to spy by faking the hardware does not even work! If I
+include the header for the fake registers, I get a linker error because now I
+have two separate test object files that both include the header of fake
+registers. Since the test object files are compiled separately, the #include
+guards do not prevent them from both including the header and defining the
+symbols within. The linker throws a multiple definition error.
+
+The right way to write the test is to simply call the public function that calls
+the DOFs. The code-under-test should not know/care the DOFs are called. The
+purpose of the test is to see that the FUT makes the right calls. This is where
+it is hard to write the higher-level lib before writing the lower-level lib. I
+do not know what the API should be until I've refactored the lower-level lib
+into a higher-level API. Similarly, the refactoring of the lower-level lib is
+guided by the desire to keep the API simple, and the test of that simplicity is
+the test of the higher-level lib.
+
+
 # FT1248
 
 ## How FT1248 relates to USB
