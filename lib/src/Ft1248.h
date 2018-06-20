@@ -46,5 +46,6 @@ extern bool (*FtHasDataToRead)(void);
 void FtRead(void);
 extern uint8_t (*FtReadData)(void);
 void FtDeactivateInterface(void);
+bool FtHasRoomToWrite(void);
 
 #endif // _FT1248_H

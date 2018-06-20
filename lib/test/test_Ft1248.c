@@ -9,9 +9,13 @@
 #include "ReadWriteBits.h"
 
 //=====[ List of tests to write ]=====
+    // *Inactive state* control signals from the FT1248 slave:
     // [x] FtHasDataToRead() returns true if MISO is low
     // [x] FtHasDataToRead returns false if MISO is high
     //     - FtHasDataToRead is an alias for FtIsBusOk
+    // [x] FtHasRoomToWrite() returns true if MIOSIO bit 0 is low
+    //
+    // The rest of the functionality is for the *Active bus state*.
     // [x] FtActivateInterface() pulls SS low.
     // [x] FtPushData() pulls SCK high.
     // [x] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
@@ -33,11 +37,13 @@
     //     - FtPushData(): SCK high, slave drives MISO with RxBufferEmpty
     //     - FtPullData(): SCK low, now its ok to pull data
     //     - FtIsBusOk(): master reads MISO
+    //     happy path:
     //     if MISO says BusIsOk, it means there is data to read,
     //     go ahead and do the read
-    // [ ] FtBusTurnaround returns true if it is ok to proceed
+    // [x] FtBusTurnaround returns false if not ok to proceed
     //     - FtIsBusOK(): it is ok to proceed if this returns true
     //     - for a read, this means there is still data to read
+    //     - for a write, this means there is room to write
     // [x] FtReadData() returns the value on MIOSIO pins
     // [x] FtDeactivateInterface() pulls SS high
     // [x] FtRead reads bytes from MIOSIO:
@@ -86,6 +92,10 @@ void FtHasDataToRead_returns_false_if_MISO_is_high(void)
     *Ft1248_pin = *Ft1248_port;  // simulate AVR `pin` register
     //=====[ Operate and Test ]=====
     TEST_ASSERT_FALSE(FtHasDataToRead());
+}
+void FtHasRoomToWrite_returns_true_if_MIOSIO_bit_0_is_low(void)
+{
+    TEST_ASSERT_TRUE(FtHasRoomToWrite());
 }
 void FtActivateInterface_pulls_SS_low(void)
 {
