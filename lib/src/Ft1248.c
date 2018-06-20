@@ -40,7 +40,9 @@ static void FtOutputByte_Implementation(uint8_t FtCmd)
 void (*FtOutputByte)(uint8_t) = FtOutputByte_Implementation;
 
 static void FtPullData_Implementation(void)
-{}
+{
+    ClearBit(Ft1248_port, Ft1248_Sck);
+}
 
 void (*FtPullData)(void) = FtPullData_Implementation;
 

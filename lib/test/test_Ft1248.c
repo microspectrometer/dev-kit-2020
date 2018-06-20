@@ -12,8 +12,8 @@
     // [x] FtPushData() pulls SCK high.
     // [x] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
     // [x] FtOutputByte(cmd) outputs a byte on port MIOSIO.
+    // [x] FtPullData() pulls SCK low.
     // FtSendCommand(cmd) handles the entire command phase.
-    // [ ] FtPullData() pulls SCK low.
     // [x] FtSendCommand(FtCmd_Read) should
     //     handle the entire command phase for the Read command:
     //     [x] FtActivateInterface()    (SS low)
@@ -41,9 +41,9 @@
     //     [ ] FtReadData(): final store of Miosio
     //     leave SCK low (it went low on FtPullData())
     //     [ ] FtDeactivateInterface(): pull SS high
+// void SetUp_NothingForFt1248(void){}
+// void TearDown_NothingForFt1248(void){}
 
-void SetUp_NothingForFt1248(void){}
-void TearDown_NothingForFt1248(void){}
 void SetUp_FtPorts(void)
 {
     *Ft1248_port = 0x00;
@@ -72,7 +72,6 @@ void FtPushData_pulls_SCK_high(void)
     uint8_t io_port = *Ft1248_port;
     TEST_ASSERT_BIT_HIGH(Ft1248_Sck, io_port);
 }
-
 void FtLetMasterDriveBus_configures_MIOSIO_port_for_MCU_output(void)
 {
     //=====[ Setup ]=====
@@ -94,6 +93,16 @@ void FtOutputByte_outputs_a_byte_on_port_MIOSIO(void)
     //=====[ Test ]=====
     uint8_t actual_miosio = *FtMiosio_port; // value in miosio port
     TEST_ASSERT_EQUAL_HEX8( expected_miosio, actual_miosio );
+}
+void FtPullData_pulls_SCK_low(void)
+{
+    //=====[ Setup ]=====
+    SetBit(Ft1248_port, Ft1248_Sck);
+    //=====[ Operate ]=====
+    FtPullData();
+    //=====[ Test ]=====
+    uint8_t io_port = *Ft1248_port;
+    TEST_ASSERT_BIT_LOW(Ft1248_Sck, io_port);
 }
 
 void SetUp_FtSendCommand(void){

@@ -42,7 +42,8 @@ int main()
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtActivateInterface_pulls_SS_low);
     RUN_TEST(FtPushData_pulls_SCK_high);
-    RUN_TEST(FtOutputByte_outputs_a_byte_on_port_MIOSIO);
     RUN_TEST(FtLetMasterDriveBus_configures_MIOSIO_port_for_MCU_output);
+    RUN_TEST(FtOutputByte_outputs_a_byte_on_port_MIOSIO);
+    RUN_TEST(FtPullData_pulls_SCK_low);
     return UNITY_END();
 }
