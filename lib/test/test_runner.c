@@ -51,12 +51,14 @@ int main()
     setUp = SetUp_FtBusTurnaround; tearDown = TearDown_FtBusTurnaround;
     RUN_TEST(FtBusTurnaround_handles_the_entire_bus_turnaround);
 
+    setUp = SetUp_FtRead; tearDown = TearDown_FtRead;
+    RUN_TEST(FtRead_reads_bytes_from_MIOSIO);
+
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input);
     RUN_TEST(FtIsBusOk_returns_true_if_MISO_is_low);
     RUN_TEST(FtIsBusOk_returns_false_if_MISO_is_high);
+    RUN_TEST(FtReadData_returns_the_value_on_MIOSIO);
 
-    setUp = SetUp_FtRead; tearDown = TearDown_FtRead;
-    RUN_TEST(FtRead_reads_bytes_from_MIOSIO);
     return UNITY_END();
 }

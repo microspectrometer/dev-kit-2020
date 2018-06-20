@@ -30,7 +30,8 @@
     //     - FtPullData(): SCK low, now its ok to pull data
     //     - FtIsBusOk(): master reads MISO
     //     if MISO says BusIsOk, do the read
-    // [ ] FtReadData() returns the value on MIOSIO
+    // [x] FtReadData() returns the value on MIOSIO
+    // [ ] FtDeactivateInterface() pulls SS high
     // [x] FtRead reads bytes from MIOSIO:
     //     FtRead should:
     //     - FtPushData(): SCK high, slave drives Miosio with data and MISO with ACK
@@ -38,14 +39,14 @@
     //     - FtIsBusOk(): check MISO for ACK/NAK
     //     if MISO is an ACK, pull from Miosio
     //     - FtReadData(): store value on Miosio
-    // [ ] loop Read until a NAK or master is done reading
+    // [ ] loop FtRead until a NAK or master is done reading
     //     if MISO is a NAK, return an error (ill-defined so far)
-    // [ ] DoneReading should:
-    //     [ ] FtPullData(): final OK to pull signal
-    //     [ ] FtIsBusOk(): final check for ACK/NAK
-    //     [ ] FtReadData(): final store of Miosio
-    //     leave SCK low (it went low on FtPullData())
-    //     [ ] FtDeactivateInterface(): pull SS high
+    // [ ] finish FtRead with this sequence:
+    //     - FtPullData(): final OK to pull signal
+    //     - FtIsBusOk(): final check for ACK/NAK
+    //     - FtReadData(): final store of Miosio
+    //     - leave SCK low (it went low on FtPullData())
+    //     - FtDeactivateInterface()    (SS high)
 // void SetUp_NothingForFt1248(void){}
 // void TearDown_NothingForFt1248(void){}
 
@@ -206,6 +207,11 @@ void FtRead_reads_bytes_from_MIOSIO(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
-
-//void
-//FtReadData() returns the value on MIOSIO
+void FtReadData_returns_the_value_on_MIOSIO(void)
+{
+    //=====[ Setup ]=====
+    uint8_t expected_byte = 0xBE;
+    *FtMiosio_port = expected_byte;
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_EQUAL_HEX8( expected_byte, FtReadData() );
+}

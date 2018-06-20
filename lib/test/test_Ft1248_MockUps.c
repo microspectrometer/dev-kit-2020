@@ -99,7 +99,7 @@ void TearDownMock_FtBusTurnaround(void)  // FUT
     Unstub_FtIsBusOk();  // DOF
 }
 
-static void (*FtReadData_Saved)(void);
+static uint8_t (*FtReadData_Saved)(void);
 static void Stub_FtReadData(void) {
     FtReadData_Saved = FtReadData;
     FtReadData = FtReadData_Stubbed;

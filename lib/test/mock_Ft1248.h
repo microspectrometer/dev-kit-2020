@@ -19,6 +19,6 @@ void FtLetSlaveDriveBus_Stubbed(void);
 void Expect_FtIsBusOk(void);
 bool FtIsBusOk_Stubbed(void);
 void Expect_FtReadData(void);
-void FtReadData_Stubbed(void);
+uint8_t FtReadData_Stubbed(void);
 
 #endif // _MOCK_FT1248_H

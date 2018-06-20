@@ -83,7 +83,9 @@ static bool FtIsBusOk_Implementation(void)
 
 bool (*FtIsBusOk)(void) = FtIsBusOk_Implementation;
 
-static void FtReadData_Implementation(void)
-{}
+static uint8_t FtReadData_Implementation(void)
+{
+    return *FtMiosio_port;
+}
 
-void (*FtReadData)(void) = FtReadData_Implementation;
+uint8_t (*FtReadData)(void) = FtReadData_Implementation;

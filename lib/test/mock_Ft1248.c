@@ -107,6 +107,7 @@ static RecordedCall * Mock_FtReadData(void)
 void Expect_FtReadData(void) {
     RecordExpectedCall(mock, Mock_FtReadData());
 }
-void FtReadData_Stubbed(void) {
+uint8_t FtReadData_Stubbed(void) {
     RecordActualCall(mock, Mock_FtReadData());
+    return 0x00;
 }
