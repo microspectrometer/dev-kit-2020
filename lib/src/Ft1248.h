@@ -42,6 +42,7 @@ extern void (*FtLetMasterDriveBus)(void);
 extern void (*FtLetSlaveDriveBus)(void);
 void FtBusTurnaround(void);
 extern bool (*FtIsBusOk)(void);
+extern bool (*FtHasDataToRead)(void);
 void FtRead(void);
 extern uint8_t (*FtReadData)(void);
 void FtDeactivateInterface(void);

@@ -8,8 +8,9 @@
 #include "ReadWriteBits.h"
 
 //=====[ List of tests to write ]=====
-    // [ ] FtHasDataToRead() returns true if MISO is low
-    //     - this is an alias for FtIsBusOk
+    // [x] FtHasDataToRead() returns true if MISO is low
+    // [x] FtHasDataToRead returns false if MISO is high
+    //     - FtHasDataToRead is an alias for FtIsBusOk
     // [x] FtActivateInterface() pulls SS low.
     // [x] FtPushData() pulls SCK high.
     // [x] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
@@ -65,6 +66,22 @@ void TearDown_FtPorts(void)
 {
     *Ft1248_port = 0x00;
     *FtMiosio_ddr = 0x00;
+}
+void FtHasDataToRead_returns_true_if_MISO_is_low(void)
+{
+    //=====[ Setup ]=====
+    ClearBit(Ft1248_port, Ft1248_Miso);
+    *Ft1248_pin = *Ft1248_port;  // simulate AVR `pin` register
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_TRUE(FtHasDataToRead());
+}
+void FtHasDataToRead_returns_false_if_MISO_is_high(void)
+{
+    //=====[ Setup ]=====
+    SetBit(Ft1248_port, Ft1248_Miso);
+    *Ft1248_pin = *Ft1248_port;  // simulate AVR `pin` register
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_FALSE(FtHasDataToRead());
 }
 void FtActivateInterface_pulls_SS_low(void)
 {

@@ -87,6 +87,7 @@ static bool FtIsBusOk_Implementation(void)
 }
 
 bool (*FtIsBusOk)(void) = FtIsBusOk_Implementation;
+bool (*FtHasDataToRead)(void) = FtIsBusOk_Implementation;
 
 static uint8_t FtReadData_Implementation(void)
 {

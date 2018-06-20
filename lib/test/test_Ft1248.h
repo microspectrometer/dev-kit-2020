@@ -13,6 +13,8 @@ void SetUp_FtRead(void); void TearDown_FtRead(void);
 void FtRead_reads_bytes_from_MIOSIO(void);
 
 void SetUp_FtPorts(void); void TearDown_FtPorts(void);
+//Before initiating read
+void FtHasDataToRead_returns_true_if_MISO_is_low(void);
 //FtSendCommand
 void FtActivateInterface_pulls_SS_low(void);
 void FtPushData_pulls_SCK_high(void);
@@ -26,5 +28,6 @@ void FtIsBusOk_returns_false_if_MISO_is_high(void);
 //FtRead
 void FtReadData_returns_the_value_on_MIOSIO_pins(void);
 void FtDeactivateInterface_pulls_SS_high(void);
+void FtHasDataToRead_returns_false_if_MISO_is_high(void);
 
 #endif // _TEST_FT1248_H
