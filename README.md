@@ -31,8 +31,164 @@ Libraries are shared:
 - the projects link against the object files in `lib`
 
 # Abstract memory-mapped-io for tests
-## Faking registers: use macros
-*This section was copied from repo `mock-object`*
+*The `avr` headers and libraries set up the memory-mapped I/O registers as if
+their name is a dereferenced pointer.*
+
+- Use I/O register names and pin names specific to the embedded project instead
+  of names specific to the AVR microcontroller.
+- Declare these names as `extern` in the lib header.
+- Define these `extern` symbols in a file named `lib-Hardware.h`, e.g., lib
+  `Ft1248` has a file named `Ft1248-Hardware.h`
+- there are at least two versions of this hardware file
+    - both have the same name, but they are in different folders
+    - one is in the sub-folder for the PCB:
+        - e.g., PCB `simBrd` has a subfolder named `simBrd`:
+        - `LIS-770i/lib/src/simBrd/Ft1248-Hardware.h`
+    - the other is in the `test` folder as a `fake`:
+        - `LIS-770i/lib/test/fake/Ft1248-Hardware.h`
+
+## Faking io registers
+
+=====[ `LIS-770i/lib/src/Ft1248.h` ]=====
+```c
+extern uint8_t volatile * const Ft1248_port;
+```
+`Ft1248_port` is the name the `Ft1248` lib uses for some memory-mapped IO. What
+is the actual address? `Ft1248` lib does not care. It up to the client of
+`Ft1248` lib to set the address.
+
+### test code as a client
+The test code that tests the `Ft1248` lib is a client of `Ft1248` lib. Here is
+some test code to test one of the low-level functions in `Ft1248` lib.
+
+=====[ `LIS-770i/lib/test/test_Ft1248.c` ]=====
+```c
+void FtOutputByte_outputs_a_byte_on_port_MIOSIO(void)
+{
+    //TEST_FAIL_MESSAGE("Implement test.");
+    //=====[ Setup ]=====
+    uint8_t byte_to_write = 0xAB;
+    uint8_t expected_miosio = byte_to_write;
+    //=====[ Operate ]=====
+    FtOutputByte(byte_to_write);
+    //=====[ Test ]=====
+    uint8_t actual_miosio = *FtMiosio_port; // value in miosio port
+    TEST_ASSERT_EQUAL_HEX8( expected_miosio, actual_miosio );
+}
+```
+This test code calls `FtOutputByte()` and `FtOutputByte()` writes to the address
+of the `FtMiosio_port`.
+
+The test code runs on my computer. My computer does not have the same addresses
+used by the MCU. Those addresses point somewhere in kernel space on my computer.
+If I try to access an address in kernel space, the test executable has a
+segmentation fault.
+
+Instead, the test code uses an arbitrary address chosen by the compiler. The
+client sets up that address by including this fake version of the
+`Ft1248-Hardware.h` header file:
+
+=====[ `LIS-770i/lib/test/fake/Ft1248-Hardware.h` ]=====
+```c
+static uint8_t volatile value_in_fake_Ft1248_port;
+uint8_t volatile * const Ft1248_port    =   &value_in_fake_Ft1248_port;
+```
+
+The header creates a dummy value of the right number of bytes. Since this is
+faking an 8-bit microcontroller, it's just one byte. The symbol with the
+`extern` declaration in the lib header file, `Ft1248_port`, is defined here to
+point to the address of this dummy value.
+
+### embedded system as a client
+The embedded system is another client of the `Ft1248` lib. This is the
+production code. It needs to use the actual address of the `Ft1248_port`
+specific to the microcontroller target and specific to the PCB the
+microcontroller is soldered to.
+
+The embedded system on the `simBrd` PCB includes this version of the
+`Ft1248-Hardware.h` header:
+
+=====[ LIS-770i/lib/src/simBrd/Ft1248-Hardware.h ]=====
+```c
+#include <avr/io.h>  // defines IO addresses and pin names
+uint8_t volatile * const Ft1248_port    =   &PORTC; // output (Port out)
+```
+The `simBrd` uses an `Atmega328P` microcontroller. When I designed the `simBrd`
+PCB, I decided `PORTC` would handle the `Ft1248` control signals.
+
+The `avr/io.h` file defines the numeric address of `PORTC` for the `ATmega328P`
+microcontroller. `PORTC` is the pnemonic the vendor provides. The pnemonic is
+handy for referencing this register in the `ATmega328P` datasheet. And many AVR
+microcontrollers have a `PORTC` with similar functionality, even if the specific
+address is different on each part.
+
+## Thought process on faking io this way
+### run time injection is stupid complicated
+My first solution to testing code with IO dependencies was to use *run-time
+injection*. See repo `mock-object` for an example. This means that register IO
+addresses and pin numbers are loaded into memory at run-time instead of
+compile-time.
+
+My libraries have functions that operate on memory-mapped IO, but the library
+object files do not specify the addresses and pin numbers, only the datatype
+(byte size) of each address. It was up to the client of the library to call an
+`init()` function to load the specific values. Those values came from a hardware
+header that specified those details. Depending on which hardware header was
+included in the client code, the same library functions operated on different
+pin numbers for different PCBs, or even different addresses depending on if the
+client runs on the embedded target or as a test on a computer.
+
+The only benefit of run-time injection is to allow a single run-time to
+instantiate a lib multiple times. But my libs do not define objects. I
+do not need that level of complexity. All of my libs only have a single
+instance. The instance is created by the compiler and placed in static
+memory, and it stays in memory for as long the microcontroller is powered.
+There is no reason to make this memory management manual. Since my libs do not
+describe objects, there is no benefit to using run-time injection.
+
+Loading the addresses in at runtime has three drawbacks.
+
+- The main drawback is that test fixturing is complicated. Setup and Teardown
+  need to load and unload these addresses.
+- Similarly, the lib `init()` function is noisy: a huge argument list loads all
+  the memory-mapped io data, and the actual initialization functionality is
+  buried at the end.
+- The last drawback is that I/O data takes up static memory.
+
+### optimizing for sanity and simplicity
+Simple is always good. That was the problem with run-time injection. So I went
+back to the `just use vendor macros` idea and made the smallest adjustments I
+could to address my problems.
+
+The method I used before I embraced TDD is to simply define all I/O dependencies
+at compile-time by using the vendor's macro names. This is straight-forward, but
+then the code cannot be tested because it only runs on the target
+microcontroller. The code is also just less readable.
+
+A small improvement on this is to define project-specific macros to alias the
+vendor macro names. I used to do this, purely to make the code easier to read,
+but I never tried running tests that used this method. I guess the project code
+is tested under this method by including a header that defines the macros using
+dummy values instead of the vendor values. This approach still does not solve
+the testing problem when it comes to lib code. Library code cannot be developed
+separately: the lib code gets compiled with either the vendor macros or the
+dummy macros. Depending on the executable target, the libs have to be
+recompiled.
+
+A final small improvement on this is to use `const` variables instead of macros.
+Library code declares memory-mapped I/O as `extern` in its header file. The same
+library object file works with both the test-development target and the embedded
+targets because the `extern` definitions are resolved when the final executable
+is linked. Each project creates `*lib*-Hardware.h` file that provides the
+definition promised by the `extern` declaration in the `*lib*.h` file. These
+hardware definition files use the vendor-specific macros. Test clients provide
+their own fake hardware files that let the compiler choose the address instead
+of using the vendor-specific macro.
+
+
+### my old notes on this from mock-object
+*The rest of this section was copied from repo `mock-object` with slight edits
+to match the info above.*
 
 Embedded design has *hardware dependencies*. The hardware dependency is a
 memory-mapped I/O register. The dependency is *faked* by creating a variable
@@ -59,54 +215,14 @@ uint8_t volatile * const fake_LedRegister;
 and test on the development system than on the target embedded system.
 
 Faking forces writing the project code base in a way that is independent of the
-hardware. The hardware details are stored in static memory and injected at run
-time when the hardware library's `Init` function is called.
-
-The alternative, which is the default for the avr libs, is that the
-register names and pin names are macros. The macros are substituted by the
-preprocessor, so they do not need to be stored in static memory. This saves on
-memory. The price paid is that the hardware-dependency macro names are sprinkled
-throughout the codebase:
-
-- *The code is harder to re-use because all the names have to change.*
-  Abstracting the names to something not hardware dependent means just switching
-  out a single header file to reuse the lib on a different embedded project.
-  Another version of the board might use different pins.
-  That should be a simple and obvious swap of one lib header, not a
-  search-and-replace throughout the entire project.
-- *The code is less readable.*
-  For example, a register that controls a bank of LEDs on one project might be
-  switch inputs on another project. The fact the LEDs connect to PORTB or
-  whatever is just noise.
-- *The code is harder to test*. If the code uses the avr lib macro names, the
-  test needs to redefine these macros. It's not impossible: just make header
-  files that make the same macro substitutions but assign the macros to fake
-  registers as described above. The messy part is that now the test code needs
-  to use the register names. This is noise in the test code.
-
-A happy medium between the two is to use the macro method but simply define a
-new set of macros that are project-specific. I suppose there really is no reason
-for me to store the register addresses in static memory and load them into
-variables at runtime. It would save on both static memory and program memory to
-let the preprocessor substitute the final addresses before the code is compiled.
-Then there is also no reason to have these `Init` functions.
-
-In fact, the only benefit of loading the values at runtime is that I could then
-instantiate multiple times. For example, if there are two debug LEDs, the one
-debug LED lib can be used with both. Except that it can't. The one lib still
-stores the addresses in static memory. If I attempt to instantiate a second
-debug LED, I'll just overwrite information initialized for the first debug LED.
-The only way to have multiple instances is to use the heap. OK, forget that
-argument then.
+hardware. The hardware details are stored in static memory and injected at
+link time when the `extern` declarations in the hardware library's header
+file are resolved by linking against a client that includes a specific
+`lib-Hardware.h` header.
 
 Now the question is whether the compiler is smart enough to see that the
 register addresses are `const` and hardcode them directly as if they were
-macros. I should investigate this. Even if the compiler does do this, the need
-to create an `Init` function does seem like a lot of extra work for no reason.
-The tests need to worry about initialization.
-
-To be honest, I'm just sticking with this method out of inertia at this point.
-The important point from the above is to define register faking.
+macros. I should investigate this.
 
 # Mockist TDD
 ## Mocks are not fakes
@@ -166,6 +282,14 @@ into a higher-level API. Similarly, the refactoring of the lower-level lib is
 guided by the desire to keep the API simple, and the test of that simplicity is
 the test of the higher-level lib.
 
+*And having read this in the future, here are some more thoughts.*
+
+Mocking C generates a lot of supporting code. A strict isolate-everything
+generates too much code. Save mocking for when it is necessary. It is OK for
+tests to be coupled. The headache of *several tests suddenly failing* is smaller
+than the headache of *ripping up the supporting mock code* when refactoring.
+I'll take have occasionally confusing test output over barriers to refactoring.
+Again, the result is *write the lower-level libs first*.
 
 # FT1248
 
