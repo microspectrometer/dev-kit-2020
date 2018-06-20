@@ -26,6 +26,14 @@ void FtBusTurnaround(void)
     FtIsBusOk();
 }
 
+void FtRead(void)
+{
+    FtPushData();
+    FtPullData();
+    FtIsBusOk();
+    FtReadData();
+}
+
 static void FtActivateInterface_Implementation(void)
 {
     ClearBit(Ft1248_port, Ft1248_Ss);
@@ -74,3 +82,8 @@ static bool FtIsBusOk_Implementation(void)
 }
 
 bool (*FtIsBusOk)(void) = FtIsBusOk_Implementation;
+
+static void FtReadData_Implementation(void)
+{}
+
+void (*FtReadData)(void) = FtReadData_Implementation;

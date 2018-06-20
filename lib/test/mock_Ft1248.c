@@ -93,6 +93,20 @@ static RecordedCall * Mock_FtIsBusOk(void)
 void Expect_FtIsBusOk(void) {
     RecordExpectedCall(mock, Mock_FtIsBusOk());
 }
-void FtIsBusOk_Stubbed(void) {
+bool FtIsBusOk_Stubbed(void) {
     RecordActualCall(mock, Mock_FtIsBusOk());
+    return false;
+}
+
+static RecordedCall * Mock_FtReadData(void)
+{
+    char const *call_name = "FtReadData";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtReadData(void) {
+    RecordExpectedCall(mock, Mock_FtReadData());
+}
+void FtReadData_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtReadData());
 }

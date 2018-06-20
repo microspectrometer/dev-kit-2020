@@ -8,7 +8,8 @@ test/test_runner.c:52:FtBusTurnaround_handles_the_entire_bus_turnaround:PASS
 test/test_runner.c:55:FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input:PASS
 test/test_runner.c:56:FtIsBusOk_returns_true_if_MISO_is_low:PASS
 test/test_runner.c:57:FtIsBusOk_returns_false_if_MISO_is_high:PASS
+test/test_runner.c:60:FtRead_reads_bytes_from_MIOSIO:PASS
 
 -----------------------
-10 Tests 0 Failures 0 Ignored 
+11 Tests 0 Failures 0 Ignored 
 OK

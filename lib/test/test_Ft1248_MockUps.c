@@ -72,7 +72,7 @@ static void Stub_FtLetSlaveDriveBus(void) {
 static void Unstub_FtLetSlaveDriveBus(void) {
     FtLetSlaveDriveBus = FtLetSlaveDriveBus_Saved;
 }
-static void (*FtIsBusOk_Saved)(void);
+static bool (*FtIsBusOk_Saved)(void);
 static void Stub_FtIsBusOk(void) {
     FtIsBusOk_Saved = FtIsBusOk;
     FtIsBusOk = FtIsBusOk_Stubbed;
@@ -97,5 +97,32 @@ void TearDownMock_FtBusTurnaround(void)  // FUT
     Unstub_FtPushData();
     Unstub_FtPullData();
     Unstub_FtIsBusOk();  // DOF
+}
+
+static void (*FtReadData_Saved)(void);
+static void Stub_FtReadData(void) {
+    FtReadData_Saved = FtReadData;
+    FtReadData = FtReadData_Stubbed;
+}
+static void Unstub_FtReadData(void) {
+    FtReadData = FtReadData_Saved;
+}
+void SetUpMock_FtRead(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_FtPushData();  // DOF
+    Stub_FtPullData();  // DOF
+    Stub_FtIsBusOk();  // DOF
+    Stub_FtReadData();  // DOF
+}
+void TearDownMock_FtRead(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtPushData();  // DOF
+    Unstub_FtPullData();  // DOF
+    Unstub_FtIsBusOk();  // DOF
+    Unstub_FtReadData();  // DOF
 }
 

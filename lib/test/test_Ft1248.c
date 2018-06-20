@@ -22,7 +22,7 @@
     //     - FtPullData()             (SCK low)
     // [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
     // [x] FtIsBusOk returns true if MISO is low
-    // [ ] FtIsBusOk returns false if MISO is high
+    // [x] FtIsBusOk returns false if MISO is high
     // [x] FtBusTurnaround handles the entire bus turnaround.
     //     FtBusTurnaround should:
     //     - FtLetSlaveDriveBus()   (MIOSIO becomes inputs)
@@ -30,13 +30,15 @@
     //     - FtPullData(): SCK low, now its ok to pull data
     //     - FtIsBusOk(): master reads MISO
     //     if MISO says BusIsOk, do the read
-    // [ ] Read should:
-    //     [ ] FtPushData(): SCK high, slave drives Miosio with data and MISO with ACK
-    //     [ ] FtPullData(): SCK low, ok to pull data
-    //     [ ] FtIsBusOk(): check MISO for ACK/NAK
+    // [ ] FtReadData() returns the value on MIOSIO
+    // [x] FtRead reads bytes from MIOSIO:
+    //     FtRead should:
+    //     - FtPushData(): SCK high, slave drives Miosio with data and MISO with ACK
+    //     - FtPullData(): SCK low, ok to pull data
+    //     - FtIsBusOk(): check MISO for ACK/NAK
     //     if MISO is an ACK, pull from Miosio
-    //     [ ] FtReadData(): store value on Miosio
-    //     loop Read until a NAK or master is done reading
+    //     - FtReadData(): store value on Miosio
+    // [ ] loop Read until a NAK or master is done reading
     //     if MISO is a NAK, return an error (ill-defined so far)
     // [ ] DoneReading should:
     //     [ ] FtPullData(): final OK to pull signal
@@ -173,7 +175,6 @@ void FtIsBusOk_returns_true_if_MISO_is_low(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_TRUE(FtIsBusOk());
 }
-
 void FtIsBusOk_returns_false_if_MISO_is_high(void)
 {
     //=====[ Setup ]=====
@@ -181,4 +182,30 @@ void FtIsBusOk_returns_false_if_MISO_is_high(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_FALSE(FtIsBusOk());
 }
+//=====[ Read ]=====
+void SetUp_FtRead(void){
+    SetUpMock_FtRead();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_FtRead(void){
+    TearDownMock_FtRead();    // destroy the mock object
+    // other teardown code
+}
+void FtRead_reads_bytes_from_MIOSIO(void)
+{
+    //=====[ Set expectations ]=====
+    Expect_FtPushData();
+    Expect_FtPullData();
+    Expect_FtIsBusOk();
+    Expect_FtReadData();
+    //=====[ Operate ]=====
+    FtRead();
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
 
+//void
+//FtReadData() returns the value on MIOSIO

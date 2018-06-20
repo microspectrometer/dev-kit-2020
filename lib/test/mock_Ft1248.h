@@ -1,7 +1,8 @@
 #ifndef _MOCK_FT1248_H
 #define _MOCK_FT1248_H
 
-#include <stdint.h>   // uint8_t
+#include <stdint.h>    // uint8_t
+#include <stdbool.h>   // bool
 
 void Expect_FtActivateInterface(void);
 void FtActivateInterface_Stubbed(void);
@@ -16,6 +17,8 @@ void FtLetMasterDriveBus_Stubbed(void);
 void Expect_FtLetSlaveDriveBus(void);
 void FtLetSlaveDriveBus_Stubbed(void);
 void Expect_FtIsBusOk(void);
-void FtIsBusOk_Stubbed(void);
+bool FtIsBusOk_Stubbed(void);
+void Expect_FtReadData(void);
+void FtReadData_Stubbed(void);
 
 #endif // _MOCK_FT1248_H
