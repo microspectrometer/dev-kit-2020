@@ -1,4 +1,5 @@
 #include "Ft1248.h"
+#include "ReadWriteBits.h"
 
 //=====[ Ft1248: FtSendCommand ]=====
 //-----------------------------------
@@ -18,12 +19,16 @@ void FtSendCommand(uint8_t FtCmd)
 }
 
 static void FtActivateInterface_Implementation(void)
-{}
+{
+    ClearBit(Ft1248_port, Ft1248_Ss);
+}
 
 void (*FtActivateInterface)(void) = FtActivateInterface_Implementation;
 
 static void FtPushData_Implementation(void)
-{}
+{
+    SetBit(Ft1248_port, Ft1248_Sck);
+}
 
 void (*FtPushData)(void) = FtPushData_Implementation;
 

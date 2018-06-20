@@ -8,7 +8,7 @@
 #include "ReadWriteBits.h"
 
 //=====[ List of tests to write ]=====
-    // [ ] FtActivateInterface() pulls SS low.
+    // [x] FtActivateInterface() pulls SS low.
     // [ ] FtPushData() pulls SCK high.
     // [ ] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
     // [x] FtOutputByte(cmd) outputs a byte on port MIOSIO.
@@ -44,14 +44,30 @@
 
 void SetUp_NothingForFt1248(void){}
 void TearDown_NothingForFt1248(void){}
-
 void FtActivateInterface_pulls_SS_low(void)
 {
     //=====[ Setup ]=====
     SetBit(Ft1248_port, Ft1248_Ss);
+    //=====[ Operate ]=====
+    FtActivateInterface();
     //=====[ Test ]=====
     uint8_t io_port = *Ft1248_port;
     TEST_ASSERT_BIT_LOW(Ft1248_Ss, io_port);
+    //=====[ Teardown ]=====
+    *Ft1248_port = 0x00;
+}
+
+void FtPushData_pulls_SCK_high(void)
+{
+    //=====[ Setup ]=====
+    ClearBit(Ft1248_port, Ft1248_Sck);
+    //=====[ Operate ]=====
+    FtPushData();
+    //=====[ Test ]=====
+    uint8_t io_port = *Ft1248_port;
+    TEST_ASSERT_BIT_HIGH(Ft1248_Sck, io_port);
+    //=====[ Teardown ]=====
+    *Ft1248_port = 0x00;
 }
 
 void FtOutputByte_outputs_a_byte_on_port_MIOSIO(void)
