@@ -45,6 +45,8 @@ static void FtPullData_Implementation(void)
 void (*FtPullData)(void) = FtPullData_Implementation;
 
 static void FtLetMasterDriveBus_Implementation(void)
-{}
+{
+    *FtMiosio_ddr = 0xFF;
+}
 
 void (*FtLetMasterDriveBus)(void) = FtLetMasterDriveBus_Implementation;

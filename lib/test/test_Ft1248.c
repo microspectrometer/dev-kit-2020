@@ -9,8 +9,8 @@
 
 //=====[ List of tests to write ]=====
     // [x] FtActivateInterface() pulls SS low.
-    // [ ] FtPushData() pulls SCK high.
-    // [ ] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
+    // [x] FtPushData() pulls SCK high.
+    // [x] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
     // [x] FtOutputByte(cmd) outputs a byte on port MIOSIO.
     // FtSendCommand(cmd) handles the entire command phase.
     // [ ] FtPullData() pulls SCK low.
@@ -44,6 +44,16 @@
 
 void SetUp_NothingForFt1248(void){}
 void TearDown_NothingForFt1248(void){}
+void SetUp_FtPorts(void)
+{
+    *Ft1248_port = 0x00;
+    *FtMiosio_ddr = 0x00;
+}
+void TearDown_FtPorts(void)
+{
+    *Ft1248_port = 0x00;
+    *FtMiosio_ddr = 0x00;
+}
 void FtActivateInterface_pulls_SS_low(void)
 {
     //=====[ Setup ]=====
@@ -53,23 +63,26 @@ void FtActivateInterface_pulls_SS_low(void)
     //=====[ Test ]=====
     uint8_t io_port = *Ft1248_port;
     TEST_ASSERT_BIT_LOW(Ft1248_Ss, io_port);
-    //=====[ Teardown ]=====
-    *Ft1248_port = 0x00;
 }
-
 void FtPushData_pulls_SCK_high(void)
 {
-    //=====[ Setup ]=====
-    ClearBit(Ft1248_port, Ft1248_Sck);
     //=====[ Operate ]=====
     FtPushData();
     //=====[ Test ]=====
     uint8_t io_port = *Ft1248_port;
     TEST_ASSERT_BIT_HIGH(Ft1248_Sck, io_port);
-    //=====[ Teardown ]=====
-    *Ft1248_port = 0x00;
 }
 
+void FtLetMasterDriveBus_configures_MIOSIO_port_for_MCU_output(void)
+{
+    //=====[ Setup ]=====
+    uint8_t expected_ddr = 0xFF;
+    //=====[ Operate ]=====
+    FtLetMasterDriveBus();
+    //=====[ Test ]=====
+    uint8_t actual_ddr = *FtMiosio_ddr; // value in data direction register
+    TEST_ASSERT_EQUAL_HEX8( expected_ddr, actual_ddr );
+}
 void FtOutputByte_outputs_a_byte_on_port_MIOSIO(void)
 {
     //TEST_FAIL_MESSAGE("Implement test.");

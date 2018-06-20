@@ -38,9 +38,11 @@ int main()
     DevelopingDebugLed      (Nope);
     setUp = SetUp_FtSendCommand; tearDown = TearDown_FtSendCommand;
     RUN_TEST(FtSendCommand_Read_does_entire_command_phase_for_ReadCmd);
-    setUp = SetUp_NothingForFt1248; tearDown = TearDown_NothingForFt1248;
+    //setUp = SetUp_NothingForFt1248; tearDown = TearDown_NothingForFt1248;
+    setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtActivateInterface_pulls_SS_low);
     RUN_TEST(FtPushData_pulls_SCK_high);
     RUN_TEST(FtOutputByte_outputs_a_byte_on_port_MIOSIO);
+    RUN_TEST(FtLetMasterDriveBus_configures_MIOSIO_port_for_MCU_output);
     return UNITY_END();
 }
