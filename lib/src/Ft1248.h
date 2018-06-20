@@ -1,7 +1,8 @@
 #ifndef _FT1248_H
 #define _FT1248_H
 
-#include <stdint.h>  // uint8_t
+#include <stdint.h>   // uint8_t
+#include <stdbool.h>  // bool, true, false
 
 //=====[ Ft1248-Hardware ]=====
 // Clients of lib Ft1248 define the following symbols.
@@ -40,6 +41,6 @@ extern void (*FtPullData)(void);
 extern void (*FtLetMasterDriveBus)(void);
 extern void (*FtLetSlaveDriveBus)(void);
 void FtBusTurnaround(void);
-extern void (*FtIsBusOk)(void);
+extern bool (*FtIsBusOk)(void);
 
 #endif // _FT1248_H

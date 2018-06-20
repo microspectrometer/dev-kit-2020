@@ -15,17 +15,20 @@
     // [x] FtPullData() pulls SCK low.
     // [x] FtSendCommand(cmd) handles the entire command phase.
     //     FtSendCommand(FtCmd_Read) should:
-    //     [x] FtActivateInterface()    (SS low)
-    //     [x] FtPushData()             (SCK high)
-    //     [x] FtLetMasterDriveBus()    (cfg MIOSIO[0:7] as output pins)
-    //     [x] FtOutputByte(FtCmd_Read) (Master outputs the read command on MIOSIO)
-    //     [x] FtPullData()             (SCK low)
+    //     - FtActivateInterface()    (SS low)
+    //     - FtPushData()             (SCK high)
+    //     - FtLetMasterDriveBus()    (cfg MIOSIO[0:7] as output pins)
+    //     - FtOutputByte(FtCmd_Read) (Master outputs the read command on MIOSIO)
+    //     - FtPullData()             (SCK low)
+    // [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
+    // [ ] FtIsBusOk returns true if MISO is low
+    // [ ] FtIsBusOk returns false if MISO is high
     // [x] FtBusTurnaround handles the entire bus turnaround.
     //     FtBusTurnaround should:
-    //     [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
-    //     [x] FtPushData(): SCK high, slave drives MISO with RxBufferEmpty
-    //     [x] FtPullData(): SCK low, now its ok to pull data
-    //     [ ] FtIsBusOk(): master reads MISO
+    //     - FtLetSlaveDriveBus()   (MIOSIO becomes inputs)
+    //     - FtPushData(): SCK high, slave drives MISO with RxBufferEmpty
+    //     - FtPullData(): SCK low, now its ok to pull data
+    //     - FtIsBusOk(): master reads MISO
     //     if MISO says BusIsOk, do the read
     // [ ] Read should:
     //     [ ] FtPushData(): SCK high, slave drives Miosio with data and MISO with ACK
@@ -162,4 +165,12 @@ void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void)
     //=====[ Test ]=====
     uint8_t actual_ddr = *FtMiosio_ddr; // value in data direction register
     TEST_ASSERT_EQUAL_HEX8( expected_ddr, actual_ddr );
+}
+
+void FtIsBusOk_returns_true_if_MISO_is_low(void)
+{
+    //=====[ Setup ]=====
+    ClearBit(Ft1248_port, Ft1248_Miso);
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_TRUE(FtIsBusOk());
 }

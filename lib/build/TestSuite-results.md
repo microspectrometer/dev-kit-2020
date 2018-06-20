@@ -6,7 +6,8 @@ test/test_runner.c:46:FtPullData_pulls_SCK_low:PASS
 test/test_runner.c:49:FtSendCommand_Read_does_entire_command_phase_for_ReadCmd:PASS
 test/test_runner.c:52:FtBusTurnaround_handles_the_entire_bus_turnaround:PASS
 test/test_runner.c:55:FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input:PASS
+test/test_runner.c:56:FtIsBusOk_returns_true_if_MISO_is_low:PASS
 
 -----------------------
-8 Tests 0 Failures 0 Ignored 
+9 Tests 0 Failures 0 Ignored 
 OK

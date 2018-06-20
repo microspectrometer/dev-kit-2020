@@ -53,5 +53,6 @@ int main()
 
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input);
+    RUN_TEST(FtIsBusOk_returns_true_if_MISO_is_low);
     return UNITY_END();
 }

@@ -68,7 +68,9 @@ static void FtLetSlaveDriveBus_Implementation(void)
 
 void (*FtLetSlaveDriveBus)(void) = FtLetSlaveDriveBus_Implementation;
 
-static void FtIsBusOk_Implementation(void)
-{}
+static bool FtIsBusOk_Implementation(void)
+{
+    return BitIsClear(Ft1248_port, Ft1248_Miso);
+}
 
-void (*FtIsBusOk)(void) = FtIsBusOk_Implementation;
+bool (*FtIsBusOk)(void) = FtIsBusOk_Implementation;
