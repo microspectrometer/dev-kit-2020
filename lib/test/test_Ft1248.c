@@ -22,7 +22,7 @@
     //     [x] FtOutputByte(FtCmd_Read) (Master outputs the read command on MIOSIO)
     //     [x] FtPullData()             (SCK low)
     // [ ] BusTurnaround should:
-    //     [ ] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
+    //     [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
     //     [ ] FtPushData(): SCK high, slave drives MISO with RxBufferEmpty
     //     [ ] FtPullData(): SCK low, now its ok to pull data
     //     [ ] FtIsBusOk(): master reads MISO
@@ -104,7 +104,6 @@ void FtPullData_pulls_SCK_low(void)
     uint8_t io_port = *Ft1248_port;
     TEST_ASSERT_BIT_LOW(Ft1248_Sck, io_port);
 }
-
 void SetUp_FtSendCommand(void){
     SetUpMock_FtSendCommand();    // create the mock object to record calls
     // other setup code
@@ -127,4 +126,15 @@ void FtSendCommand_Read_does_entire_command_phase_for_ReadCmd(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
-
+//=====[ Bus-Turnaround ]=====
+void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void)
+{
+    //=====[ Setup ]=====
+    *FtMiosio_ddr = 0xFF;
+    uint8_t expected_ddr = 0x00;
+    //=====[ Operate ]=====
+    FtLetSlaveDriveBus();
+    //=====[ Test ]=====
+    uint8_t actual_ddr = *FtMiosio_ddr; // value in data direction register
+    TEST_ASSERT_EQUAL_HEX8( expected_ddr, actual_ddr );
+}

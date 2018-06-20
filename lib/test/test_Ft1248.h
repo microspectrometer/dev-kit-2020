@@ -13,5 +13,6 @@ void FtOutputByte_outputs_a_byte_on_port_MIOSIO(void);
 void FtLetMasterDriveBus_configures_MIOSIO_port_for_MCU_output(void);
 
 void FtPullData_pulls_SCK_low(void);
+void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void);
 
 #endif // _TEST_FT1248_H

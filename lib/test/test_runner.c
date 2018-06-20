@@ -45,5 +45,6 @@ int main()
     RUN_TEST(FtLetMasterDriveBus_configures_MIOSIO_port_for_MCU_output);
     RUN_TEST(FtOutputByte_outputs_a_byte_on_port_MIOSIO);
     RUN_TEST(FtPullData_pulls_SCK_low);
+    RUN_TEST(FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input);
     return UNITY_END();
 }

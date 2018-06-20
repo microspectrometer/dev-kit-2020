@@ -52,3 +52,8 @@ static void FtLetMasterDriveBus_Implementation(void)
 }
 
 void (*FtLetMasterDriveBus)(void) = FtLetMasterDriveBus_Implementation;
+
+void FtLetSlaveDriveBus(void)
+{
+    *FtMiosio_ddr = 0x00;
+}
