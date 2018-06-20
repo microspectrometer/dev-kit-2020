@@ -10,12 +10,13 @@ test/test_runner.c:56:FtRead_reads_bytes_from_MIOSIO:PASS
 test/test_runner.c:59:FtHasDataToRead_returns_true_if_MISO_is_low:PASS
 test/test_runner.c:60:FtHasDataToRead_returns_false_if_MISO_is_high:PASS
 test/test_runner.c:61:FtHasRoomToWrite_returns_true_if_MIOSIO_bit_0_is_low:PASS
-test/test_runner.c:62:FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input:PASS
-test/test_runner.c:63:FtIsBusOk_returns_true_if_MISO_is_low:PASS
-test/test_runner.c:64:FtIsBusOk_returns_false_if_MISO_is_high:PASS
-test/test_runner.c:65:FtReadData_returns_the_value_on_MIOSIO_pins:PASS
-test/test_runner.c:66:FtDeactivateInterface_pulls_SS_high:PASS
+test/test_runner.c:62:FtHasRoomToWrite_returns_false_if_MIOSIO_bit_0_is_high:PASS
+test/test_runner.c:63:FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input:PASS
+test/test_runner.c:64:FtIsBusOk_returns_true_if_MISO_is_low:PASS
+test/test_runner.c:65:FtIsBusOk_returns_false_if_MISO_is_high:PASS
+test/test_runner.c:66:FtReadData_returns_the_value_on_MIOSIO_pins:PASS
+test/test_runner.c:67:FtDeactivateInterface_pulls_SS_high:PASS
 
 -----------------------
-17 Tests 0 Failures 0 Ignored 
+18 Tests 0 Failures 0 Ignored 
 OK

@@ -14,6 +14,7 @@
     // [x] FtHasDataToRead returns false if MISO is high
     //     - FtHasDataToRead is an alias for FtIsBusOk
     // [x] FtHasRoomToWrite() returns true if MIOSIO bit 0 is low
+    // [x] FtHasRoomToWrite() returns false if MIOSIO bit 0 is high
     //
     // The rest of the functionality is for the *Active bus state*.
     // [x] FtActivateInterface() pulls SS low.
@@ -96,6 +97,14 @@ void FtHasDataToRead_returns_false_if_MISO_is_high(void)
 void FtHasRoomToWrite_returns_true_if_MIOSIO_bit_0_is_low(void)
 {
     TEST_ASSERT_TRUE(FtHasRoomToWrite());
+}
+void FtHasRoomToWrite_returns_false_if_MIOSIO_bit_0_is_high(void)
+{
+    //=====[ Setup ]=====
+    SetBit(FtMiosio_port, FtMiosio0);
+    *FtMiosio_pin = *FtMiosio_port; // simulate AVR `pin` register
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_FALSE(FtHasRoomToWrite());
 }
 void FtActivateInterface_pulls_SS_low(void)
 {
@@ -184,6 +193,7 @@ void FtBusTurnaround_handles_the_entire_bus_turnaround(void)
 {
     //=====[ Setup ]=====
     TEST_ASSERT_BIT_LOW(Ft1248_Miso, *Ft1248_pin);  // test fixture assertion
+    *FtMiosio_pin = *FtMiosio_port; // simulate AVR `pin` register
     //=====[ Set expectations ]=====
     Expect_FtLetSlaveDriveBus();
     Expect_FtPushData();

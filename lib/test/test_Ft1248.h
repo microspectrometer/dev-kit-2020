@@ -18,6 +18,7 @@ void SetUp_FtPorts(void); void TearDown_FtPorts(void);
 void FtHasDataToRead_returns_true_if_MISO_is_low(void);
 void FtHasDataToRead_returns_false_if_MISO_is_high(void);
 void FtHasRoomToWrite_returns_true_if_MIOSIO_bit_0_is_low(void);
+void FtHasRoomToWrite_returns_false_if_MIOSIO_bit_0_is_high(void);
 //FtSendCommand
 void FtActivateInterface_pulls_SS_low(void);
 void FtPushData_pulls_SCK_high(void);
