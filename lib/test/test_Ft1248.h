@@ -25,5 +25,6 @@ void FtIsBusOk_returns_true_if_MISO_is_low(void);
 void FtIsBusOk_returns_false_if_MISO_is_high(void);
 //FtRead
 void FtReadData_returns_the_value_on_MIOSIO(void);
+void FtDeactivateInterface_pulls_SS_high(void);
 
 #endif // _TEST_FT1248_H

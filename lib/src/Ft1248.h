@@ -44,5 +44,6 @@ void FtBusTurnaround(void);
 extern bool (*FtIsBusOk)(void);
 void FtRead(void);
 extern uint8_t (*FtReadData)(void);
+void FtDeactivateInterface(void);
 
 #endif // _FT1248_H

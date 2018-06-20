@@ -215,3 +215,11 @@ void FtReadData_returns_the_value_on_MIOSIO(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_EQUAL_HEX8( expected_byte, FtReadData() );
 }
+void FtDeactivateInterface_pulls_SS_high(void)
+{
+    //=====[ Operate ]=====
+    FtDeactivateInterface();
+    //=====[ Test ]=====
+    uint8_t io_port = *Ft1248_port;
+    TEST_ASSERT_BIT_HIGH(Ft1248_Ss, io_port);
+}

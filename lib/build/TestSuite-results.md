@@ -10,7 +10,8 @@ test/test_runner.c:58:FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input:PA
 test/test_runner.c:59:FtIsBusOk_returns_true_if_MISO_is_low:PASS
 test/test_runner.c:60:FtIsBusOk_returns_false_if_MISO_is_high:PASS
 test/test_runner.c:61:FtReadData_returns_the_value_on_MIOSIO:PASS
+test/test_runner.c:62:FtDeactivateInterface_pulls_SS_high:PASS
 
 -----------------------
-12 Tests 0 Failures 0 Ignored 
+13 Tests 0 Failures 0 Ignored 
 OK
