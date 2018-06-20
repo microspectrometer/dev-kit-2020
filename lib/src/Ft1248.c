@@ -12,6 +12,7 @@ void FtSendCommand(uint8_t FtCmd)
 {
     FtActivateInterface();
     FtPushData();
+    FtLetMasterDriveBus();
     FtOutputByte(FtCmd);
     FtPullData();
 }
@@ -27,7 +28,9 @@ static void FtPushData_Implementation(void)
 void (*FtPushData)(void) = FtPushData_Implementation;
 
 static void FtOutputByte_Implementation(uint8_t FtCmd)
-{}
+{
+    *FtMiosio_port = FtCmd;
+}
 
 void (*FtOutputByte)(uint8_t) = FtOutputByte_Implementation;
 
@@ -35,3 +38,8 @@ static void FtPullData_Implementation(void)
 {}
 
 void (*FtPullData)(void) = FtPullData_Implementation;
+
+static void FtLetMasterDriveBus_Implementation(void)
+{}
+
+void (*FtLetMasterDriveBus)(void) = FtLetMasterDriveBus_Implementation;

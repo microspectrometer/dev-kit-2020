@@ -57,3 +57,16 @@ void Expect_FtPullData(void) {
 void FtPullData_Stubbed(void) {
     RecordActualCall(mock, Mock_FtPullData());
 }
+
+static RecordedCall * Mock_FtLetMasterDriveBus(void)
+{
+    char const *call_name = "FtLetMasterDriveBus";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtLetMasterDriveBus(void) {
+    RecordExpectedCall(mock, Mock_FtLetMasterDriveBus());
+}
+void FtLetMasterDriveBus_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtLetMasterDriveBus());
+}

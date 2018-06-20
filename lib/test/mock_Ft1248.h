@@ -11,5 +11,7 @@ void Expect_FtOutputByte(uint8_t arg1);
 void FtOutputByte_Stubbed(uint8_t arg1);
 void Expect_FtPullData(void);
 void FtPullData_Stubbed(void);
+void Expect_FtLetMasterDriveBus(void);
+void FtLetMasterDriveBus_Stubbed(void);
 
 #endif // _MOCK_FT1248_H

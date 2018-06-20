@@ -35,6 +35,14 @@ static void Stub_FtPullData(void) {
 static void Unstub_FtPullData(void) {
     FtPullData = FtPullData_Saved;
 }
+static void (*FtLetMasterDriveBus_Saved)(void);
+static void Stub_FtLetMasterDriveBus(void) {
+    FtLetMasterDriveBus_Saved = FtLetMasterDriveBus;
+    FtLetMasterDriveBus = FtLetMasterDriveBus_Stubbed;
+}
+static void Unstub_FtLetMasterDriveBus(void) {
+    FtLetMasterDriveBus = FtLetMasterDriveBus_Saved;
+}
 void SetUpMock_FtSendCommand(void)  // FUT
 {
     mock = Mock_new();
@@ -43,6 +51,7 @@ void SetUpMock_FtSendCommand(void)  // FUT
     Stub_FtPushData();  // DOF
     Stub_FtOutputByte();  // DOF
     Stub_FtPullData();  // DOF
+    Stub_FtLetMasterDriveBus();  // DOF
 }
 void TearDownMock_FtSendCommand(void)  // FUT
 {
@@ -52,5 +61,6 @@ void TearDownMock_FtSendCommand(void)  // FUT
     Unstub_FtPushData();  // DOF
     Unstub_FtOutputByte();  // DOF
     Unstub_FtPullData();  // DOF
+    Unstub_FtLetMasterDriveBus();  // DOF
 }
 
