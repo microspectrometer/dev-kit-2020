@@ -18,6 +18,14 @@ void FtSendCommand(uint8_t FtCmd)
     FtPullData();
 }
 
+void FtBusTurnaround(void)
+{
+    FtLetSlaveDriveBus();
+    FtPushData();
+    FtPullData();
+    FtIsBusOk();
+}
+
 static void FtActivateInterface_Implementation(void)
 {
     ClearBit(Ft1248_port, Ft1248_Ss);
@@ -53,7 +61,14 @@ static void FtLetMasterDriveBus_Implementation(void)
 
 void (*FtLetMasterDriveBus)(void) = FtLetMasterDriveBus_Implementation;
 
-void FtLetSlaveDriveBus(void)
+static void FtLetSlaveDriveBus_Implementation(void)
 {
     *FtMiosio_ddr = 0x00;
 }
+
+void (*FtLetSlaveDriveBus)(void) = FtLetSlaveDriveBus_Implementation;
+
+static void FtIsBusOk_Implementation(void)
+{}
+
+void (*FtIsBusOk)(void) = FtIsBusOk_Implementation;

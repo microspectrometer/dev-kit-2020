@@ -64,3 +64,38 @@ void TearDownMock_FtSendCommand(void)  // FUT
     Unstub_FtLetMasterDriveBus();  // DOF
 }
 
+static void (*FtLetSlaveDriveBus_Saved)(void);
+static void Stub_FtLetSlaveDriveBus(void) {
+    FtLetSlaveDriveBus_Saved = FtLetSlaveDriveBus;
+    FtLetSlaveDriveBus = FtLetSlaveDriveBus_Stubbed;
+}
+static void Unstub_FtLetSlaveDriveBus(void) {
+    FtLetSlaveDriveBus = FtLetSlaveDriveBus_Saved;
+}
+static void (*FtIsBusOk_Saved)(void);
+static void Stub_FtIsBusOk(void) {
+    FtIsBusOk_Saved = FtIsBusOk;
+    FtIsBusOk = FtIsBusOk_Stubbed;
+}
+static void Unstub_FtIsBusOk(void) {
+    FtIsBusOk = FtIsBusOk_Saved;
+}
+void SetUpMock_FtBusTurnaround(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_FtLetSlaveDriveBus();  // DOF
+    Stub_FtPushData();
+    Stub_FtPullData();
+    Stub_FtIsBusOk();  // DOF
+}
+void TearDownMock_FtBusTurnaround(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtLetSlaveDriveBus();  // DOF
+    Unstub_FtPushData();
+    Unstub_FtPullData();
+    Unstub_FtIsBusOk();  // DOF
+}
+

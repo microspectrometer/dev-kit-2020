@@ -13,18 +13,18 @@
     // [x] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
     // [x] FtOutputByte(cmd) outputs a byte on port MIOSIO.
     // [x] FtPullData() pulls SCK low.
-    // FtSendCommand(cmd) handles the entire command phase.
-    // [x] FtSendCommand(FtCmd_Read) should
-    //     handle the entire command phase for the Read command:
+    // [x] FtSendCommand(cmd) handles the entire command phase.
+    //     FtSendCommand(FtCmd_Read) should:
     //     [x] FtActivateInterface()    (SS low)
     //     [x] FtPushData()             (SCK high)
     //     [x] FtLetMasterDriveBus()    (cfg MIOSIO[0:7] as output pins)
     //     [x] FtOutputByte(FtCmd_Read) (Master outputs the read command on MIOSIO)
     //     [x] FtPullData()             (SCK low)
-    // [ ] BusTurnaround should:
+    // [x] FtBusTurnaround handles the entire bus turnaround.
+    //     FtBusTurnaround should:
     //     [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
-    //     [ ] FtPushData(): SCK high, slave drives MISO with RxBufferEmpty
-    //     [ ] FtPullData(): SCK low, now its ok to pull data
+    //     [x] FtPushData(): SCK high, slave drives MISO with RxBufferEmpty
+    //     [x] FtPullData(): SCK low, now its ok to pull data
     //     [ ] FtIsBusOk(): master reads MISO
     //     if MISO says BusIsOk, do the read
     // [ ] Read should:
@@ -114,6 +114,7 @@ void TearDown_FtSendCommand(void){
 }
 void FtSendCommand_Read_does_entire_command_phase_for_ReadCmd(void)
 {
+    //=====[ Set expectations ]=====
     Expect_FtActivateInterface();
     Expect_FtPushData();
     Expect_FtLetMasterDriveBus();
@@ -121,12 +122,36 @@ void FtSendCommand_Read_does_entire_command_phase_for_ReadCmd(void)
     Expect_FtPullData();
     //=====[ Operate ]=====
     FtSendCommand(FtCmd_Read);
+    //=====[ Test ]=====
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
 }
 //=====[ Bus-Turnaround ]=====
+void SetUp_FtBusTurnaround(void){
+    SetUpMock_FtBusTurnaround();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_FtBusTurnaround(void){
+    TearDownMock_FtBusTurnaround();    // destroy the mock object
+    // other teardown code
+}
+void FtBusTurnaround_handles_the_entire_bus_turnaround(void)
+{
+    //=====[ Set expectations ]=====
+    Expect_FtLetSlaveDriveBus();
+    Expect_FtPushData();
+    Expect_FtPullData();
+    Expect_FtIsBusOk();
+    //=====[ Operate ]=====
+    FtBusTurnaround();
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
 void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void)
 {
     //=====[ Setup ]=====

@@ -70,3 +70,29 @@ void Expect_FtLetMasterDriveBus(void) {
 void FtLetMasterDriveBus_Stubbed(void) {
     RecordActualCall(mock, Mock_FtLetMasterDriveBus());
 }
+
+static RecordedCall * Mock_FtLetSlaveDriveBus(void)
+{
+    char const *call_name = "FtLetSlaveDriveBus";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtLetSlaveDriveBus(void) {
+    RecordExpectedCall(mock, Mock_FtLetSlaveDriveBus());
+}
+void FtLetSlaveDriveBus_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtLetSlaveDriveBus());
+}
+
+static RecordedCall * Mock_FtIsBusOk(void)
+{
+    char const *call_name = "FtIsBusOk";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtIsBusOk(void) {
+    RecordExpectedCall(mock, Mock_FtIsBusOk());
+}
+void FtIsBusOk_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtIsBusOk());
+}

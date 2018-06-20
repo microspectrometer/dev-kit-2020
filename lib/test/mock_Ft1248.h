@@ -13,5 +13,9 @@ void Expect_FtPullData(void);
 void FtPullData_Stubbed(void);
 void Expect_FtLetMasterDriveBus(void);
 void FtLetMasterDriveBus_Stubbed(void);
+void Expect_FtLetSlaveDriveBus(void);
+void FtLetSlaveDriveBus_Stubbed(void);
+void Expect_FtIsBusOk(void);
+void FtIsBusOk_Stubbed(void);
 
 #endif // _MOCK_FT1248_H

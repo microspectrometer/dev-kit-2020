@@ -38,6 +38,8 @@ extern void (*FtPushData)(void);
 extern void (*FtOutputByte)(uint8_t);
 extern void (*FtPullData)(void);
 extern void (*FtLetMasterDriveBus)(void);
-void FtLetSlaveDriveBus(void);
+extern void (*FtLetSlaveDriveBus)(void);
+void FtBusTurnaround(void);
+extern void (*FtIsBusOk)(void);
 
 #endif // _FT1248_H
