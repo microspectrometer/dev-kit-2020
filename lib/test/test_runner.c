@@ -50,6 +50,7 @@ int main()
 
     setUp = SetUp_FtBusTurnaround; tearDown = TearDown_FtBusTurnaround;
     RUN_TEST(FtBusTurnaround_handles_the_entire_bus_turnaround);
+    RUN_TEST(FtBusTurnaround_returns_false_if_not_ok_to_proceed);
 
     setUp = SetUp_FtRead; tearDown = TearDown_FtRead;
     RUN_TEST(FtRead_reads_bytes_from_MIOSIO);

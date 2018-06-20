@@ -18,6 +18,7 @@ void Expect_FtLetSlaveDriveBus(void);
 void FtLetSlaveDriveBus_Stubbed(void);
 void Expect_FtIsBusOk(void);
 bool FtIsBusOk_Stubbed(void);
+extern bool (*FtIsBusOk_Returns)(void);
 void Expect_FtReadData(void);
 uint8_t FtReadData_Stubbed(void);
 

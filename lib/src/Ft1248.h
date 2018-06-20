@@ -40,7 +40,7 @@ extern void (*FtOutputByte)(uint8_t);
 extern void (*FtPullData)(void);
 extern void (*FtLetMasterDriveBus)(void);
 extern void (*FtLetSlaveDriveBus)(void);
-void FtBusTurnaround(void);
+bool FtBusTurnaround(void);
 extern bool (*FtIsBusOk)(void);
 extern bool (*FtHasDataToRead)(void);
 void FtRead(void);

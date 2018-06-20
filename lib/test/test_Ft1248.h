@@ -8,6 +8,7 @@ void FtSendCommand_Read_does_entire_command_phase_for_ReadCmd(void);
 
 void SetUp_FtBusTurnaround(void); void TearDown_FtBusTurnaround(void);
 void FtBusTurnaround_handles_the_entire_bus_turnaround(void);
+void FtBusTurnaround_returns_false_if_not_ok_to_proceed(void);
 
 void SetUp_FtRead(void); void TearDown_FtRead(void);
 void FtRead_reads_bytes_from_MIOSIO(void);

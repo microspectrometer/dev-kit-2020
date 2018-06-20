@@ -1,7 +1,9 @@
 #include <Mock.h>
 #include <RecordedCall.h>
 #include <RecordedArg.h>
+#include <ReturnValues.h>
 #include "mock_Ft1248.h"
+
 
 static RecordedCall * Mock_FtActivateInterface(void)
 {
@@ -93,9 +95,10 @@ static RecordedCall * Mock_FtIsBusOk(void)
 void Expect_FtIsBusOk(void) {
     RecordExpectedCall(mock, Mock_FtIsBusOk());
 }
+bool (*FtIsBusOk_Returns)(void) = StubReturnsFalse;
 bool FtIsBusOk_Stubbed(void) {
     RecordActualCall(mock, Mock_FtIsBusOk());
-    return false;
+    return FtIsBusOk_Returns();
 }
 
 static RecordedCall * Mock_FtReadData(void)

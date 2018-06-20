@@ -18,12 +18,12 @@ void FtSendCommand(uint8_t FtCmd)
     FtPullData();
 }
 
-void FtBusTurnaround(void)
+bool FtBusTurnaround(void)
 {
     FtLetSlaveDriveBus();
     FtPushData();
     FtPullData();
-    FtIsBusOk();
+    return FtIsBusOk();
 }
 
 void FtRead(void)

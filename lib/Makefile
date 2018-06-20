@@ -57,7 +57,7 @@ obj_libs-tested-with-mocks := $(addprefix build/,${obj_libs-tested-with-mocks})
 
 # behold my static library hack:
 # list of objects for unit testing with shared lib mock-c
-mock-c-libs    := Mock RecordedCall RecordedArg
+mock-c-libs    := Mock RecordedCall RecordedArg ReturnValues
 mock-c-objects := $(addsuffix .o,${mock-c-libs})
 mock-c-objects := $(addprefix ${path_shared-lib_mock-c}build/,${mock-c-objects})
 obj_unity := ${path_shared-lib_mock-c}build/unity.o

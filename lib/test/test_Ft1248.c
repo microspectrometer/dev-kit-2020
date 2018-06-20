@@ -4,6 +4,7 @@
 #include "fake/Ft1248-Hardware.h"   // fake the io pins in avr/io.h
 #include "mock_Ft1248.h"            // mocked version of DOF lib
 #include <Mock.h>                   // RanAsHoped, WhyDidItFail
+#include <ReturnValues.h>           // StubReturnsFalse, StubReturnsTrue
 #include <unity.h>                  // all the TEST_blah macros
 #include "ReadWriteBits.h"
 
@@ -32,8 +33,11 @@
     //     - FtPushData(): SCK high, slave drives MISO with RxBufferEmpty
     //     - FtPullData(): SCK low, now its ok to pull data
     //     - FtIsBusOk(): master reads MISO
-    //     if MISO says BusIsOk, do the read
-    // [ ] FtBusTurnaround returns true if 
+    //     if MISO says BusIsOk, it means there is data to read,
+    //     go ahead and do the read
+    // [ ] FtBusTurnaround returns true if it is ok to proceed
+    //     - FtIsBusOK(): it is ok to proceed if this returns true
+    //     - for a read, this means there is still data to read
     // [x] FtReadData() returns the value on MIOSIO pins
     // [x] FtDeactivateInterface() pulls SS high
     // [x] FtRead reads bytes from MIOSIO:
@@ -168,20 +172,32 @@ void TearDown_FtBusTurnaround(void){
 }
 void FtBusTurnaround_handles_the_entire_bus_turnaround(void)
 {
+    //=====[ Setup ]=====
+    TEST_ASSERT_BIT_LOW(Ft1248_Miso, *Ft1248_pin);  // test fixture assertion
     //=====[ Set expectations ]=====
     Expect_FtLetSlaveDriveBus();
     Expect_FtPushData();
     Expect_FtPullData();
     Expect_FtIsBusOk();
+    //=====[ Describe the happy path ]=====
+    FtIsBusOk_Returns = StubReturnsTrue;
     //=====[ Operate ]=====
-    FtBusTurnaround();
+    bool ok_to_proceed = FtBusTurnaround();
     //=====[ Test ]=====
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
+    TEST_ASSERT_TRUE(ok_to_proceed);
 }
-//void FtBusTurnaround_
+void FtBusTurnaround_returns_false_if_not_ok_to_proceed(void)
+{
+    //=====[ Setup ]=====
+    SetBit(Ft1248_pin, Ft1248_Miso);  // `no data to read` or `no room to write`
+    //=====[ Set expectations ]=====
+    FtIsBusOk_Returns = StubReturnsFalse;
+    TEST_ASSERT_FALSE(FtBusTurnaround());
+}
 void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void)
 {
     //=====[ Setup ]=====
