@@ -83,14 +83,14 @@ void (*FtLetSlaveDriveBus)(void) = FtLetSlaveDriveBus_Implementation;
 
 static bool FtIsBusOk_Implementation(void)
 {
-    return BitIsClear(Ft1248_port, Ft1248_Miso);
+    return BitIsClear(Ft1248_pin, Ft1248_Miso);
 }
 
 bool (*FtIsBusOk)(void) = FtIsBusOk_Implementation;
 
 static uint8_t FtReadData_Implementation(void)
 {
-    return *FtMiosio_port;
+    return *FtMiosio_pin;
 }
 
 uint8_t (*FtReadData)(void) = FtReadData_Implementation;

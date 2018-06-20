@@ -58,7 +58,7 @@ int main()
     RUN_TEST(FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input);
     RUN_TEST(FtIsBusOk_returns_true_if_MISO_is_low);
     RUN_TEST(FtIsBusOk_returns_false_if_MISO_is_high);
-    RUN_TEST(FtReadData_returns_the_value_on_MIOSIO);
+    RUN_TEST(FtReadData_returns_the_value_on_MIOSIO_pins);
     RUN_TEST(FtDeactivateInterface_pulls_SS_high);
     return UNITY_END();
 }

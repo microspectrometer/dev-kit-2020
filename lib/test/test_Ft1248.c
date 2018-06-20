@@ -8,6 +8,8 @@
 #include "ReadWriteBits.h"
 
 //=====[ List of tests to write ]=====
+    // [ ] FtHasDataToRead() returns true if MISO is low
+    //     - this is an alias for FtIsBusOk
     // [x] FtActivateInterface() pulls SS low.
     // [x] FtPushData() pulls SCK high.
     // [x] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
@@ -30,8 +32,9 @@
     //     - FtPullData(): SCK low, now its ok to pull data
     //     - FtIsBusOk(): master reads MISO
     //     if MISO says BusIsOk, do the read
-    // [x] FtReadData() returns the value on MIOSIO
-    // [ ] FtDeactivateInterface() pulls SS high
+    // [ ] FtBusTurnaround returns true if 
+    // [x] FtReadData() returns the value on MIOSIO pins
+    // [x] FtDeactivateInterface() pulls SS high
     // [x] FtRead reads bytes from MIOSIO:
     //     FtRead should:
     //     - FtPushData(): SCK high, slave drives Miosio with data and MISO with ACK
@@ -54,6 +57,9 @@ void SetUp_FtPorts(void)
 {
     *Ft1248_port = 0x00;
     *FtMiosio_ddr = 0x00;
+    *FtMiosio_port = 0x00;
+    *Ft1248_pin   = *Ft1248_port;   // simulate AVR `pin` register
+    *FtMiosio_pin = *FtMiosio_port; // simulate AVR `pin` register
 }
 void TearDown_FtPorts(void)
 {
@@ -158,6 +164,7 @@ void FtBusTurnaround_handles_the_entire_bus_turnaround(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
+//void FtBusTurnaround_
 void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void)
 {
     //=====[ Setup ]=====
@@ -173,6 +180,7 @@ void FtIsBusOk_returns_true_if_MISO_is_low(void)
 {
     //=====[ Setup ]=====
     ClearBit(Ft1248_port, Ft1248_Miso);
+    *Ft1248_pin = *Ft1248_port;  // simulate AVR `pin` register
     //=====[ Operate and Test ]=====
     TEST_ASSERT_TRUE(FtIsBusOk());
 }
@@ -180,6 +188,7 @@ void FtIsBusOk_returns_false_if_MISO_is_high(void)
 {
     //=====[ Setup ]=====
     SetBit(Ft1248_port, Ft1248_Miso);
+    *Ft1248_pin = *Ft1248_port;  // simulate AVR `pin` register
     //=====[ Operate and Test ]=====
     TEST_ASSERT_FALSE(FtIsBusOk());
 }
@@ -207,11 +216,12 @@ void FtRead_reads_bytes_from_MIOSIO(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
-void FtReadData_returns_the_value_on_MIOSIO(void)
+void FtReadData_returns_the_value_on_MIOSIO_pins(void)
 {
     //=====[ Setup ]=====
     uint8_t expected_byte = 0xBE;
     *FtMiosio_port = expected_byte;
+    *FtMiosio_pin  = *FtMiosio_port;  // simulate AVR `pin` register
     //=====[ Operate and Test ]=====
     TEST_ASSERT_EQUAL_HEX8( expected_byte, FtReadData() );
 }
