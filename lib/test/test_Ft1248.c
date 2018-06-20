@@ -21,7 +21,7 @@
     //     - FtOutputByte(FtCmd_Read) (Master outputs the read command on MIOSIO)
     //     - FtPullData()             (SCK low)
     // [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
-    // [ ] FtIsBusOk returns true if MISO is low
+    // [x] FtIsBusOk returns true if MISO is low
     // [ ] FtIsBusOk returns false if MISO is high
     // [x] FtBusTurnaround handles the entire bus turnaround.
     //     FtBusTurnaround should:
@@ -166,7 +166,6 @@ void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void)
     uint8_t actual_ddr = *FtMiosio_ddr; // value in data direction register
     TEST_ASSERT_EQUAL_HEX8( expected_ddr, actual_ddr );
 }
-
 void FtIsBusOk_returns_true_if_MISO_is_low(void)
 {
     //=====[ Setup ]=====
@@ -174,3 +173,12 @@ void FtIsBusOk_returns_true_if_MISO_is_low(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_TRUE(FtIsBusOk());
 }
+
+void FtIsBusOk_returns_false_if_MISO_is_high(void)
+{
+    //=====[ Setup ]=====
+    SetBit(Ft1248_port, Ft1248_Miso);
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_FALSE(FtIsBusOk());
+}
+

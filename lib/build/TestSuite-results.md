@@ -7,7 +7,8 @@ test/test_runner.c:49:FtSendCommand_Read_does_entire_command_phase_for_ReadCmd:P
 test/test_runner.c:52:FtBusTurnaround_handles_the_entire_bus_turnaround:PASS
 test/test_runner.c:55:FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input:PASS
 test/test_runner.c:56:FtIsBusOk_returns_true_if_MISO_is_low:PASS
+test/test_runner.c:57:FtIsBusOk_returns_false_if_MISO_is_high:PASS
 
 -----------------------
-9 Tests 0 Failures 0 Ignored 
+10 Tests 0 Failures 0 Ignored 
 OK

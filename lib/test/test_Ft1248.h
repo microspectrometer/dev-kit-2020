@@ -20,5 +20,6 @@ void FtPullData_pulls_SCK_low(void);
 void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void);
 
 void FtIsBusOk_returns_true_if_MISO_is_low(void);
+void FtIsBusOk_returns_false_if_MISO_is_high(void);
 
 #endif // _TEST_FT1248_H
