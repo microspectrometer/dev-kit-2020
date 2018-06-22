@@ -4,8 +4,12 @@
 #include "fake/DebugLed-Hardware.h"
 #include <unity.h>
 #include <Mock.h>
+#include "ReadWriteBits.h"
 
 // =====[ List of Tests To Write ]=====
+    // [ ] DebugLedTurnRedToShowError() turns debug led red
+    //
+    // Old:
     // DebugLedInit should:
     // [-] assign io
     //     I cannot think of a way to test this.
@@ -70,6 +74,24 @@ void SetUp_DebugLedInit(void){
 void TearDown_DebugLedInit(void){
     TearDownMock_DebugLedInit(); // destroy the mock object
     LoadWrongIoAddresses();      // restore the *wrong* fake addresses
+}
+
+void DebugLedTurnRedToShowError_turns_debug_led_red(void)
+{
+    //=====[ Stupid Setup ]=====
+    //TODO: erase this when I simplify the hardware interface
+    DebugLedInit(
+        DebugLed_ddr,
+        DebugLed_port,
+        DebugLed_pin,
+        debug_led
+        );
+    //=====[ Setup ]=====
+    ClearBit(DebugLed_port, debug_led);
+    //=====[ Operate ]=====
+    DebugLedTurnRedToShowError();
+    //=====[ Test ]=====
+    TEST_ASSERT_BIT_HIGH(debug_led, *DebugLed_port);
 }
 
 void DebugLedInit_turns_debug_led_on_and_green(void)

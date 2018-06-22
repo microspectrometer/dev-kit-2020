@@ -13,6 +13,7 @@ void DebugLedInit( // cfg i/o, make LED lit green
     );
 extern void (*DebugLedTurnGreen)(void); // is a func ptr for mockist tests
 void DebugLedTurnRed(void);
+extern void (*DebugLedTurnRedToShowError)(void);  // alias for DebugLedTurnRed
 void DebugLedToggleColor(void);
 
 //                      =====[ Plumbing ]=====

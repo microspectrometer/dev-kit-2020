@@ -21,17 +21,18 @@ void FtSendCommand(uint8_t FtCmd)
 bool FtBusTurnaround(void)
 {
     FtLetSlaveDriveBus();
-    FtPushData();
-    FtPullData();
+    FtPushData();                   // tells everyone to output to bus
+    FtPullData();                   // tells everyone to input from bus
     return FtIsBusOk();
 }
 
-void FtRead(void)
+bool FtRead(uint8_t * host_msg_ptr)
 {
-    FtPushData();
-    FtPullData();
-    FtIsBusOk();
-    FtReadData();
+    FtPushData();                   // tells everyone to output to bus
+    FtPullData();                   // tells everyone to input from bus
+    if (!FtIsBusOk()) return false; // buffer is empty
+    *host_msg_ptr = FtReadData();   // buffer is not empty, write to mem
+    return true;
 }
 
 static void FtActivateInterface_Implementation(void)

@@ -41,6 +41,7 @@ void DebugLedTurnRed(void)
 {
     SetBit(port_register_, debug_led_);
 }
+void (*DebugLedTurnRedToShowError)(void) = DebugLedTurnRed;
 
 void DebugLedToggleColor(void)
 {

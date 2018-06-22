@@ -95,10 +95,10 @@ static RecordedCall * Mock_FtIsBusOk(void)
 void Expect_FtIsBusOk(void) {
     RecordExpectedCall(mock, Mock_FtIsBusOk());
 }
-bool (*FtIsBusOk_Returns)(void) = StubReturnsFalse;
+bool FtIsBusOk_StubbedReturnValue = false;
 bool FtIsBusOk_Stubbed(void) {
     RecordActualCall(mock, Mock_FtIsBusOk());
-    return FtIsBusOk_Returns();
+    return FtIsBusOk_StubbedReturnValue;
 }
 
 static RecordedCall * Mock_FtReadData(void)
@@ -110,7 +110,8 @@ static RecordedCall * Mock_FtReadData(void)
 void Expect_FtReadData(void) {
     RecordExpectedCall(mock, Mock_FtReadData());
 }
+uint8_t FtReadData_StubbedReturnValue = 0x00;
 uint8_t FtReadData_Stubbed(void) {
     RecordActualCall(mock, Mock_FtReadData());
-    return 0x00;
+    return FtReadData_StubbedReturnValue;
 }

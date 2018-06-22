@@ -7,11 +7,12 @@ void SetUp_FtSendCommand(void); void TearDown_FtSendCommand(void);
 void FtSendCommand_Read_does_entire_command_phase_for_ReadCmd(void);
 
 void SetUp_FtBusTurnaround(void); void TearDown_FtBusTurnaround(void);
-void FtBusTurnaround_handles_the_entire_bus_turnaround(void);
+void FtBusTurnaround_returns_true_if_ok_to_proceed_with_command(void);
 void FtBusTurnaround_returns_false_if_not_ok_to_proceed(void);
 
 void SetUp_FtRead(void); void TearDown_FtRead(void);
-void FtRead_reads_bytes_from_MIOSIO(void);
+void FtRead_does_not_write_to_mem_and_returns_false_if_NAK(void);
+void FtRead_should_write_to_mem_and_return_true_if_ACK(void);
 
 void SetUp_FtPorts(void); void TearDown_FtPorts(void);
 //Before initiating read

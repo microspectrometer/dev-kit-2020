@@ -43,7 +43,7 @@ extern void (*FtLetSlaveDriveBus)(void);
 bool FtBusTurnaround(void);
 extern bool (*FtIsBusOk)(void);
 extern bool (*FtHasDataToRead)(void);
-void FtRead(void);
+bool FtRead(uint8_t * host_msg_ptr);
 extern uint8_t (*FtReadData)(void);
 void FtDeactivateInterface(void);
 bool FtHasRoomToWrite(void);
