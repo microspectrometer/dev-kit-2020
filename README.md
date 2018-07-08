@@ -18,6 +18,108 @@
 
 ---e-n-d---
 
+# Internal deadline
+- This was originally a writeup for Kulite.
+    - Kulite went with a TSL1401 prototype instead, so they never saw this.
+- But the time breakdown is still useful internally.
+    - sticking with the 7/25 date to finish embedded work
+    - defining the deliverable
+
+## Deliverables for August 8th
+
+- High-resolution spectrometer prototype using LIS-770i and n=7 die with
+  custom-machined housing to mate with 20mm x 20mm LIS-770i daughterboard and an
+  attachment for a #8-32 set-screw for mounting on an optical post.
+- Wavelength map.
+- Instructions on acquiring a single frame of data over USB.
+
+## Deadline
+[x] Estimated deadline for deliverable prototype to ship to Kulite: `8/8`
+
+- broken into two deadlines
+    - Embedded development
+    - measurement interface
+
+[x] Estimated deadline for embedded development: `7/25`
+
+- total number of tests: `250`
+    - estimate tests per module: `50`
+        - estimate based on module `Ft1248`
+        - `Ft1248` has 20 tests so far
+        - it is about halfway done
+    - estimate number of modules: `5`
+    - total number of tests: `50 tests/module * 5 modules = 250`
+- labor time and actual time are different
+- convert labor time to actual time using productive percentage of day: `50%`
+    - this percentage accounts for any-time not spent on this project
+    - e.g., meetings, PCB design, eval kits
+- estimate actual labor time per day: `8 hours/day * 50% = 4 hours/day`
+- find total labor time: `250 tests * 15 min/test = 3750 minutes = 62.5 hours`
+    - estimate number of actual days: `62.5 hours / 4 hours/day = 15.625 days`
+- plot days on calendar to find finished date
+    - start the clock the week after SensorsExpo: first day is ~~`7/2`~~ `7/9`
+    - count forward 16 days to ~~`7/25`~~ `7/31`
+
+[x] Estimate deadline for measurement interface: `8/8`
+
+- working from a time limit: two weeks
+    - let the time limit set the goals
+- start date: `Deadline for Embedded development`
+- goal: modified monochromator setup for generating a map
+    - main hurdle:
+        - modify LabVIEW communication for the new firmware
+    - approach:
+        - this is throw-away code to meet the Kulite deliverable
+        - Python interface is longer term
+    - Tanya is handling machining of custom housing
+        - this mounts to the LIS-770i daughterboard
+    - laser cut base plates to hold the readout electronics:
+        - mBrd
+        - simBrd
+    - no MacroFab orders are required to meet the goal
+        - we have several LIS-770i daughterboards
+        - we have two of each of the readout boards
+
+### Estimating time per test
+- look at git log: what is the average time per test?
+    - 2018-06-20 11:48:45 -0400  79 minutes ago FtDeactivateInterface pulls SS high.
+    - 2018-06-20 11:43:11 -0400  84 minutes ago FtReadData returns the value on MIOSIO.
+    - 2018-06-20 11:27:07 -0400     2 hours ago FtRead reads bytes from MIOSIO.
+    - 2018-06-20 10:56:00 -0400     2 hours ago FtIsBusOk returns false if MISO is high.
+    - 2018-06-20 10:53:49 -0400     2 hours ago FtIsBusOk returns true if MISO is low.
+    - 2018-06-20 10:33:57 -0400     3 hours ago TDD FtBusTurnaround.
+    - 2018-06-20 10:12:03 -0400     3 hours ago TDD FtLetSlaveDriveBus.
+    - 2018-06-20 10:02:23 -0400     3 hours ago TDD FtPullData.
+    - 2018-06-20 09:56:22 -0400     3 hours ago TDD FtLetMasterDriveBus.
+    - 2018-06-20 09:40:11 -0400     3 hours ago Document how to abstract memory-mapped io.
+- count the earliest commit here as commit 0
+    - I don't know how long it took to do the work for this commit
+    - I am just using its timestamp to measure how long it took before the next
+      commit
+    - then there are 9 commits
+    - each is a test that I wrote and made pass
+    - the total time spanned is 
+```python
+import datetime as dt
+start = dt.datetime.strptime("9:40:11",  "%H:%M:%S")
+stop  = dt.datetime.strptime("11:48:45", "%H:%M:%S")
+total = stop - start
+mean = total.seconds/9
+```
+*The mean time per test development is 857 seconds, or 14.3 minutes.*
+
+Display the total time in HH:MM:SS by simply printing `total`:
+```python
+print(total)
+```
+This yields `2:08:34` (2 hours, 8 mnutes, 34 seconds).
+
+Access the total time in seconds with `total.seconds`:
+```python
+print(total.seconds)
+```
+This yields `7714` seconds.
+
 # LIS-770i project code organization
 Separate project code into sub-folders by board name:
 
