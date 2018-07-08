@@ -1,5 +1,7 @@
 # Table of Contents
 - [Repo links](#markdown-header-repo-links)
+- [Internal deadline](#markdown-header-internal-deadline)
+- [LIS-770i project code organization](#markdown-header-lis-770i-project-code-organization)
 - [Abstract memory-mapped-io for tests](#markdown-header-abstract-memory-mapped-io-for-tests)
 - [Mockist TDD](#markdown-header-mockist-tdd)
 - [FT1248](#markdown-header-ft1248)
@@ -14,7 +16,6 @@
     - FT1248 reference
         - [FT1248 format of combined command and bus-width byte](#markdown-header-ft1248-format-of-combined-command-and-bus-width-byte)
         - [FT1248 combined command and bus-width byte for an 8-bit bus](#markdown-header-ft1248-combined-command-and-bus-width-byte-for-an-8-bit-bus)
-- [LIS-770i project code organization](#markdown-header-lis-770i-project-code-organization)
 
 ---e-n-d---
 
