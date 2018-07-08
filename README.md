@@ -25,6 +25,10 @@
 - But the time breakdown is still useful internally:
     - use the 16-day estimate to finish embedded work
     - final deliverable describes minimum viable to further internal goals
+- The crossed-out dates are from the original estimate.
+    - I assumed my first working day back from Sensors Expo would be `7/2`
+    - But after Sensors Expo follow-up, meetings, July 4th, and Kurt's birthday
+      on July 6th, my first day back on this project ended up being `7/9`
 
 ## Deliverables for August 
 
@@ -35,7 +39,8 @@
 - Instructions on acquiring a single frame of data over USB.
 
 ## Deadline
-[x] Estimated deadline for deliverable prototype to ship to Kulite: `8/14`
+[x] Estimated deadline for deliverable prototype to ~~ship to Kulite~~ use
+internally: `8/14`
 
 - broken into two deadlines
     - Embedded development
@@ -70,7 +75,7 @@
     - main hurdle:
         - modify LabVIEW communication for the new firmware
     - approach:
-        - this is throw-away code to meet the Kulite deliverable
+        - this is throw-away code to ~~meet the Kulite deliverable~~ demo to PVP
         - Python interface is longer term
     - Tanya is handling machining of custom housing
         - this mounts to the LIS-770i daughterboard
@@ -80,6 +85,7 @@
     - no MacroFab orders are required to meet the goal
         - we have several LIS-770i daughterboards
         - we have two of each of the readout boards
+    - but I do need to order MacroFab daughterboards to try the *QuikPak* part
 
 ### Estimating time per test
 - look at git log: what is the average time per test?
