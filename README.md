@@ -21,11 +21,11 @@
 # Internal deadline
 - This was originally a writeup for Kulite.
     - Kulite went with a TSL1401 prototype instead, so they never saw this.
-- But the time breakdown is still useful internally.
-    - sticking with the 7/25 date to finish embedded work
-    - defining the deliverable
+- But the time breakdown is still useful internally:
+    - use the 16-day estimate to finish embedded work
+    - final deliverable describes minimum viable to further internal goals
 
-## Deliverables for August 8th
+## Deliverables for August 
 
 - High-resolution spectrometer prototype using LIS-770i and n=7 die with
   custom-machined housing to mate with 20mm x 20mm LIS-770i daughterboard and an
@@ -34,13 +34,13 @@
 - Instructions on acquiring a single frame of data over USB.
 
 ## Deadline
-[x] Estimated deadline for deliverable prototype to ship to Kulite: `8/8`
+[x] Estimated deadline for deliverable prototype to ship to Kulite: `8/14`
 
 - broken into two deadlines
     - Embedded development
     - measurement interface
 
-[x] Estimated deadline for embedded development: `7/25`
+[x] Estimated deadline for embedded development: `7/31`
 
 - total number of tests: `250`
     - estimate tests per module: `50`
@@ -60,7 +60,7 @@
     - start the clock the week after SensorsExpo: first day is ~~`7/2`~~ `7/9`
     - count forward 16 days to ~~`7/25`~~ `7/31`
 
-[x] Estimate deadline for measurement interface: `8/8`
+[x] Estimate deadline for measurement interface: ~~`8/8`~~ `8/14`
 
 - working from a time limit: two weeks
     - let the time limit set the goals
