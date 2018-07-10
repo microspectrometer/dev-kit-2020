@@ -14,9 +14,10 @@
     //      - FtRead() leaves SCK low.
     //          - This is good.
     //          - SCK should be low before deactivating the interface.
-    // [ ] UsbRead returns false if there was no data read
+    // [x] UsbRead returns false if there was no data read
+    // - is the function in a good state after this?
     // [ ] UsbRead turns LED red if there was no data read
-    // [ ] UsbRead returns true if there is data read
+    // [x] UsbRead returns true if there is data read
     // [ ] UsbRead should read until buffer is empty
 // void SetUp_NothingForUsb(void){}
 // void TearDown_NothingForUsb(void){}
@@ -30,14 +31,36 @@ void TearDown_UsbRead(void){
 }
 void UsbRead_returns_false_if_there_was_no_data_read(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    // function returns false
+    // function exits before starting the read
+    //=====[ Mock-up values returned by stubbed functions ]=====
+    FtBusTurnaround_StubbedReturnValue = false;
+    //=====[ Set expectations ]=====
+    Expect_FtSendCommand(FtCmd_Read);
+    Expect_FtBusTurnaround();
+    //=====[ Operate ]=====
+    bool there_was_data_to_read = UsbRead();
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+    TEST_ASSERT_FALSE(there_was_data_to_read);
+}
+void UsbRead_returns_true_if_there_is_data_to_read(void)
+{
+    //=====[ Mock-up values returned by stubbed functions ]=====
+    FtBusTurnaround_StubbedReturnValue = true;
+    //=====[ Operate ]=====
+    bool there_was_data_to_read = UsbRead();
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE(there_was_data_to_read);
 }
 //void UsbRead_turns_LED_red_if_there_was_no_data_read(void)
-//void UsbRead_returns_true_if_there_is_data_read(void)
 void UsbRead_should_read_until_buffer_is_empty(void)
 {
     //=====[ Mock-up values returned by stubbed functions ]=====
-    bool FtBusTurnaround_StubbedReturnValue = true;
+    FtBusTurnaround_StubbedReturnValue = true;
     //=====[ Set expectations ]=====
     Expect_FtSendCommand(FtCmd_Read);
     Expect_FtBusTurnaround();
