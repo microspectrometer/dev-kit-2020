@@ -78,5 +78,6 @@ int main()
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Yep);
+    RUN_TEST(UsbRead_returns_false_if_there_was_no_data_read);
     return UNITY_END();
 }

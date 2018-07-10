@@ -1,5 +1,6 @@
-test/test_runner.c:41:UsbRead_should_read_until_buffer_is_empty:FAIL: Why it failed: Expected 2 calls, received 0 calls. First missed call: expected #1:'FtSendCommand'. 
+test/test_runner.c:71:UsbRead_should_read_until_buffer_is_empty:PASS
+test/test_runner.c:33:UsbRead_returns_false_if_there_was_no_data_read:FAIL: Implement test.
 
 -----------------------
-1 Tests 1 Failures 0 Ignored 
+2 Tests 1 Failures 0 Ignored 
 FAIL
