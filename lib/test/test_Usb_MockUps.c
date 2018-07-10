@@ -12,16 +12,26 @@ static void Stub_FtSendCommand(void) {
 static void Unstub_FtSendCommand(void) {
     FtSendCommand = FtSendCommand_Saved;
 }
+static bool (*FtBusTurnaround_Saved)(void);
+static void Stub_FtBusTurnaround(void) {
+    FtBusTurnaround_Saved = FtBusTurnaround;
+    FtBusTurnaround = FtBusTurnaround_Stubbed;
+}
+static void Unstub_FtBusTurnaround(void) {
+    FtBusTurnaround = FtBusTurnaround_Saved;
+}
 void SetUpMock_UsbRead(void)  // FUT
 {
     mock = Mock_new();
     //
     Stub_FtSendCommand();  // DOF
+    Stub_FtBusTurnaround();  // DOF
 }
 void TearDownMock_UsbRead(void)  // FUT
 {
     Mock_destroy(mock); mock = NULL;
     //
     Unstub_FtSendCommand();  // DOF
+    Unstub_FtBusTurnaround();  // DOF
 }
 

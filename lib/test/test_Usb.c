@@ -27,8 +27,11 @@ void TearDown_UsbRead(void){
 
 void UsbRead_should_read_until_buffer_is_empty(void)
 {
+    //=====[ Mock-up values returned by stubbed functions ]=====
+    bool FtBusTurnaround_StubbedReturnValue = true;
     //=====[ Set expectations ]=====
     Expect_FtSendCommand(FtCmd_Read);
+    Expect_FtBusTurnaround();
     //=====[ Operate ]=====
     UsbRead();
     //=====[ Test ]=====

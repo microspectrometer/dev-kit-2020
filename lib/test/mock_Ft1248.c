@@ -116,6 +116,7 @@ uint8_t FtReadData_Stubbed(void) {
     return FtReadData_StubbedReturnValue;
 }
 
+//=====[ High-level mocks ]=====
 static RecordedCall * Mock_FtSendCommand(uint8_t arg1)
 {
     char const *call_name = "FtSendCommand";
@@ -130,4 +131,19 @@ void Expect_FtSendCommand(uint8_t arg1) {
 }
 void FtSendCommand_Stubbed(uint8_t arg1) {
     RecordActualCall(mock, Mock_FtSendCommand(arg1));
+}
+
+static RecordedCall * Mock_FtBusTurnaround(void)
+{
+    char const *call_name = "FtBusTurnaround";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtBusTurnaround(void) {
+    RecordExpectedCall(mock, Mock_FtBusTurnaround());
+}
+bool FtBusTurnaround_StubbedReturnValue = true;
+bool FtBusTurnaround_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtBusTurnaround());
+    return FtBusTurnaround_StubbedReturnValue;
 }

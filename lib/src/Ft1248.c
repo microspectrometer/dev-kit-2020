@@ -8,6 +8,7 @@
 //#define FT1248_CMD_READ8    0xC6
 //static uint8_t const FT1248Cmd_8BitWide_Write = 0x86;
 
+//=====[ High-level API ]=====
 uint8_t const FtCmd_Read  = 0xC6;
 static void FtSendCommand_Implementation(uint8_t FtCmd)
 {
@@ -19,13 +20,14 @@ static void FtSendCommand_Implementation(uint8_t FtCmd)
 }
 void (*FtSendCommand)(uint8_t) = FtSendCommand_Implementation;
 
-bool FtBusTurnaround(void)
+static bool FtBusTurnaround_Implementation(void)
 {
     FtLetSlaveDriveBus();
     FtPushData();                   // tells everyone to output to bus
     FtPullData();                   // tells everyone to input from bus
     return FtIsBusOk();
 }
+bool (*FtBusTurnaround)(void) = FtBusTurnaround_Implementation;
 
 bool FtRead(uint8_t * host_msg_ptr)
 {
@@ -36,6 +38,7 @@ bool FtRead(uint8_t * host_msg_ptr)
     return true;
 }
 
+//=====[ Low-level API ]=====
 static void FtActivateInterface_Implementation(void)
 {
     ClearBit(Ft1248_port, Ft1248_Ss);

@@ -31,8 +31,7 @@ extern uint8_t const FtMiosio7;
 //=====[ Ft1248 API ]=====
 //uint8_t const FtNbitCmd_8BitWide_Read  = 0xC6;
 //extern void (*FtSendCommand)(uint8_t FtNbitCmd);
-extern uint8_t const FtCmd_Read;
-extern void (*FtSendCommand)(uint8_t FtCmd);
+//=====[ Low-level API ]=====
 extern void (*FtOutputCmdOnMiosio)(uint8_t FtCmd);
 extern void (*FtActivateInterface)(void);
 extern void (*FtPushData)(void);
@@ -40,12 +39,15 @@ extern void (*FtOutputByte)(uint8_t);
 extern void (*FtPullData)(void);
 extern void (*FtLetMasterDriveBus)(void);
 extern void (*FtLetSlaveDriveBus)(void);
-bool FtBusTurnaround(void);
 extern bool (*FtIsBusOk)(void);
 extern bool (*FtHasDataToRead)(void);
 bool FtRead(uint8_t * host_msg_ptr);
 extern uint8_t (*FtReadData)(void);
 void FtDeactivateInterface(void);
 bool FtHasRoomToWrite(void);
+//=====[ High-level API ]=====
+extern uint8_t const FtCmd_Read;
+extern void (*FtSendCommand)(uint8_t FtCmd);
+extern bool (*FtBusTurnaround)(void);
 
 #endif // _FT1248_H
