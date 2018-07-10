@@ -29,7 +29,7 @@ names-of-dev-libs := ReadWriteBits DebugLed Ft1248 Usb
 #
 # But only some tests use mocks.
 # List the dev libs tested with mocks:
-names-of-libs-tested-with-mocks := Ft1248
+names-of-libs-tested-with-mocks := Ft1248 Usb
 
 # And only some libs require mocking.
 # List the dev libs that have mocked versions to remove dependencies:

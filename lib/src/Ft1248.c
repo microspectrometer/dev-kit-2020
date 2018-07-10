@@ -9,7 +9,7 @@
 //static uint8_t const FT1248Cmd_8BitWide_Write = 0x86;
 
 uint8_t const FtCmd_Read  = 0xC6;
-void FtSendCommand(uint8_t FtCmd)
+static void FtSendCommand_Implementation(uint8_t FtCmd)
 {
     FtActivateInterface();
     FtPushData();
@@ -17,6 +17,7 @@ void FtSendCommand(uint8_t FtCmd)
     FtOutputByte(FtCmd);
     FtPullData();
 }
+void (*FtSendCommand)(uint8_t) = FtSendCommand_Implementation;
 
 bool FtBusTurnaround(void)
 {

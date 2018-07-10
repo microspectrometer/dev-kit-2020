@@ -115,3 +115,19 @@ uint8_t FtReadData_Stubbed(void) {
     RecordActualCall(mock, Mock_FtReadData());
     return FtReadData_StubbedReturnValue;
 }
+
+static RecordedCall * Mock_FtSendCommand(uint8_t arg1)
+{
+    char const *call_name = "FtSendCommand";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
+    *((uint8_t *)record_of_arg1->pArg) = arg1;
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void Expect_FtSendCommand(uint8_t arg1) {
+    RecordExpectedCall(mock, Mock_FtSendCommand(arg1));
+}
+void FtSendCommand_Stubbed(uint8_t arg1) {
+    RecordActualCall(mock, Mock_FtSendCommand(arg1));
+}

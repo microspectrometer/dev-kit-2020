@@ -66,7 +66,8 @@ void DevelopingFt1248_highlevel(bool run_test) { if (run_test) {
     RUN_TEST(FtRead_should_write_to_mem_and_return_true_if_ACK);
 }}
 void DevelopingUsb(bool run_test) {if (run_test) {
-    setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb;
+    //setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb;
+    setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead;
     RUN_TEST(UsbRead_should_read_until_buffer_is_empty);
 }}
 int main()

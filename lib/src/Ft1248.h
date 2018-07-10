@@ -32,7 +32,7 @@ extern uint8_t const FtMiosio7;
 //uint8_t const FtNbitCmd_8BitWide_Read  = 0xC6;
 //extern void (*FtSendCommand)(uint8_t FtNbitCmd);
 extern uint8_t const FtCmd_Read;
-void FtSendCommand(uint8_t FtCmd);
+extern void (*FtSendCommand)(uint8_t FtCmd);
 extern void (*FtOutputCmdOnMiosio)(uint8_t FtCmd);
 extern void (*FtActivateInterface)(void);
 extern void (*FtPushData)(void);
