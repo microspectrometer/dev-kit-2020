@@ -89,6 +89,7 @@ internally: `8/14`
 
 ### Estimating time per test
 - look at git log: what is the average time per test?
+    - Vim `gL` logs timestamped commits to `git-commits.md`
     - 2018-06-20 11:48:45 -0400  79 minutes ago FtDeactivateInterface pulls SS high.
     - 2018-06-20 11:43:11 -0400  84 minutes ago FtReadData returns the value on MIOSIO.
     - 2018-06-20 11:27:07 -0400     2 hours ago FtRead reads bytes from MIOSIO.
@@ -674,8 +675,18 @@ because the master is going to call this same function whether the command is a
 During the `bus-turnaround`, the slave uses `MISO` for both *receive buffer
 empty* and *transmit buffer full*.
 
-The master clocks out the data from the slave. First a rising clock edge to tell
-the slave to push data onto the bus and to drive `MISO` with an `ACK` or `NAK`:
+- If it is *not* OK to continue with the data transfer, `FtIsBusOk` returns
+  *false*. The low-level command immediately before this was `FtPullData` which
+  pulls `SCK` low. This is good. `SCK` should be low before deactivating the
+  interface. The master terminates the Ft1248 sesssion by deactivating the
+  interface: `FtDeactivateInterface` pulls `!SS!` high again to return to the
+  *inactive state*.
+
+- If it *is* OK to continue with the data transfer, the master clocks out the
+  data from the slave.
+
+First a rising clock edge to tell the slave to push data onto
+the bus and to drive `MISO` with an `ACK` or `NAK`:
 
     FtPushData
 
