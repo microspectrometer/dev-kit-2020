@@ -69,6 +69,7 @@ void DevelopingUsb(bool run_test) {if (run_test) {
     //setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb;
     setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead;
     RUN_TEST(UsbRead_returns_false_if_there_was_no_data_read);
+    RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_read);
     RUN_TEST(UsbRead_returns_true_if_there_is_data_to_read);
     RUN_TEST(UsbRead_should_read_until_buffer_is_empty);
 }}

@@ -1,5 +1,7 @@
-#include "Ft1248.h"                 // DOF lib
+#include "DebugLed.h"
+#include "Ft1248.h"                 // DOF lib includes FtCmd constants
 #include "mock_Ft1248.h"            // mocked version of DOF lib
+#include "mock_DebugLed.h"          // mocked version of DOF lib
 #include "test_Usb_MockUps.h"       // mock setups for LUT
 #include <Mock.h>                   // RanAsHoped, WhyDidItFail
 #include "test_Usb.h"               // LUT test code
@@ -15,10 +17,12 @@
     //          - This is good.
     //          - SCK should be low before deactivating the interface.
     // [x] UsbRead returns false if there was no data read
-    // - is the function in a good state after this?
-    // [ ] UsbRead turns LED red if there was no data read
+    //  - SCK is already low
+    //  - next step is to call FtDeactivateInterface to end the Ft1248 session
+    // [x] UsbRead turns LED red if there was no data read
     // [x] UsbRead returns true if there is data read
     // [ ] UsbRead should read until buffer is empty
+    // [ ] UsbRead calls FtDeactivateInterface to end the Ft1248 session
 // void SetUp_NothingForUsb(void){}
 // void TearDown_NothingForUsb(void){}
 void SetUp_UsbRead(void){
@@ -31,13 +35,16 @@ void TearDown_UsbRead(void){
 }
 void UsbRead_returns_false_if_there_was_no_data_read(void)
 {
-    // function returns false
-    // function exits before starting the read
+    // return false
+    // exit before reading any bytes from the buffer
+    // end the Ft1248 session
     //=====[ Mock-up values returned by stubbed functions ]=====
     FtBusTurnaround_StubbedReturnValue = false;
     //=====[ Set expectations ]=====
     Expect_FtSendCommand(FtCmd_Read);
     Expect_FtBusTurnaround();
+    Expect_DebugLedTurnRedToShowError();
+    Expect_FtDeactivateInterface();
     //=====[ Operate ]=====
     bool there_was_data_to_read = UsbRead();
     //=====[ Test ]=====
@@ -47,6 +54,24 @@ void UsbRead_returns_false_if_there_was_no_data_read(void)
         );
     TEST_ASSERT_FALSE(there_was_data_to_read);
 }
+void UsbRead_turns_LED_red_if_there_was_no_data_read(void)
+{
+    //=====[ Mock-up values returned by stubbed functions ]=====
+    FtBusTurnaround_StubbedReturnValue = false;
+    //=====[ Set expectations ]=====
+    Expect_FtSendCommand(FtCmd_Read);
+    Expect_FtBusTurnaround();
+    Expect_DebugLedTurnRedToShowError(); _MOCK_DEBUGLED_H;
+    Expect_FtDeactivateInterface();
+    //=====[ Operate ]=====
+    UsbRead();
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
+
 void UsbRead_returns_true_if_there_is_data_to_read(void)
 {
     //=====[ Mock-up values returned by stubbed functions ]=====
@@ -56,7 +81,6 @@ void UsbRead_returns_true_if_there_is_data_to_read(void)
     //=====[ Test ]=====
     TEST_ASSERT_TRUE(there_was_data_to_read);
 }
-//void UsbRead_turns_LED_red_if_there_was_no_data_read(void)
 void UsbRead_should_read_until_buffer_is_empty(void)
 {
     //=====[ Mock-up values returned by stubbed functions ]=====
@@ -72,5 +96,3 @@ void UsbRead_should_read_until_buffer_is_empty(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
-
-

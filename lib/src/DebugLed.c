@@ -57,4 +57,3 @@ bool DebugLedIsGreen(void)
 {
     return BitIsClear(pin_register_, debug_led_);
 }
-

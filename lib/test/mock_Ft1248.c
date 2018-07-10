@@ -147,3 +147,16 @@ bool FtBusTurnaround_Stubbed(void) {
     RecordActualCall(mock, Mock_FtBusTurnaround());
     return FtBusTurnaround_StubbedReturnValue;
 }
+
+static RecordedCall * Mock_FtDeactivateInterface(void)
+{
+    char const *call_name = "FtDeactivateInterface";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtDeactivateInterface(void) {
+    RecordExpectedCall(mock, Mock_FtDeactivateInterface());
+}
+void FtDeactivateInterface_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtDeactivateInterface());
+}

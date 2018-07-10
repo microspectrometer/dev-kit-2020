@@ -38,5 +38,7 @@ void FtSendCommand_Stubbed(uint8_t arg1);
 extern bool FtBusTurnaround_StubbedReturnValue;
 void Expect_FtBusTurnaround(void);
 bool FtBusTurnaround_Stubbed(void);
+void Expect_FtDeactivateInterface(void);
+void FtDeactivateInterface_Stubbed(void);
 
 #endif // _MOCK_FT1248_H

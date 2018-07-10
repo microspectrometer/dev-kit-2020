@@ -43,7 +43,7 @@ extern bool (*FtIsBusOk)(void);
 extern bool (*FtHasDataToRead)(void);
 bool FtRead(uint8_t * host_msg_ptr);
 extern uint8_t (*FtReadData)(void);
-void FtDeactivateInterface(void);
+extern void (*FtDeactivateInterface)(void);
 bool FtHasRoomToWrite(void);
 //=====[ High-level API ]=====
 extern uint8_t const FtCmd_Read;

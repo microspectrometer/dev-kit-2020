@@ -46,10 +46,11 @@ static void FtActivateInterface_Implementation(void)
 
 void (*FtActivateInterface)(void) = FtActivateInterface_Implementation;
 
-void FtDeactivateInterface(void)
+static void FtDeactivateInterface_Implementation(void)
 {
     SetBit(Ft1248_port, Ft1248_Ss);
 }
+void (*FtDeactivateInterface)(void) = FtDeactivateInterface_Implementation;
 
 static void FtPushData_Implementation(void)
 {

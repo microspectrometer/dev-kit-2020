@@ -1,3 +1,5 @@
+#include <RecordedCall.h>
+#include <RecordedArg.h>
 #include "mock_DebugLed.h"
 #include <DebugLed.h>
 #include <Mock.h>
@@ -44,3 +46,15 @@ void Unstub_DebugLedTurnGreen(void) {
     DebugLedTurnGreen = DebugLedTurnGreen_Saved;
 }
 
+static RecordedCall * Mock_DebugLedTurnRedToShowError(void)
+{
+    char const *call_name = "DebugLedTurnRedToShowError";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_DebugLedTurnRedToShowError(void) {
+    RecordExpectedCall(mock, Mock_DebugLedTurnRedToShowError());
+}
+void DebugLedTurnRedToShowError_Stubbed(void) {
+    RecordActualCall(mock, Mock_DebugLedTurnRedToShowError());
+}

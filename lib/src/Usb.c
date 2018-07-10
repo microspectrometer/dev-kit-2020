@@ -1,5 +1,7 @@
 #include "Usb.h"
 #include "Ft1248.h"
+#include "DebugLed.h"
+
 bool UsbRead(void)
 {
     FtSendCommand(FtCmd_Read);
@@ -7,6 +9,8 @@ bool UsbRead(void)
     if (!has_data_to_read)
     {
         // sad path
+        DebugLedTurnRedToShowError();
+        FtDeactivateInterface();
         return false;
     }
     return true;
