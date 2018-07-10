@@ -23,7 +23,7 @@ CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
 
 # List the libs under dev:
-names-of-dev-libs := ReadWriteBits DebugLed Ft1248
+names-of-dev-libs := ReadWriteBits DebugLed Ft1248 Usb
 # All libs under dev will be tested!
 # All libs under test need a `test_dev-lib.c` for the tests to build.
 #

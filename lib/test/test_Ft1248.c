@@ -62,13 +62,6 @@
     // - FtRead sad path:
     // [x] FtRead should not store data if slave sends NAK
     // [x] FtRead should return false if slave sends NAK
-    // Sketch for UsbRead:
-    // - calls FtSendCommand(FtCmd_Read)
-    // - checks if ok to proceed after FtBusTuraround()
-    // - loops FtRead() until buffer is empty
-    // - ends this Ft1248 session by calling FtDeactivateInterface() (SS high)
-    //   - each call to FtRead() leaves SCK low,
-    //     which is exactly what you want before deactiving the interface
 // void SetUp_NothingForFt1248(void){}
 // void TearDown_NothingForFt1248(void){}
 

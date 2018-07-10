@@ -7,6 +7,7 @@
 #include "test_ReadWriteBits.h"
 #include "test_DebugLed.h"
 #include "test_Ft1248.h"
+#include "test_Usb.h"
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -64,12 +65,17 @@ void DevelopingFt1248_highlevel(bool run_test) { if (run_test) {
     RUN_TEST(FtRead_does_not_write_to_mem_and_returns_false_if_NAK);
     RUN_TEST(FtRead_should_write_to_mem_and_return_true_if_ACK);
 }}
+void DevelopingUsb(bool run_test) {if (run_test) {
+    setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb;
+    RUN_TEST(UsbRead_should_read_until_buffer_is_empty);
+}}
 int main()
 {
     UNITY_BEGIN();
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
-    DevelopingFt1248_lowlevel (Yep);
-    DevelopingFt1248_highlevel(Yep);
+    DevelopingFt1248_lowlevel (Nope);
+    DevelopingFt1248_highlevel(Nope);
+    DevelopingUsb             (Yep);
     return UNITY_END();
 }
