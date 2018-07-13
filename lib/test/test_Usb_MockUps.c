@@ -37,6 +37,15 @@ static void Stub_DebugLedTurnRedToShowError(void) {
 static void Unstub_DebugLedTurnRedToShowError(void) {
     DebugLedTurnRedToShowError = DebugLedTurnRedToShowError_Saved;
 }
+
+static bool (*FtRead_Saved)(uint8_t *);
+static void Stub_FtRead(void) {
+    FtRead_Saved = FtRead;
+    FtRead = FtRead_Stubbed;
+}
+static void Unstub_FtRead(void) {
+    FtRead = FtRead_Saved;
+}
 void SetUpMock_UsbRead(void)  // FUT
 {
     mock = Mock_new();
@@ -45,6 +54,7 @@ void SetUpMock_UsbRead(void)  // FUT
     Stub_FtBusTurnaround();  // DOF
     Stub_FtDeactivateInterface();  // DOF
     Stub_DebugLedTurnRedToShowError();  // DOF
+    Stub_FtRead();  // DOF
 }
 void TearDownMock_UsbRead(void)  // FUT
 {
@@ -54,5 +64,6 @@ void TearDownMock_UsbRead(void)  // FUT
     Unstub_FtBusTurnaround();  // DOF
     Unstub_FtDeactivateInterface();  // DOF
     Unstub_DebugLedTurnRedToShowError();  // DOF
+    Unstub_FtRead();  // DOF
 }
 

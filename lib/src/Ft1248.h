@@ -41,7 +41,6 @@ extern void (*FtLetMasterDriveBus)(void);
 extern void (*FtLetSlaveDriveBus)(void);
 extern bool (*FtIsBusOk)(void);
 extern bool (*FtHasDataToRead)(void);
-bool FtRead(uint8_t * host_msg_ptr);
 extern uint8_t (*FtReadData)(void);
 extern void (*FtDeactivateInterface)(void);
 bool FtHasRoomToWrite(void);
@@ -49,5 +48,6 @@ bool FtHasRoomToWrite(void);
 extern uint8_t const FtCmd_Read;
 extern void (*FtSendCommand)(uint8_t FtCmd);
 extern bool (*FtBusTurnaround)(void);
+extern bool (*FtRead)(uint8_t * read_buffer_address);
 
 #endif // _FT1248_H

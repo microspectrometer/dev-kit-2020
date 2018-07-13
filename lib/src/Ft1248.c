@@ -29,7 +29,7 @@ static bool FtBusTurnaround_Implementation(void)
 }
 bool (*FtBusTurnaround)(void) = FtBusTurnaround_Implementation;
 
-bool FtRead(uint8_t * host_msg_ptr)
+static bool FtRead_Implementation(uint8_t * host_msg_ptr)
 {
     FtPushData();                   // tells everyone to output to bus
     FtPullData();                   // tells everyone to input from bus
@@ -37,6 +37,7 @@ bool FtRead(uint8_t * host_msg_ptr)
     *host_msg_ptr = FtReadData();   // buffer is not empty, write to mem
     return true;
 }
+bool (*FtRead)(uint8_t * read_buffer_address) = FtRead_Implementation;
 
 //=====[ Low-level API ]=====
 static void FtActivateInterface_Implementation(void)
@@ -105,4 +106,3 @@ static uint8_t FtReadData_Implementation(void)
 }
 
 uint8_t (*FtReadData)(void) = FtReadData_Implementation;
-

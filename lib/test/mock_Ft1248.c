@@ -160,3 +160,21 @@ void Expect_FtDeactivateInterface(void) {
 void FtDeactivateInterface_Stubbed(void) {
     RecordActualCall(mock, Mock_FtDeactivateInterface());
 }
+
+static RecordedCall * Mock_FtRead(uint8_t* arg1)
+{
+    char const *call_name = "FtRead";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t**)record_of_arg1->pArg) = arg1;
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void Expect_FtRead(uint8_t* arg1) {
+    RecordExpectedCall(mock, Mock_FtRead(arg1));
+}
+bool FtRead_StubbedReturnValue = false;
+bool FtRead_Stubbed(uint8_t* arg1) {
+    RecordActualCall(mock, Mock_FtRead(arg1));
+    return FtRead_StubbedReturnValue;
+}
