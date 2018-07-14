@@ -88,6 +88,29 @@ internally: `8/14`
     - but I do need to order MacroFab daughterboards to try the *QuikPak* part
 
 ### Estimating time per test
+#### 2018-07-10 velocity is 1 hour
+```python
+import datetime as dt
+start = dt.datetime.strptime("11:26:01",  "%H:%M:%S")
+stop  = dt.datetime.strptime("15:14:32", "%H:%M:%S")
+total = stop - start
+mean = (total.seconds- 1800)/9
+```
+I subtracted 1800 seconds to account for a 30-minute lunch break.
+*The mean time per test development is 3970 seconds, or
+1 hour and 7 minutes.*
+- This is much longer than previously. It is two effects:
+    - these tests are on a high-level lib `Usb`
+    - the high-level lib requires mocking of functions I already had defined
+      which requires doing some manual operations
+    - this was my first day *back* after Sensors Expo
+    - also, some work went into another test that I am not counting in this
+      total because the test was not finished -- I realized it was better to
+      implement the functionality in these simpler tests first
+- Even with those caveats, I should readjust my prediction with a more
+  conservative velocity.
+
+#### 2018-06-20 velocity is 15 minutes
 - look at git log: what is the average time per test?
     - Vim `gL` logs timestamped commits to `git-commits.md`
     - 2018-06-20 11:48:45 -0400  79 minutes ago FtDeactivateInterface pulls SS high.

@@ -1,22 +1,29 @@
-- 2018-07-07 21:03:44 -0400  15 minutes ago Document internal deadline.
-- 2018-07-07 20:59:00 -0400  19 minutes ago Document internal deadline.
-- 2018-07-07 20:57:40 -0400  21 minutes ago Document internal deadline.
-- 2018-07-07 20:49:56 -0400  28 minutes ago Document internal deadline.
-- 2018-06-22 14:05:38 -0400     2 weeks ago Add tests for FtRead. Ready to start FtWrite. First using FtRead to dev UsbRead.
-- 2018-06-20 17:21:04 -0400     2 weeks ago FtHasRoomToWrite returns false if MIOSIO bit 0 is high.
-- 2018-06-20 17:12:59 -0400     2 weeks ago FtHasRoomToWrite returns true if MIOSIO bit 0 is low.
-- 2018-06-20 17:00:06 -0400     2 weeks ago TDD FtBusTurnaround sad path.
-- 2018-06-20 15:48:59 -0400     2 weeks ago FtHasDataToRead() aliases FtIsBusOk().
-- 2018-06-20 15:38:38 -0400     2 weeks ago Fix reading pins uses pin registers not port registers.
-- 2018-06-20 11:48:45 -0400     2 weeks ago FtDeactivateInterface pulls SS high.
-- 2018-06-20 11:43:11 -0400     2 weeks ago FtReadData returns the value on MIOSIO.
-- 2018-06-20 11:27:07 -0400     2 weeks ago FtRead reads bytes from MIOSIO.
-- 2018-06-20 10:56:00 -0400     2 weeks ago FtIsBusOk returns false if MISO is high.
-- 2018-06-20 10:53:49 -0400     2 weeks ago FtIsBusOk returns true if MISO is low.
-- 2018-06-20 10:33:57 -0400     2 weeks ago TDD FtBusTurnaround.
-- 2018-06-20 10:12:03 -0400     2 weeks ago TDD FtLetSlaveDriveBus.
-- 2018-06-20 10:02:23 -0400     2 weeks ago TDD FtPullData.
-- 2018-06-20 09:56:22 -0400     2 weeks ago TDD FtLetMasterDriveBus.
+- 2018-07-10 15:14:32 -0400  73 seconds ago TDD two: UsbRead_returns_false_if_there_was_no_data_read and UsbRead_turns_LED_red_if_there_was_no_data_read.
+- 2018-07-10 14:35:52 -0400  40 minutes ago Document desired behavior when FtIsBusOk returns that it is not OK to continue.
+- 2018-07-10 14:26:18 -0400  49 minutes ago TDD UsbRead_returns_true_if_there_is_data_to_read.
+- 2018-07-10 14:10:04 -0400  66 minutes ago Write other tests first. WIP: UsbRead_should_read_until_buffer_is_empty.
+- 2018-07-10 13:50:17 -0400  85 minutes ago Replace FtBusTurnaround with function pointer for UsbRead mock.
+- 2018-07-10 13:08:08 -0400     2 hours ago Replace FtSendCommand with function pointer for UsbRead mock.
+- 2018-07-10 11:26:01 -0400     4 hours ago Create lib Usb for unit testing.
+- 2018-07-07 21:03:44 -0400      3 days ago Document internal deadline.
+- 2018-07-07 20:59:00 -0400      3 days ago Document internal deadline.
+- 2018-07-07 20:57:40 -0400      3 days ago Document internal deadline.
+- 2018-07-07 20:49:56 -0400      3 days ago Document internal deadline.
+- 2018-06-22 14:05:38 -0400     3 weeks ago Add tests for FtRead. Ready to start FtWrite. First using FtRead to dev UsbRead.
+- 2018-06-20 17:21:04 -0400     3 weeks ago FtHasRoomToWrite returns false if MIOSIO bit 0 is high.
+- 2018-06-20 17:12:59 -0400     3 weeks ago FtHasRoomToWrite returns true if MIOSIO bit 0 is low.
+- 2018-06-20 17:00:06 -0400     3 weeks ago TDD FtBusTurnaround sad path.
+- 2018-06-20 15:48:59 -0400     3 weeks ago FtHasDataToRead() aliases FtIsBusOk().
+- 2018-06-20 15:38:38 -0400     3 weeks ago Fix reading pins uses pin registers not port registers.
+- 2018-06-20 11:48:45 -0400     3 weeks ago FtDeactivateInterface pulls SS high.
+- 2018-06-20 11:43:11 -0400     3 weeks ago FtReadData returns the value on MIOSIO.
+- 2018-06-20 11:27:07 -0400     3 weeks ago FtRead reads bytes from MIOSIO.
+- 2018-06-20 10:56:00 -0400     3 weeks ago FtIsBusOk returns false if MISO is high.
+- 2018-06-20 10:53:49 -0400     3 weeks ago FtIsBusOk returns true if MISO is low.
+- 2018-06-20 10:33:57 -0400     3 weeks ago TDD FtBusTurnaround.
+- 2018-06-20 10:12:03 -0400     3 weeks ago TDD FtLetSlaveDriveBus.
+- 2018-06-20 10:02:23 -0400     3 weeks ago TDD FtPullData.
+- 2018-06-20 09:56:22 -0400     3 weeks ago TDD FtLetMasterDriveBus.
 - 2018-06-20 09:40:11 -0400     3 weeks ago Document how to abstract memory-mapped io.
 - 2018-06-20 09:00:23 -0400     3 weeks ago Add tests for FtActivateInterface and FtPushData.
 - 2018-06-20 08:00:55 -0400     3 weeks ago Add Ft1248-Hardware.h for fake and simBrd. TDD FtOutputByte.
@@ -25,7 +32,7 @@
 - 2018-06-18 17:45:22 -0400     3 weeks ago Test FtSendCommand. DOFs have empty implementations.
 - 2018-06-18 16:11:39 -0400     3 weeks ago Add Ft1248 documentation.
 - 2018-06-18 15:50:55 -0400     3 weeks ago TDD FtSendCommand. ;ym became ;me. ;me is finished.
-- 2018-05-25 00:30:50 -0400     6 weeks ago TDD FtSendCommand. WIP: ;ym.
+- 2018-05-25 00:30:50 -0400     7 weeks ago TDD FtSendCommand. WIP: ;ym.
 - 2018-05-22 16:23:05 -0400     7 weeks ago TDD dev lib ReadWriteBits.
 - 2018-05-22 14:17:54 -0400     7 weeks ago Plumbing in place for unit tests.
 - 2018-05-22 10:10:33 -0400     7 weeks ago Temporary hack to link against mock-c and unity object files.

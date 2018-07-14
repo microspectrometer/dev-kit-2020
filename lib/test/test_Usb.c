@@ -16,12 +16,23 @@
     //      - FtRead() leaves SCK low.
     //          - This is good.
     //          - SCK should be low before deactivating the interface.
-    // [x] UsbRead returns false if there was no data read
-    //  - SCK is already low
-    //  - next step is to call FtDeactivateInterface to end the Ft1248 session
+    // [ ] UsbRead should return the number of bytes read
+    //  - change return type from `bool` to `uint16_t`
+    //  - [ ] UsbRead should return 0 if there was no data to read
+    //  - ~~[x] UsbRead returns false if there was no data read~~
+    //      - SCK is already low
+    //      - next call FtDeactivateInterface to end the Ft1248 session
+    //  - [ ] UsbRead returns 3 if there were 3 bytes to read
+    //  - ~~[x] UsbRead returns true if there is data read~~
     // [x] UsbRead turns LED red if there was no data read
-    // [x] UsbRead returns true if there is data read
+    //
     // [ ] UsbRead should read until buffer is empty
+    //  - mock FtRead
+    //  - set up a list of return values: [true, true, true, false]
+    //  - this is a test that UsbRead loops until a NAK is received
+    // [ ] UsbRead copies bytes from MIOSIO to the input read buffer address
+    //  - this is a system test, not a unit test
+    //  - mock FtReadData, do not mock FtRead
     // [x] UsbRead calls FtDeactivateInterface to end the Ft1248 session
     //  - [x] called when returning false
     //  - [x] called when returning true
@@ -37,6 +48,7 @@ void TearDown_UsbRead(void){
 }
 void UsbRead_returns_false_if_there_was_no_data_read(void)
 {
+    TEST_FAIL_MESSAGE("Change return type from bool to uint16_t.");
     // return false
     // exit before reading any bytes from the buffer
     // end the Ft1248 session
@@ -80,6 +92,7 @@ void UsbRead_turns_LED_red_if_there_was_no_data_read(void)
 
 void UsbRead_returns_true_if_there_is_data_to_read(void)
 {
+    TEST_FAIL_MESSAGE("Change return type from bool to uint16_t.");
     //=====[ Mock-up values returned by stubbed functions ]=====
     FtBusTurnaround_StubbedReturnValue = true;
     //=====[ Operate ]=====
@@ -111,5 +124,5 @@ void UsbRead_should_read_until_buffer_is_empty(void)
         WhyDidItFail(mock)          // print this message.
         );
     /* TEST_ASSERT_EQUAL_UINT8(expected_data_byte, read_buffer); */
-    TEST_FAIL_MESSAGE("TODO: check that the data byte was copied to the read buffer.");
+    TEST_FAIL_MESSAGE("TODO: mock a list of FtRead return values and test UsbRead for the number of bytes read.");
 }
