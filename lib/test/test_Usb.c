@@ -105,16 +105,19 @@ void UsbRead_returns_true_if_there_is_data_to_read(void)
 void UsbRead_should_read_until_buffer_is_empty(void)
 {  // USB rx buffer has bytes -- UsbRead reads until there are no more bytes
     //=====[ Mock-up values returned by stubbed functions ]=====
-    FtBusTurnaround_StubbedReturnValue = true;
-    FtRead_StubbedReturnValue = false; // should be true
-    // mock-up one value for MIOSIO port to return
-    /* uint8_t expected_data_byte = 0x09; // not used yet */
+    FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
+    bool ack_nack_list[] = {true, true, true, false};  // false := buffer empty
     //=====[ Set expectations ]=====
     Expect_FtSendCommand(FtCmd_Read);
     Expect_FtBusTurnaround();
-    uint8_t read_buffer = 0x00;
+    // Set up the buffer as just a pointer or use an array to reserve a size?
+    uint8_t read_buffer;
     uint8_t *read_buffer_address = &read_buffer;
-    Expect_FtRead(read_buffer_address); _MOCK_FT1248_H;
+    for (unsigned long i=0; i<sizeof(ack_nack_list); i++)
+    {
+        FtRead_StubbedReturnValue = ack_nack_list[i];
+        Expect_FtRead(read_buffer_address++); _MOCK_FT1248_H;
+    }
     Expect_FtDeactivateInterface();
     //=====[ Operate ]=====
     UsbRead(read_buffer_address); // copy USB rx buffer to the read buffer
