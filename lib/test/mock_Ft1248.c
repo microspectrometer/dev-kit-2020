@@ -173,8 +173,9 @@ static RecordedCall * Mock_FtRead(uint8_t* arg1)
 void Expect_FtRead(uint8_t* arg1) {
     RecordExpectedCall(mock, Mock_FtRead(arg1));
 }
-bool FtRead_StubbedReturnValue = false;
+static bool FtRead_ack_nack_example[] = {true, true, false}; // example return values
+bool *FtRead_StubbedReturnValue = FtRead_ack_nack_example;   // point to first value
 bool FtRead_Stubbed(uint8_t* arg1) {
     RecordActualCall(mock, Mock_FtRead(arg1));
-    return FtRead_StubbedReturnValue;
+    return *(FtRead_StubbedReturnValue++);
 }

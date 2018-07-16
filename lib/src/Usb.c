@@ -2,8 +2,9 @@
 #include "Ft1248.h"
 #include "DebugLed.h"
 
-bool UsbRead(uint8_t *read_buffer_address)
+uint16_t UsbRead(uint8_t *read_buffer_address)
 {
+    uint16_t num_bytes_read = 0;
     FtSendCommand(FtCmd_Read);
     bool has_data_to_read = FtBusTurnaround();
     if (!has_data_to_read)
@@ -11,9 +12,13 @@ bool UsbRead(uint8_t *read_buffer_address)
         // sad path
         DebugLedTurnRedToShowError();
         FtDeactivateInterface();
-        return false;
+        return num_bytes_read;
     }
-    FtRead(read_buffer_address);
+    while (FtRead(read_buffer_address))
+    {
+        num_bytes_read++;
+    }
+
     FtDeactivateInterface();
-    return true;
+    return num_bytes_read;
 }
