@@ -46,6 +46,7 @@ extern void (*FtDeactivateInterface)(void);
 bool FtHasRoomToWrite(void);
 //=====[ High-level API ]=====
 extern uint8_t const FtCmd_Read;
+extern uint8_t const FtCmd_Write;
 extern void (*FtSendCommand)(uint8_t FtCmd);
 extern bool (*FtBusTurnaround)(void);
 extern bool (*FtRead)(uint8_t * read_buffer_address);

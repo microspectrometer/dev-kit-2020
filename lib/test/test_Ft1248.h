@@ -5,6 +5,7 @@
 //
 void SetUp_FtSendCommand(void); void TearDown_FtSendCommand(void);
 void FtSendCommand_Read_does_entire_command_phase_for_ReadCmd(void);
+void FtSendCommand_Write_does_entire_command_phase_for_WriteCmd(void);
 
 void SetUp_FtBusTurnaround(void); void TearDown_FtBusTurnaround(void);
 void FtBusTurnaround_returns_true_if_ok_to_proceed_with_command(void);
@@ -13,6 +14,9 @@ void FtBusTurnaround_returns_false_if_not_ok_to_proceed(void);
 void SetUp_FtRead(void); void TearDown_FtRead(void);
 void FtRead_does_not_write_to_mem_and_returns_false_if_NAK(void);
 void FtRead_should_write_to_mem_and_return_true_if_ACK(void);
+
+void SetUp_FtWrite(void); void TearDown_FtWrite(void);
+void FtWrite_should_return_false_if_slave_sends_NAK(void);
 
 void SetUp_FtPorts(void); void TearDown_FtPorts(void);
 //Before initiating read

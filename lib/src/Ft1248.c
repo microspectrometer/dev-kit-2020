@@ -10,6 +10,7 @@
 
 //=====[ High-level API ]=====
 uint8_t const FtCmd_Read  = 0xC6;
+uint8_t const FtCmd_Write = 0x86;
 static void FtSendCommand_Implementation(uint8_t FtCmd)
 {
     FtActivateInterface();

@@ -1,5 +1,5 @@
-test/test_runner.c:65:FtRead_does_not_write_to_mem_and_returns_false_if_NAK:PASS
+test/test_runner.c:410:FtWrite_should_return_false_if_slave_sends_NAK:FAIL: Implement test.
 
 -----------------------
-1 Tests 0 Failures 0 Ignored 
-OK
+1 Tests 1 Failures 0 Ignored 
+FAIL

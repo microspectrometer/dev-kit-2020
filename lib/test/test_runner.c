@@ -56,14 +56,18 @@ void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
 void DevelopingFt1248_highlevel(bool run_test) { if (run_test) {
     /* setUp = SetUp_FtSendCommand; tearDown = TearDown_FtSendCommand; */
     /* RUN_TEST(FtSendCommand_Read_does_entire_command_phase_for_ReadCmd); */
+    /* RUN_TEST(FtSendCommand_Write_does_entire_command_phase_for_WriteCmd); */
     /* // */
     /* setUp = SetUp_FtBusTurnaround; tearDown = TearDown_FtBusTurnaround; */
     /* RUN_TEST(FtBusTurnaround_returns_true_if_ok_to_proceed_with_command); */
     /* RUN_TEST(FtBusTurnaround_returns_false_if_not_ok_to_proceed); */
     /* // */
-    setUp = SetUp_FtRead; tearDown = TearDown_FtRead;
-    RUN_TEST(FtRead_does_not_write_to_mem_and_returns_false_if_NAK);
+    /* setUp = SetUp_FtRead; tearDown = TearDown_FtRead; */
+    /* RUN_TEST(FtRead_does_not_write_to_mem_and_returns_false_if_NAK); */
     /* RUN_TEST(FtRead_should_write_to_mem_and_return_true_if_ACK); */
+    setUp = SetUp_FtWrite; tearDown = TearDown_FtWrite;
+    RUN_TEST(FtWrite_should_return_false_if_slave_sends_NAK);
+
 }}
 void DevelopingUsb(bool run_test) {if (run_test) {
     //setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb;

@@ -23,12 +23,19 @@
     // [x] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
     // [x] FtOutputByte(cmd) outputs a byte on port MIOSIO.
     // [x] FtPullData() pulls SCK low.
-    // [x] FtSendCommand(cmd) handles the entire command phase.
-    //     FtSendCommand(FtCmd_Read) should:
+// FtSendCommand(cmd) handles the entire command phase for ReadCmd and WriteCmd.
+    // FtSendCommand implementation details:
+    //     Expect FtSendCommand(FtCmd_Read) calls:
     //     - FtActivateInterface()    (SS low)
     //     - FtPushData()             (SCK high)
     //     - FtLetMasterDriveBus()    (cfg MIOSIO[0:7] as output pins)
     //     - FtOutputByte(FtCmd_Read) (Master outputs the read command on MIOSIO)
+    //     - FtPullData()             (SCK low)
+    //     Expect FtSendCommand(FtCmd_Write) calls:
+    //     - FtActivateInterface()    (SS low)
+    //     - FtPushData()             (SCK high)
+    //     - FtLetMasterDriveBus()    (cfg MIOSIO[0:7] as output pins)
+    //     - FtOutputByte(FtCmd_Write) (Master outputs the read command on MIOSIO)
     //     - FtPullData()             (SCK low)
     // [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
     // [x] FtIsBusOk returns true if MISO is low
@@ -41,26 +48,49 @@
     //     - FtIsBusOk(): master reads MISO
     //     happy path:
     //     if MISO says BusIsOk, it means there is data to read,
-    //     go ahead and do the read
+    //     go ahead and do the read/write
     // [x] FtBusTurnaround returns false if not ok to proceed
     //     - FtIsBusOK(): it is ok to proceed if this returns true
     //     - for a read, this means there is still data to read
     //     - for a write, this means there is room to write
     // [x] FtReadData() returns the value on MIOSIO pins
     // [x] FtDeactivateInterface() pulls SS high
-    //
-    // - FtRead reads bytes from MIOSIO:
+// FtRead reads bytes from MIOSIO:
     // [x] FtRead should not store data if slave sends NAK
     // [x] FtRead should return false if slave sends NAK
     // [x] FtRead should store data if slave sends ACK
     // [x] FtRead should return true if slave sends ACK
-    // FtRead implementation deatils:
+    // FtRead implementation details:
+    //      - requires the client first called:
+    //          - FtSendCommand(FtCmd_Read)
+    //          - FtBusTurnaround()
     //     Expect FtRead calls:
     //     - FtPushData(): SCK high, slave drives Miosio with data and MISO with ACK
     //     - FtPullData(): SCK low, ok to pull data
     //     - FtIsBusOk(): check MISO for ACK/NAK
     //     if MISO is an ACK, pull from Miosio
     //     - FtReadData(): store value on Miosio
+    //     - client should increment number of bytes read
+    //     - client should continue above loop until there is no more to read
+    //     if MISO is NAK, the data was garbage
+    //     - client should not store the data
+    //
+// FtWrite writes bytes to MIOSIO:
+    // [ ] FtWrite should return false if slave sends NAK
+    // [ ] FtWrite should return true if slave sends ACK
+    // FtWrite implementation details:
+    //      - requires the client first called:
+    //          - FtSendCommand(FtCmd_Write)
+    //          - FtBusTurnaround() -- if true is returned, there is room to write
+    //      Expect FtWrite calls:
+    //     - FtPushData(): SCK high, slave drives MISO with ACK or NAK
+    //     - FtWriteData(): master drives Miosio with data
+    //     - FtPullData(): SCK low, slave pulls data
+    //     - FtIsBusOk(): check MISO for ACK/NAK
+    //     if MISO is ACK, data is successfully written to the transmit buffer
+    //     - client should increment number of bytes written
+    //     - client should continue above loop until there is no more to send
+    //     if MISO is NAK, data was not written to the transmit buffer
     //
 // void SetUp_NothingForFt1248(void){}
 // void TearDown_NothingForFt1248(void){}
@@ -183,6 +213,22 @@ void FtSendCommand_Read_does_entire_command_phase_for_ReadCmd(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
+void FtSendCommand_Write_does_entire_command_phase_for_WriteCmd(void)
+{
+    //=====[ Set expectations ]=====
+    Expect_FtActivateInterface();
+    Expect_FtPushData();
+    Expect_FtLetMasterDriveBus();
+    Expect_FtOutputByte(FtCmd_Write);
+    Expect_FtPullData();
+    //=====[ Operate ]=====
+    FtSendCommand(FtCmd_Write);
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
 
 //=====[ Develop the Bus Turnaround Phase ]=====
 void SetUp_FtBusTurnaround(void){
@@ -256,8 +302,25 @@ void FtIsBusOk_returns_false_if_MISO_is_high(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_FALSE(FtIsBusOk());
 }
+void FtReadData_returns_the_value_on_MIOSIO_pins(void)
+{
+    //=====[ Setup ]=====
+    uint8_t expected_byte = 0xBE;
+    *FtMiosio_port = expected_byte;
+    *FtMiosio_pin  = *FtMiosio_port;  // simulate AVR `pin` register
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_EQUAL_HEX8( expected_byte, FtReadData() );
+}
+void FtDeactivateInterface_pulls_SS_high(void)
+{
+    //=====[ Operate ]=====
+    FtDeactivateInterface();
+    //=====[ Test ]=====
+    uint8_t io_port = *Ft1248_port;
+    TEST_ASSERT_BIT_HIGH(Ft1248_Ss, io_port);
+}
 
-//=====[ Develop the Read Phase ]=====
+//=====[ FtRead ]=====
 void SetUp_FtRead(void){
     SetUpMock_FtRead();    // create the mock object to record calls
     // other setup code
@@ -270,7 +333,7 @@ void FtRead_does_not_write_to_mem_and_returns_false_if_NAK(void)
 {
     //=====[ Setup ]=====
     uint8_t byte_from_slave = 0xFF;  // garbage pushed by slave
-    uint8_t read_buffer[1] = {0x00};
+    uint8_t read_buffer[1] = {0x00}; // original value in mem
     // assert that byte_from_slave is different from the value in memory
     TEST_ASSERT_NOT_EQUAL(byte_from_slave, *read_buffer);
     // expect value in mem is unchanged after read
@@ -304,46 +367,50 @@ void FtRead_should_write_to_mem_and_return_true_if_ACK(void)
 {
     //=====[ Setup ]=====
     uint8_t byte_from_slave = 0x23;  // data pushed by slave
-    uint8_t host_msg        = 0x00;  // original value in mem
-    uint8_t * host_msg_ptr = &host_msg;  // address passed to FtRead
+    uint8_t read_buffer[1] = {0x00}; // original value in mem
     // assert that byte_from_slave is different from the value in memory
-    TEST_ASSERT_NOT_EQUAL(*host_msg_ptr, byte_from_slave);
+    TEST_ASSERT_NOT_EQUAL(byte_from_slave, *read_buffer);
     // expect value in mem is written with byte_from_slave after read
     uint8_t expected_mem_value = byte_from_slave;
-    //=====[ Mock-up values returned by stubbed functions]=====
+    //
+    //=====[ Mock-up test scenario by defining return values ]=====
     FtIsBusOk_StubbedReturnValue = true;  // simulate ACK from slave
     FtReadData_StubbedReturnValue = byte_from_slave;
-    //=====[ Set expected call list ]=====
+    //
+    //=====[ Operate ]=====
+    bool byte_was_valid = FtRead(read_buffer);
+    //
+    //=====[ Test that memory is written ]=====
+    TEST_ASSERT_EQUAL_HEX8(expected_mem_value, *read_buffer);
+    //
+    //=====[ Test that FtRead returns true ]=====
+    TEST_ASSERT_TRUE(byte_was_valid);
+    //
+    //=====[ Test implementation details ]=====
+    // ---Set expected call list---
     Expect_FtPushData();
     Expect_FtPullData();
     Expect_FtIsBusOk();
     Expect_FtReadData();
-    //=====[ Operate ]=====
-    bool byte_was_valid = FtRead(host_msg_ptr);
-    //=====[ Test call list ]=====
+    // ---Test call list---
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
-    //=====[ Test that memory is written ]=====
-    TEST_ASSERT_EQUAL_HEX8(expected_mem_value, *host_msg_ptr);
-    //=====[ Test that FtRead returns true ]=====
-    TEST_ASSERT_TRUE(byte_was_valid);
 }
-void FtReadData_returns_the_value_on_MIOSIO_pins(void)
-{
-    //=====[ Setup ]=====
-    uint8_t expected_byte = 0xBE;
-    *FtMiosio_port = expected_byte;
-    *FtMiosio_pin  = *FtMiosio_port;  // simulate AVR `pin` register
-    //=====[ Operate and Test ]=====
-    TEST_ASSERT_EQUAL_HEX8( expected_byte, FtReadData() );
+
+//=====[ FtWrite ]=====
+void SetUp_FtWrite(void){
 }
-void FtDeactivateInterface_pulls_SS_high(void)
+void TearDown_FtWrite(void){
+}
+
+void FtWrite_should_return_false_if_slave_sends_NAK(void)
 {
     //=====[ Operate ]=====
-    FtDeactivateInterface();
-    //=====[ Test ]=====
-    uint8_t io_port = *Ft1248_port;
-    TEST_ASSERT_BIT_HIGH(Ft1248_Ss, io_port);
+    uint8_t byte_to_write;
+    bool byte_written = FtWrite(byte_to_write);
+    //
+    //=====[ Test that FtWrite returns false ]=====
+    TEST_ASSERT_FALSE(byte_written);
 }

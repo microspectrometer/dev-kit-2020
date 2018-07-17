@@ -1,4 +1,4 @@
-- 2018-07-17 16:25:00 -0400  29 minutes ago Refactor FtRead tests to prepare for developing FtWrite.
+- 2018-07-17 16:25:00 -0400  28 minutes ago Refactor FtRead tests to prepare for developing FtWrite.
 - 2018-07-17 16:01:54 -0400  52 minutes ago Refactor UsbRead tests. Organize tests into 3 behavioral and 2 implementation.
 - 2018-07-17 11:11:20 -0400     6 hours ago PASS `UsbRead_copies_bytes_to_the_input_read_buffer_address`.
 - 2018-07-16 21:23:08 -0400    20 hours ago Set up test for UsbRead_copies_bytes_to_the_input_read_buffer_address.
