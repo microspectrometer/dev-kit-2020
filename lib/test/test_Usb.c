@@ -16,23 +16,26 @@
     //      - FtRead() leaves SCK low.
     //          - This is good.
     //          - SCK should be low before deactivating the interface.
-    // [ ] UsbRead should return the number of bytes read
+    // [x] UsbRead should return the number of bytes read
     //  - change return type from `bool` to `uint16_t`
     //  - [x] UsbRead should return 0 if there was no data to read
-    //  - ~~[x] UsbRead returns false if there was no data read~~
     //      - SCK is already low
     //      - next call FtDeactivateInterface to end the Ft1248 session
-    //  - [ ] UsbRead returns 3 if there were 3 bytes to read
-    //  - ~~[x] UsbRead returns true if there is data read~~
-    // [x] UsbRead turns LED red if there was no data read
+    //  - [x] UsbRead turns LED red if there was no data read
+    //  - [x] UsbRead returns N if there were N bytes to read
+    //  - [x] UsbRead should read until buffer is empty
+    //      - mock FtRead
+    //      - set up a list of return values: [true, true, true, false]
+    //      - this is a test that UsbRead loops until a NAK is received
     //
-    // [ ] UsbRead should read until buffer is empty
-    //  - mock FtRead
-    //  - set up a list of return values: [true, true, true, false]
-    //  - this is a test that UsbRead loops until a NAK is received
     // [ ] UsbRead copies bytes from MIOSIO to the input read buffer address
-    //  - this is a system test, not a unit test
-    //  - mock FtReadData, do not mock FtRead
+    //  - this is a system test, not a unit test because it cares about matching
+    //  the value from MIOSIO
+    //  - mock FtReadData? do not mock FtRead?
+    // [ ] UsbRead copies bytes to the input read buffer address
+    //  - this is a unit test: UsbRead is writing to the input address
+    //  - I only need to test that it is incrementing the address
+    //  - check by writing the byte number to each byte in the read buffer
     // [x] UsbRead calls FtDeactivateInterface to end the Ft1248 session
     //  - [x] called when returning false
     //  - [x] called when returning true
@@ -48,97 +51,89 @@ void TearDown_UsbRead(void){
 }
 void UsbRead_should_return_0_if_there_was_no_data_to_read(void)
 {
-    uint16_t expected = 0;
-    // exit before attempting to read any bytes from the buffer
-    // end the Ft1248 session
-    //=====[ Mock-up values returned by stubbed functions ]=====
-    FtBusTurnaround_StubbedReturnValue = false;
-    //=====[ Set expectations ]=====
-    Expect_FtSendCommand(FtCmd_Read);
-    Expect_FtBusTurnaround();
-    Expect_DebugLedTurnRedToShowError();
-    Expect_FtDeactivateInterface();
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtBusTurnaround_StubbedReturnValue = false; // simulate no bytes in rx buffer
     //=====[ Operate ]=====
-    uint8_t read_buffer;
-    uint8_t *read_buffer_address = &read_buffer;
-    //bool there_was_data_to_read = UsbRead(read_buffer_address);
-    uint16_t num_bytes_read = UsbRead(read_buffer_address);
-    //=====[ Test ]=====
-    TEST_ASSERT_TRUE_MESSAGE(
-        RanAsHoped(mock),           // If this is false,
-        WhyDidItFail(mock)          // print this message.
-        );
-    TEST_ASSERT_EQUAL_UINT16(expected, num_bytes_read);
+    uint8_t read_buffer; uint8_t *read_buffer_address = &read_buffer;
+    uint16_t actual_num_bytes_read = UsbRead(read_buffer_address);
+    //=====[ Test: UsbRead returns 0 if there is no data to read ]=====
+    uint16_t expected_num_bytes_read = 0; // expect 0 bytes read
+    TEST_ASSERT_EQUAL_UINT16(expected_num_bytes_read, actual_num_bytes_read);
 }
 void UsbRead_turns_LED_red_if_there_was_no_data_read(void)
 {
-    //=====[ Mock-up values returned by stubbed functions ]=====
-    FtBusTurnaround_StubbedReturnValue = false;
     //=====[ Set expectations ]=====
     Expect_FtSendCommand(FtCmd_Read);
-    Expect_FtBusTurnaround();
-    Expect_DebugLedTurnRedToShowError(); _MOCK_DEBUGLED_H;
+    Expect_FtBusTurnaround(); // false := error: nothing to read
+    Expect_DebugLedTurnRedToShowError();  _MOCK_DEBUGLED_H;
+    // exit before attempting to read any bytes from the buffer
     Expect_FtDeactivateInterface();
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtBusTurnaround_StubbedReturnValue = false;
     //=====[ Operate ]=====
-    uint8_t read_buffer;
-    uint8_t *read_buffer_address = &read_buffer;
+    uint8_t read_buffer; uint8_t *read_buffer_address = &read_buffer;
     UsbRead(read_buffer_address);
-    //=====[ Test ]=====
+    //=====[ Test: should follow sad path and show error with red LED ]=====
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
 }
 
-void UsbRead_returns_3_if_there_were_3_bytes_to_read(void)
+void UsbRead_returns_N_if_there_were_N_bytes_to_read(void)
 {
-    /* //=====[ Set expectations ]===== */
-    /* Expect_FtSendCommand(FtCmd_Read); */
-    /* Expect_FtBusTurnaround(); */
-    /* // Mock-up case where USB buffer has 1 byte to read. */
-    /* bool ack_nak_list[] = {true, true, false};  // false := buffer empty */
-    /* uint8_t read_buffer; uint8_t *read_buffer_address = &read_buffer; */
-    /* for (unsigned long i=0; i<sizeof(ack_nak_list); i++) */
-    /* { */
-    /*     Expect_FtRead(read_buffer_address); _MOCK_FT1248_H; */
-    /* } */
-    /* Expect_FtDeactivateInterface(); */
     //=====[ Mock-up test scenario by defining return values ]=====
     FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
-    bool ack_nak_list[] = {true, true, true, false};  // false := buffer empty
-    uint16_t expected_num_bytes = sizeof(ack_nak_list)-1;
+    // ACK (true)  is received before reading each byte.
+    // NAK (false) is received when the buffer is empty.
+    /* bool ack_nak_list[] = {false};                      // 0 bytes */
+    /* bool ack_nak_list[] = {true, false};                // 1 byte */
+    /* bool ack_nak_list[] = {true, true, false};          // 2 bytes */
+    /* bool ack_nak_list[] = {true, true, true, false};    // 3 bytes */
+    bool ack_nak_list[] = {true, true, true, true, false};    // 4 bytes
     FtRead_StubbedReturnValue = ack_nak_list;  // point at first list element
-    TEST_ASSERT_TRUE(*FtRead_StubbedReturnValue);
     //=====[ Operate ]=====
     uint8_t read_buffer; uint8_t *read_buffer_address = &read_buffer;
     uint16_t num_bytes_read = UsbRead(read_buffer_address);
     //=====[ Test ]=====
+    uint16_t expected_num_bytes = sizeof(ack_nak_list)-1;
     TEST_ASSERT_EQUAL_UINT16(expected_num_bytes, num_bytes_read);
 }
-/* void UsbRead_should_read_until_buffer_is_empty(void) */
-/* {  // USB rx buffer has bytes -- UsbRead reads until there are no more bytes */
-/*     //=====[ Mock-up values returned by stubbed functions ]===== */
-/*     FtBusTurnaround_StubbedReturnValue = true;  // bus is OK */
-/*     bool ack_nack_list[] = {true, true, true, false};  // false := buffer empty */
-/*     //=====[ Set expectations ]===== */
-/*     Expect_FtSendCommand(FtCmd_Read); */
-/*     Expect_FtBusTurnaround(); */
-/*     // Set up the buffer as just a pointer or use an array to reserve a size? */
-/*     uint8_t read_buffer; */
-/*     uint8_t *read_buffer_address = &read_buffer; */
-/*     for (unsigned long i=0; i<sizeof(ack_nack_list); i++) */
-/*     { */
-/*         FtRead_StubbedReturnValue = ack_nack_list[i]; */
-/*         Expect_FtRead(read_buffer_address++); _MOCK_FT1248_H; */
-/*     } */
-/*     Expect_FtDeactivateInterface(); */
-/*     //=====[ Operate ]===== */
-/*     UsbRead(read_buffer_address); // copy USB rx buffer to the read buffer */
-/*     //=====[ Test ]===== */
-/*     TEST_ASSERT_TRUE_MESSAGE( */
-/*         RanAsHoped(mock),           // If this is false, */
-/*         WhyDidItFail(mock)          // print this message. */
-/*         ); */
-/*     /1* TEST_ASSERT_EQUAL_UINT8(expected_data_byte, read_buffer); *1/ */
-/*     TEST_FAIL_MESSAGE("TODO: mock a list of FtRead return values and test UsbRead for the number of bytes read."); */
-/* } */
+
+void UsbRead_should_read_until_buffer_is_empty(void)
+{
+    //=====[ Set expectations for the happy path ]=====
+    Expect_FtSendCommand(FtCmd_Read);
+    Expect_FtBusTurnaround();
+    // Mock-up scenario: buffer has three bytes.
+    bool ack_nak_list[] = {true, true, true, false};  // false := buffer empty
+    uint16_t num_bytes_in_buffer = sizeof(ack_nak_list)-1;
+    TEST_ASSERT_EQUAL_UINT16(3, num_bytes_in_buffer);
+    uint16_t byte_num = 0;
+    uint8_t read_buffer; uint8_t *read_buffer_address = &read_buffer;
+    // Expect FtRead is called once for every byte in the buffer.
+    while (byte_num++ < num_bytes_in_buffer) Expect_FtRead(read_buffer_address);
+    // Expect FtRead is called one more time to find out the buffer is empty.
+    Expect_FtRead(read_buffer_address);
+    Expect_FtDeactivateInterface();
+
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
+    FtRead_StubbedReturnValue = ack_nak_list;  // point at first list element
+
+    //=====[ Operate ]=====
+    uint16_t actual_num_bytes_read = UsbRead(read_buffer_address);
+
+    //=====[ Test: UsbRead read the buffer until it was empty ]=====
+    TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, actual_num_bytes_read);
+    //=====[ Test: UsbRead followed its happy path ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
+
+void UsbRead_copies_bytes_to_the_input_read_buffer_address(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}
