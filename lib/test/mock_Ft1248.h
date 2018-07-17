@@ -40,7 +40,8 @@ void Expect_FtBusTurnaround(void);
 bool FtBusTurnaround_Stubbed(void);
 void Expect_FtDeactivateInterface(void);
 void FtDeactivateInterface_Stubbed(void);
-extern bool *FtRead_StubbedReturnValue;
+extern bool *FtRead_StubbedReturnValue; // pointer to list of fake return values
+extern uint8_t *FtRead_StubbedDataBusPtr; // fake accessing the data bus
 void Expect_FtRead(uint8_t* arg1);
 bool FtRead_Stubbed(uint8_t* arg1);
 

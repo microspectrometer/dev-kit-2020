@@ -14,7 +14,7 @@ uint16_t UsbRead(uint8_t *read_buffer_address)
         FtDeactivateInterface();
         return num_bytes_read;
     }
-    while (FtRead(read_buffer_address))
+    while (FtRead(read_buffer_address++))
     {
         num_bytes_read++;
     }

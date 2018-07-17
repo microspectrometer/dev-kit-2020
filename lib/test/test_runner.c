@@ -80,7 +80,7 @@ int main()
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
     DevelopingFt1248_lowlevel (Nope);
-    DevelopingFt1248_highlevel(Nope);
+    DevelopingFt1248_highlevel(Yep);
     DevelopingUsb             (Yep);
     return UNITY_END();
 }

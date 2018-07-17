@@ -173,9 +173,14 @@ static RecordedCall * Mock_FtRead(uint8_t* arg1)
 void Expect_FtRead(uint8_t* arg1) {
     RecordExpectedCall(mock, Mock_FtRead(arg1));
 }
-static bool FtRead_ack_nack_example[] = {true, true, false}; // example return values
-bool *FtRead_StubbedReturnValue = FtRead_ack_nack_example;   // point to first value
+static bool FtRead_ack_nack_example[] = {true, true, false};  // example return values
+bool *FtRead_StubbedReturnValue = FtRead_ack_nack_example;    // point to first value
+static uint8_t FtRead_fake_data_example[] = {6, 28};
+uint8_t *FtRead_StubbedDataBusPtr = FtRead_fake_data_example; // point to first value
 bool FtRead_Stubbed(uint8_t* arg1) {
     RecordActualCall(mock, Mock_FtRead(arg1));
+    // If the test scenario is ACK, read the faked bus data and go to next byte.
+    if (*FtRead_StubbedReturnValue) *arg1 = *(FtRead_StubbedDataBusPtr++);
+    // Return ACK/NAK and go to next ACK/NAK.
     return *(FtRead_StubbedReturnValue++);
 }

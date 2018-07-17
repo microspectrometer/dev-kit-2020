@@ -109,10 +109,11 @@ void UsbRead_should_read_until_buffer_is_empty(void)
     bool ack_nak_list[] = {true, true, true, false};  // false := buffer empty
     uint16_t num_bytes_in_buffer = sizeof(ack_nak_list)-1;
     TEST_ASSERT_EQUAL_UINT16(3, num_bytes_in_buffer);
-    uint16_t byte_num = 0;
-    uint8_t read_buffer; uint8_t *read_buffer_address = &read_buffer;
+    uint8_t read_buffer[num_bytes_in_buffer];
     // Expect FtRead is called once for every byte in the buffer.
-    while (byte_num++ < num_bytes_in_buffer) Expect_FtRead(read_buffer_address);
+    uint16_t byte_num = 0;
+    uint8_t *read_buffer_address = read_buffer;
+    while (byte_num++ < num_bytes_in_buffer) Expect_FtRead(read_buffer_address++);
     // Expect FtRead is called one more time to find out the buffer is empty.
     Expect_FtRead(read_buffer_address);
     Expect_FtDeactivateInterface();
@@ -122,7 +123,7 @@ void UsbRead_should_read_until_buffer_is_empty(void)
     FtRead_StubbedReturnValue = ack_nak_list;  // point at first list element
 
     //=====[ Operate ]=====
-    uint16_t actual_num_bytes_read = UsbRead(read_buffer_address);
+    uint16_t actual_num_bytes_read = UsbRead(read_buffer);
 
     //=====[ Test: UsbRead read the buffer until it was empty ]=====
     TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, actual_num_bytes_read);
@@ -135,13 +136,24 @@ void UsbRead_should_read_until_buffer_is_empty(void)
 
 void UsbRead_copies_bytes_to_the_input_read_buffer_address(void)
 {
-    uint8_t actual_read_buffer[] = {0, 0, 0, 0};
+    //=====[ Mock-up test scenario by defining return values ]=====
+    // FtBusTurnaround: receive buffer is not empty
+    FtBusTurnaround_StubbedReturnValue = true;
+    // FtRead: buffer has three bytes.
+    bool ack_nak_list[] = {true, true, true, false};  // false := buffer empty
+    uint16_t num_bytes_in_buffer = sizeof(ack_nak_list)-1;
+    TEST_ASSERT_EQUAL_UINT16(3, num_bytes_in_buffer);
+    FtRead_StubbedReturnValue = ack_nak_list;  // point at first list element
+    // FtRead: make up the values of the bytes in the buffer
+    uint8_t expected_read_buffer[] = {0, 1, 2};  // stub uses this fake data
+    TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, sizeof(expected_read_buffer));
+    FtRead_StubbedDataBusPtr = expected_read_buffer;
+
     //=====[ Operate ]=====
-    /* // Requires mocking return values */
-    /* uint16_t num_bytes_read = UsbRead(read_buffer_address); */
+    uint8_t actual_read_buffer[num_bytes_in_buffer];
+    uint16_t num_bytes_read = UsbRead(actual_read_buffer);
+    TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, num_bytes_read);
     //=====[ Test ]=====
-    uint8_t expected_read_buffer[] = {0, 1, 2, 3};
-    //uint16_t num_bytes = sizeof(exp
     TEST_ASSERT_EQUAL_UINT8_ARRAY(
         expected_read_buffer,
         actual_read_buffer,
