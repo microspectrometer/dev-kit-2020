@@ -4,7 +4,6 @@
 #include "fake/Ft1248-Hardware.h"   // fake the io pins in avr/io.h
 #include "mock_Ft1248.h"            // mocked version of DOF lib
 #include <Mock.h>                   // RanAsHoped, WhyDidItFail
-//#include <ReturnValues.h>           // StubReturnsFalse, StubReturnsTrue
 #include <unity.h>                  // all the TEST_blah macros
 #include "ReadWriteBits.h"
 
@@ -49,19 +48,20 @@
     //     - for a write, this means there is room to write
     // [x] FtReadData() returns the value on MIOSIO pins
     // [x] FtDeactivateInterface() pulls SS high
-    // [x] FtRead reads bytes from MIOSIO:
-    //     FtRead should:
+    //
+    // - FtRead reads bytes from MIOSIO:
+    // [x] FtRead should not store data if slave sends NAK
+    // [x] FtRead should return false if slave sends NAK
+    // [x] FtRead should store data if slave sends ACK
+    // [x] FtRead should return true if slave sends ACK
+    // FtRead implementation deatils:
+    //     Expect FtRead calls:
     //     - FtPushData(): SCK high, slave drives Miosio with data and MISO with ACK
     //     - FtPullData(): SCK low, ok to pull data
     //     - FtIsBusOk(): check MISO for ACK/NAK
     //     if MISO is an ACK, pull from Miosio
     //     - FtReadData(): store value on Miosio
-    // - FtRead happy path:
-    // [x] FtRead should store data if slave sends ACK
-    // [x] FtRead should return true if slave sends ACK
-    // - FtRead sad path:
-    // [x] FtRead should not store data if slave sends NAK
-    // [x] FtRead should return false if slave sends NAK
+    //
 // void SetUp_NothingForFt1248(void){}
 // void TearDown_NothingForFt1248(void){}
 
@@ -270,30 +270,35 @@ void FtRead_does_not_write_to_mem_and_returns_false_if_NAK(void)
 {
     //=====[ Setup ]=====
     uint8_t byte_from_slave = 0xFF;  // garbage pushed by slave
-    uint8_t host_msg        = 0x00;  // original value in mem
-    uint8_t * host_msg_ptr = &host_msg;  // address passed to FtRead
+    uint8_t read_buffer[1] = {0x00};
     // assert that byte_from_slave is different from the value in memory
-    TEST_ASSERT_NOT_EQUAL(*host_msg_ptr, byte_from_slave);
+    TEST_ASSERT_NOT_EQUAL(byte_from_slave, *read_buffer);
     // expect value in mem is unchanged after read
-    uint8_t expected_mem_value = host_msg;
-    //=====[ Mock-up values returned by stubbed functions]=====
+    uint8_t expected_mem_value = *read_buffer;
+    //
+    //=====[ Mock-up test scenario by defining return values ]=====
     FtIsBusOk_StubbedReturnValue = false;
     FtReadData_StubbedReturnValue = byte_from_slave;
-    //=====[ Set expected call list ]=====
+    //
+    //=====[ Operate ]=====
+    bool byte_was_valid = FtRead(read_buffer);
+    //
+    //=====[ Test that memory is not written ]=====
+    TEST_ASSERT_EQUAL_HEX8(expected_mem_value, *read_buffer);
+    //
+    //=====[ Test that FtRead returns false ]=====
+    TEST_ASSERT_FALSE(byte_was_valid);
+    //
+    //=====[ Test implementation details ]=====
+    // ---Set expected call list---
     Expect_FtPushData();
     Expect_FtPullData();
     Expect_FtIsBusOk();
-    //=====[ Operate ]=====
-    bool byte_was_valid = FtRead(host_msg_ptr);
-    //=====[ Test call list ]=====
+    // ---Test call list---
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
-    //=====[ Test that memory is not written ]=====
-    TEST_ASSERT_EQUAL_HEX8(expected_mem_value, *host_msg_ptr);
-    //=====[ Test that FtRead returns false ]=====
-    TEST_ASSERT_FALSE(byte_was_valid);
 }
 void FtRead_should_write_to_mem_and_return_true_if_ACK(void)
 {
