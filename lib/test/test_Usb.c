@@ -135,5 +135,16 @@ void UsbRead_should_read_until_buffer_is_empty(void)
 
 void UsbRead_copies_bytes_to_the_input_read_buffer_address(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    uint8_t actual_read_buffer[] = {0, 0, 0, 0};
+    //=====[ Operate ]=====
+    /* // Requires mocking return values */
+    /* uint16_t num_bytes_read = UsbRead(read_buffer_address); */
+    //=====[ Test ]=====
+    uint8_t expected_read_buffer[] = {0, 1, 2, 3};
+    //uint16_t num_bytes = sizeof(exp
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(
+        expected_read_buffer,
+        actual_read_buffer,
+        sizeof(expected_read_buffer)
+        );
 }

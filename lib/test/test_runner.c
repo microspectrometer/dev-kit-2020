@@ -72,6 +72,7 @@ void DevelopingUsb(bool run_test) {if (run_test) {
     RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_read);
     RUN_TEST(UsbRead_returns_N_if_there_were_N_bytes_to_read);
     RUN_TEST(UsbRead_should_read_until_buffer_is_empty);
+    RUN_TEST(UsbRead_copies_bytes_to_the_input_read_buffer_address);
 }}
 int main()
 {
