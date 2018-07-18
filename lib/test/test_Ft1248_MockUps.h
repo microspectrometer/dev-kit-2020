@@ -7,5 +7,9 @@ void SetUpMock_FtBusTurnaround(void);
 void TearDownMock_FtBusTurnaround(void);
 void SetUpMock_FtRead(void);
 void TearDownMock_FtRead(void);
+void SetUpMock_FtWrite(void);
+void TearDownMock_FtWrite(void);
+void SetUpMock_DetailsOf_FtWrite(void);
+void TearDownMock_DetailsOf_FtWrite(void);
 
 #endif // _TEST_FT1248_MOCKUPS_H

@@ -17,6 +17,9 @@ void FtRead_should_write_to_mem_and_return_true_if_ACK(void);
 
 void SetUp_FtWrite(void); void TearDown_FtWrite(void);
 void FtWrite_should_return_false_if_slave_sends_NAK(void);
+void FtWrite_should_return_true_if_slave_sends_ACK(void);
+void SetUp_DetailsOf_FtWrite(void); void TearDown_DetailsOf_FtWrite(void);
+void FtWrite_implements_the_happy_path_like_this(void);
 
 void SetUp_FtPorts(void); void TearDown_FtPorts(void);
 //Before initiating read
@@ -34,8 +37,10 @@ void FtPullData_pulls_SCK_low(void);
 void FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input(void);
 void FtIsBusOk_returns_true_if_MISO_is_low(void);
 void FtIsBusOk_returns_false_if_MISO_is_high(void);
+void FtDeactivateInterface_pulls_SS_high(void);
 //FtRead
 void FtReadData_returns_the_value_on_MIOSIO_pins(void);
-void FtDeactivateInterface_pulls_SS_high(void);
+//FtWrite
+void FtWriteData_byte_outputs_byte_on_MIOSIO_pins(void);
 
 #endif // _TEST_FT1248_H

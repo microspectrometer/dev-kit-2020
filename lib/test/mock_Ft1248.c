@@ -184,3 +184,19 @@ bool FtRead_Stubbed(uint8_t* arg1) {
     // Return ACK/NAK and go to next ACK/NAK.
     return *(FtRead_StubbedReturnValue++);
 }
+
+static RecordedCall * Mock_FtWriteData(uint8_t arg1)
+{
+    char const *call_name = "FtWriteData";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
+    *((uint8_t*)record_of_arg1->pArg) = arg1;
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void Expect_FtWriteData(uint8_t arg1) {
+    RecordExpectedCall(mock, Mock_FtWriteData(arg1));
+}
+void FtWriteData_Stubbed(uint8_t arg1) {
+    RecordActualCall(mock, Mock_FtWriteData(arg1));
+}

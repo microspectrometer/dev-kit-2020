@@ -36,12 +36,12 @@ void DevelopingDebugLed(bool run_test) { if (run_test) {
 void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
     //setUp = SetUp_NothingForFt1248; tearDown = TearDown_NothingForFt1248;
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
-    //
     RUN_TEST(FtHasDataToRead_returns_true_if_MISO_is_low);
     RUN_TEST(FtHasDataToRead_returns_false_if_MISO_is_high);
     RUN_TEST(FtHasRoomToWrite_returns_true_if_MIOSIO_bit_0_is_low);
     RUN_TEST(FtHasRoomToWrite_returns_false_if_MIOSIO_bit_0_is_high);
     //
+    setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtActivateInterface_pulls_SS_low);
     RUN_TEST(FtDeactivateInterface_pulls_SS_high);
     RUN_TEST(FtPushData_pulls_SCK_high);
@@ -50,24 +50,27 @@ void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
     RUN_TEST(FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input);
     RUN_TEST(FtOutputByte_outputs_a_byte_on_port_MIOSIO);
     RUN_TEST(FtReadData_returns_the_value_on_MIOSIO_pins);
+    RUN_TEST(FtWriteData_byte_outputs_byte_on_MIOSIO_pins);
     RUN_TEST(FtIsBusOk_returns_true_if_MISO_is_low);
     RUN_TEST(FtIsBusOk_returns_false_if_MISO_is_high);
 }}
 void DevelopingFt1248_highlevel(bool run_test) { if (run_test) {
-    /* setUp = SetUp_FtSendCommand; tearDown = TearDown_FtSendCommand; */
-    /* RUN_TEST(FtSendCommand_Read_does_entire_command_phase_for_ReadCmd); */
-    /* RUN_TEST(FtSendCommand_Write_does_entire_command_phase_for_WriteCmd); */
-    /* // */
-    /* setUp = SetUp_FtBusTurnaround; tearDown = TearDown_FtBusTurnaround; */
-    /* RUN_TEST(FtBusTurnaround_returns_true_if_ok_to_proceed_with_command); */
-    /* RUN_TEST(FtBusTurnaround_returns_false_if_not_ok_to_proceed); */
-    /* // */
-    /* setUp = SetUp_FtRead; tearDown = TearDown_FtRead; */
-    /* RUN_TEST(FtRead_does_not_write_to_mem_and_returns_false_if_NAK); */
-    /* RUN_TEST(FtRead_should_write_to_mem_and_return_true_if_ACK); */
+    setUp = SetUp_FtSendCommand; tearDown = TearDown_FtSendCommand;
+    RUN_TEST(FtSendCommand_Read_does_entire_command_phase_for_ReadCmd);
+    RUN_TEST(FtSendCommand_Write_does_entire_command_phase_for_WriteCmd);
+    //
+    setUp = SetUp_FtBusTurnaround; tearDown = TearDown_FtBusTurnaround;
+    RUN_TEST(FtBusTurnaround_returns_true_if_ok_to_proceed_with_command);
+    RUN_TEST(FtBusTurnaround_returns_false_if_not_ok_to_proceed);
+    //
+    setUp = SetUp_FtRead; tearDown = TearDown_FtRead;
+    RUN_TEST(FtRead_does_not_write_to_mem_and_returns_false_if_NAK);
+    RUN_TEST(FtRead_should_write_to_mem_and_return_true_if_ACK);
     setUp = SetUp_FtWrite; tearDown = TearDown_FtWrite;
     RUN_TEST(FtWrite_should_return_false_if_slave_sends_NAK);
-
+    RUN_TEST(FtWrite_should_return_true_if_slave_sends_ACK);
+    setUp = SetUp_DetailsOf_FtWrite; tearDown = TearDown_DetailsOf_FtWrite;
+    RUN_TEST(FtWrite_implements_the_happy_path_like_this);
 }}
 void DevelopingUsb(bool run_test) {if (run_test) {
     //setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb;
@@ -87,7 +90,7 @@ int main()
     UNITY_BEGIN();
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
-    DevelopingFt1248_lowlevel (Nope);
+    DevelopingFt1248_lowlevel (Yep);
     DevelopingFt1248_highlevel(Yep);
     DevelopingUsb             (Nope);
     return UNITY_END();

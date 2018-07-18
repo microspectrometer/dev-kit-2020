@@ -1,5 +1,28 @@
-test/test_runner.c:410:FtWrite_should_return_false_if_slave_sends_NAK:FAIL: Implement test.
+test/test_runner.c:39:FtHasDataToRead_returns_true_if_MISO_is_low:PASS
+test/test_runner.c:40:FtHasDataToRead_returns_false_if_MISO_is_high:PASS
+test/test_runner.c:41:FtHasRoomToWrite_returns_true_if_MIOSIO_bit_0_is_low:PASS
+test/test_runner.c:42:FtHasRoomToWrite_returns_false_if_MIOSIO_bit_0_is_high:PASS
+test/test_runner.c:45:FtActivateInterface_pulls_SS_low:PASS
+test/test_runner.c:46:FtDeactivateInterface_pulls_SS_high:PASS
+test/test_runner.c:47:FtPushData_pulls_SCK_high:PASS
+test/test_runner.c:48:FtPullData_pulls_SCK_low:PASS
+test/test_runner.c:49:FtLetMasterDriveBus_configures_MIOSIO_port_for_MCU_output:PASS
+test/test_runner.c:50:FtLetSlaveDriveBus_configures_MIOSIO_port_for_MCU_input:PASS
+test/test_runner.c:51:FtOutputByte_outputs_a_byte_on_port_MIOSIO:PASS
+test/test_runner.c:52:FtReadData_returns_the_value_on_MIOSIO_pins:PASS
+test/test_runner.c:53:FtWriteData_byte_outputs_byte_on_MIOSIO_pins:PASS
+test/test_runner.c:54:FtIsBusOk_returns_true_if_MISO_is_low:PASS
+test/test_runner.c:55:FtIsBusOk_returns_false_if_MISO_is_high:PASS
+test/test_runner.c:59:FtSendCommand_Read_does_entire_command_phase_for_ReadCmd:PASS
+test/test_runner.c:60:FtSendCommand_Write_does_entire_command_phase_for_WriteCmd:PASS
+test/test_runner.c:63:FtBusTurnaround_returns_true_if_ok_to_proceed_with_command:PASS
+test/test_runner.c:64:FtBusTurnaround_returns_false_if_not_ok_to_proceed:PASS
+test/test_runner.c:67:FtRead_does_not_write_to_mem_and_returns_false_if_NAK:PASS
+test/test_runner.c:68:FtRead_should_write_to_mem_and_return_true_if_ACK:PASS
+test/test_runner.c:70:FtWrite_should_return_false_if_slave_sends_NAK:PASS
+test/test_runner.c:71:FtWrite_should_return_true_if_slave_sends_ACK:PASS
+test/test_runner.c:73:FtWrite_implements_the_happy_path_like_this:PASS
 
 -----------------------
-1 Tests 1 Failures 0 Ignored 
-FAIL
+24 Tests 0 Failures 0 Ignored 
+OK

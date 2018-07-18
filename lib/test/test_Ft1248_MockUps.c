@@ -126,3 +126,42 @@ void TearDownMock_FtRead(void)  // FUT
     Unstub_FtReadData();  // DOF
 }
 
+static void (*FtWriteData_Saved)(uint8_t);
+static void Stub_FtWriteData(void) {
+    FtWriteData_Saved = FtWriteData;
+    FtWriteData = FtWriteData_Stubbed;
+}
+static void Unstub_FtWriteData(void) {
+    FtWriteData = FtWriteData_Saved;
+}
+void SetUpMock_FtWrite(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_FtIsBusOk();  // DOF
+}
+void TearDownMock_FtWrite(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtIsBusOk();  // DOF
+}
+void SetUpMock_DetailsOf_FtWrite(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_FtPushData();  // DOF
+    Stub_FtPullData();  // DOF
+    Stub_FtIsBusOk();  // DOF
+    Stub_FtWriteData();  // DOF
+}
+void TearDownMock_DetailsOf_FtWrite(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtPushData();  // DOF
+    Unstub_FtPullData();  // DOF
+    Unstub_FtIsBusOk();  // DOF
+    Unstub_FtWriteData();  // DOF
+}
+

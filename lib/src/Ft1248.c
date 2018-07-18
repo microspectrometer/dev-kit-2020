@@ -40,6 +40,14 @@ static bool FtRead_Implementation(uint8_t * host_msg_ptr)
 }
 bool (*FtRead)(uint8_t * read_buffer_address) = FtRead_Implementation;
 
+bool FtWrite(uint8_t byte_to_write)
+{
+    FtPushData();                   // tells everyone to output to bus
+    FtWriteData(byte_to_write);     // drive Miosio with data
+    FtPullData();                   // tells everyone to input from bus
+    if (!FtIsBusOk()) return false; // failed to write to transmit buffer
+    return true;
+}
 //=====[ Low-level API ]=====
 static void FtActivateInterface_Implementation(void)
 {
@@ -107,3 +115,10 @@ static uint8_t FtReadData_Implementation(void)
 }
 
 uint8_t (*FtReadData)(void) = FtReadData_Implementation;
+
+static void FtWriteData_Implementation(uint8_t byte_to_write)
+{
+    *FtMiosio_port = byte_to_write;
+}
+
+void (*FtWriteData)(uint8_t) = FtWriteData_Implementation;

@@ -44,5 +44,7 @@ extern bool *FtRead_StubbedReturnValue; // pointer to list of fake return values
 extern uint8_t *FtRead_StubbedDataBusPtr; // fake accessing the data bus
 void Expect_FtRead(uint8_t* arg1);
 bool FtRead_Stubbed(uint8_t* arg1);
+void Expect_FtWriteData(uint8_t arg1);
+void FtWriteData_Stubbed(uint8_t arg1);
 
 #endif // _MOCK_FT1248_H

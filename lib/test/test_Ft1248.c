@@ -54,6 +54,7 @@
     //     - for a read, this means there is still data to read
     //     - for a write, this means there is room to write
     // [x] FtReadData() returns the value on MIOSIO pins
+    // [x] FtWriteData(byte) outputs byte on MIOSIO pins
     // [x] FtDeactivateInterface() pulls SS high
 // FtRead reads bytes from MIOSIO:
     // [x] FtRead should not store data if slave sends NAK
@@ -76,8 +77,10 @@
     //     - client should not store the data
     //
 // FtWrite writes bytes to MIOSIO:
-    // [ ] FtWrite should return false if slave sends NAK
-    // [ ] FtWrite should return true if slave sends ACK
+    // [x] FtWrite should return false if slave sends NAK
+    // [x] FtWrite should return true if slave sends ACK
+    // [x] FtWrite implements the happy path like this
+    // - FtWrite sad path and happy path are identical
     // FtWrite implementation details:
     //      - requires the client first called:
     //          - FtSendCommand(FtCmd_Write)
@@ -311,6 +314,13 @@ void FtReadData_returns_the_value_on_MIOSIO_pins(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_EQUAL_HEX8( expected_byte, FtReadData() );
 }
+void FtWriteData_byte_outputs_byte_on_MIOSIO_pins(void)
+{
+    *FtMiosio_port = 0x00;
+    uint8_t byte_to_write = 0xBE;
+    FtWriteData(byte_to_write);
+    TEST_ASSERT_EQUAL_HEX8(byte_to_write, *FtMiosio_port);
+}
 void FtDeactivateInterface_pulls_SS_high(void)
 {
     //=====[ Operate ]=====
@@ -401,16 +411,62 @@ void FtRead_should_write_to_mem_and_return_true_if_ACK(void)
 
 //=====[ FtWrite ]=====
 void SetUp_FtWrite(void){
+    SetUpMock_FtWrite();    // create the mock object to record calls
 }
 void TearDown_FtWrite(void){
+    TearDownMock_FtWrite();    // create the mock object to record calls
 }
-
 void FtWrite_should_return_false_if_slave_sends_NAK(void)
 {
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtIsBusOk_StubbedReturnValue = false; // NAK
+
     //=====[ Operate ]=====
-    uint8_t byte_to_write;
-    bool byte_written = FtWrite(byte_to_write);
+    uint8_t byte_to_write = 0x12;
+    bool tx_buffer_has_room = FtWrite(byte_to_write);
     //
     //=====[ Test that FtWrite returns false ]=====
-    TEST_ASSERT_FALSE(byte_written);
+    TEST_ASSERT_FALSE(tx_buffer_has_room);
+}
+void FtWrite_should_return_true_if_slave_sends_ACK(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtIsBusOk_StubbedReturnValue = true; // ACK
+
+    //=====[ Operate ]=====
+    uint8_t byte_to_write = 0x12;
+    bool tx_buffer_has_room = FtWrite(byte_to_write);
+    //
+    //=====[ Test that FtWrite returns false ]=====
+    TEST_ASSERT_TRUE(tx_buffer_has_room);
+}
+void SetUp_DetailsOf_FtWrite(void){
+    SetUpMock_DetailsOf_FtWrite();    // create the mock object to record calls
+}
+void TearDown_DetailsOf_FtWrite(void){
+    TearDownMock_DetailsOf_FtWrite();    // create the mock object to record calls
+}
+void FtWrite_implements_the_happy_path_like_this(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtIsBusOk_StubbedReturnValue = true; // ACK
+    //
+    //=====[ Operate ]=====
+    uint8_t byte_to_write = 0x12;
+    bool tx_buffer_has_room = FtWrite(byte_to_write);
+    //
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_TRUE(tx_buffer_has_room);
+    //
+    //=====[ Test implementation details ]=====
+    // ---Set expected calls---
+    Expect_FtPushData();
+    Expect_FtWriteData(byte_to_write);
+    Expect_FtPullData();
+    Expect_FtIsBusOk();
+    // ---Test call list---
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
 }
