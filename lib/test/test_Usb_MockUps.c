@@ -108,6 +108,27 @@ void TearDownMock_UsbWrite(void)  // FUT
     Unstub_DebugLedTurnRedToShowError();  // DOF
 }
 
+void SetUpMock_DetailsOf_UsbWrite(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_FtSendCommand();  // DOF
+    Stub_FtBusTurnaround();  // DOF
+    Stub_FtDeactivateInterface();  // DOF
+    Stub_DebugLedTurnRedToShowError();  // DOF
+    Stub_FtWrite();  // DOF
+}
+void TearDownMock_DetailsOf_UsbWrite(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtSendCommand();  // DOF
+    Unstub_FtBusTurnaround();  // DOF
+    Unstub_FtDeactivateInterface();  // DOF
+    Unstub_DebugLedTurnRedToShowError();  // DOF
+    Unstub_FtWrite();  // DOF
+}
+
 static bool (*FtHasDataToRead_Saved)(void);
 static void Stub_FtHasDataToRead(void) {
     FtHasDataToRead_Saved = FtHasDataToRead;

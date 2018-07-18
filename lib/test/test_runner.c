@@ -79,33 +79,35 @@ void DevelopingFt1248_highlevel(bool run_test) { if (run_test) {
 }}
 void DevelopingUsb(bool run_test) {if (run_test) {
     /* setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb; */
-    //
-    setUp = SetUp_UsbHasDataToRead; tearDown = TearDown_UsbHasDataToRead;
-    RUN_TEST(UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data);
-    RUN_TEST(UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty);
-    setUp = SetUp_UsbHasRoomToWrite; tearDown = TearDown_UsbHasRoomToWrite;
-    RUN_TEST(UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full);
-    RUN_TEST(UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full);
-    //
-    setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead;
-    // UsbRead should indicate data was read
-    RUN_TEST(UsbRead_returns_0_if_there_was_no_data_to_read);
-    RUN_TEST(UsbRead_returns_N_if_there_were_N_bytes_to_read);
-    RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_to_read);
-    RUN_TEST(UsbRead_copies_bytes_to_the_input_read_buffer_address);
-    //tests that check implementation details
-    setUp = SetUp_DetailsOf_UsbRead; tearDown = TearDown_DetailsOf_UsbRead;
-    // UsbRead sad path:
-    RUN_TEST(UsbRead_sad_path_is_implemented_like_this);
-    // UsbRead happy path:
-    RUN_TEST(UsbRead_happy_path_is_implemented_like_this);
-    //
-    setUp = SetUp_UsbWrite; tearDown = TearDown_UsbWrite;
-    RUN_TEST(UsbWrite_returns_the_number_of_bytes_sent);
-    RUN_TEST(UsbWrite_calls_FtWrite_for_each_byte_to_send);
-    RUN_TEST(UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full);
-    RUN_TEST(UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full);
-    RUN_TEST(UsbWrite_returns_0_if_the_tx_buffer_was_already_full);
+    /* // */
+    /* setUp = SetUp_UsbHasDataToRead; tearDown = TearDown_UsbHasDataToRead; */
+    /* RUN_TEST(UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data); */
+    /* RUN_TEST(UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty); */
+    /* // */
+    /* setUp = SetUp_UsbHasRoomToWrite; tearDown = TearDown_UsbHasRoomToWrite; */
+    /* RUN_TEST(UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full); */
+    /* RUN_TEST(UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full); */
+    /* // */
+    /* setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead; */
+    /* // UsbRead behavioral tests */
+    /* RUN_TEST(UsbRead_returns_0_if_there_was_no_data_to_read); */
+    /* RUN_TEST(UsbRead_returns_N_if_there_were_N_bytes_to_read); */
+    /* RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_to_read); */
+    /* RUN_TEST(UsbRead_copies_bytes_to_the_input_read_buffer); */
+    /* setUp = SetUp_DetailsOf_UsbRead; tearDown = TearDown_DetailsOf_UsbRead; */
+    /* // UsbRead implementation descriptions */
+    /* RUN_TEST(UsbRead_sad_path_is_implemented_like_this); */
+    /* RUN_TEST(UsbRead_happy_path_is_implemented_like_this); */
+    /* // */
+    /* setUp = SetUp_UsbWrite; tearDown = TearDown_UsbWrite; */
+    /* // UsbWrite behavioral tests */
+    /* RUN_TEST(UsbWrite_returns_the_number_of_bytes_sent); */
+    /* RUN_TEST(UsbWrite_calls_FtWrite_for_each_byte_to_send); */
+    /* RUN_TEST(UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full); */
+    /* RUN_TEST(UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full); */
+    /* RUN_TEST(UsbWrite_returns_0_if_the_tx_buffer_was_already_full); */
+    // UsbWrite implementation descriptions
+    setUp = SetUp_DetailsOf_UsbWrite; tearDown = TearDown_DetailsOf_UsbWrite;
 }}
 int main()
 {

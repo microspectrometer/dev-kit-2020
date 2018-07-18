@@ -8,22 +8,52 @@
 #include "Usb.h"                    // LUT source code
 #include "unity.h"                  // all the TEST_blah macros
 //=====[ List of tests to write ]=====
+// UsbHasDataToRead behavioral tests
     // [x] UsbHasDataToRead returns true if the rx buffer has data
     // [x] UsbHasDataToRead returns false if the rx buffer is empty
+// UsbHasRoomToWrite behavioral tests
     // [x] UsbHasRoomToWrite returns true if the tx buffer is not full
     // [x] UsbHasRoomToWrite returns false if the tx buffer is full
+// UsbRead behavioral tests
     // [x] UsbRead should indicate data was read
     //  - [x] UsbRead returns 0 if there was no data to read
     //  - [x] UsbRead returns N if there were N bytes to read
-    // [ ] UsbRead turns LED red if there was no data to read
-    // [ ] UsbRead stops reading bytes when the rx buffer is empty
-    // UsbRead should copy data to the read buffer input
-    // [x] UsbRead copies bytes to the input read buffer address
+    // [x] UsbRead turns LED red if there was no data to read
+    // [x] UsbRead copies bytes to the input read buffer
     //  - tests that UsbRead is incrementing the read buffer address
+// UsbRead behavioral system tests
     // [ ] UsbRead copies bytes from MIOSIO to the input read buffer address
     //  - this is a system test, not a unit test because it cares about matching
-    //  the value on MIOSIO
+    //    the value on MIOSIO
     //  - mock FtReadData? do not mock FtRead?
+// UsbRead implementation details
+    //=====[ sketch of UsbRead implementation details ]=====
+    // UsbRead implementation:
+    //  - call FtSendCommand(FtCmd_Read)
+    //  - check if ok to proceed after FtBusTurnaround()
+    //  - loop FtRead() until buffer is empty
+    //      - FtRead() leaves SCK low.
+    //          - This is good.
+    //          - SCK should be low before deactivating the interface.
+    //  - then call FtDeactivateInterface() to end Ft1248 session
+    //      - call in happy path
+    //      - call in sad path
+    // [x] UsbRead sad path
+    //  - Note *this is different* from testing that UsbRead returns 0
+    //  - and from testing that UsbRead turns LED red.
+    //  - This tests the implementation of the sad path.
+    //  - If the implementation changes, this test fails, but UsbRead returns 0
+    //    still passes.
+    //  - That is *very helpful* to identify that the high-level behavior is
+    //    still correct and that the test only fails because of an
+    //    implementation change.
+    // [x] UsbRead happy path
+    //  - UsbRead stops reading bytes when the rx buffer is empty
+    //  - test checks that UsbRead loops calling FtRead as long as it returns ACK
+    //  - Note *this is different* from testing that UsbRead returns N bytes.
+    //  - If this fails, but UsbRead returns N bytes still passes, it means the
+    //    behavior is still correct but I changed the implementation.
+// UsbWrite behavioral tests
     // [x] UsbWrite returns the number of bytes sent
     // [x] UsbWrite calls FtWrite for each byte to send
     //  - tests that UsbWrite is incrementing the write buffer address
@@ -37,35 +67,14 @@
     // [ ] UsbWrite copies bytes from the input write buffer to MIOSIO
     //  - this is a system test, not a unit test because it cares about matching
     //  the value on MIOSIO
-//=====[ List of tests that check implementation details ]=====
-    // UsbRead implementation:
-    //  - call FtSendCommand(FtCmd_Read)
-    //  - check if ok to proceed after FtBusTurnaround()
-    //  - loop FtRead() until buffer is empty
-    //      - FtRead() leaves SCK low.
-    //          - This is good.
-    //          - SCK should be low before deactivating the interface.
-    //  - then call FtDeactivateInterface() to end Ft1248 session
-    //      - call in happy path
-    //      - call in sad path
-    // UsbRead sad path implementation:
-    // [x] UsbRead turns LED red if there was no data to read
-    //  - note *this is different* from testing that UsbRead returns 0
-    //  - this tests the implementation of the sad path
-    //  - if the implementation changes, this test fails, but UsbRead returns 0
-    //  still passes
-    //  - that is *very helpful* to identify that the high-level behavior is
-    //  still correct and that the test only fails because of an implementation
-    //  change
-    // UsbRead happy path implementation:
-    // [x] UsbRead should read until buffer is empty
-    //  - this checks that UsbRead loops calling FtRead as long as it returns ACK
-    //  - note *this is different* from testing that UsbRead returns N bytes
-    //  - if this fails, but UsbRead returns N bytes still passes, it means the
-    //  behavior is still correct but I changed the implementation
+// UsbWrite implementation details
+    // [ ] UsbWrite sad path
+    // [ ] UsbWrite happy path
     //
-void SetUp_NothingForUsb(void){}
-void TearDown_NothingForUsb(void){}
+/* void SetUp_NothingForUsb(void){} */
+/* void TearDown_NothingForUsb(void){} */
+
+//=====[ UsbHasDataToRead behavioral tests ]=====
 void SetUp_UsbHasDataToRead(void){
     SetUpMock_UsbHasDataToRead();    // create the mock object to record calls
     // other setup code
@@ -93,6 +102,7 @@ void UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty(void)
     TEST_ASSERT_FALSE(UsbHasDataToRead());
 }
 
+//=====[ UsbHasRoomToWrite behavioral tests ]=====
 void SetUp_UsbHasRoomToWrite(void){
     SetUpMock_UsbHasRoomToWrite();    // create the mock object to record calls
     // other setup code
@@ -118,6 +128,7 @@ void UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full(void)
     TEST_ASSERT_FALSE(UsbHasRoomToWrite());
 }
 
+//=====[ UsbWrite behavioral tests ]=====
 void SetUp_UsbWrite(void){
     SetUpMock_UsbWrite();    // create the mock object to record calls
     // other setup code
@@ -279,6 +290,17 @@ void UsbWrite_returns_0_if_the_tx_buffer_was_already_full(void)
     TEST_ASSERT_EQUAL_UINT16(0, num_bytes_sent);
 }
 
+//=====[ UsbWrite implementation details ]=====
+void SetUp_DetailsOf_UsbWrite(void){
+    SetUpMock_DetailsOf_UsbWrite();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_DetailsOf_UsbWrite(void){
+    TearDownMock_DetailsOf_UsbWrite();    // destroy the mock object
+    // other teardown code
+}
+
+//=====[ UsbRead behavioral tests ]=====
 void SetUp_UsbRead(void){
     SetUpMock_UsbRead();    // create the mock object to record calls
     // other setup code
@@ -287,8 +309,6 @@ void TearDown_UsbRead(void){
     TearDownMock_UsbRead();    // destroy the mock object
     // other teardown code
 }
-
-//=====[ UsbRead should indicate data was read ]=====
 void UsbRead_returns_0_if_there_was_no_data_to_read(void)
 {
     //=====[ Mock-up test scenario by defining return values ]=====
@@ -338,8 +358,27 @@ void UsbRead_returns_N_if_there_were_N_bytes_to_read(void)
     //=====[ Test ]=====
     TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, num_bytes_read);
 }
-//=====[ UsbRead should copy data to the read buffer input ]=====
-void UsbRead_copies_bytes_to_the_input_read_buffer_address(void)
+void UsbRead_turns_LED_red_if_there_was_no_data_to_read(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    FtBusTurnaround_StubbedReturnValue = false; // simulate rx buffer is empty
+    //
+    //=====[ Set expectations ]=====
+    Expect_FtBusTurnaround();
+    Expect_DebugLedTurnRedToShowError();
+    //
+    //=====[ Operate ]=====
+    uint8_t read_buffer[1];
+    UsbRead(read_buffer);
+    //
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
+void UsbRead_copies_bytes_to_the_input_read_buffer(void)
 {
     //=====[ Mock-up test scenario by defining return values ]=====
     //
@@ -366,28 +405,8 @@ void UsbRead_copies_bytes_to_the_input_read_buffer_address(void)
     //=====[ Test ]=====
     TEST_ASSERT_EQUAL_UINT8_ARRAY(fake_rx_buffer, read_buffer, num_bytes_read);
 }
-void UsbRead_turns_LED_red_if_there_was_no_data_to_read(void)
-{
-    //=====[ Mock-up test scenario by defining return values ]=====
-    //
-    FtBusTurnaround_StubbedReturnValue = false; // simulate rx buffer is empty
-    //
-    //=====[ Set expectations ]=====
-    Expect_FtBusTurnaround();
-    Expect_DebugLedTurnRedToShowError();
-    //
-    //=====[ Operate ]=====
-    uint8_t read_buffer[1];
-    UsbRead(read_buffer);
-    //
-    //=====[ Test ]=====
-    TEST_ASSERT_TRUE_MESSAGE(
-        RanAsHoped(mock),           // If this is false,
-        WhyDidItFail(mock)          // print this message.
-        );
-}
 
-//=====[ tests that check implementation details of UsbRead ]=====
+//=====[ UsbRead implementation details ]=====
 void SetUp_DetailsOf_UsbRead(void){
     SetUpMock_DetailsOf_UsbRead();    // create the mock object to record calls
     // other setup code

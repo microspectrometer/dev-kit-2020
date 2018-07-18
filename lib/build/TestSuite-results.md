@@ -1,19 +1,4 @@
-test/test_runner.c:84:UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data:PASS
-test/test_runner.c:85:UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty:PASS
-test/test_runner.c:87:UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full:PASS
-test/test_runner.c:88:UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full:PASS
-test/test_runner.c:92:UsbRead_returns_0_if_there_was_no_data_to_read:PASS
-test/test_runner.c:93:UsbRead_returns_N_if_there_were_N_bytes_to_read:PASS
-test/test_runner.c:94:UsbRead_turns_LED_red_if_there_was_no_data_to_read:PASS
-test/test_runner.c:95:UsbRead_copies_bytes_to_the_input_read_buffer_address:PASS
-test/test_runner.c:99:UsbRead_sad_path_is_implemented_like_this:PASS
-test/test_runner.c:101:UsbRead_happy_path_is_implemented_like_this:PASS
-test/test_runner.c:104:UsbWrite_returns_the_number_of_bytes_sent:PASS
-test/test_runner.c:105:UsbWrite_calls_FtWrite_for_each_byte_to_send:PASS
-test/test_runner.c:106:UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full:PASS
-test/test_runner.c:107:UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full:PASS
-test/test_runner.c:108:UsbWrite_returns_0_if_the_tx_buffer_was_already_full:PASS
 
 -----------------------
-15 Tests 0 Failures 0 Ignored 
+0 Tests 0 Failures 0 Ignored 
 OK
