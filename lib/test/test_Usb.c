@@ -8,6 +8,10 @@
 #include "Usb.h"                    // LUT source code
 #include "unity.h"                  // all the TEST_blah macros
 //=====[ List of tests to write ]=====
+    // [ ] UsbHasDataToRead returns true if the rx buffer has data
+    // [ ] UsbHasDataToRead returns false if the rx buffer is empty
+    // [ ] UsbHasRoomToWrite returns true if the tx buffer is not full
+    // [ ] UsbHasRoomToWrite returns false if the tx buffer is full
     // [x] UsbRead should indicate data was read
     //  - [x] UsbRead returns 0 if there was no data to read
     //  - [x] UsbRead returns N if there were N bytes to read
@@ -18,7 +22,14 @@
     //  - this is a system test, not a unit test because it cares about matching
     //  the value on MIOSIO
     //  - mock FtReadData? do not mock FtRead?
-    //
+    // [ ] UsbWrite returns the number of bytes sent
+    // [ ] UsbWrite stops sending bytes all bytes are sent
+    // [ ] UsbWrite stops sending bytes if the tx buffer is full
+    // [ ] UsbWrite copies bytes from the input write buffer
+    //  - tests that UsbWrite is incrementing the write buffer address
+    // [ ] UsbWrite copies bytes from the input write buffer to MIOSIO
+    //  - this is a system test, not a unit test because it cares about matching
+    //  the value on MIOSIO
 //=====[ List of tests that check implementation details ]=====
     // UsbRead implementation:
     //  - call FtSendCommand(FtCmd_Read)
@@ -31,7 +42,7 @@
     //      - call in happy path
     //      - call in sad path
     // UsbRead sad path implementation:
-    // [x] UsbRead turns LED red if there was no data read
+    // [x] UsbRead turns LED red if there was no data to read
     //  - note *this is different* from testing that UsbRead returns 0
     //  - this tests the implementation of the sad path
     //  - if the implementation changes, this test fails, but UsbRead returns 0

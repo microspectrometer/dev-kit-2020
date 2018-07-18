@@ -23,6 +23,12 @@
     // [x] FtLetMasterDriveBus() configures MIOSIO port for MCU output.
     // [x] FtOutputByte(cmd) outputs a byte on port MIOSIO.
     // [x] FtPullData() pulls SCK low.
+    // [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
+    // [x] FtIsBusOk returns true if MISO is low
+    // [x] FtIsBusOk returns false if MISO is high
+    // [x] FtReadData() returns the value on MIOSIO pins
+    // [x] FtWriteData(byte) outputs byte on MIOSIO pins
+    // [x] FtDeactivateInterface() pulls SS high
 // FtSendCommand(cmd) handles the entire command phase for ReadCmd and WriteCmd.
     // FtSendCommand implementation details:
     //     Expect FtSendCommand(FtCmd_Read) calls:
@@ -37,11 +43,8 @@
     //     - FtLetMasterDriveBus()    (cfg MIOSIO[0:7] as output pins)
     //     - FtOutputByte(FtCmd_Write) (Master outputs the read command on MIOSIO)
     //     - FtPullData()             (SCK low)
-    // [x] FtLetSlaveDriveBus() configures MIOSIO port for MCU input.
-    // [x] FtIsBusOk returns true if MISO is low
-    // [x] FtIsBusOk returns false if MISO is high
-    // [x] FtBusTurnaround handles the entire bus turnaround.
-    //     FtBusTurnaround should:
+// FtBusTurnaround handles the entire bus turnaround.
+    //     Expect FtBusTurnaround calls:
     //     - FtLetSlaveDriveBus()   (MIOSIO becomes inputs)
     //     - FtPushData(): SCK high, slave drives MISO with RxBufferEmpty
     //     - FtPullData(): SCK low, now its ok to pull data
@@ -53,9 +56,6 @@
     //     - FtIsBusOK(): it is ok to proceed if this returns true
     //     - for a read, this means there is still data to read
     //     - for a write, this means there is room to write
-    // [x] FtReadData() returns the value on MIOSIO pins
-    // [x] FtWriteData(byte) outputs byte on MIOSIO pins
-    // [x] FtDeactivateInterface() pulls SS high
 // FtRead reads bytes from MIOSIO:
     // [x] FtRead should not store data if slave sends NAK
     // [x] FtRead should return false if slave sends NAK
