@@ -15,6 +15,8 @@
     // [x] UsbRead should indicate data was read
     //  - [x] UsbRead returns 0 if there was no data to read
     //  - [x] UsbRead returns N if there were N bytes to read
+    // [ ] UsbRead turns LED red if there was no data to read
+    // [ ] UsbRead stops reading bytes when the rx buffer is empty
     // UsbRead should copy data to the read buffer input
     // [x] UsbRead copies bytes to the input read buffer address
     //  - tests that UsbRead is incrementing the read buffer address
@@ -23,7 +25,7 @@
     //  the value on MIOSIO
     //  - mock FtReadData? do not mock FtRead?
     // [ ] UsbWrite returns the number of bytes sent
-    // [ ] UsbWrite stops sending bytes all bytes are sent
+    // [ ] UsbWrite stops sending bytes if all bytes are sent
     // [ ] UsbWrite stops sending bytes if the tx buffer is full
     // [ ] UsbWrite copies bytes from the input write buffer
     //  - tests that UsbWrite is incrementing the write buffer address
