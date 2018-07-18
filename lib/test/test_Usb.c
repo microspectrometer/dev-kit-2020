@@ -28,7 +28,8 @@
     // [x] UsbWrite calls FtWrite for each byte to send
     // [x] UsbWrite stops sending bytes if all bytes are sent
     // [x] UsbWrite stops sending bytes if the tx buffer is full
-    // [ ] UsbWrite turns LED red if the tx buffer was already full
+    // [x] UsbWrite turns LED red if the tx buffer was already full
+    // [x] UsbWrite returns 0 if the tx buffer was already full
     // [ ] UsbWrite copies bytes from the input write buffer
     //  - tests that UsbWrite is incrementing the write buffer address
     // [ ] UsbWrite copies bytes from the input write buffer to MIOSIO
@@ -262,6 +263,19 @@ void UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
+void UsbWrite_returns_0_if_the_tx_buffer_was_already_full(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    FtBusTurnaround_StubbedReturnValue = false; // simulate tx buffer is full
+    //
+    //=====[ Operate ]=====
+    uint8_t write_buffer[5]; uint16_t num_bytes_to_send = sizeof(write_buffer);
+    uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send);
+    //=====[ Test ]=====
+    TEST_ASSERT_EQUAL_UINT16(0, num_bytes_sent);
+}
+/* UsbWrite copies bytes from the input write buffer */
 
 void SetUp_UsbRead(void){
     SetUpMock_UsbRead();    // create the mock object to record calls

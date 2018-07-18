@@ -102,6 +102,7 @@ void DevelopingUsb(bool run_test) {if (run_test) {
     RUN_TEST(UsbWrite_calls_FtWrite_for_each_byte_to_send);
     RUN_TEST(UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full);
     RUN_TEST(UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full);
+    RUN_TEST(UsbWrite_returns_0_if_the_tx_buffer_was_already_full);
 }}
 int main()
 {
