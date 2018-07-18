@@ -31,6 +31,12 @@ void Expect_FtReadData(void);
 uint8_t FtReadData_Stubbed(void);
 extern uint8_t FtReadData_StubbedReturnValue;
 
+void Expect_FtWriteData(uint8_t arg1);
+void FtWriteData_Stubbed(uint8_t arg1);
+
+void Expect_FtDeactivateInterface(void);
+void FtDeactivateInterface_Stubbed(void);
+
 //=====[ High-level mocks ]=====
 void Expect_FtSendCommand(uint8_t arg1);
 void FtSendCommand_Stubbed(uint8_t arg1);
@@ -38,13 +44,14 @@ void FtSendCommand_Stubbed(uint8_t arg1);
 extern bool FtBusTurnaround_StubbedReturnValue;
 void Expect_FtBusTurnaround(void);
 bool FtBusTurnaround_Stubbed(void);
-void Expect_FtDeactivateInterface(void);
-void FtDeactivateInterface_Stubbed(void);
+
 extern bool *FtRead_StubbedReturnValue; // pointer to list of fake return values
 extern uint8_t *FtRead_StubbedDataBusPtr; // fake accessing the data bus
 void Expect_FtRead(uint8_t* arg1);
 bool FtRead_Stubbed(uint8_t* arg1);
-void Expect_FtWriteData(uint8_t arg1);
-void FtWriteData_Stubbed(uint8_t arg1);
+
+extern bool *FtWrite_StubbedReturnValue; // pointer to list of fake return values
+void Expect_FtWrite(uint8_t* arg1);
+bool FtWrite_Stubbed(uint8_t* arg1);
 
 #endif // _MOCK_FT1248_H

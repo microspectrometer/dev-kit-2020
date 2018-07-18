@@ -79,16 +79,20 @@ void DevelopingFt1248_highlevel(bool run_test) { if (run_test) {
 }}
 void DevelopingUsb(bool run_test) {if (run_test) {
     //setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb;
-    setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead;
-    // UsbRead should indicate data was read
-    RUN_TEST(UsbRead_returns_0_if_there_was_no_data_to_read);
-    RUN_TEST(UsbRead_returns_N_if_there_were_N_bytes_to_read);
-    RUN_TEST(UsbRead_copies_bytes_to_the_input_read_buffer_address);
-    //tests that check implementation details
-    // UsbRead sad path:
-    RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_read);
-    // UsbRead happy path:
-    RUN_TEST(UsbRead_should_read_until_buffer_is_empty);
+    //
+    /* setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead; */
+    /* // UsbRead should indicate data was read */
+    /* RUN_TEST(UsbRead_returns_0_if_there_was_no_data_to_read); */
+    /* RUN_TEST(UsbRead_returns_N_if_there_were_N_bytes_to_read); */
+    /* RUN_TEST(UsbRead_copies_bytes_to_the_input_read_buffer_address); */
+    /* //tests that check implementation details */
+    /* // UsbRead sad path: */
+    /* RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_read); */
+    /* // UsbRead happy path: */
+    /* RUN_TEST(UsbRead_should_read_until_buffer_is_empty); */
+    setUp = SetUp_UsbWrite; tearDown = TearDown_UsbWrite;
+    RUN_TEST(UsbWrite_returns_the_number_of_bytes_sent);
+    RUN_TEST(UsbWrite_calls_FtWrite_for_each_byte_to_send);
 }}
 int main()
 {
@@ -96,7 +100,7 @@ int main()
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
     DevelopingFt1248_lowlevel (Nope);
-    DevelopingFt1248_highlevel(Yep);
-    DevelopingUsb             (Nope);
+    DevelopingFt1248_highlevel(Nope);
+    DevelopingUsb             (Yep);
     return UNITY_END();
 }

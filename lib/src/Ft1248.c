@@ -30,24 +30,26 @@ static bool FtBusTurnaround_Implementation(void)
 }
 bool (*FtBusTurnaround)(void) = FtBusTurnaround_Implementation;
 
-static bool FtRead_Implementation(uint8_t * host_msg_ptr)
+static bool FtRead_Implementation(uint8_t *read_buffer)
 {
     FtPushData();                   // tells everyone to output to bus
     FtPullData();                   // tells everyone to input from bus
     if (!FtIsBusOk()) return false; // buffer is empty
-    *host_msg_ptr = FtReadData();   // buffer is not empty, write to mem
+    *read_buffer = FtReadData();   // buffer is not empty, write to mem
     return true;
 }
-bool (*FtRead)(uint8_t * read_buffer_address) = FtRead_Implementation;
+bool (*FtRead)(uint8_t *read_buffer) = FtRead_Implementation;
 
-bool FtWrite(uint8_t byte_to_write)
+static bool FtWrite_Implementation(uint8_t *write_buffer)
 {
     FtPushData();                   // tells everyone to output to bus
-    FtWriteData(byte_to_write);     // drive Miosio with data
+    FtWriteData(*write_buffer);     // drive Miosio with data
     FtPullData();                   // tells everyone to input from bus
     if (!FtIsBusOk()) return false; // failed to write to transmit buffer
     return true;
 }
+
+bool (*FtWrite)(uint8_t *write_buffer) = FtWrite_Implementation;
 //=====[ Low-level API ]=====
 static void FtActivateInterface_Implementation(void)
 {

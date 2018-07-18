@@ -42,6 +42,7 @@ extern void (*FtLetSlaveDriveBus)(void);
 extern bool (*FtIsBusOk)(void);
 extern bool (*FtHasDataToRead)(void);
 extern uint8_t (*FtReadData)(void);
+extern void (*FtWriteData)(uint8_t);
 extern void (*FtDeactivateInterface)(void);
 bool FtHasRoomToWrite(void);
 //=====[ High-level API ]=====
@@ -49,8 +50,7 @@ extern uint8_t const FtCmd_Read;
 extern uint8_t const FtCmd_Write;
 extern void (*FtSendCommand)(uint8_t FtCmd);
 extern bool (*FtBusTurnaround)(void);
-extern bool (*FtRead)(uint8_t * read_buffer_address);
-bool FtWrite(uint8_t byte_to_write);
-extern void (*FtWriteData)(uint8_t);
+extern bool (*FtRead)(uint8_t *read_buffer);
+extern bool (*FtWrite)(uint8_t *write_buffer);
 
 #endif // _FT1248_H

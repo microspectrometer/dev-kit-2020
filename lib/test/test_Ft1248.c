@@ -479,8 +479,9 @@ void FtWrite_should_return_false_if_slave_sends_NAK(void)
     FtIsBusOk_StubbedReturnValue = false; // NAK
 
     //=====[ Operate ]=====
-    uint8_t byte_to_write = 0x12;
-    bool tx_buffer_has_room = FtWrite(byte_to_write);
+    /* uint8_t byte_to_write = 0x12; */
+    uint8_t write_buffer[] = {0x12};
+    bool tx_buffer_has_room = FtWrite(write_buffer);
     //
     //=====[ Test that FtWrite returns false ]=====
     TEST_ASSERT_FALSE(tx_buffer_has_room);
@@ -491,8 +492,8 @@ void FtWrite_should_return_true_if_slave_sends_ACK(void)
     FtIsBusOk_StubbedReturnValue = true; // ACK
 
     //=====[ Operate ]=====
-    uint8_t byte_to_write = 0x12;
-    bool tx_buffer_has_room = FtWrite(byte_to_write);
+    uint8_t write_buffer[] = {0x12};
+    bool tx_buffer_has_room = FtWrite(write_buffer);
     //
     //=====[ Test that FtWrite returns false ]=====
     TEST_ASSERT_TRUE(tx_buffer_has_room);
@@ -509,8 +510,8 @@ void FtWrite_implements_the_happy_path_like_this(void)
     FtIsBusOk_StubbedReturnValue = true; // ACK
     //
     //=====[ Operate ]=====
-    uint8_t byte_to_write = 0x12;
-    bool tx_buffer_has_room = FtWrite(byte_to_write);
+    uint8_t write_buffer[] = {0x12};
+    bool tx_buffer_has_room = FtWrite(write_buffer);
     //
     //=====[ Check test code for desired scenario ]=====
     TEST_ASSERT_TRUE(tx_buffer_has_room);
@@ -518,7 +519,7 @@ void FtWrite_implements_the_happy_path_like_this(void)
     //=====[ Test implementation details ]=====
     // ---Set expected calls---
     Expect_FtPushData();
-    Expect_FtWriteData(byte_to_write);
+    Expect_FtWriteData(*write_buffer);
     Expect_FtPullData();
     Expect_FtIsBusOk();
     // ---Test call list---

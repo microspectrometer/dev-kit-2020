@@ -24,8 +24,9 @@
     //  - this is a system test, not a unit test because it cares about matching
     //  the value on MIOSIO
     //  - mock FtReadData? do not mock FtRead?
-    // [ ] UsbWrite returns the number of bytes sent
-    // [ ] UsbWrite stops sending bytes if all bytes are sent
+    // [x] UsbWrite returns the number of bytes sent
+    // [x] UsbWrite calls FtWrite for each byte to send
+    // [x] UsbWrite stops sending bytes if all bytes are sent
     // [ ] UsbWrite stops sending bytes if the tx buffer is full
     // [ ] UsbWrite copies bytes from the input write buffer
     //  - tests that UsbWrite is incrementing the write buffer address
@@ -35,7 +36,7 @@
 //=====[ List of tests that check implementation details ]=====
     // UsbRead implementation:
     //  - call FtSendCommand(FtCmd_Read)
-    //  - check if ok to proceed after FtBusTuraround()
+    //  - check if ok to proceed after FtBusTurnaround()
     //  - loop FtRead() until buffer is empty
     //      - FtRead() leaves SCK low.
     //          - This is good.
@@ -61,6 +62,109 @@
     //
 // void SetUp_NothingForUsb(void){}
 // void TearDown_NothingForUsb(void){}
+
+void SetUp_UsbWrite(void){
+    SetUpMock_UsbWrite();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_UsbWrite(void){
+    TearDownMock_UsbWrite();    // destroy the mock object
+    // other teardown code
+}
+void UsbWrite_returns_the_number_of_bytes_sent(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    // FtBusTurnaround returns a bool
+    FtBusTurnaround_StubbedReturnValue = true; // simulate tx buffer has room
+    //
+    // Simulate room for 6 more bytes.
+    // FtWrite returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
+    bool ack_nak_sequence[] = {true, true, true, true, true, true, false};
+    FtWrite_StubbedReturnValue = ack_nak_sequence;
+    //=====[ Check test code for desired scenario ]=====
+    uint16_t tx_buffer_byte_limit = sizeof(ack_nak_sequence)-1;
+    TEST_ASSERT_EQUAL_UINT16(6, tx_buffer_byte_limit);
+    //
+    //=====[ Operate ]=====
+    uint8_t write_buffer[5];
+    uint16_t num_bytes_to_send = sizeof(write_buffer);
+    TEST_ASSERT_LESS_THAN_UINT16_MESSAGE(tx_buffer_byte_limit, num_bytes_to_send,
+        "Expected test scenario was the transmit buffer has enough room "
+        "to send all the bytes in the write buffer, "
+        "but the transmit buffer does not have enough room."
+        );
+    uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send);
+    //
+    //=====[ Test ]=====
+    TEST_ASSERT_EQUAL_UINT16(num_bytes_to_send, num_bytes_sent);
+}
+void UsbWrite_calls_FtWrite_for_each_byte_to_send(void)
+{
+    //  This test checks for two things at the same time:
+        //- tests that UsbWrite calls FtWrite N times
+        //    - checking for N calls is a check for the correct scenario
+        //    - but this also makes sure the implementation does not make extra
+        //    calls to FtWrite, i.e.:
+        //    -[x] UsbWrite stops sending bytes if all bytes are sent
+        //- tests that UsbWrite walks the write buffer
+        //    - comparing expected and actual calls checks that the write buffer
+        //    address is incremented
+        //- note that both of these tests require comparing call lists
+        //- to minimize mocking, I only stubbed calls that required injecting
+        //the return value to mock-up the correct scenario
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    // FtBusTurnaround returns a bool
+    FtBusTurnaround_StubbedReturnValue = true; // simulate tx buffer has room
+    //
+    // Simulate room for 6 more bytes.
+    // FtWrite returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
+    bool ack_nak_sequence[] = {true, true, true, true, true, true, false};
+    FtWrite_StubbedReturnValue = ack_nak_sequence;
+    //=====[ Check test code for desired scenario ]=====
+    uint16_t tx_buffer_byte_limit = sizeof(ack_nak_sequence)-1;
+    TEST_ASSERT_EQUAL_UINT16(6, tx_buffer_byte_limit);
+    //
+    //=====[ Operate ]=====
+    uint8_t write_buffer[4];
+    uint16_t num_bytes_to_send = sizeof(write_buffer);
+    TEST_ASSERT_LESS_THAN_UINT16_MESSAGE(tx_buffer_byte_limit, num_bytes_to_send,
+        "Expected test scenario was the transmit buffer has enough room "
+        "to send all the bytes in the write buffer, "
+        "but the transmit buffer does not have enough room."
+        );
+    uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send);
+    //
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(num_bytes_to_send, num_bytes_sent,
+            "Expected test scenario was all bytes sent, "
+            "but number of bytes in write buffer "
+            "does not equal the number of bytes sent.");
+    //
+    //=====[ Set expectations ]=====
+    Expect_FtBusTurnaround();
+    // Expect FtWrite is called once for every byte in the buffer.
+    uint16_t num_calls_to_FtWrite = 0;
+    uint8_t *p_write_buffer = write_buffer;
+    while (num_calls_to_FtWrite < num_bytes_to_send)
+    {
+        Expect_FtWrite(p_write_buffer++);
+        num_calls_to_FtWrite++;
+    }
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(num_calls_to_FtWrite, num_bytes_sent,
+            "Expected test scenario was all bytes sent, "
+            "but number of calls to FtWrite "
+            "does not equal the number of bytes sent.");
+    //=====[ Test: was FtWrite called with the expected input arg ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+
+}
+
 void SetUp_UsbRead(void){
     SetUpMock_UsbRead();    // create the mock object to record calls
     // other setup code
@@ -75,7 +179,7 @@ void UsbRead_returns_0_if_there_was_no_data_to_read(void)
 {
     //=====[ Mock-up test scenario by defining return values ]=====
     //
-    // FtBusTuraround returns a bool
+    // FtBusTurnaround returns a bool
     FtBusTurnaround_StubbedReturnValue = false; // simulate no bytes in rx buffer
     //
     // FtRead returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
@@ -99,7 +203,7 @@ void UsbRead_returns_N_if_there_were_N_bytes_to_read(void)
 {
     //=====[ Mock-up test scenario by defining return values ]=====
     //
-    // FtBusTuraround returns a bool
+    // FtBusTurnaround returns a bool
     FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
     //
     // FtRead returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
@@ -125,7 +229,7 @@ void UsbRead_copies_bytes_to_the_input_read_buffer_address(void)
 {
     //=====[ Mock-up test scenario by defining return values ]=====
     //
-    // FtBusTuraround returns a bool
+    // FtBusTurnaround returns a bool
     FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
     //
     // FtRead returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
