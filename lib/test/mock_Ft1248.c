@@ -219,3 +219,33 @@ void Expect_FtWriteData(uint8_t arg1) {
 void FtWriteData_Stubbed(uint8_t arg1) {
     RecordActualCall(mock, Mock_FtWriteData(arg1));
 }
+
+static RecordedCall * Mock_FtHasDataToRead(void)
+{
+    char const *call_name = "FtHasDataToRead";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtHasDataToRead(void) {
+    RecordExpectedCall(mock, Mock_FtHasDataToRead());
+}
+bool FtHasDataToRead_StubbedReturnValue = false;
+bool FtHasDataToRead_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtHasDataToRead());
+    return FtHasDataToRead_StubbedReturnValue;
+}
+
+static RecordedCall * Mock_FtHasRoomToWrite(void)
+{
+    char const *call_name = "FtHasRoomToWrite";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_FtHasRoomToWrite(void) {
+    RecordExpectedCall(mock, Mock_FtHasRoomToWrite());
+}
+bool FtHasRoomToWrite_StubbedReturnValue = false;
+bool FtHasRoomToWrite_Stubbed(void) {
+    RecordActualCall(mock, Mock_FtHasRoomToWrite());
+    return FtHasRoomToWrite_StubbedReturnValue;
+}

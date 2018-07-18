@@ -54,4 +54,12 @@ extern bool *FtWrite_StubbedReturnValue; // pointer to list of fake return value
 void Expect_FtWrite(uint8_t* arg1);
 bool FtWrite_Stubbed(uint8_t* arg1);
 
+extern bool FtHasDataToRead_StubbedReturnValue;
+void Expect_FtHasDataToRead(void);
+bool FtHasDataToRead_Stubbed(void);
+
+extern bool FtHasRoomToWrite_StubbedReturnValue;
+void Expect_FtHasRoomToWrite(void);
+bool FtHasRoomToWrite_Stubbed(void);
+
 #endif // _MOCK_FT1248_H

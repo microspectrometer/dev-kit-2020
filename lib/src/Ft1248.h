@@ -44,7 +44,7 @@ extern bool (*FtHasDataToRead)(void);
 extern uint8_t (*FtReadData)(void);
 extern void (*FtWriteData)(uint8_t);
 extern void (*FtDeactivateInterface)(void);
-bool FtHasRoomToWrite(void);
+extern bool (*FtHasRoomToWrite)(void);
 //=====[ High-level API ]=====
 extern uint8_t const FtCmd_Read;
 extern uint8_t const FtCmd_Write;

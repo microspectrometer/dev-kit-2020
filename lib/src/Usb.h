@@ -6,5 +6,7 @@
 
 uint16_t UsbRead(uint8_t *read_buffer);
 uint16_t UsbWrite(uint8_t *write_buffer, uint16_t nbytes);
+bool UsbHasDataToRead(void);
+bool UsbHasRoomToWrite(void);
 
 #endif // _USB_H

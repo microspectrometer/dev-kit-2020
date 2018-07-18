@@ -40,3 +40,11 @@ uint16_t UsbWrite(uint8_t *write_buffer, uint16_t nbytes)
     }
     return num_bytes_sent;
 }
+bool UsbHasDataToRead(void)
+{
+    return FtHasDataToRead();
+}
+bool UsbHasRoomToWrite(void)
+{
+    return FtHasRoomToWrite();
+}

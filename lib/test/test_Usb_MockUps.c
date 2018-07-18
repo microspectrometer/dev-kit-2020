@@ -90,3 +90,45 @@ void TearDownMock_UsbWrite(void)  // FUT
     Unstub_FtWrite();  // DOF
 }
 
+static bool (*FtHasDataToRead_Saved)(void);
+static void Stub_FtHasDataToRead(void) {
+    FtHasDataToRead_Saved = FtHasDataToRead;
+    FtHasDataToRead = FtHasDataToRead_Stubbed;
+}
+static void Unstub_FtHasDataToRead(void) {
+    FtHasDataToRead = FtHasDataToRead_Saved;
+}
+void SetUpMock_UsbHasDataToRead(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_FtHasDataToRead();  // DOF
+}
+void TearDownMock_UsbHasDataToRead(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtHasDataToRead();  // DOF
+}
+
+static bool (*FtHasRoomToWrite_Saved)(void);
+static void Stub_FtHasRoomToWrite(void) {
+    FtHasRoomToWrite_Saved = FtHasRoomToWrite;
+    FtHasRoomToWrite = FtHasRoomToWrite_Stubbed;
+}
+static void Unstub_FtHasRoomToWrite(void) {
+    FtHasRoomToWrite = FtHasRoomToWrite_Saved;
+}
+void SetUpMock_UsbHasRoomToWrite(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_FtHasRoomToWrite();  // DOF
+}
+void TearDownMock_UsbHasRoomToWrite(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtHasRoomToWrite();  // DOF
+}
+

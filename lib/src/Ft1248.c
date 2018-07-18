@@ -103,24 +103,23 @@ static bool FtIsBusOk_Implementation(void)
 {
     return BitIsClear(Ft1248_pin, Ft1248_Miso);
 }
-
 bool (*FtIsBusOk)(void) = FtIsBusOk_Implementation;
 bool (*FtHasDataToRead)(void) = FtIsBusOk_Implementation;
-bool FtHasRoomToWrite(void)
+
+static bool FtHasRoomToWrite_Implementation(void)
 {
     return BitIsClear(FtMiosio_pin, FtMiosio0);
 }
+bool (*FtHasRoomToWrite)(void) = FtHasRoomToWrite_Implementation;
 
 static uint8_t FtReadData_Implementation(void)
 {
     return *FtMiosio_pin;
 }
-
 uint8_t (*FtReadData)(void) = FtReadData_Implementation;
 
 static void FtWriteData_Implementation(uint8_t byte_to_write)
 {
     *FtMiosio_port = byte_to_write;
 }
-
 void (*FtWriteData)(uint8_t) = FtWriteData_Implementation;

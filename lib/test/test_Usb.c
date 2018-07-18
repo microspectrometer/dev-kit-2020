@@ -8,9 +8,9 @@
 #include "Usb.h"                    // LUT source code
 #include "unity.h"                  // all the TEST_blah macros
 //=====[ List of tests to write ]=====
-    // [ ] UsbHasDataToRead returns true if the rx buffer has data
-    // [ ] UsbHasDataToRead returns false if the rx buffer is empty
-    // [ ] UsbHasRoomToWrite returns true if the tx buffer is not full
+    // [x] UsbHasDataToRead returns true if the rx buffer has data
+    // [x] UsbHasDataToRead returns false if the rx buffer is empty
+    // [x] UsbHasRoomToWrite returns true if the tx buffer is not full
     // [ ] UsbHasRoomToWrite returns false if the tx buffer is full
     // [x] UsbRead should indicate data was read
     //  - [x] UsbRead returns 0 if there was no data to read
@@ -60,8 +60,50 @@
     //  - if this fails, but UsbRead returns N bytes still passes, it means the
     //  behavior is still correct but I changed the implementation
     //
-// void SetUp_NothingForUsb(void){}
-// void TearDown_NothingForUsb(void){}
+void SetUp_NothingForUsb(void){}
+void TearDown_NothingForUsb(void){}
+void SetUp_UsbHasDataToRead(void){
+    SetUpMock_UsbHasDataToRead();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_UsbHasDataToRead(void){
+    TearDownMock_UsbHasDataToRead();    // destroy the mock object
+    // other teardown code
+}
+void UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    FtHasDataToRead_StubbedReturnValue = true; // simulate rx buffer has data
+    //
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_TRUE(UsbHasDataToRead());
+}
+void UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    FtHasDataToRead_StubbedReturnValue = false; // simulate rx buffer is empty
+    //
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_FALSE(UsbHasDataToRead());
+}
+void SetUp_UsbHasRoomToWrite(void){
+    SetUpMock_UsbHasRoomToWrite();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_UsbHasRoomToWrite(void){
+    TearDownMock_UsbHasRoomToWrite();    // destroy the mock object
+    // other teardown code
+}
+void UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtHasRoomToWrite_StubbedReturnValue = false; // simulate tx buffer is not full
+    //
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_TRUE(UsbHasRoomToWrite);
+}
 
 void SetUp_UsbWrite(void){
     SetUpMock_UsbWrite();    // create the mock object to record calls

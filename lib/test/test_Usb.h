@@ -14,4 +14,11 @@ void SetUp_UsbWrite(void); void TearDown_UsbWrite(void);
 void UsbWrite_returns_the_number_of_bytes_sent(void);
 void UsbWrite_calls_FtWrite_for_each_byte_to_send(void);
 
+void SetUp_UsbHasDataToRead(void); void TearDown_UsbHasDataToRead(void);
+void UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data(void);
+void UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty(void);
+
+void SetUp_UsbHasRoomToWrite(void); void TearDown_UsbHasRoomToWrite(void);
+void UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full(void);
+
 #endif // _TEST_USB_H
