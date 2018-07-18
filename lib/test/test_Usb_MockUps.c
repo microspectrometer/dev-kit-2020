@@ -81,6 +81,7 @@ void SetUpMock_UsbWrite(void)  // FUT
     //
     Stub_FtBusTurnaround();  // DOF
     Stub_FtWrite();  // DOF
+    Stub_DebugLedTurnRedToShowError();  // DOF
 }
 void TearDownMock_UsbWrite(void)  // FUT
 {
@@ -88,6 +89,7 @@ void TearDownMock_UsbWrite(void)  // FUT
     //
     Unstub_FtBusTurnaround();  // DOF
     Unstub_FtWrite();  // DOF
+    Unstub_DebugLedTurnRedToShowError();  // DOF
 }
 
 static bool (*FtHasDataToRead_Saved)(void);

@@ -28,8 +28,9 @@ uint16_t UsbWrite(uint8_t *write_buffer, uint16_t nbytes)
     FtSendCommand(FtCmd_Write);
     if (!FtBusTurnaround())
     {
-        /* DebugLedTurnRedToShowError(); */
-        /* return num_bytes_sent; */
+        DebugLedTurnRedToShowError();
+        FtDeactivateInterface();
+        return num_bytes_sent;
     }
     bool byte_sent = true; bool finished = false;
     while (byte_sent && !finished)
@@ -38,13 +39,8 @@ uint16_t UsbWrite(uint8_t *write_buffer, uint16_t nbytes)
         if (byte_sent) num_bytes_sent++;
         finished = (num_bytes_sent >= nbytes);
     }
+    FtDeactivateInterface();
     return num_bytes_sent;
 }
-bool UsbHasDataToRead(void)
-{
-    return FtHasDataToRead();
-}
-bool UsbHasRoomToWrite(void)
-{
-    return FtHasRoomToWrite();
-}
+bool UsbHasDataToRead(void) { return FtHasDataToRead(); }
+bool UsbHasRoomToWrite(void) { return FtHasRoomToWrite(); }

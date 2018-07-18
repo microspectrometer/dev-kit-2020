@@ -27,7 +27,8 @@
     // [x] UsbWrite returns the number of bytes sent
     // [x] UsbWrite calls FtWrite for each byte to send
     // [x] UsbWrite stops sending bytes if all bytes are sent
-    // [ ] UsbWrite stops sending bytes if the tx buffer is full
+    // [x] UsbWrite stops sending bytes if the tx buffer is full
+    // [ ] UsbWrite turns LED red if the tx buffer was already full
     // [ ] UsbWrite copies bytes from the input write buffer
     //  - tests that UsbWrite is incrementing the write buffer address
     // [ ] UsbWrite copies bytes from the input write buffer to MIOSIO
@@ -212,11 +213,54 @@ void UsbWrite_calls_FtWrite_for_each_byte_to_send(void)
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
-
 }
 void UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    // FtBusTurnaround returns a bool
+    FtBusTurnaround_StubbedReturnValue = true; // simulate tx buffer has room
+    //
+    // Simulate room for 3 more bytes.
+    // FtWrite returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
+    bool ack_nak_sequence[] = {true, true, true, false};
+    FtWrite_StubbedReturnValue = ack_nak_sequence;
+    //=====[ Check test code for desired scenario ]=====
+    uint16_t tx_buffer_byte_limit = sizeof(ack_nak_sequence)-1;
+    TEST_ASSERT_EQUAL_UINT16(3, tx_buffer_byte_limit);
+    //=====[ Operate ]=====
+    uint8_t write_buffer[4];
+    uint16_t num_bytes_to_send = sizeof(write_buffer);
+    TEST_ASSERT_GREATER_THAN_UINT16_MESSAGE(tx_buffer_byte_limit, num_bytes_to_send,
+        "Expected test scenario was the transmit buffer "
+        "does not have enough room to send all the bytes in the write buffer, "
+        "but the transmit buffer does have enough room."
+        );
+    uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send);
+    //
+    //=====[ Test ]=====
+    TEST_ASSERT_EQUAL_UINT16(tx_buffer_byte_limit, num_bytes_sent);
+}
+void UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    FtBusTurnaround_StubbedReturnValue = false; // simulate tx buffer is full
+    //
+    //=====[ Set expectations ]=====
+    Expect_FtBusTurnaround();
+    Expect_DebugLedTurnRedToShowError();
+    //
+    //=====[ Operate ]=====
+    uint8_t write_buffer[1];
+    uint16_t num_bytes_to_send = sizeof(write_buffer);
+    UsbWrite(write_buffer, num_bytes_to_send);
+    //
+    //=====[ Test: compare call lists to see LED turned red ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
 }
 
 void SetUp_UsbRead(void){
