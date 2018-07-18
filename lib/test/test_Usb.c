@@ -111,7 +111,7 @@ void UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full(void)
     FtHasRoomToWrite_StubbedReturnValue = false; // simulate tx buffer is full
     //
     //=====[ Operate and Test ]=====
-    TEST_ASSERT_TRUE(UsbHasRoomToWrite());
+    TEST_ASSERT_FALSE(UsbHasRoomToWrite());
 }
 
 void SetUp_UsbWrite(void){
