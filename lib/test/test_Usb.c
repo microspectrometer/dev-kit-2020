@@ -69,7 +69,7 @@
     //  the value on MIOSIO
 // UsbWrite implementation details
     // [ ] UsbWrite sad path
-    // [ ] UsbWrite happy path
+    // [x] UsbWrite happy path
     //
 /* void SetUp_NothingForUsb(void){} */
 /* void TearDown_NothingForUsb(void){} */
@@ -141,7 +141,6 @@ void UsbWrite_returns_the_number_of_bytes_sent(void)
 {
     //=====[ Mock-up test scenario by defining return values ]=====
     //
-    // FtBusTurnaround returns a bool
     FtBusTurnaround_StubbedReturnValue = true; // simulate tx buffer has room
     //
     // Simulate room for 6 more bytes.
@@ -153,8 +152,7 @@ void UsbWrite_returns_the_number_of_bytes_sent(void)
     TEST_ASSERT_EQUAL_UINT16(6, tx_buffer_byte_limit);
     //
     //=====[ Operate ]=====
-    uint8_t write_buffer[5];
-    uint16_t num_bytes_to_send = sizeof(write_buffer);
+    uint8_t write_buffer[5]; uint16_t num_bytes_to_send = sizeof(write_buffer);
     TEST_ASSERT_LESS_THAN_UINT16_MESSAGE(tx_buffer_byte_limit, num_bytes_to_send,
         "Expected test scenario was the transmit buffer has enough room "
         "to send all the bytes in the write buffer, "
@@ -298,6 +296,47 @@ void SetUp_DetailsOf_UsbWrite(void){
 void TearDown_DetailsOf_UsbWrite(void){
     TearDownMock_DetailsOf_UsbWrite();    // destroy the mock object
     // other teardown code
+}
+void UsbWrite_happy_path_is_implemented_like_this(void) // happy path
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    FtBusTurnaround_StubbedReturnValue = true; // simulate tx buffer has room
+    // Simulate room for 6 more bytes.
+    // FtWrite returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
+    bool ack_nak_sequence[] = {true, true, true, true, true, true, false};
+    FtWrite_StubbedReturnValue = ack_nak_sequence;
+    //=====[ Check test code for desired scenario ]=====
+    uint16_t tx_buffer_byte_limit = sizeof(ack_nak_sequence)-1;
+    TEST_ASSERT_EQUAL_UINT16(6, tx_buffer_byte_limit);
+    //
+    //=====[ Operate ]=====
+    uint8_t write_buffer[5]; uint16_t num_bytes_to_send = sizeof(write_buffer);
+    uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send);
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(num_bytes_to_send, num_bytes_sent,
+            "Expected test scenario was all bytes sent, "
+            "but number of bytes in write buffer "
+            "does not equal the number of bytes sent.");
+    //
+    //=====[ Set expectations ]=====
+    Expect_FtSendCommand(FtCmd_Write);
+    Expect_FtBusTurnaround();
+    // Expect FtWrite is called once for every byte in the buffer.
+    uint16_t num_calls_to_FtWrite = 0;
+    uint8_t *p_write_buffer = write_buffer;
+    while (num_calls_to_FtWrite < num_bytes_to_send)
+    {
+        Expect_FtWrite(p_write_buffer++);
+        num_calls_to_FtWrite++;
+    }
+    Expect_FtDeactivateInterface();
+    //
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
 }
 
 //=====[ UsbRead behavioral tests ]=====

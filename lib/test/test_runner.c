@@ -108,6 +108,7 @@ void DevelopingUsb(bool run_test) {if (run_test) {
     /* RUN_TEST(UsbWrite_returns_0_if_the_tx_buffer_was_already_full); */
     // UsbWrite implementation descriptions
     setUp = SetUp_DetailsOf_UsbWrite; tearDown = TearDown_DetailsOf_UsbWrite;
+    RUN_TEST(UsbWrite_happy_path_is_implemented_like_this);
 }}
 int main()
 {

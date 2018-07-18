@@ -19,6 +19,7 @@ void UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full(void);
 void UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full(void);
 void UsbWrite_returns_0_if_the_tx_buffer_was_already_full(void);
 void SetUp_DetailsOf_UsbWrite(void); void TearDown_DetailsOf_UsbWrite(void);
+void UsbWrite_happy_path_is_implemented_like_this(void);
 
 void SetUp_UsbHasDataToRead(void); void TearDown_UsbHasDataToRead(void);
 void UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data(void);
