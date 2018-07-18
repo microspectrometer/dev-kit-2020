@@ -107,7 +107,23 @@ static void Stub_FtReadData(void) {
 static void Unstub_FtReadData(void) {
     FtReadData = FtReadData_Saved;
 }
+
 void SetUpMock_FtRead(void)  // FUT
+{
+    mock = Mock_new();  // required even if `RanAsHoped` is not called
+    //
+    Stub_FtIsBusOk();  // DOF
+    Stub_FtReadData();  // DOF
+}
+void TearDownMock_FtRead(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtIsBusOk();  // DOF
+    Unstub_FtReadData();  // DOF
+}
+//
+void SetUpMock_DetailsOf_FtRead(void)  // FUT
 {
     mock = Mock_new();
     //
@@ -116,7 +132,7 @@ void SetUpMock_FtRead(void)  // FUT
     Stub_FtIsBusOk();  // DOF
     Stub_FtReadData();  // DOF
 }
-void TearDownMock_FtRead(void)  // FUT
+void TearDownMock_DetailsOf_FtRead(void)  // FUT
 {
     Mock_destroy(mock); mock = NULL;
     //

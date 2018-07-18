@@ -339,7 +339,19 @@ void TearDown_FtRead(void){
     TearDownMock_FtRead();    // destroy the mock object
     // other teardown code
 }
-void FtRead_does_not_write_to_mem_and_returns_false_if_NAK(void)
+void FtRead_should_return_false_if_MISO_is_NAK(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtIsBusOk_StubbedReturnValue = false; // NAK
+    //
+    //=====[ Operate ]=====
+    uint8_t read_buffer[1];
+    bool byte_was_valid = FtRead(read_buffer);
+    //
+    //=====[ Test that FtRead returns false ]=====
+    TEST_ASSERT_FALSE(byte_was_valid);
+}
+void FtRead_should_not_write_to_input_buffer_if_MISO_is_NAK(void)
 {
     //=====[ Setup ]=====
     uint8_t byte_from_slave = 0xFF;  // garbage pushed by slave
@@ -350,17 +362,73 @@ void FtRead_does_not_write_to_mem_and_returns_false_if_NAK(void)
     uint8_t expected_mem_value = *read_buffer;
     //
     //=====[ Mock-up test scenario by defining return values ]=====
-    FtIsBusOk_StubbedReturnValue = false;
+    FtIsBusOk_StubbedReturnValue = false;  // NAK
     FtReadData_StubbedReturnValue = byte_from_slave;
     //
     //=====[ Operate ]=====
     bool byte_was_valid = FtRead(read_buffer);
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_FALSE_MESSAGE( byte_was_valid,
+        "Expected test scenario was NAK, but MISO is ACK.");
     //
     //=====[ Test that memory is not written ]=====
     TEST_ASSERT_EQUAL_HEX8(expected_mem_value, *read_buffer);
+}
+void FtRead_should_return_true_if_MISO_is_ACK(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtIsBusOk_StubbedReturnValue = true; // ACK
     //
-    //=====[ Test that FtRead returns false ]=====
-    TEST_ASSERT_FALSE(byte_was_valid);
+    //=====[ Operate ]=====
+    uint8_t read_buffer[1];
+    bool byte_was_valid = FtRead(read_buffer);
+    //
+    //=====[ Test that FtRead returns true ]=====
+    TEST_ASSERT_TRUE(byte_was_valid);
+}
+void FtRead_should_write_to_input_buffer_if_MISO_is_ACK(void)
+{
+    //=====[ Setup ]=====
+    uint8_t byte_from_slave = 0xBE;  // good byte pushed by slave
+    uint8_t read_buffer[1] = {0x00}; // original value in mem
+    // assert that byte_from_slave is different from the value in memory
+    TEST_ASSERT_NOT_EQUAL(byte_from_slave, *read_buffer);
+    // expect value in mem is changed after read
+    uint8_t expected_mem_value = byte_from_slave;
+    //
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtIsBusOk_StubbedReturnValue = true;  // ACK
+    FtReadData_StubbedReturnValue = byte_from_slave;
+    //
+    //=====[ Operate ]=====
+    bool byte_was_valid = FtRead(read_buffer);
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_TRUE_MESSAGE( byte_was_valid,
+        "Expected test scenario was ACK, but MISO is NAK.");
+    //
+    //=====[ Test that memory is written ]=====
+    TEST_ASSERT_EQUAL_HEX8(expected_mem_value, *read_buffer);
+}
+
+void SetUp_DetailsOf_FtRead(void){
+    SetUpMock_DetailsOf_FtRead();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_DetailsOf_FtRead(void){
+    TearDownMock_DetailsOf_FtRead();    // destroy the mock object
+    // other teardown code
+}
+void FtRead_sad_path_is_implemented_like_this(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtIsBusOk_StubbedReturnValue = false; // NAK
+    //
+    //=====[ Operate ]=====
+    uint8_t read_buffer[1];
+    bool byte_was_valid = FtRead(read_buffer);
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_FALSE_MESSAGE( byte_was_valid,
+        "Expected test scenario was NAK, but MISO is ACK.");
     //
     //=====[ Test implementation details ]=====
     // ---Set expected call list---
@@ -373,28 +441,17 @@ void FtRead_does_not_write_to_mem_and_returns_false_if_NAK(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
-void FtRead_should_write_to_mem_and_return_true_if_ACK(void)
+void FtRead_happy_path_is_implemented_like_this(void)
 {
-    //=====[ Setup ]=====
-    uint8_t byte_from_slave = 0x23;  // data pushed by slave
-    uint8_t read_buffer[1] = {0x00}; // original value in mem
-    // assert that byte_from_slave is different from the value in memory
-    TEST_ASSERT_NOT_EQUAL(byte_from_slave, *read_buffer);
-    // expect value in mem is written with byte_from_slave after read
-    uint8_t expected_mem_value = byte_from_slave;
-    //
     //=====[ Mock-up test scenario by defining return values ]=====
-    FtIsBusOk_StubbedReturnValue = true;  // simulate ACK from slave
-    FtReadData_StubbedReturnValue = byte_from_slave;
+    FtIsBusOk_StubbedReturnValue = true; // ACK
     //
     //=====[ Operate ]=====
+    uint8_t read_buffer[1];
     bool byte_was_valid = FtRead(read_buffer);
-    //
-    //=====[ Test that memory is written ]=====
-    TEST_ASSERT_EQUAL_HEX8(expected_mem_value, *read_buffer);
-    //
-    //=====[ Test that FtRead returns true ]=====
-    TEST_ASSERT_TRUE(byte_was_valid);
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_TRUE_MESSAGE( byte_was_valid,
+        "Expected test scenario was ACK, but MISO is NAK.");
     //
     //=====[ Test implementation details ]=====
     // ---Set expected call list---

@@ -12,8 +12,13 @@ void FtBusTurnaround_returns_true_if_ok_to_proceed_with_command(void);
 void FtBusTurnaround_returns_false_if_not_ok_to_proceed(void);
 
 void SetUp_FtRead(void); void TearDown_FtRead(void);
-void FtRead_does_not_write_to_mem_and_returns_false_if_NAK(void);
-void FtRead_should_write_to_mem_and_return_true_if_ACK(void);
+void FtRead_should_return_false_if_MISO_is_NAK(void);
+void FtRead_should_not_write_to_input_buffer_if_MISO_is_NAK(void);
+void FtRead_should_return_true_if_MISO_is_ACK(void);
+void FtRead_should_write_to_input_buffer_if_MISO_is_ACK(void);
+void SetUp_DetailsOf_FtRead(void); void TearDown_DetailsOf_FtRead(void);
+void FtRead_sad_path_is_implemented_like_this(void);
+void FtRead_happy_path_is_implemented_like_this(void);
 
 void SetUp_FtWrite(void); void TearDown_FtWrite(void);
 void FtWrite_should_return_false_if_slave_sends_NAK(void);
