@@ -26,12 +26,14 @@
     //  - mock FtReadData? do not mock FtRead?
     // [x] UsbWrite returns the number of bytes sent
     // [x] UsbWrite calls FtWrite for each byte to send
+    //  - tests that UsbWrite is incrementing the write buffer address
     // [x] UsbWrite stops sending bytes if all bytes are sent
     // [x] UsbWrite stops sending bytes if the tx buffer is full
     // [x] UsbWrite turns LED red if the tx buffer was already full
     // [x] UsbWrite returns 0 if the tx buffer was already full
-    // [ ] UsbWrite copies bytes from the input write buffer
-    //  - tests that UsbWrite is incrementing the write buffer address
+    // ~~[-] UsbWrite copies bytes from the input write buffer~~
+    //  - this test is impossible: there is nothing to look at
+    //  - see instead `UsbWrite calls FtWrite for each byte to send`
     // [ ] UsbWrite copies bytes from the input write buffer to MIOSIO
     //  - this is a system test, not a unit test because it cares about matching
     //  the value on MIOSIO
@@ -90,6 +92,7 @@ void UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_FALSE(UsbHasDataToRead());
 }
+
 void SetUp_UsbHasRoomToWrite(void){
     SetUpMock_UsbHasRoomToWrite();    // create the mock object to record calls
     // other setup code
@@ -275,7 +278,6 @@ void UsbWrite_returns_0_if_the_tx_buffer_was_already_full(void)
     //=====[ Test ]=====
     TEST_ASSERT_EQUAL_UINT16(0, num_bytes_sent);
 }
-/* UsbWrite copies bytes from the input write buffer */
 
 void SetUp_UsbRead(void){
     SetUpMock_UsbRead();    // create the mock object to record calls
@@ -364,9 +366,37 @@ void UsbRead_copies_bytes_to_the_input_read_buffer_address(void)
     //=====[ Test ]=====
     TEST_ASSERT_EQUAL_UINT8_ARRAY(fake_rx_buffer, read_buffer, num_bytes_read);
 }
+void UsbRead_turns_LED_red_if_there_was_no_data_to_read(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    FtBusTurnaround_StubbedReturnValue = false; // simulate rx buffer is empty
+    //
+    //=====[ Set expectations ]=====
+    Expect_FtBusTurnaround();
+    Expect_DebugLedTurnRedToShowError();
+    //
+    //=====[ Operate ]=====
+    uint8_t read_buffer[1];
+    UsbRead(read_buffer);
+    //
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
 
 //=====[ tests that check implementation details of UsbRead ]=====
-void UsbRead_turns_LED_red_if_there_was_no_data_read(void) // sad path
+void SetUp_DetailsOf_UsbRead(void){
+    SetUpMock_DetailsOf_UsbRead();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_DetailsOf_UsbRead(void){
+    TearDownMock_DetailsOf_UsbRead();    // destroy the mock object
+    // other teardown code
+}
+void UsbRead_sad_path_is_implemented_like_this(void)
 {
     //=====[ Set expectations ]=====
     Expect_FtSendCommand(FtCmd_Read);
@@ -388,7 +418,7 @@ void UsbRead_turns_LED_red_if_there_was_no_data_read(void) // sad path
         WhyDidItFail(mock)          // print this message.
         );
 }
-void UsbRead_should_read_until_buffer_is_empty(void) // happy path
+void UsbRead_happy_path_is_implemented_like_this(void) // happy path
 {
     //=====[ Set expectations for the happy path ]=====
     Expect_FtSendCommand(FtCmd_Read);
@@ -405,14 +435,14 @@ void UsbRead_should_read_until_buffer_is_empty(void) // happy path
     // Expect FtRead is called one more time to find out the buffer is empty.
     Expect_FtRead(read_buffer_address);
     Expect_FtDeactivateInterface();
-
+    //
     //=====[ Mock-up test scenario by defining return values ]=====
     FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
     FtRead_StubbedReturnValue = ack_nak_list;  // point at first list element
-
+    //
     //=====[ Operate ]=====
     uint16_t actual_num_bytes_read = UsbRead(read_buffer);
-
+    //
     //=====[ Test: UsbRead read the buffer until it was empty ]=====
     TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, actual_num_bytes_read);
     //=====[ Test: UsbRead followed its happy path ]=====

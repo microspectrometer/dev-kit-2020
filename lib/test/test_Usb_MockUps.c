@@ -50,13 +50,29 @@ void SetUpMock_UsbRead(void)  // FUT
 {
     mock = Mock_new();
     //
+    Stub_FtBusTurnaround();  // DOF
+    Stub_DebugLedTurnRedToShowError();  // DOF
+    Stub_FtRead();  // DOF
+}
+void TearDownMock_UsbRead(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_FtBusTurnaround();  // DOF
+    Unstub_DebugLedTurnRedToShowError();  // DOF
+    Unstub_FtRead();  // DOF
+}
+void SetUpMock_DetailsOf_UsbRead(void)  // FUT
+{
+    mock = Mock_new();
+    //
     Stub_FtSendCommand();  // DOF
     Stub_FtBusTurnaround();  // DOF
     Stub_FtDeactivateInterface();  // DOF
     Stub_DebugLedTurnRedToShowError();  // DOF
     Stub_FtRead();  // DOF
 }
-void TearDownMock_UsbRead(void)  // FUT
+void TearDownMock_DetailsOf_UsbRead(void)  // FUT
 {
     Mock_destroy(mock); mock = NULL;
     //
