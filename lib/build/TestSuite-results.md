@@ -1,8 +1,7 @@
-test/test_runner.c:83:UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data:PASS
-test/test_runner.c:84:UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty:PASS
-test/test_runner.c:86:UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full:PASS
-test/test_runner.c:87:UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full:PASS
+test/test_runner.c:101:UsbWrite_returns_the_number_of_bytes_sent:PASS
+test/test_runner.c:102:UsbWrite_calls_FtWrite_for_each_byte_to_send:PASS
+test/test_runner.c:219:UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full:FAIL: Implement test.
 
 -----------------------
-4 Tests 0 Failures 0 Ignored 
-OK
+3 Tests 1 Failures 0 Ignored 
+FAIL

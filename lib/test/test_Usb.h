@@ -13,6 +13,7 @@ void UsbRead_copies_bytes_to_the_input_read_buffer_address(void);
 void SetUp_UsbWrite(void); void TearDown_UsbWrite(void);
 void UsbWrite_returns_the_number_of_bytes_sent(void);
 void UsbWrite_calls_FtWrite_for_each_byte_to_send(void);
+void UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full(void);
 
 void SetUp_UsbHasDataToRead(void); void TearDown_UsbHasDataToRead(void);
 void UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data(void);

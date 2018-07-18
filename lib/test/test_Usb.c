@@ -11,7 +11,7 @@
     // [x] UsbHasDataToRead returns true if the rx buffer has data
     // [x] UsbHasDataToRead returns false if the rx buffer is empty
     // [x] UsbHasRoomToWrite returns true if the tx buffer is not full
-    // [ ] UsbHasRoomToWrite returns false if the tx buffer is full
+    // [x] UsbHasRoomToWrite returns false if the tx buffer is full
     // [x] UsbRead should indicate data was read
     //  - [x] UsbRead returns 0 if there was no data to read
     //  - [x] UsbRead returns N if there were N bytes to read
@@ -88,7 +88,6 @@ void UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_FALSE(UsbHasDataToRead());
 }
-
 void SetUp_UsbHasRoomToWrite(void){
     SetUpMock_UsbHasRoomToWrite();    // create the mock object to record calls
     // other setup code
@@ -214,6 +213,10 @@ void UsbWrite_calls_FtWrite_for_each_byte_to_send(void)
         WhyDidItFail(mock)          // print this message.
         );
 
+}
+void UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
 }
 
 void SetUp_UsbRead(void){
