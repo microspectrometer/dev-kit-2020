@@ -84,6 +84,7 @@ void DevelopingUsb(bool run_test) {if (run_test) {
     RUN_TEST(UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty);
     setUp = SetUp_UsbHasRoomToWrite; tearDown = TearDown_UsbHasRoomToWrite;
     RUN_TEST(UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full);
+    /* RUN_TEST(UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full); */
     //
     /* setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead; */
     /* // UsbRead should indicate data was read */

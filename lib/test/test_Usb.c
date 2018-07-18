@@ -88,6 +88,7 @@ void UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty(void)
     //=====[ Operate and Test ]=====
     TEST_ASSERT_FALSE(UsbHasDataToRead());
 }
+
 void SetUp_UsbHasRoomToWrite(void){
     SetUpMock_UsbHasRoomToWrite();    // create the mock object to record calls
     // other setup code
@@ -99,10 +100,18 @@ void TearDown_UsbHasRoomToWrite(void){
 void UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full(void)
 {
     //=====[ Mock-up test scenario by defining return values ]=====
-    FtHasRoomToWrite_StubbedReturnValue = false; // simulate tx buffer is not full
+    FtHasRoomToWrite_StubbedReturnValue = true; // simulate tx buffer is not full
     //
     //=====[ Operate and Test ]=====
-    TEST_ASSERT_TRUE(UsbHasRoomToWrite);
+    TEST_ASSERT_TRUE(UsbHasRoomToWrite());
+}
+void UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    FtHasRoomToWrite_StubbedReturnValue = false; // simulate tx buffer is full
+    //
+    //=====[ Operate and Test ]=====
+    TEST_ASSERT_TRUE(UsbHasRoomToWrite());
 }
 
 void SetUp_UsbWrite(void){
