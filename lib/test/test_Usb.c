@@ -64,11 +64,12 @@
     // ~~[-] UsbWrite copies bytes from the input write buffer~~
     //  - this test is impossible: there is nothing to look at
     //  - see instead `UsbWrite calls FtWrite for each byte to send`
+// UsbWrite behavioral system tests
     // [ ] UsbWrite copies bytes from the input write buffer to MIOSIO
     //  - this is a system test, not a unit test because it cares about matching
     //  the value on MIOSIO
 // UsbWrite implementation details
-    // [ ] UsbWrite sad path
+    // [x] UsbWrite sad path
     // [x] UsbWrite happy path
     //
 /* void SetUp_NothingForUsb(void){} */
@@ -330,6 +331,39 @@ void UsbWrite_happy_path_is_implemented_like_this(void) // happy path
         Expect_FtWrite(p_write_buffer++);
         num_calls_to_FtWrite++;
     }
+    Expect_FtDeactivateInterface();
+    //
+    //=====[ Test ]=====
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
+void UsbWrite_sad_path_is_implemented_like_this(void) // happy path
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    FtBusTurnaround_StubbedReturnValue = false; // simulate tx buffer is full
+    // Simulate room for 0 more bytes.
+    // FtWrite returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
+    bool ack_nak_sequence[] = {false};
+    FtWrite_StubbedReturnValue = ack_nak_sequence;
+    //=====[ Check test code for desired scenario ]=====
+    uint16_t tx_buffer_byte_limit = sizeof(ack_nak_sequence)-1;
+    TEST_ASSERT_EQUAL_UINT16(0, tx_buffer_byte_limit);
+    //
+    //=====[ Operate ]=====
+    uint8_t write_buffer[5]; uint16_t num_bytes_to_send = sizeof(write_buffer);
+    uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send);
+    //=====[ Check test code for desired scenario ]=====
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(0, num_bytes_sent,
+        "Expected test scenario was no bytes sent "
+        "because the tx buffer is full, but number of bytes sent is not zero.");
+    //
+    //=====[ Set expectations ]=====
+    Expect_FtSendCommand(FtCmd_Write);
+    Expect_FtBusTurnaround();
+    Expect_DebugLedTurnRedToShowError();
     Expect_FtDeactivateInterface();
     //
     //=====[ Test ]=====

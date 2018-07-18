@@ -109,6 +109,7 @@ void DevelopingUsb(bool run_test) {if (run_test) {
     // UsbWrite implementation descriptions
     setUp = SetUp_DetailsOf_UsbWrite; tearDown = TearDown_DetailsOf_UsbWrite;
     RUN_TEST(UsbWrite_happy_path_is_implemented_like_this);
+    RUN_TEST(UsbWrite_sad_path_is_implemented_like_this);
 }}
 int main()
 {
