@@ -19,7 +19,127 @@
 
 ---e-n-d---
 
+# Status
+## lib organization
+### libs for communication
+#### Ft1248
+- communication between the MCU and the USB bridge
+- split into porcelain and plumbing
+- porcelain calls are for interfacing with a higher-level lib
+- plumbing calls eliminate comment-noise in the porcelain calls
+- lib Usb only touches the porcelain
+#### Usb
+- encapsulates Ft1248
+- user never needs to know about Ft1248 communication at the firmware level:
+    - use writes a USB host application with the FTDI d2xx lib
+    - these libraries have nothing to do with Ft1248 communication
+    - my goal was to keep the interface as simple as possible
+    - write the USB host application looking at the embedded `main` code:
+        - `main` code makes calls to Usb lib
+        - Ft1248 lib calls are hidden
+- nothing to do with USB protocol
+    - all USB protocol is done by the USB bridge
+    - so no `open`, `close`, or `device-name` functionality
+        - that all happens at the application level on the USB host
+- but I call this lib *Usb* because that is the connecting cable
+    - Usb is a bad name because this has nothing to do with USB
+    - but it is the natural name for the USB host application developer to
+      look for when searching the embedded code to develop their USB
+      communication code
+    - what else could I call it? Ft1248 naturally divided into three levels
+      of abstraction:
+        - bottom: each bare-metal bit-push
+            - example: `FtActivateInterface` to *pull SS low*
+        - middle: coordinated bit-pushes that achieve a single purpose and
+          so are wrapped into a single function
+            - example: `FtRead` to read one byte from the receive buffer
+        - top: combining and looping those many functions into three simple
+          abstractions: ready, read, write
+            - example: `UsbRead` to read all bytes from the receive buffer
+#### Spi
+- master SPI on simBrd talks to slave SPI on mBrd
+#### Adc-spi
+- USART module on mBrd is the SPI master
+#### Lis-io
+- readout
+- programmable setup
+#### I2c
+- talks to the i2c slave LED driver on the RGB LED board
+- RGB LED board connection is available on both the mBrd and simBrd
+- useful for dev and demos
+### other libs
+#### DebugLed
+    - controls the DebugLed
+    - simBrd has one debug LED
+    - mBrd has four debug LEDs
+#### ReadWriteBits
+    - reads and writes bits given a register name and a bit number
+    - abstracts one level above the bit-mask operations
+    - eliminates comment-noise in the low-level libs
+## estimate progress
+- estimate percentage finished: `18%`
+### estimate details:
+- *number of tests written* is a crude progress indicator
+- for the purposes of estimating:
+- assume 50 tests per module
+    - this is a bit of an over-estimate
+    - it is crude fudge factor to allow for system tests and embedded tests
+- treat Usb and Ft1248 as one module split into two libs
+- ignore ReadWriteBits because it is done
+- ignore DebugLed because it works for one LED
+- number of module used in estimate: `5`
+- estimated number of tests total: `250`
+- number of tests written so far: `57`
+- number of tests written that are part of the estimated total: `45`
+### system tests
+- *system tests* are done as needed and become part of the test suite
+- these are part of the automated test suite
+- uses hardware fakes
+- no mocks:
+    - high-level lib makes call to *actual* low-level lib
+### embedded tests
+- *embedded tests* are done each time a lib is finished and there is a new
+  testable something
+- these are manual test applications
+- runs on actual hardware
+- testing requires reprogramming the MCU and manually interacting with the
+  hardware:
+    - look at debug LED
+    - read response on screen in serial communication script
+## track progress by lib
+- [x] Ft1248
+    - 28 tests
+    - 17 functions
+- [x] Usb
+    - 17 tests
+    - 4 functions
+- [ ] Spi
+- [ ] Adc-spi
+- [ ] Lis-io
+- [ ] I2c
+- [x] ReadWriteBits
+    - 10 tests
+    - 5 functions
+- [x] DebugLed for one LED
+    - 2 tests
+    - 9 functions
+    - TODO: rewrite this test code
+        - simplify hardware interface and eliminate dumb initialization
+        - pin down all the behaviors of this lib
+            - split `init` into two tests:
+                - `init turns led on`
+                - `init turns led green`
+            - add tests for the plumbing behavior
+- [ ] DebugLed for four LEDs
+    - *goal*:
+        - indicate a four-bit error code redefinable on a per-test basis
+    - *minimum viable*:
+        - this is done, just use one LED!
+    - *just beyond minimum viable*:
+        - treat as a single LED
+        - but design the interface to be open for extension
 # Internal deadline
+## Context
 - This was originally a writeup for Kulite.
     - Kulite went with a TSL1401 prototype instead, so they never saw this.
 - But the time breakdown is still useful internally:
@@ -30,7 +150,7 @@
     - But after Sensors Expo follow-up, meetings, July 4th, and Kurt's birthday
       on July 6th, my first day back on this project ended up being `7/9`
 
-## Deliverables for August 
+## Deliverables for August
 
 - High-resolution spectrometer prototype using LIS-770i and n=7 die with
   custom-machined housing to mate with 20mm x 20mm LIS-770i daughterboard and an
@@ -46,13 +166,19 @@ internally: `8/14`
     - Embedded development
     - measurement interface
 
+### embedded development
 [x] Estimated deadline for embedded development: `7/31`
 
+#### 2018-07-19 updated estimate for embedded development
+- total number of tests: `205`
+- find total labor time: `205 tests * 15 min/test = 3075 minutes = 51.25 hours`
+    - estimate number of actual days: `62.5 hours / 4 hours/day = 12.8125 days`
+- plot days on calendar to find finished date
+    - start the clock `7/19`
+    - count forward 13 days to `8/7`
+#### 2018-07-09 estimate for embedded development
 - total number of tests: `250`
     - estimate tests per module: `50`
-        - estimate based on module `Ft1248`
-        - `Ft1248` has 20 tests so far
-        - it is about halfway done
     - estimate number of modules: `5`
     - total number of tests: `50 tests/module * 5 modules = 250`
 - labor time and actual time are different
@@ -66,11 +192,26 @@ internally: `8/14`
     - start the clock the week after SensorsExpo: first day is ~~`7/2`~~ `7/9`
     - count forward 16 days to ~~`7/25`~~ `7/31`
 
-[x] Estimate deadline for measurement interface: ~~`8/8`~~ `8/14`
+### measurement interface
+[x] Estimate deadline for measurement interface:`8/16`
+#### 2018-07-19 estimate for measurement interface
+- goal is to finish in time for board meeting
+- start date: `Deadline for Embedded development`
+- that gives me 7 days
+- let the time limit set the goals
+- Estimate deadline for measurement interface: `8/16`
 
+---
+- old goal: modified monochromator setup for generating a map
+- revised goal: plot live data in LabVIEW
+
+#### 2018-07-09 estimate for measurement interface
 - working from a time limit: two weeks
     - let the time limit set the goals
 - start date: `Deadline for Embedded development`
+- estimate deadline for measurement interface: ~~`8/8`~~ `8/14`
+
+---
 - goal: modified monochromator setup for generating a map
     - main hurdle:
         - modify LabVIEW communication for the new firmware
