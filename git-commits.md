@@ -1,23 +1,39 @@
-- 2018-07-17 16:25:00 -0400  29 minutes ago Refactor FtRead tests to prepare for developing FtWrite.
-- 2018-07-17 16:01:54 -0400  52 minutes ago Refactor UsbRead tests. Organize tests into 3 behavioral and 2 implementation.
-- 2018-07-17 11:11:20 -0400     6 hours ago PASS `UsbRead_copies_bytes_to_the_input_read_buffer_address`.
-- 2018-07-16 21:23:08 -0400    20 hours ago Set up test for UsbRead_copies_bytes_to_the_input_read_buffer_address.
-- 2018-07-16 21:14:58 -0400    20 hours ago PASS UsbRead returns number of bytes read and reads until buffer is empty.
-- 2018-07-16 16:25:23 -0400    24 hours ago Pass `UsbRead_returns_3_if_there_were_3_bytes_to_read`. First test using a list of return values.
-- 2018-07-16 13:18:35 -0400    28 hours ago Fail: UsbRead_should_read_until_buffer_is_empty
-- 2018-07-14 11:03:51 -0400      3 days ago WIP: change UsbRead to return number of bytes read. Add fail messages to affected tests.
-- 2018-07-13 13:54:02 -0400      4 days ago Mock FtRead.
-- 2018-07-10 15:14:32 -0400      7 days ago TDD two: UsbRead_returns_false_if_there_was_no_data_read and UsbRead_turns_LED_red_if_there_was_no_data_read.
-- 2018-07-10 14:35:52 -0400      7 days ago Document desired behavior when FtIsBusOk returns that it is not OK to continue.
-- 2018-07-10 14:26:18 -0400      7 days ago TDD UsbRead_returns_true_if_there_is_data_to_read.
-- 2018-07-10 14:10:04 -0400      7 days ago Write other tests first. WIP: UsbRead_should_read_until_buffer_is_empty.
-- 2018-07-10 13:50:17 -0400      7 days ago Replace FtBusTurnaround with function pointer for UsbRead mock.
-- 2018-07-10 13:08:08 -0400      7 days ago Replace FtSendCommand with function pointer for UsbRead mock.
-- 2018-07-10 11:26:01 -0400      7 days ago Create lib Usb for unit testing.
-- 2018-07-07 21:03:44 -0400     10 days ago Document internal deadline.
-- 2018-07-07 20:59:00 -0400     10 days ago Document internal deadline.
-- 2018-07-07 20:57:40 -0400     10 days ago Document internal deadline.
-- 2018-07-07 20:49:56 -0400     10 days ago Document internal deadline.
+- 2018-07-18 19:07:47 -0400    16 hours ago PASS `UsbWrite_sad_path_is_implemented_like_this`.
+- 2018-07-18 19:00:18 -0400    16 hours ago PASS `UsbWrite_happy_path_is_implemented_like_this`.
+- 2018-07-18 18:47:47 -0400    16 hours ago Clean list of tests. Wire setup and teardown to test UsbWrite implementation details.
+- 2018-07-18 18:16:56 -0400    17 hours ago Organize `UsbRead` tests into behavior tests and implementation descriptions.
+- 2018-07-18 17:37:57 -0400    18 hours ago PASS `UsbWrite_returns_0_if_the_tx_buffer_was_already_full`.
+- 2018-07-18 17:28:33 -0400    18 hours ago PASS `UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full`.
+- 2018-07-18 16:57:20 -0400    18 hours ago Wired test `UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full`.
+- 2018-07-18 16:54:12 -0400    18 hours ago PASS `UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full`.
+- 2018-07-18 16:53:06 -0400    18 hours ago Fix mistake in test `UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full`.
+- 2018-07-18 16:48:17 -0400    18 hours ago PASS `UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full`.
+- 2018-07-18 14:20:46 -0400    21 hours ago PASS `UsbWrite_calls_FtWrite_for_each_byte_to_send`.
+- 2018-07-18 11:49:53 -0400    23 hours ago Add list of tests for UsbRead.
+- 2018-07-18 11:46:01 -0400    24 hours ago Add list of tests for UsbWrite.
+- 2018-07-18 09:58:06 -0400    25 hours ago Refactor FtRead tests. Organize into 4 behavior tests and 2 implementation tests.
+- 2018-07-17 21:34:53 -0400      2 days ago TDD low-level FtWriteData and high-level FtWrite.
+- 2018-07-17 17:12:58 -0400      2 days ago Wire first test of FtWrite.
+- 2018-07-17 16:25:00 -0400      2 days ago Refactor FtRead tests to prepare for developing FtWrite.
+- 2018-07-17 16:01:54 -0400      2 days ago Refactor UsbRead tests. Organize tests into 3 behavioral and 2 implementation.
+- 2018-07-17 11:11:20 -0400      2 days ago PASS `UsbRead_copies_bytes_to_the_input_read_buffer_address`.
+- 2018-07-16 21:23:08 -0400      3 days ago Set up test for UsbRead_copies_bytes_to_the_input_read_buffer_address.
+- 2018-07-16 21:14:58 -0400      3 days ago PASS UsbRead returns number of bytes read and reads until buffer is empty.
+- 2018-07-16 16:25:23 -0400      3 days ago Pass `UsbRead_returns_3_if_there_were_3_bytes_to_read`. First test using a list of return values.
+- 2018-07-16 13:18:35 -0400      3 days ago Fail: UsbRead_should_read_until_buffer_is_empty
+- 2018-07-14 11:03:51 -0400      5 days ago WIP: change UsbRead to return number of bytes read. Add fail messages to affected tests.
+- 2018-07-13 13:54:02 -0400      6 days ago Mock FtRead.
+- 2018-07-10 15:14:32 -0400      9 days ago TDD two: UsbRead_returns_false_if_there_was_no_data_read and UsbRead_turns_LED_red_if_there_was_no_data_read.
+- 2018-07-10 14:35:52 -0400      9 days ago Document desired behavior when FtIsBusOk returns that it is not OK to continue.
+- 2018-07-10 14:26:18 -0400      9 days ago TDD UsbRead_returns_true_if_there_is_data_to_read.
+- 2018-07-10 14:10:04 -0400      9 days ago Write other tests first. WIP: UsbRead_should_read_until_buffer_is_empty.
+- 2018-07-10 13:50:17 -0400      9 days ago Replace FtBusTurnaround with function pointer for UsbRead mock.
+- 2018-07-10 13:08:08 -0400      9 days ago Replace FtSendCommand with function pointer for UsbRead mock.
+- 2018-07-10 11:26:01 -0400      9 days ago Create lib Usb for unit testing.
+- 2018-07-07 21:03:44 -0400     12 days ago Document internal deadline.
+- 2018-07-07 20:59:00 -0400     12 days ago Document internal deadline.
+- 2018-07-07 20:57:40 -0400     12 days ago Document internal deadline.
+- 2018-07-07 20:49:56 -0400     12 days ago Document internal deadline.
 - 2018-06-22 14:05:38 -0400     4 weeks ago Add tests for FtRead. Ready to start FtWrite. First using FtRead to dev UsbRead.
 - 2018-06-20 17:21:04 -0400     4 weeks ago FtHasRoomToWrite returns false if MIOSIO bit 0 is high.
 - 2018-06-20 17:12:59 -0400     4 weeks ago FtHasRoomToWrite returns true if MIOSIO bit 0 is low.
