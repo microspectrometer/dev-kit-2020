@@ -1,6 +1,12 @@
 # Table of Contents
 - [Repo links](#markdown-header-repo-links)
+- [Status](#markdown-header-status)
+    - [lib organization](#markdown-header-lib-organization)
+    - [estimate progress](#markdown-header-estimate-progress)
+    - [track progress by lib](#markdown-header-track-progress-by-lib)
 - [Internal deadline](#markdown-header-internal-deadline)
+    - [Deliverables for August](#markdown-header-deliverables-for-august)
+    - [Deadline](#markdown-header-deadline)
 - [LIS-770i project code organization](#markdown-header-lis-770i-project-code-organization)
 - [Abstract memory-mapped-io for tests](#markdown-header-abstract-memory-mapped-io-for-tests)
 - [Mockist TDD](#markdown-header-mockist-tdd)
@@ -16,6 +22,7 @@
     - FT1248 reference
         - [FT1248 format of combined command and bus-width byte](#markdown-header-ft1248-format-of-combined-command-and-bus-width-byte)
         - [FT1248 combined command and bus-width byte for an 8-bit bus](#markdown-header-ft1248-combined-command-and-bus-width-byte-for-an-8-bit-bus)
+- [SPI](#markdown-header-spi)
 
 ---e-n-d---
 
@@ -28,6 +35,7 @@
 - porcelain calls are for interfacing with a higher-level lib
 - plumbing calls eliminate comment-noise in the porcelain calls
 - lib Usb only touches the porcelain
+
 #### Usb
 - encapsulates Ft1248
 - user never needs to know about Ft1248 communication at the firmware level:
@@ -56,28 +64,37 @@
         - top: combining and looping those many functions into three simple
           abstractions: ready, read, write
             - example: `UsbRead` to read all bytes from the receive buffer
+
 #### Spi
 - master SPI on simBrd talks to slave SPI on mBrd
+
 #### Adc-spi
 - USART module on mBrd is the SPI master
+
 #### Lis-io
 - readout
 - programmable setup
+
 #### I2c
 - talks to the i2c slave LED driver on the RGB LED board
 - RGB LED board connection is available on both the mBrd and simBrd
 - useful for dev and demos
+
 ### other libs
+
 #### DebugLed
-    - controls the DebugLed
-    - simBrd has one debug LED
-    - mBrd has four debug LEDs
+- controls the DebugLed
+- simBrd has one debug LED
+- mBrd has four debug LEDs
+
 #### ReadWriteBits
-    - reads and writes bits given a register name and a bit number
-    - abstracts one level above the bit-mask operations
-    - eliminates comment-noise in the low-level libs
+- reads and writes bits given a register name and a bit number
+- abstracts one level above the bit-mask operations
+- eliminates comment-noise in the low-level libs
+
 ## estimate progress
 - estimate percentage finished: `18%`
+
 ### estimate details:
 - *number of tests written* is a crude progress indicator
 - for the purposes of estimating:
@@ -91,12 +108,14 @@
 - estimated number of tests total: `250`
 - number of tests written so far: `57`
 - number of tests written that are part of the estimated total: `45`
+
 ### system tests
 - *system tests* are done as needed and become part of the test suite
 - these are part of the automated test suite
 - uses hardware fakes
 - no mocks:
     - high-level lib makes call to *actual* low-level lib
+
 ### embedded tests
 - *embedded tests* are done each time a lib is finished and there is a new
   testable something
@@ -106,6 +125,7 @@
   hardware:
     - look at debug LED
     - read response on screen in serial communication script
+
 ## track progress by lib
 - [x] Ft1248
     - 28 tests
@@ -138,6 +158,7 @@
     - *just beyond minimum viable*:
         - treat as a single LED
         - but design the interface to be open for extension
+
 # Internal deadline
 ## Context
 - This was originally a writeup for Kulite.
@@ -151,7 +172,6 @@
       on July 6th, my first day back on this project ended up being `7/9`
 
 ## Deliverables for August
-
 - High-resolution spectrometer prototype using LIS-770i and n=7 die with
   custom-machined housing to mate with 20mm x 20mm LIS-770i daughterboard and an
   attachment for a #8-32 set-screw for mounting on an optical post.
@@ -160,7 +180,7 @@
 
 ## Deadline
 [x] Estimated deadline for deliverable prototype to ~~ship to Kulite~~ use
-internally: `8/14`
+internally: ~~`8/14`~~ `8/17`
 
 - broken into two deadlines
     - Embedded development
@@ -500,8 +520,20 @@ macros. I should investigate this.
 
 # Mockist TDD
 ## Mocks are not fakes
-*This section was copied from repo `mock-object`*
+- *2017-07-19 Update: only mock when the test requires it*
+    - if possible, test behavior without comparing call lists
+    - comparing call lists couples tests to implementation details
+    - even tests that stub functions to mock-up a scenario by controlling return
+      values may not need to compare call lists
+    - tests require comparing call lists when:
+        - there is no other way to check the behavior
+        - the purpose of the test is to describe one path, e.g.: sad path or
+          happy path
 
+---
+- *This section was copied from repo `mock-object`*
+    - take any *mock-heavy* attitudes with a grain of salt `>*.*<`
+---
 This register faking is not mocking. The fake register is just another
 dependency. Mocking is a way to pretend that the dependency exists without it
 actually existing. This is done with expectations and stubs.
@@ -1137,7 +1169,7 @@ nibble. A **low** on a particular bus-width bit indicates the bus width. The
 other bits in the bus-width nibble should not matter, but to play it safe, the
 other bits in the bus-width nibble are pulled high.
 
-
+# SPI
 
 # Repo links
 Link to this repo: https://bitbucket.org/rainbots/lis-770i/src/master/
