@@ -1170,6 +1170,171 @@ other bits in the bus-width nibble should not matter, but to play it safe, the
 other bits in the bus-width nibble are pulled high.
 
 # SPI
+# Program Flash
+## Memory on the ATmega328
+The ATmega328 uses a *Harvard architecture* meaning separate memory and buses
+for program and data:
+
+- **2KBytes** of *SRAM* hold data memory
+- **32KBytes** of *Flash* hold program memory
+
+Both the *SRAM* and *Flash* use indirect addressing because it is a large amount
+of memory to navigate and the buses are only 8-bit. The **32** 8-bit *General
+Purpose Registers* use direct addressing.
+
+Static memory, stack memory, and the heap all use the *SRAM*. Static memory is
+never a problem. The trouble is with *stack-heap collisions*.
+
+## RAM layout and stack-heap collisions
+https://www.nongnu.org/avr-libc/user-manual/malloc.html
+
+- *.data* are initialized variables
+- *.bss* are uninitialized variables
+
+These are *static-mem* variables. The standard RAM layout is to place *.data*
+then *.bss* at the beginning. Then the *heap* starts.
+
+The *stack-mem* starts at the end of RAM and grows towards the beginning.
+
+The trouble is the *heap* and *stack* can both require arbitrarily large amounts
+of memory.
+Besides allocating memory dynamically, the *heap* causes trouble if
+there is a memory that is allocted but never freed, or if the memory is freed
+but RAM because fragmented such that the freed memory is never reallocated.
+The *stack* grows as stack frames stack up from nested function calls. The size
+of each stack frame depends on how much data is local to that function.
+
+It is hard to predict when the *heap* and the *stack* might collide.
+
+## Cable connections and switch settings
+- Set simBrd SW2 to "ISP"
+    - program the simBrd: SW1 to "M.ISP"
+    - program the mBrd:   SW1 to "S.ISP"
+- Power simBrd from hostPC with mini-B USB cable.
+- Power ATMEL-ICE from hostPC with micro-B USB cable.
+- Connect ATMEL-ICE to simBrd by connecting the 10-pin ribbon cable to the AVR
+  port on the Atmel-ICE, and the 6-pin keyed female socket end of the 10-pin
+  ribbon cable to the male shrouded header on the PCB.
+
+## Verify programming communication link
+### Correct output
+- Expect device signature: `0x1E950F`
+- Expect fuse settings: `EXTENDED 0xFF, HIGH 0xD9, LOW 0xF7`
+
+### Do not invoke from command line
+- you can invoke from PowerShell like this:
+```
+PS> atprogram -t atmelice -i isp -d atmega328p info
+```
+- invoke from Vim instead with the `;mkp` shortcut
+
+### Invoke from Vim
+- `cd` to directory that has the `Makefile` with the `avr` targets
+```vim
+;mkp
+```
+## Do not manually program flash from the command line
+- don't bother, use `make` instead
+### Verify a file is loaded from the command line
+- TODO: make a Vim shortcut for this
+- From PowerShell:
+    - Copy the full path to the source.elf to the clipboard.
+    - Create a variable:
+```
+PS> $source = {paste-path-to-source.elf}
+PS> atprogram -t atmelice -i isp -d atmega328p verify -fl -f $source
+```
+
+## Programming flash with `make`
+- each sub-folder in `LIS-770i` has a `Makefile`
+    - `lib`
+    - `mBrd`
+    - `simBrd`
+- `cd` to the directory with the right `Makefile`
+    - the `Makefile` in `simBrd` and `mBrd` has *avr targets*
+    - these are invoked by the following shortcuts
+        - `;mkp` - query device
+        - `;mkv` - measure voltage
+        - `;mna` - show build recipe
+        - `;mka` - build
+        - `;fa`  - download flash
+        - `;mfa` - build and download flash
+        - `;f-Space` - close log windows
+    - most are safe, but downloading flash with `;fa` will program the wrong
+      .elf file if the *pwd* is the wrong sub-folder
+    - the `Makefile` in `lib` does not have *avr targets*
+        - it is safe to accidentally be in this folder
+        - this results in messages like this:
+```make
+(1 of 1): make: *** No rule to make target 'test_programmer_is_connected'.  Stop.
+```
+### Diagnostics
+#### ;mkp returns MCU device signature and fuse settings
+- Expect device signature: `0x1E950F`
+- Expect fuse settings: `EXTENDED 0xFF, HIGH 0xD9, LOW 0xF7`
+```vim
+nnoremap <leader>mkp :make test_programmer_is_connected<CR>
+```
+- `test_programmer_is_connected` is a target defined in the `Makefile`:
+- =====[ `LIS-770i/simBrd/Makefile` ]=====
+```make
+.PHONY: test_programmer_is_connected
+test_programmer_is_connected:
+	atprogram.exe --tool atmelice --interface isp --device atmega328p info
+```
+#### ;mkv returns the target voltage
+- Expect `2.94V`
+```vim
+nnoremap <leader>mkv :make display_target_voltage<CR>
+```
+- `display_target_voltage` is a target defined in the `Makefile`:
+- =====[ `LIS-770i/simBrd/Makefile` ]=====
+```make
+.PHONY: display_target_voltage
+display_target_voltage:
+	atprogram.exe --tool atmelice --interface isp --device atmega328p parameters --voltage
+```
+### Build and Download
+#### ;mna returns the .elf build recipe with variables substituted
+```vim
+nnoremap <leader>mna :make avr-target compiler=avr-gcc -n<CR>
+```
+#### ;mka builds the .elf
+```vim
+nnoremap <leader>mka :call CloseTestResults()<CR>
+            \:make avr-target compiler=avr-gcc<CR><CR><CR>
+            \:call MakeQuickfix()<CR>
+```
+#### ;fa programs the flash
+- `;fa` to download flash
+```vim
+nnoremap <leader>fa :call DownloadFlash()<CR>
+function! DownloadFlash()
+    execute "make download_flash"
+endfunction
+```
+#### ;mfa builds and programs the flash
+- `;mfa` to build for the MCU and download flash
+- there is something wrong with this Vim script
+    - the first time I ran it I just saw a bunch of errors
+    - the second time I ran it it erased my entire README.md file!
+    - the trouble must have been here:
+```vim
+call MakeQuickfixAndDownloadFlash
+```
+
+- but the important stuff works
+```vim
+nnoremap <leader>mfa :call CloseLogfileWindows()<CR>
+            \:make avr-target compiler=avr-gcc<CR><CR><CR>
+            \:call MakeQuickfixAndDownloadFlash()<CR><CR>
+```
+#### ;f-Space closes any open atprogram log windows and quickfix window
+- I rewrote this Vim script while fixing `;mfa`
+- it is completely safe
+- invoke it from any window
+- as long as the *pwd* is correct, it does its job
+- otherwise, it does nothing
 
 # Repo links
 Link to this repo: https://bitbucket.org/rainbots/lis-770i/src/master/

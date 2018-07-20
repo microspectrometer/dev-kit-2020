@@ -94,6 +94,7 @@ ${obj_libs-tested-with-mocks}: build/%.o: test/%.c
 ${obj_libs-mocked}: build/%.o: test/%.c
 	${compiler} -c $^ -o $@ $(CFLAGS)
 
+
 #;mc
 .PHONY: clean-all-builds
 clean-all-builds:

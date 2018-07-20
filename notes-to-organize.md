@@ -439,18 +439,54 @@ Debug simBrd with the one red/green LED.
         To get help on a command:
         atprogram help {command-name}
 
-Review all the steps to program the simBrd flash from the CLI:
-Cable connections and switch settings:
-    Set simBrd SW1 to "M.ISP" and SW2 to "ISP".
-    Power simBrd from hostPC with mini-B USB cable.
-    Power ATMEL-ICE from hostPC with micro-B USB cable.
-    Connet ATMEL-ICE to simBrd by connecting the 10-pin ribbon cable to the AVR
-    port on the Atmel-ICE, and the 6-pin keyed female socket end of the 10-pin
-    ribbon cable to the male shrouded header on the PCB.
-Verify programming communication link:
-    PS> &$atprogram
-    C:\Program Files (x86)\Atmel\Studio\7.0\Extensions\Application\StudioCommandPrompt.exe
-    /cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/Extensions/Application/StudioCommandPrompt.exe
+## Review all the steps to program the simBrd flash from the CLI
+
+### Change Path instead of adding PowerShell Environment Variables
+- Wrong:
+```
+PS> &$atprogram
+```
+> `C:\Program Files (x86)\Atmel\Studio\7.0\Extensions\Application\StudioCommandPrompt.exe`
+> `/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/Extensions/Application/StudioCommandPrompt.exe`
+- See notes in `/cygdrive/c/Users/Mike/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1`
+- I copied those notes below and turned them into markdown.
+
+---
+- I ended up only needing `atprogram` and I simply added it to the path.
+    - `atprogram` is added to the path via the `atbackend` folder.
+
+- I originally created Atmel Studio 7.0 shortcuts.
+```
+$atmelstudio = "C:\Program Files (x86)\Atmel\Studio\7.0\AtmelStudio.exe"
+```
+- and ran these with `&` prefix, e.g.:
+```
+PS> &$atprogram
+PS> &$atmelstudio
+```
+- Then I started automating with Make and found I just needed to invoke
+  atprogram.
+```
+$this_is_NOT_atprogram = 
+    "C:\Program Files (x86)\Atmel\Studio\7.0\Extensions\Application\StudioCommandPrompt.exe"
+```
+- I found the actual `atprogram.exe`:
+```
+$this_is_atprogram_but_just_add_to_path =
+    "C:\Program Files (x86)\Atmel\Studio\7.0\atbackend\atprogram.exe"
+```
+- but I needed it on my Path, not as a PowerShell Envrionment variable!
+```
+#Append avr8-gnu-toolchain to PATH.
+$avr8_path = "C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin"
+$env:PATH = "$env:PATH;$avr8_path"
+
+#Append atprogram.exe folder to PATH.
+$atbackend_path = "C:\Program Files (x86)\Atmel\Studio\7.0\atbackend"
+$env:PATH = "$env:PATH;$atbackend_path"
+```
+
+### Verify programming communication link
     PS> powershell
     PS> atprogram -t atmelice -i isp -d atmega328p info
         Expect device signature:    0x1E950F
@@ -461,5 +497,3 @@ Verify a file is loaded:
     Copy the full path to the source.elf to the clipboard.
     Create a variable: $source = {paste full path}.
     atprogram -t atmelice -i isp -d atmega328p verify -fl -f $source
-
-
