@@ -1357,6 +1357,85 @@ nnoremap <leader>mfa :call CloseLogfileWindows()<CR>
 - as long as the *pwd* is correct, it does its job
 - otherwise, it does nothing
 
+# USB Host Application
+## 2017 eval kit `Example Python Interface`
+### Use legacy Python environment
+- the `s.write()` calls in this example code requires my legacy Python
+  environment:
+    - Python2.7
+    - OS: Windows
+- invoke this legacy Python environment from PowerShell:
+```powershell
+PS> &$python2_os_Windows
+```
+
+### needs py27 to write unicode
+- this calls `python.exe` in my Windows installation of `py27`:
+> `C:\Anaconda3\envs\py27\python.exe`
+- all other calls work as expected on `py3` on Windows
+
+### needs Windows to acces the `COM` port
+- `Windows` is required to use the `COM` port to identify the serial port.
+- a `POSIX` OS complains that `COM` is not a file or directory
+- here is the error when attempting to open `Cygwin` (a POSIX OS)
+> File "/usr/lib/python3.6/site-packages/serial/serialposix.py", line 268, in
+> open
+```python
+raise SerialException(
+    msg.errno,
+    "could not open port {}: {}".format(self._port, msg)
+    )
+```
+> serial.serialutil.SerialException: [Errno 2] could not open port COM6: [Errno
+> 2] no such file or directory: 'COM6'
+
+### Configure the FT221XA for VCP
+- set the FT221XA to use the COM port:
+    - run `Device Manager`
+    - Find `Usb Serial Converter`
+    - right-clik, select `Properties`
+    - click on the `Advanced` tab
+    - check the box `Load VCP`
+    - this uses `VCP` instead of `D2XX`
+
+### Run at the Python REPL
+- copy the following Python lines into the clipboard with Vim:
+    - `V` to select by line, highlight all lines
+    - `"+y` yank into the clipboard
+- I added `^M` to the end of each line of script
+    - when this is pasted into the *Python REPL* it behaves as if pressing
+      `<CR>` at the end of the line
+    - I added these `<CR>` keypresses in Vim using `i_Ctrl-B<CR>`
+- paste into the *Python REPL* in *PowerShell* with `Alt-Space e p`
+
+#### open serial port
+```python
+import serial
+s=serial.Serial()
+s.baudrate = 9600
+s.port = 'COM7'
+s.open()
+```
+- note that `pyserial` has improved handling of Windows port names since the
+  last time someone used the Chromation `Example Python Interface`
+    - `port` takes the Windows `COM` port number as a string
+    - `port` no longer takes an `int`
+
+#### write a byte
+```python
+s.write('\x00')
+```
+#### Earhart command sequence to get a frame
+```python
+s.write('\x00\x04')
+s.write('\x00\x80')
+s.write('\x00\x05')
+s.write('\x01\xF4')
+s.inWaiting()
+```
+- expect the response `4L` meaning there are four bytes waiting in the input
+  buffer
+
 # Repo links
 Link to this repo: https://bitbucket.org/rainbots/lis-770i/src/master/
 

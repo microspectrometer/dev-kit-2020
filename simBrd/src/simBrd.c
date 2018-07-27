@@ -55,6 +55,46 @@ void test_UsbWrite(void)
     /* UsbWrite_called_before_UsbInit_turns_debug_led_red();  // PASS 2018-07-27 */
 }
 //
+void Turn_debug_led_red_when_there_is_a_byte_to_read(void)
+{
+    /* =====[ Host application ]===== */
+    /* ```python */
+    /* import serial */
+    /* s=serial.Serial() */
+    /* s.baudrate = 9600 */
+    /* s.port = 'COM6' */
+    /* s.open() */
+    /* s.write('\x00') */
+    /* ``` */
+    //
+    /* =====[ Required Hardware Settings in FT_Prog ]===== */
+    /* - Hardware Specific -> Ft1248 Settings */
+    /* - Clock Polarity High: checked */
+    /* - Bit Order LSB: unchecked */
+    /* - Flow Ctrl not selected: checked */
+    //
+    // Loop forever checking MISO.
+    // Expect MISO goes low when there is data in the USB rx buffer.
+    //
+    // Visually confirm the debug LED turns red when the host executes
+    // `s.write`.
+    //
+    while(1)
+    {
+        if ( UsbHasDataToRead() ) DebugLedTurnRed();
+        /* UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data */
+    }
+}
+void test_UsbRead(void)
+{
+    //
+    // Pick one test to run.
+    // Uncomment that test.
+    // Leave the other tests commented out.
+    //
+    /* Turn_debug_led_red_when_there_is_a_byte_to_read(); // PASS 2018-07-27 */
+}
+//
 void SetupDebugLed(void)
 {
     DebugLedInit(
@@ -67,7 +107,8 @@ void SetupDebugLed(void)
 int main()
 {
     SetupDebugLed();
-    test_UsbWrite();
+    /* test_UsbWrite(); // All tests PASS 2018-07-27 */
+    /* test_UsbRead(); // All tests pass 2018-07-27 */
 }
     /* UsbWrite_called_before_UsbInit_turns_debug_led_red(); */
     /* uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send); */
