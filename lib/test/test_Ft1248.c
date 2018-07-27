@@ -13,6 +13,7 @@
     // [x] FtEnablePullupOnMiso enables pullup on MISO
     // [x] FtSetMiosioAsInputs configures MIOSIO as an input port
     // [x] FtEnablePullupsOnMiosio configures pullups on MIOSIO
+    // [x] FtSckLow drives SCK low
     // [ ] FtSetOutput(pin) configures pin as an output pin
     // [ ] FtEnablePullup(pin) enables pullup on pin
     // [ ] FtDisablePullup(pin) disables pullup on pin
@@ -137,7 +138,6 @@ void FtEnablePullupOnMiso_enables_pullup_on_MISO(void)
 {
     /* =====[ Operate ]===== */
     FtEnablePullupOnMiso();
-
     /* =====[ Test ]===== */
     TEST_ASSERT_TRUE(BitIsSet(Ft1248_port,Ft1248_Miso));
 }
@@ -156,6 +156,15 @@ void FtEnablePullupsOnMiosio_configures_pullups_on_MIOSIO(void)
     FtEnablePullupsOnMiosio();
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_UINT8(0xFF, *FtMiosio_port);
+}
+void FtSckLow_drives_SCK_low(void)
+{
+    /* =====[ Setup ]===== */
+    *Ft1248_port=0xFF;
+    /* =====[ Operate ]===== */
+    FtSckLow();
+    TEST_ASSERT_TRUE(BitIsClear(Ft1248_port,Ft1248_Sck));
+    TEST_ASSERT_TRUE(BitIsSet(Ft1248_ddr,Ft1248_Sck));
 }
 
 void FtHasDataToRead_returns_true_if_MISO_is_low(void)

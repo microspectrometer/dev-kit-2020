@@ -36,6 +36,7 @@ void FtSetMisoAsInput(void);
 void FtEnablePullupOnMiso(void);
 void FtSetMiosioAsInputs(void);
 void FtEnablePullupsOnMiosio(void);
+void FtSckLow(void);
 extern void (*FtOutputCmdOnMiosio)(uint8_t FtCmd);
 extern void (*FtActivateInterface)(void);
 extern void (*FtPushData)(void);

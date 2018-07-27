@@ -19,7 +19,7 @@ void FtInit(void)
 }
 void FtSetMisoAsInput(void)
 {
-    ClearBit(Ft1248_ddr,Ft1248_Miso);
+    ClearBit(Ft1248_ddr, Ft1248_Miso);
 }
 void FtEnablePullupOnMiso(void)
 {
@@ -33,7 +33,11 @@ void FtEnablePullupsOnMiosio(void)
 {
     *FtMiosio_port = 0xFF;
 }
-/* void (*FtSckLow)(void) = FtPullData_Implementation; */
+void FtSckLow(void)
+{
+    ClearBit(Ft1248_port, Ft1248_Sck);  // drive low
+    SetBit(Ft1248_ddr, Ft1248_Sck);     // cfg as output
+}
 
 uint8_t const FtCmd_Read  = 0xC6;
 uint8_t const FtCmd_Write = 0x86;
