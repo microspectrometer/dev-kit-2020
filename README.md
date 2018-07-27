@@ -23,6 +23,10 @@
         - [FT1248 format of combined command and bus-width byte](#markdown-header-ft1248-format-of-combined-command-and-bus-width-byte)
         - [FT1248 combined command and bus-width byte for an 8-bit bus](#markdown-header-ft1248-combined-command-and-bus-width-byte-for-an-8-bit-bus)
 - [SPI](#markdown-header-spi)
+- [Program Flash](#markdown-header-program-flash)
+    - [Cable connections and switch settings](#markdown-header-cable-connections-and-switch-settings)
+    - [Verify programming communication link](#markdown-header-verify-programming-communication-link)
+    - [Programming flash with `make`](#markdown-header-programming-flash-with-`make`)
 
 ---e-n-d---
 
