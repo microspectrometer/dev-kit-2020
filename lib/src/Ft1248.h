@@ -34,7 +34,8 @@ extern uint8_t const FtMiosio7;
 //=====[ Low-level API ]=====
 void FtSetMisoAsInput(void);
 void FtEnablePullupOnMiso(void);
-void FtSetMiosioAsInput(void);
+void FtSetMiosioAsInputs(void);
+void FtEnablePullupsOnMiosio(void);
 extern void (*FtOutputCmdOnMiosio)(uint8_t FtCmd);
 extern void (*FtActivateInterface)(void);
 extern void (*FtPushData)(void);

@@ -11,7 +11,8 @@
 // Ft1248Init() configures much pins to be an FT1248 master.
     // [x] FtSetMisoAsInput configures MISO as an input pin
     // [x] FtEnablePullupOnMiso enables pullup on MISO
-    // [x] FtSetMiosioAsInput configures MIOSIO as an input port
+    // [x] FtSetMiosioAsInputs configures MIOSIO as an input port
+    // [x] FtEnablePullupsOnMiosio configures pullups on MIOSIO
     // [ ] FtSetOutput(pin) configures pin as an output pin
     // [ ] FtEnablePullup(pin) enables pullup on pin
     // [ ] FtDisablePullup(pin) disables pullup on pin
@@ -121,6 +122,7 @@ void TearDown_FtPorts(void)
     *Ft1248_ddr = 0x00;
     *Ft1248_port = 0x00;
     *FtMiosio_ddr = 0x00;
+    *FtMiosio_port = 0x00;
 }
 void FtSetMisoAsInput_configures_MISO_as_an_input_pin(void)
 {
@@ -139,14 +141,21 @@ void FtEnablePullupOnMiso_enables_pullup_on_MISO(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_TRUE(BitIsSet(Ft1248_port,Ft1248_Miso));
 }
-void FtSetMiosioAsInput_configures_MIOSIO_as_an_input_port(void)
+void FtSetMiosioAsInputs_configures_MIOSIO_as_an_input_port(void)
 {
     /* =====[ Setup ]===== */
     *FtMiosio_ddr = 0xFF;
     /* =====[ Operate ]===== */
-    FtSetMiosioAsInput();
+    FtSetMiosioAsInputs();
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_UINT8(0x00, *FtMiosio_ddr);
+}
+void FtEnablePullupsOnMiosio_configures_pullups_on_MIOSIO(void)
+{
+    /* =====[ Operate ]===== */
+    FtEnablePullupsOnMiosio();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT8(0xFF, *FtMiosio_port);
 }
 
 void FtHasDataToRead_returns_true_if_MISO_is_low(void)

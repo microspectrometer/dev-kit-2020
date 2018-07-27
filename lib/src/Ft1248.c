@@ -14,6 +14,8 @@ void FtInit(void)
 {
     FtSetMisoAsInput();
     FtEnablePullupOnMiso();
+    FtSetMiosioAsInputs();
+    FtEnablePullupsOnMiosio();
 }
 void FtSetMisoAsInput(void)
 {
@@ -23,10 +25,15 @@ void FtEnablePullupOnMiso(void)
 {
     SetBit(Ft1248_port, Ft1248_Miso);
 }
-void FtSetMiosioAsInput(void)
+void FtSetMiosioAsInputs(void)
 {
     *FtMiosio_ddr = 0x00;
 }
+void FtEnablePullupsOnMiosio(void)
+{
+    *FtMiosio_port = 0xFF;
+}
+/* void (*FtSckLow)(void) = FtPullData_Implementation; */
 
 uint8_t const FtCmd_Read  = 0xC6;
 uint8_t const FtCmd_Write = 0x86;
