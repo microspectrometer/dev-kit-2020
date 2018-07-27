@@ -33,6 +33,7 @@ extern uint8_t const FtMiosio7;
 //extern void (*FtSendCommand)(uint8_t FtNbitCmd);
 //=====[ Low-level API ]=====
 void FtSetMisoAsInput(void);
+void FtEnablePullupOnMiso(void);
 extern void (*FtOutputCmdOnMiosio)(uint8_t FtCmd);
 extern void (*FtActivateInterface)(void);
 extern void (*FtPushData)(void);

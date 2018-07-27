@@ -18,6 +18,10 @@ void FtSetMisoAsInput(void)
 {
     ClearBit(Ft1248_ddr,Ft1248_Miso);
 }
+void FtEnablePullupOnMiso(void)
+{
+    SetBit(Ft1248_port, Ft1248_Miso);
+}
 
 uint8_t const FtCmd_Read  = 0xC6;
 uint8_t const FtCmd_Write = 0x86;

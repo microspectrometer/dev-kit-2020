@@ -49,5 +49,6 @@ void FtReadData_returns_the_value_on_MIOSIO_pins(void);
 void FtWriteData_byte_outputs_byte_on_MIOSIO_pins(void);
 //FtInit
 void FtSetMisoAsInput_configures_MISO_as_an_input_pin(void);
+void FtEnablePullupOnMiso_enables_pullup_on_MISO(void);
 
 #endif // _TEST_FT1248_H
