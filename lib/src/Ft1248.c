@@ -16,6 +16,8 @@ void FtInit(void)
     FtEnablePullupOnMiso();
     FtSetMiosioAsInputs();
     FtEnablePullupsOnMiosio();
+    FtSckLow();
+    FtSsHigh();
 }
 void FtSetMisoAsInput(void)
 {

@@ -36,6 +36,14 @@ void DevelopingDebugLed(bool run_test) { if (run_test) {
 void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
     //setUp = SetUp_NothingForFt1248; tearDown = TearDown_NothingForFt1248;
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
+    RUN_TEST(FtSetMisoAsInput_configures_MISO_as_an_input_pin);
+    RUN_TEST(FtEnablePullupOnMiso_enables_pullup_on_MISO);
+    RUN_TEST(FtSetMiosioAsInputs_configures_MIOSIO_as_an_input_port);
+    RUN_TEST(FtEnablePullupsOnMiosio_configures_pullups_on_MIOSIO);
+    RUN_TEST(FtSckLow_drives_SCK_low);
+    RUN_TEST(FtSsHigh_drives_SS_high);
+    //
+    setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtHasDataToRead_returns_true_if_MISO_is_low);
     RUN_TEST(FtHasDataToRead_returns_false_if_MISO_is_high);
     RUN_TEST(FtHasRoomToWrite_returns_true_if_MIOSIO_bit_0_is_low);
@@ -116,15 +124,8 @@ int main()
     UNITY_BEGIN();
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
-    DevelopingFt1248_lowlevel (Nope);
+    DevelopingFt1248_lowlevel (Yep);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
-    setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
-    RUN_TEST(FtSetMisoAsInput_configures_MISO_as_an_input_pin);
-    RUN_TEST(FtEnablePullupOnMiso_enables_pullup_on_MISO);
-    RUN_TEST(FtSetMiosioAsInputs_configures_MIOSIO_as_an_input_port);
-    RUN_TEST(FtEnablePullupsOnMiosio_configures_pullups_on_MIOSIO);
-    RUN_TEST(FtSckLow_drives_SCK_low);
-    RUN_TEST(FtSsHigh_drives_SS_high);
     return UNITY_END();
 }

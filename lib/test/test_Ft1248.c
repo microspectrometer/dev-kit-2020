@@ -14,10 +14,7 @@
     // [x] FtSetMiosioAsInputs configures MIOSIO as an input port
     // [x] FtEnablePullupsOnMiosio configures pullups on MIOSIO
     // [x] FtSckLow drives SCK low
-    // [ ] FtSsHigh drives SS high
-    // [ ] FtSetOutput(pin) configures pin as an output pin
-    // [ ] FtEnablePullup(pin) enables pullup on pin
-    // [ ] FtDisablePullup(pin) disables pullup on pin
+    // [x] FtSsHigh drives SS high
     //
 // *Inactive state* control signals from the FT1248 slave:
     // [x] FtHasDataToRead() returns true if MISO is low

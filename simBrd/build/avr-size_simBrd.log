@@ -1,2 +1,2 @@
    text	   data	    bss	    dec	    hex	filename
-    856	     48	      7	    911	    38f	build/simBrd.elf
+   1030	     50	      7	   1087	    43f	build/simBrd.elf

@@ -11,6 +11,7 @@ int main()
         DebugLed_pin,
         debug_led
         );
+    UsbInit();
     /* DebugLedTurnRedToShowError(); */
     uint8_t write_buffer[] = {0, 1, 2, 3, 4, 5};
     uint16_t num_bytes_to_send = sizeof(write_buffer);
