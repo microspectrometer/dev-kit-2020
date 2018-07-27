@@ -10,7 +10,8 @@
 //=====[ List of tests to write ]=====
 // Ft1248Init() configures much pins to be an FT1248 master.
     // [x] FtSetMisoAsInput configures MISO as an input pin
-    // [ ] FtEnablePullupOnMiso enables pullup on MISO
+    // [x] FtEnablePullupOnMiso enables pullup on MISO
+    // [x] FtSetMiosioAsInput configures MIOSIO as an input port
     // [ ] FtSetOutput(pin) configures pin as an output pin
     // [ ] FtEnablePullup(pin) enables pullup on pin
     // [ ] FtDisablePullup(pin) disables pullup on pin
@@ -137,6 +138,15 @@ void FtEnablePullupOnMiso_enables_pullup_on_MISO(void)
 
     /* =====[ Test ]===== */
     TEST_ASSERT_TRUE(BitIsSet(Ft1248_port,Ft1248_Miso));
+}
+void FtSetMiosioAsInput_configures_MIOSIO_as_an_input_port(void)
+{
+    /* =====[ Setup ]===== */
+    *FtMiosio_ddr = 0xFF;
+    /* =====[ Operate ]===== */
+    FtSetMiosioAsInput();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT8(0x00, *FtMiosio_ddr);
 }
 
 void FtHasDataToRead_returns_true_if_MISO_is_low(void)

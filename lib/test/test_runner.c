@@ -122,5 +122,6 @@ int main()
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtSetMisoAsInput_configures_MISO_as_an_input_pin);
     RUN_TEST(FtEnablePullupOnMiso_enables_pullup_on_MISO);
+    RUN_TEST(FtSetMiosioAsInput_configures_MIOSIO_as_an_input_port);
     return UNITY_END();
 }

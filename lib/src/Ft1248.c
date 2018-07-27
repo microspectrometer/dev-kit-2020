@@ -12,7 +12,8 @@
 #include "DebugLed.h"
 void FtInit(void)
 {
-    DebugLedTurnRed();
+    FtSetMisoAsInput();
+    FtEnablePullupOnMiso();
 }
 void FtSetMisoAsInput(void)
 {
@@ -21,6 +22,10 @@ void FtSetMisoAsInput(void)
 void FtEnablePullupOnMiso(void)
 {
     SetBit(Ft1248_port, Ft1248_Miso);
+}
+void FtSetMiosioAsInput(void)
+{
+    *FtMiosio_ddr = 0x00;
 }
 
 uint8_t const FtCmd_Read  = 0xC6;
