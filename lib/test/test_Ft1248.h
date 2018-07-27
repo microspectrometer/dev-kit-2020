@@ -47,5 +47,7 @@ void FtDeactivateInterface_pulls_SS_high(void);
 void FtReadData_returns_the_value_on_MIOSIO_pins(void);
 //FtWrite
 void FtWriteData_byte_outputs_byte_on_MIOSIO_pins(void);
+//FtInit
+void FtSetMisoAsInput_configures_MISO_as_an_input_pin(void);
 
 #endif // _TEST_FT1248_H

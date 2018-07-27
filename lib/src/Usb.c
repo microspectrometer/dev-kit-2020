@@ -2,6 +2,10 @@
 #include "Ft1248.h"
 #include "DebugLed.h"
 
+void UsbInit(void)
+{
+    FtInit();
+}
 uint16_t UsbRead(uint8_t *read_buffer)
 {
     uint16_t num_bytes_read = 0;

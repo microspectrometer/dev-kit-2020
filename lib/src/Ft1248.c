@@ -9,6 +9,16 @@
 //static uint8_t const FT1248Cmd_8BitWide_Write = 0x86;
 
 //=====[ High-level API ]=====
+#include "DebugLed.h"
+void FtInit(void)
+{
+    DebugLedTurnRed();
+}
+void FtSetMisoAsInput(void)
+{
+    ClearBit(Ft1248_ddr,Ft1248_Miso);
+}
+
 uint8_t const FtCmd_Read  = 0xC6;
 uint8_t const FtCmd_Write = 0x86;
 static void FtSendCommand_Implementation(uint8_t FtCmd)

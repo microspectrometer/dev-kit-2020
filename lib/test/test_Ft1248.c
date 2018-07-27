@@ -8,7 +8,13 @@
 #include "ReadWriteBits.h"
 
 //=====[ List of tests to write ]=====
-    // *Inactive state* control signals from the FT1248 slave:
+// Ft1248Init() configures much pins to be an FT1248 master.
+    // [x] FtSetMisoAsInput configures MISO as an input pin
+    // [ ] FtSetOutput(pin) configures pin as an output pin
+    // [ ] FtEnablePullup(pin) enables pullup on pin
+    // [ ] FtDisablePullup(pin) disables pullup on pin
+    //
+// *Inactive state* control signals from the FT1248 slave:
     // [x] FtHasDataToRead() returns true if MISO is low
     // [x] FtHasDataToRead returns false if MISO is high
     //     - FtHasDataToRead is an alias for FtIsBusOk
@@ -101,6 +107,7 @@
 //=====[ Develop low-level functions ]=====
 void SetUp_FtPorts(void)
 {
+    *Ft1248_ddr = 0x00;
     *Ft1248_port = 0x00;
     *FtMiosio_ddr = 0x00;
     *FtMiosio_port = 0x00;
@@ -109,9 +116,20 @@ void SetUp_FtPorts(void)
 }
 void TearDown_FtPorts(void)
 {
+    *Ft1248_ddr = 0x00;
     *Ft1248_port = 0x00;
     *FtMiosio_ddr = 0x00;
 }
+void FtSetMisoAsInput_configures_MISO_as_an_input_pin(void)
+{
+    /* =====[ Setup ]===== */
+    *Ft1248_ddr = 0xFF;
+    /* =====[ Operate ]===== */
+    FtSetMisoAsInput();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE(BitIsClear(Ft1248_ddr,Ft1248_Miso));
+}
+
 void FtHasDataToRead_returns_true_if_MISO_is_low(void)
 {
     //=====[ Setup ]=====

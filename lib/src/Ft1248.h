@@ -32,6 +32,7 @@ extern uint8_t const FtMiosio7;
 //uint8_t const FtNbitCmd_8BitWide_Read  = 0xC6;
 //extern void (*FtSendCommand)(uint8_t FtNbitCmd);
 //=====[ Low-level API ]=====
+void FtSetMisoAsInput(void);
 extern void (*FtOutputCmdOnMiosio)(uint8_t FtCmd);
 extern void (*FtActivateInterface)(void);
 extern void (*FtPushData)(void);
@@ -46,6 +47,7 @@ extern void (*FtWriteData)(uint8_t);
 extern void (*FtDeactivateInterface)(void);
 extern bool (*FtHasRoomToWrite)(void);
 //=====[ High-level API ]=====
+void FtInit(void);
 extern uint8_t const FtCmd_Read;
 extern uint8_t const FtCmd_Write;
 extern void (*FtSendCommand)(uint8_t FtCmd);
