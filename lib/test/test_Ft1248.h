@@ -53,5 +53,6 @@ void FtEnablePullupOnMiso_enables_pullup_on_MISO(void);
 void FtSetMiosioAsInputs_configures_MIOSIO_as_an_input_port(void);
 void FtEnablePullupsOnMiosio_configures_pullups_on_MIOSIO(void);
 void FtSckLow_drives_SCK_low(void);
+void FtSsHigh_drives_SS_high(void);
 
 #endif // _TEST_FT1248_H

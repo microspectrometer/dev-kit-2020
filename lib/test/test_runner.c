@@ -125,5 +125,6 @@ int main()
     RUN_TEST(FtSetMiosioAsInputs_configures_MIOSIO_as_an_input_port);
     RUN_TEST(FtEnablePullupsOnMiosio_configures_pullups_on_MIOSIO);
     RUN_TEST(FtSckLow_drives_SCK_low);
+    RUN_TEST(FtSsHigh_drives_SS_high);
     return UNITY_END();
 }

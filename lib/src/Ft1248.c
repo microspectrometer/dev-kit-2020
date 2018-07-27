@@ -38,6 +38,11 @@ void FtSckLow(void)
     ClearBit(Ft1248_port, Ft1248_Sck);  // drive low
     SetBit(Ft1248_ddr, Ft1248_Sck);     // cfg as output
 }
+void FtSsHigh(void)
+{
+    SetBit(Ft1248_port, Ft1248_Ss);     // drive high
+    SetBit(Ft1248_ddr, Ft1248_Ss);      // cfg as output
+}
 
 uint8_t const FtCmd_Read  = 0xC6;
 uint8_t const FtCmd_Write = 0x86;
