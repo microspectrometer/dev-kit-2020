@@ -39,7 +39,7 @@ build/%.elf: ${obj_dev-libs} src/%.c
 	avr-gcc $^ -o $@ $(CFLAGS)  \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
-	avr-size $@
+	avr-size $@ > build/avr-size_simBrd.log
 #	# 	-I../lib/src \
 
 #--------------------------------------------------------------
@@ -73,3 +73,5 @@ clean-all-builds:
 	rm -f build/${board-name}.elf
 	rm -f build/${board-name}.map
 	rm -f ${obj_dev-libs}
+	rm -f build/atprogram-download*.log
+	rm -f build/avr-size_*.log

@@ -187,7 +187,7 @@ internally: ~~`8/14`~~ `8/17`
     - measurement interface
 
 ### embedded development
-[x] Estimated deadline for embedded development: `7/31`
+[x] Estimated deadline for embedded development: `8/7`
 
 #### 2018-07-19 updated estimate for embedded development
 - total number of tests: `205`
@@ -1171,6 +1171,23 @@ other bits in the bus-width nibble are pulled high.
 
 # SPI
 # Program Flash
+## Quick Summary
+- check hardware connection: `;mkp`
+    - Expect device signature is `0x1E950F`
+    - Expect fuse settings are `EXTENDED 0xFF, HIGH 0xD9, LOW 0xF7`
+- check build recipe: `;mna`
+    - Expect build output is `simBrd.elf` if programming the `simBrd` MCU
+- build and check size: `;mka`
+    - builds the `Makefile` in the active folder
+    - `;nr` refresh the build folder
+    - open `avr-size_simBrd.log`
+    - `make` reports `Nothing to be done for avr-target` if the `.elf` has not
+      changed
+    - clean the build to force a rebuild
+- clean the build `;mc`
+- download flash: `;fa`
+- build and download flash: `;mfa`
+    - downloads flash whether or not the build needed to be rebuilt
 ## Memory on the ATmega328
 The ATmega328 uses a *Harvard architecture* meaning separate memory and buses
 for program and data:
