@@ -33,7 +33,9 @@ ${obj_dev-libs}: build/%.o: ../lib/src/%.c
 atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
 
 # Executable for uploading to the microcontroller. Eliminate unused code.
-avr-target: build/${board-name}.elf
+# .elf is the executable to download to flash
+# .lst is the disassembly for analysis
+avr-target: build/${board-name}.elf build/${board-name}.lst
 
 build/%.elf: ${obj_dev-libs} src/%.c
 	avr-gcc $^ -o $@ $(CFLAGS)  \
@@ -41,6 +43,12 @@ build/%.elf: ${obj_dev-libs} src/%.c
 # avr-size writes a summary to stdout with the size of each section.
 	avr-size $@ > build/avr-size_simBrd.log
 #	# 	-I../lib/src \
+
+# Convert .elf to .lst for disassembly.
+#  -h: list space used by each section
+#  -S: output the binary with source code
+build/%.lst: build/%.elf
+	avr-objdump -h -S $^ > $@
 
 #--------------------------------------------------------------
 # ;fa or ;mfa
@@ -71,6 +79,7 @@ display_target_voltage:
 .PHONY: clean-all-builds
 clean-all-builds:
 	rm -f build/${board-name}.elf
+	rm -f build/${board-name}.lst
 	rm -f build/${board-name}.map
 	rm -f ${obj_dev-libs}
 	rm -f build/atprogram-download*.log

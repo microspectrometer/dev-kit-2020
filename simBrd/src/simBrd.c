@@ -3,6 +3,13 @@
 #include <Ft1248.h>
 #include <Ft1248-Hardware.h>
 #include <Usb.h>
+//
+/* =====[ Required Hardware Settings in FT_Prog ]===== */
+/* - Hardware Specific -> Ft1248 Settings */
+/* - Clock Polarity High: unchecked */
+/* - Bit Order LSB: unchecked */
+/* - Flow Ctrl not selected: checked */
+//
 void operate_UsbWrite(void)
 {
     //
@@ -14,6 +21,7 @@ void operate_UsbWrite(void)
     //     - how many bytes to send
     //
     uint8_t write_buffer[] = {0, 1, 2, 3, 4, 5};
+    /* uint8_t write_buffer[] = {0xFF, 0x00, 0x20, 3, 4, 5}; */
     uint16_t num_bytes_to_send = sizeof(write_buffer);
     UsbWrite(write_buffer, num_bytes_to_send);
 }
@@ -44,6 +52,33 @@ void UsbWrite_took_the_happy_path_if_debug_led_is_green(void)
     UsbInit();
     operate_UsbWrite();
 }
+void UsbWrite_sends_bytes_to_the_USB_host(void)
+{
+    // Manually Run host application
+    //
+    /* =====[ USB Host Application ]===== */
+    /* ```python */
+    /* import serial */
+    /* s=serial.Serial() */
+    /* s.baudrate = 9600 */
+    /* s.port = 'COM9' */
+    /* s.open() */
+    /* ``` */
+    //
+    // Write bytes to the USB Host by pressing the reset button on the PCB.
+    // After power-up, this function is called.
+    // This function writes 6 bytes to the USB host.
+    // Manually run host `read` command.
+    //
+    /* ```python */
+    /* s.read(s.inWaiting()) */
+    /* ``` */
+    //
+    // Visually confirm that bytes received are these values in this order:
+    // {0, 1, 2, 3, 4, 5}
+    //
+    UsbWrite_took_the_happy_path_if_debug_led_is_green();
+}
 void test_UsbWrite(void)
 {
     //
@@ -53,11 +88,12 @@ void test_UsbWrite(void)
     //
     /* UsbWrite_took_the_happy_path_if_debug_led_is_green(); // PASS 2018-07-27 */
     /* UsbWrite_called_before_UsbInit_turns_debug_led_red();  // PASS 2018-07-27 */
+    UsbWrite_sends_bytes_to_the_USB_host();
 }
 //
 void Turn_debug_led_red_when_there_is_a_byte_to_read(void)
 {
-    /* =====[ Host application ]===== */
+    /* =====[ USB Host Application ]===== */
     /* ```python */
     /* import serial */
     /* s=serial.Serial() */
@@ -67,17 +103,13 @@ void Turn_debug_led_red_when_there_is_a_byte_to_read(void)
     /* s.write('\x00') */
     /* ``` */
     //
-    /* =====[ Required Hardware Settings in FT_Prog ]===== */
-    /* - Hardware Specific -> Ft1248 Settings */
-    /* - Clock Polarity High: checked */
-    /* - Bit Order LSB: unchecked */
-    /* - Flow Ctrl not selected: checked */
-    //
     // Loop forever checking MISO.
     // Expect MISO goes low when there is data in the USB rx buffer.
     //
     // Visually confirm the debug LED turns red when the host executes
     // `s.write`.
+    //
+    // Cycle power to the FTDI device to clear the data in the rx buffer.
     //
     while(1)
     {
@@ -92,7 +124,7 @@ void test_UsbRead(void)
     // Uncomment that test.
     // Leave the other tests commented out.
     //
-    /* Turn_debug_led_red_when_there_is_a_byte_to_read(); // PASS 2018-07-27 */
+    Turn_debug_led_red_when_there_is_a_byte_to_read(); // PASS 2018-07-27
 }
 //
 void SetupDebugLed(void)
@@ -106,11 +138,15 @@ void SetupDebugLed(void)
 }
 int main()
 {
+    //
+    // Pick one test group to run.
+    // Uncomment that test group.
+    // Leave the other test groups commented out.
+    //
     SetupDebugLed();
-    /* test_UsbWrite(); // All tests PASS 2018-07-27 */
     /* test_UsbRead(); // All tests pass 2018-07-27 */
+    test_UsbWrite();
 }
-    /* UsbWrite_called_before_UsbInit_turns_debug_led_red(); */
     /* uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send); */
     /* if (UsbHasDataToRead()) */
     /* { */

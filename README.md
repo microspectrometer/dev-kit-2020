@@ -1092,6 +1092,27 @@ Ft1248 function:
 
 ---
 ## FT1248 reference
+### Hardware Specific Ft1248 Settings
+- Run `FT_Prog`
+- Scan for devices
+- locate the `UMFT221XA`
+- Select `Hardware Specific -> Ft1248 Settings`
+- Earhart 1-bit wide config:
+    - Clock Polarity High: *checked*
+    - Bit Order LSB: unchecked
+    - Flow Ctrl not selected: *checked*
+- 8-bit wide config used on the LIS-770i interface:
+    - Clock Polarity High: unchecked
+    - Bit Order LSB: unchecked
+    - Flow Ctrl not selected: *checked*
+- See FTDI Application Note `AN_167`
+> When `CPOL` is 1, the idle state of the clock is high.
+> When `CPOL` is 0, the idle state of the clock is low.
+> There are 4 possible modes which are determined by Clock Polarity (`CPOL`) and
+> Clock Phase (`CPHA`) signals. For the FT1248 slave, only 2 of these 4 modes are
+> supported. `CPHA` will always be set to 1 in the FT1248 slave because data is
+> available or driven on to MIOSIO wires on the first clock edge after `SS_n` is
+> active and is therefore sampled on the trailing edge of the first clock pulse.
 ### FT1248 format of combined command and bus-width byte
 The *bus-width* (*BW*) and command are sent in a byte on a subset of the
 `MIOSIO[7:0]` pins over one or more clock cycles.
@@ -1110,9 +1131,10 @@ On the **first falling edge** of `SCK`, the FTDI chip gets the **bus-width ID**
 and therefore knows whether it's clocking out more bits, or reading the entire
 `CMD[3..0]` on the `MIOSIO` pins.
 
-    Note that in the Earhart design, `CPOL = 1` (`SCK` idles `HIGH`), so it
-    would be the first rising edge of `SCK` when the FTDI chip reads the
-    bus-width.
+Note that in the Earhart design, `CPOL = 1` (`SCK` idles `HIGH`), so it would be
+the first rising edge of `SCK` when the FTDI chip reads the bus-width.
+
+In the design for the LIS-770i interface, `CPOL = 0` (`SCK` idles `LOW`).
 
 - command/bus-width byte format:
     - bit[7] = X

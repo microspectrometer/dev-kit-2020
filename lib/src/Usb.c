@@ -36,6 +36,7 @@ uint16_t UsbWrite(uint8_t *write_buffer, uint16_t nbytes)
         FtDeactivateInterface();
         return num_bytes_sent;
     }
+    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
     bool byte_sent = true; bool finished = false;
     while (byte_sent && !finished)
     {
