@@ -1097,14 +1097,43 @@ Ft1248 function:
 - Scan for devices
 - locate the `UMFT221XA`
 - Select `Hardware Specific -> Ft1248 Settings`
-- Earhart 1-bit wide config:
-    - Clock Polarity High: *checked*
-    - Bit Order LSB: unchecked
-    - Flow Ctrl not selected: *checked*
 - 8-bit wide config used on the LIS-770i interface:
     - Clock Polarity High: unchecked
-    - Bit Order LSB: unchecked
+    - Bit Order LSB: *checked*
     - Flow Ctrl not selected: *checked*
+- Note this is different from the previous Chromation embedded system using
+  FTDI USB bridge ICs:
+    - Earhart 1-bit wide config:
+        - Clock Polarity High: *checked*
+        - Bit Order LSB: unchecked
+        - Flow Ctrl not selected: *checked*
+
+#### Flow Ctrl
+- if `Flow Ctrl not selected` is unchecked, then the Ft1248 slave does not use
+  MISO and MIOSIO[0] to send Rx and Tx buffer status signals
+- read this as `Use flow control when the slave is inactive`
+
+#### Bit Order
+- I discovered this by trial and error
+- the bit order is LSB
+- send the byte `0x01`
+    - if `Bit Order LSB` is checked
+    - then the USB host reads this as `0x01`
+    - if `Bit Order LSB` is unchecked
+    - then the USB host read this as `0x80`
+    - this is exactly what you expect when flipping the bit order
+
+#### Clock Polarity
+- when unchecked, clock polarity works as described all throughout the FTDI
+  application note and all throughout this README
+- unchecked means the CPOL is 0 which means SCK idles low
+- since the clock phase CPHA is always 1, this means SCK goes high to signal
+  pushing data onto the bus and SCK goes low to signal pulling data from the bus
+
+- I was pretty sure Clock Polarity High should be unchecked
+    - I confirmed this by trying it both ways
+    - behavior is very strange when clock polarity is checked
+
 - See FTDI Application Note `AN_167`
 > When `CPOL` is 1, the idle state of the clock is high.
 > When `CPOL` is 0, the idle state of the clock is low.
@@ -1113,6 +1142,7 @@ Ft1248 function:
 > supported. `CPHA` will always be set to 1 in the FT1248 slave because data is
 > available or driven on to MIOSIO wires on the first clock edge after `SS_n` is
 > active and is therefore sampled on the trailing edge of the first clock pulse.
+
 ### FT1248 format of combined command and bus-width byte
 The *bus-width* (*BW*) and command are sent in a byte on a subset of the
 `MIOSIO[7:0]` pins over one or more clock cycles.
