@@ -79,10 +79,7 @@ bool (*FtRead)(uint8_t *read_buffer) = FtRead_Implementation;
 
 static bool FtWrite_Implementation(uint8_t *write_buffer)
 {
-    // TODO: bug: USB Host always receives '\xff'
-    // [ ] Test that this fixes the bug.
     FtLetMasterDriveBus();
-    //
     FtPushData();                   // tells everyone to output to bus
     FtWriteData(*write_buffer);     // drive Miosio with data
     FtPullData();                   // tells everyone to input from bus

@@ -21,7 +21,6 @@ void operate_UsbWrite(void)
     //     - how many bytes to send
     //
     uint8_t write_buffer[] = {0, 1, 2, 3, 4, 5};
-    /* uint8_t write_buffer[] = {0xFF, 0x00, 0x20, 3, 4, 5}; */
     uint16_t num_bytes_to_send = sizeof(write_buffer);
     UsbWrite(write_buffer, num_bytes_to_send);
 }
@@ -76,6 +75,8 @@ void UsbWrite_sends_bytes_to_the_USB_host(void)
     //
     // Visually confirm that bytes received are these values in this order:
     // {0, 1, 2, 3, 4, 5}
+    // >>> s.read(s.inWaiting())
+    // '\x00\x01\x02\x03\x04\x05'
     //
     UsbWrite_took_the_happy_path_if_debug_led_is_green();
 }
@@ -88,7 +89,7 @@ void test_UsbWrite(void)
     //
     /* UsbWrite_took_the_happy_path_if_debug_led_is_green(); // PASS 2018-07-27 */
     /* UsbWrite_called_before_UsbInit_turns_debug_led_red();  // PASS 2018-07-27 */
-    UsbWrite_sends_bytes_to_the_USB_host();
+    /* UsbWrite_sends_bytes_to_the_USB_host(); // PASS 2018-07-28 */
 }
 //
 void Turn_debug_led_red_when_there_is_a_byte_to_read(void)
@@ -145,7 +146,7 @@ int main()
     //
     SetupDebugLed();
     /* test_UsbRead(); // All tests pass 2018-07-27 */
-    test_UsbWrite();
+    /* test_UsbWrite();   // All tests pass 2018-07-28 */
 }
     /* uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send); */
     /* if (UsbHasDataToRead()) */

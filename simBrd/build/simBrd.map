@@ -55,45 +55,45 @@ Discarded input sections
                 0x00000000        0xc build/Usb.o
  .text.UsbHasRoomToWrite
                 0x00000000        0xc build/Usb.o
- .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
- .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
- .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
+ .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
+ .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .text.UsbWrite_called_before_UsbInit_turns_debug_led_red
-                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .text.UsbWrite_sends_bytes_to_the_USB_host
-                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .text.test_UsbWrite
-                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .text.Turn_debug_led_red_when_there_is_a_byte_to_read
-                0x00000000        0xe C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0xe C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .text.test_UsbRead
-                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio7
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio6
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio5
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio4
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio3
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio2
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio1
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio0
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.FtMiosio_pin
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.debug_led
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.DebugLed_pin
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.DebugLed_port
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .rodata.DebugLed_ddr
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -163,7 +163,7 @@ LOAD build/ReadWriteBits.o
 LOAD build/DebugLed.o
 LOAD build/Ft1248.o
 LOAD build/Usb.o
-LOAD C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+LOAD C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
@@ -423,15 +423,15 @@ END GROUP
                 0x00000334       0x80 build/Usb.o
                 0x00000334                UsbWrite
  .text.operate_UsbWrite
-                0x000003b4       0x3e C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x000003b4       0x3e C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x000003b4                operate_UsbWrite
  .text.UsbWrite_took_the_happy_path_if_debug_led_is_green
-                0x000003f2        0xa C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x000003f2        0xa C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x000003f2                UsbWrite_took_the_happy_path_if_debug_led_is_green
  .text.SetupDebugLed
-                0x000003fc       0x14 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x000003fc       0x14 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x000003fc                SetupDebugLed
- .text.main     0x00000410        0xe C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .text.main     0x00000410        0xe C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x00000410                main
                 0x0000041e                . = ALIGN (0x2)
  *(.fini9)
@@ -510,34 +510,34 @@ END GROUP
                 0x0080011c                FtSendCommand
  *(.gnu.linkonce.d*)
  *(.rodata)
- .rodata        0x0080011e        0x6 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .rodata        0x0080011e        0x6 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
  *(.rodata*)
  .rodata.FtCmd_Write
                 0x00800124        0x1 build/Ft1248.o
                 0x00800124                FtCmd_Write
  .rodata.Ft1248_Miso
-                0x00800125        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00800125        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x00800125                Ft1248_Miso
  .rodata.Ft1248_Sck
-                0x00800126        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00800126        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x00800126                Ft1248_Sck
  .rodata.Ft1248_Ss
-                0x00800127        0x1 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00800127        0x1 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x00800127                Ft1248_Ss
  .rodata.FtMiosio_port
-                0x00800128        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00800128        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x00800128                FtMiosio_port
  .rodata.FtMiosio_ddr
-                0x0080012a        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x0080012a        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x0080012a                FtMiosio_ddr
  .rodata.Ft1248_pin
-                0x0080012c        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x0080012c        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x0080012c                Ft1248_pin
  .rodata.Ft1248_port
-                0x0080012e        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x0080012e        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x0080012e                Ft1248_port
  .rodata.Ft1248_ddr
-                0x00800130        0x2 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x00800130        0x2 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                 0x00800130                Ft1248_ddr
  *(.gnu.linkonce.r*)
                 0x00800132                . = ALIGN (0x2)
@@ -612,7 +612,7 @@ END GROUP
  .comment       0x00000030       0x31 build/DebugLed.o
  .comment       0x00000030       0x31 build/Ft1248.o
  .comment       0x00000030       0x31 build/Usb.o
- .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 
 .note.gnu.avr.deviceinfo
                 0x00000000       0x40
@@ -645,7 +645,7 @@ END GROUP
  .debug_aranges
                 0x00000160       0x40 build/Usb.o
  .debug_aranges
-                0x000001a0       0x60 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+                0x000001a0       0x60 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 
 .debug_pubnames
  *(.debug_pubnames)
@@ -657,7 +657,7 @@ END GROUP
  .debug_info    0x0000079d      0x2a5 build/DebugLed.o
  .debug_info    0x00000a42      0x61a build/Ft1248.o
  .debug_info    0x0000105c      0x28b build/Usb.o
- .debug_info    0x000012e7      0x45a C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .debug_info    0x000012e7      0x45a C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 
 .debug_abbrev   0x00000000      0xc0d
  *(.debug_abbrev)
@@ -666,7 +666,7 @@ END GROUP
  .debug_abbrev  0x0000066f      0x10b build/DebugLed.o
  .debug_abbrev  0x0000077a      0x1fb build/Ft1248.o
  .debug_abbrev  0x00000975      0x125 build/Usb.o
- .debug_abbrev  0x00000a9a      0x173 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .debug_abbrev  0x00000a9a      0x173 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 
 .debug_line     0x00000000      0x965
  *(.debug_line .debug_line.* .debug_line_end)
@@ -675,7 +675,7 @@ END GROUP
  .debug_line    0x0000012a      0x182 build/DebugLed.o
  .debug_line    0x000002ac      0x357 build/Ft1248.o
  .debug_line    0x00000603      0x192 build/Usb.o
- .debug_line    0x00000795      0x1d0 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .debug_line    0x00000795      0x1d0 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 
 .debug_frame    0x00000000      0x3ec
  *(.debug_frame)
@@ -683,7 +683,7 @@ END GROUP
  .debug_frame   0x00000064       0x94 build/DebugLed.o
  .debug_frame   0x000000f8      0x1a8 build/Ft1248.o
  .debug_frame   0x000002a0       0x98 build/Usb.o
- .debug_frame   0x00000338       0xb4 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .debug_frame   0x00000338       0xb4 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 
 .debug_str      0x00000000      0xa73
  *(.debug_str)
@@ -696,7 +696,7 @@ END GROUP
                                 0x4fb (size before relaxing)
  .debug_str     0x00000855       0x8e build/Usb.o
                                 0x266 (size before relaxing)
- .debug_str     0x000008e3      0x190 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .debug_str     0x000008e3      0x190 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
                                 0x36f (size before relaxing)
 
 .debug_loc      0x00000000      0x505
@@ -705,7 +705,7 @@ END GROUP
  .debug_loc     0x00000050       0x93 build/DebugLed.o
  .debug_loc     0x000000e3      0x169 build/Ft1248.o
  .debug_loc     0x0000024c      0x271 build/Usb.o
- .debug_loc     0x000004bd       0x48 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .debug_loc     0x000004bd       0x48 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -731,7 +731,7 @@ END GROUP
  .debug_ranges  0x00000030       0x48 build/DebugLed.o
  .debug_ranges  0x00000078       0xb8 build/Ft1248.o
  .debug_ranges  0x00000130       0x30 build/Usb.o
- .debug_ranges  0x00000160       0x50 C:\Users\Mike\AppData\Local\Temp\ccwcTx3v.o
+ .debug_ranges  0x00000160       0x50 C:\Users\Mike\AppData\Local\Temp\ccYvp42I.o
 
 .debug_macro
  *(.debug_macro)
