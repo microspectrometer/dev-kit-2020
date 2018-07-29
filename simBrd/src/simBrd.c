@@ -10,6 +10,14 @@
 /* - Bit Order LSB: unchecked */
 /* - Flow Ctrl not selected: checked */
 //
+/* =====[ List of tests ]===== */
+// test_UsbWrite
+    // [x] UsbWrite_took_the_happy_path_if_debug_led_is_green
+    // [x] UsbWrite_called_before_UsbInit_turns_debug_led_red
+    // [x] UsbWrite_sends_bytes_to_the_USB_host
+// test_UsbRead
+    // [x] Turn_debug_led_red_when_there_is_a_byte_to_read
+    // [ ] Turn_debug_led_red_when_rx_byte_is_0x01
 void operate_UsbWrite(void)
 {
     //
@@ -118,6 +126,35 @@ void Turn_debug_led_red_when_there_is_a_byte_to_read(void)
         /* UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data */
     }
 }
+void Turn_debug_led_red_when_rx_byte_is_0x01(void)
+{
+    /* =====[ USB Host Application ]===== */
+    /* ```python */
+    /* import serial */
+    /* s=serial.Serial() */
+    /* s.baudrate = 9600 */
+    /* s.port = 'COM12' */
+    /* s.open() */
+    /* s.write('\x01') */
+    //
+    // Read bytes as soon as they are available.
+    // Turn the debug LED red if the byte is 0x01.
+    //
+    // Visually confirm the LED is green for `s.write('\x00')`, then the debug
+    // LED turns red for `s.write('\x01')`.
+    uint8_t expected_byte = 0x01;
+    /* =====[ Operate ]===== */
+    UsbInit();
+    uint8_t read_buffer[] = {0x00};
+    while(1)
+    {
+        if ( UsbHasDataToRead() )
+        {
+            UsbRead(read_buffer);
+            if (read_buffer[0] == expected_byte) DebugLedTurnRed();
+        }
+    }
+}
 void test_UsbRead(void)
 {
     //
@@ -125,7 +162,8 @@ void test_UsbRead(void)
     // Uncomment that test.
     // Leave the other tests commented out.
     //
-    Turn_debug_led_red_when_there_is_a_byte_to_read(); // PASS 2018-07-27
+    /* Turn_debug_led_red_when_there_is_a_byte_to_read(); // PASS 2018-07-27 */
+    /* Turn_debug_led_red_when_rx_byte_is_0x01(); // PASS 2018-07-28 */
 }
 //
 void SetupDebugLed(void)
@@ -145,7 +183,7 @@ int main()
     // Leave the other test groups commented out.
     //
     SetupDebugLed();
-    /* test_UsbRead(); // All tests pass 2018-07-27 */
+    /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
 }
     /* uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send); */

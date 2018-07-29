@@ -31,6 +31,23 @@
 ---e-n-d---
 
 # Status
+## Next step
+- UsbRead embedded systems test:
+    - USB host sends bytes
+    - embedded system echoes bytes back
+
+## Latest improvements
+- UsbWrite passed its embedded systems test.
+    - This was a major hurdle to overcome.
+    - There is Python code for the USB host to receive bytes from the embedded
+      system.
+    - The FT1248 hardware settings are proven. They are different from the
+      Earhart FT1248 settings.
+- Revisiting passing embedded systems tests helped me identify the correct
+  FT1248 Hardware Settings. I am structuring the embedded application code like
+  a series of tests even though there is no test runner. I am the test runner.
+  This `simBrd.c` file will probably become a `test-simBrd-Usb.c` file.
+
 ## lib organization
 ### libs for communication
 #### Ft1248
@@ -1465,7 +1482,7 @@ raise SerialException(
 import serial
 s=serial.Serial()
 s.baudrate = 9600
-s.port = 'COM7'
+s.port = 'COM12'
 s.open()
 ```
 - note that `pyserial` has improved handling of Windows port names since the
