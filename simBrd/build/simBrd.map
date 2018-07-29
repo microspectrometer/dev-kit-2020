@@ -32,68 +32,61 @@ Discarded input sections
  .text          0x00000000        0x0 build/Ft1248.o
  .data          0x00000000        0x0 build/Ft1248.o
  .bss           0x00000000        0x0 build/Ft1248.o
- .text.FtWrite_Implementation
-                0x00000000       0x40 build/Ft1248.o
- .text.FtWriteData_Implementation
-                0x00000000        0xc build/Ft1248.o
  .text.FtHasRoomToWrite_Implementation
                 0x00000000       0x12 build/Ft1248.o
- .data.FtWriteData
-                0x00000000        0x2 build/Ft1248.o
  .data.FtHasRoomToWrite
                 0x00000000        0x2 build/Ft1248.o
- .data.FtWrite  0x00000000        0x2 build/Ft1248.o
- .rodata.FtCmd_Write
-                0x00000000        0x1 build/Ft1248.o
  .text          0x00000000        0x0 build/Usb.o
  .data          0x00000000        0x0 build/Usb.o
  .bss           0x00000000        0x0 build/Usb.o
- .text.UsbWrite
-                0x00000000       0x80 build/Usb.o
  .text.UsbHasRoomToWrite
                 0x00000000        0xc build/Usb.o
- .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
- .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
- .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
- .rodata        0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+ .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+ .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+ .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+ .rodata        0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .text.operate_UsbWrite
-                0x00000000       0x3e C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000       0x3e C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .text.UsbWrite_called_before_UsbInit_turns_debug_led_red
-                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .text.UsbWrite_took_the_happy_path_if_debug_led_is_green
-                0x00000000        0xa C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0xa C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .text.UsbWrite_sends_bytes_to_the_USB_host
-                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .text.test_UsbWrite
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .text.Turn_debug_led_red_when_there_is_a_byte_to_read
-                0x00000000        0xe C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0xe C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+ .text.Turn_debug_led_red_when_rx_byte_is_0x01
+                0x00000000       0x2c C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .text.test_UsbRead
-                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+ .text.test_EchoByte
+                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.FtMiosio7
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.FtMiosio6
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.FtMiosio5
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.FtMiosio4
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.FtMiosio3
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.FtMiosio2
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.FtMiosio1
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.FtMiosio0
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.debug_led
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.DebugLed_pin
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.DebugLed_port
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .rodata.DebugLed_ddr
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -163,7 +156,7 @@ LOAD build/ReadWriteBits.o
 LOAD build/DebugLed.o
 LOAD build/Ft1248.o
 LOAD build/Usb.o
-LOAD C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+LOAD C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
@@ -268,7 +261,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x402
+.text           0x00000000      0x4d8
  *(.vectors)
  .vectors       0x00000000       0x68 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -379,64 +372,74 @@ END GROUP
                 0x00000194       0x2a build/Ft1248.o
  .text.FtRead_Implementation
                 0x000001be       0x44 build/Ft1248.o
+ .text.FtWrite_Implementation
+                0x00000202       0x40 build/Ft1248.o
  .text.FtOutputByte_Implementation
-                0x00000202        0xc build/Ft1248.o
+                0x00000242        0xc build/Ft1248.o
  .text.FtLetMasterDriveBus_Implementation
-                0x0000020e        0xe build/Ft1248.o
+                0x0000024e        0xe build/Ft1248.o
  .text.FtLetSlaveDriveBus_Implementation
-                0x0000021c        0xc build/Ft1248.o
+                0x0000025c        0xc build/Ft1248.o
  .text.FtReadData_Implementation
-                0x00000228        0xc build/Ft1248.o
+                0x00000268        0xc build/Ft1248.o
+ .text.FtWriteData_Implementation
+                0x00000274        0xc build/Ft1248.o
  .text.FtActivateInterface_Implementation
-                0x00000234       0x12 build/Ft1248.o
+                0x00000280       0x12 build/Ft1248.o
  .text.FtPullData_Implementation
-                0x00000246       0x12 build/Ft1248.o
+                0x00000292       0x12 build/Ft1248.o
  .text.FtDeactivateInterface_Implementation
-                0x00000258       0x12 build/Ft1248.o
+                0x000002a4       0x12 build/Ft1248.o
  .text.FtPushData_Implementation
-                0x0000026a       0x12 build/Ft1248.o
+                0x000002b6       0x12 build/Ft1248.o
  .text.FtIsBusOk_Implementation
-                0x0000027c       0x12 build/Ft1248.o
+                0x000002c8       0x12 build/Ft1248.o
  .text.FtSetMisoAsInput
-                0x0000028e       0x12 build/Ft1248.o
-                0x0000028e                FtSetMisoAsInput
+                0x000002da       0x12 build/Ft1248.o
+                0x000002da                FtSetMisoAsInput
  .text.FtEnablePullupOnMiso
-                0x000002a0       0x12 build/Ft1248.o
-                0x000002a0                FtEnablePullupOnMiso
+                0x000002ec       0x12 build/Ft1248.o
+                0x000002ec                FtEnablePullupOnMiso
  .text.FtSetMiosioAsInputs
-                0x000002b2        0xc build/Ft1248.o
-                0x000002b2                FtSetMiosioAsInputs
+                0x000002fe        0xc build/Ft1248.o
+                0x000002fe                FtSetMiosioAsInputs
  .text.FtEnablePullupsOnMiosio
-                0x000002be        0xe build/Ft1248.o
-                0x000002be                FtEnablePullupsOnMiosio
+                0x0000030a        0xe build/Ft1248.o
+                0x0000030a                FtEnablePullupsOnMiosio
  .text.FtSckLow
-                0x000002cc       0x26 build/Ft1248.o
-                0x000002cc                FtSckLow
+                0x00000318       0x26 build/Ft1248.o
+                0x00000318                FtSckLow
  .text.FtSsHigh
-                0x000002f2       0x26 build/Ft1248.o
-                0x000002f2                FtSsHigh
- .text.FtInit   0x00000318       0x1a build/Ft1248.o
-                0x00000318                FtInit
- .text.UsbInit  0x00000332        0x6 build/Usb.o
-                0x00000332                UsbInit
- .text.UsbRead  0x00000338       0x72 build/Usb.o
-                0x00000338                UsbRead
+                0x0000033e       0x26 build/Ft1248.o
+                0x0000033e                FtSsHigh
+ .text.FtInit   0x00000364       0x1a build/Ft1248.o
+                0x00000364                FtInit
+ .text.UsbInit  0x0000037e        0x6 build/Usb.o
+                0x0000037e                UsbInit
+ .text.UsbRead  0x00000384       0x72 build/Usb.o
+                0x00000384                UsbRead
+ .text.UsbWrite
+                0x000003f6       0x80 build/Usb.o
+                0x000003f6                UsbWrite
  .text.UsbHasDataToRead
-                0x000003aa        0xc build/Usb.o
-                0x000003aa                UsbHasDataToRead
- .text.Turn_debug_led_red_when_rx_byte_is_0x01
-                0x000003b6       0x2c C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x000003b6                Turn_debug_led_red_when_rx_byte_is_0x01
+                0x00000476        0xc build/Usb.o
+                0x00000476                UsbHasDataToRead
+ .text.EchoByte
+                0x00000482       0x24 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x00000482                EchoByte
+ .text.EchoByte_reads_a_byte_and_writes_it_back_to_the_host
+                0x000004a6       0x12 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x000004a6                EchoByte_reads_a_byte_and_writes_it_back_to_the_host
  .text.SetupDebugLed
-                0x000003e2       0x14 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x000003e2                SetupDebugLed
- .text.main     0x000003f6        0x8 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x000003f6                main
-                0x000003fe                . = ALIGN (0x2)
+                0x000004b8       0x14 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x000004b8                SetupDebugLed
+ .text.main     0x000004cc        0x8 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x000004cc                main
+                0x000004d4                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000003fe        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x000003fe                _exit
-                0x000003fe                exit
+ .fini9         0x000004d4        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x000004d4                _exit
+                0x000004d4                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -455,11 +458,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000003fe        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x000004d4        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000402                _etext = .
+                0x000004d8                _etext = .
 
-.data           0x00800100       0x30 load address 0x00000402
+.data           0x00800100       0x36 load address 0x000004d8
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -472,104 +475,113 @@ END GROUP
  .data.DebugLedTurnOn
                 0x00800104        0x2 build/DebugLed.o
                 0x00800104                DebugLedTurnOn
- .data.FtReadData
+ .data.FtWriteData
                 0x00800106        0x2 build/Ft1248.o
-                0x00800106                FtReadData
- .data.FtHasDataToRead
+                0x00800106                FtWriteData
+ .data.FtReadData
                 0x00800108        0x2 build/Ft1248.o
-                0x00800108                FtHasDataToRead
- .data.FtIsBusOk
+                0x00800108                FtReadData
+ .data.FtHasDataToRead
                 0x0080010a        0x2 build/Ft1248.o
-                0x0080010a                FtIsBusOk
- .data.FtLetSlaveDriveBus
+                0x0080010a                FtHasDataToRead
+ .data.FtIsBusOk
                 0x0080010c        0x2 build/Ft1248.o
-                0x0080010c                FtLetSlaveDriveBus
- .data.FtLetMasterDriveBus
+                0x0080010c                FtIsBusOk
+ .data.FtLetSlaveDriveBus
                 0x0080010e        0x2 build/Ft1248.o
-                0x0080010e                FtLetMasterDriveBus
- .data.FtPullData
+                0x0080010e                FtLetSlaveDriveBus
+ .data.FtLetMasterDriveBus
                 0x00800110        0x2 build/Ft1248.o
-                0x00800110                FtPullData
- .data.FtOutputByte
+                0x00800110                FtLetMasterDriveBus
+ .data.FtPullData
                 0x00800112        0x2 build/Ft1248.o
-                0x00800112                FtOutputByte
- .data.FtPushData
+                0x00800112                FtPullData
+ .data.FtOutputByte
                 0x00800114        0x2 build/Ft1248.o
-                0x00800114                FtPushData
- .data.FtDeactivateInterface
+                0x00800114                FtOutputByte
+ .data.FtPushData
                 0x00800116        0x2 build/Ft1248.o
-                0x00800116                FtDeactivateInterface
- .data.FtActivateInterface
+                0x00800116                FtPushData
+ .data.FtDeactivateInterface
                 0x00800118        0x2 build/Ft1248.o
-                0x00800118                FtActivateInterface
- .data.FtRead   0x0080011a        0x2 build/Ft1248.o
-                0x0080011a                FtRead
+                0x00800118                FtDeactivateInterface
+ .data.FtActivateInterface
+                0x0080011a        0x2 build/Ft1248.o
+                0x0080011a                FtActivateInterface
+ .data.FtWrite  0x0080011c        0x2 build/Ft1248.o
+                0x0080011c                FtWrite
+ .data.FtRead   0x0080011e        0x2 build/Ft1248.o
+                0x0080011e                FtRead
  .data.FtBusTurnaround
-                0x0080011c        0x2 build/Ft1248.o
-                0x0080011c                FtBusTurnaround
+                0x00800120        0x2 build/Ft1248.o
+                0x00800120                FtBusTurnaround
  .data.FtSendCommand
-                0x0080011e        0x2 build/Ft1248.o
-                0x0080011e                FtSendCommand
+                0x00800122        0x2 build/Ft1248.o
+                0x00800122                FtSendCommand
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
+ .rodata.FtCmd_Write
+                0x00800124        0x1 build/Ft1248.o
+                0x00800124                FtCmd_Write
  .rodata.FtCmd_Read
-                0x00800120        0x1 build/Ft1248.o
-                0x00800120                FtCmd_Read
+                0x00800125        0x1 build/Ft1248.o
+                0x00800125                FtCmd_Read
  .rodata.Ft1248_Miso
-                0x00800121        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x00800121                Ft1248_Miso
+                0x00800126        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x00800126                Ft1248_Miso
  .rodata.Ft1248_Sck
-                0x00800122        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x00800122                Ft1248_Sck
+                0x00800127        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x00800127                Ft1248_Sck
  .rodata.Ft1248_Ss
-                0x00800123        0x1 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x00800123                Ft1248_Ss
+                0x00800128        0x1 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x00800128                Ft1248_Ss
  .rodata.FtMiosio_pin
-                0x00800124        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x00800124                FtMiosio_pin
+                0x00800129        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x00800129                FtMiosio_pin
  .rodata.FtMiosio_port
-                0x00800126        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x00800126                FtMiosio_port
+                0x0080012b        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x0080012b                FtMiosio_port
  .rodata.FtMiosio_ddr
-                0x00800128        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x00800128                FtMiosio_ddr
+                0x0080012d        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x0080012d                FtMiosio_ddr
  .rodata.Ft1248_pin
-                0x0080012a        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x0080012a                Ft1248_pin
+                0x0080012f        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x0080012f                Ft1248_pin
  .rodata.Ft1248_port
-                0x0080012c        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x0080012c                Ft1248_port
+                0x00800131        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x00800131                Ft1248_port
  .rodata.Ft1248_ddr
-                0x0080012e        0x2 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                0x0080012e                Ft1248_ddr
+                0x00800133        0x2 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                0x00800133                Ft1248_ddr
  *(.gnu.linkonce.r*)
-                0x00800130                . = ALIGN (0x2)
-                0x00800130                _edata = .
-                0x00800130                PROVIDE (__data_end, .)
+                0x00800136                . = ALIGN (0x2)
+ *fill*         0x00800135        0x1 
+                0x00800136                _edata = .
+                0x00800136                PROVIDE (__data_end, .)
 
-.bss            0x00800130        0x7
-                0x00800130                PROVIDE (__bss_start, .)
+.bss            0x00800136        0x7
+                0x00800136                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.debug_led_
-                0x00800130        0x1 build/DebugLed.o
+                0x00800136        0x1 build/DebugLed.o
  .bss.pin_register_
-                0x00800131        0x2 build/DebugLed.o
+                0x00800137        0x2 build/DebugLed.o
  .bss.port_register_
-                0x00800133        0x2 build/DebugLed.o
+                0x00800139        0x2 build/DebugLed.o
  .bss.ddr_register_
-                0x00800135        0x2 build/DebugLed.o
+                0x0080013b        0x2 build/DebugLed.o
  *(COMMON)
-                0x00800137                PROVIDE (__bss_end, .)
-                0x00000402                __data_load_start = LOADADDR (.data)
-                0x00000432                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0080013d                PROVIDE (__bss_end, .)
+                0x000004d8                __data_load_start = LOADADDR (.data)
+                0x0000050e                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800137        0x0
+.noinit         0x0080013d        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800137                _end = .
+                0x0080013d                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -616,7 +628,7 @@ END GROUP
  .comment       0x00000030       0x31 build/DebugLed.o
  .comment       0x00000030       0x31 build/Ft1248.o
  .comment       0x00000030       0x31 build/Usb.o
- .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+ .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 
 .note.gnu.avr.deviceinfo
                 0x00000000       0x40
@@ -638,7 +650,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x208
+.debug_aranges  0x00000000      0x220
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x40 build/ReadWriteBits.o
@@ -649,47 +661,47 @@ END GROUP
  .debug_aranges
                 0x00000160       0x40 build/Usb.o
  .debug_aranges
-                0x000001a0       0x68 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+                0x000001a0       0x80 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1795
+.debug_info     0x00000000     0x1848
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_info    0x000005f4      0x1a9 build/ReadWriteBits.o
  .debug_info    0x0000079d      0x2a5 build/DebugLed.o
  .debug_info    0x00000a42      0x61a build/Ft1248.o
  .debug_info    0x0000105c      0x28b build/Usb.o
- .debug_info    0x000012e7      0x4ae C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+ .debug_info    0x000012e7      0x561 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 
-.debug_abbrev   0x00000000      0xc46
+.debug_abbrev   0x00000000      0xc55
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2       0xcd build/ReadWriteBits.o
  .debug_abbrev  0x0000066f      0x10b build/DebugLed.o
  .debug_abbrev  0x0000077a      0x1fb build/Ft1248.o
  .debug_abbrev  0x00000975      0x125 build/Usb.o
- .debug_abbrev  0x00000a9a      0x1ac C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+ .debug_abbrev  0x00000a9a      0x1bb C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 
-.debug_line     0x00000000      0x991
+.debug_line     0x00000000      0x9f8
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_line    0x0000001a      0x110 build/ReadWriteBits.o
  .debug_line    0x0000012a      0x182 build/DebugLed.o
  .debug_line    0x000002ac      0x357 build/Ft1248.o
  .debug_line    0x00000603      0x192 build/Usb.o
- .debug_line    0x00000795      0x1fc C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+ .debug_line    0x00000795      0x263 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 
-.debug_frame    0x00000000      0x40c
+.debug_frame    0x00000000      0x44c
  *(.debug_frame)
  .debug_frame   0x00000000       0x64 build/ReadWriteBits.o
  .debug_frame   0x00000064       0x94 build/DebugLed.o
  .debug_frame   0x000000f8      0x1a8 build/Ft1248.o
  .debug_frame   0x000002a0       0x98 build/Usb.o
- .debug_frame   0x00000338       0xd4 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+ .debug_frame   0x00000338      0x114 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 
-.debug_str      0x00000000      0xaa9
+.debug_str      0x00000000      0xaec
  *(.debug_str)
  .debug_str     0x00000000      0x208 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_str     0x00000208      0x126 build/ReadWriteBits.o
@@ -700,16 +712,16 @@ END GROUP
                                 0x4fb (size before relaxing)
  .debug_str     0x00000855       0x8e build/Usb.o
                                 0x266 (size before relaxing)
- .debug_str     0x000008e3      0x1c6 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
-                                0x3b9 (size before relaxing)
+ .debug_str     0x000008e3      0x209 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
+                                0x414 (size before relaxing)
 
-.debug_loc      0x00000000      0x54d
+.debug_loc      0x00000000      0x5bd
  *(.debug_loc)
  .debug_loc     0x00000000       0x50 build/ReadWriteBits.o
  .debug_loc     0x00000050       0x93 build/DebugLed.o
  .debug_loc     0x000000e3      0x169 build/Ft1248.o
  .debug_loc     0x0000024c      0x271 build/Usb.o
- .debug_loc     0x000004bd       0x90 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+ .debug_loc     0x000004bd      0x100 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -729,13 +741,13 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x1b8
+.debug_ranges   0x00000000      0x1d0
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x30 build/ReadWriteBits.o
  .debug_ranges  0x00000030       0x48 build/DebugLed.o
  .debug_ranges  0x00000078       0xb8 build/Ft1248.o
  .debug_ranges  0x00000130       0x30 build/Usb.o
- .debug_ranges  0x00000160       0x58 C:\Users\Mike\AppData\Local\Temp\cckgWrmr.o
+ .debug_ranges  0x00000160       0x70 C:\Users\Mike\AppData\Local\Temp\cc7EbzFn.o
 
 .debug_macro
  *(.debug_macro)

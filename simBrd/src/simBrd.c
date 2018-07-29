@@ -17,7 +17,9 @@
     // [x] UsbWrite_sends_bytes_to_the_USB_host
 // test_UsbRead
     // [x] Turn_debug_led_red_when_there_is_a_byte_to_read
-    // [ ] Turn_debug_led_red_when_rx_byte_is_0x01
+    // [x] Turn_debug_led_red_when_rx_byte_is_0x01
+// test_EchoByte
+    // [x] EchoByte_reads_a_byte_and_writes_it_back_to_the_host
 void operate_UsbWrite(void)
 {
     //
@@ -166,6 +168,26 @@ void test_UsbRead(void)
     /* Turn_debug_led_red_when_rx_byte_is_0x01(); // PASS 2018-07-28 */
 }
 //
+void EchoByte(void)
+{
+    uint8_t read_buffer[1];
+    uint16_t num_bytes_read = UsbRead(read_buffer);
+    UsbWrite(read_buffer, num_bytes_read);
+}
+void EchoByte_reads_a_byte_and_writes_it_back_to_the_host(void)
+{
+    /* >>> s.write('\x00\x01\x02\x03\x04\x05\x06\x07\x08') */
+    /* >>> s.read(s.inWaiting()) */
+    /* '\x00\x01\x02\x03\x04\x05\x06\x07\x08' */
+
+    /* DebugLedTurnRed(); */
+    /* =====[ Operate ]===== */
+    UsbInit(); while(1) if ( UsbHasDataToRead() ) EchoByte();
+}
+void test_EchoByte(void)
+{
+    EchoByte_reads_a_byte_and_writes_it_back_to_the_host(); // PASS 2018-07-28
+}
 void SetupDebugLed(void)
 {
     DebugLedInit(
@@ -185,9 +207,5 @@ int main()
     SetupDebugLed();
     /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
+    /* test_EchoByte(); // All tests pass 2018-07-28 */
 }
-    /* uint16_t num_bytes_sent = UsbWrite(write_buffer, num_bytes_to_send); */
-    /* if (UsbHasDataToRead()) */
-    /* { */
-    /*     DebugLedTurnGreen(); */
-    /* } */
