@@ -32,21 +32,34 @@
 
 # Status
 ## Next step
-- UsbRead embedded systems test:
-    - USB host sends bytes
-    - embedded system echoes bytes back
+- [ ] next is Spi
+    - [ ] document Spi stuff in the `README`, just like you did for `FT1248`
+    - [ ] develop the Spi lib
+- [ ] then next embedded test application:
+    - control the mBrd debug LED through the simBrd using lib Usb and lib Spi
 
 ## Latest improvements
-- UsbWrite passed its embedded systems test.
+### lib USB passed its embedded system tests
+- [x] PASS embedded system tests of lib Usb
     - This was a major hurdle to overcome.
     - There is Python code for the USB host to receive bytes from the embedded
       system.
     - The FT1248 hardware settings are proven. They are different from the
       Earhart FT1248 settings.
-- Revisiting passing embedded systems tests helped me identify the correct
-  FT1248 Hardware Settings. I am structuring the embedded application code like
-  a series of tests even though there is no test runner. I am the test runner.
-  This `simBrd.c` file will probably become a `test-simBrd-Usb.c` file.
+- This `simBrd.c` file will probably become a `test-simBrd-Usb.c` file.
+- [x] The final test is to echo bytes
+    - [x] create `EchoByte()`
+        - this combines `UsbWrite` and `UsbRead`
+    - [x] `EchoByte()` works for read buffers large enough to read the entire rx
+      buffer in one call
+    - [x] `EchoByte()` works when the read buffers is only 1-byte in length
+        - in this case, each `UsbRead` terminates after reading a single byte
+          because the read buffer is full
+        - after writing the byte, `UsbRead` is called again because the rx
+          buffer still has data
+        - my implementation of `UsbRead()` is robust: it terminates after
+          reading all bytes or after running out of space in its read buffer
+        - this made writing `EchoByte()` shockingly easy
 
 ## lib organization
 ### libs for communication
@@ -138,6 +151,7 @@
     - high-level lib makes call to *actual* low-level lib
 
 ### embedded tests
+#### overview
 - *embedded tests* are done each time a lib is finished and there is a new
   testable something
 - these are manual test applications
@@ -146,6 +160,41 @@
   hardware:
     - look at debug LED
     - read response on screen in serial communication script
+- the embedded test code is structured like a series of tests even though there
+  is no test runner. I am the test runner.
+- This means I can revisit past embedded tests, I don't just see it pass and
+  then delete it.
+    - example: revisiting passing embedded tests helped me identify the correct
+      `FT1248 Hardware Settings`
+#### comparison of embedded tests and lib unit tests
+##### manual vs automated
+- lib unit tests are automated, so they are easy to run
+- embedded tests are manual, making them a pain in the ass to check
+- all lib unit tests are run anytime the lib code base changes to confirm
+  that the code base still behaves as promised
+- once an embedded test passes, it is only run again when trying to debug some
+  unexpected behavior by revisiting past behaviors to sanity check that they
+  have not broken
+##### code examples vs code as the specification doc
+- lib unit tests read as a specification of the lib functionality
+- an embedded test reads as a contract: run this test to see this
+  behavior
+- embedded tests sometimes read as checks on the lib functionality, but
+  not always
+    - example of a check on lib functionality:
+      `UsbWrite_took_the_happy_path_if_debug_led_is_green`
+    - in actual applications, the debug LED really will be green if `UsbWrite`
+      follows its happy path
+- sometimes the test name is just me doing something to make the test result
+  observable
+- in this case, the test is not confirming any lib functionality, it is just
+  illustrating a code snippet with some behavior under some use case and
+  describing how to verify that the correct behavior occurs
+    - example: `Turn_debug_led_red_when_there_is_a_byte_to_read`
+    - in actual applications, the debug LED will not turn red when there is a
+      byte to read
+    - but turning the LED red made it easy to check that the embedded system is
+      able to detect when there is a byte to read
 
 ## track progress by lib
 - [x] Ft1248
