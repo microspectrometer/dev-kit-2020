@@ -137,5 +137,6 @@ int main()
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
+    RUN_TEST(DebugLedsTurnAllOn_turns_on_all_4_leds);
     return UNITY_END();
 }

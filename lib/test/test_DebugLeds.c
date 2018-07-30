@@ -4,6 +4,7 @@
 /* =====[ List of Tests ]===== */
 // Init
     // [x] DebugLedsTurnOn_led_N_turns_on_led_N
+    // [ ] DebugLedsTurnAllOn_turns_on_all_4_leds
     // [x] DebugLedsTurnRed_led_N_turns_led_N_red
     // [x] DebugLedsTurnGreen_led_N_turns_led_N_green
     // [x] DebugLedsTurnAllRed_turns_all_4_leds_red
@@ -33,6 +34,16 @@ void DebugLedsTurnOn_led_N_turns_on_led_N(void)
     DebugLedsTurnOn(debug_ledN);
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(debug_ledN, *DebugLeds_ddr);
+}
+void DebugLedsTurnAllOn_turns_on_all_4_leds(void)
+{
+    /* =====[ Operate ]===== */
+    DebugLedsTurnAllOn();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(debug_led1, *DebugLeds_ddr);
+    TEST_ASSERT_BIT_HIGH(debug_led2, *DebugLeds_ddr);
+    TEST_ASSERT_BIT_HIGH(debug_led3, *DebugLeds_ddr);
+    TEST_ASSERT_BIT_HIGH(debug_led4, *DebugLeds_ddr);
 }
 void DebugLedsTurnRed_led_N_turns_led_N_red(void)
 {

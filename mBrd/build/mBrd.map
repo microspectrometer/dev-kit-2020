@@ -3,9 +3,7 @@ Archive member included to satisfy reference by file (symbol)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
                               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o (exit)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
-                              build/DebugLed.o (__do_copy_data)
-c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
-                              build/DebugLed.o (__do_clear_bss)
+                              C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o (__do_copy_data)
 
 Discarded input sections
 
@@ -14,78 +12,30 @@ Discarded input sections
  .text          0x00000000        0x0 build/ReadWriteBits.o
  .data          0x00000000        0x0 build/ReadWriteBits.o
  .bss           0x00000000        0x0 build/ReadWriteBits.o
- .text.ClearBit
-                0x00000000       0x1a build/ReadWriteBits.o
  .text.ToggleBit
                 0x00000000       0x18 build/ReadWriteBits.o
  .text.BitIsSet
                 0x00000000       0x22 build/ReadWriteBits.o
  .text.BitIsClear
                 0x00000000       0x18 build/ReadWriteBits.o
- .text          0x00000000        0x0 build/DebugLed.o
- .data          0x00000000        0x0 build/DebugLed.o
- .bss           0x00000000        0x0 build/DebugLed.o
- .text.DebugLedTurnOn_Implementation
-                0x00000000       0x12 build/DebugLed.o
- .text.DebugLedTurnRed
-                0x00000000       0x12 build/DebugLed.o
- .text.DebugLedTurnGreen_Implementation
-                0x00000000       0x12 build/DebugLed.o
- .text.DebugLedInit
-                0x00000000       0x32 build/DebugLed.o
- .text.DebugLedTurnOff
-                0x00000000       0x12 build/DebugLed.o
- .text.DebugLedToggleColor
-                0x00000000       0x12 build/DebugLed.o
- .text.DebugLedIsRed
-                0x00000000       0x12 build/DebugLed.o
- .text.DebugLedIsGreen
-                0x00000000       0x12 build/DebugLed.o
- .data.DebugLedTurnRedToShowError
-                0x00000000        0x2 build/DebugLed.o
- .data.DebugLedTurnGreen
-                0x00000000        0x2 build/DebugLed.o
- .data.DebugLedTurnOn
-                0x00000000        0x2 build/DebugLed.o
- .bss.debug_led_
-                0x00000000        0x1 build/DebugLed.o
- .bss.pin_register_
-                0x00000000        0x2 build/DebugLed.o
- .bss.port_register_
-                0x00000000        0x2 build/DebugLed.o
- .bss.ddr_register_
-                0x00000000        0x2 build/DebugLed.o
- .debug_info    0x00000000      0x2a5 build/DebugLed.o
- .debug_abbrev  0x00000000      0x10b build/DebugLed.o
- .debug_loc     0x00000000       0x93 build/DebugLed.o
- .debug_aranges
-                0x00000000       0x58 build/DebugLed.o
- .debug_ranges  0x00000000       0x48 build/DebugLed.o
- .debug_line    0x00000000      0x182 build/DebugLed.o
- .debug_str     0x00000000      0x295 build/DebugLed.o
- .comment       0x00000000       0x31 build/DebugLed.o
- .debug_frame   0x00000000       0x94 build/DebugLed.o
- .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+ .text          0x00000000        0x0 build/DebugLeds.o
+ .data          0x00000000        0x0 build/DebugLeds.o
+ .bss           0x00000000        0x0 build/DebugLeds.o
+ .text.DebugLedsTurnOn
+                0x00000000       0x10 build/DebugLeds.o
+ .text.DebugLedsTurnAllRed
+                0x00000000       0x3a build/DebugLeds.o
+ .text.DebugLedsTurnAllGreen
+                0x00000000       0x3a build/DebugLeds.o
+ .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+ .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+ .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
  .text.All_debug_leds_turn_on_and_turn_green
-                0x00000000       0x2a C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+                0x00000000        0xa C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
  .text.All_debug_leds_turn_on_and_turn_red
-                0x00000000       0x52 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .rodata.debug_led4
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .rodata.debug_led3
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .rodata.debug_led2
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .rodata.debug_led1
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .rodata.DebugLed_pin
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .rodata.DebugLed_port
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
- .rodata.DebugLed_ddr
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+                0x00000000        0xa C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+ .rodata.DebugLeds_pin
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -118,22 +68,6 @@ Discarded input sections
                 0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
  .text.libgcc.fixed
                 0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
- .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc.mul
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc.div
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc   0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc.prologue
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc.builtins
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc.fmul
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc.fixed
-                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
 
 Memory Configuration
 
@@ -152,8 +86,8 @@ Linker script and memory map
 Address of section .data set to 0x800100
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
 LOAD build/ReadWriteBits.o
-LOAD build/DebugLed.o
-LOAD C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+LOAD build/DebugLeds.o
+LOAD C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
@@ -258,7 +192,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x100
+.text           0x00000000      0x14e
  *(.vectors)
  .vectors       0x00000000       0x68 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -301,8 +235,6 @@ END GROUP
  *(.init4)
  .init4         0x00000074       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
                 0x00000074                __do_copy_data
- .init4         0x0000008a       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
-                0x0000008a                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -313,50 +245,62 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x0000009a        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .init9         0x0000008a        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  *(.init9)
  *(.text)
- .text          0x000000a2        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
-                0x000000a2                __vector_22
-                0x000000a2                __vector_1
-                0x000000a2                __vector_24
-                0x000000a2                __vector_12
-                0x000000a2                __bad_interrupt
-                0x000000a2                __vector_6
-                0x000000a2                __vector_3
-                0x000000a2                __vector_23
-                0x000000a2                __vector_25
-                0x000000a2                __vector_11
-                0x000000a2                __vector_13
-                0x000000a2                __vector_17
-                0x000000a2                __vector_19
-                0x000000a2                __vector_7
-                0x000000a2                __vector_5
-                0x000000a2                __vector_4
-                0x000000a2                __vector_9
-                0x000000a2                __vector_2
-                0x000000a2                __vector_21
-                0x000000a2                __vector_15
-                0x000000a2                __vector_8
-                0x000000a2                __vector_14
-                0x000000a2                __vector_10
-                0x000000a2                __vector_16
-                0x000000a2                __vector_18
-                0x000000a2                __vector_20
-                0x000000a6                . = ALIGN (0x2)
+ .text          0x00000092        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+                0x00000092                __vector_22
+                0x00000092                __vector_1
+                0x00000092                __vector_24
+                0x00000092                __vector_12
+                0x00000092                __bad_interrupt
+                0x00000092                __vector_6
+                0x00000092                __vector_3
+                0x00000092                __vector_23
+                0x00000092                __vector_25
+                0x00000092                __vector_11
+                0x00000092                __vector_13
+                0x00000092                __vector_17
+                0x00000092                __vector_19
+                0x00000092                __vector_7
+                0x00000092                __vector_5
+                0x00000092                __vector_4
+                0x00000092                __vector_9
+                0x00000092                __vector_2
+                0x00000092                __vector_21
+                0x00000092                __vector_15
+                0x00000092                __vector_8
+                0x00000092                __vector_14
+                0x00000092                __vector_10
+                0x00000092                __vector_16
+                0x00000092                __vector_18
+                0x00000092                __vector_20
+                0x00000096                . = ALIGN (0x2)
  *(.text.*)
- .text.SetBit   0x000000a6       0x18 build/ReadWriteBits.o
-                0x000000a6                SetBit
+ .text.SetBit   0x00000096       0x18 build/ReadWriteBits.o
+                0x00000096                SetBit
+ .text.ClearBit
+                0x000000ae       0x1a build/ReadWriteBits.o
+                0x000000ae                ClearBit
+ .text.DebugLedsTurnAllOn
+                0x000000c8       0x3a build/DebugLeds.o
+                0x000000c8                DebugLedsTurnAllOn
+ .text.DebugLedsTurnRed
+                0x00000102       0x10 build/DebugLeds.o
+                0x00000102                DebugLedsTurnRed
+ .text.DebugLedsTurnGreen
+                0x00000112       0x10 build/DebugLeds.o
+                0x00000112                DebugLedsTurnGreen
  .text.Turn_led1_red_and_the_rest_green
-                0x000000be       0x34 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
-                0x000000be                Turn_led1_red_and_the_rest_green
- .text.main     0x000000f2        0xa C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
-                0x000000f2                main
-                0x000000fc                . = ALIGN (0x2)
+                0x00000122       0x1e C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                0x00000122                Turn_led1_red_and_the_rest_green
+ .text.main     0x00000140        0xa C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                0x00000140                main
+                0x0000014a                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000000fc        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x000000fc                _exit
-                0x000000fc                exit
+ .fini9         0x0000014a        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x0000014a                _exit
+                0x0000014a                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -375,36 +319,54 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000000fc        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x0000014a        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000100                _etext = .
+                0x0000014e                _etext = .
 
-.data           0x00800100        0x0 load address 0x00000100
+.data           0x00800100        0x8 load address 0x0000014e
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
+ .rodata.debug_led4
+                0x00800100        0x1 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                0x00800100                debug_led4
+ .rodata.debug_led3
+                0x00800101        0x1 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                0x00800101                debug_led3
+ .rodata.debug_led2
+                0x00800102        0x1 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                0x00800102                debug_led2
+ .rodata.debug_led1
+                0x00800103        0x1 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                0x00800103                debug_led1
+ .rodata.DebugLeds_port
+                0x00800104        0x2 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                0x00800104                DebugLeds_port
+ .rodata.DebugLeds_ddr
+                0x00800106        0x2 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                0x00800106                DebugLeds_ddr
  *(.gnu.linkonce.r*)
-                0x00800100                . = ALIGN (0x2)
-                0x00800100                _edata = .
-                0x00800100                PROVIDE (__data_end, .)
+                0x00800108                . = ALIGN (0x2)
+                0x00800108                _edata = .
+                0x00800108                PROVIDE (__data_end, .)
 
-.bss            0x00800100        0x0
-                0x00800100                PROVIDE (__bss_start, .)
+.bss            0x00800108        0x0
+                [!provide]                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  *(COMMON)
-                0x00800100                PROVIDE (__bss_end, .)
-                0x00000100                __data_load_start = LOADADDR (.data)
-                0x00000100                __data_load_end = (__data_load_start + SIZEOF (.data))
+                [!provide]                PROVIDE (__bss_end, .)
+                0x0000014e                __data_load_start = LOADADDR (.data)
+                0x00000156                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800100        0x0
+.noinit         0x00800108        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800100                _end = .
+                0x00800108                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -448,7 +410,8 @@ END GROUP
  *(.comment)
  .comment       0x00000000       0x30 build/ReadWriteBits.o
                                  0x31 (size before relaxing)
- .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+ .comment       0x00000030       0x31 build/DebugLeds.o
+ .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
 
 .note.gnu.avr.deviceinfo
                 0x00000000       0x40
@@ -470,50 +433,59 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x78
+.debug_aranges  0x00000000       0xc0
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x40 build/ReadWriteBits.o
  .debug_aranges
-                0x00000040       0x38 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+                0x00000040       0x48 build/DebugLeds.o
+ .debug_aranges
+                0x00000088       0x38 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xb1b
+.debug_info     0x00000000      0xce5
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_info    0x000005f4      0x1a9 build/ReadWriteBits.o
- .debug_info    0x0000079d      0x37e C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+ .debug_info    0x0000079d      0x313 build/DebugLeds.o
+ .debug_info    0x00000ab0      0x235 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
 
-.debug_abbrev   0x00000000      0x745
+.debug_abbrev   0x00000000      0x81f
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2       0xcd build/ReadWriteBits.o
- .debug_abbrev  0x0000066f       0xd6 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+ .debug_abbrev  0x0000066f       0xda build/DebugLeds.o
+ .debug_abbrev  0x00000749       0xd6 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
 
-.debug_line     0x00000000      0x299
+.debug_line     0x00000000      0x3e8
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_line    0x0000001a      0x110 build/ReadWriteBits.o
- .debug_line    0x0000012a      0x16f C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+ .debug_line    0x0000012a      0x182 build/DebugLeds.o
+ .debug_line    0x000002ac      0x13c C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
 
-.debug_frame    0x00000000       0xb8
+.debug_frame    0x00000000      0x150
  *(.debug_frame)
  .debug_frame   0x00000000       0x64 build/ReadWriteBits.o
- .debug_frame   0x00000064       0x54 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+ .debug_frame   0x00000064       0x98 build/DebugLeds.o
+ .debug_frame   0x000000fc       0x54 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
 
-.debug_str      0x00000000      0x3fb
+.debug_str      0x00000000      0x490
  *(.debug_str)
  .debug_str     0x00000000      0x208 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_str     0x00000208      0x124 build/ReadWriteBits.o
                                 0x15d (size before relaxing)
- .debug_str     0x0000032c       0xcf C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
-                                0x1e5 (size before relaxing)
+ .debug_str     0x0000032c       0xdb build/DebugLeds.o
+                                0x1fa (size before relaxing)
+ .debug_str     0x00000407       0x89 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
+                                0x242 (size before relaxing)
 
-.debug_loc      0x00000000       0x50
+.debug_loc      0x00000000      0x161
  *(.debug_loc)
  .debug_loc     0x00000000       0x50 build/ReadWriteBits.o
+ .debug_loc     0x00000050      0x111 build/DebugLeds.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -533,10 +505,11 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x58
+.debug_ranges   0x00000000       0x90
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x30 build/ReadWriteBits.o
- .debug_ranges  0x00000030       0x28 C:\Users\Mike\AppData\Local\Temp\ccmVdEjL.o
+ .debug_ranges  0x00000030       0x38 build/DebugLeds.o
+ .debug_ranges  0x00000068       0x28 C:\Users\Mike\AppData\Local\Temp\cc4oA9xO.o
 
 .debug_macro
  *(.debug_macro)

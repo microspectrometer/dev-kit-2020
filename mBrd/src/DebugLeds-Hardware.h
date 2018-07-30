@@ -22,9 +22,9 @@
     //      let &path = &path . ',' . avr_include
 
 //  =====[ I/O Register Address ]=====          =====[ Register's Purpose ]=====
-uint8_t volatile * const DebugLed_ddr  = &DDRC;  // controls if input or output
-uint8_t volatile * const DebugLed_port = &PORTC; // controls output high/low
-uint8_t volatile * const DebugLed_pin  = &PINC;  // reads pin value
+uint8_t volatile * const DebugLeds_ddr  = &DDRC;  // controls if input or output
+uint8_t volatile * const DebugLeds_port = &PORTC; // controls output high/low
+uint8_t volatile * const DebugLeds_pin  = &PINC;  // reads pin value
 // =====[ DebugLed Pin Connection On simBrd ]=====
 uint8_t const debug_led1 = PINC0;
 uint8_t const debug_led2 = PINC1;

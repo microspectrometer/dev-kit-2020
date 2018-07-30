@@ -6,6 +6,14 @@ void DebugLedsTurnOn(uint8_t debug_led)
     SetBit(DebugLeds_ddr, debug_led);
 }
 
+void DebugLedsTurnAllOn(void)
+{
+    SetBit(DebugLeds_ddr, debug_led1);
+    SetBit(DebugLeds_ddr, debug_led2);
+    SetBit(DebugLeds_ddr, debug_led3);
+    SetBit(DebugLeds_ddr, debug_led4);
+}
+
 void DebugLedsTurnRed(uint8_t debug_led)
 {
     SetBit(DebugLeds_port, debug_led);

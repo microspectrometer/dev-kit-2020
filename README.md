@@ -32,7 +32,7 @@
 
 # Status
 ## Next step
-- [x] emedded test of debug LEDs on the `mBrd`
+- [x] embedded test of debug LEDs on the `mBrd`
     - the debug LED demonstrates I can program the `mBrd`
 - [x] write a lib to control these four debug LEDs
     - the debug LED is a way to run tests on the `mBrd`
@@ -49,7 +49,7 @@
             - it is a little messy
         - make a new version of the DebugLed lib just for the mBrd
         - call it DebugLeds
-- [ ] embedded test of lib DebugLeds on the `mBrd`
+- [x] embedded test of lib DebugLeds on the `mBrd`
 - [ ] Spi
     - [ ] document Spi stuff in the `README`, just like you did for `FT1248`
     - [ ] develop the Spi lib

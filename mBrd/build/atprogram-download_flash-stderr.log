@@ -1,8 +1,9 @@
 [DEBUG] Starting execution of "program"
 [DEBUG] Starting process 'C:\Program Files (x86)\Atmel\Studio\7.0\atbackend\atbackend.exe'
-[DEBUG] Connecting to TCP:127.0.0.1:50988
+[DEBUG] Connecting to TCP:127.0.0.1:57974
 [INFO] Connected to atmelice, fw version: 1.27
 [INFO] Firmware check OK
-[DEBUG] Memory segment prog written at 0x00000000. Size = 0x00000100.
+[DEBUG] Memory segment prog written at 0x00000000. Size = 0x0000014e.
+[DEBUG] Memory segment prog written at 0x0000014e. Size = 0x00000008.
 [DEBUG] Command "program" finished with return code 0
 [DEBUG] Exit successfully.
