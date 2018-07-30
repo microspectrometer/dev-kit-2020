@@ -1,8 +1,11 @@
 #include <DebugLed.h>
-#include <DebugLed-Hardware.h>
+#include "DebugLed-Hardware.h"
 #include <Ft1248.h>
-#include <Ft1248-Hardware.h>
+#include "Ft1248-Hardware.h"
 #include <Usb.h>
+#include <SpiMaster.h>
+#include "SpiMaster-Hardware.h"
+/* #include <ReadWriteBits.h> */
 //
 /* =====[ Required Hardware Settings in FT_Prog ]===== */
 /* - Hardware Specific -> Ft1248 Settings */
@@ -207,5 +210,6 @@ int main()
     SetupDebugLed();
     /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
-    /* test_EchoByte(); // All tests pass 2018-07-28 */
+    /* test_EchoByte(); // All tests pass 2018-07-30 */
+    SpiMasterInit(); DebugLedTurnRed();
 }

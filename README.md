@@ -1326,6 +1326,43 @@ other bits in the bus-width nibble are pulled high.
 > `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/pcb design/eagle/projects/Chromation/20150807_SPI_Wand/doc/design on paper/Communication With FLIR Ex-Series Camera.txt`
 > `C:\chromation-dropbox\Dropbox\design files and protocols\circuits\mcu\Atmel Studio\LIS-770i_Interface\20151020_LIS-770i_mBrd\src\main.c`
 > `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/mcu/Atmel Studio/LIS-770i_Interface/20151020_LIS-770i_mBrd/src/main.c`
+## Setup the SPI pins
+- see `hardware-connection-and-schematics.pdf`
+```powershell
+PS> &$lis_hardware
+```
+- [x] create `SpiMaster-Hardware.h`
+- [x] create `SpiSlave-Hardware.h`
+    - pinout is identical to `SpiMaster-Hardware.h`
+## Setup the SPI registers
+- see datasheet
+```powershell
+PS> &$atmega328p_datasheet
+```
+- chapter 18 `SPI - Serial Peripheral Interface`
+- [x] configure user-defined pins in software
+- [x] setup SPI registers to use SPI pins for SPI on Master and Slave
+- [x] set SPI Master to run the SPI clock at `fosc/8 = 1.25MHz`
+- [ ] setup slave to change debug LED when it receives a byte over SPI
+- [ ] setup master to send a byte over SPI when it starts up
+
+### SPI master pin overrides
+pin         | direction
+----------- | ---------
+`Spi_Ss`    | user defined
+`Spi_Miso`  | input
+`Spi_Mosi`  | user defined
+`Spi_Sck`   | user defined
+
+### SPI slave pin overrides
+pin         | direction
+----------- | ---------
+`Spi_Ss`    | input
+`Spi_Miso`  | user defined
+`Spi_Mosi`  | input
+`Spi_Sck`   | input
+
+
 ## SPI communication for requesting a frame
 - SPI master requests a frame:
     - `Spi_Ss` goes high to low
@@ -1447,35 +1484,39 @@ uint8_t const Spi_Sck    =   PB5;    // SPI clock
 ## SPI master writes to SPI slave
 - [ ] continue copying in from
 > `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/pcb design/eagle/projects/Chromation/20150807_SPI_Wand/doc/design on paper/Communication With FLIR Ex-Series Camera.txt`
-    -SimMCU transmits to WandMCU:
-        -SimMCU pull WandMCU !SS low
-        -SimMCU sends byte
-        -WandMCU receives byte in SPI hardware buffer
-        -when one byte is received, hardware triggers interrupt and WandMCU reads byte from SPI buffer
-        -SimMCU pulls WandMCU !SS high (allowing slave to use its MISO pin as a GPIO)
-        -example: SimMCU requests a frame of data
+- `simBrd` transmits to `mBrd`:
+    - `simBrd` pull `mBrd` `!SS` low
+    - `simBrd` sends byte
+    - `mBrd` receives byte in SPI hardware buffer
+    - when one byte is received, hardware triggers interrupt and `mBrd` reads
+      byte from SPI buffer
+    - `simBrd` pulls `mBrd` `!SS` high (allowing slave to use its MISO pin as a
+      GPIO)
 
-    -WandMCU transmits to SimMCU:
-        -example: SimMCU is waiting to receive a frame of data
-        -SimMCU is polling MISO
-            -MISO goes low when the frame is ready
-            -(check that control of MISO is automatically given to the SPI hardware module when the WandMCU is put into slave mode)
-        -SimMCU pulls !SS low
-            -WandMCU is automatically placed into SPI slave mode
-            -MISO output is controlled by SPI hardware
-        -SimMCU loads a byte of garbage into its transmit buffer
-            -this starts a transmission
-            -eight bits of garbage are sent to the slave
-            -the slave transmits eight bits of frame data at the same time
-            -the slave needs to prepare the next byte as soon as it knows the previous one has been sent
-        -SimMCU keeps SS low
-        -SimMCU reads the byte received from the slave
-        -SimMCU loads another byte of garbage into its transmit buffer
-            -this start another transmission
-        -SimMCU continues this until it has read a full frame (784 pixels * 2 bytes per pixel = 1568 bytes)
-        -SimMCU checks the frame to make sure it was received correctly
-            -not sure how to do this -- want to do a checksum?
-        -SimMCU requests a new frame from the WandMCU
+- `mBrd` transmits to `simBrd`:
+    - example: `simBrd` is waiting to receive a frame of data
+    - `simBrd` is polling MISO
+        - MISO goes low when the frame is ready
+        - (check that control of MISO is automatically given to the SPI hardware
+          module when the `mBrd` is put into slave mode)
+    - `simBrd` pulls `!SS` low
+        - `mBrd` is automatically placed into SPI slave mode
+        - MISO output is controlled by SPI hardware
+    - `simBrd` loads a byte of garbage into its transmit buffer
+        - this starts a transmission
+        - eight bits of garbage are sent to the slave
+        - the slave transmits eight bits of frame data at the same time
+        - the slave needs to prepare the next byte as soon as it knows the
+          previous one has been sent
+    - `simBrd` keeps `!SS` low
+    - `simBrd` reads the byte received from the slave
+    - `simBrd` loads another byte of garbage into its transmit buffer
+        - this start another transmission
+    - `simBrd` continues this until it has read a full frame (784 pixels * 2
+      bytes per pixel = 1568 bytes)
+    - `simBrd` checks the frame to make sure it was received correctly
+        - not sure how to do this -- want to do a checksum?
+    - `simBrd` requests a new frame from the `mBrd`
 
 
 # UART SPI
@@ -1537,8 +1578,8 @@ It is hard to predict when the *heap* and the *stack* might collide.
 
 ## Cable connections and switch settings
 - Set simBrd SW2 to "ISP"
-    - program the simBrd: SW1 to "M.ISP"
-    - program the mBrd:   SW1 to "S.ISP"
+    - program the simBrd: SW1 to "M.ISP" *M for SPI Master*
+    - program the mBrd:   SW1 to "S.ISP" *S for SPI Slave*
 - Power simBrd from hostPC with mini-B USB cable.
 - Power ATMEL-ICE from hostPC with micro-B USB cable.
 - Connect ATMEL-ICE to simBrd by connecting the 10-pin ribbon cable to the AVR
