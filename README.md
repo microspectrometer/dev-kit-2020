@@ -34,9 +34,22 @@
 ## Next step
 - [x] emedded test of debug LEDs on the `mBrd`
     - the debug LED demonstrates I can program the `mBrd`
-- [ ] write a lib to control these four debug LEDs
+- [x] write a lib to control these four debug LEDs
     - the debug LED is a way to run tests on the `mBrd`
-- [ ] embedded test of lib DebugLed on the `mBrd`
+    - the easiest thing to do is:
+        - eliminate `static uint8_t debug_led_` as a value passed in by
+          `DebugLedInit()`
+        - instead make this a value passed into the actual calls, for example:
+        - `DebugLedTurnOn()` becomes `DebugLedTurnOn(uint8_t pin_number)` where
+          the `pin_number` is defined in `DebugLed-Hardware.h`.
+        - for the existing `simBrd` code, this changes to
+          `DebugLedTurnOn(`debug_led`) since the hardware only defines one debug
+          LED.
+        - do not go back and change existing code now
+            - it is a little messy
+        - make a new version of the DebugLed lib just for the mBrd
+        - call it DebugLeds
+- [ ] embedded test of lib DebugLeds on the `mBrd`
 - [ ] Spi
     - [ ] document Spi stuff in the `README`, just like you did for `FT1248`
     - [ ] develop the Spi lib

@@ -5,7 +5,8 @@
 #include <RecordedCall.h>   // used by *DOF* `mock_lib.c`
 #include <RecordedArg.h>    // used by *DOF* `mock_lib.c`
 #include "test_ReadWriteBits.h"
-#include "test_DebugLed.h"
+#include "test_DebugLed.h"  // debug LED  on simBrd
+#include "test_DebugLeds.h" // debug LEDs on mBrd
 #include "test_Ft1248.h"
 #include "test_Usb.h"
 
@@ -32,6 +33,14 @@ void DevelopingDebugLed(bool run_test) { if (run_test) {
     setUp = SetUp_DebugLedInit; tearDown = TearDown_DebugLedInit;
     RUN_TEST(DebugLedInit_turns_debug_led_on_and_green);
     RUN_TEST(DebugLedTurnRedToShowError_turns_debug_led_red);
+}}
+void DevelopingDebugLeds(bool run_test) { if (run_test) {
+    setUp = SetUp_DebugLeds; tearDown = TearDown_DebugLeds;
+    RUN_TEST(DebugLedsTurnOn_led_N_turns_on_led_N);
+    RUN_TEST(DebugLedsTurnRed_led_N_turns_led_N_red);
+    RUN_TEST(DebugLedsTurnGreen_led_N_turns_led_N_green);
+    RUN_TEST(DebugLedsTurnAllRed_turns_all_4_leds_red);
+    RUN_TEST(DebugLedsTurnAllGreen_turns_all_4_leds_green);
 }}
 void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
     //setUp = SetUp_NothingForFt1248; tearDown = TearDown_NothingForFt1248;
@@ -124,8 +133,9 @@ int main()
     UNITY_BEGIN();
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
+    DevelopingDebugLeds       (Yep);
     DevelopingFt1248_lowlevel (Nope);
-    DevelopingFt1248_highlevel(Yep);
-    DevelopingUsb             (Yep);
+    DevelopingFt1248_highlevel(Nope);
+    DevelopingUsb             (Nope);
     return UNITY_END();
 }
