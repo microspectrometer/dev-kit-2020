@@ -7,6 +7,7 @@
 extern uint8_t volatile * const Spi_ddr;
 extern uint8_t volatile * const Spi_spcr;  // SPI control register
 extern uint8_t volatile * const Spi_spsr;  // SPI status register
+extern uint8_t volatile * const Spi_spdr;  // SPI data register
 /* =====[ Pins defined in -Hardware.h ]===== */
 extern uint8_t const Spi_Miso;
 /* =====[ SPI control register bits ]===== */

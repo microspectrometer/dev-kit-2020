@@ -27,6 +27,7 @@ uint8_t volatile * const Spi_port   =   &PORTB; // output (Port out)
 uint8_t volatile * const Spi_pin    =   &PINB;  // input (Port in)
 uint8_t volatile * const Spi_spcr   =   &SPCR;  // SPI control register
 uint8_t volatile * const Spi_spsr   =   &SPSR;  // SPI status register
+uint8_t volatile * const Spi_spdr   =   &SPDR;  // SPI data register
 
 // =====[ SpiSlave Pin Connection On mBrd ]=====
 uint8_t const Spi_Ss    =   PB2;    // slave select driven by the master

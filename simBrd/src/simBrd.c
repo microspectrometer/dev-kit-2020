@@ -213,6 +213,19 @@ void SpiMaster_sends_byte_0x01(void)
     // End the transmission by de-selecting the slave.
     SetBit(Spi_port, Spi_Ss);
 }
+void SpiMaster_sends_byte_0x06(void)
+{
+    /* Call this function on the SPI Master */
+    /* when running this test on the SPI slave. */
+    // Start a transmission by selecting the slave.
+    ClearBit(Spi_port, Spi_Ss);
+    // Load SPI tx buffer with a byte to send.
+    *Spi_spdr = 0x06;
+    // Wait for SPI tranmission to complete. Version without interrupts.
+    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
+    // End the transmission by de-selecting the slave.
+    SetBit(Spi_port, Spi_Ss);
+}
 int main()
 {
     //
@@ -226,6 +239,7 @@ int main()
     /* test_EchoByte(); // All tests pass 2018-07-30 */
     /* =====[ test SpiMaster ]===== */
     SpiMasterInit();
-    SpiMaster_sends_byte_0x01(); // PASS 2018-07-30
+    /* SpiMaster_sends_byte_0x01(); // PASS 2018-07-30 */
+    SpiMaster_sends_byte_0x06(); // PASS 2018-07-30
     DebugLedTurnRed();
 }

@@ -38,7 +38,17 @@ void Turn_led3_red_when_SpiSlave_receives_a_byte(void)
     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
     DebugLedsTurnRed(debug_led3);
 }
-
+void Show_received_SPI_data_on_debug_leds(void)
+{
+    /* =====[ Operate ]===== */
+    // SPI Master sends a 4-bit value.
+    /* =====[ Version without interrupts ]===== */
+    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
+    if (BitIsSet(Spi_spdr, 0)) DebugLedsTurnRed(debug_led1);
+    if (BitIsSet(Spi_spdr, 1)) DebugLedsTurnRed(debug_led2);
+    if (BitIsSet(Spi_spdr, 2)) DebugLedsTurnRed(debug_led3);
+    if (BitIsSet(Spi_spdr, 3)) DebugLedsTurnRed(debug_led4);
+}
 int main()
 {
     /* test_DebugLeds(); // All tests pass 2018-07-30 */
@@ -47,5 +57,6 @@ int main()
     /* =====[ test SpiSlave ]===== */
     SpiSlaveInit();
     /* sei(); // Enable interrupts */
-    Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-30
+    /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-30 */
+    Show_received_SPI_data_on_debug_leds(); // PASS 2018-07-30
 }
