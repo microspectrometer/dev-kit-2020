@@ -32,9 +32,17 @@
 
 # Status
 ## Next step
-- [ ] next is Spi
+- [x] emedded test of debug LEDs on the `mBrd`
+    - the debug LED demonstrates I can program the `mBrd`
+- [ ] write a lib to control these four debug LEDs
+    - the debug LED is a way to run tests on the `mBrd`
+- [ ] embedded test of lib DebugLed on the `mBrd`
+- [ ] Spi
     - [ ] document Spi stuff in the `README`, just like you did for `FT1248`
     - [ ] develop the Spi lib
+    - [ ] testing the SPI lib is a little more tricky:
+        - both the SPI master and SPI slave need working code
+        - this is why I need the debug LED on the `mBrd` working first
 - [ ] then next embedded test application:
     - control the mBrd debug LED through the simBrd using lib Usb and lib Spi
 
@@ -862,11 +870,16 @@ Anytime the FT1248 master receives a `NAK` it returns the interface to the
 inactive state. 
 
 ## FT1248 protocol and Ft1248 C library
-- FT1248 is the FTDI protocol.
-- Ft1248 is my C library that implements the FT1248
-protocol.
+- `FT1248` is the FTDI protocol.
+- `Ft1248` is my C library that implements the `FT1248` protocol.
+- I implemented `FT1248` entirely in software:
+    - the Earhart implementation used the SPI hardware module on the ATtiny84
+      because it is 1-bit wide
+    - the LIS-770i interface implementation is done in software because it is
+      8-bitwide
 
-Summarizing the behavior, using the Ft1248 function names.
+The following summarizes 8-bit wide `FT1248` using the lib `Ft1248` function
+names.
 
 ### Polling in the inactive state
 In the inactive state, the master is always checking `MISO` to see if there is
@@ -1292,6 +1305,170 @@ other bits in the bus-width nibble should not matter, but to play it safe, the
 other bits in the bus-width nibble are pulled high.
 
 # SPI
+- lib Spi
+- the Ft1248 Master MCU is the SPI master
+- the motherboard MCU is the SPI slave
+## Reference docs
+> `C:\chromation-dropbox\Dropbox\design files and protocols\circuits\pcb design\eagle\projects\Chromation\20150807_SPI_Wand\doc\design on paper\Communication With FLIR Ex-Series Camera.txt`
+> `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/pcb design/eagle/projects/Chromation/20150807_SPI_Wand/doc/design on paper/Communication With FLIR Ex-Series Camera.txt`
+> `C:\chromation-dropbox\Dropbox\design files and protocols\circuits\mcu\Atmel Studio\LIS-770i_Interface\20151020_LIS-770i_mBrd\src\main.c`
+> `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/mcu/Atmel Studio/LIS-770i_Interface/20151020_LIS-770i_mBrd/src/main.c`
+## SPI communication for requesting a frame
+- SPI master requests a frame:
+    - `Spi_Ss` goes high to low
+        - this places the `mBrd` MCU in *slave* mode
+    - SPI master transmits `request_frame`
+    - `Spi_Ss` goes low to high
+        - this releases the `mBrd` MCU from *slave* mode
+- SPI slave parses the request
+- SPI slave pulls `Spi_Miso` low when a frame is ready
+- SPI master reads out the frame:
+    - `Spi_Ss` goes high to low
+        - this places the `mBrd` MCU in *slave* mode
+    - SPI master does the read out
+    - `Spi_Ss` goes low to high
+        - this releases the `mBrd` MCU from *slave* mode
+## SPI communication with LTC1864LADC
+```c
+// Configure USART to clock ADC SCK at fosc/2 = 5MHz
+    // UBBRn=0 -> XCK clock frequency = fosc/2
+    
+// Cfg XCK as an output.
+    // DDR_XCKn = 1
+
+// Enable SPI mode.
+    // UMSELn1:0 = [1 1]
+
+// Configure clock polarity (CPOL) and clock phase (CPHA).
+    // CPOL = 0 -> clock idles low -> first edge is rising.
+    // CPOL = 1 -> clock idles high -> first edge is falling.
+    // CPHA = 0 -> sample first
+    // CHPA = 1 -> load first
+    // Use CPOL = 1, CPHA = 1:
+        // UCPOLn = 1
+        // UCPHAn = 1
+        // clock idles high
+        // load data on first edge (falling edge)
+        // sample data on rising edges
+
+// Configure bit-order
+    // UDORDn = 
+    
+// Tx a byte.
+//  1.  Wait until bit UDREn in reg UCSRnA is high.
+//  2.  Write two bytes to UDRn for a 16-bit transfer.
+//  3.  Wait for an interrupt that is triggered when the UART
+//      transmission completes. Or, wait until bit RXCn in reg
+//      UCSRnA is high.
+```
+## Standard SPI
+- SPI master *always* initiates communication
+- Every SPI communication is both a **read** and a **write**
+    - master and slave form an 8-bit circular buffer
+    - the 8-bits in the slave's transmit buffer get shifted into the master's
+      receive buffer
+    - the 8-bits in the master's transmit buffer get shifted into the slave's
+      receive buffer
+## SPI sensors
+- many SPI sensors are slaves that only transmit (no receive buffer)
+- transmit only scheme:
+    - host transmit buffer is garbage
+    - clock slave some number of times
+    - clock drives the sensor's ADC
+    - meaningful data received on last N clocks after the first M clocks.
+- the `mBrd` is configurable so it must receive too
+## Basic SPI
+- SPI master loads a byte into its SPI data register
+- SPI master tells its hardware peripheral to send the byte
+- SPI slave hardware peripheral receives the byte
+    - this is independent of the main program execution
+- SPI slave has an interrupt that triggers when a byte is received
+    - this interrupt notifies the CPU that a byte was received
+    - this is the first time the SPI slave need even be aware that the SPI
+      master has been communicating with it.
+
+## SPI with Slave/Chip Select
+- There is a fourth SPI signal called Slave Select or Chip Select.
+    - SPI master MCU `Spi_Ss` pin can by any general purpose I/O on the
+      `ATmega328`
+    - SPI slave MCU `Spi_Ss` is a specific pin that ties into the SPI hardware
+      peripheral
+- When the `simBrd` MCU wants to talk to the `mBrd`, it pulls `Spi_Ss` low to put
+  the `mBrd` MCU's SPI hardware peripheral into a state where it is ready to
+  receive communication.
+    - If the `simBrd` MCU transimts data without pulling `Spi_Ss` low, the
+      `mBrd` MCU's SPI hardware peripheral ignores the communication.
+    - This allows the `simBrd` MCU to have multiple SPI slaves on the same SPI
+      bus (every slave's SCK connected to the master's SCK, etc.), but only
+      communicate with one slave at a time. The SPI master has a separate
+      `Spi_Ss` pin for each slave.
+
+## SPI simBrd and mBrd hardware
+- the `SPI` pin connections on the `mBrd` are exactly the same as on the
+  `simBrd`
+```c
+//  =====[ I/O Register Address ]=====          =====[ Register's Purpose ]=====
+uint8_t volatile * const Spi_ddr     =   &DDRB;  // data direction in/out
+uint8_t volatile * const Spi_port    =   &PORTB; // output (Port out)
+uint8_t volatile * const Spi_pin     =   &PINB;  // input  (Port in)
+// =====[ Spi Pin Connection On simBrd and mBrd ]=====
+uint8_t const Spi_Ss     =   PB2;    // Slave select
+uint8_t const Spi_Mosi   =   PB3;    // master data line: master-out, slave-in
+uint8_t const Spi_Miso   =   PB4;    // slave data line: master-in, slave-out
+uint8_t const Spi_Sck    =   PB5;    // SPI clock
+```
+- `simBrd` and `mBrd` are both ATmega328P on 10MHz oscillators
+- `mBrd` is the SPI slave
+    - `mBrd` uses SPI hardware peripheral
+    - `mBrd` configures an interrupt for byte received over SPI
+- `simBrd` is the SPI master
+    - `simBrd` uses USART hardware peripheral
+- SPI master SCK shall not exceed 2MHz.
+- SPI master is an ATmega328P with a 10MHz oscillator.
+- SPI master shall use SCK = fosc/8 = 1.25MHz.
+- `simBrd` MCU `SCK` clocks `mBrd` MCU `SCK` at `fosc/8 = 1.25MHz`
+- `mBrd` is SPI master to ADC
+    - its `USART` clocks ADC SCK at `fosc/2 = 5MHz`
+
+
+## SPI master writes to SPI slave
+- [ ] continue copying in from
+> `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/pcb design/eagle/projects/Chromation/20150807_SPI_Wand/doc/design on paper/Communication With FLIR Ex-Series Camera.txt`
+    -SimMCU transmits to WandMCU:
+        -SimMCU pull WandMCU !SS low
+        -SimMCU sends byte
+        -WandMCU receives byte in SPI hardware buffer
+        -when one byte is received, hardware triggers interrupt and WandMCU reads byte from SPI buffer
+        -SimMCU pulls WandMCU !SS high (allowing slave to use its MISO pin as a GPIO)
+        -example: SimMCU requests a frame of data
+
+    -WandMCU transmits to SimMCU:
+        -example: SimMCU is waiting to receive a frame of data
+        -SimMCU is polling MISO
+            -MISO goes low when the frame is ready
+            -(check that control of MISO is automatically given to the SPI hardware module when the WandMCU is put into slave mode)
+        -SimMCU pulls !SS low
+            -WandMCU is automatically placed into SPI slave mode
+            -MISO output is controlled by SPI hardware
+        -SimMCU loads a byte of garbage into its transmit buffer
+            -this starts a transmission
+            -eight bits of garbage are sent to the slave
+            -the slave transmits eight bits of frame data at the same time
+            -the slave needs to prepare the next byte as soon as it knows the previous one has been sent
+        -SimMCU keeps SS low
+        -SimMCU reads the byte received from the slave
+        -SimMCU loads another byte of garbage into its transmit buffer
+            -this start another transmission
+        -SimMCU continues this until it has read a full frame (784 pixels * 2 bytes per pixel = 1568 bytes)
+        -SimMCU checks the frame to make sure it was received correctly
+            -not sure how to do this -- want to do a checksum?
+        -SimMCU requests a new frame from the WandMCU
+
+
+# UART SPI
+- lib UartSpi
+- the motherboard MCU is the SPI master
+- the ADC is the SPI slave
 # Program Flash
 ## Quick Summary
 - check hardware connection: `;mkp`
