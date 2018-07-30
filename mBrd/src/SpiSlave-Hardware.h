@@ -26,6 +26,7 @@ uint8_t volatile * const Spi_ddr    =   &DDRB;  // data direction in/out
 uint8_t volatile * const Spi_port   =   &PORTB; // output (Port out)
 uint8_t volatile * const Spi_pin    =   &PINB;  // input (Port in)
 uint8_t volatile * const Spi_spcr   =   &SPCR;  // SPI control register
+uint8_t volatile * const Spi_spsr   =   &SPSR;  // SPI status register
 
 // =====[ SpiSlave Pin Connection On mBrd ]=====
 uint8_t const Spi_Ss    =   PB2;    // slave select driven by the master
@@ -35,6 +36,10 @@ uint8_t const Spi_Sck   =   PB5;    // Spi clock driven by the master
 
 /* =====[ SPI control register bits ]===== */
 uint8_t const Spi_Enable            = SPE;
+uint8_t const Spi_InterruptEnable   = SPIE;
+
+/* =====[ SPI status register bits ]===== */
+uint8_t const Spi_InterruptFlag     = SPIF;
 
 #endif // _SPI_SLAVE_HW_H
 

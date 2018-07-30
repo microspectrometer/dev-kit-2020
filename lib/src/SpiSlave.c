@@ -9,5 +9,8 @@ void SpiSlaveInit(void)
 
     // Enable SPI.
     SetBit(Spi_spcr, Spi_Enable);
+
+    /* // Enable SPI interrupt. */
+    /* SetBit(Spi_spcr, Spi_InterruptEnable); */
 }
 

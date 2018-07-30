@@ -7,8 +7,9 @@
 extern uint8_t volatile * const Spi_ddr;
 extern uint8_t volatile * const Spi_port;
 /* extern uint8_t volatile * const Spi_pin; */
-extern uint8_t volatile * const Spi_spcr;
-extern uint8_t volatile * const Spi_spsr;
+extern uint8_t volatile * const Spi_spcr;  // SPI control register
+extern uint8_t volatile * const Spi_spsr;  // SPI status register
+extern uint8_t volatile * const Spi_spdr;  // SPI data register
 
 /* =====[ Pins defined in -Hardware.h ]===== */
 extern uint8_t const Spi_Ss;
@@ -23,6 +24,7 @@ extern uint8_t const Spi_Enable;
 
 /* =====[ SPI status register bits ]===== */
 extern uint8_t const Spi_DoubleClockRate;
+extern uint8_t const Spi_InterruptFlag;
 
 /* =====[ API ]===== */
 void SpiMasterInit(void);

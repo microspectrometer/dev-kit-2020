@@ -1,8 +1,9 @@
-/* #include <ReadWriteBits.h> */
-#include <DebugLeds.h>
-#include "DebugLeds-Hardware.h"
-#include <SpiSlave.h>
-#include "SpiSlave-Hardware.h"
+#include <avr/interrupt.h>      // defines sei and cli
+#include <ReadWriteBits.h>      // SetBit, ClearBit, etc.
+#include <DebugLeds.h>          // controls the 4 debug LEDs
+#include "DebugLeds-Hardware.h" // map debug LEDs to actual hardware
+#include <SpiSlave.h>           // Chromation spectrometer is a SPI slave
+#include "SpiSlave-Hardware.h"  // map SPI I/O to actual hardware
 
 void All_debug_leds_turn_on_and_turn_green(void)
 {
@@ -30,13 +31,21 @@ void test_DebugLeds(void)
 }
 void Turn_led3_red_when_SpiSlave_receives_a_byte(void)
 {
+    /* =====[ Operate ]===== */
+    // SPI Master sends a byte.
+    /* =====[ Version without interrupts ]===== */
+    // Do nothing until SPI Interrupt Flag is set.
+    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
     DebugLedsTurnRed(debug_led3);
 }
 
 int main()
 {
-    test_DebugLeds(); // All tests pass 2018-07-30
+    /* test_DebugLeds(); // All tests pass 2018-07-30 */
+    DebugLedsTurnAllOn();
+    DebugLedsTurnAllGreen();
     /* =====[ test SpiSlave ]===== */
     SpiSlaveInit();
-    Turn_led3_red_when_SpiSlave_receives_a_byte();
+    /* sei(); // Enable interrupts */
+    Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-30
 }
