@@ -152,5 +152,6 @@ int main()
     RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
     RUN_TEST(SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8);
     RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
+    RUN_TEST(SpiMasterTransmit_byte_loads_SPI_tx_buffer_with_byte);
     return UNITY_END();
 }

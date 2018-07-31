@@ -11,7 +11,7 @@
     // [x] SpiMasterInit_enables_the_SPI_hardware_module
     // [x] SpiMasterOpenSpi_selects_the_SPI_slave
     // [x] SpiMasterCloseSpi_unselects_the_SPI_slave
-    // [ ] SpiMasterTransmit_byte_loads_SPI_tx_buffer_with_byte
+    // [x] SpiMasterTransmit_byte_loads_SPI_tx_buffer_with_byte
     // [ ] SpiMasterTransmit_byte_starts_a_transmission
     //
 void SpiMasterInit_pulls_Ss_high(void)
@@ -103,4 +103,16 @@ void SpiMasterCloseSpi_unselects_the_SPI_slave(void)
     SpiMasterCloseSpi();
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(Spi_Ss, *Spi_port);
+}
+void SpiMasterTransmit_byte_loads_SPI_tx_buffer_with_byte(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_spdr = 0x00;  // start with 0x00 in the tx buffer
+    uint8_t expect_byte = 0x09;
+    /* =====[ Operate ]===== */
+    uint8_t byte_to_send = expect_byte;
+    SpiMasterTransmit(byte_to_send);
+    /* =====[ Test ]===== */
+    uint8_t actual_byte_loaded = *Spi_spdr;
+    TEST_ASSERT_EQUAL_UINT8(expect_byte, actual_byte_loaded);
 }

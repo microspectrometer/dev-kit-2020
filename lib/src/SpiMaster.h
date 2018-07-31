@@ -30,5 +30,6 @@ extern uint8_t const Spi_InterruptFlag;
 void SpiMasterInit(void);
 void SpiMasterOpenSpi(void);
 void SpiMasterCloseSpi(void);
+void SpiMasterTransmit(uint8_t byte_to_send);
 
 #endif // _SPI_MASTER_H

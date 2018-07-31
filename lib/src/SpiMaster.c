@@ -48,3 +48,7 @@ void SpiMasterCloseSpi(void)
 {
     SetBit(Spi_port, Spi_Ss);
 }
+void SpiMasterTransmit(uint8_t byte_to_send)
+{
+    *Spi_spdr = byte_to_send;  // load tx buffer and start SPI transmission
+}
