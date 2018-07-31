@@ -3,8 +3,8 @@
 #include <Ft1248.h>
 #include "Ft1248-Hardware.h"
 #include <Usb.h>
-#include <SpiMaster.h>
-#include "SpiMaster-Hardware.h"
+#include <Spi.h>
+#include "Spi-Hardware.h"
 #include <ReadWriteBits.h>
 //
 /* =====[ Required Hardware Settings in FT_Prog ]===== */
@@ -245,5 +245,5 @@ int main()
     /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
     /* test_EchoByte(); // All tests pass 2018-07-30 */
-    /* test_SpiMaster(); // All test pass 2018-07-31 */
+    test_SpiMaster(); // All test pass 2018-07-31
 }

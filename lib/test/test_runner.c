@@ -9,8 +9,7 @@
 #include "test_DebugLeds.h" // debug LEDs on mBrd
 #include "test_Ft1248.h"    // lib-level API for FT1248 master on simBrd
 #include "test_Usb.h"       // app-level API for FT1248 master on simBrd
-#include "test_SpiMaster.h" // SPI on simBrd
-#include "test_SpiSlave.h"  // SPI on mBrd
+#include "test_Spi.h"       // SPI master on simBrd and SPI slave on mBrd
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -160,7 +159,7 @@ int main()
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
-    DevelopingSpiMaster       (Nope);
+    DevelopingSpiMaster       (Yep);
     DevelopingSpiSlave        (Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(SpiSlaveInit_configures_pin_Miso_as_an_output);

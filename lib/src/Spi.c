@@ -1,6 +1,9 @@
-#include "SpiMaster.h"
+#include "Spi.h"
 #include "ReadWriteBits.h"
 
+//
+/* =====[ Spi Master ]===== */
+//
 //
 // TODO: remove Open and Close from the public API
 //
@@ -68,3 +71,21 @@ void SpiMasterWrite(uint8_t byte_to_send)
     while (!SpiTransferIsDone()) ;
     SpiMasterCloseSpi();
 }
+
+//
+/* =====[ Spi Slave ]===== */
+//
+void SpiSlaveInit(void)
+{
+    /* =====[ Configure user-defined pins in software. ]===== */
+    // Make Spi_Miso an output pin.
+    SetBit(Spi_ddr, Spi_Miso);
+
+    // Enable SPI.
+    SetBit(Spi_spcr, Spi_Enable);
+
+    /* // Enable SPI interrupt. */
+    /* SetBit(Spi_spcr, Spi_InterruptEnable); */
+}
+
+

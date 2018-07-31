@@ -1,11 +1,11 @@
-#ifndef _SPI_SLAVE_HW_H
-#define _SPI_SLAVE_HW_H
+#ifndef _SPI_HW_H
+#define _SPI_HW_H
 
 #include <stdint.h>  // uint8_t
 #include <avr/io.h>  // defines IO addresses and pin names
 
-// =====[ Use This File With "SpiSlave.h" ]=====
-// This file resolves hardware dependencies declared extern in "SpiSlave.h".
+// =====[ Use This File With "Spi.h" ]=====
+// This file resolves hardware dependencies declared extern in "Spi.h".
 //
 // Hardware dependencies declared in this file are included by avr-gcc:
     // avr-gcc ... -mmcu=atmega328p -B ${atmega328_lib} ...
@@ -42,5 +42,5 @@ uint8_t const Spi_InterruptEnable   = SPIE;
 /* =====[ SPI status register bits ]===== */
 uint8_t const Spi_InterruptFlag     = SPIF;
 
-#endif // _SPI_SLAVE_HW_H
+#endif // _SPI_HW_H
 

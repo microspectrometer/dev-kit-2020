@@ -1,12 +1,12 @@
 #include <Mock.h>
-#include "test_SpiMaster_MockUps.h"
-#include "test_SpiMaster.h"
-#include "SpiMaster.h"          // lib under test
-#include "fake/Spi-Hardware.h"  // fake hardware dependencies in SpiMaster.h
+#include "test_Spi_MockUps.h"
+#include "test_Spi.h"
+#include "Spi.h"                // lib under test
+#include "fake/Spi-Hardware.h"  // fake hardware dependencies in Spi.h
 #include <unity.h>              // unit testing framework
 #include "ReadWriteBits.h"
-#include "mock_SpiMaster.h"
-/* =====[ List of Tests ]===== */
+#include "mock_Spi.h"
+/* =====[ List of SPI Master Tests ]===== */
     // [x] SpiMasterInit_pulls_Ss_high
     // [x] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
     // [x] SpiMasterInit_makes_this_mcu_the_SPI_master
@@ -28,6 +28,21 @@
         // I mock `SpiTransferIsDone()` to return a sequence of bit checks of
         // the SPI Interrupt Flag.
         //
+/* =====[ List of SPI Slave Tests ]===== */
+    // [ ] SpiSlaveInit_configures_pin_Miso_as_an_output
+    // [ ] SpiSlaveInit_enables_the_SPI_hardware_module
+
+//
+/* =====[ SPI Slave ]===== */
+//
+void SpiSlaveInit_configures_pin_Miso_as_an_output(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+
+//
+/* =====[ SPI Master ]===== */
+//
 void SpiMasterInit_pulls_Ss_high(void)
 {
     /* =====[ Setup ]===== */

@@ -1,6 +1,9 @@
-#ifndef _TEST_SPIMASTER_H
-#define _TEST_SPIMASTER_H
+#ifndef _TEST_SPI_H
+#define _TEST_SPI_H
 
+//
+/* =====[ SPI Master ]===== */
+//
 void SpiMasterOpenSpi_selects_the_SPI_slave(void);
 void SpiMasterCloseSpi_unselects_the_SPI_slave(void);
 void SpiMasterInit_pulls_Ss_high(void);
@@ -13,4 +16,8 @@ void Setup_SpiMasterWrite(void); void TearDown_SpiMasterWrite(void);
 void SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte(void);
 void SpiMasterWrite_byte_waits_for_transmission_to_complete(void);
 
-#endif // _TEST_SPIMASTER_H
+//
+/* =====[ SPI Slave ]===== */
+//
+void SpiSlaveInit_configures_pin_Miso_as_an_output(void);
+#endif // _TEST_SPI_H

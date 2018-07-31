@@ -4,7 +4,7 @@
 #include <stdint.h>    // uint8_t
 //#include <avr/io.h>  // This is the file being faked.
 
-// =====[ Use This File With lib headers "SpiMaster.h" and "SpiSlave.h" ]=====
+// =====[ Use This File With lib header "Spi.h" ]=====
 // This file resolves hardware dependencies declared extern in the lib headers.
 //
 // =====[ Fake the I/O Register Addresses ]=====

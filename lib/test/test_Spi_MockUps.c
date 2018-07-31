@@ -1,7 +1,7 @@
-#include "SpiMaster.h"
-#include "mock_SpiMaster.h"
+#include "Spi.h"
+#include "mock_Spi.h"
 #include <Mock.h>
-#include "test_SpiMaster_MockUps.h"
+#include "test_Spi_MockUps.h"
 void temporary(void){}
 
 static void (*SpiMasterOpenSpi_Saved)(void);

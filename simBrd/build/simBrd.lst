@@ -13,21 +13,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000338  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000168  00000000  00000000  00000378  2**0
+  5 .debug_aranges 00000170  00000000  00000000  00000378  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000151b  00000000  00000000  000004e0  2**0
+  6 .debug_info   00001555  00000000  00000000  000004e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000a96  00000000  00000000  000019fb  2**0
+  7 .debug_abbrev 00000ab0  00000000  00000000  00001a3d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000006ed  00000000  00000000  00002491  2**0
+  8 .debug_line   000006f4  00000000  00000000  000024ed  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000002a4  00000000  00000000  00002b80  2**2
+  9 .debug_frame  000002b4  00000000  00000000  00002be4  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000009b4  00000000  00000000  00002e24  2**0
+ 10 .debug_str    000009bb  00000000  00000000  00002e98  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000260  00000000  00000000  000037d8  2**0
+ 11 .debug_loc    00000260  00000000  00000000  00003853  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000128  00000000  00000000  00003a38  2**0
+ 12 .debug_ranges 00000130  00000000  00000000  00003ab3  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -391,10 +391,10 @@ void test_SpiMaster(void)
 {
     SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31
  248:	0e 94 1c 01 	call	0x238	; 0x238 <SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble>
+    SetupDebugLed();
     /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
     /* test_EchoByte(); // All tests pass 2018-07-30 */
-    /* =====[ test SpiMaster ]===== */
     test_SpiMaster(); // All test pass 2018-07-31
 }
  24c:	80 e0       	ldi	r24, 0x00	; 0

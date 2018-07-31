@@ -1,11 +1,11 @@
-#ifndef _SPI_MASTER_HW_H
-#define _SPI_MASTER_HW_H
+#ifndef _SPI_HW_H
+#define _SPI_HW_H
 
 #include <stdint.h>  // uint8_t
 #include <avr/io.h>  // defines IO addresses and pin names
 
-// =====[ Use This File With "SpiMaster.h" ]=====
-// This file resolves hardware dependencies declared extern in "SpiMaster.h".
+// =====[ Use This File With "Spi.h" ]=====
+// This file resolves hardware dependencies declared extern in "Spi.h".
 //
 // Hardware dependencies declared in this file are included by avr-gcc:
     // avr-gcc ... -mmcu=atmega328p -B ${atmega328_lib} ...
@@ -44,5 +44,5 @@ uint8_t const Spi_Enable            = SPE;
 uint8_t const Spi_DoubleClockRate   = SPI2X;
 uint8_t const Spi_InterruptFlag     = SPIF;
 
-#endif // _SPI_MASTER_HW_H
+#endif // _SPI_HW_H
 

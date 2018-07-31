@@ -11,21 +11,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002d4  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000100  00000000  00000000  00000314  2**0
+  4 .debug_aranges 00000120  00000000  00000000  00000314  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00001184  00000000  00000000  00000414  2**0
+  5 .debug_info   00001384  00000000  00000000  00000434  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000008b7  00000000  00000000  00001598  2**0
+  6 .debug_abbrev 000009a0  00000000  00000000  000017b8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000605  00000000  00000000  00001e4f  2**0
+  7 .debug_line   0000064f  00000000  00000000  00002158  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  000001b4  00000000  00000000  00002454  2**2
+  8 .debug_frame  00000208  00000000  00000000  000027a8  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000005b6  00000000  00000000  00002608  2**0
+  9 .debug_str    00000724  00000000  00000000  000029b0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000161  00000000  00000000  00002bbe  2**0
+ 10 .debug_loc    000001de  00000000  00000000  000030d4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 000000c0  00000000  00000000  00002d1f  2**0
+ 11 .debug_ranges 000000e0  00000000  00000000  000032b2  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -225,7 +225,7 @@ void DebugLedsTurnAllGreen(void)
  184:	08 95       	ret
 
 00000186 <SpiSlaveInit>:
-
+//
 void SpiSlaveInit(void)
 {
     /* =====[ Configure user-defined pins in software. ]===== */
@@ -245,18 +245,19 @@ void SpiSlaveInit(void)
  1a6:	08 95       	ret
 
 000001a8 <Show_received_SPI_data_on_debug_leds>:
-    //
-    // Display the second byte on the DebugLeds
-    if (BitIsSet(Spi_spdr, 0)) DebugLedsTurnRed(debug_led1);
-    if (BitIsSet(Spi_spdr, 1)) DebugLedsTurnRed(debug_led2);
-    if (BitIsSet(Spi_spdr, 2)) DebugLedsTurnRed(debug_led3);
-    if (BitIsSet(Spi_spdr, 3)) DebugLedsTurnRed(debug_led4);
+{
+    /* =====[ Operate ]===== */
+    // SPI Master sends a 4-bit value.
+    /* =====[ Version without interrupts ]===== */
+    // Do nothing until SPI Interrupt Flag is set.
+    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
  1a8:	67 e0       	ldi	r22, 0x07	; 7
  1aa:	8d e4       	ldi	r24, 0x4D	; 77
  1ac:	90 e0       	ldi	r25, 0x00	; 0
  1ae:	0e 94 75 00 	call	0xea	; 0xea <BitIsClear>
  1b2:	81 11       	cpse	r24, r1
  1b4:	f9 cf       	rjmp	.-14     	; 0x1a8 <Show_received_SPI_data_on_debug_leds>
+    if (BitIsSet(Spi_spdr, 0)) DebugLedsTurnRed(debug_led1);
  1b6:	60 e0       	ldi	r22, 0x00	; 0
  1b8:	8e e4       	ldi	r24, 0x4E	; 78
  1ba:	90 e0       	ldi	r25, 0x00	; 0
@@ -265,6 +266,7 @@ void SpiSlaveInit(void)
  1c2:	19 f0       	breq	.+6      	; 0x1ca <Show_received_SPI_data_on_debug_leds+0x22>
  1c4:	80 e0       	ldi	r24, 0x00	; 0
  1c6:	0e 94 9e 00 	call	0x13c	; 0x13c <DebugLedsTurnRed>
+    if (BitIsSet(Spi_spdr, 1)) DebugLedsTurnRed(debug_led2);
  1ca:	61 e0       	ldi	r22, 0x01	; 1
  1cc:	8e e4       	ldi	r24, 0x4E	; 78
  1ce:	90 e0       	ldi	r25, 0x00	; 0
@@ -273,6 +275,7 @@ void SpiSlaveInit(void)
  1d6:	19 f0       	breq	.+6      	; 0x1de <Show_received_SPI_data_on_debug_leds+0x36>
  1d8:	81 e0       	ldi	r24, 0x01	; 1
  1da:	0e 94 9e 00 	call	0x13c	; 0x13c <DebugLedsTurnRed>
+    if (BitIsSet(Spi_spdr, 2)) DebugLedsTurnRed(debug_led3);
  1de:	62 e0       	ldi	r22, 0x02	; 2
  1e0:	8e e4       	ldi	r24, 0x4E	; 78
  1e2:	90 e0       	ldi	r25, 0x00	; 0
@@ -281,6 +284,7 @@ void SpiSlaveInit(void)
  1ea:	19 f0       	breq	.+6      	; 0x1f2 <Show_received_SPI_data_on_debug_leds+0x4a>
  1ec:	82 e0       	ldi	r24, 0x02	; 2
  1ee:	0e 94 9e 00 	call	0x13c	; 0x13c <DebugLedsTurnRed>
+    if (BitIsSet(Spi_spdr, 3)) DebugLedsTurnRed(debug_led4);
  1f2:	63 e0       	ldi	r22, 0x03	; 3
  1f4:	8e e4       	ldi	r24, 0x4E	; 78
  1f6:	90 e0       	ldi	r25, 0x00	; 0
@@ -308,7 +312,6 @@ int main()
     /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-30 */
     Show_received_SPI_data_on_debug_leds(); // PASS 2018-07-30
  214:	0e 94 d4 00 	call	0x1a8	; 0x1a8 <Show_received_SPI_data_on_debug_leds>
-    /* Echo_byte_back_to_SPI_master(); */
 }
  218:	80 e0       	ldi	r24, 0x00	; 0
  21a:	90 e0       	ldi	r25, 0x00	; 0

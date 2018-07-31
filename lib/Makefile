@@ -23,17 +23,17 @@ CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
 
 # List the libs under dev:
-names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb SpiMaster SpiSlave
+names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb Spi
 # All libs under dev will be tested!
 # All libs under test need a `test_dev-lib.c` for the tests to build.
 #
 # But only some tests use mocks.
 # List the dev libs tested with mocks:
-names-of-libs-tested-with-mocks := Ft1248 Usb SpiMaster
+names-of-libs-tested-with-mocks := Ft1248 Usb Spi
 
 # And only some libs require mocking.
 # List the dev libs that have mocked versions to remove dependencies:
-mocked-dev-libs := DebugLed Ft1248 SpiMaster
+mocked-dev-libs := DebugLed Ft1248 Spi
 
 # list of object prerequisites for      dev libs
 obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
@@ -100,8 +100,8 @@ ${obj_libs-mocked}: build/%.o: test/%.c
 clean-all-builds:
 	rm -f build/${file-stem}.exe
 	rm -f build/TestSuite.exe
-	rm -f build/SpiSlave.o
-	rm -f build/test_SpiSlave.o
+	# rm -f build/SpiSlave.o
+	# rm -f build/test_SpiSlave.o
 	# rm -f build/mock_SpiSlave.o
 	# rm -f build/test_SpiSlave_MockUps.o
 	rm -f ${obj_dev-libs}

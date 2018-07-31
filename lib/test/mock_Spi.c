@@ -1,4 +1,4 @@
-#include "mock_SpiMaster.h"
+#include "mock_Spi.h"
 #include <Mock.h>
 #include <RecordedCall.h>
 #include <RecordedArg.h>
