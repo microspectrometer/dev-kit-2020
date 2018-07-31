@@ -240,6 +240,8 @@ int main()
     /* =====[ test SpiMaster ]===== */
     SpiMasterInit();
     /* SpiMaster_sends_byte_0x01(); // PASS 2018-07-30 */
-    SpiMaster_sends_byte_0x06(); // PASS 2018-07-30
+    /* SpiMaster_sends_byte_0x06(); // PASS 2018-07-30 */
+    // Send another byte for SPI slave test `Echo_byte_back_to_SPI_master`.
+    SpiMaster_sends_byte_0x01();
     DebugLedTurnRed();
 }

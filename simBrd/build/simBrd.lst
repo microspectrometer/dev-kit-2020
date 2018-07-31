@@ -294,7 +294,7 @@ void SpiMasterInit(void)
 
 000001dc <SetupDebugLed>:
     // Load SPI tx buffer with a byte to send.
-    *Spi_spdr = 0x01;
+    *Spi_spdr = 0x06;
     // Wait for SPI tranmission to complete. Version without interrupts.
     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
     // End the transmission by de-selecting the slave.
@@ -309,31 +309,19 @@ void SpiMasterInit(void)
  1ea:	0e 94 93 00 	call	0x126	; 0x126 <DebugLedInit>
  1ee:	08 95       	ret
 
-000001f0 <SpiMaster_sends_byte_0x06>:
-void SpiMaster_sends_byte_0x06(void)
-{
-    /* Call this function on the SPI Master */
-    /* when running this test on the SPI slave. */
-    // Start a transmission by selecting the slave.
-    ClearBit(Spi_port, Spi_Ss);
+000001f0 <SpiMaster_sends_byte_0x01>:
  1f0:	62 e0       	ldi	r22, 0x02	; 2
  1f2:	85 e2       	ldi	r24, 0x25	; 37
  1f4:	90 e0       	ldi	r25, 0x00	; 0
  1f6:	0e 94 5f 00 	call	0xbe	; 0xbe <ClearBit>
-    // Load SPI tx buffer with a byte to send.
-    *Spi_spdr = 0x06;
- 1fa:	86 e0       	ldi	r24, 0x06	; 6
+ 1fa:	81 e0       	ldi	r24, 0x01	; 1
  1fc:	8e bd       	out	0x2e, r24	; 46
-    // Wait for SPI tranmission to complete. Version without interrupts.
-    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
  1fe:	67 e0       	ldi	r22, 0x07	; 7
  200:	8d e4       	ldi	r24, 0x4D	; 77
  202:	90 e0       	ldi	r25, 0x00	; 0
  204:	0e 94 6c 00 	call	0xd8	; 0xd8 <BitIsClear>
  208:	81 11       	cpse	r24, r1
- 20a:	f9 cf       	rjmp	.-14     	; 0x1fe <SpiMaster_sends_byte_0x06+0xe>
-    // End the transmission by de-selecting the slave.
-    SetBit(Spi_port, Spi_Ss);
+ 20a:	f9 cf       	rjmp	.-14     	; 0x1fe <SpiMaster_sends_byte_0x01+0xe>
  20c:	62 e0       	ldi	r22, 0x02	; 2
  20e:	85 e2       	ldi	r24, 0x25	; 37
  210:	90 e0       	ldi	r25, 0x00	; 0
@@ -355,8 +343,10 @@ void SpiMaster_sends_byte_0x06(void)
     SpiMasterInit();
  21c:	0e 94 ac 00 	call	0x158	; 0x158 <SpiMasterInit>
     /* SpiMaster_sends_byte_0x01(); // PASS 2018-07-30 */
-    SpiMaster_sends_byte_0x06();
- 220:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <SpiMaster_sends_byte_0x06>
+    /* SpiMaster_sends_byte_0x06(); // PASS 2018-07-30 */
+    // Send another byte for SPI slave test `Echo_byte_back_to_SPI_master`.
+    SpiMaster_sends_byte_0x01();
+ 220:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <SpiMaster_sends_byte_0x01>
     DebugLedTurnRed();
  224:	0e 94 81 00 	call	0x102	; 0x102 <DebugLedTurnRed>
 }

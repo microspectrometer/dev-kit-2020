@@ -43,12 +43,33 @@ void Show_received_SPI_data_on_debug_leds(void)
     /* =====[ Operate ]===== */
     // SPI Master sends a 4-bit value.
     /* =====[ Version without interrupts ]===== */
+    // Do nothing until SPI Interrupt Flag is set.
     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
     if (BitIsSet(Spi_spdr, 0)) DebugLedsTurnRed(debug_led1);
     if (BitIsSet(Spi_spdr, 1)) DebugLedsTurnRed(debug_led2);
     if (BitIsSet(Spi_spdr, 2)) DebugLedsTurnRed(debug_led3);
     if (BitIsSet(Spi_spdr, 3)) DebugLedsTurnRed(debug_led4);
 }
+void Echo_byte_back_to_SPI_master(void)
+{
+    /* =====[ Operate ]===== */
+    // SPI Master sends two bytes.
+    /* =====[ Version without interrupts ]===== */
+    //
+    // Read the first byte.
+    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
+    // The first byte is now in the SPI data register.
+    //
+    // Send the byte back to the host by reading the second byte.
+    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
+    //
+    // Display the second byte on the DebugLeds
+    if (BitIsSet(Spi_spdr, 0)) DebugLedsTurnRed(debug_led1);
+    if (BitIsSet(Spi_spdr, 1)) DebugLedsTurnRed(debug_led2);
+    if (BitIsSet(Spi_spdr, 2)) DebugLedsTurnRed(debug_led3);
+    if (BitIsSet(Spi_spdr, 3)) DebugLedsTurnRed(debug_led4);
+}
+
 int main()
 {
     /* test_DebugLeds(); // All tests pass 2018-07-30 */
@@ -59,4 +80,5 @@ int main()
     /* sei(); // Enable interrupts */
     /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-30 */
     Show_received_SPI_data_on_debug_leds(); // PASS 2018-07-30
+    /* Echo_byte_back_to_SPI_master(); */
 }

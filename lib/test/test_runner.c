@@ -4,14 +4,17 @@
 #include <Mock.h>           // used by all test client code
 #include <RecordedCall.h>   // used by *DOF* `mock_lib.c`
 #include <RecordedArg.h>    // used by *DOF* `mock_lib.c`
-#include "test_ReadWriteBits.h"
+#include "test_ReadWriteBits.h"  // low-level bit manipulations
 #include "test_DebugLed.h"  // debug LED  on simBrd
 #include "test_DebugLeds.h" // debug LEDs on mBrd
-#include "test_Ft1248.h"
-#include "test_Usb.h"
+#include "test_Ft1248.h"    // lib-level API for FT1248 master on simBrd
+#include "test_Usb.h"       // app-level API for FT1248 master on simBrd
+#include "test_SpiMaster.h" // SPI on simBrd
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
+void NothingToSetUp(void){}
+void NothingToTearDown(void){}
 
 bool Yep=true, Nope=false;
 
@@ -41,6 +44,7 @@ void DevelopingDebugLeds(bool run_test) { if (run_test) {
     RUN_TEST(DebugLedsTurnGreen_led_N_turns_led_N_green);
     RUN_TEST(DebugLedsTurnAllRed_turns_all_4_leds_red);
     RUN_TEST(DebugLedsTurnAllGreen_turns_all_4_leds_green);
+    RUN_TEST(DebugLedsTurnAllOn_turns_on_all_4_leds);
 }}
 void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
     //setUp = SetUp_NothingForFt1248; tearDown = TearDown_NothingForFt1248;
@@ -128,15 +132,19 @@ void DevelopingUsb(bool run_test) {if (run_test) {
     RUN_TEST(UsbWrite_happy_path_is_implemented_like_this);
     RUN_TEST(UsbWrite_sad_path_is_implemented_like_this);
 }}
+void DevelopingSpiMaster(bool run_test) {if (run_test) {
+}}
 int main()
 {
     UNITY_BEGIN();
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
-    DevelopingDebugLeds       (Yep);
+    DevelopingDebugLeds       (Nope);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
-    RUN_TEST(DebugLedsTurnAllOn_turns_on_all_4_leds);
+    DevelopingSpiMaster       (Yep);
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(SpiMasterOpen_selects_the_SPI_slave);
     return UNITY_END();
 }
