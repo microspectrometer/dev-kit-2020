@@ -1,11 +1,13 @@
 #include "SpiMaster.h"
 #include "ReadWriteBits.h"
 
+static void (*SpiMasterSlaveSelectIdleHigh)(void) = SpiMasterCloseSpi;
+
 void SpiMasterInit(void)
 {
     /* =====[ Configure user-defined pins in software. ]===== */
     // Spi_Ss idles high.
-    SetBit(Spi_port, Spi_Ss);
+    SpiMasterSlaveSelectIdleHigh();
     // Make Spi_Ss an output pin.
     SetBit(Spi_ddr, Spi_Ss);
     //

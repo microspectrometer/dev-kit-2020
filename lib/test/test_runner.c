@@ -147,5 +147,6 @@ int main()
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(SpiMasterOpenSpi_selects_the_SPI_slave);
     RUN_TEST(SpiMasterCloseSpi_unselects_the_SPI_slave);
+    RUN_TEST(SpiMasterInit_pulls_Ss_high);
     return UNITY_END();
 }
