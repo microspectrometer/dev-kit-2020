@@ -26,6 +26,10 @@ static void SetClockRateToFoscDividedBy8(void)
     ClearBit(Spi_spcr, Spi_ClockRateBit1);
     SetBit(Spi_spsr, Spi_DoubleClockRate);
 }
+static void EnableSpi(void)
+{
+    SetBit(Spi_spcr, Spi_Enable);
+}
 void SpiMasterInit(void)
 {
     SlaveSelectIdleHigh();
@@ -34,9 +38,7 @@ void SpiMasterInit(void)
     SetSckAsOutput();          // pin-direction is user-defined
     MakeMeTheMaster();
     SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
-
-    // Enable SPI.
-    SetBit(Spi_spcr, Spi_Enable);
+    EnableSpi();
 }
 void SpiMasterOpenSpi(void)
 {

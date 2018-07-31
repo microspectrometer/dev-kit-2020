@@ -8,7 +8,7 @@
     // [x] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
     // [x] SpiMasterInit_makes_this_mcu_the_SPI_master
     // [x] SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8
-    // [ ] SpiMasterInit_enables_the_SPI_hardware_module
+    // [x] SpiMasterInit_enables_the_SPI_hardware_module
     // [x] SpiMasterOpenSpi_selects_the_SPI_slave
     // [x] SpiMasterCloseSpi_unselects_the_SPI_slave
     // [ ] SpiMasterTransmit_byte_loads_SPI_tx_buffer_with_byte
@@ -53,7 +53,7 @@ void SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8(void)
     ClearBit  (Spi_spcr, Spi_ClockRateBit0);
     SetBit(Spi_spcr, Spi_ClockRateBit1);
     ClearBit(Spi_spsr, Spi_DoubleClockRate);
-
+    //
     /* =====[ Operate ]===== */
     SpiMasterInit();
     /* =====[ Test ]===== */
@@ -73,7 +73,19 @@ void SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8(void)
         "Failed for bit: DoubleClockRate."
         );
 }
-
+void SpiMasterInit_enables_the_SPI_hardware_module(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_spcr = 0x00;
+    /* =====[ Operate ]===== */
+    SpiMasterInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+            Spi_Enable,
+            *Spi_spcr,
+            "Bit must be high to enable the SPI."
+            );
+}
 void SpiMasterOpenSpi_selects_the_SPI_slave(void)
 {
     /* =====[ Setup ]===== */
