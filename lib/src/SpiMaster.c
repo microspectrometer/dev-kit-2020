@@ -28,8 +28,11 @@ void SpiMasterInit(void)
     // Enable SPI.
     SetBit(Spi_spcr, Spi_Enable);
 }
-
 void SpiMasterOpenSpi(void)
 {
     ClearBit(Spi_port, Spi_Ss);
+}
+void SpiMasterCloseSpi(void)
+{
+    SetBit(Spi_port, Spi_Ss);
 }

@@ -100,8 +100,10 @@ ${obj_libs-mocked}: build/%.o: test/%.c
 clean-all-builds:
 	rm -f build/${file-stem}.exe
 	rm -f build/TestSuite.exe
-	rm -f ${obj_dev-libs}
-	rm -f ${obj_libs-tested}
-	rm -f ${obj_libs-tested-with-mocks}
-	rm -f ${obj_libs-mocked}
+	rm -f build/SpiMaster.o
+	rm -f build/test_SpiMaster.o
+	# rm -f ${obj_dev-libs}
+	# rm -f ${obj_libs-tested}
+	# rm -f ${obj_libs-tested-with-mocks}
+	# rm -f ${obj_libs-mocked}
 

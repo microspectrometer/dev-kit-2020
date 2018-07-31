@@ -29,5 +29,6 @@ extern uint8_t const Spi_InterruptFlag;
 /* =====[ API ]===== */
 void SpiMasterInit(void);
 void SpiMasterOpenSpi(void);
+void SpiMasterCloseSpi(void);
 
 #endif // _SPI_MASTER_H

@@ -209,8 +209,7 @@ void SpiMaster_sends_byte_0x01(void)
     *Spi_spdr = 0x01;
     // Wait for SPI tranmission to complete. Version without interrupts.
     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
-    // End the transmission by de-selecting the slave.
-    SetBit(Spi_port, Spi_Ss);
+    SpiMasterCloseSpi(void);
 }
 void SpiMaster_sends_byte_0x06(void)
 {
@@ -221,8 +220,7 @@ void SpiMaster_sends_byte_0x06(void)
     *Spi_spdr = 0x06;
     // Wait for SPI tranmission to complete. Version without interrupts.
     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
-    // End the transmission by de-selecting the slave.
-    SetBit(Spi_port, Spi_Ss);
+    SpiMasterCloseSpi(void);
 }
 int main()
 {
