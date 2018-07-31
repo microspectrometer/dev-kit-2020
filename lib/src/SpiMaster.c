@@ -2,20 +2,26 @@
 #include "ReadWriteBits.h"
 
 static void (*SpiMasterSlaveSelectIdleHigh)(void) = SpiMasterCloseSpi;
+static void SpiMasterSetSlaveSelectAsOutput(void)
+{
+    SetBit(Spi_ddr, Spi_Ss);
+}
+static void SpiMasterSetMosiAsOutput(void)
+{
+    SetBit(Spi_ddr, Spi_Mosi);
+}
+static void SpiMasterSetSckAsOutput(void)
+{
+    SetBit(Spi_ddr, Spi_Sck);
+}
 
 void SpiMasterInit(void)
 {
     /* =====[ Configure user-defined pins in software. ]===== */
-    // Spi_Ss idles high.
     SpiMasterSlaveSelectIdleHigh();
-    // Make Spi_Ss an output pin.
-    SetBit(Spi_ddr, Spi_Ss);
-    //
-    // Make Spi_Mosi an output pin.
-    SetBit(Spi_ddr, Spi_Mosi);
-    //
-    // Make Spi_Sck an output pin.
-    SetBit(Spi_ddr, Spi_Sck);
+    SpiMasterSetSlaveSelectAsOutput();
+    SpiMasterSetMosiAsOutput();
+    SpiMasterSetSckAsOutput();
 
     // Make this the master.
     SetBit(Spi_spcr, Spi_MasterSlaveSelect);

@@ -4,7 +4,7 @@
 #include <unity.h>              // unit testing framework
 /* =====[ List of Tests ]===== */
     // [x] SpiMasterInit_pulls_Ss_high
-    // [ ] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
+    // [x] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
     // [ ] SpiMasterInit_makes_this_mcu_the_SPI_master
     // [ ] SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8
     // [ ] SpiMasterInit_enables_the_SPI_hardware_module
@@ -13,7 +13,6 @@
     // [ ] SpiMasterTransmit_byte_loads_SPI_tx_buffer_with_byte
     // [ ] SpiMasterTransmit_byte_starts_a_transmission
     //
-
 void SpiMasterInit_pulls_Ss_high(void)
 {
     /* =====[ Setup ]===== */
@@ -24,6 +23,17 @@ void SpiMasterInit_pulls_Ss_high(void)
     TEST_ASSERT_BIT_HIGH(Spi_Ss, *Spi_port);
 }
 
+void SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_ddr = 0x00;
+    /* =====[ Operate ]===== */
+    SpiMasterInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Ss,    *Spi_ddr, "Failed for pin Ss.");
+    TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Mosi,  *Spi_ddr, "Failed for pin Mosi.");
+    TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Sck,   *Spi_ddr, "Failed for pin Sck.");
+}
 void SpiMasterOpenSpi_selects_the_SPI_slave(void)
 {
     /* =====[ Setup ]===== */
