@@ -75,12 +75,13 @@ void SpiMasterWrite(uint8_t byte_to_send)
 //
 /* =====[ Spi Slave ]===== */
 //
+static void SetMisoAsOutput(void)
+{
+    SetBit(Spi_ddr, Spi_Miso);
+}
 void SpiSlaveInit(void)
 {
-    /* =====[ Configure user-defined pins in software. ]===== */
-    // Make Spi_Miso an output pin.
-    SetBit(Spi_ddr, Spi_Miso);
-
+    SetMisoAsOutput();         // pin-direction is user-defined
     // Enable SPI.
     SetBit(Spi_spcr, Spi_Enable);
 

@@ -29,7 +29,7 @@
         // the SPI Interrupt Flag.
         //
 /* =====[ List of SPI Slave Tests ]===== */
-    // [ ] SpiSlaveInit_configures_pin_Miso_as_an_output
+    // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
     // [ ] SpiSlaveInit_enables_the_SPI_hardware_module
 
 //
@@ -37,7 +37,12 @@
 //
 void SpiSlaveInit_configures_pin_Miso_as_an_output(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    /* =====[ Setup ]===== */
+    *Spi_ddr = 0x00;
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Miso,  *Spi_ddr, "Failed for pin Miso.");
 }
 
 //
