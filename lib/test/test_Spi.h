@@ -19,5 +19,6 @@ void SpiMasterWrite_byte_waits_for_transmission_to_complete(void);
 //
 /* =====[ SPI Slave ]===== */
 //
+void SpiSlaveInit_enables_the_SPI_hardware_module(void);
 void SpiSlaveInit_configures_pin_Miso_as_an_output(void);
 #endif // _TEST_SPI_H

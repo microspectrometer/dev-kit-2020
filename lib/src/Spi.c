@@ -82,8 +82,7 @@ static void SetMisoAsOutput(void)
 void SpiSlaveInit(void)
 {
     SetMisoAsOutput();         // pin-direction is user-defined
-    // Enable SPI.
-    SetBit(Spi_spcr, Spi_Enable);
+    EnableSpi();
 
     /* // Enable SPI interrupt. */
     /* SetBit(Spi_spcr, Spi_InterruptEnable); */

@@ -44,6 +44,19 @@ void SpiSlaveInit_configures_pin_Miso_as_an_output(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Miso,  *Spi_ddr, "Failed for pin Miso.");
 }
+void SpiSlaveInit_enables_the_SPI_hardware_module(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_spcr = 0x00;
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_Enable,
+        *Spi_spcr,
+        "Bit must be high to enable the SPI."
+        );
+}
 
 //
 /* =====[ SPI Master ]===== */

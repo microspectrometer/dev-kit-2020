@@ -163,5 +163,6 @@ int main()
     DevelopingSpiSlave        (Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(SpiSlaveInit_configures_pin_Miso_as_an_output);
+    RUN_TEST(SpiSlaveInit_enables_the_SPI_hardware_module);
     return UNITY_END();
 }
