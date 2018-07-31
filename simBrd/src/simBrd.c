@@ -209,7 +209,7 @@ void SpiMaster_sends_byte_0x01(void)
     *Spi_spdr = 0x01;
     // Wait for SPI tranmission to complete. Version without interrupts.
     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
-    SpiMasterCloseSpi(void);
+    SpiMasterCloseSpi();
 }
 void SpiMaster_sends_byte_0x06(void)
 {
@@ -220,7 +220,7 @@ void SpiMaster_sends_byte_0x06(void)
     *Spi_spdr = 0x06;
     // Wait for SPI tranmission to complete. Version without interrupts.
     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
-    SpiMasterCloseSpi(void);
+    SpiMasterCloseSpi();
 }
 int main()
 {

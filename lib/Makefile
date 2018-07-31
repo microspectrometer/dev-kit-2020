@@ -29,11 +29,11 @@ names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb SpiMaster
 #
 # But only some tests use mocks.
 # List the dev libs tested with mocks:
-names-of-libs-tested-with-mocks := Ft1248 Usb
+names-of-libs-tested-with-mocks := Ft1248 Usb SpiMaster
 
 # And only some libs require mocking.
 # List the dev libs that have mocked versions to remove dependencies:
-mocked-dev-libs := DebugLed Ft1248
+mocked-dev-libs := DebugLed Ft1248 SpiMaster
 
 # list of object prerequisites for      dev libs
 obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
@@ -102,6 +102,8 @@ clean-all-builds:
 	rm -f build/TestSuite.exe
 	rm -f build/SpiMaster.o
 	rm -f build/test_SpiMaster.o
+	rm -f build/mock_SpiMaster.o
+	rm -f build/test_SpiMaster_MockUps.o
 	# rm -f ${obj_dev-libs}
 	# rm -f ${obj_libs-tested}
 	# rm -f ${obj_libs-tested-with-mocks}

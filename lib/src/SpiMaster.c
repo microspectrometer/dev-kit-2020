@@ -1,7 +1,28 @@
 #include "SpiMaster.h"
 #include "ReadWriteBits.h"
 
-static void (*SlaveSelectIdleHigh)(void) = SpiMasterCloseSpi;
+//
+// TODO: remove Open and Close from the public API
+//
+static void SpiMasterOpenSpi_Implementation(void)
+{
+    ClearBit(Spi_port, Spi_Ss);
+}
+void (*SpiMasterOpenSpi)(void) = SpiMasterOpenSpi_Implementation;
+//
+static void SpiMasterCloseSpi_Implementation(void)
+{
+    SetBit(Spi_port, Spi_Ss);
+}
+void (*SpiMasterCloseSpi)(void) = SpiMasterCloseSpi_Implementation;
+//
+static bool SpiTransferIsDone_Implementation(void)
+{
+    return BitIsClear(Spi_spsr, Spi_InterruptFlag);
+}
+bool (*SpiTransferIsDone)(void) = SpiTransferIsDone_Implementation;
+
+static void (*SlaveSelectIdleHigh)(void) = SpiMasterCloseSpi_Implementation;
 static void SetSlaveSelectAsOutput(void)
 {
     SetBit(Spi_ddr, Spi_Ss);
@@ -40,15 +61,10 @@ void SpiMasterInit(void)
     SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
     EnableSpi();
 }
-void SpiMasterOpenSpi(void)
+void SpiMasterWrite(uint8_t byte_to_send)
 {
-    ClearBit(Spi_port, Spi_Ss);
-}
-void SpiMasterCloseSpi(void)
-{
-    SetBit(Spi_port, Spi_Ss);
-}
-void SpiMasterTransmit(uint8_t byte_to_send)
-{
+    SpiMasterOpenSpi();
     *Spi_spdr = byte_to_send;  // load tx buffer and start SPI transmission
+    while (!SpiTransferIsDone()) ;
+    SpiMasterCloseSpi();
 }
