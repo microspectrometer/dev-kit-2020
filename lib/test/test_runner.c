@@ -10,6 +10,7 @@
 #include "test_Ft1248.h"    // lib-level API for FT1248 master on simBrd
 #include "test_Usb.h"       // app-level API for FT1248 master on simBrd
 #include "test_SpiMaster.h" // SPI on simBrd
+#include "test_SpiSlave.h"  // SPI on mBrd
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -47,7 +48,6 @@ void DevelopingDebugLeds(bool run_test) { if (run_test) {
     RUN_TEST(DebugLedsTurnAllOn_turns_on_all_4_leds);
 }}
 void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
-    //setUp = SetUp_NothingForFt1248; tearDown = TearDown_NothingForFt1248;
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtSetMisoAsInput_configures_MISO_as_an_input_pin);
     RUN_TEST(FtEnablePullupOnMiso_enables_pullup_on_MISO);
@@ -89,50 +89,67 @@ void DevelopingFt1248_highlevel(bool run_test) { if (run_test) {
     RUN_TEST(FtRead_should_not_write_to_input_buffer_if_MISO_is_NAK);
     RUN_TEST(FtRead_should_return_true_if_MISO_is_ACK);
     RUN_TEST(FtRead_should_write_to_input_buffer_if_MISO_is_ACK);
+    //
     setUp = SetUp_DetailsOf_FtRead; tearDown = TearDown_DetailsOf_FtRead;
     RUN_TEST(FtRead_sad_path_is_implemented_like_this);
     RUN_TEST(FtRead_happy_path_is_implemented_like_this);
+    //
     setUp = SetUp_FtWrite; tearDown = TearDown_FtWrite;
     RUN_TEST(FtWrite_should_return_false_if_slave_sends_NAK);
     RUN_TEST(FtWrite_should_return_true_if_slave_sends_ACK);
+    //
     setUp = SetUp_DetailsOf_FtWrite; tearDown = TearDown_DetailsOf_FtWrite;
     RUN_TEST(FtWrite_implements_the_happy_path_like_this);
 }}
 void DevelopingUsb(bool run_test) {if (run_test) {
-    /* setUp = SetUp_NothingForUsb; tearDown = TearDown_NothingForUsb; */
-    /* // */
-    /* setUp = SetUp_UsbHasDataToRead; tearDown = TearDown_UsbHasDataToRead; */
-    /* RUN_TEST(UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data); */
-    /* RUN_TEST(UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty); */
-    /* // */
-    /* setUp = SetUp_UsbHasRoomToWrite; tearDown = TearDown_UsbHasRoomToWrite; */
-    /* RUN_TEST(UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full); */
-    /* RUN_TEST(UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full); */
-    /* // */
-    /* setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead; */
-    /* // UsbRead behavioral tests */
-    /* RUN_TEST(UsbRead_returns_0_if_there_was_no_data_to_read); */
-    /* RUN_TEST(UsbRead_returns_N_if_there_were_N_bytes_to_read); */
-    /* RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_to_read); */
-    /* RUN_TEST(UsbRead_copies_bytes_to_the_input_read_buffer); */
-    /* setUp = SetUp_DetailsOf_UsbRead; tearDown = TearDown_DetailsOf_UsbRead; */
-    /* // UsbRead implementation descriptions */
-    /* RUN_TEST(UsbRead_sad_path_is_implemented_like_this); */
-    /* RUN_TEST(UsbRead_happy_path_is_implemented_like_this); */
-    /* // */
-    /* setUp = SetUp_UsbWrite; tearDown = TearDown_UsbWrite; */
-    /* // UsbWrite behavioral tests */
-    /* RUN_TEST(UsbWrite_returns_the_number_of_bytes_sent); */
-    /* RUN_TEST(UsbWrite_calls_FtWrite_for_each_byte_to_send); */
-    /* RUN_TEST(UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full); */
-    /* RUN_TEST(UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full); */
-    /* RUN_TEST(UsbWrite_returns_0_if_the_tx_buffer_was_already_full); */
+    setUp = SetUp_UsbHasDataToRead; tearDown = TearDown_UsbHasDataToRead;
+    RUN_TEST(UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data);
+    RUN_TEST(UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty);
+    //
+    setUp = SetUp_UsbHasRoomToWrite; tearDown = TearDown_UsbHasRoomToWrite;
+    RUN_TEST(UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full);
+    RUN_TEST(UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full);
+    //
+    // UsbRead behavioral tests
+    setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead;
+    RUN_TEST(UsbRead_returns_0_if_there_was_no_data_to_read);
+    RUN_TEST(UsbRead_returns_N_if_there_were_N_bytes_to_read);
+    RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_to_read);
+    RUN_TEST(UsbRead_copies_bytes_to_the_input_read_buffer);
+    //
+    // UsbRead implementation descriptions
+    setUp = SetUp_DetailsOf_UsbRead; tearDown = TearDown_DetailsOf_UsbRead;
+    RUN_TEST(UsbRead_sad_path_is_implemented_like_this);
+    RUN_TEST(UsbRead_happy_path_is_implemented_like_this);
+    //
+    // UsbWrite behavioral tests
+    setUp = SetUp_UsbWrite; tearDown = TearDown_UsbWrite;
+    RUN_TEST(UsbWrite_returns_the_number_of_bytes_sent);
+    RUN_TEST(UsbWrite_calls_FtWrite_for_each_byte_to_send);
+    RUN_TEST(UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full);
+    RUN_TEST(UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full);
+    RUN_TEST(UsbWrite_returns_0_if_the_tx_buffer_was_already_full);
+    //
     // UsbWrite implementation descriptions
     setUp = SetUp_DetailsOf_UsbWrite; tearDown = TearDown_DetailsOf_UsbWrite;
     RUN_TEST(UsbWrite_happy_path_is_implemented_like_this);
     RUN_TEST(UsbWrite_sad_path_is_implemented_like_this);
 }}
 void DevelopingSpiMaster(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(SpiMasterOpenSpi_selects_the_SPI_slave);
+    RUN_TEST(SpiMasterCloseSpi_unselects_the_SPI_slave);
+    RUN_TEST(SpiMasterInit_pulls_Ss_high);
+    RUN_TEST(SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs);
+    RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
+    RUN_TEST(SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8);
+    RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
+    RUN_TEST(SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte);
+    //
+    setUp = Setup_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
+    RUN_TEST(SpiMasterWrite_byte_waits_for_transmission_to_complete);
+}}
+void DevelopingSpiSlave(bool run_test) {if (run_test) {
 }}
 int main()
 {
@@ -143,17 +160,9 @@ int main()
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
-    DevelopingSpiMaster       (Yep);
+    DevelopingSpiMaster       (Nope);
+    DevelopingSpiSlave        (Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(SpiMasterOpenSpi_selects_the_SPI_slave);
-    RUN_TEST(SpiMasterCloseSpi_unselects_the_SPI_slave);
-    RUN_TEST(SpiMasterInit_pulls_Ss_high);
-    RUN_TEST(SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs);
-    RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
-    RUN_TEST(SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8);
-    RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
-    RUN_TEST(SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte);
-    setUp = Setup_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
-    RUN_TEST(SpiMasterWrite_byte_waits_for_transmission_to_complete);
+    RUN_TEST(SpiSlaveInit_configures_pin_Miso_as_an_output);
     return UNITY_END();
 }

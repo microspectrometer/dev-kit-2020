@@ -23,7 +23,7 @@ CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
 
 # List the libs under dev:
-names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb SpiMaster
+names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb SpiMaster SpiSlave
 # All libs under dev will be tested!
 # All libs under test need a `test_dev-lib.c` for the tests to build.
 #
@@ -100,12 +100,12 @@ ${obj_libs-mocked}: build/%.o: test/%.c
 clean-all-builds:
 	rm -f build/${file-stem}.exe
 	rm -f build/TestSuite.exe
-	rm -f build/SpiMaster.o
-	rm -f build/test_SpiMaster.o
-	rm -f build/mock_SpiMaster.o
-	rm -f build/test_SpiMaster_MockUps.o
-	# rm -f ${obj_dev-libs}
-	# rm -f ${obj_libs-tested}
-	# rm -f ${obj_libs-tested-with-mocks}
-	# rm -f ${obj_libs-mocked}
+	rm -f build/SpiSlave.o
+	rm -f build/test_SpiSlave.o
+	# rm -f build/mock_SpiSlave.o
+	# rm -f build/test_SpiSlave_MockUps.o
+	rm -f ${obj_dev-libs}
+	rm -f ${obj_libs-tested}
+	rm -f ${obj_libs-tested-with-mocks}
+	rm -f ${obj_libs-mocked}
 
