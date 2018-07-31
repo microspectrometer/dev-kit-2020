@@ -150,5 +150,6 @@ int main()
     RUN_TEST(SpiMasterInit_pulls_Ss_high);
     RUN_TEST(SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs);
     RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
+    RUN_TEST(SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8);
     return UNITY_END();
 }

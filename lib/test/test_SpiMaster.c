@@ -2,11 +2,12 @@
 #include "SpiMaster.h"          // lib under test
 #include "fake/Spi-Hardware.h"  // fake hardware dependencies in SpiMaster.h
 #include <unity.h>              // unit testing framework
+#include "ReadWriteBits.h"
 /* =====[ List of Tests ]===== */
     // [x] SpiMasterInit_pulls_Ss_high
     // [x] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
     // [x] SpiMasterInit_makes_this_mcu_the_SPI_master
-    // [ ] SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8
+    // [x] SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8
     // [ ] SpiMasterInit_enables_the_SPI_hardware_module
     // [x] SpiMasterOpenSpi_selects_the_SPI_slave
     // [x] SpiMasterCloseSpi_unselects_the_SPI_slave
@@ -44,6 +45,32 @@ void SpiMasterInit_makes_this_mcu_the_SPI_master(void)
         Spi_MasterSlaveSelect,
         *Spi_spcr,
         "Expect bit is high if this is the master."
+        );
+}
+void SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8(void)
+{
+    /* =====[ Setup ]===== */
+    ClearBit  (Spi_spcr, Spi_ClockRateBit0);
+    SetBit(Spi_spcr, Spi_ClockRateBit1);
+    ClearBit(Spi_spsr, Spi_DoubleClockRate);
+
+    /* =====[ Operate ]===== */
+    SpiMasterInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_ClockRateBit0,
+        *Spi_spcr,
+        "Failed for bit: ClockRateBit0."
+        );
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Spi_ClockRateBit1,
+        *Spi_spcr,
+        "Failed for bit: ClockRateBit1."
+        );
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_DoubleClockRate,
+        *Spi_spsr,
+        "Failed for bit: DoubleClockRate."
         );
 }
 

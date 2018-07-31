@@ -18,6 +18,14 @@ static void MakeMeTheMaster(void)
 {
     SetBit(Spi_spcr, Spi_MasterSlaveSelect);
 }
+static void SetClockRateToFoscDividedBy8(void)
+{
+    // SPI master and slave are both an ATmega328P with a 10MHz oscillator.
+    // Use SCK = fosc/8 = 1.25MHz.
+    SetBit  (Spi_spcr, Spi_ClockRateBit0);
+    ClearBit(Spi_spcr, Spi_ClockRateBit1);
+    SetBit(Spi_spsr, Spi_DoubleClockRate);
+}
 void SpiMasterInit(void)
 {
     SlaveSelectIdleHigh();
@@ -25,13 +33,7 @@ void SpiMasterInit(void)
     SetMosiAsOutput();         // pin-direction is user-defined
     SetSckAsOutput();          // pin-direction is user-defined
     MakeMeTheMaster();
-
-    /* =====[ Hardcode the clock rate for this project. ]===== */
-    // SPI master and slave are both an ATmega328P with a 10MHz oscillator.
-    // Use SCK = fosc/8 = 1.25MHz.
-    SetBit  (Spi_spcr, Spi_ClockRateBit0);
-    ClearBit(Spi_spcr, Spi_ClockRateBit1);
-    SetBit(Spi_spsr, Spi_DoubleClockRate);
+    SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
 
     // Enable SPI.
     SetBit(Spi_spcr, Spi_Enable);
