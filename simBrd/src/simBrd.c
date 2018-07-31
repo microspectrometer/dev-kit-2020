@@ -204,8 +204,7 @@ void SpiMaster_sends_byte_0x01(void)
 {
     /* Call this function on the SPI Master */
     /* when running this test on the SPI slave. */
-    // Start a transmission by selecting the slave.
-    ClearBit(Spi_port, Spi_Ss);
+    SpiMasterOpenSpi();
     // Load SPI tx buffer with a byte to send.
     *Spi_spdr = 0x01;
     // Wait for SPI tranmission to complete. Version without interrupts.
@@ -217,8 +216,7 @@ void SpiMaster_sends_byte_0x06(void)
 {
     /* Call this function on the SPI Master */
     /* when running this test on the SPI slave. */
-    // Start a transmission by selecting the slave.
-    ClearBit(Spi_port, Spi_Ss);
+    SpiMasterOpenSpi();
     // Load SPI tx buffer with a byte to send.
     *Spi_spdr = 0x06;
     // Wait for SPI tranmission to complete. Version without interrupts.

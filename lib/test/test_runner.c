@@ -145,6 +145,6 @@ int main()
     DevelopingUsb             (Nope);
     DevelopingSpiMaster       (Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(SpiMasterOpen_selects_the_SPI_slave);
+    RUN_TEST(SpiMasterOpenSpi_selects_the_SPI_slave);
     return UNITY_END();
 }

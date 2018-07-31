@@ -1,5 +1,5 @@
-test/test_runner.c:7:SpiMasterOpen_selects_the_SPI_slave:FAIL: Implement test.
+test/test_runner.c:148:SpiMasterOpenSpi_selects_the_SPI_slave:PASS
 
 -----------------------
-1 Tests 1 Failures 0 Ignored 
-FAIL
+1 Tests 0 Failures 0 Ignored 
+OK
