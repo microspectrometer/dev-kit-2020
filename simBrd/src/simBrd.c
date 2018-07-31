@@ -23,6 +23,8 @@
     // [x] Turn_debug_led_red_when_rx_byte_is_0x01
 // test_EchoByte
     // [x] EchoByte_reads_a_byte_and_writes_it_back_to_the_host
+// test_SpiMaster
+    // [x] SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble
 void operate_UsbWrite(void)
 {
     //
@@ -200,27 +202,37 @@ void SetupDebugLed(void)
         debug_led
         );
 }
-void SpiMaster_sends_byte_0x01(void)
+/* void SpiMaster_sends_byte_0x01(void) */
+/* { */
+/*     /1* Call this function on the SPI Master *1/ */
+/*     /1* when running this test on the SPI slave. *1/ */
+/*     SpiMasterOpenSpi(); */
+/*     // Load SPI tx buffer with a byte to send. */
+/*     *Spi_spdr = 0x01; */
+/*     // Wait for SPI tranmission to complete. Version without interrupts. */
+/*     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) ); */
+/*     SpiMasterCloseSpi(); */
+/* } */
+void SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(void)
 {
-    /* Call this function on the SPI Master */
-    /* when running this test on the SPI slave. */
-    SpiMasterOpenSpi();
-    // Load SPI tx buffer with a byte to send.
-    *Spi_spdr = 0x01;
-    // Wait for SPI tranmission to complete. Version without interrupts.
-    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
-    SpiMasterCloseSpi();
+    /* Connect to `mBrd`. `mBrd` is the SpiSlave. */
+    /* SpiSlave runs `Show_received_SPI_data_on_debug_leds()`. */
+    /* After downloading flash to the `simBrd`, */
+    /* move `SW2` from `ISP` to `SPI` and press the PCB reset button. */
+    //
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    /* =====[ Operate ]===== */
+    uint8_t byte_to_send = 0x0B;
+    SpiMasterWrite(byte_to_send);
+    /* =====[ Test ]===== */
+    // Visually confirm data on slave debug LEDs is:
+    // led number: 4  3  2  1
+    // led color:  R  G  R  R
 }
-void SpiMaster_sends_byte_0x06(void)
+void test_SpiMaster(void)
 {
-    /* Call this function on the SPI Master */
-    /* when running this test on the SPI slave. */
-    SpiMasterOpenSpi();
-    // Load SPI tx buffer with a byte to send.
-    *Spi_spdr = 0x06;
-    // Wait for SPI tranmission to complete. Version without interrupts.
-    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
-    SpiMasterCloseSpi();
+    SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31
 }
 int main()
 {
@@ -233,11 +245,5 @@ int main()
     /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
     /* test_EchoByte(); // All tests pass 2018-07-30 */
-    /* =====[ test SpiMaster ]===== */
-    SpiMasterInit();
-    /* SpiMaster_sends_byte_0x01(); // PASS 2018-07-30 */
-    /* SpiMaster_sends_byte_0x06(); // PASS 2018-07-30 */
-    // Send another byte for SPI slave test `Echo_byte_back_to_SPI_master`.
-    SpiMaster_sends_byte_0x01();
-    DebugLedTurnRed();
+    /* test_SpiMaster(); // All test pass 2018-07-31 */
 }

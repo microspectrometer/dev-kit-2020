@@ -1321,17 +1321,33 @@ other bits in the bus-width nibble are pulled high.
 
 # SPI
 ## SPI dev tasklist
-### start with embedded tests to discover working code
-- [x] configure user-defined pins in software
-- [x] setup SPI registers to use SPI pins for SPI on Master and Slave
-- [x] set SPI Master to run the SPI clock at `fosc/8 = 1.25MHz`
-- [x] setup slave to change debug LED when it receives a byte over SPI
-- [x] setup master to send a byte over SPI when it starts up
-### switch to unit tests to refactor working code
-- [ ] develop Spi embedded tests into unit tests
+### This is the dev cycle
+#### start with embedded tests to discover working code
+- Example: this is how I started working on the SPI libraries
+    - [x] configure user-defined pins in software
+    - [x] setup SPI registers to use SPI pins for SPI on Master and Slave
+    - [x] set SPI Master to run the SPI clock at `fosc/8 = 1.25MHz`
+    - [x] setup slave to change debug LED when it receives a byte over SPI
+    - [x] setup master to send a byte over SPI when it starts up
+#### switch to unit tests to refactor working code
+- look at the functions in the embedded tests:
     - one-liner comments describing what the next line does become the function
       names
     - each claim in the function documentation becomes a unit test
+### Track progress in the current dev cycle
+#### embedded tests to discover new code
+- [x] SpiMaster
+- [x] SpiSlave
+#### unit-tested working code into lib code and refactored
+- [x] SpiMaster
+- [ ] SpiSlave
+#### refactor embedded tests using new lib code
+- [x] SpiMaster
+- [ ] SpiSlave
+#### embedded tests of refactored lib code
+- [x] embedded test of SpiMaster
+- [ ] embedded test of SpiSlave
+
 ## SPI dev overview
 ### SPI and Spi
 - *SPI* is *Serial Peripheral Interface*
