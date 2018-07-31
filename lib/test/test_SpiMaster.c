@@ -5,7 +5,7 @@
 /* =====[ List of Tests ]===== */
     // [x] SpiMasterInit_pulls_Ss_high
     // [x] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
-    // [ ] SpiMasterInit_makes_this_mcu_the_SPI_master
+    // [x] SpiMasterInit_makes_this_mcu_the_SPI_master
     // [ ] SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8
     // [ ] SpiMasterInit_enables_the_SPI_hardware_module
     // [x] SpiMasterOpenSpi_selects_the_SPI_slave
@@ -22,7 +22,6 @@ void SpiMasterInit_pulls_Ss_high(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(Spi_Ss, *Spi_port);
 }
-
 void SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs(void)
 {
     /* =====[ Setup ]===== */
@@ -34,6 +33,20 @@ void SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs(void)
     TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Mosi,  *Spi_ddr, "Failed for pin Mosi.");
     TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Sck,   *Spi_ddr, "Failed for pin Sck.");
 }
+void SpiMasterInit_makes_this_mcu_the_SPI_master(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_spcr = 0x00;
+    /* =====[ Operate ]===== */
+    SpiMasterInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_MasterSlaveSelect,
+        *Spi_spcr,
+        "Expect bit is high if this is the master."
+        );
+}
+
 void SpiMasterOpenSpi_selects_the_SPI_slave(void)
 {
     /* =====[ Setup ]===== */

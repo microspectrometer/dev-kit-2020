@@ -149,5 +149,6 @@ int main()
     RUN_TEST(SpiMasterCloseSpi_unselects_the_SPI_slave);
     RUN_TEST(SpiMasterInit_pulls_Ss_high);
     RUN_TEST(SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs);
+    RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
     return UNITY_END();
 }
