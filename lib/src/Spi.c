@@ -1,6 +1,12 @@
 #include "Spi.h"
 #include "ReadWriteBits.h"
 
+// TODO: version using interrupts...?
+    /* // Enable Global Interrupts */
+    /* #include <avr/interrupt.h>      // defines sei and cli */
+    /* sei(); // Enable interrupts */
+    /* // Enable SPI interrupt. */
+    /* SetBit(Spi_spcr, Spi_InterruptEnable); */
 //
 /* =====[ Spi Master ]===== */
 //
@@ -21,7 +27,7 @@ void (*SpiMasterCloseSpi)(void) = SpiMasterCloseSpi_Implementation;
 //
 static bool SpiTransferIsDone_Implementation(void)
 {
-    return BitIsClear(Spi_spsr, Spi_InterruptFlag);
+    return BitIsSet(Spi_spsr, Spi_InterruptFlag);
 }
 bool (*SpiTransferIsDone)(void) = SpiTransferIsDone_Implementation;
 
@@ -83,9 +89,5 @@ void SpiSlaveInit(void)
 {
     SetMisoAsOutput();         // pin-direction is user-defined
     EnableSpi();
-
-    /* // Enable SPI interrupt. */
-    /* SetBit(Spi_spcr, Spi_InterruptEnable); */
 }
-
 

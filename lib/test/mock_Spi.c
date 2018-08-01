@@ -38,7 +38,7 @@ static RecordedCall * Mock_SpiTransferIsDone(void)
 void Expect_SpiTransferIsDone(void) {
     RecordExpectedCall(mock, Mock_SpiTransferIsDone());
 }
-bool SpiTransferIsDone_SPIF_example[] = {false, false, true};  // example return values
+bool SpiTransferIsDone_SPIF_example[] = {true};  // example return values
 bool *SpiTransferIsDone_StubbedReturnValue = SpiTransferIsDone_SPIF_example;
 bool SpiTransferIsDone_Stubbed(void) {
     RecordActualCall(mock, Mock_SpiTransferIsDone());

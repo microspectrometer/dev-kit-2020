@@ -1,4 +1,3 @@
-/* #include <avr/interrupt.h>      // defines sei and cli */
 #include <ReadWriteBits.h>      // SetBit, ClearBit, etc.
 #include <DebugLeds.h>          // controls the 4 debug LEDs
 #include "DebugLeds-Hardware.h" // map debug LEDs to actual hardware
@@ -32,33 +31,38 @@ void test_DebugLeds(void)
 void Turn_led3_red_when_SpiSlave_receives_a_byte(void)
 {
     /* =====[ Operate ]===== */
-    // SPI Master sends a byte.
-    /* =====[ Version without interrupts ]===== */
-    // Do nothing until SPI Interrupt Flag is set.
-    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
+    // SPI Master sends any byte.
+    SpiSlaveInit();
+    while( !SpiTransferIsDone() );
     DebugLedsTurnRed(debug_led3);
 }
-void Show_received_SPI_data_on_debug_leds(void)
+void Show_data_on_debug_leds(uint8_t four_bits)
+{
+    // Show the lower nibble of input `four_bits`
+    uint8_t *pfour_bits = &four_bits;
+    if (BitIsSet(pfour_bits, 0)) DebugLedsTurnRed(debug_led1);
+    if (BitIsSet(pfour_bits, 1)) DebugLedsTurnRed(debug_led2);
+    if (BitIsSet(pfour_bits, 2)) DebugLedsTurnRed(debug_led3);
+    if (BitIsSet(pfour_bits, 3)) DebugLedsTurnRed(debug_led4);
+}
+void SpiSlaveRead_and_show_received_data_on_debug_leds(void)
 {
     /* =====[ Operate ]===== */
     // SPI Master sends a 4-bit value.
-    /* =====[ Version without interrupts ]===== */
-    // Do nothing until SPI Interrupt Flag is set.
-    while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
-    if (BitIsSet(Spi_spdr, 0)) DebugLedsTurnRed(debug_led1);
-    if (BitIsSet(Spi_spdr, 1)) DebugLedsTurnRed(debug_led2);
-    if (BitIsSet(Spi_spdr, 2)) DebugLedsTurnRed(debug_led3);
-    if (BitIsSet(Spi_spdr, 3)) DebugLedsTurnRed(debug_led4);
+    SpiSlaveInit();
+    // TODO: make this SpiSlaveRead
+    while( !SpiTransferIsDone() );
+    Show_data_on_debug_leds(*Spi_spdr);
 }
-
+void test_SpiSlave(void)
+{
+    /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-31 */
+    SpiSlaveRead_and_show_received_data_on_debug_leds(); // PASS 2018-07-31
+}
 int main()
 {
     /* test_DebugLeds(); // All tests pass 2018-07-30 */
     DebugLedsTurnAllOn();
     DebugLedsTurnAllGreen();
-    /* =====[ test SpiSlave ]===== */
-    SpiSlaveInit();
-    /* sei(); // Enable interrupts */
-    /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-30 */
-    Show_received_SPI_data_on_debug_leds(); // PASS 2018-07-30
+    test_SpiSlave(); // All tests pass 2018-07-31
 }

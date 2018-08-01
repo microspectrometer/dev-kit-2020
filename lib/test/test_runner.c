@@ -138,14 +138,16 @@ void DevelopingSpiMaster(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(SpiMasterOpenSpi_selects_the_SPI_slave);
     RUN_TEST(SpiMasterCloseSpi_unselects_the_SPI_slave);
+    RUN_TEST(SpiTransferIsDone_returns_true_when_the_transfer_is_done);
+    RUN_TEST(SpiTransferIsDone_returns_false_when_the_transfer_is_not_done);
     RUN_TEST(SpiMasterInit_pulls_Ss_high);
     RUN_TEST(SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs);
     RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
     RUN_TEST(SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8);
     RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
-    RUN_TEST(SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte);
     //
     setUp = Setup_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
+    RUN_TEST(SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte);
     RUN_TEST(SpiMasterWrite_byte_waits_for_transmission_to_complete);
 }}
 void DevelopingSpiSlave(bool run_test) {if (run_test) {

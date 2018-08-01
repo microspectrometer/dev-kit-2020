@@ -14,6 +14,8 @@
     // [x] SpiMasterInit_enables_the_SPI_hardware_module
     // [x] SpiMasterOpenSpi_selects_the_SPI_slave
     // [x] SpiMasterCloseSpi_unselects_the_SPI_slave
+    // [x] SpiTransferIsDone_returns_true_when_the_transfer_is_done
+    // [x] SpiTransferIsDone_returns_false_when_the_transfer_is_not_done
     // [x] SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte
         //  This also starts the transmission.
         //  No reason to unit test that the SPI hardware module starts the
@@ -30,7 +32,7 @@
         //
 /* =====[ List of SPI Slave Tests ]===== */
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
-    // [ ] SpiSlaveInit_enables_the_SPI_hardware_module
+    // [x] SpiSlaveInit_enables_the_SPI_hardware_module
 
 //
 /* =====[ SPI Slave ]===== */
@@ -151,6 +153,20 @@ void SpiMasterCloseSpi_unselects_the_SPI_slave(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(Spi_Ss, *Spi_port);
 }
+void SpiTransferIsDone_returns_true_when_the_transfer_is_done(void)
+{
+    /* =====[ Setup ]===== */
+    SetBit(Spi_spsr, Spi_InterruptFlag);
+    /* =====[ Test and Operate ]===== */
+    TEST_ASSERT_TRUE(SpiTransferIsDone());
+}
+void SpiTransferIsDone_returns_false_when_the_transfer_is_not_done(void)
+{
+    /* =====[ Setup ]===== */
+    ClearBit(Spi_spsr, Spi_InterruptFlag);
+    /* =====[ Test and Operate ]===== */
+    TEST_ASSERT_FALSE(SpiTransferIsDone());
+}
 
 /* =====[ SpiMasterWrite ]===== */
 void Setup_SpiMasterWrite(void)
@@ -165,6 +181,12 @@ void TearDown_SpiMasterWrite(void)
 }
 void SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte(void)
 {
+    //=====[ Mock-up test scenario by defining return values ]=====
+    // SPI hardware module sets SPIF to indicate the SPI transfer is done.
+    // SPIF := SPI Interrupt Flag
+    // SpiMasterWrite checks SPIF to know when the transfer is done.
+    bool SPIF_sequence[] = {false, false, true}; // true:= flag is set
+    SpiTransferIsDone_StubbedReturnValue = SPIF_sequence;
     /* =====[ Setup ]===== */
     *Spi_spdr = 0x00;  // start with 0x00 in the tx buffer
     uint8_t expect_byte = 0x09;
