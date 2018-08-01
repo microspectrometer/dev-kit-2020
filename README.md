@@ -9,7 +9,10 @@
     - [Deadline](#markdown-header-deadline)
 - [LIS-770i project code organization](#markdown-header-lis-770i-project-code-organization)
 - [Abstract memory-mapped-io for tests](#markdown-header-abstract-memory-mapped-io-for-tests)
+- [TDD](#markdown-header-tdd)
 - [Mockist TDD](#markdown-header-mockist-tdd)
+    - [Hardware connections are faked not mocked](#markdown-header-hardware-connections-are-faked-not-mocked)
+    - [Hardware behavior is mocked](#markdown-header-hardware-behavior-is-mocked)
 - [FT1248](#markdown-header-ft1248)
     - [How FT1248 relates to USB](#markdown-header-how-ft1248-relates-to-usb)
     - [FT1248 overview](#markdown-header-ft1248-overview)
@@ -611,21 +614,114 @@ Now the question is whether the compiler is smart enough to see that the
 register addresses are `const` and hardcode them directly as if they were
 macros. I should investigate this.
 
+# TDD
+The primary benefit of TDD is *workflow*. TDD is a sane way to split an
+intimidating task into smaller tasks. Each task has a clear goal. Focus on the
+small goal while ignoring the intimidating task. An initial straw man task list
+gets the first few tasks queued up. As the tasks are developed into tests, the
+details become clearer and the task list is revised. By expressing each small
+task as code it is very clear:
+
+- how to proceed on the task
+- when the task is finished
+
+At some point, you step back and look at the list of completed tasks, i.e., the
+list of passing tests, and you realize the initial intimidating task is done.
+
+My old workflow was pretty simple. The drawback is that I end up with code that
+I am afraid to make changes to, which means at some point I am no longer able to
+add functionality without doing a complete rewrite.
+
+- start writing the application and check the control flow as I go by turning
+  the debug LED red
+- bootstrap the application: as it grows, I am able to check more stuff, e.g.,
+  once there is USB communication, I have more ways to check that the code is
+  actually doing what I think its doing
+- keep doing this until I've written the whole application
+
+My TDD workflow goes like this. I do not actively use this like a check list,
+this is just the flow I naturally follow after practicing TDD for the past 6
+months. The embedded part are very recent habits I've noticed forming in the
+past week now that I've started working with the actual embedded targets:
+`simBrd` and `mBrd`.
+
+- write an embedded test application
+    - this is a very small piece of embedded code that tries to do something,
+      e.g., write one byte or turn the debug LED red when a condition happens
+    - the only goal of this code is that it worksk
+    - do not worry about anything else
+    - proceed each line with a one-liner comment explaining what the code does,
+      e.g., `Load the data and start the transmission.`
+        - the need for these is obvious because the code it explains is cryptic
+          register names and bit names that require referencing the datasheet to
+          interpret
+    - if there is a large block of code that works together, write a multi-line
+      comment explaining how that block of code behaves under different
+      conditions
+- get the embedded test to do what it claims
+- place the test code in a function that describes the test
+- add a multi-line comment to this function explaining all the conditions
+  necessary to run this test
+- comment the test as passing with the date tested
+- commit the passing embedded test
+- now turn the embedded code into unit-tested lib code
+    - the one-liner comments become the function names in the lib
+    - the multiline block comments become the test cases
+- write an initial list of tests
+- pick a test to work on first
+- write a function with the test as the name and a body that asserts failure
+- get the test runner to compile and report the failure
+- create the `Operate` section: usually this is just calling the function
+- if the function does not exist yet, get the test runner to compile
+- once it compiles, I am back to a failing test
+- create the `Test` section: write the real test and erase the asserted failure
+- once I start expressing the test in code, it is clear what I need in terms of
+  test setup and teardown
+- create the `Setup` and `Teardown` sections
+- check that this test fails
+- start editing the production code function body to make this test pass
+- git commit the passing test
+- think about a refactor:
+    - if I am unhappy with the production code or the test code
+    - and if I have an idea on how to make it better now
+    - then refactor and commit the passing refactored code.
+    - otherwise stick a `TODO` that says why I am unhappy
+    - it will become clear how to refactor after there are more tests in place
+- think about how this test affects the test list:
+    - often a test like `foo returns true when bar` begs a twin test like `foo
+      returns false when not bar`
+    - getting the test to pass shows what functions are needed
+- continue this until all of the functionality of the passing embedded code is
+  captured
+- the unit-tested lib code is the refactored version of the original embedded
+  code
+- in small pieces, replace the embedded code with the lib code and check that
+  the embedded test still passes
+- refactor the embedded code as much as possible: it should now be dead simple
+  to understand when you come back to it in the future
+- this will often result in great example code:
+    - neat little functions that seem to application-specific to make them part
+      of the lib, but will probably come in handy later when all of the libs are
+      done and you are working on the final application
+- commit the final, refactored, passing, embedded test
+- if it is clear how to continue extending the lib code, go back to developing
+  the lib, otherwise write some more embedded code
+
 # Mockist TDD
 ## Mocks are not fakes
-- *2017-07-19 Update: only mock when the test requires it*
-    - if possible, test behavior without comparing call lists
-    - comparing call lists couples tests to implementation details
-    - even tests that stub functions to mock-up a scenario by controlling return
-      values may not need to compare call lists
-    - tests require comparing call lists when:
-        - there is no other way to check the behavior
-        - the purpose of the test is to describe one path, e.g.: sad path or
-          happy path
+### 2017-07-19 Update: only mock when the test requires it
+- if possible, test behavior without comparing call lists
+- comparing call lists couples tests to implementation details
+- even tests that stub functions to mock-up a scenario by controlling return
+  values may not need to compare call lists
+- tests require comparing call lists when:
+    - there is no other way to check the behavior
+    - the purpose of the test is to describe one path, e.g.: sad path or
+      happy path
 
----
-- *This section was copied from repo `mock-object`*
-    - take any *mock-heavy* attitudes with a grain of salt `>*.*<`
+### This section was copied from repo `mock-object`
+- take any *mock-heavy* attitudes with a grain of salt `>*.*<`
+
 ---
 This register faking is not mocking. The fake register is just another
 dependency. Mocking is a way to pretend that the dependency exists without it
@@ -670,7 +766,7 @@ include the header for the fake registers, I get a linker error because now I
 have two separate test object files that both include the header of fake
 registers. Since the test object files are compiled separately, the #include
 guards do not prevent them from both including the header and defining the
-symbols within. The linker throws a multiple definition error.
+symbols within. The linker throws a **multiple definition error**.
 
 The right way to write the test is to simply call the public function that calls
 the DOFs. The code-under-test should not know/care the DOFs are called. The
@@ -681,7 +777,7 @@ into a higher-level API. Similarly, the refactoring of the lower-level lib is
 guided by the desire to keep the API simple, and the test of that simplicity is
 the test of the higher-level lib.
 
-*And having read this in the future, here are some more thoughts.*
+### And having read this in the future
 
 Mocking C generates a lot of supporting code. A strict isolate-everything
 generates too much code. Save mocking for when it is necessary. It is OK for
@@ -689,6 +785,221 @@ tests to be coupled. The headache of *several tests suddenly failing* is smaller
 than the headache of *ripping up the supporting mock code* when refactoring.
 I'll take have occasionally confusing test output over barriers to refactoring.
 Again, the result is *write the lower-level libs first*.
+
+### And having read this even further in the future
+
+There is a lot of *TDD cruft* on the internet. Anytime anyone claims something
+must be done a certain way, search for an opposing opinion before taking the
+advice. Here are the ones I have found to be misleading and subsequent internet
+searches have validated my experience:
+
+- *Use a framework*
+    - frameworks are tools
+    - use them when they help
+    - do not use them if they get in the way
+- *Do not write your own framework*
+    - the important thing is to get things done
+    - testing is important if it helps me get thing done
+    - if I am not using a framework but I am testing, i.e., getting things done,
+      then the framework is just extra work
+    - if I can quickly add the functionality myself to get the job done, e.g.,
+      using a global to stub a return value, then I should
+    - if it is faster to use the framework, I should do that
+- *All tests must be isolated -- isolate by mocking everything*
+    - mocking comes at a price
+    - it is the tool of last resort
+    - if tests are expressible without mocks, do not mock
+
+The industry wisdom is to *use mocking when appropriate*. There are tradeoffs to
+mocking:
+
+- function are exposed in the lib header file that would otherwise be private
+- The number of files in the test code increases.
+- Noise increases in the test code:
+    - more files
+    - more setup/teardown
+    - more pieces that have to work together to form the actual test
+- Noise increases in production code:
+    - a function becomes a function pointer
+    - this is noise if it is only in service of the test
+
+Sometimes the act of mocking drives refactoring into a form that improves the
+API. In this case I am intentionally mocking to figure out how to
+refactor. I find this effect happens a lot from testing, not as often from
+mocking.
+
+My latest approach is to attempt to write the test without mocks first. I end up
+mocking for one or all of these reasons:
+
+- I want a function to return a certain value or a sequence of values.
+    - That function needs to be mocked so I can stub it in the test and inject
+      my return values through the global that is returned by the stub.
+        - see [Hardware behavior is mocked](#markdown-header-hardware-behavior-is-mocked)
+        - I actually do not *need* a `mock` object to do this.
+        - But I still need to generate most of the *mocking* noise:
+            - make a function pointer
+            - create functions to stub and unstub
+            - do the stubbing and unstubbing in `Setup` and `Teardown`
+        - so I do just end up creating the full `mock` object with `;me`
+- I want to check that the production code follows some conditional path under
+  some condition.
+    - e.g.:
+        - some *error* causes the *sad path* to execute
+        - there is **no way** to check this without logging some of the function
+          calls and checking that they were actually called
+    - The functions need to be mocked so I can log when they are called.
+        - The mocking creates stubs that record themselves in the `mock` object
+          when the *function under test* is called.
+    - The functions need to be mocked so I can log the expectations set up by
+      the test.
+        - The mocking creates expectation functions that record themselves in
+          the `mock` object when the test runs.
+    - The `mock` object records both the function names and the function input
+      arguments.
+    - The test checks that the correct calls were made in the correct order with
+      the correct input arguments.
+- I am unhappy with the code and want to refactor but it is not clear how to do
+  it.
+    - Forget the existing code.
+    - Make a mock that looks/feels exactly how I want it to.
+    - Write test cases stating what I want under each condition and stub return
+      values for each case.
+    - Convert the stubbed function into actual production code.
+
+### Hardware connections are faked not mocked
+And dealing with harwdare I/O, i.e., registers and pin names, has nothing to do
+with mocking. Hardware I/O is faked. Fake it by declaring all registers and pin
+names as `extern` in the lib header. Unit-test code resolves the `extern` by
+defining the registers and pin names using fake variables that match the
+datatypes of the registers and pins. Application code resolves the `extern` by
+including the vendor libraries and defining the registers and pin names using
+the actual names in the vendor `include` files.
+
+### Hardware behavior is mocked
+If the hardware changes a register value under some condition, e.g. an interrupt
+flag is set when something happens or something finishes, this is easy to write
+unit tests for.
+
+The lib code needs a level of indirection: encapsulate the act
+of checking the register value inside a the function. This makes for better lib
+code anyway.
+
+Now that there is a function, there is a seam to insert a mock. Mock by stubbing
+this function. The purpose of the stub is to give the test code control over the
+values returned by the function. Here is an example:
+
+```c
+while( BitIsClear(Spi_spsr, Spi_InterruptFlag) );
+```
+- some context for the above:
+    - a `SPI` transfer was started
+    - this line of code sits in a loop until the transfer finishes
+    - `Spi_spsr` is a register name declared in the lib header
+    - `Spi_InterruptFlag` is a bit name declared in the lib header
+    - the SPI hardware module sets this bit when the transfer is done
+
+- the test code fakes the register name and pin name as explained in the
+  previous section
+- a mock is needed to take the place of the SPI hardware module and control when
+  the bit is set
+
+I want a unit test to check that the logic in this code is correct, i.e., in a
+larger code block, I want to know that this line of code halts execution until
+the SPI hardware module sets the bit.
+
+Test this by mocking the SPI hardware. The first step is to encapsulate the bit
+checking in a function:
+
+```c
+while( !SpiTransferIsDone() );
+```
+
+The production code implementation of the function looks like this:
+
+```c
+bool SpiTransferIsDone(void)
+{
+    return BitIsSet(Spi_spsr, Spi_InterruptFlag);
+}
+```
+
+Now there is a function to stub to take control over the return value. To stub
+the function, it must be a function pointer:
+
+```c
+bool (*SpiTransferIsDone)(void) = SpiTransferIsDone_Implementation;
+static bool SpiTransferIsDone_Implementation(void)
+{
+    return BitIsSet(Spi_spsr, Spi_InterruptFlag);
+}
+bool (*SpiTransferIsDone)(void) = SpiTransferIsDone_Implementation;
+```
+
+Declare the function pointer `extern` in the lib header:
+```c
+extern bool (*SpiTransferIsDone)(void);
+```
+
+Declaring it `extern` lets the test code reassign it to the stubbed
+implementation. Write `Stub` and `Unstub` functions:
+```c
+static bool (*SpiTransferIsDone_Saved)(void);
+void Stub_SpiTransferIsDone(void) {
+    SpiTransferIsDone_Saved = SpiTransferIsDone;
+    SpiTransferIsDone = SpiTransferIsDone_Stubbed;
+}
+void Unstub_SpiTransferIsDone(void) {
+    SpiTransferIsDone = SpiTransferIsDone_Saved;
+}
+```
+The test calls the `Stub` function in `Setup` and the `Unstub` function in
+`Teardown`. The `Stub` function replaces the production code function with its
+stubbed version. The `Unstub` function puts the production code version back in.
+
+Lastly, write the stubbed implementation:
+```c
+bool SpiTransferIsDone_SPIF_example[] = {true};  // default return values
+bool *SpiTransferIsDone_StubbedReturnValue = SpiTransferIsDone_SPIF_example;
+bool SpiTransferIsDone_Stubbed(void) {
+    return *(SpiTransferIsDone_StubbedReturnValue++);
+}
+```
+
+Declare the stubbed return value `extern` in the mock-lib header:
+```c
+bool SpiTransferIsDone_Stubbed(void);
+extern bool *SpiTransferIsDone_StubbedReturnValue;
+```
+Declaring it `extern` lets the test code reassign it its own array of return
+values that describe the test condition.
+
+I am leaving out the code for recording the call. It is only an extra couple of
+lines, but those lines use my `mock-c` library for creating `mock` objects. All
+I care about here is taking control over the value returned by the function.
+I do not need any `mock-c` functionality for that.
+
+The stubbed return value is a global pointer to an array. The test code
+describes the test condition by creating an array of return values, and it runs
+the test under this condition by pointing the stubbed return value at this
+array.
+
+Each time the *function under test* calls the stub, the stub returns the next
+value in the array. And *voila* what would have been an infinite while loop
+checking non-existent hardware is instead mocked by the array of return values
+simulating some number of *bit checks* until the hardware module sets the flag.
+
+If the test code does not assign the value, the default is to simply use the
+`example` value. Note this should not be relied on as a default. If the function
+is only called once, the default is fine.
+
+For example, the stub returns `true` the first time the function is called. That
+exits the `while` loop and the function is not called again. But if the same
+unit test *is* going to call the function again, e.g., a test that involves two
+serial transfers, then the test must either reset the stubbed return value to
+point at the beginning of the array or make the array long enough to work for
+two calls, e.g., `{true, true}`. So it is good practice to always explicitly put
+the array of return values in the test and *not* rely on the default *example*
+value.
 
 # FT1248
 
@@ -1449,57 +1760,6 @@ pin         | direction
 `Spi_Mosi`  | input
 `Spi_Sck`   | input
 
-## Old notes
-### Old Reference docs
-> `C:\chromation-dropbox\Dropbox\design files and protocols\circuits\pcb design\eagle\projects\Chromation\20150807_SPI_Wand\doc\design on paper\Communication With FLIR Ex-Series Camera.txt`
-> `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/pcb design/eagle/projects/Chromation/20150807_SPI_Wand/doc/design on paper/Communication With FLIR Ex-Series Camera.txt`
-> `C:\chromation-dropbox\Dropbox\design files and protocols\circuits\mcu\Atmel Studio\LIS-770i_Interface\20151020_LIS-770i_mBrd\src\main.c`
-> `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/mcu/Atmel Studio/LIS-770i_Interface/20151020_LIS-770i_mBrd/src/main.c`
-
-
-
-### Standard SPI
-- SPI master *always* initiates communication
-- Every SPI communication is both a **read** and a **write**
-    - master and slave form an 8-bit circular buffer
-    - the 8-bits in the slave's transmit buffer get shifted into the master's
-      receive buffer
-    - the 8-bits in the master's transmit buffer get shifted into the slave's
-      receive buffer
-### SPI sensors
-- many SPI sensors are slaves that only transmit (no receive buffer)
-- transmit only scheme:
-    - host transmit buffer is garbage
-    - clock slave some number of times
-    - clock drives the sensor's ADC
-    - meaningful data received on last N clocks after the first M clocks.
-- the `mBrd` is configurable so it must receive too
-## Basic SPI
-- SPI master loads a byte into its SPI data register
-- SPI master tells its hardware peripheral to send the byte
-- SPI slave hardware peripheral receives the byte
-    - this is independent of the main program execution
-- SPI slave has an interrupt that triggers when a byte is received
-    - this interrupt notifies the CPU that a byte was received
-    - this is the first time the SPI slave need even be aware that the SPI
-      master has been communicating with it.
-
-## SPI with Slave/Chip Select
-- There is a fourth SPI signal called Slave Select or Chip Select.
-    - SPI master MCU `Spi_Ss` pin can by any general purpose I/O on the
-      `ATmega328`
-    - SPI slave MCU `Spi_Ss` is a specific pin that ties into the SPI hardware
-      peripheral
-- When the `simBrd` MCU wants to talk to the `mBrd`, it pulls `Spi_Ss` low to put
-  the `mBrd` MCU's SPI hardware peripheral into a state where it is ready to
-  receive communication.
-    - If the `simBrd` MCU transimts data without pulling `Spi_Ss` low, the
-      `mBrd` MCU's SPI hardware peripheral ignores the communication.
-    - This allows the `simBrd` MCU to have multiple SPI slaves on the same SPI
-      bus (every slave's SCK connected to the master's SCK, etc.), but only
-      communicate with one slave at a time. The SPI master has a separate
-      `Spi_Ss` pin for each slave.
-
 ## SPI simBrd and mBrd hardware
 - the `SPI` pin connections on the `mBrd` are exactly the same as on the
   `simBrd`
@@ -1528,7 +1788,7 @@ uint8_t const Spi_Sck    =   PB5;    // SPI clock
     - its `USART` clocks ADC SCK at `fosc/2 = 5MHz`
 
 
-## SPI master writes to SPI slave
+## Old but useful: SPI master writes to SPI slave
 - [ ] continue copying in from
 > `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/pcb design/eagle/projects/Chromation/20150807_SPI_Wand/doc/design on paper/Communication With FLIR Ex-Series Camera.txt`
 - `simBrd` transmits to `mBrd`:
@@ -1565,6 +1825,54 @@ uint8_t const Spi_Sck    =   PB5;    // SPI clock
         - not sure how to do this -- want to do a checksum?
     - `simBrd` requests a new frame from the `mBrd`
 
+## Old notes that are probably not useful anymore
+### Old Reference docs
+> `C:\chromation-dropbox\Dropbox\design files and protocols\circuits\pcb design\eagle\projects\Chromation\20150807_SPI_Wand\doc\design on paper\Communication With FLIR Ex-Series Camera.txt`
+> `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/pcb design/eagle/projects/Chromation/20150807_SPI_Wand/doc/design on paper/Communication With FLIR Ex-Series Camera.txt`
+> `C:\chromation-dropbox\Dropbox\design files and protocols\circuits\mcu\Atmel Studio\LIS-770i_Interface\20151020_LIS-770i_mBrd\src\main.c`
+> `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/mcu/Atmel Studio/LIS-770i_Interface/20151020_LIS-770i_mBrd/src/main.c`
+
+### Standard SPI
+- SPI master *always* initiates communication
+- Every SPI communication is both a **read** and a **write**
+    - master and slave form an 8-bit circular buffer
+    - the 8-bits in the slave's transmit buffer get shifted into the master's
+      receive buffer
+    - the 8-bits in the master's transmit buffer get shifted into the slave's
+      receive buffer
+### SPI sensors
+- many SPI sensors are slaves that only transmit (no receive buffer)
+- transmit only scheme:
+    - host transmit buffer is garbage
+    - clock slave some number of times
+    - clock drives the sensor's ADC
+    - meaningful data received on last N clocks after the first M clocks.
+- the `mBrd` is configurable so it must receive too
+### Basic SPI
+- SPI master loads a byte into its SPI data register
+- SPI master tells its hardware peripheral to send the byte
+- SPI slave hardware peripheral receives the byte
+    - this is independent of the main program execution
+- SPI slave has an interrupt that triggers when a byte is received
+    - this interrupt notifies the CPU that a byte was received
+    - this is the first time the SPI slave need even be aware that the SPI
+      master has been communicating with it.
+
+### SPI with Slave/Chip Select
+- There is a fourth SPI signal called Slave Select or Chip Select.
+    - SPI master MCU `Spi_Ss` pin can by any general purpose I/O on the
+      `ATmega328`
+    - SPI slave MCU `Spi_Ss` is a specific pin that ties into the SPI hardware
+      peripheral
+- When the `simBrd` MCU wants to talk to the `mBrd`, it pulls `Spi_Ss` low to put
+  the `mBrd` MCU's SPI hardware peripheral into a state where it is ready to
+  receive communication.
+    - If the `simBrd` MCU transimts data without pulling `Spi_Ss` low, the
+      `mBrd` MCU's SPI hardware peripheral ignores the communication.
+    - This allows the `simBrd` MCU to have multiple SPI slaves on the same SPI
+      bus (every slave's SCK connected to the master's SCK, etc.), but only
+      communicate with one slave at a time. The SPI master has a separate
+      `Spi_Ss` pin for each slave.
 
 # UART SPI
 - lib `UartSpi`
