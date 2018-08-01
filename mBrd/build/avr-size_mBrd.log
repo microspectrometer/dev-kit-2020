@@ -1,2 +1,2 @@
    text	   data	    bss	    dec	    hex	filename
-    566	     20	      0	    586	    24a	build/mBrd.elf
+    482	     14	      0	    496	    1f0	build/mBrd.elf
