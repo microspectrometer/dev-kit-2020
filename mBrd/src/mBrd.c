@@ -16,7 +16,7 @@
     // [x] SpiSlaveRead_and_show_received_data_on_debug_leds
         // Tests `SpiSlaveRead()`
         // Receives data without using interrupts.
-    // [ ] Slave_receives_request_and_sends_response_when_ready
+    // [x] Slave_receives_request_and_sends_response_when_ready
         // Master sends the request.
         // Slave parses the request.
         // Slave signals to master it has a response ready.
@@ -125,17 +125,43 @@ void SPI_read_in_ISR_and_show_data_on_debug_leds(void)
     // led number: 4  3  2  1
     // led color:  R  G  R  R
 }
+void Slave_receives_request_and_sends_response_when_ready(void)
+{
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
+    DebugLedsTurnRed(debug_led1);
+    // Visually confirm debug LED 1 is red.
+    // The slave is waiting to receive the command.
+    //
+    // Master sends a byte requesting data.
+    uint8_t const cmd_slave_respond_0xBA = 0xAB;
+    /* =====[ Operate ]===== */
+    // wait for a command from the master
+    uint8_t cmd = SpiSlaveRead();
+    // parse the command
+    if (cmd == cmd_slave_respond_0xBA)
+    {
+        DebugLedsTurnRed(debug_led2);
+        uint8_t const response = 0xBA;
+        *Spi_spdr = response;
+        SpiSlaveSignalDataIsReady();
+    }
+    /* =====[ Test ]===== */
+    // Visually confirm debug LED 2 is red.
+    // The slave parsed the request correctly.
+}
 void test_SpiSlave(void)
 {
     /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-31 */
     /* SpiSlaveRead_and_show_received_data_on_debug_leds(); // PASS 2018-08-01 */
     /* SPI_interrupt_routine_turns_debug_led1_red(); // PASS 2018-08-01 */
-    SPI_read_in_ISR_and_show_data_on_debug_leds(); // PASS 2018-08-01
+    /* SPI_read_in_ISR_and_show_data_on_debug_leds(); // PASS 2018-08-01 */
+    Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02
 }
 int main()
 {
     /* test_DebugLeds(); // All tests pass 2018-07-30 */
     DebugLedsTurnAllOn();
     DebugLedsTurnAllGreen();
-    test_SpiSlave();
+    test_SpiSlave(); // All tests pass 2018-08-02
 }

@@ -71,6 +71,11 @@ void SpiMasterWrite(uint8_t byte_to_send)
     while (!SpiTransferIsDone()) ;
     SpiMasterCloseSpi();
 }
+bool SpiResponseIsReady(void)
+{
+    return BitIsClear(Spi_port, Spi_Miso);
+}
+
 
 //
 /* =====[ Spi Slave ]===== */
@@ -82,6 +87,7 @@ static void SetMisoAsOutput(void)
 void SpiSlaveInit(void)
 {
     SetMisoAsOutput();         // pin-direction is user-defined
+    SpiSlaveSignalDataIsNotReady(); // MISO idles high
     EnableSpi();
 }
 static void ClearPendingSpiInterrupt(void)
@@ -101,6 +107,14 @@ void SpiEnableInterrupt(void)
     ClearPendingSpiInterrupt();
     EnableTransferCompleteInterrupt();
     GlobalInterruptEnable();
+}
+void SpiSlaveSignalDataIsReady(void)
+{
+    ClearBit(Spi_port, Spi_Miso);
+}
+void SpiSlaveSignalDataIsNotReady(void)
+{
+    SetBit(Spi_port, Spi_Miso);
 }
 uint8_t SpiSlaveRead(void)
 {

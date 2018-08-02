@@ -1923,11 +1923,11 @@ other bits in the bus-width nibble are pulled high.
 ### Track progress in the current dev cycle
 #### embedded tests to discover new code
 - next test: `Slave_receives_request_and_sends_response_when_ready`
-- [ ] SpiMaster
-- [ ] SpiSlave
-#### unit-tested working code into lib code and refactored
 - [x] SpiMaster
 - [x] SpiSlave
+#### unit-tested working code into lib code and refactored
+- [ ] SpiMaster
+- [ ] SpiSlave
 #### refactor embedded tests using new lib code
 - [x] SpiMaster
 - [x] SpiSlave

@@ -140,6 +140,8 @@ void DevelopingSpiMaster(bool run_test) {if (run_test) {
     RUN_TEST(SpiMasterCloseSpi_unselects_the_SPI_slave);
     RUN_TEST(SpiTransferIsDone_returns_true_when_the_transfer_is_done);
     RUN_TEST(SpiTransferIsDone_returns_false_when_the_transfer_is_not_done);
+    RUN_TEST(SpiResponseIsReady_returns_true_when_slave_signals_data_is_ready);
+    RUN_TEST(SpiResponseIsReady_returns_false_when_slave_signals_data_not_ready);
     RUN_TEST(SpiMasterInit_pulls_Ss_high);
     RUN_TEST(SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs);
     RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
@@ -153,8 +155,11 @@ void DevelopingSpiMaster(bool run_test) {if (run_test) {
 void DevelopingSpiSlave(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(SpiSlaveInit_configures_pin_Miso_as_an_output);
+    RUN_TEST(SpiSlaveInit_pulls_Miso_high);
     RUN_TEST(SpiSlaveInit_enables_the_SPI_hardware_module);
     RUN_TEST(SpiEnableInterrupt_enables_the_transfer_is_done_interrupt);
+    RUN_TEST(SpiSlaveSignalDataIsReady_pulls_Miso_low);
+    RUN_TEST(SpiSlaveSignalDataIsNotReady_pulls_Miso_high);
 }}
 int main()
 {

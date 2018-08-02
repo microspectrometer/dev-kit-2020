@@ -18,6 +18,8 @@
     // [x] SpiMasterCloseSpi_unselects_the_SPI_slave
     // [x] SpiTransferIsDone_returns_true_when_the_transfer_is_done
     // [x] SpiTransferIsDone_returns_false_when_the_transfer_is_not_done
+    // [x] SpiResponseIsReady_returns_true_when_slave_signals_data_is_ready
+    // [x] SpiResponseIsReady_returns_false_when_slave_signals_data_not_ready
     // [x] SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte
         //  This also starts the transmission.
         //  No reason to unit test that the SPI hardware module starts the
@@ -34,10 +36,13 @@
         //
 /* =====[ List of SPI Slave Tests ]===== */
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
+    // [x] SpiSlaveInit_pulls_Miso_high
     // [x] SpiSlaveInit_enables_the_SPI_hardware_module
     // [x] SpiEnableInterrupt_enables_the_transfer_is_done_interrupt
     // [x] SpiSlaveRead_waits_until_transfer_is_done
     // [x] SpiSlaveRead_returns_the_SPI_data_register_byte
+    // [x] SpiSlaveSignalDataIsReady_pulls_Miso_low
+    // [x] SpiSlaveSignalDataIsNotReady_pulls_Miso_high
 
 //
 /* =====[ SPI Slave ]===== */
@@ -50,6 +55,15 @@ void SpiSlaveInit_configures_pin_Miso_as_an_output(void)
     SpiSlaveInit();
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Miso,  *Spi_ddr, "Failed for pin Miso.");
+}
+void SpiSlaveInit_pulls_Miso_high(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_port = 0x00;
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Spi_Miso, *Spi_port);
 }
 void SpiSlaveInit_enables_the_SPI_hardware_module(void)
 {
@@ -73,7 +87,24 @@ void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(Spi_InterruptEnable, *Spi_spcr);
 }
-
+void SpiSlaveSignalDataIsReady_pulls_Miso_low(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_port = 0xFF;
+    /* =====[ Operate ]===== */
+    SpiSlaveSignalDataIsReady();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(Spi_Miso, *Spi_port);
+}
+void SpiSlaveSignalDataIsNotReady_pulls_Miso_high(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_port = 0x00;
+    /* =====[ Operate ]===== */
+    SpiSlaveSignalDataIsNotReady();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Spi_Miso, *Spi_port);
+}
 /* =====[ SpiSlaveRead ]===== */
 void SetUp_SpiSlaveRead(void)
 {
@@ -231,7 +262,20 @@ void SpiTransferIsDone_returns_false_when_the_transfer_is_not_done(void)
     /* =====[ Test and Operate ]===== */
     TEST_ASSERT_FALSE(SpiTransferIsDone());
 }
-
+void SpiResponseIsReady_returns_true_when_slave_signals_data_is_ready(void)
+{
+    /* =====[ Setup ]===== */
+    SpiSlaveSignalDataIsReady();
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE(SpiResponseIsReady());
+}
+void SpiResponseIsReady_returns_false_when_slave_signals_data_not_ready(void)
+{
+    /* =====[ Setup ]===== */
+    SpiSlaveSignalDataIsNotReady();
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_FALSE(SpiResponseIsReady());
+}
 /* =====[ SpiMasterWrite ]===== */
 void SetUp_SpiMasterWrite(void)
 {

@@ -8,6 +8,8 @@ void SpiMasterOpenSpi_selects_the_SPI_slave(void);
 void SpiMasterCloseSpi_unselects_the_SPI_slave(void);
 void SpiTransferIsDone_returns_true_when_the_transfer_is_done(void);
 void SpiTransferIsDone_returns_false_when_the_transfer_is_not_done(void);
+void SpiResponseIsReady_returns_true_when_slave_signals_data_is_ready(void);
+void SpiResponseIsReady_returns_false_when_slave_signals_data_not_ready(void);
 void SpiMasterInit_pulls_Ss_high(void);
 void SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs(void);
 void SpiMasterInit_makes_this_mcu_the_SPI_master(void);
@@ -22,8 +24,11 @@ void SpiMasterWrite_byte_waits_for_transmission_to_complete(void);
 /* =====[ SPI Slave ]===== */
 //
 void SpiSlaveInit_configures_pin_Miso_as_an_output(void);
+void SpiSlaveInit_pulls_Miso_high(void);
 void SpiSlaveInit_enables_the_SPI_hardware_module(void);
 void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void);
+void SpiSlaveSignalDataIsReady_pulls_Miso_low(void);
+void SpiSlaveSignalDataIsNotReady_pulls_Miso_high(void);
 //
 void SetUp_SpiSlaveRead(void); void TearDown_SpiSlaveRead(void);
 void SpiSlaveRead_waits_until_transfer_is_done(void);

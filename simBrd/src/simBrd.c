@@ -25,11 +25,12 @@
     // [x] EchoByte_reads_a_byte_and_writes_it_back_to_the_host
 // test_SpiMaster
     // [x] SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble
-    // [ ] Slave_receives_request_and_sends_response_when_ready
+    // [x] Slave_receives_request_and_sends_response_when_ready
         // Master sends the request.
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
+
 void operate_UsbWrite(void)
 {
     //
@@ -189,7 +190,7 @@ void EchoByte_reads_a_byte_and_writes_it_back_to_the_host(void)
     /* >>> s.write('\x00\x01\x02\x03\x04\x05\x06\x07\x08') */
     /* >>> s.read(s.inWaiting()) */
     /* '\x00\x01\x02\x03\x04\x05\x06\x07\x08' */
-
+    //
     /* DebugLedTurnRed(); */
     /* =====[ Operate ]===== */
     UsbInit(); while(1) if ( UsbHasDataToRead() ) EchoByte();
@@ -235,9 +236,31 @@ void SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(void)
     // led number: 4  3  2  1
     // led color:  R  G  R  R
 }
+void Slave_receives_request_and_sends_response_when_ready(void)
+{
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    /* =====[ Operate ]===== */
+    // Master sends a request
+    uint8_t const cmd_slave_respond_0xBA = 0xAB;
+    uint8_t const response = 0xBA;
+    SpiMasterWrite(cmd_slave_respond_0xBA);
+    /* =====[ Test ]===== */
+    // Slave signals to master it has a response ready.
+    //
+    // Wait for the response ready signal from the slave.
+    while( !SpiResponseIsReady() );
+    // SpiMasterRead
+    uint8_t garbage = 0xFF;
+    SpiMasterWrite(garbage);
+    if (*Spi_spdr == response) DebugLedTurnRed();
+    // Visually confirm the debug LED turns red.
+    // The master received the expected response from the slave.
+}
 void test_SpiMaster(void)
 {
-    SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31
+    /* SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31 */
+    Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02
 }
 int main()
 {
@@ -250,5 +273,5 @@ int main()
     /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
     /* test_EchoByte(); // All tests pass 2018-07-30 */
-    test_SpiMaster(); // All test pass 2018-07-31
+    test_SpiMaster(); // All test pass 2018-08-02
 }

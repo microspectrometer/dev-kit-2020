@@ -15,6 +15,7 @@ extern void (*GlobalInterruptDisable)(void);
 /* =====[ SPI Master API ]===== */
 void SpiMasterInit(void);
 void SpiMasterWrite(uint8_t byte_to_send);
+bool SpiResponseIsReady(void);
 /* =====[ Not part of the API. Exposed for testing SPI Master only. ]===== */
 extern void (*SpiMasterOpenSpi)(void);
 extern void (*SpiMasterCloseSpi)(void);
@@ -48,5 +49,7 @@ extern uint8_t const Spi_InterruptFlag;
 void SpiSlaveInit(void);
 void SpiEnableInterrupt(void);
 uint8_t SpiSlaveRead(void);
+void SpiSlaveSignalDataIsReady(void);
+void SpiSlaveSignalDataIsNotReady(void);
 
 #endif // _SPI_H
