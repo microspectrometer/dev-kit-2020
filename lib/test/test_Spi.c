@@ -35,7 +35,9 @@
 /* =====[ List of SPI Slave Tests ]===== */
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
     // [x] SpiSlaveInit_enables_the_SPI_hardware_module
-    // [ ] SpiEnableInterrupt_enables_the_transfer_is_done_interrupt
+    // [x] SpiEnableInterrupt_enables_the_transfer_is_done_interrupt
+    // [x] SpiSlaveRead_waits_until_transfer_is_done
+    // [ ] SpiSlaveRead_returns_the_SPI_data_register_byte
 
 //
 /* =====[ SPI Slave ]===== */
@@ -71,6 +73,41 @@ void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(Spi_InterruptEnable, *Spi_spcr);
 }
+
+/* =====[ SpiSlaveRead ]===== */
+void SetUp_SpiSlaveRead(void)
+{
+    SetUpMock_SpiSlaveRead();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_SpiSlaveRead(void)
+{
+    TearDownMock_SpiSlaveRead();    // destroy the mock object
+    // other teardown code
+}
+void SpiSlaveRead_waits_until_transfer_is_done(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    // SPI hardware module sets SPIF to indicate the SPI transfer is done.
+    // SPIF := SPI Interrupt Flag
+    // SpiSlaveRead checks SPIF to know when the transfer is done.
+    bool SPIF_sequence[] = {false, false, true}; // true:= flag is set
+    int num_times_SPIF_is_checked = sizeof(SPIF_sequence);
+    SpiTransferIsDone_StubbedReturnValue = SPIF_sequence;
+    /* =====[ Operate ]===== */
+    SpiSlaveRead();
+    /* =====[ Set up expected calls ]===== */
+    for (int i=0; i<num_times_SPIF_is_checked; i++)
+    {
+        Expect_SpiTransferIsDone();
+    }
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
+
 //
 /* =====[ SPI Master ]===== */
 //
@@ -180,7 +217,7 @@ void SpiTransferIsDone_returns_false_when_the_transfer_is_not_done(void)
 }
 
 /* =====[ SpiMasterWrite ]===== */
-void Setup_SpiMasterWrite(void)
+void SetUp_SpiMasterWrite(void)
 {
     SetUpMock_SpiMasterWrite();    // create the mock object to record calls
     // other setup code

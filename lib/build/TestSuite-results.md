@@ -9,10 +9,11 @@ test/test_runner.c:146:SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8:PA
 test/test_runner.c:147:SpiMasterInit_enables_the_SPI_hardware_module:PASS
 test/test_runner.c:150:SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte:PASS
 test/test_runner.c:151:SpiMasterWrite_byte_waits_for_transmission_to_complete:PASS
-test/test_runner.c:167:SpiSlaveInit_configures_pin_Miso_as_an_output:PASS
-test/test_runner.c:168:SpiSlaveInit_enables_the_SPI_hardware_module:PASS
-test/test_runner.c:169:SpiEnableInterrupt_enables_the_transfer_is_done_interrupt:PASS
+test/test_runner.c:155:SpiSlaveInit_configures_pin_Miso_as_an_output:PASS
+test/test_runner.c:156:SpiSlaveInit_enables_the_SPI_hardware_module:PASS
+test/test_runner.c:157:SpiEnableInterrupt_enables_the_transfer_is_done_interrupt:PASS
+test/test_runner.c:171:SpiSlaveRead_waits_until_transfer_is_done:PASS
 
 -----------------------
-14 Tests 0 Failures 0 Ignored 
+15 Tests 0 Failures 0 Ignored 
 OK

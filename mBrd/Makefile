@@ -30,7 +30,8 @@ atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/AT
 # .lst is the disassembly for analysis
 avr-target: build/${board-name}.elf build/${board-name}.lst
 
-build/%.elf: ${obj_dev-libs} src/%.c src/AvrAsmMacros.c
+avr-asm-macros := src/AvrAsmMacros.c
+build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
 	avr-gcc $^ -o $@ $(CFLAGS)  \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.

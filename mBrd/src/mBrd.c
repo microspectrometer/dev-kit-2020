@@ -10,7 +10,6 @@
 
 /* =====[ List of Tests ]===== */
     // [x] SPI_interrupt_routine_turns_debug_led1_red
-    //
 void All_debug_leds_turn_on_and_turn_green(void)
 {
     DebugLedsTurnAllOn();
@@ -58,16 +57,10 @@ void SpiSlaveRead_and_show_received_data_on_debug_leds(void)
     // SPI Master sends a 4-bit value.
     SpiSlaveInit();
     // TODO: make this SpiSlaveRead
+    /* Show_data_on_debug_leds(SpiSlaveRead()); */
     while( !SpiTransferIsDone() );
     Show_data_on_debug_leds(*Spi_spdr);
 }
-/* void SpiEnableInterrupt(void) */
-/* { */
-/*     cli(); // Disable all interrupts. */
-/*     // TODO: clear any pending Transfer-Complete interrupt */
-/*     SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt. */
-/*     sei(); // Enable all enabled interrupts. */
-/* } */
 ISR(SPI_STC_vect)
 {
     DebugLedsTurnRed(debug_led1);

@@ -146,11 +146,15 @@ void DevelopingSpiMaster(bool run_test) {if (run_test) {
     RUN_TEST(SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8);
     RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
     //
-    setUp = Setup_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
+    setUp = SetUp_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
     RUN_TEST(SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte);
     RUN_TEST(SpiMasterWrite_byte_waits_for_transmission_to_complete);
 }}
 void DevelopingSpiSlave(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(SpiSlaveInit_configures_pin_Miso_as_an_output);
+    RUN_TEST(SpiSlaveInit_enables_the_SPI_hardware_module);
+    RUN_TEST(SpiEnableInterrupt_enables_the_transfer_is_done_interrupt);
 }}
 int main()
 {
@@ -163,9 +167,7 @@ int main()
     DevelopingUsb             (Nope);
     DevelopingSpiMaster       (Yep);
     DevelopingSpiSlave        (Yep);
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(SpiSlaveInit_configures_pin_Miso_as_an_output);
-    RUN_TEST(SpiSlaveInit_enables_the_SPI_hardware_module);
-    RUN_TEST(SpiEnableInterrupt_enables_the_transfer_is_done_interrupt);
+    setUp = SetUp_SpiSlaveRead; tearDown = TearDown_SpiSlaveRead;
+    RUN_TEST(SpiSlaveRead_waits_until_transfer_is_done);
     return UNITY_END();
 }

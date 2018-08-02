@@ -102,3 +102,8 @@ void SpiEnableInterrupt(void)
     EnableTransferCompleteInterrupt();
     GlobalInterruptEnable();
 }
+uint8_t SpiSlaveRead(void)
+{
+    while( !SpiTransferIsDone() );
+    return 0x00;
+}

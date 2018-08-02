@@ -2,7 +2,6 @@
 #include "mock_Spi.h"
 #include <Mock.h>
 #include "test_Spi_MockUps.h"
-void temporary(void){}
 
 static void (*SpiMasterOpenSpi_Saved)(void);
 static void Stub_SpiMasterOpenSpi(void) {
@@ -44,4 +43,15 @@ void TearDownMock_SpiMasterWrite(void)  // FUT
     Unstub_SpiMasterCloseSpi();  // DOF
     Unstub_SpiTransferIsDone();  // DOF
 }
-
+void SetUpMock_SpiSlaveRead(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_SpiTransferIsDone();  // DOF
+}
+void TearDownMock_SpiSlaveRead(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_SpiTransferIsDone();  // DOF
+}
