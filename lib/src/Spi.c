@@ -71,9 +71,14 @@ void SpiMasterWrite(uint8_t byte_to_send)
     while (!SpiTransferIsDone()) ;
     SpiMasterCloseSpi();
 }
-bool SpiResponseIsReady(void)
+static bool SpiResponseIsReady_Implementation(void)
 {
     return BitIsClear(Spi_port, Spi_Miso);
+}
+bool (*SpiResponseIsReady)(void) = SpiResponseIsReady_Implementation;
+void SpiMasterWaitForResponse(void)
+{
+    while( !SpiResponseIsReady() );
 }
 
 

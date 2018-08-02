@@ -34,6 +34,9 @@
         // I mock `SpiTransferIsDone()` to return a sequence of bit checks of
         // the SPI Interrupt Flag.
         //
+    // [x] SpiMasterWaitForResponse_waits_until_slave_signals_ready
+    // [ ] SpiMasterRead_waits_for_transmission_to_complete
+    // [ ] SpiMasterRead_returns_the_SPI_data_register
 /* =====[ List of SPI Slave Tests ]===== */
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
     // [x] SpiSlaveInit_pulls_Miso_high
@@ -334,6 +337,36 @@ void SpiMasterWrite_byte_waits_for_transmission_to_complete(void)
     // matches the number of times the SPI Interrupt Flag is sampled until the
     // transfer is done.
     //
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
+/* =====[ SpiMasterWaitForResponse ]===== */
+void SetUp_SpiMasterWaitForResponse(void)
+{
+    SetUpMock_SpiMasterWaitForResponse();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_SpiMasterWaitForResponse(void)
+{
+    TearDownMock_SpiMasterWaitForResponse();    // destroy the mock object
+    // other teardown code
+}
+void SpiMasterWaitForResponse_waits_until_slave_signals_ready(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    bool response_is_ready_sequence[] = {false, false, false, true};
+    int num_times_signal_is_checked = sizeof(response_is_ready_sequence);
+    SpiResponseIsReady_StubbedReturnValue = response_is_ready_sequence;
+    /* =====[ Operate ]===== */
+    SpiMasterWaitForResponse();
+    /* =====[ Set expectations ]===== */
+    for (int i=0; i<num_times_signal_is_checked; i++)
+    {
+        Expect_SpiResponseIsReady();
+    }
+    /* =====[ Test ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.

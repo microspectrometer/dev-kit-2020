@@ -55,3 +55,25 @@ void TearDownMock_SpiSlaveRead(void)  // FUT
     //
     Unstub_SpiTransferIsDone();  // DOF
 }
+
+static bool (*SpiResponseIsReady_Saved)(void);
+static void Stub_SpiResponseIsReady(void) {
+    SpiResponseIsReady_Saved = SpiResponseIsReady;
+    SpiResponseIsReady = SpiResponseIsReady_Stubbed;
+}
+static void Unstub_SpiResponseIsReady(void) {
+    SpiResponseIsReady = SpiResponseIsReady_Saved;
+}
+void SetUpMock_SpiMasterWaitForResponse(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_SpiResponseIsReady();  // DOF
+}
+void TearDownMock_SpiMasterWaitForResponse(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_SpiResponseIsReady();  // DOF
+}
+

@@ -21,6 +21,7 @@
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
+
 void All_debug_leds_turn_on_and_turn_green(void)
 {
     DebugLedsTurnAllOn();
@@ -137,13 +138,27 @@ void Slave_receives_request_and_sends_response_when_ready(void)
     uint8_t const cmd_slave_respond_0xBA = 0xAB;
     /* =====[ Operate ]===== */
     // wait for a command from the master
+        // app should either:
+            // poll SpiTransferIsDone() then call SpiSlaveRead()
+            // or
+            // enable the interrupt and move SpiSlaveRead() into the ISR
+        // just calling SpiSlaveRead() as in this example,
+        // the app loops checking SpiTransferIsDone() and never does anything
+        // else, like petting the watchdog
     uint8_t cmd = SpiSlaveRead();
     // parse the command
+        // refactor this as another command pattern:
+        // SpiParseCommand(); SpiExecuteCommand();
+        // parse points at execute at the correct response routine
+        // every routine follows the form: do something, load data, signal ready
     if (cmd == cmd_slave_respond_0xBA)
     {
         DebugLedsTurnRed(debug_led2);
+        /* =====[ Do something to get data ]===== */
         uint8_t const response = 0xBA;
+        /* =====[ Load data ]===== */
         *Spi_spdr = response;
+        /* =====[ Signal ready to send ]===== */
         SpiSlaveSignalDataIsReady();
     }
     /* =====[ Test ]===== */

@@ -44,3 +44,19 @@ bool SpiTransferIsDone_Stubbed(void) {
     RecordActualCall(mock, Mock_SpiTransferIsDone());
     return *(SpiTransferIsDone_StubbedReturnValue++);
 }
+
+static RecordedCall * Mock_SpiResponseIsReady(void)
+{
+    char const *call_name = "SpiResponseIsReady";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_SpiResponseIsReady(void) {
+    RecordExpectedCall(mock, Mock_SpiResponseIsReady());
+}
+bool SpiResponseIsReady_returns[] = {true};  // example return values
+bool *SpiResponseIsReady_StubbedReturnValue = SpiResponseIsReady_returns;
+bool SpiResponseIsReady_Stubbed(void) {
+    RecordActualCall(mock, Mock_SpiResponseIsReady());
+    return *(SpiResponseIsReady_StubbedReturnValue++);
+}

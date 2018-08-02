@@ -160,6 +160,9 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     RUN_TEST(SpiEnableInterrupt_enables_the_transfer_is_done_interrupt);
     RUN_TEST(SpiSlaveSignalDataIsReady_pulls_Miso_low);
     RUN_TEST(SpiSlaveSignalDataIsNotReady_pulls_Miso_high);
+    setUp = SetUp_SpiSlaveRead; tearDown = TearDown_SpiSlaveRead;
+    RUN_TEST(SpiSlaveRead_waits_until_transfer_is_done);
+    RUN_TEST(SpiSlaveRead_returns_the_SPI_data_register_byte);
 }}
 int main()
 {
@@ -172,8 +175,7 @@ int main()
     DevelopingUsb             (Nope);
     DevelopingSpiMaster       (Yep);
     DevelopingSpiSlave        (Yep);
-    setUp = SetUp_SpiSlaveRead; tearDown = TearDown_SpiSlaveRead;
-    RUN_TEST(SpiSlaveRead_waits_until_transfer_is_done);
-    RUN_TEST(SpiSlaveRead_returns_the_SPI_data_register_byte);
+    setUp = SetUp_SpiMasterWaitForResponse; tearDown = TearDown_SpiMasterWaitForResponse;
+    RUN_TEST(SpiMasterWaitForResponse_waits_until_slave_signals_ready);
     return UNITY_END();
 }
