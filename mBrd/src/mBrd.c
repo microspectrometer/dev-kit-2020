@@ -10,6 +10,12 @@
 
 /* =====[ List of Tests ]===== */
     // [x] SPI_interrupt_routine_turns_debug_led1_red
+        // Tests `SpiEnableInterrupt()`
+    // [x] SPI_read_in_ISR_and_show_data_on_debug_leds
+        // Receives data using interrupts. Does not use `SpiSlaveRead`.
+    // [x] SpiSlaveRead_and_show_received_data_on_debug_leds
+        // Tests `SpiSlaveRead()`
+        // Receives data without using interrupts.
 void All_debug_leds_turn_on_and_turn_green(void)
 {
     DebugLedsTurnAllOn();
@@ -20,13 +26,17 @@ void All_debug_leds_turn_on_and_turn_red(void)
     DebugLedsTurnAllOn();
     DebugLedsTurnAllRed();
 }
+void Turn_led1_red_and_the_rest_green(void)
+{
+    DebugLedsTurnAllOn();
+    DebugLedsTurnAllGreen();
+    DebugLedsTurnRed(debug_led1);
+}
 void Turn_led1_green_and_the_rest_red(void)
 {
     DebugLedsTurnAllOn();
+    DebugLedsTurnAllRed();
     DebugLedsTurnGreen(debug_led1);
-    DebugLedsTurnRed(debug_led2);
-    DebugLedsTurnRed(debug_led3);
-    DebugLedsTurnRed(debug_led4);
 }
 void test_DebugLeds(void)
 {
@@ -36,10 +46,12 @@ void test_DebugLeds(void)
 }
 void Turn_led3_red_when_SpiSlave_receives_a_byte(void)
 {
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
     /* =====[ Operate ]===== */
     // SPI Master sends any byte.
-    SpiSlaveInit();
-    while( !SpiTransferIsDone() );
+    // Hang until the byte is received.
+    SpiSlaveRead(); // discard the byte
     DebugLedsTurnRed(debug_led3);
 }
 void Show_data_on_debug_leds(uint8_t four_bits)
@@ -53,24 +65,29 @@ void Show_data_on_debug_leds(uint8_t four_bits)
 }
 void SpiSlaveRead_and_show_received_data_on_debug_leds(void)
 {
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
     /* =====[ Operate ]===== */
     // SPI Master sends a 4-bit value.
-    SpiSlaveInit();
-    // TODO: make this SpiSlaveRead
-    /* Show_data_on_debug_leds(SpiSlaveRead()); */
-    while( !SpiTransferIsDone() );
-    Show_data_on_debug_leds(*Spi_spdr);
+    Show_data_on_debug_leds(SpiSlaveRead());
 }
+/* =====[ Move control over the SPI ISR into the test code ]===== */
+typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
+//
 ISR(SPI_STC_vect)
 {
-    DebugLedsTurnRed(debug_led1);
+    DoTaskForThisTest(); // fptr assigned in test code
 }
 void SPI_interrupt_routine_turns_debug_led1_red(void)
 {
     /* =====[ Setup ]===== */
     SpiSlaveInit();
+    DoTaskForThisTest = Turn_led1_red_and_the_rest_green;
     /* =====[ Operate ]===== */
     SpiEnableInterrupt();
+    /* while(0); // exit loop immediately */
+    while(1); // loop forever
+    DebugLedsTurnAllRed();  // This should *never* be called.
     /* =====[ Test ]===== */
     // Program the SPI Master to send any byte on reset.
     // Visually confirm the debug LEDs are all green.
@@ -80,15 +97,35 @@ void SPI_interrupt_routine_turns_debug_led1_red(void)
     // Repeat test by flipping `SW2` to `ISP` and pressing reset to turn the
     // LEDs back to all green.
     //
-    /* while(0); // exit loop immediately */
-    while(1); // loop forever
+}
+void ShowSpiDataOnDebugLeds(void)
+{ Show_data_on_debug_leds(*Spi_spdr); }
+void SPI_read_in_ISR_and_show_data_on_debug_leds(void)
+{
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
+    DoTaskForThisTest = ShowSpiDataOnDebugLeds;
+    /* =====[ Operate ]===== */
+    SpiEnableInterrupt();
+    // You must loop forever.
+    // Interrupts do not execute if the program is allowed to finish.
+    while(1);
     DebugLedsTurnAllRed();  // This should *never* be called.
+    /* =====[ Test ]===== */
+    // Program the SPI Master to send `0x0B` on reset.
+    // Visually confirm the debug LEDs are all green.
+    // Flip `SW2` to `SPI`. Press the reset button.
+    //
+    // Visually confirm the lower nibble is displayed:
+    // led number: 4  3  2  1
+    // led color:  R  G  R  R
 }
 void test_SpiSlave(void)
 {
     /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-31 */
     /* SpiSlaveRead_and_show_received_data_on_debug_leds(); // PASS 2018-08-01 */
-    SPI_interrupt_routine_turns_debug_led1_red();
+    /* SPI_interrupt_routine_turns_debug_led1_red(); // PASS 2018-08-01 */
+    SPI_read_in_ISR_and_show_data_on_debug_leds(); // PASS 2018-08-01
 }
 int main()
 {
