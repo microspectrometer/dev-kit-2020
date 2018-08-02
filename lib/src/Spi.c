@@ -105,5 +105,5 @@ void SpiEnableInterrupt(void)
 uint8_t SpiSlaveRead(void)
 {
     while( !SpiTransferIsDone() );
-    return 0x00;
+    return *Spi_spdr;
 }

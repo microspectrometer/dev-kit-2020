@@ -13,7 +13,8 @@ test/test_runner.c:155:SpiSlaveInit_configures_pin_Miso_as_an_output:PASS
 test/test_runner.c:156:SpiSlaveInit_enables_the_SPI_hardware_module:PASS
 test/test_runner.c:157:SpiEnableInterrupt_enables_the_transfer_is_done_interrupt:PASS
 test/test_runner.c:171:SpiSlaveRead_waits_until_transfer_is_done:PASS
+test/test_runner.c:172:SpiSlaveRead_returns_the_SPI_data_register_byte:PASS
 
 -----------------------
-15 Tests 0 Failures 0 Ignored 
+16 Tests 0 Failures 0 Ignored 
 OK

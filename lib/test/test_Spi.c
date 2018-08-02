@@ -37,7 +37,7 @@
     // [x] SpiSlaveInit_enables_the_SPI_hardware_module
     // [x] SpiEnableInterrupt_enables_the_transfer_is_done_interrupt
     // [x] SpiSlaveRead_waits_until_transfer_is_done
-    // [ ] SpiSlaveRead_returns_the_SPI_data_register_byte
+    // [x] SpiSlaveRead_returns_the_SPI_data_register_byte
 
 //
 /* =====[ SPI Slave ]===== */
@@ -106,6 +106,22 @@ void SpiSlaveRead_waits_until_transfer_is_done(void)
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
+}
+void SpiSlaveRead_returns_the_SPI_data_register_byte(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t expect_byte = 0x09;
+    *Spi_spdr = expect_byte;
+    //=====[ Mock-up test scenario by defining return values ]=====
+    // SPI hardware module sets SPIF to indicate the SPI transfer is done.
+    // SPIF := SPI Interrupt Flag
+    // SpiSlaveRead checks SPIF to know when the transfer is done.
+    bool SPIF_sequence[] = {false, false, true}; // true:= flag is set
+    SpiTransferIsDone_StubbedReturnValue = SPIF_sequence;
+    /* =====[ Operate ]===== */
+    uint8_t actual_byte = SpiSlaveRead();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT8(expect_byte, actual_byte);
 }
 
 //

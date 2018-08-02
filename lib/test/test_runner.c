@@ -169,5 +169,6 @@ int main()
     DevelopingSpiSlave        (Yep);
     setUp = SetUp_SpiSlaveRead; tearDown = TearDown_SpiSlaveRead;
     RUN_TEST(SpiSlaveRead_waits_until_transfer_is_done);
+    RUN_TEST(SpiSlaveRead_returns_the_SPI_data_register_byte);
     return UNITY_END();
 }

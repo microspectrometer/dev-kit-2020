@@ -27,5 +27,6 @@ void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void);
 //
 void SetUp_SpiSlaveRead(void); void TearDown_SpiSlaveRead(void);
 void SpiSlaveRead_waits_until_transfer_is_done(void);
+void SpiSlaveRead_returns_the_SPI_data_register_byte(void);
 
 #endif // _TEST_SPI_H
