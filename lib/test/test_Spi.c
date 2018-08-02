@@ -6,6 +6,8 @@
 #include <unity.h>              // unit testing framework
 #include "ReadWriteBits.h"
 #include "mock_Spi.h"
+#include "fake/AvrAsmMacros.h"       // fake AVR asm macro dependencies
+
 /* =====[ List of SPI Master Tests ]===== */
     // [x] SpiMasterInit_pulls_Ss_high
     // [x] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
@@ -33,6 +35,7 @@
 /* =====[ List of SPI Slave Tests ]===== */
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
     // [x] SpiSlaveInit_enables_the_SPI_hardware_module
+    // [ ] SpiEnableInterrupt_enables_the_transfer_is_done_interrupt
 
 //
 /* =====[ SPI Slave ]===== */
@@ -59,7 +62,15 @@ void SpiSlaveInit_enables_the_SPI_hardware_module(void)
         "Bit must be high to enable the SPI."
         );
 }
-
+void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_spcr = 0x00;
+    /* =====[ Operate ]===== */
+    SpiEnableInterrupt();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Spi_InterruptEnable, *Spi_spcr);
+}
 //
 /* =====[ SPI Master ]===== */
 //

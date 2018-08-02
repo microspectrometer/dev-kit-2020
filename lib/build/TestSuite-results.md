@@ -11,7 +11,8 @@ test/test_runner.c:150:SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte:PASS
 test/test_runner.c:151:SpiMasterWrite_byte_waits_for_transmission_to_complete:PASS
 test/test_runner.c:167:SpiSlaveInit_configures_pin_Miso_as_an_output:PASS
 test/test_runner.c:168:SpiSlaveInit_enables_the_SPI_hardware_module:PASS
+test/test_runner.c:169:SpiEnableInterrupt_enables_the_transfer_is_done_interrupt:PASS
 
 -----------------------
-13 Tests 0 Failures 0 Ignored 
+14 Tests 0 Failures 0 Ignored 
 OK

@@ -166,5 +166,6 @@ int main()
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(SpiSlaveInit_configures_pin_Miso_as_an_output);
     RUN_TEST(SpiSlaveInit_enables_the_SPI_hardware_module);
+    RUN_TEST(SpiEnableInterrupt_enables_the_transfer_is_done_interrupt);
     return UNITY_END();
 }

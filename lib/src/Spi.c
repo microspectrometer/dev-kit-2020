@@ -1,12 +1,6 @@
 #include "Spi.h"
 #include "ReadWriteBits.h"
 
-// TODO: version using interrupts...?
-    /* // Enable Global Interrupts */
-    /* #include <avr/interrupt.h>      // defines sei and cli */
-    /* sei(); // Enable interrupts */
-    /* // Enable SPI interrupt. */
-    /* SetBit(Spi_spcr, Spi_InterruptEnable); */
 //
 /* =====[ Spi Master ]===== */
 //
@@ -90,4 +84,21 @@ void SpiSlaveInit(void)
     SetMisoAsOutput();         // pin-direction is user-defined
     EnableSpi();
 }
-
+static void ClearPendingSpiInterrupt(void)
+{
+    // Clear the SPI Interrupt Flag bit in the SPI Status Register.
+    // Implementation:
+    // Read registers SPSR and SPDR, in that order.
+    *Spi_spsr; *Spi_spdr;
+}
+static void EnableTransferCompleteInterrupt(void)
+{
+    SetBit(Spi_spcr, Spi_InterruptEnable);
+}
+void SpiEnableInterrupt(void)
+{
+    GlobalInterruptDisable();
+    ClearPendingSpiInterrupt();
+    EnableTransferCompleteInterrupt();
+    GlobalInterruptEnable();
+}

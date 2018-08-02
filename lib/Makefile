@@ -73,7 +73,8 @@ build/%.exe: src/%.c ${obj_shared-lib_mock-c}
 ${test-output}: build/TestSuite.exe
 	$^ > $@
 test-runner := test/test_runner.c
-build/TestSuite.exe: ${test-runner} ${obj_dev-libs} ${obj_libs-tested} \
+avr-asm-macros := test/fake/AvrAsmMacros.c
+build/TestSuite.exe: ${test-runner} ${avr-asm-macros} ${obj_dev-libs} ${obj_libs-tested} \
 ${obj_libs-tested-with-mocks} ${obj_libs-mocked} ${obj_shared-lib_mock-c}
 	${compiler} $^ -o $@ $(LFLAGS) $(CFLAGS) \
 		-Itest

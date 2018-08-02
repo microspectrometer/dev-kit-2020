@@ -36,6 +36,7 @@ uint8_t const Spi_MasterSlaveSelect = 4;
 uint8_t const Spi_ClockRateBit0     = 0;
 uint8_t const Spi_ClockRateBit1     = 1;
 uint8_t const Spi_Enable            = 6;
+uint8_t const Spi_InterruptEnable   = 7;
 
 /* =====[ SPI status register bits ]===== */
 uint8_t const Spi_DoubleClockRate   = 0;

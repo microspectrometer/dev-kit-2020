@@ -4,17 +4,26 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/* =====[ AVR asm macros ]===== */
+extern void (*GlobalInterruptEnable)(void);
+extern void (*GlobalInterruptDisable)(void);
+/* #ifndef _AVR_INTERRUPT_H_ */
+/* #define cli() */
+/* #define sei() */
+/* #endif // _AVR_INTERRUPT_H_ */
+
 /* =====[ SPI Master API ]===== */
 void SpiMasterInit(void);
 void SpiMasterWrite(uint8_t byte_to_send);
 /* =====[ SPI Slave API ]===== */
 void SpiSlaveInit(void);
+void SpiEnableInterrupt(void);
 /* =====[ Not part of the API. Exposed for testing SPI Master only. ]===== */
 extern void (*SpiMasterOpenSpi)(void);
 extern void (*SpiMasterCloseSpi)(void);
 extern bool (*SpiTransferIsDone)(void);
 
-/* =====[ Hardware dependencies to be resolved in SpiMaster-Hardware.h ]===== */
+/* =====[ Hardware dependencies to be resolved in Spi-Hardware.h ]===== */
 /* ---Pin Direction and I/O Registers--- */
 extern uint8_t volatile * const Spi_ddr;
 extern uint8_t volatile * const Spi_port;

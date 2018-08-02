@@ -1,8 +1,12 @@
+// my libs and the headers that resolve their hardware dependencies
 #include <ReadWriteBits.h>      // SetBit, ClearBit, etc.
 #include <DebugLeds.h>          // controls the 4 debug LEDs
 #include "DebugLeds-Hardware.h" // map debug LEDs to actual hardware
 #include <Spi.h>                // Chromation spectrometer is a SPI slave
 #include "Spi-Hardware.h"       // map SPI I/O to actual hardware
+#include "AvrAsmMacros.h"       // resolve lib dependencies on AVR asm macros
+// avr libs
+#include <avr/interrupt.h>      // defines macro ISR()
 
 /* =====[ List of Tests ]===== */
     // [x] SPI_interrupt_routine_turns_debug_led1_red
@@ -57,17 +61,15 @@ void SpiSlaveRead_and_show_received_data_on_debug_leds(void)
     while( !SpiTransferIsDone() );
     Show_data_on_debug_leds(*Spi_spdr);
 }
-#include <avr/interrupt.h>      // defines sei and cli
-void SpiEnableInterruptForTransferIsDone(void)
-{
-    cli(); // Disable all interrupts.
-    // TODO: clear any pending Transfer-Complete interrupt
-    SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt.
-    sei(); // Enable all enabled interrupts.
-}
+/* void SpiEnableInterrupt(void) */
+/* { */
+/*     cli(); // Disable all interrupts. */
+/*     // TODO: clear any pending Transfer-Complete interrupt */
+/*     SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt. */
+/*     sei(); // Enable all enabled interrupts. */
+/* } */
 ISR(SPI_STC_vect)
 {
-    /* Turn_led1_green_and_the_rest_red(); */
     DebugLedsTurnRed(debug_led1);
 }
 void SPI_interrupt_routine_turns_debug_led1_red(void)
@@ -75,7 +77,7 @@ void SPI_interrupt_routine_turns_debug_led1_red(void)
     /* =====[ Setup ]===== */
     SpiSlaveInit();
     /* =====[ Operate ]===== */
-    SpiEnableInterruptForTransferIsDone();
+    SpiEnableInterrupt();
     /* =====[ Test ]===== */
     // Program the SPI Master to send any byte on reset.
     // Visually confirm the debug LEDs are all green.
