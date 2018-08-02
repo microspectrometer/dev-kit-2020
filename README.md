@@ -1647,17 +1647,17 @@ other bits in the bus-width nibble are pulled high.
     - each claim in the function documentation becomes a unit test
 ### Track progress in the current dev cycle
 #### embedded tests to discover new code
-- [x] SpiMaster
-- [x] SpiSlave
+- [ ] SpiMaster
+- [ ] SpiSlave
 #### unit-tested working code into lib code and refactored
 - [x] SpiMaster
-- [ ] SpiSlave
+- [x] SpiSlave
 #### refactor embedded tests using new lib code
 - [x] SpiMaster
-- [ ] SpiSlave
+- [x] SpiSlave
 #### embedded tests of refactored lib code
 - [x] embedded test of SpiMaster
-- [ ] embedded test of SpiSlave
+- [x] embedded test of SpiSlave
 
 ## SPI dev overview
 ### SPI and Spi
