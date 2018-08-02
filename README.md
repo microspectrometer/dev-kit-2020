@@ -54,13 +54,13 @@
         - make a new version of the DebugLed lib just for the mBrd
         - call it DebugLeds
 - [x] embedded test of lib DebugLeds on the `mBrd`
-- [ ] Spi
-    - [ ] document Spi stuff in the `README`, just like you did for `FT1248`
-    - [ ] develop the Spi lib
-    - [ ] testing the SPI lib is a little more tricky:
+- [x] Spi
+    - [x] document Spi stuff in the `README`, just like you did for `FT1248`
+    - [x] develop the Spi lib
+    - [x] testing the SPI lib is a little more tricky:
         - both the SPI master and SPI slave need working code
         - this is why I need the debug LED on the `mBrd` working first
-- [ ] then next embedded test application:
+- [x] then next embedded test application:
     - control the mBrd debug LED through the simBrd using lib Usb and lib Spi
 
 ## Latest improvements
@@ -223,13 +223,47 @@
       able to detect when there is a byte to read
 
 ## track progress by lib
+### Ft1248
 - [x] Ft1248
-    - 28 tests
-    - 17 functions
+    - 28 unit tests
+    - 26 functions
+        - 7 API functions for Usb
+        - 19 plumbing functions
+            - some legitimate plumbing, i.e., low-level functionality that is
+              occassionally useful
+            - some only exposed for tests
+        - 0 private functions
+            - I was learning how to mock while writing this lib, so I exposed
+              everything for mocking!
+    - 0 embedded system tests (Usb is the API)
+- [ ] TODO: decide if applications using lib `Usb` need to include lib `Ft1248`
+    - final application definitely needs to include `Ft1248-Hardware.h`
+    - but does it need to include `Ft1248.h`?
+### Usb
 - [x] Usb
-    - 17 tests
-    - 4 functions
-- [ ] SpiMaster and SpiSlave
+    - 17 unit tests
+    - 5 API functions
+    - 0 private functions (Usb is the API for Ft1248)
+    - 6 embedded system tests
+### Spi
+- [ ] Spi
+    - 16 unit tests
+    - 17 functions
+        - 5 API
+        - 2 plumbing to wrap AVR asm macros
+        - 10 private
+            - not counting private implementations for public function pointers
+    - break down by Master and Slave
+    - SpiMaster
+        - 11 unit tests
+        - 2 embedded system tests
+        - 2 API functions
+    - SpiSlave
+        - 5 unit tests
+        - 4 embedded system tests
+        - 3 API functions
+        - 2 plumbing functions
+            - one function to wrap each AVR asm macro
 - [ ] UartSpi
 - [ ] Lis-io
 - [ ] I2c
@@ -246,14 +280,14 @@
                 - `init turns led on`
                 - `init turns led green`
             - add tests for the plumbing behavior
-- [ ] DebugLed for four LEDs
+- [x] DebugLeds for four LEDs
     - *goal*:
         - indicate a four-bit error code redefinable on a per-test basis
+        - combine with lib `DebugLed` into a single lib where you say how many
+          LEDs there are
     - *minimum viable*:
-        - this is done, just use one LED!
-    - *just beyond minimum viable*:
-        - treat as a single LED
-        - but design the interface to be open for extension
+        - [x] just use one LED!
+        - [x] provide plumbing for all four LEDs!
 
 # Internal deadline
 ## Context
@@ -1001,6 +1035,247 @@ two calls, e.g., `{true, true}`. So it is good practice to always explicitly put
 the array of return values in the test and *not* rely on the default *example*
 value.
 
+# Weird embedded stuff
+## AVR asm macros
+### Example
+These are macros defined in `avr-libc`.
+
+- For example:
+    - `Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/avr/interrupt.h` 
+- defines these macros:
+    - `sei()` - do the SEI instruction: *Global Interrupt Enable*
+    - `cli()` - do the CLI instruction: *Global Interrupt Disable*
+### I wrap these inside functions
+I wrap these macros inside functions because:
+
+- my function names are more readable:
+    - for example, `sei()` is wrapped in `GlobalInterruptEnable`
+- this allows me to put them in my lib code
+
+Like any other lib code, I put these macros in my lib code to hide the details
+from the application code.
+
+- For example, when enabling a specific interrupt:
+    - globally disable interrupts
+    - clear the pending interrupt, if any, for the specific interrupt being
+      enabled
+    - *enable the specific interrupt* -- **this is the goal**
+    - then globally re-enable interrupts
+- the surrounding `cli()` and `sei()` are a precaution that no interrupts occur
+  while I enable this interrupt
+- clearing any pending interrupt is a precaution against enabling this interrupt
+  and having it execute as soon as I return from this function
+
+### Compiling lib code with AVR asm macros
+Putting the macro in my lib code has a similar problem to putting a register or
+pin name in my lib code. My test environment compilers, gcc and clang, do not
+know what these macros are.
+
+I cannot just include the `avr-libc` header that defines the macros. The macro
+is inline assembly. The assembly recognized by avr-gcc is not the same assembly
+recognized by gcc or clang. The inline assembly will compile fine for the avr
+target, but the unit tests will not compile for the development environment.
+
+My solution is similar to how I fake register and pin names.
+
+#### Recall strategy for faking register and pin names
+
+- register and pin names are just macros for numbers
+    - e.g.:
+```c
+#define SPCR _SFR_IO8(0x2C)
+#define SPR0 0
+```
+- I make a `hardware` header file specific to the embedded system target
+- the `hardware` header file defines variables and assigns them to the
+  register and pin names, just as a variable would be assigned to any literal
+  value
+    - e.g.:
+```c
+uint8_t volatile * const Spi_spcr   = &SPCR;  // SPI control register
+uint8_t const Spi_ClockRateBit0     = SPR0;
+```
+- I create the *faking* seam by substituting the macro with a variable
+- a `uint8_t const` is a ~~good~~ great substitute for a macro defined with an
+  unsigned 8-bit value
+- this is where I get to suffix the variables with names reflecting which of my
+  libs they belong to
+    - this is just the old *no magic numbers* mantra
+    - I shift the name from the langauge domain into the solution domain
+    - for example, while developing code, I care about what the pin is used for,
+      e.g., the `Spi` lib, so I suffix it:
+```c
+uint8_t const Spi_Ss    =   PB2;    // slave select driven by the master
+```
+    - I do not care that a pin is on `PORTB` -- that detail was
+      important during PCB layout and planning for the functionality of the
+      embedded system, but I want to forget that detail while developing code
+    - My lib header only has the solution-domain name:
+```c
+extern uint8_t const Spi_Ss;
+```
+    - the same pin can even be used by more than one lib!
+- The lib header file:
+    - declares those variables as `extern`
+    - only has to match the datatype in the `hardware` header file
+- My test code is otherwise ignorant of the `hardware` header file and defines
+  those variables with arbitrary values
+
+#### Solution for faking AVR asm macros
+The solution is a little different because the asm macros are not just numbers,
+they are inline assembly code. I cannot create the *faking seam* with a simple
+`const` variable. I create the *faking seam* by wrapping the macro in a
+function. Similar to setting up a function for stubbing, I keep the macro
+wrapper as a private implementation and expose the function pointer for the API.
+
+Here is the implementation in the `.c` file for the avr targets:
+```c
+/* =====[ mBrd/AvrAsmMacros.c ]===== */
+/* =====[ simBrd/AvrAsmMacros.c ]===== */
+#include "AvrAsmMacros.h"
+#include <avr/interrupt.h>      // defines macros `sei()` and `cli()`
+
+// sei()
+static void GlobalInterruptEnable_Implementation(void)
+{ sei(); }
+void (*GlobalInterruptEnable)(void) = GlobalInterruptEnable_Implementation;
+```
+
+Here is the fake implementation in the `.c` file for the unit test code:
+```c
+/* =====[ lib/test/fake/AvrAsmMacros.c ]===== */
+#include "AvrAsmMacros.h"
+/* =====[ Fake the AVR asm macros with empty definitions ]===== */
+// sei()
+static void GlobalInterruptEnable_Implementation(void) {}
+void (*GlobalInterruptEnable)(void) = GlobalInterruptEnable_Implementation;
+```
+
+And here is the one lib header used by all clients:
+```c
+/* =====[ lib/src/AvrAsmMacros.h ]===== */
+extern void (*GlobalInterruptEnable)(void);
+```
+
+- The avr target uses the inline assembly implementation.
+- The unit tests use empty implementations.
+
+I cannot unit test these functions because they do nothing. But I can compile
+them without harm and I can fake their effects within the stack frame of a test
+case.
+
+## Interrupts
+Interrupts are yet another macro to deal with.
+
+- the macro looks like a function that is missing a return type
+```c
+ISR(SPI_STC_vect)
+{
+    Turn_led1_red_and_the_rest_green();
+}
+```
+- `avr-gcc` does some useful hidden setup/teardown on entering and exiting the
+  interrupt
+    - suspend interrupts while this interrupt executes
+    - call `reti()` at the end
+
+But I do not like the disconnect between *interrupt enablers* in one part of the
+application code and *what the interrupt does* being described in the
+body of the interrupt service routine. This really sucks during embedded system
+tests. I want the test to control the behavior of the ISR. Different tests need
+different bodies for the ISR. And I want to do this without resorting to
+conditionals.
+
+I use the *command* design pattern:
+```c
+/* =====[ Move control over the SPI ISR into the test code ]===== */
+typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
+//
+ISR(SPI_STC_vect)
+{
+    DoTaskForThisTest(); // fptr assigned in test code
+}
+```
+The *ISR* just knows it is doing a task. A task is any function that has no
+input arguments and returns nothing. The task is selected in the testcase. For
+example, here is a test case to check that the ISR is being called. If it is
+called, then `debug_led1` turns red:
+```c
+void SPI_interrupt_routine_turns_debug_led1_red(void)
+{
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
+    DoTaskForThisTest = Turn_led1_red_and_the_rest_green;
+    /* =====[ Operate ]===== */
+    SpiEnableInterrupt();
+    /* while(0); // exit loop immediately */
+    while(1); // loop forever
+    DebugLedsTurnAllRed();  // This should *never* be called.
+    /* =====[ Test ]===== */
+    // Program the SPI Master to send any byte on reset.
+    // Visually confirm the debug LEDs are all green.
+    // Flip `SW2` to `SPI`. Press the reset button.
+    // Visually confirm debug LED 1 turns red.
+}
+```
+The ISR behavior is defined by the test case! I can read what this test does
+without ever looking at the ISR macro.
+
+## Read a register and throw away the value
+Sometimes it is necessary to read a register to clear a bit flag. The value in
+the register is garbage, but reading it is the only way to clear the bit in some
+status register. But now there is a *throw-away* value that needs to be dealt
+with.
+
+Here is an example:
+```c
+// Clear the SPI Interrupt Flag bit in the SPI Status Register.
+// Implementation:
+// Read registers SPSR and SPDR, in that order.
+```
+First attempt at an implementation:
+```c
+static void ClearPendingSpiInterrupt(void)
+{
+    uint8_t volatile throw_away;
+    throw_away = *Spi_spsr; throw_away = *Spi_spdr;
+}
+```
+Compiling this code with `gcc` generates a warning that the value is not used:
+```make
+|| src/Spi.c: In function ‘ClearPendingSpiInterrupt’:
+src/Spi.c|92 col 22| warning: variable ‘throw_away’ set but not used [-Wunused-but-set-variable]
+||      uint8_t volatile throw_away;
+||                       ^~~~~~~~~~
+```
+It is tempting to write this as inline assembly, but the assembly recognized by
+avr-gcc is not the same assembly recognized by gcc or clang. The inline assembly
+will compile fine for the avr target, but the unit tests will not compile for
+the development environment.
+
+One workaround is to write a wrapper for inline assembly. The wrapper has an
+empty implementation used by test code, and an inline assembly implementation
+used by the avr-target code. I use this approach to place the `AVR asm` macros
+in my lib code.
+
+But there is a simple solution. It turns out the *assignment is not necessary*.
+It is sufficient to do this:
+```c
+static void ClearPendingSpiInterrupt(void)
+{
+    *Spi_spsr; *Spi_spdr;
+}
+```
+Unfortunately the
+[success of this simple approach is compiler-dependent] (https://embeddedgurus.com/stack-overflow/2010/03/reading-a-register-for-its-side-effects-in-c-and-c/
+on the compiler).
+
+- [ ] TODO: check the disassembly from `avr-gcc` to confirm the register access
+  happens.
+
+If I am disappointed in the results of the `avr-gcc` output, I can use the
+`AvrAsmMacros` trick.
+
 # FT1248
 
 ## How FT1248 relates to USB
@@ -1647,6 +1922,7 @@ other bits in the bus-width nibble are pulled high.
     - each claim in the function documentation becomes a unit test
 ### Track progress in the current dev cycle
 #### embedded tests to discover new code
+- next test: `Slave_receives_request_and_sends_response_when_ready`
 - [ ] SpiMaster
 - [ ] SpiSlave
 #### unit-tested working code into lib code and refactored

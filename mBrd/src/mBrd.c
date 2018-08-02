@@ -16,6 +16,11 @@
     // [x] SpiSlaveRead_and_show_received_data_on_debug_leds
         // Tests `SpiSlaveRead()`
         // Receives data without using interrupts.
+    // [ ] Slave_receives_request_and_sends_response_when_ready
+        // Master sends the request.
+        // Slave parses the request.
+        // Slave signals to master it has a response ready.
+        // Master gets response from slave.
 void All_debug_leds_turn_on_and_turn_green(void)
 {
     DebugLedsTurnAllOn();

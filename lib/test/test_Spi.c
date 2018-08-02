@@ -6,7 +6,7 @@
 #include <unity.h>              // unit testing framework
 #include "ReadWriteBits.h"
 #include "mock_Spi.h"
-#include "fake/AvrAsmMacros.h"       // fake AVR asm macro dependencies
+#include "AvrAsmMacros.h"       // fake AVR asm macro dependencies
 
 /* =====[ List of SPI Master Tests ]===== */
     // [x] SpiMasterInit_pulls_Ss_high

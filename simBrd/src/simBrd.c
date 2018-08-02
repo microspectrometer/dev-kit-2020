@@ -25,6 +25,11 @@
     // [x] EchoByte_reads_a_byte_and_writes_it_back_to_the_host
 // test_SpiMaster
     // [x] SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble
+    // [ ] Slave_receives_request_and_sends_response_when_ready
+        // Master sends the request.
+        // Slave parses the request.
+        // Slave signals to master it has a response ready.
+        // Master gets response from slave.
 void operate_UsbWrite(void)
 {
     //
