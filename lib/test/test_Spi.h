@@ -29,6 +29,7 @@ void SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs(void);
 void SpiMasterInit_makes_this_mcu_the_SPI_master(void);
 void SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8(void);
 void SpiMasterInit_enables_the_SPI_hardware_module(void);
+void SpiMasterRead_returns_the_SPI_data_register(void);
 //
 void SetUp_SpiMasterWrite(void); void TearDown_SpiMasterWrite(void);
 void SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte(void);

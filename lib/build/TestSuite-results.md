@@ -9,18 +9,19 @@ test/test_runner.c:146:SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs:PASS
 test/test_runner.c:147:SpiMasterInit_makes_this_mcu_the_SPI_master:PASS
 test/test_runner.c:148:SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8:PASS
 test/test_runner.c:149:SpiMasterInit_enables_the_SPI_hardware_module:PASS
-test/test_runner.c:152:SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte:PASS
-test/test_runner.c:153:SpiMasterWrite_byte_waits_for_transmission_to_complete:PASS
-test/test_runner.c:157:SpiSlaveInit_configures_pin_Miso_as_an_output:PASS
-test/test_runner.c:158:SpiSlaveInit_pulls_Miso_high:PASS
-test/test_runner.c:159:SpiSlaveInit_enables_the_SPI_hardware_module:PASS
-test/test_runner.c:160:SpiEnableInterrupt_enables_the_transfer_is_done_interrupt:PASS
-test/test_runner.c:161:SpiSlaveSignalDataIsReady_pulls_Miso_low:PASS
-test/test_runner.c:162:SpiSlaveSignalDataIsNotReady_pulls_Miso_high:PASS
-test/test_runner.c:164:SpiSlaveRead_waits_until_transfer_is_done:PASS
-test/test_runner.c:165:SpiSlaveRead_returns_the_SPI_data_register_byte:PASS
-test/test_runner.c:179:SpiMasterWaitForResponse_waits_until_slave_signals_ready:PASS
+test/test_runner.c:150:SpiMasterRead_returns_the_SPI_data_register:PASS
+test/test_runner.c:153:SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte:PASS
+test/test_runner.c:154:SpiMasterWrite_byte_waits_for_transmission_to_complete:PASS
+test/test_runner.c:158:SpiSlaveInit_configures_pin_Miso_as_an_output:PASS
+test/test_runner.c:159:SpiSlaveInit_pulls_Miso_high:PASS
+test/test_runner.c:160:SpiSlaveInit_enables_the_SPI_hardware_module:PASS
+test/test_runner.c:161:SpiEnableInterrupt_enables_the_transfer_is_done_interrupt:PASS
+test/test_runner.c:162:SpiSlaveSignalDataIsReady_pulls_Miso_low:PASS
+test/test_runner.c:163:SpiSlaveSignalDataIsNotReady_pulls_Miso_high:PASS
+test/test_runner.c:165:SpiSlaveRead_waits_until_transfer_is_done:PASS
+test/test_runner.c:166:SpiSlaveRead_returns_the_SPI_data_register_byte:PASS
+test/test_runner.c:180:SpiMasterWaitForResponse_waits_until_slave_signals_ready:PASS
 
 -----------------------
-22 Tests 0 Failures 0 Ignored 
+23 Tests 0 Failures 0 Ignored 
 OK

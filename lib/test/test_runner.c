@@ -147,6 +147,7 @@ void DevelopingSpiMaster(bool run_test) {if (run_test) {
     RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
     RUN_TEST(SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8);
     RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
+    RUN_TEST(SpiMasterRead_returns_the_SPI_data_register);
     //
     setUp = SetUp_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
     RUN_TEST(SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte);

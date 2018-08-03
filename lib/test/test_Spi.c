@@ -35,8 +35,8 @@
         // the SPI Interrupt Flag.
         //
     // [x] SpiMasterWaitForResponse_waits_until_slave_signals_ready
+    // [x] SpiMasterRead_returns_the_SPI_data_register
     // [ ] SpiMasterRead_waits_for_transmission_to_complete
-    // [ ] SpiMasterRead_returns_the_SPI_data_register
 /* =====[ List of SPI Slave Tests ]===== */
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
     // [x] SpiSlaveInit_pulls_Miso_high
@@ -341,6 +341,20 @@ void SpiMasterWrite_byte_waits_for_transmission_to_complete(void)
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
+}
+/* =====[ SpiMasterRead ]===== */
+void SpiMasterRead_waits_for_transmission_to_complete(void)
+{
+}
+void SpiMasterRead_returns_the_SPI_data_register(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t expect_byte = 0x0A;
+    *Spi_spdr = expect_byte;
+    /* =====[ Operate ]===== */
+    uint8_t actual_byte = SpiMasterRead();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT8(expect_byte, actual_byte);
 }
 /* =====[ SpiMasterWaitForResponse ]===== */
 void SetUp_SpiMasterWaitForResponse(void)

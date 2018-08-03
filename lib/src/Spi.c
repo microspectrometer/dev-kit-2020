@@ -71,6 +71,10 @@ void SpiMasterWrite(uint8_t byte_to_send)
     while (!SpiTransferIsDone()) ;
     SpiMasterCloseSpi();
 }
+uint8_t SpiMasterRead(void)
+{
+    return *Spi_spdr;
+}
 static bool SpiResponseIsReady_Implementation(void)
 {
     return BitIsClear(Spi_port, Spi_Miso);

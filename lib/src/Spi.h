@@ -15,6 +15,7 @@ extern void (*GlobalInterruptDisable)(void);
 /* =====[ SPI Master API ]===== */
 void SpiMasterInit(void);
 void SpiMasterWrite(uint8_t byte_to_send);
+uint8_t SpiMasterRead(void);
 extern bool (*SpiResponseIsReady)(void);
 void SpiMasterWaitForResponse(void);
 /* =====[ Not part of the API. Exposed for testing SPI Master only. ]===== */
