@@ -1921,16 +1921,17 @@ other bits in the bus-width nibble are pulled high.
       names
     - each claim in the function documentation becomes a unit test
 ### Track progress in the current dev cycle
-#### embedded tests to discover new code
-- next test: `Slave_receives_request_and_sends_response_when_ready`
+#### ! embedded tests to discover new code
 - [x] SpiMaster
-- [x] SpiSlave
+- [ ] SpiSlave
+    - next test: write Appliation versions of `Slave_receives_request`
+    - make a version without interrupts and a version with interrupts
 #### unit-tested working code into lib code and refactored
 - [x] SpiMaster
 - [x] SpiSlave
 #### refactor embedded tests using new lib code
-- [ ] SpiMaster
-- [ ] SpiSlave
+- [x] SpiMaster
+- [x] SpiSlave
 #### embedded tests of refactored lib code
 - [x] embedded test of SpiMaster
 - [x] embedded test of SpiSlave

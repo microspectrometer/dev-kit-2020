@@ -21,6 +21,8 @@
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
+    // [ ] App_version_of_Slave_receives_request_without_interrupts
+    // [ ] App_version_of_Slave_receives_request_with_interrupts
 
 void All_debug_leds_turn_on_and_turn_green(void)
 {
@@ -145,6 +147,11 @@ void Slave_receives_request_and_sends_response_when_ready(void)
         // just calling SpiSlaveRead() as in this example,
         // the app loops checking SpiTransferIsDone() and never does anything
         // else, like petting the watchdog
+        //
+        // I left this example as-is to make the test clear.
+        // There is nothing to refactor for this test.
+        // Refactor in the `App_version` versions of this test.
+        //
     uint8_t cmd = SpiSlaveRead();
     // parse the command
         // refactor this as another command pattern:
