@@ -1,9 +1,12 @@
+// This PCB gives the Chromation spectrometer chip a digital-out interface.
+//
 // my libs and the headers that resolve their hardware dependencies
 #include <ReadWriteBits.h>      // SetBit, ClearBit, etc.
 #include <DebugLeds.h>          // controls the 4 debug LEDs
 #include "DebugLeds-Hardware.h" // map debug LEDs to actual hardware
 #include <Spi.h>                // Chromation spectrometer is a SPI slave
 #include "Spi-Hardware.h"       // map SPI I/O to actual hardware
+#include "Spi-Commands.h"       // commands understood by the SPI slave
 #include "AvrAsmMacros.h"       // resolve lib dependencies on AVR asm macros
 // avr libs
 #include <avr/interrupt.h>      // defines macro ISR()
@@ -172,41 +175,38 @@ void Slave_receives_request_and_sends_response_when_ready(void)
     // Visually confirm debug LED 2 is red.
     // The slave parsed the request correctly.
 }
-void SendDummyData(uint8_t dummy_byte)
+void LoadDummyData(uint8_t dummy_byte)
 {
     DebugLedsTurnRed(debug_led2);
     *Spi_spdr = dummy_byte;
 }
 void GetDataMasterAskedFor(uint8_t cmd)
 {
-    // Move this to a header of commands shared by master and slave:
-    uint8_t const cmd_send_dummy_data_0xDB = 0x01;
     // parse and act: get the data and load it into SPDR
-    if (cmd == cmd_send_dummy_data_0xDB) SendDummyData(0xDB);
+    if (cmd == cmd_send_dummy_data_0xDB) LoadDummyData(0xDB);
 }
 
 void DoWhatMasterSays(void)
 {
-    DebugLedsTurnRed(debug_led1);
+    DebugLedsTurnRed(debug_led1);  // for manual testing
     // All commands ask the SPI slave to get some data.
     GetDataMasterAskedFor( SpiSlaveRead() );
     SpiSlaveSignalDataIsReady();
-    DebugLedsTurnRed(debug_led3);
+    DebugLedsTurnRed(debug_led3);  // for manual testing
+}
+void RespondToRequestsForData(void)
+{
+    // If the SPI master requested data, process the request.
+    // If there is no request for data, do nothing.
+    if (SpiTransferIsDone) DoWhatMasterSays();
 }
 void App_version_of_Slave_receives_request_without_interrupts(void)
 {
-    /* DebugLedsTurnAllRed(); */
     /* =====[ Setup ]===== */
     SpiSlaveInit();
     /* =====[ Main Loop ]===== */
-    while (1)
-    {
-        // Check if the SPI master sent anything.
-        if (SpiTransferIsDone) DoWhatMasterSays();
-        //
-        // Actual app does other stuff, e.g., pet the watchdog.
-        //
-    }
+    while(1) RespondToRequestsForData();
+    // Actual app does other stuff, e.g., pet the watchdog.
     /* =====[ Test ]===== */
     // Program master to send byte 0x01.
     //

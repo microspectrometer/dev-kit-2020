@@ -1,10 +1,13 @@
-#include <DebugLed.h>
-#include "DebugLed-Hardware.h"
-#include <Ft1248.h>
-#include "Ft1248-Hardware.h"
-#include <Usb.h>
-#include <Spi.h>
-#include "Spi-Hardware.h"
+// This PCB is the bridge from the USB host to the Chromation spectrometer.
+//
+#include <DebugLed.h>               // controls the debug LED
+#include "DebugLed-Hardware.h"      // map debug LED to actual hardware
+#include <Ft1248.h>                 // supports Usb -- TODO: does app need this?
+#include "Ft1248-Hardware.h"        // map FT1248 (USB) I/O to actual hardware
+#include <Usb.h>                    // USB host communication
+#include <Spi.h>                    // Chromation spectrometer is a SPI slave
+#include "Spi-Hardware.h"           // map SPI I/O to actual hardware
+#include "../../mBrd/src/Spi-Commands.h" // commands understood by the SPI slave
 #include <ReadWriteBits.h>
 //
 /* =====[ Required Hardware Settings in FT_Prog ]===== */
@@ -31,6 +34,7 @@
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
     // [x] Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
+    // [ ] Get_several_bytes_from_slave_and_write_bytes_to_USB_host
 void operate_UsbWrite(void)
 {
     //
@@ -256,8 +260,6 @@ void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
     SpiMasterInit();
     UsbInit();
     /* =====[ Operate ]===== */
-    // Move this to a header of commands shared by master and slave:
-    uint8_t const cmd_send_dummy_data_0xDB = 0x01;
     SpiMasterWrite(cmd_send_dummy_data_0xDB);
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
     uint8_t response = SpiMasterRead();
