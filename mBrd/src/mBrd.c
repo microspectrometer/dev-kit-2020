@@ -21,7 +21,7 @@
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
-    // [ ] App_version_of_Slave_receives_request_without_interrupts
+    // [x] App_version_of_Slave_receives_request_without_interrupts
     // [ ] App_version_of_Slave_receives_request_with_interrupts
 
 void All_debug_leds_turn_on_and_turn_green(void)
@@ -156,7 +156,7 @@ void Slave_receives_request_and_sends_response_when_ready(void)
     // parse the command
         // refactor this as another command pattern:
         // SpiParseCommand(); SpiExecuteCommand();
-        // parse points at execute at the correct response routine
+        // parse points the execute at the correct response routine
         // every routine follows the form: do something, load data, signal ready
     if (cmd == cmd_slave_respond_0xBA)
     {
@@ -172,13 +172,61 @@ void Slave_receives_request_and_sends_response_when_ready(void)
     // Visually confirm debug LED 2 is red.
     // The slave parsed the request correctly.
 }
+void SendDummyData(uint8_t dummy_byte)
+{
+    DebugLedsTurnRed(debug_led2);
+    *Spi_spdr = dummy_byte;
+}
+void GetDataMasterAskedFor(uint8_t cmd)
+{
+    // Move this to a header of commands shared by master and slave:
+    uint8_t const cmd_send_dummy_data_0xDB = 0x01;
+    // parse and act: get the data and load it into SPDR
+    if (cmd == cmd_send_dummy_data_0xDB) SendDummyData(0xDB);
+}
+
+void DoWhatMasterSays(void)
+{
+    DebugLedsTurnRed(debug_led1);
+    // All commands ask the SPI slave to get some data.
+    GetDataMasterAskedFor( SpiSlaveRead() );
+    SpiSlaveSignalDataIsReady();
+    DebugLedsTurnRed(debug_led3);
+}
+void App_version_of_Slave_receives_request_without_interrupts(void)
+{
+    /* DebugLedsTurnAllRed(); */
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
+    /* =====[ Main Loop ]===== */
+    while (1)
+    {
+        // Check if the SPI master sent anything.
+        if (SpiTransferIsDone) DoWhatMasterSays();
+        //
+        // Actual app does other stuff, e.g., pet the watchdog.
+        //
+    }
+    /* =====[ Test ]===== */
+    // Program master to send byte 0x01.
+    //
+    // Visually confirm debug LEDs are green.
+    // Move `SW2` to `SPI`.
+    // Press reset button.
+    // Visually confirm debug LED 1 is red: slave hears master.
+    // Visually confirm debug LED 2 is red: slave understood master.
+    // Visually confirm debug LED 3 is red: slave is done.
+    //
+    // Check if master received 0xDB.
+}
 void test_SpiSlave(void)
 {
     /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-31 */
     /* SpiSlaveRead_and_show_received_data_on_debug_leds(); // PASS 2018-08-01 */
     /* SPI_interrupt_routine_turns_debug_led1_red(); // PASS 2018-08-01 */
     /* SPI_read_in_ISR_and_show_data_on_debug_leds(); // PASS 2018-08-01 */
-    Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02
+    /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
+    App_version_of_Slave_receives_request_without_interrupts();
 }
 int main()
 {
