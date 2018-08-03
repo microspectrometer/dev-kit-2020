@@ -1926,11 +1926,11 @@ other bits in the bus-width nibble are pulled high.
 - [x] SpiMaster
 - [x] SpiSlave
 #### unit-tested working code into lib code and refactored
-- [ ] SpiMaster
-- [ ] SpiSlave
-#### refactor embedded tests using new lib code
 - [x] SpiMaster
 - [x] SpiSlave
+#### refactor embedded tests using new lib code
+- [ ] SpiMaster
+- [ ] SpiSlave
 #### embedded tests of refactored lib code
 - [x] embedded test of SpiMaster
 - [x] embedded test of SpiSlave
@@ -2206,12 +2206,20 @@ uint8_t const Spi_Sck    =   PB5;    // SPI clock
 - download flash: `;fa`
 - build and download flash: `;mfa`
     - downloads flash whether or not the build needed to be rebuilt
+
+## Compiler options
+> `https://www.microchip.com/webdoc/AVRLibcReferenceManual/using_tools_1using_sel_gcc_opts.html`
+
 ## Memory on the ATmega328
 The ATmega328 uses a *Harvard architecture* meaning separate memory and buses
 for program and data:
 
 - **2KBytes** of *SRAM* hold data memory
 - **32KBytes** of *Flash* hold program memory
+
+- *SRAM* **is not** *Flash*
+- *Flash* holds the program memory
+- *SRAM* holds the data memory
 
 Both the *SRAM* and *Flash* use indirect addressing because it is a large amount
 of memory to navigate and the buses are only 8-bit. The **32** 8-bit *General
@@ -2220,11 +2228,12 @@ Purpose Registers* use direct addressing.
 Static memory, stack memory, and the heap all use the *SRAM*. Static memory is
 never a problem. The trouble is with *stack-heap collisions*.
 
-## RAM layout and stack-heap collisions
-https://www.nongnu.org/avr-libc/user-manual/malloc.html
+### RAM layout and stack-heap collisions
+> https://www.nongnu.org/avr-libc/user-manual/malloc.html
 
 - *.data* are initialized variables
 - *.bss* are uninitialized variables
+- both are stored in *SRAM*
 
 These are *static-mem* variables. The standard RAM layout is to place *.data*
 then *.bss* at the beginning. Then the *heap* starts.
@@ -2233,6 +2242,7 @@ The *stack-mem* starts at the end of RAM and grows towards the beginning.
 
 The trouble is the *heap* and *stack* can both require arbitrarily large amounts
 of memory.
+
 Besides allocating memory dynamically, the *heap* causes trouble if
 there is a memory that is allocted but never freed, or if the memory is freed
 but RAM because fragmented such that the freed memory is never reallocated.
@@ -2240,6 +2250,68 @@ The *stack* grows as stack frames stack up from nested function calls. The size
 of each stack frame depends on how much data is local to that function.
 
 It is hard to predict when the *heap* and the *stack* might collide.
+
+
+### Size of the final `.elf` files
+- the avr-target executable is an `elf32-avr` with a `.elf` extension
+- `avr-size` is a utility to report the size of a `.elf` by section:
+```make
+build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
+	avr-gcc $^ -o $@ $(CFLAGS)  \
+		-Wl,-Map="build/$*.map" -Wl,--gc-sections
+	avr-size $@ > build/avr-size_simBrd.log
+```
+- example output of `avr-size`:
+```
+   text	   data	    bss	    dec	    hex	filename
+    730	     34	      7	    771	    303	build/simBrd.elf
+```
+- about these values:
+    - units are bytes
+    - numbers are represented in base 10 except for the final `hex` column
+    - the `dec` and `hex` columns are the total *Flash* memory used
+- memory sections are described here:
+> `https://www.microchip.com/webdoc/AVRLibcReferenceManual/mem_sections_1sec_dot_text.html`
+- I think the following is a decent summary
+#### `.text` memory section
+- the `.text` contains the machine instructions
+- the total amount of *Flash* memory consumed is the `.text` plus the `.data`
+    - the `.data` is added because the *Flash* gets:
+> a copy of the `.data` initializers
+- the `ATmega328P` has `32KBytes` of *Flash*
+- example: How much of the *Flash* did I use?
+    - `.data`: 34
+    - `.text`: 730
+    - total: **764**
+- so this small example application uses less than `1KByte`
+- that is about 2.4% of the *Flash* memory.
+
+#### `.data` memory section
+- static data:
+    - constants
+    - initialized globals
+    - initialized static variables
+- `.data` and `.bss` are both data, so they both go in `SRAM`
+- the total amount of *SRAM* consumed is the `.data` plus `.bss`
+- the `ATmega328P` has `2KBytes` of *SRAM*
+- example: How much of the *SRAM* did I use?
+    - `.data`: 34
+    - `.bss`: 7
+    - total: **41**
+- that is about 2.1% of the *SRAM*
+
+#### `.bss` memory section
+- uninitialized globals
+- uninitialized static variables
+
+#### `.dec` memory section
+- this is just the sum of the other three sections
+    - `.data`: 34
+    - `.text`: 730
+    - `.bss` : 7
+    - total: **771**
+- `dec` stands for decimal
+- `hex` is the same total represented in base 16
 
 ## Cable connections and switch settings
 - Power `simBrd` from hostPC with mini-B USB cable.
