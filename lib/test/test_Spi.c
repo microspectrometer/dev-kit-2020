@@ -36,7 +36,7 @@
         //
     // [x] SpiMasterWaitForResponse_waits_until_slave_signals_ready
     // [x] SpiMasterRead_returns_the_SPI_data_register
-    // [ ] SpiMasterRead_waits_for_transmission_to_complete
+    // [x] SpiMasterRead_waits_for_transmission_to_complete
 /* =====[ List of SPI Slave Tests ]===== */
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
     // [x] SpiSlaveInit_pulls_Miso_high
@@ -343,14 +343,44 @@ void SpiMasterWrite_byte_waits_for_transmission_to_complete(void)
         );
 }
 /* =====[ SpiMasterRead ]===== */
+void SetUp_SpiMasterRead(void)
+{
+    SetUpMock_SpiMasterRead();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_SpiMasterRead(void)
+{
+    TearDownMock_SpiMasterRead();    // destroy the mock object
+    // other teardown code
+}
 void SpiMasterRead_waits_for_transmission_to_complete(void)
 {
+    //=====[ Mock-up test scenario by defining return values ]=====
+    // SPI hardware module sets SPIF to indicate the SPI transfer is done.
+    // SPIF := SPI Interrupt Flag
+    // SpiMasterWrite checks SPIF to know when the transfer is done.
+    bool SPIF_sequence[] = {false, false, true}; // true:= flag is set
+    int num_times_SPIF_is_checked = sizeof(SPIF_sequence);
+    SpiTransferIsDone_StubbedReturnValue = SPIF_sequence;
+    /* =====[ Operate ]===== */
+    SpiMasterRead();
+    /* =====[ Set up expected calls ]===== */
+    for (int i=0; i<num_times_SPIF_is_checked; i++)
+    {
+        Expect_SpiTransferIsDone();
+    }
+    Expect_ReadSpiDataRegister();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
 }
 void SpiMasterRead_returns_the_SPI_data_register(void)
 {
     /* =====[ Setup ]===== */
     uint8_t expect_byte = 0x0A;
-    *Spi_spdr = expect_byte;
+    ReadSpiDataRegister_StubbedReturnValue = expect_byte;
     /* =====[ Operate ]===== */
     uint8_t actual_byte = SpiMasterRead();
     /* =====[ Test ]===== */

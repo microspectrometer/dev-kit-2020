@@ -43,6 +43,28 @@ void TearDownMock_SpiMasterWrite(void)  // FUT
     Unstub_SpiMasterCloseSpi();  // DOF
     Unstub_SpiTransferIsDone();  // DOF
 }
+static uint8_t (*ReadSpiDataRegister_Saved)(void);
+static void Stub_ReadSpiDataRegister(void) {
+    ReadSpiDataRegister_Saved = ReadSpiDataRegister;
+    ReadSpiDataRegister = ReadSpiDataRegister_Stubbed;
+}
+static void Unstub_ReadSpiDataRegister(void) {
+    ReadSpiDataRegister = ReadSpiDataRegister_Saved;
+}
+void SetUpMock_SpiMasterRead(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_SpiTransferIsDone();  // DOF
+    Stub_ReadSpiDataRegister();  // DOF
+}
+void TearDownMock_SpiMasterRead(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_SpiTransferIsDone();  // DOF
+    Unstub_ReadSpiDataRegister();  // DOF
+}
 void SetUpMock_SpiSlaveRead(void)  // FUT
 {
     mock = Mock_new();

@@ -60,3 +60,18 @@ bool SpiResponseIsReady_Stubbed(void) {
     RecordActualCall(mock, Mock_SpiResponseIsReady());
     return *(SpiResponseIsReady_StubbedReturnValue++);
 }
+
+static RecordedCall * Mock_ReadSpiDataRegister(void)
+{
+    char const *call_name = "ReadSpiDataRegister";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_ReadSpiDataRegister(void) {
+    RecordExpectedCall(mock, Mock_ReadSpiDataRegister());
+}
+uint8_t ReadSpiDataRegister_StubbedReturnValue = 0xFF;
+uint8_t ReadSpiDataRegister_Stubbed(void) {
+    RecordActualCall(mock, Mock_ReadSpiDataRegister());
+    return ReadSpiDataRegister_StubbedReturnValue;
+}

@@ -2,6 +2,7 @@
 #define _TEST_SPI_MOCKUPS_H
 
 void SetUpMock_SpiMasterWrite(void); void TearDownMock_SpiMasterWrite(void);
+void SetUpMock_SpiMasterRead(void); void TearDownMock_SpiMasterRead(void);
 void SetUpMock_SpiSlaveRead(void); void TearDownMock_SpiSlaveRead(void);
 void SetUpMock_SpiMasterWaitForResponse(void);
 void TearDownMock_SpiMasterWaitForResponse(void);

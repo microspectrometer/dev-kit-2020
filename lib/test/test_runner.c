@@ -147,11 +147,9 @@ void DevelopingSpiMaster(bool run_test) {if (run_test) {
     RUN_TEST(SpiMasterInit_makes_this_mcu_the_SPI_master);
     RUN_TEST(SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8);
     RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
-    RUN_TEST(SpiMasterRead_returns_the_SPI_data_register);
     //
-    setUp = SetUp_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
-    RUN_TEST(SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte);
-    RUN_TEST(SpiMasterWrite_byte_waits_for_transmission_to_complete);
+    setUp = SetUp_SpiMasterWaitForResponse; tearDown = TearDown_SpiMasterWaitForResponse;
+    RUN_TEST(SpiMasterWaitForResponse_waits_until_slave_signals_ready);
 }}
 void DevelopingSpiSlave(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
@@ -176,7 +174,13 @@ int main()
     DevelopingUsb             (Nope);
     DevelopingSpiMaster       (Yep);
     DevelopingSpiSlave        (Yep);
-    setUp = SetUp_SpiMasterWaitForResponse; tearDown = TearDown_SpiMasterWaitForResponse;
-    RUN_TEST(SpiMasterWaitForResponse_waits_until_slave_signals_ready);
+    //
+    setUp = SetUp_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
+    RUN_TEST(SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte);
+    RUN_TEST(SpiMasterWrite_byte_waits_for_transmission_to_complete);
+    //
+    setUp = SetUp_SpiMasterRead; tearDown = TearDown_SpiMasterRead;
+    RUN_TEST(SpiMasterRead_returns_the_SPI_data_register);
+    RUN_TEST(SpiMasterRead_waits_for_transmission_to_complete);
     return UNITY_END();
 }

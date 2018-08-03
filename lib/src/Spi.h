@@ -22,6 +22,7 @@ void SpiMasterWaitForResponse(void);
 extern void (*SpiMasterOpenSpi)(void);
 extern void (*SpiMasterCloseSpi)(void);
 extern bool (*SpiTransferIsDone)(void);
+extern uint8_t (*ReadSpiDataRegister)(void);
 
 /* =====[ Hardware dependencies to be resolved in Spi-Hardware.h ]===== */
 /* ---Pin Direction and I/O Registers--- */

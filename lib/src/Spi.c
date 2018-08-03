@@ -71,9 +71,16 @@ void SpiMasterWrite(uint8_t byte_to_send)
     while (!SpiTransferIsDone()) ;
     SpiMasterCloseSpi();
 }
-uint8_t SpiMasterRead(void)
+static uint8_t ReadSpiDataRegister_Implementation(void)
 {
     return *Spi_spdr;
+}
+uint8_t (*ReadSpiDataRegister)(void) = ReadSpiDataRegister_Implementation;
+uint8_t SpiMasterRead(void)
+{
+    uint8_t garbage = 0xFF;
+    SpiMasterWrite(garbage);
+    return ReadSpiDataRegister();
 }
 static bool SpiResponseIsReady_Implementation(void)
 {
@@ -128,5 +135,5 @@ void SpiSlaveSignalDataIsNotReady(void)
 uint8_t SpiSlaveRead(void)
 {
     while( !SpiTransferIsDone() );
-    return *Spi_spdr;
+    return ReadSpiDataRegister();
 }
