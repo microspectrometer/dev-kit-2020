@@ -241,21 +241,13 @@ void Slave_receives_request_and_sends_response_when_ready(void)
     /* =====[ Setup ]===== */
     SpiMasterInit();
     /* =====[ Operate ]===== */
-    // Master sends a request
     uint8_t const cmd_slave_respond_0xBA = 0xAB;
-    uint8_t const response = 0xBA;
     SpiMasterWrite(cmd_slave_respond_0xBA);
     /* =====[ Test ]===== */
-    // Slave signals to master it has a response ready.
-    //
-    // Wait for the response ready signal from the slave.
-    while( !SpiResponseIsReady() );
-    // SpiMasterRead
-    uint8_t garbage = 0xFF;
-    SpiMasterWrite(garbage);
-    if (*Spi_spdr == response) DebugLedTurnRed();
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    uint8_t const expected_response = 0xBA;
+    if ( SpiMasterRead() == expected_response ) DebugLedTurnRed();
     // Visually confirm the debug LED turns red.
-    // The master received the expected response from the slave.
 }
 void test_SpiMaster(void)
 {
