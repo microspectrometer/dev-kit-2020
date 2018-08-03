@@ -30,7 +30,7 @@
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
-
+    // [x] Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
 void operate_UsbWrite(void)
 {
     //
@@ -249,10 +249,47 @@ void Slave_receives_request_and_sends_response_when_ready(void)
     if ( SpiMasterRead() == expected_response ) DebugLedTurnRed();
     // Visually confirm the debug LED turns red.
 }
+void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_receives_request_without_interrupts */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    // Move this to a header of commands shared by master and slave:
+    uint8_t const cmd_send_dummy_data_0xDB = 0x01;
+    SpiMasterWrite(cmd_send_dummy_data_0xDB);
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    uint8_t response = SpiMasterRead();
+    /* =====[ Test ]===== */
+    uint8_t const expected_response = 0xDB;
+    if ( response == expected_response )
+    {
+        DebugLedTurnRed();
+        // Visually confirm the debug LED turns red.
+        //
+        uint8_t write_buffer[] = {response};
+        uint16_t num_bytes_to_send = sizeof(write_buffer);
+        UsbWrite(write_buffer, num_bytes_to_send);
+        // Manually Run host application and confirm master received 0xDB.
+    }
+    /* =====[ USB Host Application ]===== */
+    /* PS> &$python2_os_Windows */
+    /* ```python */
+    /* import serial */
+    /* s=serial.Serial() */
+    /* s.baudrate = 9600 */
+    /* s.port = 'COM12' */
+    /* s.open() */
+    /* s.read(s.inWaiting()) */
+    /* ``` */
+}
+
 void test_SpiMaster(void)
 {
     /* SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31 */
-    Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02
+    /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
+    Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host();
 }
 int main()
 {
