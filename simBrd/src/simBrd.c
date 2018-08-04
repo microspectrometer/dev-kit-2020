@@ -6,7 +6,7 @@
 #include "Ft1248-Hardware.h"        // map FT1248 (USB) I/O to actual hardware
 #include <Usb.h>                    // USB host communication
 #include <Spi.h>                    // Chromation spectrometer is a SPI slave
-#include "Spi-Hardware.h"           // map SPI I/O to actual hardware
+#include "../../mBrd/src/Spi-Hardware.h" // map SPI I/O to actual hardware
 #include "../../mBrd/src/Spi-Commands.h" // commands understood by the SPI slave
 #include <ReadWriteBits.h>
 //
@@ -262,13 +262,14 @@ void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
     /* =====[ Operate ]===== */
     SpiMasterWrite(cmd_send_dummy_data_0xDB);
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    DebugLedTurnRed();
+    while (1);
+    // Visually confirm the debug LED turns red.
     uint8_t response = SpiMasterRead();
     /* =====[ Test ]===== */
     uint8_t const expected_response = 0xDB;
     if ( response == expected_response )
     {
-        DebugLedTurnRed();
-        // Visually confirm the debug LED turns red.
         //
         uint8_t write_buffer[] = {response};
         uint16_t num_bytes_to_send = sizeof(write_buffer);
@@ -286,12 +287,30 @@ void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
     /* s.read(s.inWaiting()) */
     /* ``` */
 }
-
+void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_receives_request_without_interrupts */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    SpiMasterWrite(cmd_send_bytes_0xB1_0xB2_0xB3_0xB4);
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    DebugLedTurnRed();
+    /* =====[ Test ]===== */
+    // Visually confirm debug LED is red: slave responded.
+}
 void test_SpiMaster(void)
 {
     /* SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
-    Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host();
+    Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-03
+    /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); */
+}
+void MakeSpiMisoAnInputAndPullUp(void)
+{
+    ClearBit(Spi_ddr, Spi_Miso);  // input
+    SetBit(Spi_port, Spi_Miso);   // pull-up
 }
 int main()
 {
@@ -304,5 +323,23 @@ int main()
     /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
     /* test_EchoByte(); // All tests pass 2018-07-30 */
-    test_SpiMaster(); // All test pass 2018-08-02
+    /* test_SpiMaster(); // All test pass 2018-08-02 */
+
+    /* SetBit(Spi_ddr, Spi_Miso); */
+    /* ClearBit(Spi_port, Spi_Miso); */
+    //
+    // TODO: integrate this with SpiMasterInit:
+    // It protects against false `SpiResponseIsReady` signals.
+    MakeSpiMisoAnInputAndPullUp();  // PASS 2018-08-03
+    SpiMasterInit();
+    // SPI slave cannot pull MISO low.
+    // Try doing a throw-away write to reset the SPI logic.
+    /* while (1); // PASS: slave only has led1 red */
+    SpiMasterWrite(0x00); // MISO still high...
+    // Maybe MISO goes low and then something happens...
+    // Try to catch a low MISO with the LED:
+    while( !SpiResponseIsReady() );
+    // When MISO goes low, turn the LED red.
+    DebugLedTurnRed();
+    while (1); // infinite loop here to *stop* execution
 }

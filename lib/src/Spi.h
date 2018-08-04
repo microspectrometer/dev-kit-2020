@@ -28,7 +28,7 @@ extern uint8_t (*ReadSpiDataRegister)(void);
 /* ---Pin Direction and I/O Registers--- */
 extern uint8_t volatile * const Spi_ddr;
 extern uint8_t volatile * const Spi_port;
-/* extern uint8_t volatile * const Spi_pin; */
+extern uint8_t volatile * const Spi_pin;
 /* ---Pin Names--- */
 extern uint8_t const Spi_Ss;    // used in software for master
 extern uint8_t const Spi_Mosi;  // used in software for master

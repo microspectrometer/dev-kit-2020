@@ -1,6 +1,13 @@
 #include "Spi.h"
 #include "ReadWriteBits.h"
 
+static void ClearPendingSpiInterrupt(void)
+{
+    // Clear the SPI Interrupt Flag bit in the SPI Status Register.
+    // Implementation:
+    // Read registers SPSR and SPDR, in that order.
+    *Spi_spsr; *Spi_spdr;
+}
 //
 /* =====[ Spi Master ]===== */
 //
@@ -54,15 +61,28 @@ static void EnableSpi(void)
 {
     SetBit(Spi_spcr, Spi_Enable);
 }
+//
+// I cannot do this.
+// I expected it to just enable the pull-up.
+// Instead, it prevents the SPI master from ever receiving `DataIsReady`.
+// It behaves like MISO is always high, but I have not measured it.
+//
+/* void PreventFalseDataReadySignals(void) */
+/* { */
+/*     ClearBit(Spi_ddr, Spi_Miso);    // make sure Miso is an input */
+/*     SpiSlaveSignalDataIsNotReady(); // enable pull-up on Miso */
+/* } */
 void SpiMasterInit(void)
 {
     SlaveSelectIdleHigh();
+    /* PreventFalseDataReadySignals(); // does not work */
     SetSlaveSelectAsOutput();  // pin-direction is user-defined
     SetMosiAsOutput();         // pin-direction is user-defined
     SetSckAsOutput();          // pin-direction is user-defined
     MakeMeTheMaster();
     SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
     EnableSpi();
+    ClearPendingSpiInterrupt();
 }
 void SpiMasterWrite(uint8_t byte_to_send)
 {
@@ -84,7 +104,7 @@ uint8_t SpiMasterRead(void)
 }
 static bool SpiResponseIsReady_Implementation(void)
 {
-    return BitIsClear(Spi_port, Spi_Miso);
+    return BitIsClear(Spi_pin, Spi_Miso);
 }
 bool (*SpiResponseIsReady)(void) = SpiResponseIsReady_Implementation;
 void SpiMasterWaitForResponse(void)
@@ -102,16 +122,14 @@ static void SetMisoAsOutput(void)
 }
 void SpiSlaveInit(void)
 {
-    SetMisoAsOutput();         // pin-direction is user-defined
     SpiSlaveSignalDataIsNotReady(); // MISO idles high
+    // TODO: consider if I need to drive MISO high or if a pull-up is OK
+    // SPI slaves usually only weakly pull-up MISO when not in use.
+    SetMisoAsOutput();         // pin-direction is user-defined
+    // Desperate attempts... this should already be clear
+    /* ClearBit(Spi_spcr, Spi_MasterSlaveSelect); // be the slave */
     EnableSpi();
-}
-static void ClearPendingSpiInterrupt(void)
-{
-    // Clear the SPI Interrupt Flag bit in the SPI Status Register.
-    // Implementation:
-    // Read registers SPSR and SPDR, in that order.
-    *Spi_spsr; *Spi_spdr;
+    ClearPendingSpiInterrupt();
 }
 static void EnableTransferCompleteInterrupt(void)
 {

@@ -1924,7 +1924,14 @@ other bits in the bus-width nibble are pulled high.
 #### ! embedded tests to discover new code
 - [x] SpiMaster
 - [ ] SpiSlave
-    - next test: write Appliation versions of `Slave_receives_request`
+    - [x] killed a few bugs:
+        - [x] I was reading `PORT` instead of `PIN`
+        - [x] I was reading a function name instead of the function value
+            - i.e., I forgot the trailing `()`
+        - [x] I was trying to use `MISO ` as general purpose I/O while the `SPI`
+          hardware module was overriding the `PORT` value
+    - [ ] this test: sending bytes
+    - next test: write Application versions of `Slave_receives_request`
     - make a version without interrupts and a version with interrupts
 #### unit-tested working code into lib code and refactored
 - [x] SpiMaster
@@ -2036,6 +2043,73 @@ pin         | direction
 `Spi_Miso`  | user defined
 `Spi_Mosi`  | input
 `Spi_Sck`   | input
+
+### SPI Errata
+I discovered a weird-but-obvious-in-hindsight behavior that is not documented
+anywhere.
+
+#### Loss of MISO as general purpose IO when SPI is enabled
+##### Context
+The Chromation spectrometer is a SPI slave. Customer hardware is the SPI master.
+When a master requests data, it takes time for the sensor to collect the data.
+Since `MISO` is always an input on the SPI master, I decided to use `MISO` as
+the signal to the master that the data is ready. The master requests data, the
+slave gets the data, then pulls `MISO` low to signal it is ready for the master
+to read the data.
+
+##### Problem
+After the SPI slave enables the SPI hardware module:
+```c
+SetBit(Spi_spcr, Spi_Enable);
+```
+`MISO` no longer behaves as general purpose I/O. `MISO` idles high (I think it
+is pulled-up, not a hard high, but I have not tested this). This has no affect:
+```c
+ClearBit(Spi_port, Spi_Miso);
+```
+The pin continues to idle high and the SPI master thinks the slave is still
+collecting data.
+
+Of course, the pin must be configured as an output pin for the SPI hardware
+module to use it as a slave output line. But what is not clearly stated anywhere
+is the loss of control via the `PORT` register.
+
+*As long as SPI is enabled, only the SPI hardware module has control over MISO*.
+
+I cannot use `MISO` to signal to the master that data is ready.
+
+##### Solution
+Just kidding. It's an easy fix.
+
+Follow the `MISO`-go-low instruction with a quick `SpiDisable()` to regain
+control of the pin and `SpiEnable()` to give control back to the SPI hardware
+module:
+```c
+ClearBit(Spi_port, Spi_Miso);    // signal the slave is ready
+ClearBit(Spi_spcr, Spi_Enable);  // disable SPI -- now MISO goes low
+SetBit  (Spi_spcr, Spi_Enable);  // enable SPI -- MISO is pulled back up
+```
+
+##### It makes sense in hindsight
+It kind of makes sense that the SPI module works this way, but I'm still
+annoyed this isn't spelled out in the datasheet.
+
+I mean it is spelled out in `Figure 13-5. Alternate Port Functions`. But that
+takes a real careful, thoughtful read of the datasheet. The `SPI` section
+doesn't mention this, and that's what I'm ticked about.
+
+Of course, the chip has to work this way. As `Figure 13-5` shows, a *MUX* is
+needed to select whether control goes to general purpose or the alternate
+function. And what signal controls the *MUX*? The act of *enabling/disabling*
+the alternate function. A nice and simple system. I just wish the implication
+was stated explicitly.
+
+From a system-design point-of-view, this is definitely a feature, not a bug.
+Disabling PORT control is a safeguard. In a multi-slave system, if SPI is always
+enabled, the pin can only drive the MISO line when the slave is select. This
+protects against the slave driving MISO while another slave is driving MISO. The
+SPI protocol handles selecting one slave at a time, and the SPI hardware module
+tri-states the MISO for inactive slaves.
 
 ## SPI simBrd and mBrd hardware
 - the `SPI` pin connections on the `mBrd` are exactly the same as on the
