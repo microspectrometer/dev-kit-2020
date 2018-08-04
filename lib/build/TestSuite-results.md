@@ -22,7 +22,8 @@ test/test_runner.c:179:SpiMasterWrite_byte_loads_SPI_tx_buffer_with_byte:PASS
 test/test_runner.c:180:SpiMasterWrite_byte_waits_for_transmission_to_complete:PASS
 test/test_runner.c:183:SpiMasterRead_returns_the_SPI_data_register:PASS
 test/test_runner.c:184:SpiMasterRead_waits_for_transmission_to_complete:PASS
+test/test_runner.c:188:ClearPendingSpiInterrupt_reads_SPSR_and_SPDR:PASS
 
 -----------------------
-24 Tests 0 Failures 0 Ignored 
+25 Tests 0 Failures 0 Ignored 
 OK

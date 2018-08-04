@@ -1,13 +1,25 @@
 #include "Spi.h"
 #include "ReadWriteBits.h"
 
-static void ClearPendingSpiInterrupt(void)
+void ClearPendingSpiInterrupt(void)
 {
     // Clear the SPI Interrupt Flag bit in the SPI Status Register.
     // Implementation:
     // Read registers SPSR and SPDR, in that order.
-    *Spi_spsr; *Spi_spdr;
+    //
+    // Old implementation -- check how avr-gcc handles this:
+    /* *Spi_spsr; */
+    /* *Spi_spdr; */
+    //
+    // New implementation -- check how avr-gcc handles this:
+    ReadSpiStatusReg();     // read and discard the value
+    ReadSpiDataRegister();  // read and discard the value
 }
+static uint8_t ReadSpiStatusReg_Implementation(void)
+{
+    return *Spi_spsr;
+}
+uint8_t (*ReadSpiStatusReg)(void) = ReadSpiStatusReg_Implementation;
 //
 /* =====[ Spi Master ]===== */
 //

@@ -9,11 +9,17 @@
 #include "AvrAsmMacros.h"       // fake AVR asm macro dependencies
 
 /* =====[ List of SPI Master Tests ]===== */
+// [x] SpiMasterInit_cfg
     // [x] SpiMasterInit_pulls_Ss_high
     // [x] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
     // [x] SpiMasterInit_makes_this_mcu_the_SPI_master
     // [x] SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8
     // [x] SpiMasterInit_enables_the_SPI_hardware_module
+// [ ] SpiMasterInit_protects_against_false_SpiResponseIsReady_signals
+    // - [ ] SetMisoAsPullupInput_configure_Miso_as_an_input
+    // - [ ] SetMisoAsPullupInput_enable_its_pullup
+    // - [x] ClearPendingSpiInterrupt_reads_SPSR_and_SPDR
+// SpiMasterWrite and SpiMasterRead
     // [x] SpiMasterOpenSpi_selects_the_SPI_slave
     // [x] SpiMasterCloseSpi_unselects_the_SPI_slave
     // [x] SpiTransferIsDone_returns_true_when_the_transfer_is_done
@@ -268,14 +274,18 @@ void SpiTransferIsDone_returns_false_when_the_transfer_is_not_done(void)
 void SpiResponseIsReady_returns_true_when_slave_signals_data_is_ready(void)
 {
     /* =====[ Setup ]===== */
-    SpiSlaveSignalDataIsReady();
+    /* SpiSlaveSignalDataIsNotReady(); // watch the test FAIL */
+    SpiSlaveSignalDataIsReady(); // watch the test PASS
+    *Spi_pin = *Spi_port; // Fake `PIN` register sampling the input
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_TRUE(SpiResponseIsReady());
 }
 void SpiResponseIsReady_returns_false_when_slave_signals_data_not_ready(void)
 {
     /* =====[ Setup ]===== */
-    SpiSlaveSignalDataIsNotReady();
+    /* SpiSlaveSignalDataIsReady(); // watch the test FAIL */
+    SpiSlaveSignalDataIsNotReady(); // watch the test PASS
+    *Spi_pin = *Spi_port; // Fake `PIN` register sampling the input
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_FALSE(SpiResponseIsReady());
 }
@@ -415,4 +425,28 @@ void SpiMasterWaitForResponse_waits_until_slave_signals_ready(void)
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
+}
+void SetUp_ClearPendingSpiInterrupt(void)
+{
+    SetUpMock_ClearPendingSpiInterrupt();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_ClearPendingSpiInterrupt(void)
+{
+    TearDownMock_ClearPendingSpiInterrupt();    // destroy the mock object
+    // other teardown code
+}
+/* =====[ ClearPendingSpiInterrupt ]===== */
+void ClearPendingSpiInterrupt_reads_SPSR_and_SPDR(void)
+{
+    /* =====[ Operate ]===== */
+    ClearPendingSpiInterrupt();
+    Expect_ReadSpiStatusReg();
+    Expect_ReadSpiDataRegister();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+
 }

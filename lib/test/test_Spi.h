@@ -40,5 +40,9 @@ void SpiMasterWaitForResponse_waits_until_slave_signals_ready(void);
 void SetUp_SpiMasterRead(void); void TearDown_SpiMasterRead(void);
 void SpiMasterRead_returns_the_SPI_data_register(void);
 void SpiMasterRead_waits_for_transmission_to_complete(void);
+//
+void SetUp_ClearPendingSpiInterrupt(void);
+void TearDown_ClearPendingSpiInterrupt(void);
+void ClearPendingSpiInterrupt_reads_SPSR_and_SPDR(void);
 
 #endif // _TEST_SPI_H

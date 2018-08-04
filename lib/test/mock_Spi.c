@@ -75,3 +75,17 @@ uint8_t ReadSpiDataRegister_Stubbed(void) {
     RecordActualCall(mock, Mock_ReadSpiDataRegister());
     return ReadSpiDataRegister_StubbedReturnValue;
 }
+
+static RecordedCall * Mock_ReadSpiStatusReg(void)
+{
+    char const *call_name = "ReadSpiStatusReg";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_ReadSpiStatusReg(void) {
+    RecordExpectedCall(mock, Mock_ReadSpiStatusReg());
+}
+uint8_t ReadSpiStatusReg_Stubbed(void) {
+    RecordActualCall(mock, Mock_ReadSpiStatusReg());
+    return 0x00; // I do not care what this returns
+}

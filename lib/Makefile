@@ -101,12 +101,12 @@ ${obj_libs-mocked}: build/%.o: test/%.c
 clean-all-builds:
 	rm -f build/${file-stem}.exe
 	rm -f build/TestSuite.exe
-	# rm -f build/SpiSlave.o
-	# rm -f build/test_SpiSlave.o
-	# rm -f build/mock_SpiSlave.o
-	# rm -f build/test_SpiSlave_MockUps.o
-	rm -f ${obj_dev-libs}
-	rm -f ${obj_libs-tested}
-	rm -f ${obj_libs-tested-with-mocks}
-	rm -f ${obj_libs-mocked}
+	rm -f build/Spi.o
+	rm -f build/test_Spi.o
+	rm -f build/mock_Spi.o
+	rm -f build/test_Spi_MockUps.o
+	# rm -f ${obj_dev-libs}
+	# rm -f ${obj_libs-tested}
+	# rm -f ${obj_libs-tested-with-mocks}
+	# rm -f ${obj_libs-mocked}
 

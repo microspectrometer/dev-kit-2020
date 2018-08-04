@@ -13,6 +13,7 @@
 // used by the test code. The symbols are only for obtaining addresses.
 static uint8_t volatile value_in_fake_Spi_ddr;
 static uint8_t volatile value_in_fake_Spi_port;
+static uint8_t volatile value_in_fake_Spi_pin;
 static uint8_t volatile value_in_fake_Spi_spcr;  // SPI control register
 static uint8_t volatile value_in_fake_Spi_spsr;  // SPI status  register
 static uint8_t volatile value_in_fake_Spi_spdr;  // SPI data    register
@@ -20,6 +21,7 @@ static uint8_t volatile value_in_fake_Spi_spdr;  // SPI data    register
 //  =====[ I/O Register Address ]=====
 uint8_t volatile * const Spi_ddr    =   &value_in_fake_Spi_ddr;
 uint8_t volatile * const Spi_port   =   &value_in_fake_Spi_port;
+uint8_t volatile * const Spi_pin    =   &value_in_fake_Spi_pin;
 uint8_t volatile * const Spi_spcr   =   &value_in_fake_Spi_spcr;
 uint8_t volatile * const Spi_spsr   =   &value_in_fake_Spi_spsr;
 uint8_t volatile * const Spi_spdr   =   &value_in_fake_Spi_spdr;

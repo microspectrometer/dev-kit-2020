@@ -182,5 +182,9 @@ int main()
     setUp = SetUp_SpiMasterRead; tearDown = TearDown_SpiMasterRead;
     RUN_TEST(SpiMasterRead_returns_the_SPI_data_register);
     RUN_TEST(SpiMasterRead_waits_for_transmission_to_complete);
+    //
+    setUp = SetUp_ClearPendingSpiInterrupt;
+    tearDown = TearDown_ClearPendingSpiInterrupt;
+    RUN_TEST(ClearPendingSpiInterrupt_reads_SPSR_and_SPDR);
     return UNITY_END();
 }

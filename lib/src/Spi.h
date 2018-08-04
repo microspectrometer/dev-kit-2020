@@ -22,7 +22,6 @@ void SpiMasterWaitForResponse(void);
 extern void (*SpiMasterOpenSpi)(void);
 extern void (*SpiMasterCloseSpi)(void);
 extern bool (*SpiTransferIsDone)(void);
-extern uint8_t (*ReadSpiDataRegister)(void);
 
 /* =====[ Hardware dependencies to be resolved in Spi-Hardware.h ]===== */
 /* ---Pin Direction and I/O Registers--- */
@@ -50,9 +49,14 @@ extern uint8_t const Spi_InterruptFlag;
 
 /* =====[ SPI Slave API ]===== */
 void SpiSlaveInit(void);
-void SpiEnableInterrupt(void);
 uint8_t SpiSlaveRead(void);
 void SpiSlaveSignalDataIsReady(void);
 void SpiSlaveSignalDataIsNotReady(void);
+
+/* =====[ Plumbing for all AVR SPI devices, exposed for testing ]===== */
+extern uint8_t (*ReadSpiDataRegister)(void);
+void SpiEnableInterrupt(void);
+void ClearPendingSpiInterrupt(void);
+extern uint8_t (*ReadSpiStatusReg)(void);
 
 #endif // _SPI_H

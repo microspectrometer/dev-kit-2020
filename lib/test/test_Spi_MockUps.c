@@ -99,3 +99,26 @@ void TearDownMock_SpiMasterWaitForResponse(void)  // FUT
     Unstub_SpiResponseIsReady();  // DOF
 }
 
+static uint8_t (*ReadSpiStatusReg_Saved)(void);
+static void Stub_ReadSpiStatusReg(void) {
+    ReadSpiStatusReg_Saved = ReadSpiStatusReg;
+    ReadSpiStatusReg = ReadSpiStatusReg_Stubbed;
+}
+static void Unstub_ReadSpiStatusReg(void) {
+    ReadSpiStatusReg = ReadSpiStatusReg_Saved;
+}
+void SetUpMock_ClearPendingSpiInterrupt(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_ReadSpiStatusReg();  // DOF
+    Stub_ReadSpiDataRegister();  // DOF
+}
+void TearDownMock_ClearPendingSpiInterrupt(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_ReadSpiStatusReg();  // DOF
+    Unstub_ReadSpiDataRegister();  // DOF
+}
+
