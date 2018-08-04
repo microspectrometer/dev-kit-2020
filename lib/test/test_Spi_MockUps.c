@@ -99,26 +99,47 @@ void TearDownMock_SpiMasterWaitForResponse(void)  // FUT
     Unstub_SpiResponseIsReady();  // DOF
 }
 
-static uint8_t (*ReadSpiStatusReg_Saved)(void);
-static void Stub_ReadSpiStatusReg(void) {
-    ReadSpiStatusReg_Saved = ReadSpiStatusReg;
-    ReadSpiStatusReg = ReadSpiStatusReg_Stubbed;
+static uint8_t (*ReadSpiStatusRegister_Saved)(void);
+static void Stub_ReadSpiStatusRegister(void) {
+    ReadSpiStatusRegister_Saved = ReadSpiStatusRegister;
+    ReadSpiStatusRegister = ReadSpiStatusRegister_Stubbed;
 }
-static void Unstub_ReadSpiStatusReg(void) {
-    ReadSpiStatusReg = ReadSpiStatusReg_Saved;
+static void Unstub_ReadSpiStatusRegister(void) {
+    ReadSpiStatusRegister = ReadSpiStatusRegister_Saved;
 }
 void SetUpMock_ClearPendingSpiInterrupt(void)  // FUT
 {
     mock = Mock_new();
     //
-    Stub_ReadSpiStatusReg();  // DOF
+    Stub_ReadSpiStatusRegister();  // DOF
     Stub_ReadSpiDataRegister();  // DOF
 }
 void TearDownMock_ClearPendingSpiInterrupt(void)  // FUT
 {
     Mock_destroy(mock); mock = NULL;
     //
-    Unstub_ReadSpiStatusReg();  // DOF
+    Unstub_ReadSpiStatusRegister();  // DOF
     Unstub_ReadSpiDataRegister();  // DOF
+}
+
+static void (*ClearPendingSpiInterrupt_Saved)(void);
+static void Stub_ClearPendingSpiInterrupt(void) {
+    ClearPendingSpiInterrupt_Saved = ClearPendingSpiInterrupt;
+    ClearPendingSpiInterrupt = ClearPendingSpiInterrupt_Stubbed;
+}
+static void Unstub_ClearPendingSpiInterrupt(void) {
+    ClearPendingSpiInterrupt = ClearPendingSpiInterrupt_Saved;
+}
+void SetUpMock_SpiMasterInit(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_ClearPendingSpiInterrupt();  // DOF
+}
+void TearDownMock_SpiMasterInit(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_ClearPendingSpiInterrupt();  // DOF
 }
 

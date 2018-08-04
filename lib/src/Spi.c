@@ -1,7 +1,7 @@
 #include "Spi.h"
 #include "ReadWriteBits.h"
 
-void ClearPendingSpiInterrupt(void)
+static void ClearPendingSpiInterrupt_Implementation(void)
 {
     // Clear the SPI Interrupt Flag bit in the SPI Status Register.
     // Implementation:
@@ -12,14 +12,15 @@ void ClearPendingSpiInterrupt(void)
     /* *Spi_spdr; */
     //
     // New implementation -- check how avr-gcc handles this:
-    ReadSpiStatusReg();     // read and discard the value
+    ReadSpiStatusRegister();// read and discard the value
     ReadSpiDataRegister();  // read and discard the value
 }
-static uint8_t ReadSpiStatusReg_Implementation(void)
+void (*ClearPendingSpiInterrupt)(void) = ClearPendingSpiInterrupt_Implementation;
+static uint8_t ReadSpiStatusRegister_Implementation(void)
 {
     return *Spi_spsr;
 }
-uint8_t (*ReadSpiStatusReg)(void) = ReadSpiStatusReg_Implementation;
+uint8_t (*ReadSpiStatusRegister)(void) = ReadSpiStatusRegister_Implementation;
 //
 /* =====[ Spi Master ]===== */
 //
@@ -84,10 +85,16 @@ static void EnableSpi(void)
 /*     ClearBit(Spi_ddr, Spi_Miso);    // make sure Miso is an input */
 /*     SpiSlaveSignalDataIsNotReady(); // enable pull-up on Miso */
 /* } */
+static void SetMisoAsPullupInput(void)
+{
+    ClearBit(Spi_ddr, Spi_Miso);    // make it an input
+    SetBit(Spi_port, Spi_Miso);     // enable pull-up
+}
 void SpiMasterInit(void)
 {
     SlaveSelectIdleHigh();
     /* PreventFalseDataReadySignals(); // does not work */
+    SetMisoAsPullupInput(); // protect against false SpiResponseIsReady signals
     SetSlaveSelectAsOutput();  // pin-direction is user-defined
     SetMosiAsOutput();         // pin-direction is user-defined
     SetSckAsOutput();          // pin-direction is user-defined

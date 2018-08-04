@@ -76,16 +76,29 @@ uint8_t ReadSpiDataRegister_Stubbed(void) {
     return ReadSpiDataRegister_StubbedReturnValue;
 }
 
-static RecordedCall * Mock_ReadSpiStatusReg(void)
+static RecordedCall * Mock_ReadSpiStatusRegister(void)
 {
-    char const *call_name = "ReadSpiStatusReg";
+    char const *call_name = "ReadSpiStatusRegister";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
     return record_of_this_call;
 }
-void Expect_ReadSpiStatusReg(void) {
-    RecordExpectedCall(mock, Mock_ReadSpiStatusReg());
+void Expect_ReadSpiStatusRegister(void) {
+    RecordExpectedCall(mock, Mock_ReadSpiStatusRegister());
 }
-uint8_t ReadSpiStatusReg_Stubbed(void) {
-    RecordActualCall(mock, Mock_ReadSpiStatusReg());
+uint8_t ReadSpiStatusRegister_Stubbed(void) {
+    RecordActualCall(mock, Mock_ReadSpiStatusRegister());
     return 0x00; // I do not care what this returns
+}
+
+static RecordedCall * Mock_ClearPendingSpiInterrupt(void)
+{
+    char const *call_name = "ClearPendingSpiInterrupt";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_ClearPendingSpiInterrupt(void) {
+    RecordExpectedCall(mock, Mock_ClearPendingSpiInterrupt());
+}
+void ClearPendingSpiInterrupt_Stubbed(void) {
+    RecordActualCall(mock, Mock_ClearPendingSpiInterrupt());
 }

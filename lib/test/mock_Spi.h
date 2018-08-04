@@ -21,7 +21,9 @@ extern bool *SpiResponseIsReady_StubbedReturnValue;
 void Expect_ReadSpiDataRegister(void);
 uint8_t ReadSpiDataRegister_Stubbed(void);
 extern uint8_t ReadSpiDataRegister_StubbedReturnValue;
-void Expect_ReadSpiStatusReg(void);
-uint8_t ReadSpiStatusReg_Stubbed(void);
+void Expect_ReadSpiStatusRegister(void);
+uint8_t ReadSpiStatusRegister_Stubbed(void);
+void Expect_ClearPendingSpiInterrupt(void);
+void ClearPendingSpiInterrupt_Stubbed(void);
 
 #endif // _MOCK_SPI_H

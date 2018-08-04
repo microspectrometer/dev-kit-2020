@@ -8,6 +8,8 @@
 #include "mock_Spi.h"
 #include "AvrAsmMacros.h"       // fake AVR asm macro dependencies
 
+/* =====[ List of SPI Device Plumbing Tests ]===== */
+    // [x] ClearPendingSpiInterrupt_reads_SPSR_and_SPDR
 /* =====[ List of SPI Master Tests ]===== */
 // [x] SpiMasterInit_cfg
     // [x] SpiMasterInit_pulls_Ss_high
@@ -15,10 +17,10 @@
     // [x] SpiMasterInit_makes_this_mcu_the_SPI_master
     // [x] SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8
     // [x] SpiMasterInit_enables_the_SPI_hardware_module
-// [ ] SpiMasterInit_protects_against_false_SpiResponseIsReady_signals
-    // - [ ] SetMisoAsPullupInput_configure_Miso_as_an_input
-    // - [ ] SetMisoAsPullupInput_enable_its_pullup
-    // - [x] ClearPendingSpiInterrupt_reads_SPSR_and_SPDR
+    // [x] SpiMasterInit_clears_pending_SPI_interrupt
+// [x] SpiMasterInit_protects_against_false_SpiResponseIsReady_signals
+    // - [x] SetMisoAsPullupInput_configure_Miso_as_an_input
+    // - [x] SetMisoAsPullupInput_enable_its_pullup
 // SpiMasterWrite and SpiMasterRead
     // [x] SpiMasterOpenSpi_selects_the_SPI_slave
     // [x] SpiMasterCloseSpi_unselects_the_SPI_slave
@@ -52,6 +54,33 @@
     // [x] SpiSlaveRead_returns_the_SPI_data_register_byte
     // [x] SpiSlaveSignalDataIsReady_pulls_Miso_low
     // [x] SpiSlaveSignalDataIsNotReady_pulls_Miso_high
+
+//
+/* =====[ Plumbing for all SPI devices ]===== */
+//
+void SetUp_ClearPendingSpiInterrupt(void)
+{
+    SetUpMock_ClearPendingSpiInterrupt();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_ClearPendingSpiInterrupt(void)
+{
+    TearDownMock_ClearPendingSpiInterrupt();    // destroy the mock object
+    // other teardown code
+}
+/* =====[ ClearPendingSpiInterrupt ]===== */
+void ClearPendingSpiInterrupt_reads_SPSR_and_SPDR(void)
+{
+    /* =====[ Operate ]===== */
+    ClearPendingSpiInterrupt();
+    Expect_ReadSpiStatusRegister();
+    Expect_ReadSpiDataRegister();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
 
 //
 /* =====[ SPI Slave ]===== */
@@ -167,6 +196,16 @@ void SpiSlaveRead_returns_the_SPI_data_register_byte(void)
 //
 /* =====[ SPI Master ]===== */
 //
+void SetUp_SpiMasterInit(void)
+{
+    SetUpMock_SpiMasterInit();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_SpiMasterInit(void)
+{
+    TearDownMock_SpiMasterInit();    // destroy the mock object
+    // other teardown code
+}
 void SpiMasterInit_pulls_Ss_high(void)
 {
     /* =====[ Setup ]===== */
@@ -239,6 +278,37 @@ void SpiMasterInit_enables_the_SPI_hardware_module(void)
             "Bit must be high to enable the SPI."
             );
 }
+void SpiMasterInit_protects_against_false_SpiResponseIsReady_signals(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_ddr = 0xFF; *Spi_port = 0x00;
+    /* =====[ Operate ]===== */
+    SpiMasterInit();
+    /* =====[ Test Miso is configured correctly ]===== */
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Spi_Miso,
+        *Spi_ddr,
+        "DDR Miso bit must be low to be an input."
+        );
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_Miso,
+        *Spi_port,
+        "PORT Miso bit must be high to enable pullups."
+        );
+}
+void SpiMasterInit_clears_pending_SPI_interrupt(void)
+{
+    /* =====[ Operate ]===== */
+    SpiMasterInit();
+    /* =====[ Set expectations ]===== */
+    Expect_ClearPendingSpiInterrupt();
+    /* =====[ Test interrupts are cleared ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+}
+
 void SpiMasterOpenSpi_selects_the_SPI_slave(void)
 {
     /* =====[ Setup ]===== */
@@ -425,28 +495,4 @@ void SpiMasterWaitForResponse_waits_until_slave_signals_ready(void)
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
-}
-void SetUp_ClearPendingSpiInterrupt(void)
-{
-    SetUpMock_ClearPendingSpiInterrupt();    // create the mock object to record calls
-    // other setup code
-}
-void TearDown_ClearPendingSpiInterrupt(void)
-{
-    TearDownMock_ClearPendingSpiInterrupt();    // destroy the mock object
-    // other teardown code
-}
-/* =====[ ClearPendingSpiInterrupt ]===== */
-void ClearPendingSpiInterrupt_reads_SPSR_and_SPDR(void)
-{
-    /* =====[ Operate ]===== */
-    ClearPendingSpiInterrupt();
-    Expect_ReadSpiStatusReg();
-    Expect_ReadSpiDataRegister();
-    /* =====[ Test ]===== */
-    TEST_ASSERT_TRUE_MESSAGE(
-        RanAsHoped(mock),           // If this is false,
-        WhyDidItFail(mock)          // print this message.
-        );
-
 }

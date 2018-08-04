@@ -8,5 +8,7 @@ void SetUpMock_SpiMasterWaitForResponse(void);
 void TearDownMock_SpiMasterWaitForResponse(void);
 void SetUpMock_ClearPendingSpiInterrupt(void);
 void TearDownMock_ClearPendingSpiInterrupt(void);
+void SetUpMock_SpiMasterInit(void);
+void TearDownMock_SpiMasterInit(void);
 
 #endif // _TEST_SPI_MOCKUPS_H
