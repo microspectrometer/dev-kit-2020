@@ -46,10 +46,22 @@
     // [x] SpiMasterRead_returns_the_SPI_data_register
     // [x] SpiMasterRead_waits_for_transmission_to_complete
 /* =====[ List of SPI Slave Tests ]===== */
+// [x] SpiSlaveInit_cfg
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
     // [x] SpiSlaveInit_pulls_Miso_high
     // [x] SpiSlaveInit_enables_the_SPI_hardware_module
+    // [x] SpiSlaveInit_clears_pending_SPI_interrupt
+// SpiSlaveRead and SpiSlaveSignalDataIsReady or NotReady
     // [x] SpiEnableInterrupt_enables_the_transfer_is_done_interrupt
+        // - not used if interrupts are not used
+        // I decided not to use interrupts:
+        // - master has no time to do other stuff, may as well just poll
+        // - the slave is either waiting for the master or doing what the master
+        // said, and if it is in the middle of doing what the master said, it
+        // should not be interrupted -- unless I decide to implement
+        // functionality for the master to tell the slave to abort its current
+        // task
+        //
     // [x] SpiSlaveRead_waits_until_transfer_is_done
     // [x] SpiSlaveRead_returns_the_SPI_data_register_byte
     // [x] SpiSlaveSignalDataIsReady_pulls_Miso_low
@@ -85,6 +97,16 @@ void ClearPendingSpiInterrupt_reads_SPSR_and_SPDR(void)
 //
 /* =====[ SPI Slave ]===== */
 //
+void SetUp_SpiSlaveInit(void)
+{
+    SetUpMock_SpiSlaveInit();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_SpiSlaveInit(void)
+{
+    TearDownMock_SpiSlaveInit();    // destroy the mock object
+    // other teardown code
+}
 void SpiSlaveInit_configures_pin_Miso_as_an_output(void)
 {
     /* =====[ Setup ]===== */
@@ -114,6 +136,18 @@ void SpiSlaveInit_enables_the_SPI_hardware_module(void)
         Spi_Enable,
         *Spi_spcr,
         "Bit must be high to enable the SPI."
+        );
+}
+void SpiSlaveInit_clears_pending_SPI_interrupt(void)
+{
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Set exepctations ]===== */
+    Expect_ClearPendingSpiInterrupt();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
         );
 }
 void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void)

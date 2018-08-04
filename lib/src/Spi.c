@@ -142,11 +142,13 @@ static void SetMisoAsOutput(void)
 void SpiSlaveInit(void)
 {
     SpiSlaveSignalDataIsNotReady(); // MISO idles high
-    // TODO: consider if I need to drive MISO high or if a pull-up is OK
-    // SPI slaves usually only weakly pull-up MISO when not in use.
+    // After SPI is enabled, the alternate port function (SPI MISO) takes
+    // control of the PORT value.
+    // The SPI module makes MISO a pull-up instead of a hard high.
+    // MISO is only driven hard high or hard low when:
+    // - a SPI tranfer is in progress
+    // - SPI is disabled
     SetMisoAsOutput();         // pin-direction is user-defined
-    // Desperate attempts... this should already be clear
-    /* ClearBit(Spi_spcr, Spi_MasterSlaveSelect); // be the slave */
     EnableSpi();
     ClearPendingSpiInterrupt();
 }

@@ -142,4 +142,16 @@ void TearDownMock_SpiMasterInit(void)  // FUT
     //
     Unstub_ClearPendingSpiInterrupt();  // DOF
 }
+void SetUpMock_SpiSlaveInit(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_ClearPendingSpiInterrupt();  // DOF
+}
+void TearDownMock_SpiSlaveInit(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_ClearPendingSpiInterrupt();  // DOF
+}
 

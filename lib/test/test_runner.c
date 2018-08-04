@@ -171,13 +171,17 @@ void DevelopingSpiMaster(bool run_test) {if (run_test) {
     //
 }}
 void DevelopingSpiSlave(bool run_test) {if (run_test) {
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    setUp = SetUp_SpiSlaveInit; tearDown = TearDown_SpiSlaveInit;
     RUN_TEST(SpiSlaveInit_configures_pin_Miso_as_an_output);
     RUN_TEST(SpiSlaveInit_pulls_Miso_high);
     RUN_TEST(SpiSlaveInit_enables_the_SPI_hardware_module);
+    RUN_TEST(SpiSlaveInit_clears_pending_SPI_interrupt);
+    //
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(SpiEnableInterrupt_enables_the_transfer_is_done_interrupt);
     RUN_TEST(SpiSlaveSignalDataIsReady_pulls_Miso_low);
     RUN_TEST(SpiSlaveSignalDataIsNotReady_pulls_Miso_high);
+    //
     setUp = SetUp_SpiSlaveRead; tearDown = TearDown_SpiSlaveRead;
     RUN_TEST(SpiSlaveRead_waits_until_transfer_is_done);
     RUN_TEST(SpiSlaveRead_returns_the_SPI_data_register_byte);
@@ -191,8 +195,8 @@ int main()
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
-    DevelopingSpiPlumbing     (Yep);
-    DevelopingSpiMaster       (Yep);
-    DevelopingSpiSlave        (Nope);
+    DevelopingSpiPlumbing     (Nope);
+    DevelopingSpiMaster       (Nope);
+    DevelopingSpiSlave        (Yep);
     return UNITY_END();
 }
