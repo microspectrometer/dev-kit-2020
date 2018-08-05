@@ -22,6 +22,17 @@ static uint8_t ReadSpiStatusRegister_Implementation(void)
 }
 uint8_t (*ReadSpiStatusRegister)(void) = ReadSpiStatusRegister_Implementation;
 //
+static void DisableSpi_Implementation(void)
+{
+    ClearBit(Spi_spcr, Spi_Enable);
+}
+void (*DisableSpi)(void) = DisableSpi_Implementation;
+//
+static void EnableSpi_Implementation(void)
+{
+    SetBit(Spi_spcr, Spi_Enable);
+}
+void (*EnableSpi)(void) = EnableSpi_Implementation;
 /* =====[ Spi Master ]===== */
 //
 //
@@ -69,10 +80,6 @@ static void SetClockRateToFoscDividedBy8(void)
     SetBit  (Spi_spcr, Spi_ClockRateBit0);
     ClearBit(Spi_spcr, Spi_ClockRateBit1);
     SetBit(Spi_spsr, Spi_DoubleClockRate);
-}
-static void EnableSpi(void)
-{
-    SetBit(Spi_spcr, Spi_Enable);
 }
 //
 // I cannot do this.
@@ -135,13 +142,12 @@ static void SetMisoAsOutput(void)
 }
 void SpiSlaveInit(void)
 {
-    SpiSlaveSignalDataIsNotReady(); // MISO idles high
     // After SPI is enabled, the alternate port function (SPI MISO) takes
     // control of the PORT value.
-    // The SPI module makes MISO a pull-up instead of a hard high.
     // MISO is only driven hard high or hard low when:
     // - a SPI tranfer is in progress
     // - SPI is disabled
+    // When not driven hard, the SPI module makes MISO a pull-up.
     SetMisoAsOutput();         // pin-direction is user-defined
     EnableSpi();
     ClearPendingSpiInterrupt();
@@ -160,10 +166,8 @@ void SpiEnableInterrupt(void)
 void SpiSlaveSignalDataIsReady(void)
 {
     ClearBit(Spi_port, Spi_Miso);
-}
-void SpiSlaveSignalDataIsNotReady(void)
-{
-    SetBit(Spi_port, Spi_Miso);
+    DisableSpi();
+    EnableSpi();
 }
 uint8_t SpiSlaveRead(void)
 {

@@ -48,7 +48,7 @@
 /* =====[ List of SPI Slave Tests ]===== */
 // [x] SpiSlaveInit_cfg
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
-    // [x] SpiSlaveInit_pulls_Miso_high
+    // [x] SpiSlaveInit_makes_Miso_a_pullup_input_when_no_transfer_is_in_progress
     // [x] SpiSlaveInit_enables_the_SPI_hardware_module
     // [x] SpiSlaveInit_clears_pending_SPI_interrupt
 // SpiSlaveRead and SpiSlaveSignalDataIsReady or NotReady
@@ -65,7 +65,6 @@
     // [x] SpiSlaveRead_waits_until_transfer_is_done
     // [x] SpiSlaveRead_returns_the_SPI_data_register_byte
     // [x] SpiSlaveSignalDataIsReady_pulls_Miso_low
-    // [x] SpiSlaveSignalDataIsNotReady_pulls_Miso_high
 
 //
 /* =====[ Plumbing for all SPI devices ]===== */
@@ -116,14 +115,44 @@ void SpiSlaveInit_configures_pin_Miso_as_an_output(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH_MESSAGE(Spi_Miso,  *Spi_ddr, "Failed for pin Miso.");
 }
-void SpiSlaveInit_pulls_Miso_high(void)
+void SpiSlaveInit_makes_Miso_a_pullup_input_when_no_transfer_is_in_progress(void)
 {
+    // This test does not actually test any production code.
+    // But it captures *my* understanding of the behavior of the SPI hardware
+    // module.
+    // This understanding was hard earned after many hours of debug.
+    // I felt it worth documenting in code.
+    //
     /* =====[ Setup ]===== */
+    *Spi_ddr = 0x00;
     *Spi_port = 0x00;
+    // Simulate the PIN register sampling the pin value.
+    *Spi_pin = *Spi_port;
     /* =====[ Operate ]===== */
     SpiSlaveInit();
     /* =====[ Test ]===== */
-    TEST_ASSERT_BIT_HIGH(Spi_Miso, *Spi_port);
+    // Simulate the alternate SPI function overriding the PORT value.
+    if( BitIsSet(Spi_spcr, Spi_Enable) )
+    {
+        SetBit(Spi_port, Spi_Miso);
+        // Simulate the PIN register sampling the pin value.
+        *Spi_pin = *Spi_port;
+    }
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_Miso,
+        *Spi_port,
+        "Assert this test simulates the SPI hardware making MISO a pullup input."
+        );
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_Miso,
+        *Spi_pin,
+        "Assert this test simulates the PIN register sampling the MISO pin."
+        );
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_Miso,
+        *Spi_ddr,
+        "MISO must be configured as an output."
+        );
 }
 void SpiSlaveInit_enables_the_SPI_hardware_module(void)
 {
@@ -159,6 +188,16 @@ void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(Spi_InterruptEnable, *Spi_spcr);
 }
+void SetUp_SpiSlaveSignalDataIsReady(void)
+{
+    SetUpMock_SpiSlaveSignalDataIsReady();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_SpiSlaveSignalDataIsReady(void)
+{
+    TearDownMock_SpiSlaveSignalDataIsReady();    // destroy the mock object
+    // other teardown code
+}
 void SpiSlaveSignalDataIsReady_pulls_Miso_low(void)
 {
     /* =====[ Setup ]===== */
@@ -166,16 +205,21 @@ void SpiSlaveSignalDataIsReady_pulls_Miso_low(void)
     /* =====[ Operate ]===== */
     SpiSlaveSignalDataIsReady();
     /* =====[ Test ]===== */
+    // First just make sure the `Miso` PORT value is low.
     TEST_ASSERT_BIT_LOW(Spi_Miso, *Spi_port);
-}
-void SpiSlaveSignalDataIsNotReady_pulls_Miso_high(void)
-{
-    /* =====[ Setup ]===== */
-    *Spi_port = 0x00;
-    /* =====[ Operate ]===== */
-    SpiSlaveSignalDataIsNotReady();
-    /* =====[ Test ]===== */
-    TEST_ASSERT_BIT_HIGH(Spi_Miso, *Spi_port);
+    /* =====[ Set expectations ]===== */
+    // If `Miso` PORT value is low and SPI is disabled, the Miso pin is low.
+    Expect_DisableSpi();
+    // After SPI is enabled again, `Miso` goes back to being a pull-up.
+    Expect_EnableSpi();
+    // I don't know how to test for all that, but I can at least check that
+    // `DisableSpi` and `EnableSpi` are called.
+    // The expectation is that Miso dips low briefly.
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+
 }
 /* =====[ SpiSlaveRead ]===== */
 void SetUp_SpiSlaveRead(void)
@@ -378,7 +422,7 @@ void SpiTransferIsDone_returns_false_when_the_transfer_is_not_done(void)
 void SpiResponseIsReady_returns_true_when_slave_signals_data_is_ready(void)
 {
     /* =====[ Setup ]===== */
-    /* SpiSlaveSignalDataIsNotReady(); // watch the test FAIL */
+    /* SetBit(Spi_port, Spi_Miso); // watch the test FAIL */
     SpiSlaveSignalDataIsReady(); // watch the test PASS
     *Spi_pin = *Spi_port; // Fake `PIN` register sampling the input
     /* =====[ Operate and Test ]===== */
@@ -388,7 +432,7 @@ void SpiResponseIsReady_returns_false_when_slave_signals_data_not_ready(void)
 {
     /* =====[ Setup ]===== */
     /* SpiSlaveSignalDataIsReady(); // watch the test FAIL */
-    SpiSlaveSignalDataIsNotReady(); // watch the test PASS
+    SetBit(Spi_port, Spi_Miso); // watch the test PASS
     *Spi_pin = *Spi_port; // Fake `PIN` register sampling the input
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_FALSE(SpiResponseIsReady());

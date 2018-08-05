@@ -4,6 +4,7 @@
 //
 /* =====[ Plumbing for all SPI devices ]===== */
 //
+// no setup or teardown:
 void SetUp_ClearPendingSpiInterrupt(void);
 void TearDown_ClearPendingSpiInterrupt(void);
 void ClearPendingSpiInterrupt_reads_SPSR_and_SPDR(void);
@@ -11,15 +12,18 @@ void ClearPendingSpiInterrupt_reads_SPSR_and_SPDR(void);
 //
 /* =====[ SPI Slave ]===== */
 //
+// no setup or teardown:
+void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void);
+//
 void SetUp_SpiSlaveInit(void); void TearDown_SpiSlaveInit(void);
 void SpiSlaveInit_configures_pin_Miso_as_an_output(void);
-void SpiSlaveInit_pulls_Miso_high(void);
+void SpiSlaveInit_makes_Miso_a_pullup_input_when_no_transfer_is_in_progress(void);
 void SpiSlaveInit_enables_the_SPI_hardware_module(void);
 void SpiSlaveInit_clears_pending_SPI_interrupt(void);
 //
-void SpiEnableInterrupt_enables_the_transfer_is_done_interrupt(void);
+void SetUp_SpiSlaveSignalDataIsReady(void);
+void TearDown_SpiSlaveSignalDataIsReady(void);
 void SpiSlaveSignalDataIsReady_pulls_Miso_low(void);
-void SpiSlaveSignalDataIsNotReady_pulls_Miso_high(void);
 //
 void SetUp_SpiSlaveRead(void); void TearDown_SpiSlaveRead(void);
 void SpiSlaveRead_waits_until_transfer_is_done(void);

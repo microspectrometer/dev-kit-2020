@@ -25,5 +25,9 @@ void Expect_ReadSpiStatusRegister(void);
 uint8_t ReadSpiStatusRegister_Stubbed(void);
 void Expect_ClearPendingSpiInterrupt(void);
 void ClearPendingSpiInterrupt_Stubbed(void);
+void Expect_DisableSpi(void);
+void DisableSpi_Stubbed(void);
+void Expect_EnableSpi(void);
+void EnableSpi_Stubbed(void);
 
 #endif // _MOCK_SPI_H

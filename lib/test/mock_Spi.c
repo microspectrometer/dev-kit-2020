@@ -102,3 +102,29 @@ void Expect_ClearPendingSpiInterrupt(void) {
 void ClearPendingSpiInterrupt_Stubbed(void) {
     RecordActualCall(mock, Mock_ClearPendingSpiInterrupt());
 }
+
+static RecordedCall * Mock_DisableSpi(void)
+{
+    char const *call_name = "DisableSpi";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_DisableSpi(void) {
+    RecordExpectedCall(mock, Mock_DisableSpi());
+}
+void DisableSpi_Stubbed(void) {
+    RecordActualCall(mock, Mock_DisableSpi());
+}
+
+static RecordedCall * Mock_EnableSpi(void)
+{
+    char const *call_name = "EnableSpi";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_EnableSpi(void) {
+    RecordExpectedCall(mock, Mock_EnableSpi());
+}
+void EnableSpi_Stubbed(void) {
+    RecordActualCall(mock, Mock_EnableSpi());
+}

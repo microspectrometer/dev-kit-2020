@@ -155,3 +155,34 @@ void TearDownMock_SpiSlaveInit(void)  // FUT
     Unstub_ClearPendingSpiInterrupt();  // DOF
 }
 
+static void (*DisableSpi_Saved)(void);
+static void Stub_DisableSpi(void) {
+    DisableSpi_Saved = DisableSpi;
+    DisableSpi = DisableSpi_Stubbed;
+}
+static void Unstub_DisableSpi(void) {
+    DisableSpi = DisableSpi_Saved;
+}
+static void (*EnableSpi_Saved)(void);
+static void Stub_EnableSpi(void) {
+    EnableSpi_Saved = EnableSpi;
+    EnableSpi = EnableSpi_Stubbed;
+}
+static void Unstub_EnableSpi(void) {
+    EnableSpi = EnableSpi_Saved;
+}
+void SetUpMock_SpiSlaveSignalDataIsReady(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_DisableSpi();  // DOF
+    Stub_EnableSpi();  // DOF
+}
+void TearDownMock_SpiSlaveSignalDataIsReady(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_DisableSpi();  // DOF
+    Unstub_EnableSpi();  // DOF
+}
+

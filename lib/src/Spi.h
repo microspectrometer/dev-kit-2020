@@ -51,12 +51,13 @@ extern uint8_t const Spi_InterruptFlag;
 void SpiSlaveInit(void);
 uint8_t SpiSlaveRead(void);
 void SpiSlaveSignalDataIsReady(void);
-void SpiSlaveSignalDataIsNotReady(void);
 
 /* =====[ Plumbing for all AVR SPI devices, exposed for testing ]===== */
 extern uint8_t (*ReadSpiDataRegister)(void);
 void SpiEnableInterrupt(void);
 extern void (*ClearPendingSpiInterrupt)(void);
 extern uint8_t (*ReadSpiStatusRegister)(void);
+extern void (*DisableSpi)(void);
+extern void (*EnableSpi)(void);
 
 #endif // _SPI_H

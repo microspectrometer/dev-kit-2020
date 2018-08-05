@@ -235,11 +235,11 @@ void App_version_of_Slave_receives_request_without_interrupts(void)
     SpiSlaveRead(); // wait for a byte, read it and discard it
     // PASS: the slave hangs here until a byte is sent
     DebugLedsTurnRed(debug_led2);  // for manual testing
-    SpiSlaveSignalDataIsReady(); // FAIL: MISO still high
-    // Try disabling SPI!
-    ClearBit(Spi_spcr, Spi_Enable); // PASS
-    // And re-enabling SPI
-    SetBit(Spi_spcr, Spi_Enable);
+    SpiSlaveSignalDataIsReady();
+    /* // Try disabling SPI! */
+    /* ClearBit(Spi_spcr, Spi_Enable); // PASS */
+    /* // And re-enabling SPI */
+    /* SetBit(Spi_spcr, Spi_Enable); */
     DebugLedsTurnRed(debug_led3);  // for manual testing
     while(1); // Loop forever
     /* =====[ Test ]===== */
