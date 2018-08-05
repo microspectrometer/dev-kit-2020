@@ -46,14 +46,18 @@ build/%.lst: build/%.elf
 
 #--------------------------------------------------------------
 # ;fa or ;mfa
-# TODO: figure out how to replace name 'mBrd' with a variable.
+# Get rid of --verbose to just display `Firmware check OK`
+# Add `avr-size blah.elf` to see how much memory is used.
 .PHONY: download_flash
 download_flash: build/${board-name}.elf
-	atprogram.exe --verbose --tool atmelice --interface isp \
-		--device atmega328p program --chiperase --verify --file \
-		$^ > \
-		build/atprogram-download_flash-stdout.log 2> \
-		build/atprogram-download_flash-stderr.log
+	atprogram.exe --tool atmelice --interface isp \
+		--device atmega328p program --chiperase --verify --file $^
+	avr-size $^
+#	# atprogram.exe --verbose --tool atmelice --interface isp \
+#	# 	--device atmega328p program --chiperase --verify --file \
+#	# 	$^ > \
+#	# 	build/atprogram-download_flash-stdout.log 2> \
+#	# 	build/atprogram-download_flash-stderr.log
 
 #---Development---
 # ;mkp

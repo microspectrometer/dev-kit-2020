@@ -28,6 +28,7 @@
     // [x] EchoByte_reads_a_byte_and_writes_it_back_to_the_host
 // test_SpiMaster
     // [x] SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble
+    // [x] SpiMaster_detects_when_slave_is_ready_to_send_data
     // [x] Slave_receives_request_and_sends_response_when_ready
         // Master sends the request.
         // Slave parses the request.
@@ -300,17 +301,41 @@ void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
     /* =====[ Test ]===== */
     // Visually confirm debug LED is red: slave responded.
 }
+void SpiMaster_detects_when_slave_is_ready_to_send_data(void)
+{
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    SpiMasterWrite(0x00);
+    /* =====[ Operate ]===== */
+    SpiMasterWaitForResponse();
+    /* =====[ Test 1 ]===== */
+    // The master should hang here until the slave pulls MISO low.
+    //
+    // Visually confirm LED is green if `SW2` is set to `ISP`.
+    // This disconnects the master and slave `SCK`, preventing communication.
+    /* =====[ Test 2 ]===== */
+    // Move `SW2` to `SPI` and press the reset button.
+    // The master is able to communicate with the slave.
+    //
+    // Now the slave responds by pulling MISO low and execution continues.
+    DebugLedTurnRed();
+    // Visually confirm LED turns red.
+    //
+    // Measure MISO.
+    // A voltmeter will not show the voltage go low because it happens very
+    // quickly.
+    // A digital oscilloscope set to trigger on `Slave Select` should show a
+    // brief dip on MISO just after `Slave Select` goes high, but I have not
+    // done this test.
+    while(1);
+}
 void test_SpiMaster(void)
 {
     /* SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
-    Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-03
+    /* Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-03 */
+    SpiMaster_detects_when_slave_is_ready_to_send_data();  // PASS 2018-08-03
     /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); */
-}
-void MakeSpiMisoAnInputAndPullUp(void)
-{
-    ClearBit(Spi_ddr, Spi_Miso);  // input
-    SetBit(Spi_port, Spi_Miso);   // pull-up
 }
 int main()
 {
@@ -323,23 +348,5 @@ int main()
     /* test_UsbRead(); // All test pass 2018-07-28 */
     /* test_UsbWrite();   // All tests pass 2018-07-28 */
     /* test_EchoByte(); // All tests pass 2018-07-30 */
-    /* test_SpiMaster(); // All test pass 2018-08-02 */
-
-    /* SetBit(Spi_ddr, Spi_Miso); */
-    /* ClearBit(Spi_port, Spi_Miso); */
-    //
-    // TODO: integrate this with SpiMasterInit:
-    // It protects against false `SpiResponseIsReady` signals.
-    MakeSpiMisoAnInputAndPullUp();  // PASS 2018-08-03
-    SpiMasterInit();
-    // SPI slave cannot pull MISO low.
-    // Try doing a throw-away write to reset the SPI logic.
-    /* while (1); // PASS: slave only has led1 red */
-    SpiMasterWrite(0x00); // MISO still high...
-    // Maybe MISO goes low and then something happens...
-    // Try to catch a low MISO with the LED:
-    while( !SpiResponseIsReady() );
-    // When MISO goes low, turn the LED red.
-    DebugLedTurnRed();
-    while (1); // infinite loop here to *stop* execution
+    test_SpiMaster(); // All test pass 2018-08-03
 }

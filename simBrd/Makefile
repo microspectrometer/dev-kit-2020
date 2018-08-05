@@ -42,7 +42,8 @@ build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
 	avr-gcc $^ -o $@ $(CFLAGS)  \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
-	avr-size $@ > build/avr-size_simBrd.log
+	avr-size $@
+#	# avr-size $@ > build/avr-size_simBrd.log
 #	# 	-I../lib/src \
 
 # Convert .elf to .lst for disassembly.
@@ -53,14 +54,18 @@ build/%.lst: build/%.elf
 
 #--------------------------------------------------------------
 # ;fa or ;mfa
-# TODO: figure out how to replace name 'simBrd' with a variable.
+# Get rid of --verbose to just display `Firmware check OK`
+# Add `avr-size blah.elf` to see how much memory is used.
 .PHONY: download_flash
 download_flash: build/${board-name}.elf
-	atprogram.exe --verbose --tool atmelice --interface isp \
-		--device atmega328p program --chiperase --verify --file \
-		$^ > \
-		build/atprogram-download_flash-stdout.log 2> \
-		build/atprogram-download_flash-stderr.log
+	atprogram.exe --tool atmelice --interface isp \
+		--device atmega328p program --chiperase --verify --file $^
+	avr-size $^
+#	# atprogram.exe --verbose --tool atmelice --interface isp \
+#		# --device atmega328p program --chiperase --verify --file \
+#		# $^ > \
+#		# build/atprogram-download_flash-stdout.log 2> \
+#		# build/atprogram-download_flash-stderr.log
 
 #---Development---
 # ;mkp

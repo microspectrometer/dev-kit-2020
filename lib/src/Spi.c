@@ -80,11 +80,6 @@ static void EnableSpi(void)
 // Instead, it prevents the SPI master from ever receiving `DataIsReady`.
 // It behaves like MISO is always high, but I have not measured it.
 //
-/* void PreventFalseDataReadySignals(void) */
-/* { */
-/*     ClearBit(Spi_ddr, Spi_Miso);    // make sure Miso is an input */
-/*     SpiSlaveSignalDataIsNotReady(); // enable pull-up on Miso */
-/* } */
 static void SetMisoAsPullupInput(void)
 {
     ClearBit(Spi_ddr, Spi_Miso);    // make it an input
@@ -93,7 +88,6 @@ static void SetMisoAsPullupInput(void)
 void SpiMasterInit(void)
 {
     SlaveSelectIdleHigh();
-    /* PreventFalseDataReadySignals(); // does not work */
     SetMisoAsPullupInput(); // protect against false SpiResponseIsReady signals
     SetSlaveSelectAsOutput();  // pin-direction is user-defined
     SetMosiAsOutput();         // pin-direction is user-defined
