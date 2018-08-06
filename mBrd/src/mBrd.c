@@ -24,8 +24,9 @@
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
-    // [x] App_version_of_Slave_receives_request_without_interrupts
-    // [ ] App_version_of_Slave_receives_request_with_interrupts
+    // [ ] App_version_of_Slave_receives_request_without_interrupts
+    // [ ] App_version_of_Slave_sends_a_frame_of_data
+    // [-] App_version_of_Slave_receives_request_with_interrupts
 
 void All_debug_leds_turn_on_and_turn_green(void)
 {
@@ -191,9 +192,6 @@ void LoadError(void)
 }
 void SendDataMasterAskedFor(void)
 {
-    /* SpiSlaveSignalDataIsReady(); */
-    ClearBit(Spi_port, Spi_Miso);
-    while(1);
     DebugLedsTurnRed(debug_led1);  // for manual testing
     uint8_t cmd = SpiSlaveRead();
     // parse and act: get the data, load into SPDR, signal master when ready
@@ -228,24 +226,6 @@ void App_version_of_Slave_receives_request_without_interrupts(void)
     DebugLedsTurnRed(debug_led1);  // for manual testing
     /* =====[ Setup ]===== */
     SpiSlaveInit();
-    // Try loading data register with 0. See if that affects value of MISO.
-    *Spi_spdr = 0x00;  // no effect, MISO still high
-    /* SpiSlaveSignalDataIsReady(); // does the master see this? no */
-    // try waiting to pull MISO low until after a handshake
-    SpiSlaveRead(); // wait for a byte, read it and discard it
-    // PASS: the slave hangs here until a byte is sent
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    SpiSlaveSignalDataIsReady();
-    /* // Try disabling SPI! */
-    /* ClearBit(Spi_spcr, Spi_Enable); // PASS */
-    /* // And re-enabling SPI */
-    /* SetBit(Spi_spcr, Spi_Enable); */
-    DebugLedsTurnRed(debug_led3);  // for manual testing
-    while(1); // Loop forever
-    /* =====[ Test ]===== */
-    // Visually confirm led1 red: running this test
-    // Visually confirm led2 red: finished reading byte from master
-    // Visually confirm led3 red: pulled MISO low (or tried to)
     /* =====[ Main Loop ]===== */
     while(1) RespondToRequestsForData();
     // Actual app does other stuff, e.g., pet the watchdog.
@@ -260,6 +240,18 @@ void App_version_of_Slave_receives_request_without_interrupts(void)
     // Visually confirm debug LED 3 is red: slave is done.
     //
     // Check if master received 0xDB.
+    //
+    /* =====[ Old code ]===== */
+    /* SpiSlaveRead(); // wait for a byte, read it and discard it */
+    /* // PASS: the slave hangs here until a byte is sent */
+    /* DebugLedsTurnRed(debug_led2);  // for manual testing */
+    /* SpiSlaveSignalDataIsReady(); */
+    /* DebugLedsTurnRed(debug_led3);  // for manual testing */
+    /* while(1); // Loop forever */
+    /* =====[ Test ]===== */
+    // Visually confirm led1 red: running this test
+    // Visually confirm led2 red: finished reading byte from master
+    // Visually confirm led3 red: pulled MISO low (or tried to)
 }
 void test_SpiSlave(void)
 {

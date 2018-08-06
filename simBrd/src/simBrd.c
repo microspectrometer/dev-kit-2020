@@ -263,19 +263,28 @@ void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
     /* =====[ Operate ]===== */
     SpiMasterWrite(cmd_send_dummy_data_0xDB);
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    DebugLedTurnRed();
-    while (1);
+    DebugLedTurnRed(); // for manual testing
     // Visually confirm the debug LED turns red.
     uint8_t response = SpiMasterRead();
     /* =====[ Test ]===== */
-    uint8_t const expected_response = 0xDB;
-    if ( response == expected_response )
+    if ( response == cmd_send_dummy_data_0xDB )
     {
+        uint8_t test_passed[] =
+            "Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host:PASS\n"
+            "SPI slave responded with ";
+        uint16_t num_bytes_to_send = sizeof(test_passed);
+        UsbWrite(test_passed, num_bytes_to_send);
         //
         uint8_t write_buffer[] = {response};
-        uint16_t num_bytes_to_send = sizeof(write_buffer);
+        num_bytes_to_send = sizeof(write_buffer);
         UsbWrite(write_buffer, num_bytes_to_send);
-        // Manually Run host application and confirm master received 0xDB.
+        // Manually Run host application and confirm master received 0x01.
+            // Raw data shows a `\x00\x01`.
+            // The `\x00` is the NULL terminator in the `test_passed` message.
+        // Call `print` on the received data:
+            // "\n" is interpreted as a newline
+            // the `NULL` terminator prints as a single space
+            // the `\x01` shows up as a smiley face
     }
     /* =====[ USB Host Application ]===== */
     /* PS> &$python2_os_Windows */
@@ -333,8 +342,8 @@ void test_SpiMaster(void)
 {
     /* SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
-    /* Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-03 */
-    SpiMaster_detects_when_slave_is_ready_to_send_data();  // PASS 2018-08-03
+    /* SpiMaster_detects_when_slave_is_ready_to_send_data();  // PASS 2018-08-03 */
+    Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-03
     /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); */
 }
 int main()
