@@ -9,6 +9,8 @@
 #include "../../mBrd/src/Spi-Hardware.h" // map SPI I/O to actual hardware
 #include "../../mBrd/src/Spi-Commands.h" // commands understood by the SPI slave
 #include <ReadWriteBits.h>
+#include <stdio.h>  // snprintf()
+#include <string.h> // strlen()
 //
 /* =====[ Required Hardware Settings in FT_Prog ]===== */
 /* - Hardware Specific -> Ft1248 Settings */
@@ -49,6 +51,50 @@ void operate_UsbWrite(void)
     uint8_t write_buffer[] = {0, 1, 2, 3, 4, 5};
     uint16_t num_bytes_to_send = sizeof(write_buffer);
     UsbWrite(write_buffer, num_bytes_to_send);
+}
+typedef struct TestResult TestResult;
+struct TestResult
+{
+    uint8_t const pcb_name[7];  // `simBrd` or `mBrd`
+    uint8_t const test_name[81]; // names should be well under 80 char
+    uint8_t const pass_fail[5]; // `PASS` or `FAIL`
+};
+void PrintSpiSlaveResponse(uint8_t response)
+{
+    size_t len =    strlen("SPI slave responded with ``\n") +
+                    1 + // response is one byte
+                    1;  // NULL
+    uint8_t string[len];
+    snprintf((char *)string, len,
+        "SPI slave responded with `%c`\n",
+        response
+        );
+    uint16_t num_bytes_to_send;
+    num_bytes_to_send = sizeof(string);
+    UsbWrite(string, num_bytes_to_send);
+}
+uint8_t AddTestResultStringLengths(TestResult test_result)
+{
+    return  strlen((char *)test_result.pcb_name) +
+            strlen((char *)test_result.test_name) +
+            strlen((char *)test_result.pass_fail);
+}
+void PrintTestResult(TestResult this_test)
+{
+    /* size_t len = AddTestResultStringLengths(this_test) + strlen("`` test ``:\n"); */
+    size_t len =    AddTestResultStringLengths(this_test) +
+                    strlen("`` test ``:\n") +
+                    1; // add one more byte for the NULL terminator
+    uint8_t string[len];
+    snprintf((char *)string, len,
+        "`%s` test `%s`:%s\n",
+        this_test.pcb_name,
+        this_test.test_name,
+        this_test.pass_fail
+        );
+    uint16_t num_bytes_to_send;
+    num_bytes_to_send = sizeof(string);
+    UsbWrite(string, num_bytes_to_send);
 }
 void UsbWrite_called_before_UsbInit_turns_debug_led_red(void)
 {
@@ -256,28 +302,35 @@ void Slave_receives_request_and_sends_response_when_ready(void)
 }
 void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
 {
-    /* Pairs with App_version_of_Slave_receives_request_without_interrupts */
+    /* Pairs with App_version_of_Slave_sending_one_byte */
     /* =====[ Setup ]===== */
     SpiMasterInit();
     UsbInit();
     /* =====[ Operate ]===== */
-    SpiMasterWrite(cmd_send_dummy_data_0xDB);
+    SpiMasterWrite(cmd_send_dummy_byte);
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
     DebugLedTurnRed(); // for manual testing
     // Visually confirm the debug LED turns red.
     uint8_t response = SpiMasterRead();
     /* =====[ Test ]===== */
-    if ( response == cmd_send_dummy_data_0xDB )
+    if ( response == cmd_send_dummy_byte )
     {
-        uint8_t test_passed[] =
-            "Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host:PASS\n"
-            "SPI slave responded with ";
-        uint16_t num_bytes_to_send = sizeof(test_passed);
-        UsbWrite(test_passed, num_bytes_to_send);
+        TestResult this_test = {
+        .pcb_name = "simBrd",
+        .test_name = "Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host",
+        .pass_fail = "PASS"
+        };
+        PrintTestResult(this_test);
+        PrintSpiSlaveResponse(response);
+            /* "SPI slave responded with `"; */
         //
-        uint8_t write_buffer[] = {response};
-        num_bytes_to_send = sizeof(write_buffer);
-        UsbWrite(write_buffer, num_bytes_to_send);
+        /* uint8_t write_buffer[] = {response}; */
+        /* num_bytes_to_send = sizeof(write_buffer); */
+        /* UsbWrite(write_buffer, num_bytes_to_send); */
+        //
+        /* uint8_t md_tick[] = "`"; */
+        /* num_bytes_to_send = sizeof(md_tick); */
+        /* UsbWrite(md_tick, num_bytes_to_send); */
         // Manually Run host application and confirm master received 0x01.
             // Raw data shows a `\x00\x01`.
             // The `\x00` is the NULL terminator in the `test_passed` message.
@@ -299,7 +352,7 @@ void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
 }
 void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
 {
-    /* Pairs with App_version_of_Slave_receives_request_without_interrupts */
+    /* Pairs with App_version_of_Slave_sending_one_byte */
     /* =====[ Setup ]===== */
     SpiMasterInit();
     UsbInit();

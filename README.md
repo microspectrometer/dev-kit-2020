@@ -1923,7 +1923,7 @@ other bits in the bus-width nibble are pulled high.
 ### Track progress in the current dev cycle
 #### ! embedded tests to discover new code
 - [x] SpiMaster
-- [ ] SpiSlave
+- [x] SpiSlave
     - [x] killed a few bugs:
         - [x] I was reading `PORT` instead of `PIN`
         - [x] I was reading a function name instead of the function value
@@ -1935,7 +1935,7 @@ other bits in the bus-width nibble are pulled high.
     - make a version without interrupts and a version with interrupts
 #### unit-tested working code into lib code and refactored
 - [x] SpiMaster
-- [x] SpiSlave
+- [ ] SpiSlave
 #### refactor embedded tests using new lib code
 - [x] SpiMaster
 - [x] SpiSlave

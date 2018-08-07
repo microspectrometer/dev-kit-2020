@@ -24,7 +24,7 @@
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
-    // [ ] App_version_of_Slave_receives_request_without_interrupts
+    // [ ] App_version_of_Slave_sending_one_byte
     // [ ] App_version_of_Slave_sends_a_frame_of_data
     // [-] App_version_of_Slave_receives_request_with_interrupts
 
@@ -182,6 +182,12 @@ void SendDummyData(uint8_t dummy_byte)
     *Spi_spdr = dummy_byte;
     SpiSlaveSignalDataIsReady();
 }
+void SendDummyByte()
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    *Spi_spdr = cmd_send_dummy_byte;
+    SpiSlaveSignalDataIsReady();
+}
 void SendDummyFrame(void)
 {
     DebugLedsTurnRed(debug_led2);  // for manual testing
@@ -195,11 +201,11 @@ void SendDataMasterAskedFor(void)
     DebugLedsTurnRed(debug_led1);  // for manual testing
     uint8_t cmd = SpiSlaveRead();
     // parse and act: get the data, load into SPDR, signal master when ready
-    if      (cmd == cmd_send_dummy_data_0xDB) SendDummyData(0xDB);
+    if      (cmd == cmd_send_dummy_byte) SendDummyByte();
+    DebugLedsTurnRed(debug_led3);  // for manual testing
     /* else if (cmd == cmd_send_bytes_0xB1_0xB2_0xB3_0xB4) SendDummyFrame(); */
     /* // need an established command to ignore -- for when master does read */
     /* else LoadError();  // PASS 2018-08-03 */
-    /* DebugLedsTurnRed(debug_led3);  // for manual testing */
 }
 void RespondToRequestsForData(void)
 {
@@ -207,6 +213,9 @@ void RespondToRequestsForData(void)
     // If there is no request for data, do nothing.
     /* if ( SpiTransferIsDone() ) DoWhatMasterSays(); */
     if ( SpiTransferIsDone() ) SendDataMasterAskedFor();
+    // The slave assumes the master does not leave the SPI pins tri-stated.
+    // The slave assumes *any* SPI communication is a request from the master.
+    // The slave responds to *all* SPI communications.
     // Note: if the SPI master tri-states the SPI pins, it is *very* easy for
     // noise to trip the SPI slave hardware module into communication:
         // - do not program the master to do SPI communication
@@ -217,13 +226,9 @@ void RespondToRequestsForData(void)
         // - touching `SW2` couples noise which trips the SPI module!
     // This issue is easily avoided by initializing the SPI master with
     // SpiMasterInit().
-    // The slave assumes the master *is* does not leave the SPI pins tri-stated.
-    // The slave assumes *any* SPI communication is a request from the master.
-    // The slave responds to *all* SPI communications.
 }
-void App_version_of_Slave_receives_request_without_interrupts(void)
+void App_version_of_Slave_sending_one_byte(void)
 {
-    DebugLedsTurnRed(debug_led1);  // for manual testing
     /* =====[ Setup ]===== */
     SpiSlaveInit();
     /* =====[ Main Loop ]===== */
@@ -238,20 +243,6 @@ void App_version_of_Slave_receives_request_without_interrupts(void)
     // Visually confirm debug LED 1 is red: slave hears master.
     // Visually confirm debug LED 2 is red: slave understood master.
     // Visually confirm debug LED 3 is red: slave is done.
-    //
-    // Check if master received 0xDB.
-    //
-    /* =====[ Old code ]===== */
-    /* SpiSlaveRead(); // wait for a byte, read it and discard it */
-    /* // PASS: the slave hangs here until a byte is sent */
-    /* DebugLedsTurnRed(debug_led2);  // for manual testing */
-    /* SpiSlaveSignalDataIsReady(); */
-    /* DebugLedsTurnRed(debug_led3);  // for manual testing */
-    /* while(1); // Loop forever */
-    /* =====[ Test ]===== */
-    // Visually confirm led1 red: running this test
-    // Visually confirm led2 red: finished reading byte from master
-    // Visually confirm led3 red: pulled MISO low (or tried to)
 }
 void test_SpiSlave(void)
 {
@@ -260,7 +251,7 @@ void test_SpiSlave(void)
     /* SPI_interrupt_routine_turns_debug_led1_red(); // PASS 2018-08-01 */
     /* SPI_read_in_ISR_and_show_data_on_debug_leds(); // PASS 2018-08-01 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
-    App_version_of_Slave_receives_request_without_interrupts();
+    App_version_of_Slave_sending_one_byte();
 }
 void Miso_measures_3V_when_it_outputs_a_hard_high(void)
 {
@@ -347,7 +338,7 @@ int main()
 /* void GetDataMasterAskedFor(uint8_t cmd) */
 /* { */
 /*     // parse and act: get the data and load it into SPDR */
-/*     if      (cmd == cmd_send_dummy_data_0xDB) SendDummyData(0xDB); */
+/*     if      (cmd == cmd_send_dummy_byte) SendDummyData(0xDB); */
 /*     else if (cmd == cmd_send_bytes_0xB1_0xB2_0xB3_0xB4) SendDummyFrame(); */
 /*     else LoadError();  // PASS 2018-08-03 */
 /* } */

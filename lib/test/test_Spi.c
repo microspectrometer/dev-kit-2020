@@ -12,8 +12,13 @@
     // [x] ClearPendingSpiInterrupt_reads_SPSR_and_SPDR
 /* =====[ List of SPI Master Tests ]===== */
 // [x] SpiMasterInit_cfg
-    // [x] SpiMasterInit_pulls_Ss_high
     // [x] SpiMasterInit_configures_pins_Ss_Mosi_Sck_as_outputs
+        // - SpiMaster must drive Ss, Mosi, and Sck hard
+        // - these pins cannot be tri-stated
+        // - the slave responds to *all* SPI communications
+        // - if these pins are tri-stated, noise trips the SPI slave hardware
+        // into communication
+    // [x] SpiMasterInit_pulls_Ss_high
     // [x] SpiMasterInit_makes_this_mcu_the_SPI_master
     // [x] SpiMasterInit_sets_the_clock_rate_to_fosc_divided_by_8
     // [x] SpiMasterInit_enables_the_SPI_hardware_module
