@@ -24,8 +24,10 @@
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
-    // [ ] App_version_of_Slave_sending_one_byte
-    // [ ] App_version_of_Slave_sends_a_frame_of_data
+    // [x] App_version_of_Slave_RespondToRequestsForData
+        // [x] Sends_dummy_byte_for_cmd_send_dummy_byte
+        // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
+            // This is the example for the slave to send a frame of data.
     // [-] App_version_of_Slave_receives_request_with_interrupts
 
 void All_debug_leds_turn_on_and_turn_green(void)
@@ -191,6 +193,30 @@ void SendDummyByte()
 void SendDummyFrame(void)
 {
     DebugLedsTurnRed(debug_led2);  // for manual testing
+    uint8_t fake_data[] = {0x01, 0x02, 0x03, 0x04};
+    *Spi_spdr = fake_data[0];
+    SpiSlaveSignalDataIsReady();
+    while ( !SpiTransferIsDone() );
+    *Spi_spdr = fake_data[1];
+    SpiSlaveSignalDataIsReady();
+    while ( !SpiTransferIsDone() );
+    *Spi_spdr = fake_data[2];
+    SpiSlaveSignalDataIsReady();
+    while ( !SpiTransferIsDone() );
+    *Spi_spdr = fake_data[3];
+    SpiSlaveSignalDataIsReady();
+    // When is it safe to load the next byte?
+        // Just wait for the transmission to end.
+        // The transmit buffer is single-buffered.
+        // It cannot be written until the transmission finishes.
+        // The receive buffer is double-buffered.
+        // Old values are available up until the last bit of the next byte is
+        // shifted in.
+    // The SPI master waits for MISO to go low after every read.
+    // This gaurantees the next byte of data is ready.
+    // The SPI master does not have to release SlaveSelect, but it can.
+    // SlaveSelect being low should not impact the slave's ability to disable
+    // SPI and pull MISO low.
 }
 void LoadError(void)
 {
@@ -200,19 +226,41 @@ void SendDataMasterAskedFor(void)
 {
     DebugLedsTurnRed(debug_led1);  // for manual testing
     uint8_t cmd = SpiSlaveRead();
-    // parse and act: get the data, load into SPDR, signal master when ready
+    // parse and act
+    // each action gets data, loads it into SPDR, and signals master when ready
     if      (cmd == cmd_send_dummy_byte) SendDummyByte();
+    else if (cmd == cmd_send_four_dummy_bytes) SendDummyFrame();
     DebugLedsTurnRed(debug_led3);  // for manual testing
-    /* else if (cmd == cmd_send_bytes_0xB1_0xB2_0xB3_0xB4) SendDummyFrame(); */
     /* // need an established command to ignore -- for when master does read */
     /* else LoadError();  // PASS 2018-08-03 */
 }
 void RespondToRequestsForData(void)
 {
-    // If the SPI master requested data, process the request.
-    // If there is no request for data, do nothing.
-    /* if ( SpiTransferIsDone() ) DoWhatMasterSays(); */
+    // Poll SPI bus. Process data requests, if any.
     if ( SpiTransferIsDone() ) SendDataMasterAskedFor();
+}
+void App_version_of_Slave_RespondToRequestsForData(void)
+{
+    // [x] Sends_dummy_byte_for_cmd_send_dummy_byte
+    // pairs with Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
+    // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
+    // pairs with Get_several_bytes_from_slave_and_write_bytes_to_USB_host
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
+    /* =====[ Main Loop ]===== */
+    while(1) RespondToRequestsForData();
+    // Actual app does other stuff, e.g., pet the watchdog.
+    /* =====[ Test ]===== */
+    // Program master to send a command from `Spi-Commands.h`.
+    //
+    // Visually confirm debug LEDs are green.
+    // Move `SW2` to `SPI`.
+    // Press reset button.
+    // Visually confirm debug LED 1 is red: slave hears master.
+    // Visually confirm debug LED 2 is red: slave understood master.
+    // Visually confirm debug LED 3 is red: success or failure, slave is done.
+    //
+// Notes for designing the SPI master:
     // The slave assumes the master does not leave the SPI pins tri-stated.
     // The slave assumes *any* SPI communication is a request from the master.
     // The slave responds to *all* SPI communications.
@@ -227,23 +275,6 @@ void RespondToRequestsForData(void)
     // This issue is easily avoided by initializing the SPI master with
     // SpiMasterInit().
 }
-void App_version_of_Slave_sending_one_byte(void)
-{
-    /* =====[ Setup ]===== */
-    SpiSlaveInit();
-    /* =====[ Main Loop ]===== */
-    while(1) RespondToRequestsForData();
-    // Actual app does other stuff, e.g., pet the watchdog.
-    /* =====[ Test ]===== */
-    // Program master to send byte 0x01.
-    //
-    // Visually confirm debug LEDs are green.
-    // Move `SW2` to `SPI`.
-    // Press reset button.
-    // Visually confirm debug LED 1 is red: slave hears master.
-    // Visually confirm debug LED 2 is red: slave understood master.
-    // Visually confirm debug LED 3 is red: slave is done.
-}
 void test_SpiSlave(void)
 {
     /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-31 */
@@ -251,7 +282,7 @@ void test_SpiSlave(void)
     /* SPI_interrupt_routine_turns_debug_led1_red(); // PASS 2018-08-01 */
     /* SPI_read_in_ISR_and_show_data_on_debug_leds(); // PASS 2018-08-01 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
-    App_version_of_Slave_sending_one_byte();
+    App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08
 }
 void Miso_measures_3V_when_it_outputs_a_hard_high(void)
 {
@@ -333,13 +364,12 @@ int main()
     DebugLedsTurnAllOn();
     DebugLedsTurnAllGreen();
     test_SpiSlave(); // All tests pass 2018-08-02
-    /* test_Atmel_ice_quirk_requires_flipping_SW2_to_SPI(); // FAIL */
 }
 /* void GetDataMasterAskedFor(uint8_t cmd) */
 /* { */
 /*     // parse and act: get the data and load it into SPDR */
 /*     if      (cmd == cmd_send_dummy_byte) SendDummyData(0xDB); */
-/*     else if (cmd == cmd_send_bytes_0xB1_0xB2_0xB3_0xB4) SendDummyFrame(); */
+/*     else if (cmd == cmd_send_four_dummy_bytes) SendDummyFrame(); */
 /*     else LoadError();  // PASS 2018-08-03 */
 /* } */
 /* void DoWhatMasterSays(void) */

@@ -1,2 +1,2 @@
 uint8_t const cmd_send_dummy_byte = 0x01;
-uint8_t const cmd_send_bytes_0xB1_0xB2_0xB3_0xB4 = 0x02;
+uint8_t const cmd_send_four_dummy_bytes = 0x02;

@@ -37,7 +37,7 @@
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
     // [x] Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
-    // [ ] Get_several_bytes_from_slave_and_write_bytes_to_USB_host
+    // [x] Get_several_bytes_from_slave_and_write_bytes_to_USB_host
 void operate_UsbWrite(void)
 {
     //
@@ -356,7 +356,7 @@ void Slave_receives_request_and_sends_response_when_ready(void)
 }
 void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
 {
-    /* Pairs with App_version_of_Slave_sending_one_byte */
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
     /* =====[ Setup ]===== */
     SpiMasterInit();
     UsbInit();
@@ -414,16 +414,40 @@ void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
 }
 void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
 {
-    /* Pairs with App_version_of_Slave_sending_one_byte */
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
     /* =====[ Setup ]===== */
     SpiMasterInit();
     UsbInit();
     /* =====[ Operate ]===== */
-    SpiMasterWrite(cmd_send_bytes_0xB1_0xB2_0xB3_0xB4);
+    uint8_t fake_data[4]; uint8_t * pfake_data = fake_data;
+    uint16_t nbytes = sizeof(fake_data);
+    SpiMasterWrite(cmd_send_four_dummy_bytes);
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    *(pfake_data++) = SpiMasterRead();
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    *(pfake_data++) = SpiMasterRead();
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    *(pfake_data++) = SpiMasterRead();
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    *(pfake_data++) = SpiMasterRead();
     DebugLedTurnRed();
     /* =====[ Test ]===== */
-    // Visually confirm debug LED is red: slave responded.
+    // Visually confirm debug LED turned red: slave responded with four bytes.
+    TestResult this_test = {
+        .pcb_name = "simBrd",
+        .test_name = "Get_several_bytes_from_slave_and_write_bytes_to_USB_host",
+        .pass_fail = "PASS"
+        };
+    PrintTestResultInColor(this_test);
+    for (uint16_t i=0; i<nbytes; i++) PrintSpiSlaveResponseInColor(fake_data[i]);
+    //
+    // Manually Run host application and confirm master received 1, 2, 3, 4.
+    // simBrd test Get_several_bytes_from_slave_and_write_bytes_to_USB_host:PASS
+    // SPI slave responded with  ☺
+    // SPI slave responded with  ☻
+    // SPI slave responded with  ♥
+    // SPI slave responded with  ♦
+    // Confirm slave leds 1, 2, and 3 turn red.
 }
 void SpiMaster_detects_when_slave_is_ready_to_send_data(void)
 {
@@ -458,8 +482,8 @@ void test_SpiMaster(void)
     /* SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
     /* SpiMaster_detects_when_slave_is_ready_to_send_data();  // PASS 2018-08-03 */
-    Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-03
-    /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); */
+    /* Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-08 */
+    Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); // PASS 2018-08-08
 }
 int main()
 {
