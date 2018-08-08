@@ -59,7 +59,66 @@ struct TestResult
     uint8_t const test_name[81]; // names should be well under 80 char
     uint8_t const pass_fail[5]; // `PASS` or `FAIL`
 };
-void PrintSpiSlaveResponse(uint8_t response)
+uint8_t const text_color_reset[]    = "\033[39m";
+uint8_t const text_color_grey[]     = "\033[30m"; // test_name
+uint8_t const text_color_white[]    = "\033[37m"; // test_name, PASS, response
+uint8_t const text_color_cyan[]     = "\033[36m"; // PASS
+uint8_t const text_color_red[]      = "\033[31m"; // FAIL
+uint8_t const text_color_yellow[]   = "\033[33m"; // simBrd
+uint8_t const text_color_magenta[]  = "\033[35m"; // mBrd
+uint8_t const * PassFailColor(TestResult test)
+{
+    int test_failed = strcmp((char *)test.pass_fail, "PASS");
+    return test_failed ? text_color_red : text_color_white;
+}
+uint8_t AddTestResultStringLengths(TestResult test_result)
+{
+    return  strlen((char *)test_result.pcb_name) +
+            strlen((char *)test_result.test_name) +
+            strlen((char *)test_result.pass_fail);
+}
+void PrintTestResultInMono(TestResult this_test)
+{
+    size_t len =    AddTestResultStringLengths(this_test) +
+                    strlen("`` test ``:\n") +
+                    1;      // add one more byte for the NULL terminator
+    uint8_t string[len];
+    snprintf((char *)string, len,
+        "`%s` test `%s`:%s\n",
+        this_test.pcb_name,
+        this_test.test_name,
+        this_test.pass_fail
+        );
+    uint16_t num_bytes_to_send;
+    /* num_bytes_to_send = sizeof(string);  // change sizeof to strlen to drop NULL */
+    num_bytes_to_send = strlen((char *)string);
+    UsbWrite(string, num_bytes_to_send);
+}
+void PrintTestResultInColor(TestResult this_test)
+{
+    size_t len =    AddTestResultStringLengths(this_test) +
+                    strlen(" test :\n") +
+                    20 +    // add 5 bytes for each color code
+                    1;      // add one more byte for the NULL terminator
+    uint8_t string[len];
+    snprintf((char *)string, len,
+        "%s%s test %s%s:%s%s%s\n",
+        /* text_color_yellow, */
+        text_color_white,
+        this_test.pcb_name,
+        text_color_grey,
+        this_test.test_name,
+        /* text_color_cyan, */
+        PassFailColor(this_test), // PASS is text_color_white, FAIL is text_color_red
+        this_test.pass_fail,
+        text_color_reset
+        );
+    uint16_t num_bytes_to_send;
+    /* num_bytes_to_send = sizeof(string);  // change sizeof to strlen to drop NULL */
+    num_bytes_to_send = strlen((char *)string);
+    UsbWrite(string, num_bytes_to_send);
+}
+void PrintSpiSlaveResponseInMono(uint8_t response)
 {
     size_t len =    strlen("SPI slave responded with ``\n") +
                     1 + // response is one byte
@@ -70,30 +129,25 @@ void PrintSpiSlaveResponse(uint8_t response)
         response
         );
     uint16_t num_bytes_to_send;
-    num_bytes_to_send = sizeof(string);
+    num_bytes_to_send = strlen((char *)string);
     UsbWrite(string, num_bytes_to_send);
 }
-uint8_t AddTestResultStringLengths(TestResult test_result)
+void PrintSpiSlaveResponseInColor(uint8_t response)
 {
-    return  strlen((char *)test_result.pcb_name) +
-            strlen((char *)test_result.test_name) +
-            strlen((char *)test_result.pass_fail);
-}
-void PrintTestResult(TestResult this_test)
-{
-    /* size_t len = AddTestResultStringLengths(this_test) + strlen("`` test ``:\n"); */
-    size_t len =    AddTestResultStringLengths(this_test) +
-                    strlen("`` test ``:\n") +
-                    1; // add one more byte for the NULL terminator
+    size_t len =    strlen("SPI slave responded with   \n") +
+                    1 + // response is one byte
+                    15+ // add 5 bytes for each color code
+                    1;  // NULL
     uint8_t string[len];
     snprintf((char *)string, len,
-        "`%s` test `%s`:%s\n",
-        this_test.pcb_name,
-        this_test.test_name,
-        this_test.pass_fail
+        "%sSPI slave responded with %s %c %s\n",
+        text_color_grey,
+        text_color_white,
+        response,
+        text_color_reset
         );
     uint16_t num_bytes_to_send;
-    num_bytes_to_send = sizeof(string);
+    num_bytes_to_send = strlen((char *)string);
     UsbWrite(string, num_bytes_to_send);
 }
 void UsbWrite_called_before_UsbInit_turns_debug_led_red(void)
@@ -319,25 +373,17 @@ void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
         .pcb_name = "simBrd",
         .test_name = "Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host",
         .pass_fail = "PASS"
+        /* .pass_fail = "FAIL"  // example of a failing test */
         };
-        PrintTestResult(this_test);
-        PrintSpiSlaveResponse(response);
-            /* "SPI slave responded with `"; */
+        // Example of printing with color:
+        PrintTestResultInColor(this_test);
+        PrintSpiSlaveResponseInColor(response);
+        // Example of printing without color:
+        /* PrintTestResultInMono(this_test); */
+        /* PrintSpiSlaveResponseInMono(response); */
         //
-        /* uint8_t write_buffer[] = {response}; */
-        /* num_bytes_to_send = sizeof(write_buffer); */
-        /* UsbWrite(write_buffer, num_bytes_to_send); */
-        //
-        /* uint8_t md_tick[] = "`"; */
-        /* num_bytes_to_send = sizeof(md_tick); */
-        /* UsbWrite(md_tick, num_bytes_to_send); */
         // Manually Run host application and confirm master received 0x01.
-            // Raw data shows a `\x00\x01`.
-            // The `\x00` is the NULL terminator in the `test_passed` message.
-        // Call `print` on the received data:
-            // "\n" is interpreted as a newline
-            // the `NULL` terminator prints as a single space
-            // the `\x01` shows up as a smiley face
+        // Confirm slave leds 1, 2, and 3 turn red.
     }
     /* =====[ USB Host Application ]===== */
     /* PS> &$python2_os_Windows */
@@ -347,8 +393,24 @@ void Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
     /* s.baudrate = 9600 */
     /* s.port = 'COM12' */
     /* s.open() */
-    /* s.read(s.inWaiting()) */
     /* ``` */
+    // Move `SW2` to `SPI`. Press the reset button.
+    /* ```python */
+    /* a = s.read(s.inWaiting()) */
+    /* a */
+    /* ``` */
+    // View the raw bytes.
+        // The `\x00` is the NULL terminator in the `test_passed` message.
+        // The `\x01` is the slave response.
+        // "\n" is printed as "\n"
+    /* ```python */
+    /* a = s.read(s.inWaiting()) */
+    /* print a */
+    /* ``` */
+    // View the print-formatted test result.
+        // the `NULL` terminator prints as a single space
+        // the `\x01` shows up as a smiley face
+        // "\n" is interpreted as a newline
 }
 void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
 {

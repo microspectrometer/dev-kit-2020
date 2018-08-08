@@ -1,4 +1,6 @@
 # See ../mBrd/src/Spi-Commands.h
+import colorama
+colorama.init()
 import serial
 s=serial.Serial()
 s.baudrate = 9600
