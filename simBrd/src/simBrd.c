@@ -419,17 +419,15 @@ void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
     SpiMasterInit();
     UsbInit();
     /* =====[ Operate ]===== */
+    SpiMasterWrite(cmd_send_four_dummy_bytes);
     uint8_t fake_data[4]; uint8_t * pfake_data = fake_data;
     uint16_t nbytes = sizeof(fake_data);
-    SpiMasterWrite(cmd_send_four_dummy_bytes);
-    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    *(pfake_data++) = SpiMasterRead();
-    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    *(pfake_data++) = SpiMasterRead();
-    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    *(pfake_data++) = SpiMasterRead();
-    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    *(pfake_data++) = SpiMasterRead();
+    uint16_t byte_counter = 0;
+    while (byte_counter++ < nbytes)
+    {
+        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+        *(pfake_data++) = SpiMasterRead();
+    }
     DebugLedTurnRed();
     /* =====[ Test ]===== */
     // Visually confirm debug LED turned red: slave responded with four bytes.
