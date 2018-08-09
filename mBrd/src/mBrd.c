@@ -190,21 +190,15 @@ void SendDummyByte()
     *Spi_spdr = cmd_send_dummy_byte;
     SpiSlaveSignalDataIsReady();
 }
-void SendDummyFrame(void)
+void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes)
 {
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    uint8_t fake_data[] = {0x01, 0x02, 0x03, 0x04};
-    *Spi_spdr = fake_data[0];
-    SpiSlaveSignalDataIsReady();
-    while ( !SpiTransferIsDone() );
-    *Spi_spdr = fake_data[1];
-    SpiSlaveSignalDataIsReady();
-    while ( !SpiTransferIsDone() );
-    *Spi_spdr = fake_data[2];
-    SpiSlaveSignalDataIsReady();
-    while ( !SpiTransferIsDone() );
-    *Spi_spdr = fake_data[3];
-    SpiSlaveSignalDataIsReady();
+    uint16_t byte_index;
+    for (byte_index = 0; byte_index < nbytes; byte_index++)
+    {
+        *Spi_spdr = bytes[byte_index];
+        SpiSlaveSignalDataIsReady();
+        while ( !SpiTransferIsDone() );
+    }
     // When is it safe to load the next byte?
         // Just wait for the transmission to end.
         // The transmit buffer is single-buffered.
@@ -218,6 +212,24 @@ void SendDummyFrame(void)
     // SlaveSelect being low should not impact the slave's ability to disable
     // SPI and pull MISO low.
 }
+void SendFourDummyBytes(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    uint8_t fake_data[] = {0x01, 0x02, 0x03, 0x04};
+    uint16_t nbytes = sizeof(fake_data);
+    SpiSlaveSendBytes(fake_data, nbytes);
+}
+void SendDummyFrame(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    uint8_t fake_data[num_bytes_in_a_dummy_frame];
+    uint16_t byte_index;
+    for (byte_index = 0; byte_index < num_bytes_in_a_dummy_frame; byte_index++)
+    {
+        fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65'
+    }
+    SpiSlaveSendBytes(fake_data, (uint16_t) num_bytes_in_a_dummy_frame);
+}
 void LoadError(void)
 {
     DebugLedsTurnRed(debug_led4);  // for manual testing
@@ -229,7 +241,8 @@ void SendDataMasterAskedFor(void)
     // parse and act
     // each action gets data, loads it into SPDR, and signals master when ready
     if      (cmd == cmd_send_dummy_byte) SendDummyByte();
-    else if (cmd == cmd_send_four_dummy_bytes) SendDummyFrame();
+    else if (cmd == cmd_send_four_dummy_bytes) SendFourDummyBytes();
+    else if (cmd == cmd_send_dummy_frame) SendDummyFrame();
     DebugLedsTurnRed(debug_led3);  // for manual testing
     /* // need an established command to ignore -- for when master does read */
     /* else LoadError();  // PASS 2018-08-03 */
@@ -245,6 +258,8 @@ void App_version_of_Slave_RespondToRequestsForData(void)
     // pairs with Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
     // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
     // pairs with Get_several_bytes_from_slave_and_write_bytes_to_USB_host
+    // [ ] Sends_dummy_frame_for_cmd_send_dummy_frame
+    // pairs with Get_a_frame_from_slave_and_write_frame_to_USB_host
     /* =====[ Setup ]===== */
     SpiSlaveInit();
     /* =====[ Main Loop ]===== */
@@ -365,18 +380,3 @@ int main()
     DebugLedsTurnAllGreen();
     test_SpiSlave(); // All tests pass 2018-08-02
 }
-/* void GetDataMasterAskedFor(uint8_t cmd) */
-/* { */
-/*     // parse and act: get the data and load it into SPDR */
-/*     if      (cmd == cmd_send_dummy_byte) SendDummyData(0xDB); */
-/*     else if (cmd == cmd_send_four_dummy_bytes) SendDummyFrame(); */
-/*     else LoadError();  // PASS 2018-08-03 */
-/* } */
-/* void DoWhatMasterSays(void) */
-/* { */
-/*     /1* DebugLedsTurnRed(debug_led1);  // for manual testing *1/ */
-/*     // All commands ask the SPI slave to get some data. */
-/*     GetDataMasterAskedFor( SpiSlaveRead() ); */
-/*     SpiSlaveSignalDataIsReady(); */
-/*     /1* DebugLedsTurnRed(debug_led3);  // for manual testing *1/ */
-/* } */

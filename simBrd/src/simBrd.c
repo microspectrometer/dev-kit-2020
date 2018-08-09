@@ -38,6 +38,7 @@
         // Master gets response from slave.
     // [x] Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
     // [x] Get_several_bytes_from_slave_and_write_bytes_to_USB_host
+    // [x] Get_a_frame_from_slave_and_write_frame_to_USB_host
 void operate_UsbWrite(void)
 {
     //
@@ -447,6 +448,70 @@ void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
     // SPI slave responded with  ♦
     // Confirm slave leds 1, 2, and 3 turn red.
 }
+void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    SpiMasterWrite(cmd_send_dummy_frame);
+    uint8_t fake_data[num_bytes_in_a_dummy_frame];
+    uint8_t * pfake_data = fake_data;
+    uint16_t byte_counter = 0;
+    while (byte_counter++ < num_bytes_in_a_dummy_frame)
+    {
+        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+        *(pfake_data++) = SpiMasterRead();
+    }
+    DebugLedTurnRed();
+    /* =====[ Test ]===== */
+    // Visually confirm debug LED turned red: slave responded with a full frame.
+    TestResult this_test = {
+        .pcb_name = "simBrd",
+        .test_name = "Get_a_frame_from_slave_and_write_frame_to_USB_host",
+        .pass_fail = "PASS"
+        };
+    PrintTestResultInColor(this_test);
+    // Print the fake data sent by the slave.
+    byte_counter = 0; pfake_data = fake_data;
+    while (byte_counter++ < num_bytes_in_a_dummy_frame)
+    {
+        PrintSpiSlaveResponseInColor( *(pfake_data++) );
+    }
+    // for loop version:
+    /* for (byte_counter = 0; byte_counter < num_bytes_in_a_dummy_frame; byte_counter++) */
+    /* { */
+    /*     PrintSpiSlaveResponseInColor(fake_data[byte_counter]); */
+    /* } */
+    // Expect the alphabet:
+        // SPI slave responded with  A
+        // SPI slave responded with  B
+        // SPI slave responded with  C
+        // SPI slave responded with  D
+        // SPI slave responded with  E
+        // SPI slave responded with  F
+        // SPI slave responded with  G
+        // SPI slave responded with  H
+        // SPI slave responded with  I
+        // SPI slave responded with  J
+        // SPI slave responded with  K
+        // SPI slave responded with  L
+        // SPI slave responded with  M
+        // SPI slave responded with  N
+        // SPI slave responded with  O
+        // SPI slave responded with  P
+        // SPI slave responded with  Q
+        // SPI slave responded with  R
+        // SPI slave responded with  S
+        // SPI slave responded with  T
+        // SPI slave responded with  U
+        // SPI slave responded with  V
+        // SPI slave responded with  W
+        // SPI slave responded with  X
+        // SPI slave responded with  Y
+        // SPI slave responded with  Z
+}
 void SpiMaster_detects_when_slave_is_ready_to_send_data(void)
 {
     /* =====[ Setup ]===== */
@@ -481,7 +546,8 @@ void test_SpiMaster(void)
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
     /* SpiMaster_detects_when_slave_is_ready_to_send_data();  // PASS 2018-08-03 */
     /* Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-08 */
-    Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); // PASS 2018-08-08
+    /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); // PASS 2018-08-08 */
+    Get_a_frame_from_slave_and_write_frame_to_USB_host(); // PASS 2018-08-09
 }
 int main()
 {
