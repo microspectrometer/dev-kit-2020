@@ -39,6 +39,8 @@
     // [x] Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
     // [x] Get_several_bytes_from_slave_and_write_bytes_to_USB_host
     // [x] Get_a_frame_from_slave_and_write_frame_to_USB_host
+    // [x] Slave_ignores_cmd_slave_ignore
+
 void operate_UsbWrite(void)
 {
     //
@@ -314,17 +316,6 @@ void SetupDebugLed(void)
         debug_led
         );
 }
-/* void SpiMaster_sends_byte_0x01(void) */
-/* { */
-/*     /1* Call this function on the SPI Master *1/ */
-/*     /1* when running this test on the SPI slave. *1/ */
-/*     SpiMasterOpenSpi(); */
-/*     // Load SPI tx buffer with a byte to send. */
-/*     *Spi_spdr = 0x01; */
-/*     // Wait for SPI tranmission to complete. Version without interrupts. */
-/*     while( BitIsClear(Spi_spsr, Spi_InterruptFlag) ); */
-/*     SpiMasterCloseSpi(); */
-/* } */
 void SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(void)
 {
     /* Connect to `mBrd`. `mBrd` is the SpiSlave. */
@@ -341,6 +332,34 @@ void SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(void)
     // Visually confirm data on slave debug LEDs is:
     // led number: 4  3  2  1
     // led color:  R  G  R  R
+}
+void SpiMaster_detects_when_slave_is_ready_to_send_data(void)
+{
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    SpiMasterWrite(0x00);
+    /* =====[ Operate ]===== */
+    SpiMasterWaitForResponse();
+    /* =====[ Test 1 ]===== */
+    // The master should hang here until the slave pulls MISO low.
+    //
+    // Visually confirm LED is green if `SW2` is set to `ISP`.
+    // This disconnects the master and slave `SCK`, preventing communication.
+    /* =====[ Test 2 ]===== */
+    // Move `SW2` to `SPI` and press the reset button.
+    // The master is able to communicate with the slave.
+    //
+    // Now the slave responds by pulling MISO low and execution continues.
+    DebugLedTurnRed();
+    // Visually confirm LED turns red.
+    //
+    // Measure MISO.
+    // A voltmeter will not show the voltage go low because it happens very
+    // quickly.
+    // A digital oscilloscope set to trigger on `Slave Select` should show a
+    // brief dip on MISO just after `Slave Select` goes high, but I have not
+    // done this test.
+    while(1);
 }
 void Slave_receives_request_and_sends_response_when_ready(void)
 {
@@ -456,6 +475,7 @@ void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
     UsbInit();
     /* =====[ Operate ]===== */
     SpiMasterWrite(cmd_send_dummy_frame);
+    // SpiMasterReadSensorData
     uint8_t fake_data[num_bytes_in_a_dummy_frame];
     uint8_t * pfake_data = fake_data;
     uint16_t byte_counter = 0;
@@ -512,33 +532,21 @@ void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
         // SPI slave responded with  Y
         // SPI slave responded with  Z
 }
-void SpiMaster_detects_when_slave_is_ready_to_send_data(void)
+void Slave_ignores_cmd_slave_ignore(void)
 {
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
     /* =====[ Setup ]===== */
     SpiMasterInit();
-    SpiMasterWrite(0x00);
+    UsbInit();
     /* =====[ Operate ]===== */
-    SpiMasterWaitForResponse();
-    /* =====[ Test 1 ]===== */
-    // The master should hang here until the slave pulls MISO low.
-    //
-    // Visually confirm LED is green if `SW2` is set to `ISP`.
-    // This disconnects the master and slave `SCK`, preventing communication.
-    /* =====[ Test 2 ]===== */
-    // Move `SW2` to `SPI` and press the reset button.
-    // The master is able to communicate with the slave.
-    //
-    // Now the slave responds by pulling MISO low and execution continues.
-    DebugLedTurnRed();
-    // Visually confirm LED turns red.
-    //
-    // Measure MISO.
-    // A voltmeter will not show the voltage go low because it happens very
-    // quickly.
-    // A digital oscilloscope set to trigger on `Slave Select` should show a
-    // brief dip on MISO just after `Slave Select` goes high, but I have not
-    // done this test.
-    while(1);
+    SpiMasterWrite(slave_ignore);
+    DebugLedTurnRed(); // for manual testing
+    // Visually confirm the debug LED turns red.
+    // Visually confirm the red slave debug LEDs are 1 and 3
+    // Expect 1 red:    hears master
+    // Expect 2 green:  sent a response
+    // Expect 3 red:    done responding
+    // Expect 4 green:  unknown command
 }
 void test_SpiMaster(void)
 {
@@ -547,7 +555,8 @@ void test_SpiMaster(void)
     /* SpiMaster_detects_when_slave_is_ready_to_send_data();  // PASS 2018-08-03 */
     /* Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-08 */
     /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); // PASS 2018-08-08 */
-    Get_a_frame_from_slave_and_write_frame_to_USB_host(); // PASS 2018-08-09
+    /* Get_a_frame_from_slave_and_write_frame_to_USB_host(); // PASS 2018-08-09 */
+    Slave_ignores_cmd_slave_ignore();
 }
 int main()
 {

@@ -28,6 +28,7 @@
         // [x] Sends_dummy_byte_for_cmd_send_dummy_byte
         // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
             // This is the example for the slave to send a frame of data.
+        // [x] Slave_ignores_cmd_slave_ignore
     // [-] App_version_of_Slave_receives_request_with_interrupts
 
 void All_debug_leds_turn_on_and_turn_green(void)
@@ -230,10 +231,11 @@ void SendDummyFrame(void)
     }
     SpiSlaveSendBytes(fake_data, (uint16_t) num_bytes_in_a_dummy_frame);
 }
-void LoadError(void)
+void IndicateUnknownCommand(void)
 {
     DebugLedsTurnRed(debug_led4);  // for manual testing
 }
+void DoNothing(void){}
 void SendDataMasterAskedFor(void)
 {
     DebugLedsTurnRed(debug_led1);  // for manual testing
@@ -243,9 +245,11 @@ void SendDataMasterAskedFor(void)
     if      (cmd == cmd_send_dummy_byte) SendDummyByte();
     else if (cmd == cmd_send_four_dummy_bytes) SendFourDummyBytes();
     else if (cmd == cmd_send_dummy_frame) SendDummyFrame();
+    else if (cmd == slave_ignore) DoNothing();
+    else IndicateUnknownCommand();
     DebugLedsTurnRed(debug_led3);  // for manual testing
     /* // need an established command to ignore -- for when master does read */
-    /* else LoadError();  // PASS 2018-08-03 */
+    /* else IndicateUnknownCommand();  // PASS 2018-08-03 */
 }
 void RespondToRequestsForData(void)
 {
