@@ -50,6 +50,7 @@
     // [x] SpiMasterWaitForResponse_waits_until_slave_signals_ready
     // [x] SpiMasterRead_returns_the_SPI_data_register
     // [x] SpiMasterRead_waits_for_transmission_to_complete
+    // [x] SpiMasterRead_loads_SPI_tx_buffer_with_slave_ignore
 /* =====[ List of SPI Slave Tests ]===== */
 // [x] SpiSlaveInit_cfg
     // [x] SpiSlaveInit_configures_pin_Miso_as_an_output
@@ -548,6 +549,15 @@ void SpiMasterRead_returns_the_SPI_data_register(void)
     uint8_t actual_byte = SpiMasterRead();
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_UINT8(expect_byte, actual_byte);
+}
+void SpiMasterRead_loads_SPI_tx_buffer_with_slave_ignore(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_spdr = 0x00;  // start with 0x00 in the tx buffer
+    /* =====[ Operate ]===== */
+    SpiMasterRead();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT8(slave_ignore, *Spi_spdr);
 }
 /* =====[ SpiMasterWaitForResponse ]===== */
 void SetUp_SpiMasterWaitForResponse(void)

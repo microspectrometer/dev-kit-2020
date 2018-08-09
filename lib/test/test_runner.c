@@ -168,6 +168,7 @@ void DevelopingSpiMaster(bool run_test) {if (run_test) {
     setUp = SetUp_SpiMasterRead; tearDown = TearDown_SpiMasterRead;
     RUN_TEST(SpiMasterRead_returns_the_SPI_data_register);
     RUN_TEST(SpiMasterRead_waits_for_transmission_to_complete);
+    RUN_TEST(SpiMasterRead_loads_SPI_tx_buffer_with_slave_ignore);
     //
 }}
 void DevelopingSpiSlave(bool run_test) {if (run_test) {
@@ -198,7 +199,7 @@ int main()
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
     DevelopingSpiPlumbing     (Nope);
-    DevelopingSpiMaster       (Nope);
-    DevelopingSpiSlave        (Yep);
+    DevelopingSpiMaster       (Yep);
+    DevelopingSpiSlave        (Nope);
     return UNITY_END();
 }

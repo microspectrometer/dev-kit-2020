@@ -116,10 +116,10 @@ static uint8_t ReadSpiDataRegister_Implementation(void)
     return *Spi_spdr;
 }
 uint8_t (*ReadSpiDataRegister)(void) = ReadSpiDataRegister_Implementation;
+uint8_t const slave_ignore = 0xFF;  // slave ignores 0xFF from the master
 uint8_t SpiMasterRead(void)
 {
-    uint8_t garbage = 0xFF;
-    SpiMasterWrite(garbage);
+    SpiMasterWrite(slave_ignore);
     return ReadSpiDataRegister();
 }
 static bool SpiResponseIsReady_Implementation(void)

@@ -51,6 +51,7 @@ extern uint8_t const Spi_InterruptFlag;
 void SpiSlaveInit(void);
 uint8_t SpiSlaveRead(void);
 void SpiSlaveSignalDataIsReady(void);
+extern uint8_t const slave_ignore;  // slave ignores master cmd `slave_ignore`
 
 /* =====[ Plumbing for all AVR SPI devices, exposed for testing ]===== */
 extern uint8_t (*ReadSpiDataRegister)(void);

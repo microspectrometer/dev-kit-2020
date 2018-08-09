@@ -58,6 +58,7 @@ void SpiMasterWaitForResponse_waits_until_slave_signals_ready(void);
 void SetUp_SpiMasterRead(void); void TearDown_SpiMasterRead(void);
 void SpiMasterRead_returns_the_SPI_data_register(void);
 void SpiMasterRead_waits_for_transmission_to_complete(void);
+void SpiMasterRead_loads_SPI_tx_buffer_with_slave_ignore(void);
 //
 
 #endif // _TEST_SPI_H
