@@ -116,7 +116,8 @@ static uint8_t ReadSpiDataRegister_Implementation(void)
     return *Spi_spdr;
 }
 uint8_t (*ReadSpiDataRegister)(void) = ReadSpiDataRegister_Implementation;
-uint8_t const slave_ignore = 0xFF;  // slave ignores 0xFF from the master
+uint8_t const slave_ignore     = 0xFF;  // slave ignores 0xFF from the master
+uint8_t const test_unknown_cmd = 0xFE;  // guarantee 0xFE to be an unknown cmd
 uint8_t SpiMasterRead(void)
 {
     SpiMasterWrite(slave_ignore);

@@ -40,6 +40,7 @@
     // [x] Get_several_bytes_from_slave_and_write_bytes_to_USB_host
     // [x] Get_a_frame_from_slave_and_write_frame_to_USB_host
     // [x] Slave_ignores_cmd_slave_ignore
+    // [ ] Slave_indicates_unknown_cmd_on_led_4
 
 void operate_UsbWrite(void)
 {
@@ -548,6 +549,23 @@ void Slave_ignores_cmd_slave_ignore(void)
     // Expect 3 red:    done responding
     // Expect 4 green:  unknown command
 }
+void Slave_indicates_unknown_cmd_on_led_4(void)
+{
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
+    // Send test_unknown_cmd to see slave's response to an unknown command.
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    SpiMasterWrite(test_unknown_cmd);
+    DebugLedTurnRed(); // for manual testing
+    // Visually confirm the debug LED turns red.
+    // Visually confirm the red slave debug LEDs are 1, 3, and 4
+    // Expect 1 red:    hears master
+    // Expect 2 green:  sent a response
+    // Expect 3 red:    done responding
+    // Expect 4 green:  unknown command
+}
 void test_SpiMaster(void)
 {
     /* SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31 */
@@ -556,7 +574,8 @@ void test_SpiMaster(void)
     /* Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-08 */
     /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); // PASS 2018-08-08 */
     /* Get_a_frame_from_slave_and_write_frame_to_USB_host(); // PASS 2018-08-09 */
-    Slave_ignores_cmd_slave_ignore();
+    /* Slave_ignores_cmd_slave_ignore();  // PASS 2018-08-09 */
+    Slave_indicates_unknown_cmd_on_led_4();
 }
 int main()
 {

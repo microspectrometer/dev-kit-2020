@@ -29,6 +29,7 @@
         // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
             // This is the example for the slave to send a frame of data.
         // [x] Slave_ignores_cmd_slave_ignore
+        // [x] Slave_indicates_unknown_cmd_on_led_4
     // [-] App_version_of_Slave_receives_request_with_interrupts
 
 void All_debug_leds_turn_on_and_turn_green(void)
@@ -262,8 +263,10 @@ void App_version_of_Slave_RespondToRequestsForData(void)
     // pairs with Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
     // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
     // pairs with Get_several_bytes_from_slave_and_write_bytes_to_USB_host
-    // [ ] Sends_dummy_frame_for_cmd_send_dummy_frame
+    // [x] Sends_dummy_frame_for_cmd_send_dummy_frame
     // pairs with Get_a_frame_from_slave_and_write_frame_to_USB_host
+    // [x] Slave_indicates_unknown_cmd_on_led_4
+    // pairs with Slave_indicates_unknown_cmd_on_led_4
     /* =====[ Setup ]===== */
     SpiSlaveInit();
     /* =====[ Main Loop ]===== */
