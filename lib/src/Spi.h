@@ -53,6 +53,7 @@ uint8_t SpiSlaveRead(void);
 void SpiSlaveSignalDataIsReady(void);
 extern uint8_t const slave_ignore;      // slave ignores cmd `slave_ignore`
 extern uint8_t const test_unknown_cmd;  // tests slave response to unknown cmd
+void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes);
 
 /* =====[ Plumbing for all AVR SPI devices, exposed for testing ]===== */
 extern uint8_t (*ReadSpiDataRegister)(void);

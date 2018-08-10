@@ -12,5 +12,7 @@ void SetUpMock_SpiMasterInit(void); void TearDownMock_SpiMasterInit(void);
 void SetUpMock_SpiSlaveInit(void); void TearDownMock_SpiSlaveInit(void);
 void SetUpMock_SpiSlaveSignalDataIsReady(void);
 void TearDownMock_SpiSlaveSignalDataIsReady(void);
+void SetUpMock_SpiSlaveSendBytes(void);
+void TearDownMock_SpiSlaveSendBytes(void);
 
 #endif // _TEST_SPI_MOCKUPS_H

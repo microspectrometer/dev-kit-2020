@@ -28,7 +28,9 @@ void SpiSlaveSignalDataIsReady_pulls_Miso_low(void);
 void SetUp_SpiSlaveRead(void); void TearDown_SpiSlaveRead(void);
 void SpiSlaveRead_waits_until_transfer_is_done(void);
 void SpiSlaveRead_returns_the_SPI_data_register_byte(void);
-
+//
+void SetUp_SpiSlaveSendBytes(void); void TearDown_SpiSlaveSendBytes(void);
+void SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer(void);
 //
 /* =====[ SPI Master ]===== */
 //

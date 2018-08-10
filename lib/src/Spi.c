@@ -175,3 +175,13 @@ uint8_t SpiSlaveRead(void)
     while( !SpiTransferIsDone() );
     return ReadSpiDataRegister();
 }
+void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes)
+{
+    uint16_t byte_index;
+    for (byte_index = 0; byte_index < nbytes; byte_index++)
+    {
+        *Spi_spdr = bytes[byte_index];
+        SpiSlaveSignalDataIsReady();
+        while ( !SpiTransferIsDone() );
+    }
+}

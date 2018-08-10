@@ -71,6 +71,12 @@
     // [x] SpiSlaveRead_waits_until_transfer_is_done
     // [x] SpiSlaveRead_returns_the_SPI_data_register_byte
     // [x] SpiSlaveSignalDataIsReady_pulls_Miso_low
+// SpiSlaveProvideSensorData
+    // [ ] SpiSlaveProvideSensorData_gets_the_data_to_send
+// SpiSlaveSendBytes
+    // [x] SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer
+    // [ ] SpiSlaveSendBytes_signals_ready_after_loading_a_byte
+    // [ ] SpiSlaveSendBytes_waits_for_master_read_after_signaling_ready
 
 //
 /* =====[ Plumbing for all SPI devices ]===== */
@@ -227,6 +233,53 @@ void SpiSlaveSignalDataIsReady_pulls_Miso_low(void)
         );
 
 }
+void SetUp_SpiSlaveSendBytes(void)
+{
+    SetUpMock_SpiSlaveSendBytes();
+}
+void TearDown_SpiSlaveSendBytes(void)
+{
+    TearDownMock_SpiSlaveSendBytes();
+}
+void SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer(void)
+{
+    Expect_WriteSpiDataRegister(uint8_t byte_to_write);
+    Expect_SpiSlaveSignalDataIsReady();
+    //=====[ Mock-up test scenario by defining return values ]=====
+    // SPI hardware module sets SPIF to indicate the SPI transfer is done.
+    // SPIF := SPI Interrupt Flag
+    // SpiSlaveSendBytes checks SPIF to know when the transfer is done.
+    // SpiSlaveSendBytes does not load the next byte until the transfer is done.
+    // Return *true: transfer done* enough times to fake sending all the data.
+    bool SPIF_sequence[] = {true, true, true, true, true}; // true:= flag is set
+    int num_times_tx_is_done = sizeof(SPIF_sequence);
+    SpiTransferIsDone_StubbedReturnValue = SPIF_sequence;
+
+    /* =====[ Setup ]===== */
+    *Spi_spdr = 0x00;
+    uint8_t fake_data[] = {1, 2, 3, 4, 5};  // fakes getting sensor data frame
+    uint16_t nbytes = sizeof(fake_data);    // fakes known frame size
+    // Make sure the test scenario is correct.
+    TEST_ASSERT_EQUAL_UINT16(num_times_tx_is_done, nbytes);
+    /* =====[ Operate ]===== */
+    SpiSlaveSendBytes(fake_data, nbytes);
+    /* =====[ Test ]===== */
+    // - just check that SPDR has the last byte of fake_data
+    uint8_t last_byte_loaded = fake_data[nbytes-1];
+    // - to check all bytes are loaded, I need to add a level of indirection:
+        // I'm not sure this added indirection is worth it.
+        // For now I'm just noting how I would do it:
+        // - replace the direct write to Spi_spdr with a function call.
+        // - call it WriteSpiDataRegister
+        // - mock the function
+        // - have its stub write each byte to an array
+        // - the test creates this array
+        // - the stub has a global array pointer the test uses to get the stub
+        // to alter the array that it has created
+        // - on each write, the stub increments the array pointer
+    TEST_ASSERT_EQUAL_UINT8(last_byte_loaded, *Spi_spdr);
+}
+
 /* =====[ SpiSlaveRead ]===== */
 void SetUp_SpiSlaveRead(void)
 {

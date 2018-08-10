@@ -27,6 +27,18 @@ static void Stub_SpiTransferIsDone(void) {
 static void Unstub_SpiTransferIsDone(void) {
     SpiTransferIsDone = SpiTransferIsDone_Saved;
 }
+void SetUpMock_SpiSlaveSendBytes(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_SpiTransferIsDone();  // DOF
+}
+void TearDownMock_SpiSlaveSendBytes(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_SpiTransferIsDone();  // DOF
+}
 void SetUpMock_SpiMasterWrite(void)  // FUT
 {
     mock = Mock_new();

@@ -573,9 +573,9 @@ void test_SpiMaster(void)
     /* SpiMaster_detects_when_slave_is_ready_to_send_data();  // PASS 2018-08-03 */
     /* Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-08 */
     /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); // PASS 2018-08-08 */
-    /* Get_a_frame_from_slave_and_write_frame_to_USB_host(); // PASS 2018-08-09 */
+    Get_a_frame_from_slave_and_write_frame_to_USB_host(); // PASS 2018-08-09
     /* Slave_ignores_cmd_slave_ignore();  // PASS 2018-08-09 */
-    Slave_indicates_unknown_cmd_on_led_4();
+    /* Slave_indicates_unknown_cmd_on_led_4(); // PASS 2018-08-09 */
 }
 int main()
 {
