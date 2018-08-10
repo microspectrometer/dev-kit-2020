@@ -164,12 +164,13 @@ void SpiEnableInterrupt(void)
     EnableTransferCompleteInterrupt();
     GlobalInterruptEnable();
 }
-void SpiSlaveSignalDataIsReady(void)
+static void SpiSlaveSignalDataIsReady_Implementation(void)
 {
     ClearBit(Spi_port, Spi_Miso);
     DisableSpi();
     EnableSpi();
 }
+void (*SpiSlaveSignalDataIsReady)(void) = SpiSlaveSignalDataIsReady_Implementation;
 uint8_t SpiSlaveRead(void)
 {
     while( !SpiTransferIsDone() );
@@ -180,8 +181,28 @@ void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes)
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes; byte_index++)
     {
-        *Spi_spdr = bytes[byte_index];
+        /* *Spi_spdr = bytes[byte_index]; */
+        WriteSpiDataRegister(bytes[byte_index]);
         SpiSlaveSignalDataIsReady();
         while ( !SpiTransferIsDone() );
     }
+    // When is it safe to load the next byte?
+        // Just wait for the transmission to end.
+        // The transmit buffer is single-buffered.
+        // It cannot be written until the transmission finishes.
+        // The receive buffer is double-buffered.
+        // Old values are available up until the last bit of the next byte is
+        // shifted in.
+    // The SPI master waits for MISO to go low after every read.
+    // This gaurantees the next byte of data is ready.
+    // The SPI master does not have to release SlaveSelect, but it can.
+    // SlaveSelect being low should not impact the slave's ability to disable
+    // SPI and pull MISO low.
 }
+
+static void WriteSpiDataRegister_Implementation(uint8_t byte_to_write)
+{
+    *Spi_spdr = byte_to_write;
+}
+void (*WriteSpiDataRegister)(uint8_t) = WriteSpiDataRegister_Implementation;
+

@@ -190,7 +190,7 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     RUN_TEST(SpiSlaveRead_returns_the_SPI_data_register_byte);
     //
     setUp = SetUp_SpiSlaveSendBytes; tearDown = TearDown_SpiSlaveSendBytes;
-    RUN_TEST(SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer);
+    RUN_TEST(SpiSlaveSendBytes_waits_for_master_read_between_each_byte);
 }}
 int main()
 {

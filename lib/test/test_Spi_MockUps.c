@@ -27,17 +27,37 @@ static void Stub_SpiTransferIsDone(void) {
 static void Unstub_SpiTransferIsDone(void) {
     SpiTransferIsDone = SpiTransferIsDone_Saved;
 }
+static void (*WriteSpiDataRegister_Saved)(uint8_t);
+static void Stub_WriteSpiDataRegister(void) {
+    WriteSpiDataRegister_Saved = WriteSpiDataRegister;
+    WriteSpiDataRegister = WriteSpiDataRegister_Stubbed;
+}
+static void Unstub_WriteSpiDataRegister(void) {
+    WriteSpiDataRegister = WriteSpiDataRegister_Saved;
+}
+static void (*SpiSlaveSignalDataIsReady_Saved)(void);
+static void Stub_SpiSlaveSignalDataIsReady(void) {
+    SpiSlaveSignalDataIsReady_Saved = SpiSlaveSignalDataIsReady;
+    SpiSlaveSignalDataIsReady = SpiSlaveSignalDataIsReady_Stubbed;
+}
+static void Unstub_SpiSlaveSignalDataIsReady(void) {
+    SpiSlaveSignalDataIsReady = SpiSlaveSignalDataIsReady_Saved;
+}
 void SetUpMock_SpiSlaveSendBytes(void)  // FUT
 {
     mock = Mock_new();
     //
     Stub_SpiTransferIsDone();  // DOF
+    Stub_WriteSpiDataRegister();  // DOF
+    Stub_SpiSlaveSignalDataIsReady();  // DOF
 }
 void TearDownMock_SpiSlaveSendBytes(void)  // FUT
 {
     Mock_destroy(mock); mock = NULL;
     //
     Unstub_SpiTransferIsDone();  // DOF
+    Unstub_WriteSpiDataRegister();  // DOF
+    Unstub_SpiSlaveSignalDataIsReady();  // DOF
 }
 void SetUpMock_SpiMasterWrite(void)  // FUT
 {

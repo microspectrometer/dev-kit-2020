@@ -30,7 +30,7 @@ void SpiSlaveRead_waits_until_transfer_is_done(void);
 void SpiSlaveRead_returns_the_SPI_data_register_byte(void);
 //
 void SetUp_SpiSlaveSendBytes(void); void TearDown_SpiSlaveSendBytes(void);
-void SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer(void);
+void SpiSlaveSendBytes_waits_for_master_read_between_each_byte(void);
 //
 /* =====[ SPI Master ]===== */
 //

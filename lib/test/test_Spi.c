@@ -74,9 +74,11 @@
 // SpiSlaveProvideSensorData
     // [ ] SpiSlaveProvideSensorData_gets_the_data_to_send
 // SpiSlaveSendBytes
-    // [x] SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer
-    // [ ] SpiSlaveSendBytes_signals_ready_after_loading_a_byte
-    // [ ] SpiSlaveSendBytes_waits_for_master_read_after_signaling_ready
+    // [x] SpiSlaveSendBytes_waits_for_master_read_between_each_byte
+    // - this tests three behaviors:
+        // [x] SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer
+        // [x] SpiSlaveSendBytes_signals_ready_after_loading_a_byte
+        // [x] SpiSlaveSendBytes_waits_for_master_read_before_loading_next_byte
 
 //
 /* =====[ Plumbing for all SPI devices ]===== */
@@ -241,43 +243,53 @@ void TearDown_SpiSlaveSendBytes(void)
 {
     TearDownMock_SpiSlaveSendBytes();
 }
-void SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer(void)
+void SpiSlaveSendBytes_waits_for_master_read_between_each_byte(void)
 {
-    Expect_WriteSpiDataRegister(uint8_t byte_to_write);
-    Expect_SpiSlaveSignalDataIsReady();
     //=====[ Mock-up test scenario by defining return values ]=====
-    // SPI hardware module sets SPIF to indicate the SPI transfer is done.
-    // SPIF := SPI Interrupt Flag
-    // SpiSlaveSendBytes checks SPIF to know when the transfer is done.
-    // SpiSlaveSendBytes does not load the next byte until the transfer is done.
     // Return *true: transfer done* enough times to fake sending all the data.
     bool SPIF_sequence[] = {true, true, true, true, true}; // true:= flag is set
     int num_times_tx_is_done = sizeof(SPIF_sequence);
     SpiTransferIsDone_StubbedReturnValue = SPIF_sequence;
-
+    // Initialize a log to record the values written to Spi_spdr.
+    uint8_t Spi_spdr_write_log[] = {0, 0, 0, 0, 0};
+    // Point stubbed WriteSpiDataRegister to write to the log.
+    WriteSpiDataRegister_WriteLog = Spi_spdr_write_log;
     /* =====[ Setup ]===== */
-    *Spi_spdr = 0x00;
     uint8_t fake_data[] = {1, 2, 3, 4, 5};  // fakes getting sensor data frame
     uint16_t nbytes = sizeof(fake_data);    // fakes known frame size
     // Make sure the test scenario is correct.
     TEST_ASSERT_EQUAL_UINT16(num_times_tx_is_done, nbytes);
+    TEST_ASSERT_EQUAL_UINT16(nbytes, sizeof(Spi_spdr_write_log));
+    /* =====[ Set expectations ]===== */
+    uint8_t *pfake_data = fake_data;
+    uint16_t byte_count = 0;
+    while (byte_count++ < nbytes)
+    {
+        Expect_WriteSpiDataRegister(*(pfake_data++));
+        Expect_SpiSlaveSignalDataIsReady();
+        Expect_SpiTransferIsDone();
+    }
     /* =====[ Operate ]===== */
     SpiSlaveSendBytes(fake_data, nbytes);
-    /* =====[ Test ]===== */
-    // - just check that SPDR has the last byte of fake_data
-    uint8_t last_byte_loaded = fake_data[nbytes-1];
-    // - to check all bytes are loaded, I need to add a level of indirection:
-        // I'm not sure this added indirection is worth it.
-        // For now I'm just noting how I would do it:
-        // - replace the direct write to Spi_spdr with a function call.
-        // - call it WriteSpiDataRegister
-        // - mock the function
-        // - have its stub write each byte to an array
-        // - the test creates this array
-        // - the stub has a global array pointer the test uses to get the stub
-        // to alter the array that it has created
-        // - on each write, the stub increments the array pointer
-    TEST_ASSERT_EQUAL_UINT8(last_byte_loaded, *Spi_spdr);
+    /* =====[ First Test ]===== */
+    // test: SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer
+    // Expect the fake_data to match the log of written values.
+    pfake_data = fake_data; uint8_t *pwrite_log = Spi_spdr_write_log;
+    byte_count = 0;
+    while (byte_count++ < nbytes)
+        TEST_ASSERT_EQUAL_UINT8(
+            *(pfake_data++),
+            *(pwrite_log++)
+            );
+    /* =====[ Second Test ]===== */
+    // test: SpiSlaveSendBytes_signals_ready_after_loading_a_byte
+    // test: SpiSlaveSendBytes_waits_for_master_read_before_loading_next_byte
+    // Expectations for Both behaviors are set in the expected call list.
+    // Check that the expected calls are actually made.
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
 }
 
 /* =====[ SpiSlaveRead ]===== */

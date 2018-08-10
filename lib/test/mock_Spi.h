@@ -29,5 +29,10 @@ void Expect_DisableSpi(void);
 void DisableSpi_Stubbed(void);
 void Expect_EnableSpi(void);
 void EnableSpi_Stubbed(void);
+void Expect_WriteSpiDataRegister(uint8_t arg1);
+void WriteSpiDataRegister_Stubbed(uint8_t arg1);
+extern uint8_t *WriteSpiDataRegister_WriteLog;
+void Expect_SpiSlaveSignalDataIsReady(void);
+void SpiSlaveSignalDataIsReady_Stubbed(void);
 
 #endif // _MOCK_SPI_H

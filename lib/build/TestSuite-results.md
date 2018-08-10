@@ -6,7 +6,7 @@ test/test_runner.c:182:SpiSlaveInit_clears_pending_SPI_interrupt:PASS
 test/test_runner.c:186:SpiSlaveSignalDataIsReady_pulls_Miso_low:PASS
 test/test_runner.c:189:SpiSlaveRead_waits_until_transfer_is_done:PASS
 test/test_runner.c:190:SpiSlaveRead_returns_the_SPI_data_register_byte:PASS
-test/test_runner.c:193:SpiSlaveSendBytes_loads_each_byte_into_its_tx_buffer:PASS
+test/test_runner.c:193:SpiSlaveSendBytes_waits_for_master_read_between_each_byte:PASS
 
 -----------------------
 9 Tests 0 Failures 0 Ignored 

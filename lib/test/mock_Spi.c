@@ -128,3 +128,35 @@ void Expect_EnableSpi(void) {
 void EnableSpi_Stubbed(void) {
     RecordActualCall(mock, Mock_EnableSpi());
 }
+
+static RecordedCall * Mock_WriteSpiDataRegister(uint8_t arg1)
+{
+    char const *call_name = "WriteSpiDataRegister";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
+    *((uint8_t*)record_of_arg1->pArg) = arg1;
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void Expect_WriteSpiDataRegister(uint8_t arg1) {
+    RecordExpectedCall(mock, Mock_WriteSpiDataRegister(arg1));
+}
+uint8_t Spi_spdr_write_log[] = {6}; // example array; test code makes its own array
+uint8_t *WriteSpiDataRegister_WriteLog = Spi_spdr_write_log;
+void WriteSpiDataRegister_Stubbed(uint8_t byte_to_write) {
+    RecordActualCall(mock, Mock_WriteSpiDataRegister(byte_to_write));
+    *(WriteSpiDataRegister_WriteLog++) = byte_to_write;
+}
+
+static RecordedCall * Mock_SpiSlaveSignalDataIsReady(void)
+{
+    char const *call_name = "SpiSlaveSignalDataIsReady";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_SpiSlaveSignalDataIsReady(void) {
+    RecordExpectedCall(mock, Mock_SpiSlaveSignalDataIsReady());
+}
+void SpiSlaveSignalDataIsReady_Stubbed(void) {
+    RecordActualCall(mock, Mock_SpiSlaveSignalDataIsReady());
+}
