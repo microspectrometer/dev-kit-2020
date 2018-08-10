@@ -40,7 +40,7 @@
     // [x] Get_several_bytes_from_slave_and_write_bytes_to_USB_host
     // [x] Get_a_frame_from_slave_and_write_frame_to_USB_host
     // [x] Slave_ignores_cmd_slave_ignore
-    // [ ] Slave_indicates_unknown_cmd_on_led_4
+    // [x] Slave_indicates_unknown_cmd_on_led_4
 
 void operate_UsbWrite(void)
 {
@@ -131,6 +131,24 @@ void PrintSpiSlaveResponseInMono(uint8_t response)
     snprintf((char *)string, len,
         "SPI slave responded with `%c`\n",
         response
+        );
+    uint16_t num_bytes_to_send;
+    num_bytes_to_send = strlen((char *)string);
+    UsbWrite(string, num_bytes_to_send);
+}
+void PrintSizeOfSpiSlaveResponse(uint16_t nbytes)
+{
+    size_t len =    strlen("%sSPI slave responded with %s %u bytes %s\n") +
+                    4 + // size will take four characters
+                    15+ // add 5 bytes for each color code
+                    1;  // NULL
+    uint8_t string[len];
+    snprintf((char *)string, len,
+        "%sSPI slave responded with %s %u bytes %s\n",
+        text_color_grey,
+        text_color_white,
+        nbytes,
+        text_color_reset
         );
     uint16_t num_bytes_to_send;
     num_bytes_to_send = strlen((char *)string);
@@ -468,6 +486,17 @@ void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
     // SPI slave responded with  ♦
     // Confirm slave leds 1, 2, and 3 turn red.
 }
+uint8_t dummy_frame[num_bytes_in_a_dummy_frame];
+void SpiMasterReadFakeSensorData(void)
+{
+    SpiMasterWrite(cmd_send_dummy_frame);
+    uint8_t * pfake_data = dummy_frame; uint16_t byte_counter = 0;
+    while (byte_counter++ < num_bytes_in_a_dummy_frame)
+    {
+        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+        *(pfake_data++) = SpiMasterRead();
+    }
+}
 void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
 {
     /* Pairs with App_version_of_Slave_RespondToRequestsForData */
@@ -475,16 +504,8 @@ void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
     SpiMasterInit();
     UsbInit();
     /* =====[ Operate ]===== */
-    SpiMasterWrite(cmd_send_dummy_frame);
     // SpiMasterReadSensorData
-    uint8_t fake_data[num_bytes_in_a_dummy_frame];
-    uint8_t * pfake_data = fake_data;
-    uint16_t byte_counter = 0;
-    while (byte_counter++ < num_bytes_in_a_dummy_frame)
-    {
-        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-        *(pfake_data++) = SpiMasterRead();
-    }
+    SpiMasterReadFakeSensorData();
     DebugLedTurnRed();
     /* =====[ Test ]===== */
     // Visually confirm debug LED turned red: slave responded with a full frame.
@@ -495,15 +516,15 @@ void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
         };
     PrintTestResultInColor(this_test);
     // Print the fake data sent by the slave.
-    byte_counter = 0; pfake_data = fake_data;
-    while (byte_counter++ < num_bytes_in_a_dummy_frame)
-    {
-        PrintSpiSlaveResponseInColor( *(pfake_data++) );
-    }
-    // for loop version:
-    /* for (byte_counter = 0; byte_counter < num_bytes_in_a_dummy_frame; byte_counter++) */
+    // Expect the alphabet repeated to fill 1300 bytes.
+    uint16_t nbytes = UsbWrite(dummy_frame, num_bytes_in_a_dummy_frame);
+    PrintSizeOfSpiSlaveResponse(nbytes);
+    //
+    // Previous version with messages:
+    /* uint8_t * pfake_data = dummy_frame; uint16_t byte_counter = 0; */
+    /* while (byte_counter++ < num_bytes_in_a_dummy_frame) */
     /* { */
-    /*     PrintSpiSlaveResponseInColor(fake_data[byte_counter]); */
+    /*     PrintSpiSlaveResponseInColor( *(pfake_data++) ); */
     /* } */
     // Expect the alphabet:
         // SPI slave responded with  A

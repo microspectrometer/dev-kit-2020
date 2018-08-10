@@ -192,28 +192,6 @@ void SendDummyByte()
     *Spi_spdr = cmd_send_dummy_byte;
     SpiSlaveSignalDataIsReady();
 }
-void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes)
-{
-    uint16_t byte_index;
-    for (byte_index = 0; byte_index < nbytes; byte_index++)
-    {
-        *Spi_spdr = bytes[byte_index];
-        SpiSlaveSignalDataIsReady();
-        while ( !SpiTransferIsDone() );
-    }
-    // When is it safe to load the next byte?
-        // Just wait for the transmission to end.
-        // The transmit buffer is single-buffered.
-        // It cannot be written until the transmission finishes.
-        // The receive buffer is double-buffered.
-        // Old values are available up until the last bit of the next byte is
-        // shifted in.
-    // The SPI master waits for MISO to go low after every read.
-    // This gaurantees the next byte of data is ready.
-    // The SPI master does not have to release SlaveSelect, but it can.
-    // SlaveSelect being low should not impact the slave's ability to disable
-    // SPI and pull MISO low.
-}
 void SendFourDummyBytes(void)
 {
     DebugLedsTurnRed(debug_led2);  // for manual testing
@@ -221,16 +199,38 @@ void SendFourDummyBytes(void)
     uint16_t nbytes = sizeof(fake_data);
     SpiSlaveSendBytes(fake_data, nbytes);
 }
-void SendDummyFrame(void)
+uint8_t dummy_frame[num_bytes_in_a_dummy_frame];
+void FillDummyFrameWithAlphabet(void)
 {
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    uint8_t fake_data[num_bytes_in_a_dummy_frame];
+    uint8_t * pdummy_frame = dummy_frame;
     uint16_t byte_index;
     for (byte_index = 0; byte_index < num_bytes_in_a_dummy_frame; byte_index++)
     {
-        fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65'
+        /* fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65' */
+        /* dummy_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
+        *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65'
     }
-    SpiSlaveSendBytes(fake_data, (uint16_t) num_bytes_in_a_dummy_frame);
+    /* uint8_t fake_data[num_bytes_in_a_dummy_frame]; */
+    // NO: this didn't work.
+    // Is there a 1K limit to the stack frame?
+    // This needs to go in SRAM.
+    // No, that didn't make any difference.
+    /* uint8_t * pdummy_frame = dummy_frame; */
+    /* uint16_t byte_index; */
+    /* for (byte_index = 0; byte_index < num_bytes_in_a_dummy_frame; byte_index++) */
+    /* { */
+        /* fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65' */
+        /* dummy_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
+        /* *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
+    /* } */
+}
+void SendDummyFrame(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
+    uint8_t *pdummy_frame = dummy_frame;
+    // Send measurement data to master.
+    SpiSlaveSendBytes(pdummy_frame, (uint16_t) num_bytes_in_a_dummy_frame);
 }
 void IndicateUnknownCommand(void)
 {
