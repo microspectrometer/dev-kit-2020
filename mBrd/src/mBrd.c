@@ -1,4 +1,22 @@
 // This PCB gives the Chromation spectrometer chip a digital-out interface.
+// Notes for designing the SPI master:
+    // The slave assumes the master does not leave the SPI pins tri-stated.
+    // The slave assumes *any* SPI communication is a request from the master.
+    // The slave responds to *all* SPI communications.
+    // Note: if the SPI master tri-states the SPI pins, it is *very* easy for
+    // noise to trip the SPI slave hardware module into communication:
+        // - do not program the master to do SPI communication
+        // - do not configure the SPI pins on the master, leave them tri-stated
+        // - put `SW2` to `SPI`
+        // - press the reset button
+        // - touch `SW2` but do not actually switch it
+        // - touching `SW2` couples noise which trips the SPI module!
+    // This issue is easily avoided by initializing the SPI master with
+    // SpiMasterInit().
+    // TODO: this no-tri-state requirement conflicts with the use of the ISP
+    // pins to bypass the spi-master-simulant and provide access to the SPI bus
+    // for an Arduino. In this instance, the master *should* tri-state the pins
+    // to let another master take over.
 //
 // my libs and the headers that resolve their hardware dependencies
 #include <ReadWriteBits.h>      // SetBit, ClearBit, etc.
@@ -11,7 +29,25 @@
 // avr libs
 #include <avr/interrupt.h>      // defines macro ISR()
 
-/* =====[ List of Tests ]===== */
+/* =====[ List of application example tests ]===== */
+    // [x] App_version_of_Slave_RespondToRequestsForData
+        // [x] Sends_dummy_byte_for_cmd_send_dummy_byte
+        // pairs with SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
+        //
+        // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
+        // pairs with Get_several_bytes_from_slave_and_write_bytes_to_USB_host
+        //
+        // [x] Sends_dummy_frame_for_cmd_send_dummy_frame
+        // pairs with SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host
+        //
+        // [x] Slave_indicates_unknown_cmd_on_led_4
+        // pairs with Slave_indicates_unknown_cmd_on_led_4
+        //
+        // [x] Slave_ignores_cmd_slave_ignore
+        // pairs with Slave_ignores_cmd_slave_ignore
+
+/* =====[ List of old tests ]===== */
+    // [-] App_version_of_Slave_receives_request_with_interrupts
     // [x] SPI_interrupt_routine_turns_debug_led1_red
         // Tests `SpiEnableInterrupt()`
     // [x] SPI_read_in_ISR_and_show_data_on_debug_leds
@@ -24,14 +60,121 @@
         // Slave parses the request.
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
-    // [x] App_version_of_Slave_RespondToRequestsForData
-        // [x] Sends_dummy_byte_for_cmd_send_dummy_byte
-        // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
-            // This is the example for the slave to send a frame of data.
-        // [x] Slave_ignores_cmd_slave_ignore
-        // [x] Slave_indicates_unknown_cmd_on_led_4
-    // [-] App_version_of_Slave_receives_request_with_interrupts
 
+/* =====[ Spi-slave application-level API ]===== */
+void SetupDebugLeds(void);
+void RespondToRequestsForData(void);
+// ...uses:
+void SendDataMasterAskedFor(void);
+// ...uses these examples:
+// these examples will turn into useful application functions
+void SendDummyByte(void);
+void SendFourDummyBytes(void);
+void FillDummyFrameWithAlphabet(void); // recording a large array to output
+void SendDummyFrame(void);             // output a large array
+// helpers for command parsing
+void IndicateUnknownCommand(void) { DebugLedsTurnRed(debug_led4); }
+void DoNothing(void){}
+
+/* =====[ Test groups ]===== */
+void test_DebugLeds(void);
+void test_SpiSlave(void);
+
+/* =====[ DebugLeds application-level API ]===== */
+void All_debug_leds_turn_on_and_turn_green(void);
+void All_debug_leds_turn_on_and_turn_red(void);
+void Turn_led1_red_and_the_rest_green(void);
+void Show_data_on_debug_leds(uint8_t four_bits);
+
+int main()
+{
+    //
+    // Pick one test group to run.
+    // Uncomment that test group.
+    // Leave the other test groups commented out.
+    //
+    SetupDebugLeds();
+    /* test_DebugLeds(); // All tests pass 2018-07-30 */
+    test_SpiSlave(); // All tests pass 2018-08-08
+}
+/* =====[ SpiSlave application-level API details ]===== */
+void App_version_of_Slave_RespondToRequestsForData(void)
+{
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
+    /* =====[ Main Loop ]===== */
+    while(1) RespondToRequestsForData();
+    // Actual app does other stuff, e.g., pet the watchdog.
+    /* =====[ Test ]===== */
+    // Program master to send a command from `Spi-Commands.h`.
+        // Visually confirm debug LEDs are green.
+        // Move `SW2` to `SPI`.
+        // Press reset button.
+    // Check LEDs:
+        // Visually confirm debug LED 1 is red: slave hears master.
+        // Visually confirm debug LED 2 is red: slave understood master.
+        // Visually confirm debug LED 3 is red: success or failure, slave is done.
+}
+void RespondToRequestsForData(void)
+{
+    // Poll SPI bus. Process data requests, if any.
+    if ( SpiTransferIsDone() ) SendDataMasterAskedFor();
+}
+void SendDataMasterAskedFor(void)
+{
+    DebugLedsTurnRed(debug_led1);  // for manual testing
+    uint8_t cmd = SpiSlaveRead();
+    // parse and act
+    // each action gets data, loads it into SPDR, and signals master when ready
+    if      (cmd == cmd_send_dummy_byte) SendDummyByte();
+    else if (cmd == cmd_send_four_dummy_bytes) SendFourDummyBytes();
+    else if (cmd == cmd_send_dummy_frame) SendDummyFrame();
+    else if (cmd == slave_ignore) DoNothing();  // PASS 2018-08-03
+    // `slave_ignore` is available through spi lib
+    // for master to send when slave does read
+    else IndicateUnknownCommand();              // PASS 2018-08-03
+    DebugLedsTurnRed(debug_led3);  // for manual testing
+}
+void SetupDebugLeds(void)
+{
+    DebugLedsTurnAllOn();
+    DebugLedsTurnAllGreen();
+}
+
+/* =====[ Helper functions ]===== */
+/* ---Spi-slave application-level API details--- */
+void SendDummyByte(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    *Spi_spdr = cmd_send_dummy_byte;
+    SpiSlaveSignalDataIsReady();
+}
+void SendFourDummyBytes(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    uint8_t fake_data[] = {0x01, 0x02, 0x03, 0x04};
+    uint16_t nbytes = sizeof(fake_data);
+    SpiSlaveSendBytes(fake_data, nbytes);
+}
+void FillDummyFrameWithAlphabet(void)
+{
+    uint8_t * pdummy_frame = dummy_frame;
+    uint16_t byte_index;
+    for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
+    {
+        *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65'
+    }
+}
+void SendDummyFrame(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
+    uint8_t *pdummy_frame = dummy_frame;
+    // Send measurement data to master.
+    SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
+}
+
+/* ---DebugLeds--- */
 void All_debug_leds_turn_on_and_turn_green(void)
 {
     DebugLedsTurnAllOn();
@@ -48,28 +191,6 @@ void Turn_led1_red_and_the_rest_green(void)
     DebugLedsTurnAllGreen();
     DebugLedsTurnRed(debug_led1);
 }
-void Turn_led1_green_and_the_rest_red(void)
-{
-    DebugLedsTurnAllOn();
-    DebugLedsTurnAllRed();
-    DebugLedsTurnGreen(debug_led1);
-}
-void test_DebugLeds(void)
-{
-    All_debug_leds_turn_on_and_turn_green(); // PASS 2018-07-30
-    /* All_debug_leds_turn_on_and_turn_red(); // PASS 2018-07-30 */
-    /* Turn_led1_green_and_the_rest_red(); // PASS 2018-07-30 */
-}
-void Turn_led3_red_when_SpiSlave_receives_a_byte(void)
-{
-    /* =====[ Setup ]===== */
-    SpiSlaveInit();
-    /* =====[ Operate ]===== */
-    // SPI Master sends any byte.
-    // Hang until the byte is received.
-    SpiSlaveRead(); // discard the byte
-    DebugLedsTurnRed(debug_led3);
-}
 void Show_data_on_debug_leds(uint8_t four_bits)
 {
     // Show the lower nibble of input `four_bits`
@@ -79,14 +200,11 @@ void Show_data_on_debug_leds(uint8_t four_bits)
     if (BitIsSet(pfour_bits, 2)) DebugLedsTurnRed(debug_led3);
     if (BitIsSet(pfour_bits, 3)) DebugLedsTurnRed(debug_led4);
 }
-void SpiSlaveRead_and_show_received_data_on_debug_leds(void)
-{
-    /* =====[ Setup ]===== */
-    SpiSlaveInit();
-    /* =====[ Operate ]===== */
-    // SPI Master sends a 4-bit value.
-    Show_data_on_debug_leds(SpiSlaveRead());
-}
+
+/* =====[ SpiSlave ISR ]===== */
+/* ---examples using the SPI ISR (found no use for this yet)--- */
+void SPI_interrupt_routine_turns_debug_led1_red(void);
+void SPI_read_in_ISR_and_show_data_on_debug_leds(void);
 /* =====[ Move control over the SPI ISR into the test code ]===== */
 typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
 //
@@ -136,6 +254,19 @@ void SPI_read_in_ISR_and_show_data_on_debug_leds(void)
     // led number: 4  3  2  1
     // led color:  R  G  R  R
 }
+/* =====[ SpiSlave non-ISR ]===== */
+/* ---examples *not* using ISR (version I am using so far)--- */
+void SpiSlaveRead_and_show_received_data_on_debug_leds(void);
+void Slave_receives_request_and_sends_response_when_ready(void);
+/* =====[ Move control over the SPI ISR into the test code ]===== */
+void SpiSlaveRead_and_show_received_data_on_debug_leds(void)
+{
+    /* =====[ Setup ]===== */
+    SpiSlaveInit();
+    /* =====[ Operate ]===== */
+    // SPI Master sends a 4-bit value.
+    Show_data_on_debug_leds(SpiSlaveRead());
+}
 void Slave_receives_request_and_sends_response_when_ready(void)
 {
     /* =====[ Setup ]===== */
@@ -180,135 +311,24 @@ void Slave_receives_request_and_sends_response_when_ready(void)
     // Visually confirm debug LED 2 is red.
     // The slave parsed the request correctly.
 }
-void SendDummyData(uint8_t dummy_byte)
+
+/* =====[ Test groups ]===== */
+void test_DebugLeds(void)
 {
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    *Spi_spdr = dummy_byte;
-    SpiSlaveSignalDataIsReady();
-}
-void SendDummyByte()
-{
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    *Spi_spdr = cmd_send_dummy_byte;
-    SpiSlaveSignalDataIsReady();
-}
-void SendFourDummyBytes(void)
-{
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    uint8_t fake_data[] = {0x01, 0x02, 0x03, 0x04};
-    uint16_t nbytes = sizeof(fake_data);
-    SpiSlaveSendBytes(fake_data, nbytes);
-}
-/* uint8_t dummy_frame[num_bytes_in_a_dummy_frame]; */
-void FillDummyFrameWithAlphabet(void)
-{
-    uint8_t * pdummy_frame = dummy_frame;
-    uint16_t byte_index;
-    for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
-    {
-        /* fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65' */
-        /* dummy_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
-        *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65'
-    }
-    /* uint8_t fake_data[num_bytes_in_a_dummy_frame]; */
-    // NO: this didn't work.
-    // Is there a 1K limit to the stack frame?
-    // This needs to go in SRAM.
-    // No, that didn't make any difference.
-    /* uint8_t * pdummy_frame = dummy_frame; */
-    /* uint16_t byte_index; */
-    /* for (byte_index = 0; byte_index < num_bytes_in_a_dummy_frame; byte_index++) */
-    /* { */
-        /* fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65' */
-        /* dummy_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
-        /* *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
-    /* } */
-}
-void SendDummyFrame(void)
-{
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
-    uint8_t *pdummy_frame = dummy_frame;
-    // Send measurement data to master.
-    SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
-}
-void IndicateUnknownCommand(void)
-{
-    DebugLedsTurnRed(debug_led4);  // for manual testing
-}
-void DoNothing(void){}
-void SendDataMasterAskedFor(void)
-{
-    DebugLedsTurnRed(debug_led1);  // for manual testing
-    uint8_t cmd = SpiSlaveRead();
-    // parse and act
-    // each action gets data, loads it into SPDR, and signals master when ready
-    if      (cmd == cmd_send_dummy_byte) SendDummyByte();
-    else if (cmd == cmd_send_four_dummy_bytes) SendFourDummyBytes();
-    else if (cmd == cmd_send_dummy_frame) SendDummyFrame();
-    else if (cmd == slave_ignore) DoNothing();
-    else IndicateUnknownCommand();
-    DebugLedsTurnRed(debug_led3);  // for manual testing
-    /* // need an established command to ignore -- for when master does read */
-    /* else IndicateUnknownCommand();  // PASS 2018-08-03 */
-}
-void RespondToRequestsForData(void)
-{
-    // Poll SPI bus. Process data requests, if any.
-    if ( SpiTransferIsDone() ) SendDataMasterAskedFor();
-}
-void App_version_of_Slave_RespondToRequestsForData(void)
-{
-    // [x] Sends_dummy_byte_for_cmd_send_dummy_byte
-    // pairs with Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
-    //
-    // [x] Sends_four_dummy_bytes_for_cmd_send_four_dummy_bytes
-    // pairs with Get_several_bytes_from_slave_and_write_bytes_to_USB_host
-    //
-    // [x] Sends_dummy_frame_for_cmd_send_dummy_frame
-    // pairs with Get_a_frame_from_slave_and_write_frame_to_USB_host
-    //
-    // [x] Slave_indicates_unknown_cmd_on_led_4
-    // pairs with Slave_indicates_unknown_cmd_on_led_4
-    /* =====[ Setup ]===== */
-    SpiSlaveInit();
-    /* =====[ Main Loop ]===== */
-    while(1) RespondToRequestsForData();
-    // Actual app does other stuff, e.g., pet the watchdog.
-    /* =====[ Test ]===== */
-    // Program master to send a command from `Spi-Commands.h`.
-    //
-    // Visually confirm debug LEDs are green.
-    // Move `SW2` to `SPI`.
-    // Press reset button.
-    // Visually confirm debug LED 1 is red: slave hears master.
-    // Visually confirm debug LED 2 is red: slave understood master.
-    // Visually confirm debug LED 3 is red: success or failure, slave is done.
-    //
-// Notes for designing the SPI master:
-    // The slave assumes the master does not leave the SPI pins tri-stated.
-    // The slave assumes *any* SPI communication is a request from the master.
-    // The slave responds to *all* SPI communications.
-    // Note: if the SPI master tri-states the SPI pins, it is *very* easy for
-    // noise to trip the SPI slave hardware module into communication:
-        // - do not program the master to do SPI communication
-        // - do not configure the SPI pins on the master, leave them tri-stated
-        // - put `SW2` to `SPI`
-        // - press the reset button
-        // - touch `SW2` but do not actually switch it
-        // - touching `SW2` couples noise which trips the SPI module!
-    // This issue is easily avoided by initializing the SPI master with
-    // SpiMasterInit().
+    /* All_debug_leds_turn_on_and_turn_green(); // PASS 2018-07-30 */
+    /* All_debug_leds_turn_on_and_turn_red(); // PASS 2018-07-30 */
+    /* Turn_led1_green_and_the_rest_red(); // PASS 2018-07-30 */
 }
 void test_SpiSlave(void)
 {
-    /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-31 */
-    /* SpiSlaveRead_and_show_received_data_on_debug_leds(); // PASS 2018-08-01 */
     /* SPI_interrupt_routine_turns_debug_led1_red(); // PASS 2018-08-01 */
     /* SPI_read_in_ISR_and_show_data_on_debug_leds(); // PASS 2018-08-01 */
+    /* SpiSlaveRead_and_show_received_data_on_debug_leds(); // PASS 2018-08-01 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
     App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08
 }
+
+/* =====[ Hardware troubleshooting tests ]===== */
 void Miso_measures_3V_when_it_outputs_a_hard_high(void)
 {
     SetBit(Spi_ddr,  Spi_Miso);  // output
@@ -383,19 +403,4 @@ void test_Atmel_ice_quirk_requires_flipping_SW2_to_SPI(void)
     DebugLedsTurnRed(debug_led4);
     while (1);
 }
-void SetupDebugLeds(void)
-{
-    DebugLedsTurnAllOn();
-    DebugLedsTurnAllGreen();
-}
-int main()
-{
-    //
-    // Pick one test group to run.
-    // Uncomment that test group.
-    // Leave the other test groups commented out.
-    //
-    SetupDebugLeds();
-    /* test_DebugLeds(); // All tests pass 2018-07-30 */
-    test_SpiSlave(); // All tests pass 2018-08-08
-}
+

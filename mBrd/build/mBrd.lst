@@ -13,21 +13,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000530  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000248  00000000  00000000  00000570  2**0
+  5 .debug_aranges 00000230  00000000  00000000  00000570  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00001d72  00000000  00000000  000007b8  2**0
+  6 .debug_info   00001ca9  00000000  00000000  000007a0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000c36  00000000  00000000  0000252a  2**0
+  7 .debug_abbrev 00000c3a  00000000  00000000  00002449  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000b55  00000000  00000000  00003160  2**0
+  8 .debug_line   00000ae6  00000000  00000000  00003083  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000004fc  00000000  00000000  00003cb8  2**2
+  9 .debug_frame  000004c4  00000000  00000000  00003b6c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000d52  00000000  00000000  000041b4  2**0
+ 10 .debug_str    00000cf7  00000000  00000000  00004030  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000005ee  00000000  00000000  00004f06  2**0
+ 11 .debug_loc    000005a0  00000000  00000000  00004d27  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000208  00000000  00000000  000054f4  2**0
+ 12 .debug_ranges 000001f0  00000000  00000000  000052c7  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -50,7 +50,7 @@ Disassembly of section .text:
   38:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   3c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  44:	0c 94 4f 01 	jmp	0x29e	; 0x29e <__vector_17>
+  44:	0c 94 ea 01 	jmp	0x3d4	; 0x3d4 <__vector_17>
   48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -94,7 +94,7 @@ Disassembly of section .text:
   94:	ac 32       	cpi	r26, 0x2C	; 44
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 0d 02 	call	0x41a	; 0x41a <main>
+  9a:	0e 94 e6 01 	call	0x3cc	; 0x3cc <main>
   9e:	0c 94 20 02 	jmp	0x440	; 0x440 <_exit>
 
 000000a2 <__bad_interrupt>:
@@ -375,216 +375,206 @@ void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes)
  29a:	0f 91       	pop	r16
  29c:	08 95       	ret
 
-0000029e <__vector_17>:
-    // This test only passes after flipping SW2 to SPI.
-    /* SpiSlaveInit_should_make_Miso_output_a_hard_high(); // PASS 2018-08-03 */
+0000029e <IndicateUnknownCommand>:
+    // Repeat test by flipping `SW2` to `ISP` and pressing reset to turn the
+    // LEDs back to all green.
     //
-    // This test does not pass if the SPI master is enabled.
-    /* SpiSlaveSignalDataIsReady_outputs_a_hard_low(); // FAIL 2018-08-03 */
-    DebugLedsTurnRed(debug_led4);
- 29e:	1f 92       	push	r1
- 2a0:	0f 92       	push	r0
- 2a2:	0f b6       	in	r0, 0x3f	; 63
- 2a4:	0f 92       	push	r0
- 2a6:	11 24       	eor	r1, r1
- 2a8:	2f 93       	push	r18
- 2aa:	3f 93       	push	r19
- 2ac:	4f 93       	push	r20
- 2ae:	5f 93       	push	r21
- 2b0:	6f 93       	push	r22
- 2b2:	7f 93       	push	r23
- 2b4:	8f 93       	push	r24
- 2b6:	9f 93       	push	r25
- 2b8:	af 93       	push	r26
- 2ba:	bf 93       	push	r27
- 2bc:	ef 93       	push	r30
- 2be:	ff 93       	push	r31
- 2c0:	e0 91 26 01 	lds	r30, 0x0126	; 0x800126 <__data_end>
- 2c4:	f0 91 27 01 	lds	r31, 0x0127	; 0x800127 <__data_end+0x1>
- 2c8:	09 95       	icall
- 2ca:	ff 91       	pop	r31
- 2cc:	ef 91       	pop	r30
- 2ce:	bf 91       	pop	r27
- 2d0:	af 91       	pop	r26
- 2d2:	9f 91       	pop	r25
- 2d4:	8f 91       	pop	r24
- 2d6:	7f 91       	pop	r23
- 2d8:	6f 91       	pop	r22
- 2da:	5f 91       	pop	r21
- 2dc:	4f 91       	pop	r20
- 2de:	3f 91       	pop	r19
- 2e0:	2f 91       	pop	r18
- 2e2:	0f 90       	pop	r0
- 2e4:	0f be       	out	0x3f, r0	; 63
- 2e6:	0f 90       	pop	r0
- 2e8:	1f 90       	pop	r1
- 2ea:	18 95       	reti
+}
+void ShowSpiDataOnDebugLeds(void)
+{ Show_data_on_debug_leds(*Spi_spdr); }
+ 29e:	83 e0       	ldi	r24, 0x03	; 3
+ 2a0:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
+ 2a4:	08 95       	ret
 
-000002ec <SendDummyByte>:
- 2ec:	81 e0       	ldi	r24, 0x01	; 1
- 2ee:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
- 2f2:	81 e0       	ldi	r24, 0x01	; 1
- 2f4:	8e bd       	out	0x2e, r24	; 46
- 2f6:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiSlaveSignalDataIsReady>
- 2fa:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiSlaveSignalDataIsReady+0x1>
- 2fe:	09 95       	icall
+000002a6 <SetupDebugLeds>:
+ 2a6:	0e 94 7d 00 	call	0xfa	; 0xfa <DebugLedsTurnAllOn>
+ 2aa:	0e 94 a2 00 	call	0x144	; 0x144 <DebugLedsTurnAllGreen>
+ 2ae:	08 95       	ret
+
+000002b0 <SendDummyByte>:
+ 2b0:	81 e0       	ldi	r24, 0x01	; 1
+ 2b2:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
+ 2b6:	81 e0       	ldi	r24, 0x01	; 1
+ 2b8:	8e bd       	out	0x2e, r24	; 46
+ 2ba:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiSlaveSignalDataIsReady>
+ 2be:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiSlaveSignalDataIsReady+0x1>
+ 2c2:	09 95       	icall
+ 2c4:	08 95       	ret
+
+000002c6 <SendFourDummyBytes>:
+ 2c6:	cf 93       	push	r28
+ 2c8:	df 93       	push	r29
+ 2ca:	00 d0       	rcall	.+0      	; 0x2cc <SendFourDummyBytes+0x6>
+ 2cc:	00 d0       	rcall	.+0      	; 0x2ce <SendFourDummyBytes+0x8>
+ 2ce:	cd b7       	in	r28, 0x3d	; 61
+ 2d0:	de b7       	in	r29, 0x3e	; 62
+ 2d2:	81 e0       	ldi	r24, 0x01	; 1
+ 2d4:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
+ 2d8:	81 e0       	ldi	r24, 0x01	; 1
+ 2da:	89 83       	std	Y+1, r24	; 0x01
+ 2dc:	82 e0       	ldi	r24, 0x02	; 2
+ 2de:	8a 83       	std	Y+2, r24	; 0x02
+ 2e0:	83 e0       	ldi	r24, 0x03	; 3
+ 2e2:	8b 83       	std	Y+3, r24	; 0x03
+ 2e4:	84 e0       	ldi	r24, 0x04	; 4
+ 2e6:	8c 83       	std	Y+4, r24	; 0x04
+ 2e8:	64 e0       	ldi	r22, 0x04	; 4
+ 2ea:	70 e0       	ldi	r23, 0x00	; 0
+ 2ec:	ce 01       	movw	r24, r28
+ 2ee:	01 96       	adiw	r24, 0x01	; 1
+ 2f0:	0e 94 2a 01 	call	0x254	; 0x254 <SpiSlaveSendBytes>
+ 2f4:	0f 90       	pop	r0
+ 2f6:	0f 90       	pop	r0
+ 2f8:	0f 90       	pop	r0
+ 2fa:	0f 90       	pop	r0
+ 2fc:	df 91       	pop	r29
+ 2fe:	cf 91       	pop	r28
  300:	08 95       	ret
 
-00000302 <SendFourDummyBytes>:
- 302:	cf 93       	push	r28
- 304:	df 93       	push	r29
- 306:	00 d0       	rcall	.+0      	; 0x308 <SendFourDummyBytes+0x6>
- 308:	00 d0       	rcall	.+0      	; 0x30a <SendFourDummyBytes+0x8>
- 30a:	cd b7       	in	r28, 0x3d	; 61
- 30c:	de b7       	in	r29, 0x3e	; 62
- 30e:	81 e0       	ldi	r24, 0x01	; 1
- 310:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
- 314:	81 e0       	ldi	r24, 0x01	; 1
- 316:	89 83       	std	Y+1, r24	; 0x01
- 318:	82 e0       	ldi	r24, 0x02	; 2
- 31a:	8a 83       	std	Y+2, r24	; 0x02
- 31c:	83 e0       	ldi	r24, 0x03	; 3
- 31e:	8b 83       	std	Y+3, r24	; 0x03
- 320:	84 e0       	ldi	r24, 0x04	; 4
- 322:	8c 83       	std	Y+4, r24	; 0x04
- 324:	64 e0       	ldi	r22, 0x04	; 4
- 326:	70 e0       	ldi	r23, 0x00	; 0
- 328:	ce 01       	movw	r24, r28
- 32a:	01 96       	adiw	r24, 0x01	; 1
- 32c:	0e 94 2a 01 	call	0x254	; 0x254 <SpiSlaveSendBytes>
- 330:	0f 90       	pop	r0
- 332:	0f 90       	pop	r0
- 334:	0f 90       	pop	r0
- 336:	0f 90       	pop	r0
- 338:	df 91       	pop	r29
- 33a:	cf 91       	pop	r28
- 33c:	08 95       	ret
+00000302 <FillDummyFrameWithAlphabet>:
+ 302:	ff 92       	push	r15
+ 304:	0f 93       	push	r16
+ 306:	1f 93       	push	r17
+ 308:	cf 93       	push	r28
+ 30a:	df 93       	push	r29
+ 30c:	08 e2       	ldi	r16, 0x28	; 40
+ 30e:	11 e0       	ldi	r17, 0x01	; 1
+ 310:	cc e2       	ldi	r28, 0x2C	; 44
+ 312:	d7 e0       	ldi	r29, 0x07	; 7
+ 314:	f8 01       	movw	r30, r16
+ 316:	0f 2e       	mov	r0, r31
+ 318:	fa e1       	ldi	r31, 0x1A	; 26
+ 31a:	ff 2e       	mov	r15, r31
+ 31c:	f0 2d       	mov	r31, r0
+ 31e:	af 01       	movw	r20, r30
+ 320:	40 1b       	sub	r20, r16
+ 322:	51 0b       	sbc	r21, r17
+ 324:	9a 01       	movw	r18, r20
+ 326:	a5 ec       	ldi	r26, 0xC5	; 197
+ 328:	be e4       	ldi	r27, 0x4E	; 78
+ 32a:	0e 94 11 02 	call	0x422	; 0x422 <__umulhisi3>
+ 32e:	96 95       	lsr	r25
+ 330:	87 95       	ror	r24
+ 332:	96 95       	lsr	r25
+ 334:	87 95       	ror	r24
+ 336:	96 95       	lsr	r25
+ 338:	87 95       	ror	r24
+ 33a:	f8 9e       	mul	r15, r24
+ 33c:	90 01       	movw	r18, r0
+ 33e:	f9 9e       	mul	r15, r25
+ 340:	30 0d       	add	r19, r0
+ 342:	11 24       	eor	r1, r1
+ 344:	42 1b       	sub	r20, r18
+ 346:	53 0b       	sbc	r21, r19
+ 348:	4f 5b       	subi	r20, 0xBF	; 191
+ 34a:	41 93       	st	Z+, r20
+ 34c:	ec 17       	cp	r30, r28
+ 34e:	fd 07       	cpc	r31, r29
+ 350:	31 f7       	brne	.-52     	; 0x31e <FillDummyFrameWithAlphabet+0x1c>
+ 352:	df 91       	pop	r29
+ 354:	cf 91       	pop	r28
+ 356:	1f 91       	pop	r17
+ 358:	0f 91       	pop	r16
+ 35a:	ff 90       	pop	r15
+ 35c:	08 95       	ret
 
-0000033e <FillDummyFrameWithAlphabet>:
- 33e:	ff 92       	push	r15
- 340:	0f 93       	push	r16
- 342:	1f 93       	push	r17
- 344:	cf 93       	push	r28
- 346:	df 93       	push	r29
- 348:	08 e2       	ldi	r16, 0x28	; 40
- 34a:	11 e0       	ldi	r17, 0x01	; 1
- 34c:	cc e2       	ldi	r28, 0x2C	; 44
- 34e:	d7 e0       	ldi	r29, 0x07	; 7
- 350:	f8 01       	movw	r30, r16
- 352:	0f 2e       	mov	r0, r31
- 354:	fa e1       	ldi	r31, 0x1A	; 26
- 356:	ff 2e       	mov	r15, r31
- 358:	f0 2d       	mov	r31, r0
- 35a:	af 01       	movw	r20, r30
- 35c:	40 1b       	sub	r20, r16
- 35e:	51 0b       	sbc	r21, r17
- 360:	9a 01       	movw	r18, r20
- 362:	a5 ec       	ldi	r26, 0xC5	; 197
- 364:	be e4       	ldi	r27, 0x4E	; 78
- 366:	0e 94 11 02 	call	0x422	; 0x422 <__umulhisi3>
- 36a:	96 95       	lsr	r25
- 36c:	87 95       	ror	r24
- 36e:	96 95       	lsr	r25
- 370:	87 95       	ror	r24
- 372:	96 95       	lsr	r25
- 374:	87 95       	ror	r24
- 376:	f8 9e       	mul	r15, r24
- 378:	90 01       	movw	r18, r0
- 37a:	f9 9e       	mul	r15, r25
- 37c:	30 0d       	add	r19, r0
- 37e:	11 24       	eor	r1, r1
- 380:	42 1b       	sub	r20, r18
- 382:	53 0b       	sbc	r21, r19
- 384:	4f 5b       	subi	r20, 0xBF	; 191
- 386:	41 93       	st	Z+, r20
- 388:	ec 17       	cp	r30, r28
- 38a:	fd 07       	cpc	r31, r29
- 38c:	31 f7       	brne	.-52     	; 0x35a <FillDummyFrameWithAlphabet+0x1c>
- 38e:	df 91       	pop	r29
- 390:	cf 91       	pop	r28
- 392:	1f 91       	pop	r17
- 394:	0f 91       	pop	r16
- 396:	ff 90       	pop	r15
- 398:	08 95       	ret
+0000035e <SendDummyFrame>:
+ 35e:	81 e0       	ldi	r24, 0x01	; 1
+ 360:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
+ 364:	0e 94 81 01 	call	0x302	; 0x302 <FillDummyFrameWithAlphabet>
+ 368:	64 e0       	ldi	r22, 0x04	; 4
+ 36a:	76 e0       	ldi	r23, 0x06	; 6
+ 36c:	88 e2       	ldi	r24, 0x28	; 40
+ 36e:	91 e0       	ldi	r25, 0x01	; 1
+ 370:	0e 94 2a 01 	call	0x254	; 0x254 <SpiSlaveSendBytes>
+ 374:	08 95       	ret
 
-0000039a <SendDummyFrame>:
- 39a:	81 e0       	ldi	r24, 0x01	; 1
- 39c:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
- 3a0:	0e 94 9f 01 	call	0x33e	; 0x33e <FillDummyFrameWithAlphabet>
- 3a4:	64 e0       	ldi	r22, 0x04	; 4
- 3a6:	76 e0       	ldi	r23, 0x06	; 6
- 3a8:	88 e2       	ldi	r24, 0x28	; 40
- 3aa:	91 e0       	ldi	r25, 0x01	; 1
- 3ac:	0e 94 2a 01 	call	0x254	; 0x254 <SpiSlaveSendBytes>
- 3b0:	08 95       	ret
+00000376 <SendDataMasterAskedFor>:
+ 376:	80 e0       	ldi	r24, 0x00	; 0
+ 378:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
+ 37c:	0e 94 1d 01 	call	0x23a	; 0x23a <SpiSlaveRead>
+ 380:	81 30       	cpi	r24, 0x01	; 1
+ 382:	19 f4       	brne	.+6      	; 0x38a <SendDataMasterAskedFor+0x14>
+ 384:	0e 94 58 01 	call	0x2b0	; 0x2b0 <SendDummyByte>
+ 388:	0f c0       	rjmp	.+30     	; 0x3a8 <SendDataMasterAskedFor+0x32>
+ 38a:	82 30       	cpi	r24, 0x02	; 2
+ 38c:	19 f4       	brne	.+6      	; 0x394 <SendDataMasterAskedFor+0x1e>
+ 38e:	0e 94 63 01 	call	0x2c6	; 0x2c6 <SendFourDummyBytes>
+ 392:	0a c0       	rjmp	.+20     	; 0x3a8 <SendDataMasterAskedFor+0x32>
+ 394:	83 30       	cpi	r24, 0x03	; 3
+ 396:	19 f4       	brne	.+6      	; 0x39e <SendDataMasterAskedFor+0x28>
+ 398:	0e 94 af 01 	call	0x35e	; 0x35e <SendDummyFrame>
+ 39c:	05 c0       	rjmp	.+10     	; 0x3a8 <SendDataMasterAskedFor+0x32>
+ 39e:	90 91 10 01 	lds	r25, 0x0110	; 0x800110 <slave_ignore>
+ 3a2:	89 13       	cpse	r24, r25
+ 3a4:	0e 94 4f 01 	call	0x29e	; 0x29e <IndicateUnknownCommand>
+ 3a8:	82 e0       	ldi	r24, 0x02	; 2
+ 3aa:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
+ 3ae:	08 95       	ret
 
-000003b2 <IndicateUnknownCommand>:
- 3b2:	83 e0       	ldi	r24, 0x03	; 3
- 3b4:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
- 3b8:	08 95       	ret
+000003b0 <RespondToRequestsForData>:
+ 3b0:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
+ 3b4:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
+ 3b8:	09 95       	icall
+ 3ba:	81 11       	cpse	r24, r1
+ 3bc:	0e 94 bb 01 	call	0x376	; 0x376 <SendDataMasterAskedFor>
+ 3c0:	08 95       	ret
 
-000003ba <SendDataMasterAskedFor>:
- 3ba:	80 e0       	ldi	r24, 0x00	; 0
- 3bc:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
- 3c0:	0e 94 1d 01 	call	0x23a	; 0x23a <SpiSlaveRead>
- 3c4:	81 30       	cpi	r24, 0x01	; 1
- 3c6:	19 f4       	brne	.+6      	; 0x3ce <SendDataMasterAskedFor+0x14>
- 3c8:	0e 94 76 01 	call	0x2ec	; 0x2ec <SendDummyByte>
- 3cc:	0f c0       	rjmp	.+30     	; 0x3ec <SendDataMasterAskedFor+0x32>
- 3ce:	82 30       	cpi	r24, 0x02	; 2
- 3d0:	19 f4       	brne	.+6      	; 0x3d8 <SendDataMasterAskedFor+0x1e>
- 3d2:	0e 94 81 01 	call	0x302	; 0x302 <SendFourDummyBytes>
- 3d6:	0a c0       	rjmp	.+20     	; 0x3ec <SendDataMasterAskedFor+0x32>
- 3d8:	83 30       	cpi	r24, 0x03	; 3
- 3da:	19 f4       	brne	.+6      	; 0x3e2 <SendDataMasterAskedFor+0x28>
- 3dc:	0e 94 cd 01 	call	0x39a	; 0x39a <SendDummyFrame>
- 3e0:	05 c0       	rjmp	.+10     	; 0x3ec <SendDataMasterAskedFor+0x32>
- 3e2:	90 91 10 01 	lds	r25, 0x0110	; 0x800110 <slave_ignore>
- 3e6:	89 13       	cpse	r24, r25
- 3e8:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <IndicateUnknownCommand>
- 3ec:	82 e0       	ldi	r24, 0x02	; 2
- 3ee:	0e 94 9a 00 	call	0x134	; 0x134 <DebugLedsTurnRed>
- 3f2:	08 95       	ret
+000003c2 <App_version_of_Slave_RespondToRequestsForData>:
+ 3c2:	0e 94 0a 01 	call	0x214	; 0x214 <SpiSlaveInit>
+ 3c6:	0e 94 d8 01 	call	0x3b0	; 0x3b0 <RespondToRequestsForData>
+ 3ca:	fd cf       	rjmp	.-6      	; 0x3c6 <App_version_of_Slave_RespondToRequestsForData+0x4>
 
-000003f4 <RespondToRequestsForData>:
- 3f4:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
- 3f8:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
- 3fc:	09 95       	icall
- 3fe:	81 11       	cpse	r24, r1
- 400:	0e 94 dd 01 	call	0x3ba	; 0x3ba <SendDataMasterAskedFor>
- 404:	08 95       	ret
+000003cc <main>:
+ 3cc:	0e 94 53 01 	call	0x2a6	; 0x2a6 <SetupDebugLeds>
+ 3d0:	0e 94 e1 01 	call	0x3c2	; 0x3c2 <App_version_of_Slave_RespondToRequestsForData>
 
-00000406 <App_version_of_Slave_RespondToRequestsForData>:
- 406:	0e 94 0a 01 	call	0x214	; 0x214 <SpiSlaveInit>
- 40a:	0e 94 fa 01 	call	0x3f4	; 0x3f4 <RespondToRequestsForData>
- 40e:	fd cf       	rjmp	.-6      	; 0x40a <App_version_of_Slave_RespondToRequestsForData+0x4>
-
-00000410 <SetupDebugLeds>:
-    while (1);
-}
-void SetupDebugLeds(void)
+000003d4 <__vector_17>:
+void SPI_read_in_ISR_and_show_data_on_debug_leds(void);
+/* =====[ Move control over the SPI ISR into the test code ]===== */
+typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
+//
+ISR(SPI_STC_vect)
 {
-    DebugLedsTurnAllOn();
- 410:	0e 94 7d 00 	call	0xfa	; 0xfa <DebugLedsTurnAllOn>
-    DebugLedsTurnAllGreen();
- 414:	0e 94 a2 00 	call	0x144	; 0x144 <DebugLedsTurnAllGreen>
- 418:	08 95       	ret
-
-0000041a <main>:
-    //
-    // Pick one test group to run.
-    // Uncomment that test group.
-    // Leave the other test groups commented out.
-    //
-    SetupDebugLeds();
- 41a:	0e 94 08 02 	call	0x410	; 0x410 <SetupDebugLeds>
-    /* Turn_led3_red_when_SpiSlave_receives_a_byte(); // PASS 2018-07-31 */
-    /* SpiSlaveRead_and_show_received_data_on_debug_leds(); // PASS 2018-08-01 */
-    /* SPI_interrupt_routine_turns_debug_led1_red(); // PASS 2018-08-01 */
-    /* SPI_read_in_ISR_and_show_data_on_debug_leds(); // PASS 2018-08-01 */
-    /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
-    App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08
- 41e:	0e 94 03 02 	call	0x406	; 0x406 <App_version_of_Slave_RespondToRequestsForData>
+ 3d4:	1f 92       	push	r1
+ 3d6:	0f 92       	push	r0
+ 3d8:	0f b6       	in	r0, 0x3f	; 63
+ 3da:	0f 92       	push	r0
+ 3dc:	11 24       	eor	r1, r1
+ 3de:	2f 93       	push	r18
+ 3e0:	3f 93       	push	r19
+ 3e2:	4f 93       	push	r20
+ 3e4:	5f 93       	push	r21
+ 3e6:	6f 93       	push	r22
+ 3e8:	7f 93       	push	r23
+ 3ea:	8f 93       	push	r24
+ 3ec:	9f 93       	push	r25
+ 3ee:	af 93       	push	r26
+ 3f0:	bf 93       	push	r27
+ 3f2:	ef 93       	push	r30
+ 3f4:	ff 93       	push	r31
+    DoTaskForThisTest(); // fptr assigned in test code
+ 3f6:	e0 91 26 01 	lds	r30, 0x0126	; 0x800126 <__data_end>
+ 3fa:	f0 91 27 01 	lds	r31, 0x0127	; 0x800127 <__data_end+0x1>
+ 3fe:	09 95       	icall
+}
+ 400:	ff 91       	pop	r31
+ 402:	ef 91       	pop	r30
+ 404:	bf 91       	pop	r27
+ 406:	af 91       	pop	r26
+ 408:	9f 91       	pop	r25
+ 40a:	8f 91       	pop	r24
+ 40c:	7f 91       	pop	r23
+ 40e:	6f 91       	pop	r22
+ 410:	5f 91       	pop	r21
+ 412:	4f 91       	pop	r20
+ 414:	3f 91       	pop	r19
+ 416:	2f 91       	pop	r18
+ 418:	0f 90       	pop	r0
+ 41a:	0f be       	out	0x3f, r0	; 63
+ 41c:	0f 90       	pop	r0
+ 41e:	1f 90       	pop	r1
+ 420:	18 95       	reti
 
 00000422 <__umulhisi3>:
  422:	a2 9f       	mul	r26, r18

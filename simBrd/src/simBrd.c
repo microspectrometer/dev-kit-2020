@@ -18,11 +18,10 @@
 /* - Bit Order LSB: unchecked */
 /* - Flow Ctrl not selected: checked */
 //
-/* =====[ List of tests ]===== */
+/* =====[ List of manual tests ]===== */
 // test_EchoByte
     // [x] EchoByte_reads_a_byte_and_writes_it_back_to_the_host
 // test_SpiMaster
-    // [x] SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble
     // [x] SpiMaster_detects_when_slave_is_ready_to_send_data
     // [x] Slave_receives_request_and_sends_response_when_ready
         // Master sends the request.
@@ -35,26 +34,24 @@
     // [x] Slave_ignores_cmd_slave_ignore
     // [x] Slave_indicates_unknown_cmd_on_led_4
 
-void operate_UsbWrite(void)
-{
-    //
-    // Write a few bytes for testing purposes.
-    //
-    // A one-liner call to UsbWrite is not enough.
-    // UsbWrite needs to know:
-    //     - what bytes to send
-    //     - how many bytes to send
-    //
-    uint8_t write_buffer[] = {0, 1, 2, 3, 4, 5};
-    uint16_t num_bytes_to_send = sizeof(write_buffer);
-    UsbWrite(write_buffer, num_bytes_to_send);
-}
+/* =====[ List of automated tests ]===== */
+    // [x] SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
+    // [x] SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host
+
+// Spi-master application-level API
+uint16_t SpiMasterPassFakeSensorData(void);  // example for getting a frame
+
+// Automated Testing API
 typedef struct TestResult TestResult;
 #define max_pass_fail_string_length 4   // `PASS` or `FAIL
 #define max_pcb_name_string_length  6   // `simBrd` or `mBrd`
 #define max_test_name_string_length 80  // `Function_does_foo_when_bar`
-#define max_test_result_string_length   102 // leaves space for 12 characters
-#define max_test_result_bytes           max_test_result_string_length+1
+void RunTest(TestResult *result, bool assert_true);  // record and print result
+bool Failed(TestResult *result);                     // return true if failed
+// Check for failure to print additional information only for failing tests.
+
+// Automated Testing Details
+void PrintTestResultInColor(TestResult this_test);
 struct TestResult
 {
     uint8_t const pcb_name[max_pcb_name_string_length+1];
@@ -62,6 +59,22 @@ struct TestResult
     bool passed;
     /* uint8_t const pass_fail[5]; // `PASS` or `FAIL` */
 };
+void RunTest(TestResult * result, bool assert_true)
+{
+    // asssert_true := boolean condition that determines pass/fail
+    result->passed = assert_true;
+    PrintTestResultInColor(*result);
+}
+bool Failed(TestResult *result) { return result->passed ? false : true; }
+#define max_string_length_for_color_info 20
+#define max_string_length_for_other_text 12
+#define max_test_result_string_length \
+    max_pass_fail_string_length         + \
+    max_pcb_name_string_length          + \
+    max_test_name_string_length         + \
+    max_string_length_for_color_info    + \
+    max_string_length_for_other_text
+#define max_test_result_bytes           max_test_result_string_length+1
 uint8_t const text_color_reset[]    = "\033[39m";
 uint8_t const text_color_grey[]     = "\033[30m"; // test_name
 uint8_t const text_color_white[]    = "\033[37m"; // test_name, PASS, response
@@ -229,23 +242,6 @@ void SetupDebugLed(void)
         debug_led
         );
 }
-void SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(void)
-{
-    /* Connect to `mBrd`. `mBrd` is the SpiSlave. */
-    /* SpiSlave runs `Show_received_SPI_data_on_debug_leds()`. */
-    /* After downloading flash to the `simBrd`, */
-    /* move `SW2` from `ISP` to `SPI` and press the PCB reset button. */
-    //
-    /* =====[ Setup ]===== */
-    SpiMasterInit();
-    /* =====[ Operate ]===== */
-    uint8_t byte_to_send = 0x0B;
-    SpiMasterWrite(byte_to_send);
-    /* =====[ Test ]===== */
-    // Visually confirm data on slave debug LEDs is:
-    // led number: 4  3  2  1
-    // led color:  R  G  R  R
-}
 void SpiMaster_detects_when_slave_is_ready_to_send_data(void)
 {
     /* =====[ Setup ]===== */
@@ -394,27 +390,6 @@ void SpiMasterReadFakeSensorData(void)
         *(pfake_data++) = SpiMasterRead();
     }
 }
-uint16_t SpiMasterPassFakeSensorData(void)
-{
-    // TODO: refactor the loop to eliminate repetition outside the loop
-    // Pass each byte out as soon as you get it.
-    // Return the number of bytes passed from spi-slave to USB host.
-    SpiMasterWrite(cmd_send_dummy_frame);
-    uint16_t byte_counter = 0;
-    uint8_t byte_buffer;
-    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    while (++byte_counter < sizeof_dummy_frame)
-    {
-        byte_buffer = SpiMasterRead(); // read first byte
-        // must look for slave response right away or you'll miss it
-        SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
-        UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next
-    }
-    byte_buffer = SpiMasterRead(); // read last byte
-    UsbWrite(&byte_buffer, 1); // send last byte out
-    DebugLedTurnRed();
-    return byte_counter;
-}
 void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
 {
     /* Pairs with App_version_of_Slave_RespondToRequestsForData */
@@ -448,7 +423,7 @@ void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
         .pcb_name = "simBrd",
         .test_name = "Get_a_frame_from_slave_and_write_frame_to_USB_host"
     };
-    this_test.passed = (nbytes != sizeof_dummy_frame);
+    this_test.passed = (nbytes == sizeof_dummy_frame);
     PrintTestResultInColor(this_test);
     // If test fails, report number of bytes.
     if (!this_test.passed) PrintSizeOfSpiSlaveResponse(nbytes);
@@ -488,14 +463,89 @@ void Slave_indicates_unknown_cmd_on_led_4(void)
 }
 void test_SpiMaster(void)
 {
-    /* SpiMaster_sends_a_byte_and_slave_debug_leds_show_lower_nibble(); // PASS 2018-07-31 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
     /* SpiMaster_detects_when_slave_is_ready_to_send_data();  // PASS 2018-08-03 */
     /* Get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); // PASS 2018-08-08 */
     /* Get_several_bytes_from_slave_and_write_bytes_to_USB_host(); // PASS 2018-08-08 */
-    Get_a_frame_from_slave_and_write_frame_to_USB_host(); // PASS 2018-08-15
+    /* Get_a_frame_from_slave_and_write_frame_to_USB_host(); // PASS 2018-08-15 */
     /* Slave_ignores_cmd_slave_ignore();  // PASS 2018-08-09 */
     /* Slave_indicates_unknown_cmd_on_led_4(); // PASS 2018-08-09 */
+}
+
+/* =====[ The automated testing starts here ]===== */
+void SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    SpiMasterWrite(cmd_send_dummy_byte);
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    uint8_t response = SpiMasterRead();
+    /* =====[ Test ]===== */
+    // USB host reads the byte.
+    // ```python REPL
+    // a = s.read(s.inWaiting())
+    // ```
+    TestResult this_test = {
+        .pcb_name = "simBrd",
+        .test_name = "SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host"
+    };
+    bool assert_true = (response == cmd_send_dummy_byte);
+    TestResult *result = &this_test; RunTest(result, assert_true);
+    // Expect `0x01`.
+    // If test fails, print the received byte. `0x01` prints as a smiley face.
+    if (Failed(result)) PrintSpiSlaveResponseInColor(response);
+
+    /* this_test.passed = (response == cmd_send_dummy_byte); */
+    /* PrintTestResultInColor(this_test); */
+    /* // Expect `0x01`. */
+    /* // If test fails, print the byte sent. `0x01` prints as a smiley face. */
+    /* if (!this_test.passed) PrintSpiSlaveResponseInColor(response); */
+}
+uint16_t SpiMasterPassFakeSensorData(void)
+{
+    // TODO: refactor the loop to eliminate repetition outside the loop
+    // Pass each byte out as soon as you get it.
+    // Return the number of bytes passed from spi-slave to USB host.
+    SpiMasterWrite(cmd_send_dummy_frame);
+    uint16_t byte_counter = 0;
+    uint8_t byte_buffer;
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    while (++byte_counter < sizeof_dummy_frame)
+    {
+        byte_buffer = SpiMasterRead(); // read first byte
+        // must look for slave response right away or you'll miss it
+        SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
+        UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next
+    }
+    byte_buffer = SpiMasterRead(); // read last byte
+    UsbWrite(&byte_buffer, 1); // send last byte out
+    return byte_counter;
+}
+void SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    uint16_t nbytes = SpiMasterPassFakeSensorData();
+    //
+    /* =====[ Test ]===== */
+    // USB host reads the frame.
+    // ```python REPL
+    // a = s.read(s.inWaiting())
+    // ```
+    TestResult this_test = {
+        .pcb_name = "simBrd",
+        .test_name = "Get_a_frame_from_slave_and_write_frame_to_USB_host"
+    };
+    bool assert_true = (nbytes == sizeof_dummy_frame);
+    TestResult *result = &this_test; RunTest(result, assert_true);
+    // Expect 1540 bytes of repeated ABCs, ending in letter `F`
+    if (Failed(result)) PrintSizeOfSpiSlaveResponse(nbytes);
 }
 int main()
 {
@@ -506,5 +556,8 @@ int main()
     //
     SetupDebugLed();
     /* test_EchoByte(); // All tests pass 2018-07-30 */
-    test_SpiMaster(); // All test pass 2018-08-03
+    /* test_SpiMaster(); // All test pass 2018-08-15 */
+    SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host(); // prints a lot
+    SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host();
+
 }
