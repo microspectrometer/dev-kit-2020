@@ -1276,6 +1276,169 @@ on the compiler).
 If I am disappointed in the results of the `avr-gcc` output, I can use the
 `AvrAsmMacros` trick.
 
+## clobbering large arrays when making structs?
+- the frame data is a big array:
+    - approximately `770 pixels * 2 bytes per pixel = 1540`
+- and transmitting large arrays over USB works fine
+- but printing test results messes this up for reasons I do not understand
+### observations
+- if I precede a large array print with a test result print, the array is
+  consistently clobbered starting at byte 1042
+- if I follow a large array print with a test result print, the array is
+  consistently clobbered starting at byte 1385
+- if I print an array of 1540 bytes without printing any test results, the array
+  prints correctly
+### conclusions
+- do not print test results
+- in general, behavior is very unpredictable with this large array dancing
+  around
+- I think this is because the array is too large a percentage of the SRAM
+- unfortunately I cannot switch it to PROGMEM because I need to write to it!
+- I tried for 6 hours to understand the problem, time to move on
+    - in that time I heavily characterized what would and wouldn't cause
+      problems
+    - in each case it was not predictable until I actually did the test
+    - the main takeaway is that I need to be careful about even doing simple
+      function calls
+    - it would be better to offload the data as it comes in
+    - I tried just printing out direct every byte, but that doesn't work, I
+      don't know why. The SPI communication fails.
+- I can print test results, I just cannot pass the `TestResult` struct around
+    - fault if I use its members as string variables in `snprintf`
+- I also must declare the *total* amount of memory snprintf will write to before
+  calling snprintf
+- Here is the final working example:
+```c
+    char test[94];  // assume 93 char is the biggest `TestResult` message
+    char pcb_name[] = "simBrd";
+    char pass_fail[] = "PASS";
+    snprintf(test, 94,
+            /* "\n%ssimBrd %stest " */
+            "\n%s%s %stest "
+            "Get_a_frame_from_slave_and_write_frame_to_USB_host"
+            /* ":%sPASS%s\n", */
+            ":%s%s%s\n",
+        text_color_white, pcb_name,
+        text_color_grey,  // test_name
+        text_color_white, pass_fail,
+        text_color_reset
+        );
+    uint16_t nb = strlen(test);
+    UsbWrite((uint8_t *)test, nb);
+```
+- It really sucks that any of the steps to turn this into a function cause a
+  fault
+- I don't know why I can pass `pcb_name` and `pass_fail` as string variables,
+  but I cannot do that for the `test_name` or the debug LED does not even turn
+  on
+- so I am stuck just copy-and-pasting this code wherever I need it
+- even attempting to automate the color of pass/fail causes a little array
+  clobbering, even if I am not passing the whole TestResult struct!
+
+### wait but why
+- why is printing coupled to the memory for the array?
+    - this is probably an `snprintf` issue
+    - I am calculating the message length at runtime
+    - that is OK, but not for determining the maximum amount of memory
+    - but I need to give the compiler a safe maximum to reserve, and then the
+      program decides how much to actually use
+- solving those problems was not enough
+    - sending two frames is no problem
+    - and reading from the slave is no problem
+    - the problem is 100% due to attempting to print a test result either before or
+      after printing the array
+    - so what is special about my test-result printing call?
+    - it uses `snprintf` -- possibly that is accessing memory it should not be
+    - yep, `snprintf` causes the problem, but so does a straight call to `UsbWrite`
+      with mixed up signedness of the pointers, as well as use of the `TestResult`
+      struct in building a string to write with `snprintf`
+- the issue is the SRAM is only 2K
+    - I am consuming 1.54K just to hold an array
+    - it does not take much to overrun into this array by accident
+    - I'm losing SRAM to stack frames from all the function calls
+    - I'm losing SRAM to data like the `TestResults` struct which holds a long
+      string
+    - so it does not take much to step onto the array
+- the solution is to *not store the array*
+    - the tradeoff here is speed
+    - sending each byte as I get it is definitely slower
+- I can probably speed up if I send the data out in half-frames
+- alternatively, I can do an 8-bit version for now
+- but yes, success, now I can go back to my printing routines with no problem
+#### for future refactoring
+- use `vsnprintf` instead?
+- it's a good solution once I have my array-clobbering problem sorted, but this
+  will not help with that
+- plus I have to learn to write variadic functions...
+> https://embeddedgurus.com/stack-overflow/2009/02/effective-c-tips-1-using-vsprintf/
+> https://www.avrfreaks.net/forum/passing-valist-snprintf
+- it is in `stdio.h` along with `snprintf`:
+> `https://www.nongnu.org/avr-libc/user-manual/group__avr__stdio.html`
+> `https://www.nongnu.org/avr-libc/user-manual/group__avr__stdio.html#gac92e8c42a044c8f50aad5c2c69e638e0`
+```c
+int vsnprintf(
+        char * __s,
+        size_t __n,
+        const char *__fmt,
+        va_list ap
+        )
+```
+> Like vsprintf(), but instead of assuming s to be of infinite size, no more
+> than n characters (including the trailing NUL character) will be converted to
+> s.
+> 
+> Returns the number of characters that would have been written to s if there
+> were enough space.
+
+- The example from Nigel Jones:
+```c
+// char array creation happens here
+void display_Write(
+    uint8_t row,
+    uint8_t column,
+    char const * format,
+    ...
+    )
+{
+    va_list args;
+    char buf[MAX_STR_LEN];
+
+    va_start(args, format);
+    vsprintf(buf, format, args); /* buf contains the formatted string */
+    
+    /* Send formatted string to display - hardware dependent */
+    
+    va_end(args);                /* Clean up. Do NOT omit */
+}
+// example client code
+void display_Time(int hours, int minutes, int seconds)
+{
+    display_Write(3, 9, "%02d:%02d:%02d", hours, minutes, seconds);
+}
+```
+## pointer signedness
+```make
+warning: pointer targets in initialization differ in signedness [-Wpointer-sign]
+```
+- this happens because `UsbWrite` deals in raw bytes, so it takes pointers to
+  unsigned bytes:
+```c
+UsbWrite((uint8_t *)test, nb);
+```
+- but in the example above, `test` is a string, which is a pointer to a char
+- even though `char` and `uint8_t` are identical, `avr-gcc` complains this is a
+  sign change from `unsigned` to not `unsigned`
+- the attempted `cast` in the above snipped does not eliminate the warning
+  because I have CFLAGS `-Wall` and `-Wextra -pedantic`
+- solution: add CFLAG `-Wno-pointer-sign` to eliminate the warning
+```make
+#=====[ Compiler and Linker flags ]=====
+CFLAGS = -I../lib/src -Isrc \
+	-g -Wall -Wextra -pedantic -Wno-pointer-sign\
+	-O1 -ffunction-sections -fdata-sections -fshort-enums \
+		-mmcu=atmega328p -B ${atmega328_lib}
+```
+
 # FT1248
 
 ## How FT1248 relates to USB

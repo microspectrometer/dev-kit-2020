@@ -9,7 +9,7 @@ unit-test: ${test-output}
 
 #=====[ Compiler and Linker flags ]=====
 CFLAGS = -I../lib/src -Isrc \
-	-g -Wall -Wextra -pedantic \
+	-g -Wall -Wextra -pedantic -Wno-pointer-sign\
 	-O1 -ffunction-sections -fdata-sections -fshort-enums \
 		-mmcu=atmega328p -B ${atmega328_lib}
 #The avr ld.exe does not recognize any of these

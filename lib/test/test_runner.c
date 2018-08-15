@@ -192,6 +192,8 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     setUp = SetUp_SpiSlaveSendBytes; tearDown = TearDown_SpiSlaveSendBytes;
     RUN_TEST(SpiSlaveSendBytes_waits_for_master_read_between_each_byte);
 }}
+void DevelopingUartSpi(bool run_test) {if (run_test) {
+}}
 int main()
 {
     UNITY_BEGIN();
@@ -203,6 +205,7 @@ int main()
     DevelopingUsb             (Nope);
     DevelopingSpiPlumbing     (Nope);
     DevelopingSpiMaster       (Nope);
-    DevelopingSpiSlave        (Yep);
+    DevelopingSpiSlave        (Nope);
+    DevelopingUartSpi         (Yep);
     return UNITY_END();
 }
