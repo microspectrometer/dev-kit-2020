@@ -9,7 +9,7 @@
     // [x] UartSpiInit_sets_Sck_as_an_output
     // [x] UartSpiInit_sets_AdcConv_to_idle_low
     // [x] UartSpiInit_sets_AdcConv_as_an_output
-    // [ ] UartSpiInit_enables_the_UART_in_Master_SPI_Mode
+    // [x] UartSpiInit_enables_the_UART_in_Master_SPI_Mode
 void UartSpiInit_loads_0_into_baud_rate_register(void)
 {
     /* =====[ Setup ]===== */
@@ -50,5 +50,19 @@ void UartSpiInit_sets_AdcConv_as_an_output(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         UartSpi_AdcConv, *UartSpi_ddr, "Failed for pin AdcConv."
+        );
+}
+void UartSpiInit_enables_the_UART_in_Master_SPI_Mode(void)
+{
+    /* =====[ Setup ]===== */
+    *UartSpi_csrc = 0x00;
+    /* =====[ Operate ]===== */
+    UartSpiInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        UartSpi_ModeSelect0, *UartSpi_csrc, "Failed for bit ModeSelect0."
+        );
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        UartSpi_ModeSelect1, *UartSpi_csrc, "Failed for bit ModeSelect1."
         );
 }

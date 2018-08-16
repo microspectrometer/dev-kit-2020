@@ -31,11 +31,14 @@ static void SetAdcConvAsOutput(void)
     // cfg general purpose output for conversion-start and readout-start
     SetBit(UartSpi_ddr, UartSpi_AdcConv);
 }
-static void EnableSpiMode(void)
+static void EnableAtmega328UsartInSpiMasterMode(void)
 {
-    // Enable ATmega328 USART in SPI master mode.
     SetBit(UartSpi_csrc, UartSpi_ModeSelect0);
     SetBit(UartSpi_csrc, UartSpi_ModeSelect1);
+}
+static void SpiMasterEnable(void)
+{
+    EnableAtmega328UsartInSpiMasterMode();
     // Use SPI data mode: CPOL=1, CPHA=1
         // clock idles high
         // load data on falling  clock edge
@@ -54,7 +57,7 @@ void UartSpiInit(void)
     RunSpiAt5Mhz(); // datasheet says to call this first
     SetSckAsOutput();
     AdcConvIdleLow(); SetAdcConvAsOutput();
-    EnableSpiMode();
+    SpiMasterEnable();
     RunSpiAt5Mhz(); // datasheet says to call this again after enable
 }
 static bool TxBufferIsEmpty(void)
