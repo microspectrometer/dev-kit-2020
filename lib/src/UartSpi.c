@@ -49,23 +49,27 @@ static void CfgSpiToTransferMsbFirst(void)
 {
     ClearBit(UartSpi_csrc, UartSpi_DataOrder);
 }
-static void SpiMasterEnable(void)
+static void GiveSpiControlOverMisoAndMosiPins(void)
 {
-    EnableAtmega328UsartInSpiMasterMode();
-    UseSpiDataModeCpol1CPha1();
-    CfgSpiToTransferMsbFirst();
     /* ---Enabling Rx and Tx overrides normal port operation--- */
     // Enable the receiver. The UART Rx pin becomes the SPI Miso.
     SetBit(UartSpi_csrb, UartSpi_RxEnable);
     // Enable the transmitter. The UART Tx pin becomes the SPI Mosi.
     SetBit(UartSpi_csrb, UartSpi_TxEnable);
 }
+static void SpiMasterCfg(void)
+{
+    EnableAtmega328UsartInSpiMasterMode();
+    UseSpiDataModeCpol1CPha1();
+    CfgSpiToTransferMsbFirst();
+    GiveSpiControlOverMisoAndMosiPins();
+}
 void UartSpiInit(void)
 {
     RunSpiAt5Mhz(); // datasheet says to call this first
     SetSckAsOutput();
     AdcConvIdleLow(); SetAdcConvAsOutput();
-    SpiMasterEnable();
+    SpiMasterCfg();
     RunSpiAt5Mhz(); // datasheet says to call this again after enable
 }
 static bool TxBufferIsEmpty(void)

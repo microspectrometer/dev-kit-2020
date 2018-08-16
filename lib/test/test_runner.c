@@ -216,5 +216,6 @@ int main()
     RUN_TEST(UartSpiInit_enables_the_UART_in_Master_SPI_Mode);
     RUN_TEST(UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1);
     RUN_TEST(UartSpiInit_cfgs_SPI_to_transfer_MSB_first);
+    RUN_TEST(UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior);
     return UNITY_END();
 }

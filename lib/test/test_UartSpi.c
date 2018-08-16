@@ -12,6 +12,7 @@
     // [x] UartSpiInit_enables_the_UART_in_Master_SPI_Mode
     // [x] UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1
     // [x] UartSpiInit_cfgs_SPI_to_transfer_MSB_first
+    // [x] UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior
 void UartSpiInit_loads_0_into_baud_rate_register(void)
 {
     /* =====[ Setup ]===== */
@@ -91,5 +92,19 @@ void UartSpiInit_cfgs_SPI_to_transfer_MSB_first(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_LOW_MESSAGE(
         UartSpi_DataOrder, *UartSpi_csrc, "Failed for bit DataOrder."
+        );
+}
+void UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior(void)
+{
+    /* =====[ Setup ]===== */
+    *UartSpi_csrb = 0x00;
+    /* =====[ Operate ]===== */
+    UartSpiInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        UartSpi_RxEnable, *UartSpi_csrb, "Failed for bit RxEnable."
+        );
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        UartSpi_TxEnable, *UartSpi_csrb, "Failed for bit TxEnable."
         );
 }
