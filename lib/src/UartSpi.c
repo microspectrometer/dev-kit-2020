@@ -1,7 +1,9 @@
 #include "UartSpi.h"
 #include "ReadWriteBits.h"
 
-
+//
+/* =====[ UartSpiInit ]===== */
+//
 static void RunSpiAt5Mhz(void)
 {
     // Configure USART to clock ADC SCK at fosc/2 = 5MHz:
@@ -72,16 +74,22 @@ void UartSpiInit(void)
     SpiMasterCfg();
     RunSpiAt5Mhz(); // datasheet says to call this again after enable
 }
+
+//
+/* =====[ UartSpiRead ]===== */
+//
 static bool TxBufferIsEmpty(void)
 {
     // Check `data register empty` flag UDRE0
     return BitIsSet(UartSpi_csra, UartSpi_DataRegEmpty);
 }
-static bool UartSpiTransferIsDone(void)
+bool (*UartSpiTxBufferIsEmpty)(void) = TxBufferIsEmpty;
+static bool Received8bits(void)
 {
     // Check `data receive done` flag RXC0
     return BitIsSet(UartSpi_csra, UartSpi_RxComplete);
 }
+bool (*UartSpiTransferIsDone)(void) = Received8bits;
 static uint8_t ReadUartSpiDataRegister(void)
 {
     return *UartSpi_data;
@@ -93,7 +101,7 @@ uint16_t UartSpiRead(void)
     // Wait for conversion to finish
     uint8_t ticks = 15; Delay3CpuCyclesPerTick(ticks); // 3*1.0e-7s*15 = 4.5us
     StartAdcReadout();
-    while (!TxBufferIsEmpty());
+    while (!UartSpiTxBufferIsEmpty());
     uint8_t byte_to_send = 0x00; // arbitrary choice -- write zeroes
     *UartSpi_data = byte_to_send;  // load tx buffer and start SPI transmission
     *UartSpi_data = byte_to_send;  // this makes it a 16-bit transmission ?

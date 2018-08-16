@@ -217,5 +217,8 @@ int main()
     RUN_TEST(UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1);
     RUN_TEST(UartSpiInit_cfgs_SPI_to_transfer_MSB_first);
     RUN_TEST(UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior);
+    setUp = SetUp_UartSpiRead; tearDown = TearDown_UartSpiRead;
+    RUN_TEST(UartSpiTransferIsDone_returns_true_when_the_transfer_is_done);
+    RUN_TEST(UartSpiRead_initiates_adc_conversion_and_readout);
     return UNITY_END();
 }

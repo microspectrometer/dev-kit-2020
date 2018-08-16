@@ -29,11 +29,11 @@ names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb Spi UartSpi
 #
 # But only some tests use mocks.
 # List the dev libs tested with mocks:
-names-of-libs-tested-with-mocks := Ft1248 Usb Spi
+names-of-libs-tested-with-mocks := Ft1248 Usb Spi UartSpi
 
 # And only some libs require mocking.
 # List the dev libs that have mocked versions to remove dependencies:
-mocked-dev-libs := DebugLed Ft1248 Spi
+mocked-dev-libs := DebugLed Ft1248 Spi UartSpi
 
 # list of object prerequisites for      dev libs
 obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})

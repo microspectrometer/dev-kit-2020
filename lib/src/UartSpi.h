@@ -2,6 +2,7 @@
 #define _UARTSPI_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* =====[ AVR asm macros ]===== */
 extern void (*Delay3CpuCyclesPerTick)(uint8_t);
@@ -35,5 +36,8 @@ extern uint8_t const UartSpi_DataOrder;     // clear for MSB first
 extern uint8_t const UartSpi_DataRegEmpty;  // set when tx is done
 extern uint8_t const UartSpi_RxComplete;    // set when rx is done
 
+/* =====[ Exposed to mock for testing ]===== */
+extern bool (*UartSpiTxBufferIsEmpty)(void);
+extern bool (*UartSpiTransferIsDone)(void);
 
 #endif // _UARTSPI_H
