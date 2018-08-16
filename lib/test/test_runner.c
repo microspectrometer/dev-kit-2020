@@ -194,8 +194,6 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     RUN_TEST(SpiSlaveSendBytes_waits_for_master_read_between_each_byte);
 }}
 void DevelopingUartSpi(bool run_test) {if (run_test) {
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(plumbing);
 }}
 int main()
 {
@@ -210,5 +208,7 @@ int main()
     DevelopingSpiMaster       (Nope);
     DevelopingSpiSlave        (Nope);
     DevelopingUartSpi         (Yep);
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(UartSpiInit_loads_0_into_baud_rate_register);
     return UNITY_END();
 }

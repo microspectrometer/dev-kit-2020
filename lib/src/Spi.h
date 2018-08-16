@@ -23,6 +23,23 @@ extern void (*SpiMasterOpenSpi)(void);
 extern void (*SpiMasterCloseSpi)(void);
 extern bool (*SpiTransferIsDone)(void);
 
+/* =====[ SPI Slave API ]===== */
+void SpiSlaveInit(void);
+uint8_t SpiSlaveRead(void);
+extern void (*SpiSlaveSignalDataIsReady)(void);
+extern uint8_t const slave_ignore;      // slave ignores cmd `slave_ignore`
+extern uint8_t const test_unknown_cmd;  // tests slave response to unknown cmd
+void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes);
+
+/* =====[ Plumbing for all AVR SPI devices, exposed for testing ]===== */
+extern uint8_t (*ReadSpiDataRegister)(void);
+extern void (*WriteSpiDataRegister)(uint8_t);
+void SpiEnableInterrupt(void);
+extern void (*ClearPendingSpiInterrupt)(void);
+extern uint8_t (*ReadSpiStatusRegister)(void);
+extern void (*DisableSpi)(void);
+extern void (*EnableSpi)(void);
+
 /* =====[ Hardware dependencies to be resolved in Spi-Hardware.h ]===== */
 /* ---Pin Direction and I/O Registers--- */
 extern uint8_t volatile * const Spi_ddr;
@@ -46,22 +63,5 @@ extern uint8_t const Spi_InterruptEnable;   // used in software for slave
 /* ---SPI status register bit names--- */
 extern uint8_t const Spi_DoubleClockRate;
 extern uint8_t const Spi_InterruptFlag;
-
-/* =====[ SPI Slave API ]===== */
-void SpiSlaveInit(void);
-uint8_t SpiSlaveRead(void);
-extern void (*SpiSlaveSignalDataIsReady)(void);
-extern uint8_t const slave_ignore;      // slave ignores cmd `slave_ignore`
-extern uint8_t const test_unknown_cmd;  // tests slave response to unknown cmd
-void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes);
-
-/* =====[ Plumbing for all AVR SPI devices, exposed for testing ]===== */
-extern uint8_t (*ReadSpiDataRegister)(void);
-extern void (*WriteSpiDataRegister)(uint8_t);
-void SpiEnableInterrupt(void);
-extern void (*ClearPendingSpiInterrupt)(void);
-extern uint8_t (*ReadSpiStatusRegister)(void);
-extern void (*DisableSpi)(void);
-extern void (*EnableSpi)(void);
 
 #endif // _SPI_H

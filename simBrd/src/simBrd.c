@@ -194,6 +194,23 @@ void PrintSizeOfSpiSlaveResponse(uint16_t nbytes)
     num_bytes_to_send = strlen((char *)string);
     UsbWrite(string, num_bytes_to_send);
 }
+void PrintAdcReading(uint16_t adc_reading)
+{
+    size_t len =    strlen("\nADC reading: 0x0000\n") +
+                    15+ // add 5 bytes for each color code
+                    1;  // NULL
+    uint8_t string[len];
+    snprintf((char *)string, len,
+        "\n%sADC reading: %s0x%.4X%s\n",
+        text_color_grey,
+        text_color_white,
+        adc_reading,
+        text_color_reset
+        );
+    uint16_t num_bytes_to_send;
+    num_bytes_to_send = strlen((char *)string);
+    UsbWrite(string, num_bytes_to_send);
+}
 void PrintSpiSlaveResponseInColor(uint8_t response)
 {
     size_t len =    strlen("SPI slave responded with   \n") +
@@ -547,6 +564,61 @@ void SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host(void)
     // Expect 1540 bytes of repeated ABCs, ending in letter `F`
     if (Failed(result)) PrintSizeOfSpiSlaveResponse(nbytes);
 }
+void SpiMaster_get_adc_reading_from_slave_and_write_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    SpiMasterWrite(cmd_send_adc_reading);
+    uint8_t adc_bytes[2]; uint8_t * padc_bytes = adc_bytes;
+    uint16_t nbytes = sizeof(adc_bytes);
+    uint16_t byte_counter = 0;
+    while (byte_counter++ < nbytes)
+    {
+        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+        *(padc_bytes++) = SpiMasterRead();
+    }
+    uint16_t adc_reading = (adc_bytes[0] << 8) + adc_bytes[1];
+    PrintAdcReading(adc_reading);
+    DebugLedTurnRed();
+
+    TestResult this_test = {
+        .pcb_name = "simBrd",
+        .test_name = "SpiMaster_get_adc_reading_from_slave_and_write_to_USB_host"
+    };
+    bool assert_true = (nbytes == 2);
+    TestResult *result = &this_test; RunTest(result, assert_true);
+    if (Failed(result)) PrintAdcReading(adc_reading);
+}
+void SpiMaster_get_fake_adc_reading_from_slave_and_write_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    SpiMasterWrite(cmd_send_fake_adc_reading);
+    uint8_t adc_bytes[2]; uint8_t * padc_bytes = adc_bytes;
+    uint16_t nbytes = sizeof(adc_bytes);
+    uint16_t byte_counter = 0;
+    while (byte_counter++ < nbytes)
+    {
+        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+        *(padc_bytes++) = SpiMasterRead();
+    }
+    uint16_t adc_reading = (adc_bytes[0] << 8) + adc_bytes[1];
+    DebugLedTurnRed();
+
+    TestResult this_test = {
+        .pcb_name = "simBrd",
+        .test_name = "SpiMaster_get_fake_adc_reading_from_slave_and_write_to_USB_host"
+    };
+    bool assert_true = (adc_reading == fake_adc_reading);
+    TestResult *result = &this_test; RunTest(result, assert_true);
+    if (Failed(result)) PrintAdcReading(adc_reading);
+}
 int main()
 {
     //
@@ -559,5 +631,7 @@ int main()
     /* test_SpiMaster(); // All test pass 2018-08-15 */
     SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host(); // prints a lot
     SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host();
+    SpiMaster_get_fake_adc_reading_from_slave_and_write_to_USB_host();
+    SpiMaster_get_adc_reading_from_slave_and_write_to_USB_host();
 
 }

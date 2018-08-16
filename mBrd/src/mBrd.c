@@ -25,6 +25,8 @@
 #include <Spi.h>                // Chromation spectrometer is a SPI slave
 #include "Spi-Hardware.h"       // map SPI I/O to actual hardware
 #include "Spi-Commands.h"       // commands understood by the SPI slave
+#include <UartSpi.h>            // mBrd USART in MSPIM mode for ADC readout
+#include "UartSpi-Hardware.h"   // map UART MSPIM I/O to actual hardware
 #include "AvrAsmMacros.h"       // resolve lib dependencies on AVR asm macros
 // avr libs
 #include <avr/interrupt.h>      // defines macro ISR()
@@ -63,6 +65,7 @@
 
 /* =====[ Spi-slave application-level API ]===== */
 void SetupDebugLeds(void);
+void App_version_of_Slave_RespondToRequestsForData(void);
 void RespondToRequestsForData(void);
 // ...uses:
 void SendDataMasterAskedFor(void);
@@ -86,6 +89,12 @@ void All_debug_leds_turn_on_and_turn_red(void);
 void Turn_led1_red_and_the_rest_green(void);
 void Show_data_on_debug_leds(uint8_t four_bits);
 
+/* =====[ UartSpi preliminary work ]===== */
+// Moved to mBrd/src/UartSpi-Hardware.h
+// Moved to lib/src/UartSpi.h
+// Moved to lib/src/UartSpi.c
+// Created lib/test/fake/UartSpi-Hardware.h
+
 int main()
 {
     //
@@ -95,13 +104,15 @@ int main()
     //
     SetupDebugLeds();
     /* test_DebugLeds(); // All tests pass 2018-07-30 */
-    test_SpiSlave(); // All tests pass 2018-08-08
+    /* test_SpiSlave();  // All tests pass 2018-08-08 */
+    App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08
 }
 /* =====[ SpiSlave application-level API details ]===== */
 void App_version_of_Slave_RespondToRequestsForData(void)
 {
     /* =====[ Setup ]===== */
     SpiSlaveInit();
+    UartSpiInit();
     /* =====[ Main Loop ]===== */
     while(1) RespondToRequestsForData();
     // Actual app does other stuff, e.g., pet the watchdog.
@@ -120,6 +131,28 @@ void RespondToRequestsForData(void)
     // Poll SPI bus. Process data requests, if any.
     if ( SpiTransferIsDone() ) SendDataMasterAskedFor();
 }
+void SendAdcReading(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    uint16_t adc_reading = UartSpiRead();
+    uint8_t adc_lsb = adc_reading & 0xFF;
+    uint8_t adc_msb = adc_reading >> 8;
+
+    uint8_t adc_bytes[] = {adc_msb, adc_lsb};
+    uint16_t nbytes = sizeof(adc_bytes);
+    SpiSlaveSendBytes(adc_bytes, nbytes);
+}
+void SendFakeAdcReading(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    uint16_t adc_reading = fake_adc_reading;
+    uint8_t adc_lsb = adc_reading & 0xFF;
+    uint8_t adc_msb = adc_reading >> 8;
+
+    uint8_t adc_bytes[] = {adc_msb, adc_lsb};
+    uint16_t nbytes = sizeof(adc_bytes);
+    SpiSlaveSendBytes(adc_bytes, nbytes);
+}
 void SendDataMasterAskedFor(void)
 {
     DebugLedsTurnRed(debug_led1);  // for manual testing
@@ -129,6 +162,8 @@ void SendDataMasterAskedFor(void)
     if      (cmd == cmd_send_dummy_byte) SendDummyByte();
     else if (cmd == cmd_send_four_dummy_bytes) SendFourDummyBytes();
     else if (cmd == cmd_send_dummy_frame) SendDummyFrame();
+    else if (cmd == cmd_send_adc_reading) SendAdcReading();
+    else if (cmd == cmd_send_fake_adc_reading) SendFakeAdcReading();
     else if (cmd == slave_ignore) DoNothing();  // PASS 2018-08-03
     // `slave_ignore` is available through spi lib
     // for master to send when slave does read
@@ -326,6 +361,17 @@ void test_SpiSlave(void)
     /* SpiSlaveRead_and_show_received_data_on_debug_leds(); // PASS 2018-08-01 */
     /* Slave_receives_request_and_sends_response_when_ready(); // PASS 2018-08-02 */
     App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08
+}
+void Show_four_MSB_of_adc_reading_on_debug_leds(void)
+{
+    UartSpiInit();
+    Show_data_on_debug_leds( (UartSpiRead() >> 12) );
+}
+void test_UartSpi(void)
+{
+    // This is a stupid test without having some way to control the analog
+    // differential voltage.
+    Show_four_MSB_of_adc_reading_on_debug_leds();
 }
 
 /* =====[ Hardware troubleshooting tests ]===== */

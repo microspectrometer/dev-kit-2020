@@ -130,6 +130,28 @@
 #### UartSpi
 - USART module on `mBrd` is the SPI master
 - For reading data from the *ADC* on the `mBrd`
+- see PDF sketch `mcu-usart-in-spi-mode-for-adc-spi.pdf`
+    - explains USART configuration for MSPIM
+##### ADC
+- LTC1864L
+##### analog overview
+- 16-bit SAR ADC with a differential input and a unipolar transfer function
+    - Differential input means the analog voltage is the difference between
+      inputs IN+ and IN-
+        - IN- connects to the LIS-770i VREF (dark reference) output
+        - the difference between IN+ and IN- is the dark-corrected pixel voltage
+    - Unipolar transfer function means the allowed analog voltages range from 0V
+      to 2.5V.
+- uses a 2.5V external reference
+##### digital interface
+- communicate with ADC over SPI to read the pixel voltages as 16-bit values:
+    - ADC is the SPI slave
+    - ATmega328 on `mBrd` is the SPI master
+        - uses the USART in SPI master mode
+        - Slave select (or chip select) is just a general purpose i/o
+        - the clock is USART XCK
+        - MISO is USART RxD
+        - there is no MOSI connection: the ADC is a read-only device
 
 #### Lis-io
 - readout
