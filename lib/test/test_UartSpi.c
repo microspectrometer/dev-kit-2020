@@ -8,7 +8,7 @@
         // this runs the SPI clock at 5MHz for a 10MHz CPU clock
     // [x] UartSpiInit_sets_Sck_as_an_output
     // [x] UartSpiInit_sets_AdcConv_to_idle_low
-    // [ ] UartSpiInit_sets_AdcConv_as_an_output
+    // [x] UartSpiInit_sets_AdcConv_as_an_output
     // [ ] UartSpiInit_enables_the_UART_in_Master_SPI_Mode
 void UartSpiInit_loads_0_into_baud_rate_register(void)
 {
@@ -39,5 +39,16 @@ void UartSpiInit_sets_AdcConv_to_idle_low(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_LOW_MESSAGE(
         UartSpi_AdcConv, *UartSpi_port, "Failed for pin AdcConv."
+        );
+}
+void UartSpiInit_sets_AdcConv_as_an_output(void)
+{
+    /* =====[ Setup ]===== */
+    *UartSpi_ddr = 0x00;
+    /* =====[ Operate ]===== */
+    UartSpiInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        UartSpi_AdcConv, *UartSpi_ddr, "Failed for pin AdcConv."
         );
 }

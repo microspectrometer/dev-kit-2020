@@ -212,5 +212,6 @@ int main()
     RUN_TEST(UartSpiInit_loads_0_into_baud_rate_register);
     RUN_TEST(UartSpiInit_sets_Sck_as_an_output);
     RUN_TEST(UartSpiInit_sets_AdcConv_to_idle_low);
+    RUN_TEST(UartSpiInit_sets_AdcConv_as_an_output);
     return UNITY_END();
 }
