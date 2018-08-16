@@ -210,5 +210,6 @@ int main()
     DevelopingUartSpi         (Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(UartSpiInit_loads_0_into_baud_rate_register);
+    RUN_TEST(UartSpiInit_sets_Sck_as_an_output);
     return UNITY_END();
 }
