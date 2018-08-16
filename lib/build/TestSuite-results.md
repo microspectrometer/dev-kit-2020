@@ -1,4 +1,5 @@
+test/test_runner.c:198:plumbing:PASS
 
 -----------------------
-0 Tests 0 Failures 0 Ignored 
+1 Tests 0 Failures 0 Ignored 
 OK

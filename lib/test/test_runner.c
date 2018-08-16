@@ -10,6 +10,7 @@
 #include "test_Ft1248.h"    // lib-level API for FT1248 master on simBrd
 #include "test_Usb.h"       // app-level API for FT1248 master on simBrd
 #include "test_Spi.h"       // SPI master on simBrd and SPI slave on mBrd
+#include "test_UartSpi.h"   // mBrd USART in MSPIM mode for ADC readout
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -193,6 +194,8 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     RUN_TEST(SpiSlaveSendBytes_waits_for_master_read_between_each_byte);
 }}
 void DevelopingUartSpi(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(plumbing);
 }}
 int main()
 {
