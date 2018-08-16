@@ -10,6 +10,7 @@
     // [x] UartSpiInit_sets_AdcConv_to_idle_low
     // [x] UartSpiInit_sets_AdcConv_as_an_output
     // [x] UartSpiInit_enables_the_UART_in_Master_SPI_Mode
+    // [x] UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1
 void UartSpiInit_loads_0_into_baud_rate_register(void)
 {
     /* =====[ Setup ]===== */
@@ -64,5 +65,19 @@ void UartSpiInit_enables_the_UART_in_Master_SPI_Mode(void)
         );
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         UartSpi_ModeSelect1, *UartSpi_csrc, "Failed for bit ModeSelect1."
+        );
+}
+void UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1(void)
+{
+    /* =====[ Setup ]===== */
+    *UartSpi_csrc = 0x00;
+    /* =====[ Operate ]===== */
+    UartSpiInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        UartSpi_ClockPolarity, *UartSpi_csrc, "Failed for bit ClockPolarity."
+        );
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        UartSpi_ClockPhase, *UartSpi_csrc, "Failed for bit ClockPhase."
         );
 }

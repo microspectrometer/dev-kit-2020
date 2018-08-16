@@ -3,7 +3,8 @@ test/test_runner.c:213:UartSpiInit_sets_Sck_as_an_output:PASS
 test/test_runner.c:214:UartSpiInit_sets_AdcConv_to_idle_low:PASS
 test/test_runner.c:215:UartSpiInit_sets_AdcConv_as_an_output:PASS
 test/test_runner.c:216:UartSpiInit_enables_the_UART_in_Master_SPI_Mode:PASS
+test/test_runner.c:217:UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1:PASS
 
 -----------------------
-5 Tests 0 Failures 0 Ignored 
+6 Tests 0 Failures 0 Ignored 
 OK

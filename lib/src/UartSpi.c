@@ -36,15 +36,19 @@ static void EnableAtmega328UsartInSpiMasterMode(void)
     SetBit(UartSpi_csrc, UartSpi_ModeSelect0);
     SetBit(UartSpi_csrc, UartSpi_ModeSelect1);
 }
-static void SpiMasterEnable(void)
+static void UseSpiDataModeCpol1CPha1(void)
 {
-    EnableAtmega328UsartInSpiMasterMode();
     // Use SPI data mode: CPOL=1, CPHA=1
         // clock idles high
         // load data on falling  clock edge
         // sample data on rising clock edge
     SetBit(UartSpi_csrc, UartSpi_ClockPolarity);  // clock idles high
     SetBit(UartSpi_csrc, UartSpi_ClockPhase);     // load data then sample data
+}
+static void SpiMasterEnable(void)
+{
+    EnableAtmega328UsartInSpiMasterMode();
+    UseSpiDataModeCpol1CPha1();
     ClearBit(UartSpi_csrc, UartSpi_DataOrder);    // MSB is transmitted first
     /* ---Enabling Rx and Tx overrides normal port operation--- */
     // Enable the receiver. The UART Rx pin becomes the SPI Miso.
