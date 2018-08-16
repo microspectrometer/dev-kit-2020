@@ -11,6 +11,7 @@
     // [x] UartSpiInit_sets_AdcConv_as_an_output
     // [x] UartSpiInit_enables_the_UART_in_Master_SPI_Mode
     // [x] UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1
+    // [x] UartSpiInit_cfgs_SPI_to_transfer_MSB_first
 void UartSpiInit_loads_0_into_baud_rate_register(void)
 {
     /* =====[ Setup ]===== */
@@ -79,5 +80,16 @@ void UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1(void)
         );
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         UartSpi_ClockPhase, *UartSpi_csrc, "Failed for bit ClockPhase."
+        );
+}
+void UartSpiInit_cfgs_SPI_to_transfer_MSB_first(void)
+{
+    /* =====[ Setup ]===== */
+    *UartSpi_csrc = 0xFF;
+    /* =====[ Operate ]===== */
+    UartSpiInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        UartSpi_DataOrder, *UartSpi_csrc, "Failed for bit DataOrder."
         );
 }
