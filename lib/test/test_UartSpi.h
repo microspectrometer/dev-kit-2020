@@ -13,5 +13,6 @@ void UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior(void);
 void SetUp_UartSpiRead(void); void TearDown_UartSpiRead(void);
 void UartSpiRead_initiates_adc_conversion_and_readout(void);
 void UartSpiTransferIsDone_returns_true_when_the_transfer_is_done(void);
+void UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC(void);
 
 #endif // _TEST_UARTSPI_H

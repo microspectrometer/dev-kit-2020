@@ -7,7 +7,7 @@
 #include "mock_UartSpi.h"
 
 /* =====[ List of UartSpi Plumbing Tests ]===== */
-// [ ] UartSpiInit
+// [x] UartSpiInit
     // [x] UartSpiInit_loads_0_into_baud_rate_register
         // this runs the SPI clock at 5MHz for a 10MHz CPU clock
     // [x] UartSpiInit_sets_Sck_as_an_output
@@ -20,7 +20,7 @@
 // [ ] UartSpiRead
     // [x] UartSpiTransferIsDone_returns_true_when_the_transfer_is_done
     // [x] UartSpiRead_initiates_adc_conversion_and_readout
-    // [ ] UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC
+    // [x] UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC
     // [ ] UartSpiRead_reads_the_ADC_MSB_first
         // a.k.a. big-endian
         // mock ReadUartSpiDataRegister to return 0x12 then 0x34
@@ -171,35 +171,61 @@ void UartSpiRead_initiates_adc_conversion_and_readout(void)
     /* =====[ Setup ]===== */
     // Mock functions that make the FUT block until they return true.
     //
-    /* bool TxBufferIsEmpty_returns[] = {false, false, true}; */
     bool TxBufferIsEmpty_returns[] = {true};
     int num_times_TxBuffer_is_checked = sizeof(TxBufferIsEmpty_returns);
     UartSpiTxBufferIsEmpty_StubbedReturnValue = TxBufferIsEmpty_returns;
     //
-    /* bool UartSpiTransferIsDone_returns[] = {false, false, true}; */
-    /* bool UartSpiTransferIsDone_returns[] = {false, true}; */
-    bool UartSpiTransferIsDone_returns[] = {false, false, true, false, false, true};
+    bool UartSpiTransferIsDone_returns[] = {true, true};
     UartSpiTransferIsDone_StubbedReturnValue = UartSpiTransferIsDone_returns;
     int num_times_RxDone_is_checked = sizeof(UartSpiTransferIsDone_returns);
     /* =====[ Operate ]===== */
     UartSpiRead();
     /* =====[ Set up expected calls ]===== */
-    /* Expect_StartAdcConversion(); */
-    /* Expect_StartAdcReadout(); */
+    /* ---The two calls I am testing for--- */
+    Expect_UartSpiStartAdcConversion();
+    Expect_UartSpiStartAdcReadout();
+    /* ---Plumbing for this test--- */
     // Since the blocking calls are stubbed, I have to *expect* them too.
-    // First wait for the TxBuffer to be empty before starting a SPI transfer.
     for (int i=0; i<num_times_TxBuffer_is_checked; i++)
-    {
-        Expect_UartSpiTxBufferIsEmpty();
-    }
-    // UartSpiRead loads 16 bits into the tx buffer and the SPI transfer starts.
+        Expect_UartSpiTxBufferIsEmpty(); // wait for TxBuffer empty, then
+    Expect_UartSpiTransfer16bits();      // transmit 16 bits
     for (int i=0; i<num_times_RxDone_is_checked; i++)
-    {
-        Expect_UartSpiTransferIsDone();
-    }
+        Expect_UartSpiTransferIsDone();  // wait for receive to complete
+    /* =====[ Test: compare call lists ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
-        ListAllCalls(mock)          // print all calls.
+        WhyDidItFail(mock)          // print this message.
+        /* ListAllCalls(mock)          // print all calls. */
         );
-
+}
+void UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC(void)
+{
+    /* =====[ Setup ]===== */
+    // Mock functions that make the FUT block until they return true.
+    //
+    bool TxBufferIsEmpty_returns[] = {true};
+    int num_times_TxBuffer_is_checked = sizeof(TxBufferIsEmpty_returns);
+    UartSpiTxBufferIsEmpty_StubbedReturnValue = TxBufferIsEmpty_returns;
+    //
+    bool UartSpiTransferIsDone_returns[] = {true, true};
+    UartSpiTransferIsDone_StubbedReturnValue = UartSpiTransferIsDone_returns;
+    int num_times_RxDone_is_checked = sizeof(UartSpiTransferIsDone_returns);
+    /* =====[ Operate ]===== */
+    UartSpiRead();
+    /* =====[ Set list of expected calls ]===== */
+    /* ---Plumbing for this test--- */
+    Expect_UartSpiStartAdcConversion();
+    Expect_UartSpiStartAdcReadout();
+    for (int i=0; i<num_times_TxBuffer_is_checked; i++)
+    /* ---The call I am testing for--- */
+        Expect_UartSpiTxBufferIsEmpty(); // wait for TxBuffer empty, then
+    /* ---More plumbing for this test--- */
+    Expect_UartSpiTransfer16bits();      // transmit 16 bits
+    for (int i=0; i<num_times_RxDone_is_checked; i++)
+        Expect_UartSpiTransferIsDone();  // wait for receive to complete
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
 }

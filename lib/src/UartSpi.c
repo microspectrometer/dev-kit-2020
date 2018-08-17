@@ -23,11 +23,13 @@ static void StartAdcReadout(void)
 {
     ClearBit(UartSpi_port, UartSpi_AdcConv);
 }
+void (*UartSpiStartAdcReadout)(void) = StartAdcReadout;
 static void (*AdcConvIdleLow)(void) = StartAdcReadout;
 static void StartAdcConversion(void)
 {
     SetBit(UartSpi_port, UartSpi_AdcConv);
 }
+void (*UartSpiStartAdcConversion)(void) = StartAdcConversion;
 static void SetAdcConvAsOutput(void)
 {
     // cfg general purpose output for conversion-start and readout-start
@@ -94,17 +96,22 @@ static uint8_t ReadUartSpiDataRegister(void)
 {
     return *UartSpi_data;
 }
-uint16_t UartSpiRead(void)
+static void Transfer16bits(void)
 {
-    StartAdcConversion(); // conversion takes 4.66us max; one loop iter = 3 cpu
-    /* uint8_t tconv = 15; _delay_loop_1(tconv); // 3*1.0e-7s*15 = 4.5us */
-    // Wait for conversion to finish
-    uint8_t ticks = 15; Delay3CpuCyclesPerTick(ticks); // 3*1.0e-7s*15 = 4.5us
-    StartAdcReadout();
-    while (!UartSpiTxBufferIsEmpty());
     uint8_t byte_to_send = 0x00; // arbitrary choice -- write zeroes
     *UartSpi_data = byte_to_send;  // load tx buffer and start SPI transmission
     *UartSpi_data = byte_to_send;  // this makes it a 16-bit transmission ?
+}
+void (*UartSpiTransfer16bits)(void) = Transfer16bits;
+uint16_t UartSpiRead(void)
+{
+    UartSpiStartAdcConversion(); // conversion takes 4.66us max; one loop iter = 3 cpu
+    /* uint8_t tconv = 15; _delay_loop_1(tconv); // 3*1.0e-7s*15 = 4.5us */
+    // Wait for conversion to finish
+    uint8_t ticks = 15; Delay3CpuCyclesPerTick(ticks); // 3*1.0e-7s*15 = 4.5us
+    UartSpiStartAdcReadout();
+    while (!UartSpiTxBufferIsEmpty());
+    UartSpiTransfer16bits();
     while (!UartSpiTransferIsDone()) ;
     uint16_t adc_reading;
     adc_reading = ReadUartSpiDataRegister();    // MSB

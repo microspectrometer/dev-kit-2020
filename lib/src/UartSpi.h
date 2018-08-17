@@ -38,6 +38,9 @@ extern uint8_t const UartSpi_RxComplete;    // set when rx is done
 
 /* =====[ Exposed to mock for testing ]===== */
 extern bool (*UartSpiTxBufferIsEmpty)(void);
+extern void (*UartSpiTransfer16bits)(void);
 extern bool (*UartSpiTransferIsDone)(void);
+extern void (*UartSpiStartAdcConversion)(void);
+extern void (*UartSpiStartAdcReadout)(void);
 
 #endif // _UARTSPI_H
