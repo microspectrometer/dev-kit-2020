@@ -92,10 +92,11 @@ static bool Received8bits(void)
     return BitIsSet(UartSpi_csra, UartSpi_RxComplete);
 }
 bool (*UartSpiTransferIsDone)(void) = Received8bits;
-static uint8_t ReadUartSpiDataRegister(void)
+static uint8_t ReadDataRegister(void)
 {
     return *UartSpi_data;
 }
+uint8_t (*UartSpiReadDataRegister)(void) = ReadDataRegister;
 static void Transfer16bits(void)
 {
     uint8_t byte_to_send = 0x00; // arbitrary choice -- write zeroes
@@ -103,21 +104,37 @@ static void Transfer16bits(void)
     *UartSpi_data = byte_to_send;  // this makes it a 16-bit transmission ?
 }
 void (*UartSpiTransfer16bits)(void) = Transfer16bits;
-uint16_t UartSpiRead(void)
+void WaitForConversionToFinish(void)
 {
-    UartSpiStartAdcConversion(); // conversion takes 4.66us max; one loop iter = 3 cpu
-    /* uint8_t tconv = 15; _delay_loop_1(tconv); // 3*1.0e-7s*15 = 4.5us */
-    // Wait for conversion to finish
-    uint8_t ticks = 15; Delay3CpuCyclesPerTick(ticks); // 3*1.0e-7s*15 = 4.5us
+    // conversion takes 4.66us max; one loop iter = 3 cpu
+    uint8_t fifteen_ticks = 15;
+    Delay3CpuCyclesPerTick(fifteen_ticks);
+    // one cpu cycle is 1.0e-7 seconds
+    // three cpu cyclces is 3.0e-7 seconds
+    // 15 ticks is 3.0e-7s*15 = 4.5 microseconds
+    // Adding in the overhead of function calls and setup, this should be well
+    // over the 4.66us max.
+    // TODO: measure actual AdcConv high-time on an oscilloscope.
+}
+void UartSpiRead(uint8_t *two_bytes)
+{
+    UartSpiStartAdcConversion();
+    WaitForConversionToFinish();
     UartSpiStartAdcReadout();
     while (!UartSpiTxBufferIsEmpty());
     UartSpiTransfer16bits();
     while (!UartSpiTransferIsDone()) ;
-    uint16_t adc_reading;
-    adc_reading = ReadUartSpiDataRegister();    // MSB
-    adc_reading = adc_reading << 8;
+    *(two_bytes++)  = UartSpiReadDataRegister();   // MSB
     while (!UartSpiTransferIsDone()) ;
-    adc_reading |= ReadUartSpiDataRegister();   // LSB
-    return adc_reading;
+    *two_bytes      = UartSpiReadDataRegister();   // LSB
+    // Original version returning a 16-bit word:
+        // This sucked.
+        // It is a waste of time to smash bytes together only to have the caller
+        // rip them back apart.
+    /* uint16_t adc_reading; */
+    /* adc_reading = UartSpiReadDataRegister();    // MSB */
+    /* adc_reading = adc_reading << 8; */
+    /* adc_reading |= UartSpiReadDataRegister();   // LSB */
+    /* return adc_reading; */
 }
 

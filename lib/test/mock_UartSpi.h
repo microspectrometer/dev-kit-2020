@@ -2,6 +2,7 @@
 #define _MOCK_UARTSPI_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 void Expect_UartSpiTxBufferIsEmpty(void);
 bool UartSpiTxBufferIsEmpty_Stubbed(void);
@@ -15,5 +16,8 @@ void Expect_UartSpiStartAdcConversion(void);
 void UartSpiStartAdcConversion_Stubbed(void);
 void Expect_UartSpiStartAdcReadout(void);
 void UartSpiStartAdcReadout_Stubbed(void);
+void Expect_UartSpiReadDataRegister(void);
+uint8_t UartSpiReadDataRegister_Stubbed(void);
+extern uint8_t *UartSpiReadDataRegister_StubbedReturnValue;
 
 #endif // _MOCK_UARTSPI_H

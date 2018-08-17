@@ -9,7 +9,7 @@ extern void (*Delay3CpuCyclesPerTick)(uint8_t);
 
 /* =====[ UartSpi API ]===== */
 void UartSpiInit(void);
-uint16_t UartSpiRead(void);
+void UartSpiRead(uint8_t *two_bytes_MSB_first);
 
 /* =====[ Hardware dependencies to be resolved in UartSpi-Hardware.h ]===== */
 /* ---I/O Registers--- */
@@ -42,5 +42,6 @@ extern void (*UartSpiTransfer16bits)(void);
 extern bool (*UartSpiTransferIsDone)(void);
 extern void (*UartSpiStartAdcConversion)(void);
 extern void (*UartSpiStartAdcReadout)(void);
+extern uint8_t (*UartSpiReadDataRegister)(void);
 
 #endif // _UARTSPI_H

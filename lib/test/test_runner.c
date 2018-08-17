@@ -221,5 +221,6 @@ int main()
     RUN_TEST(UartSpiTransferIsDone_returns_true_when_the_transfer_is_done);
     RUN_TEST(UartSpiRead_initiates_adc_conversion_and_readout);
     RUN_TEST(UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC);
+    RUN_TEST(UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address);
     return UNITY_END();
 }

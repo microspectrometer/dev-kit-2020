@@ -17,22 +17,15 @@
     // [x] UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1
     // [x] UartSpiInit_cfgs_SPI_to_transfer_MSB_first
     // [x] UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior
-// [ ] UartSpiRead
+// [x] UartSpiRead
     // [x] UartSpiTransferIsDone_returns_true_when_the_transfer_is_done
     // [x] UartSpiRead_initiates_adc_conversion_and_readout
     // [x] UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC
-    // [ ] UartSpiRead_reads_the_ADC_MSB_first
-        // a.k.a. big-endian
-        // mock ReadUartSpiDataRegister to return 0x12 then 0x34
-        // check you get the value 0x1234
-        // This test might go away -- I don't want to return a 16-bit value.
+    // [x] UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address
+        // - mock ReadUartSpiDataRegister to return 0x12 then 0x34
+        // - check you get the value 0x1234
         // It is a waste of time to smash bytes together only to have the caller
         // rip them back apart.
-        // And this way I can write directly to the frame array.
-    // [ ] UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address
-        // same stubbed return values but now testing that memory is written
-        // mock ReadUartSpiDataRegister to return 0x12 then 0x34
-        // check you get the value 0x1234
 
 //
 /* =====[ UartSpiInit ]===== */
@@ -148,8 +141,7 @@ void TearDown_UartSpiRead(void)
 }
 void UartSpiTransferIsDone_returns_true_when_the_transfer_is_done(void)
 {
-    // This is weird. I am testing a stub.
-    // I have to do this. The stub is behaving really strange.
+    // Sanity-check that the stub code is correct.
     bool UartSpiTransferIsDone_returns[] = {false, false, true};
     UartSpiTransferIsDone_StubbedReturnValue = UartSpiTransferIsDone_returns;
     /* =====[ Operate and Test ]===== */
@@ -172,25 +164,25 @@ void UartSpiRead_initiates_adc_conversion_and_readout(void)
     // Mock functions that make the FUT block until they return true.
     //
     bool TxBufferIsEmpty_returns[] = {true};
-    int num_times_TxBuffer_is_checked = sizeof(TxBufferIsEmpty_returns);
     UartSpiTxBufferIsEmpty_StubbedReturnValue = TxBufferIsEmpty_returns;
     //
     bool UartSpiTransferIsDone_returns[] = {true, true};
     UartSpiTransferIsDone_StubbedReturnValue = UartSpiTransferIsDone_returns;
-    int num_times_RxDone_is_checked = sizeof(UartSpiTransferIsDone_returns);
     /* =====[ Operate ]===== */
-    UartSpiRead();
+    uint8_t adc_reading[2];
+    UartSpiRead(adc_reading);
     /* =====[ Set up expected calls ]===== */
     /* ---The two calls I am testing for--- */
     Expect_UartSpiStartAdcConversion();
     Expect_UartSpiStartAdcReadout();
     /* ---Plumbing for this test--- */
     // Since the blocking calls are stubbed, I have to *expect* them too.
-    for (int i=0; i<num_times_TxBuffer_is_checked; i++)
-        Expect_UartSpiTxBufferIsEmpty(); // wait for TxBuffer empty, then
+    Expect_UartSpiTxBufferIsEmpty(); // wait for TxBuffer empty, then
     Expect_UartSpiTransfer16bits();      // transmit 16 bits
-    for (int i=0; i<num_times_RxDone_is_checked; i++)
-        Expect_UartSpiTransferIsDone();  // wait for receive to complete
+    Expect_UartSpiTransferIsDone();  // wait for receive to complete
+    Expect_UartSpiReadDataRegister();   // read 8-bit MSByte
+    Expect_UartSpiTransferIsDone();  // wait for receive to complete
+    Expect_UartSpiReadDataRegister();   // read 8-bit LSByte
     /* =====[ Test: compare call lists ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
@@ -204,28 +196,48 @@ void UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC(void)
     // Mock functions that make the FUT block until they return true.
     //
     bool TxBufferIsEmpty_returns[] = {true};
-    int num_times_TxBuffer_is_checked = sizeof(TxBufferIsEmpty_returns);
     UartSpiTxBufferIsEmpty_StubbedReturnValue = TxBufferIsEmpty_returns;
     //
     bool UartSpiTransferIsDone_returns[] = {true, true};
     UartSpiTransferIsDone_StubbedReturnValue = UartSpiTransferIsDone_returns;
-    int num_times_RxDone_is_checked = sizeof(UartSpiTransferIsDone_returns);
     /* =====[ Operate ]===== */
-    UartSpiRead();
+    uint8_t adc_reading[2];
+    UartSpiRead(adc_reading);
     /* =====[ Set list of expected calls ]===== */
     /* ---Plumbing for this test--- */
     Expect_UartSpiStartAdcConversion();
     Expect_UartSpiStartAdcReadout();
-    for (int i=0; i<num_times_TxBuffer_is_checked; i++)
     /* ---The call I am testing for--- */
-        Expect_UartSpiTxBufferIsEmpty(); // wait for TxBuffer empty, then
+    Expect_UartSpiTxBufferIsEmpty();// wait for TxBuffer empty, then
     /* ---More plumbing for this test--- */
-    Expect_UartSpiTransfer16bits();      // transmit 16 bits
-    for (int i=0; i<num_times_RxDone_is_checked; i++)
-        Expect_UartSpiTransferIsDone();  // wait for receive to complete
+    Expect_UartSpiTransfer16bits();     // transmit 16 bits
+    Expect_UartSpiTransferIsDone();     // wait for 8-bit receive to complete
+    Expect_UartSpiReadDataRegister();   // read 8-bit MSByte
+    Expect_UartSpiTransferIsDone();     // wait for 8-bit receive to complete
+    Expect_UartSpiReadDataRegister();   // read 8-bit LSByte
     /* =====[ Test ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
+        );
+}
+void UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address(void)
+{
+    /* =====[ Inject stubbed return values for data register reads ]===== */
+    uint8_t expected_MSB = 0x12; uint8_t expected_LSB = 0x34;
+    uint8_t ReadDataRegister_returns[] = {expected_MSB, expected_LSB};
+    UartSpiReadDataRegister_StubbedReturnValue = ReadDataRegister_returns;
+    /* =====[ Setup ]===== */
+    uint8_t adc_reading[] = {0, 0};
+    /* =====[ Operate ]===== */
+    UartSpiRead(adc_reading);
+    /* =====[ Test ]===== */
+    uint8_t actual_MSB = adc_reading[0];
+    uint8_t actual_LSB = adc_reading[1];
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(
+        expected_MSB, actual_MSB, "Failed for MSB."
+        );
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(
+        expected_LSB, actual_LSB, "Failed for LSB."
         );
 }

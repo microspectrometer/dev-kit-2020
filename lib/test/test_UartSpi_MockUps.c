@@ -43,6 +43,14 @@ static void Stub_UartSpiStartAdcReadout(void) {
 static void Unstub_UartSpiStartAdcReadout(void) {
     UartSpiStartAdcReadout = UartSpiStartAdcReadout_Saved;
 }
+static uint8_t (*UartSpiReadDataRegister_Saved)(void);
+static void Stub_UartSpiReadDataRegister(void) {
+    UartSpiReadDataRegister_Saved = UartSpiReadDataRegister;
+    UartSpiReadDataRegister = UartSpiReadDataRegister_Stubbed;
+}
+static void Unstub_UartSpiReadDataRegister(void) {
+    UartSpiReadDataRegister = UartSpiReadDataRegister_Saved;
+}
 void SetUpMock_UartSpiRead(void)  // FUT
 {
     mock = Mock_new();
@@ -52,6 +60,7 @@ void SetUpMock_UartSpiRead(void)  // FUT
     Stub_UartSpiTransfer16bits();  // DOF
     Stub_UartSpiStartAdcConversion();  // DOF
     Stub_UartSpiStartAdcReadout();  // DOF
+    Stub_UartSpiReadDataRegister();  // DOF
 }
 void TearDownMock_UartSpiRead(void)  // FUT
 {
@@ -62,5 +71,6 @@ void TearDownMock_UartSpiRead(void)  // FUT
     Unstub_UartSpiTransfer16bits();  // DOF
     Unstub_UartSpiStartAdcConversion();  // DOF
     Unstub_UartSpiStartAdcReadout();  // DOF
+    Unstub_UartSpiReadDataRegister();  // DOF
 }
 

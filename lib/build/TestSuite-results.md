@@ -9,7 +9,8 @@ test/test_runner.c:219:UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_beha
 test/test_runner.c:221:UartSpiTransferIsDone_returns_true_when_the_transfer_is_done:PASS
 test/test_runner.c:222:UartSpiRead_initiates_adc_conversion_and_readout:PASS
 test/test_runner.c:223:UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC:PASS
+test/test_runner.c:224:UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address:PASS
 
 -----------------------
-11 Tests 0 Failures 0 Ignored 
+12 Tests 0 Failures 0 Ignored 
 OK

@@ -73,3 +73,19 @@ void Expect_UartSpiStartAdcReadout(void) {
 void UartSpiStartAdcReadout_Stubbed(void) {
     RecordActualCall(mock, Mock_UartSpiStartAdcReadout());
 }
+
+static RecordedCall * Mock_UartSpiReadDataRegister(void)
+{
+    char const *call_name = "UartSpiReadDataRegister";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void Expect_UartSpiReadDataRegister(void) {
+    RecordExpectedCall(mock, Mock_UartSpiReadDataRegister());
+}
+uint8_t UartSpiReadDataRegister_example[] = {0,0};  // example return values
+uint8_t *UartSpiReadDataRegister_StubbedReturnValue = UartSpiReadDataRegister_example;
+uint8_t UartSpiReadDataRegister_Stubbed(void) {
+    RecordActualCall(mock, Mock_UartSpiReadDataRegister());
+    return *(UartSpiReadDataRegister_StubbedReturnValue++);
+}

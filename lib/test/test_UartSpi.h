@@ -14,5 +14,6 @@ void SetUp_UartSpiRead(void); void TearDown_UartSpiRead(void);
 void UartSpiRead_initiates_adc_conversion_and_readout(void);
 void UartSpiTransferIsDone_returns_true_when_the_transfer_is_done(void);
 void UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC(void);
+void UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address(void);
 
 #endif // _TEST_UARTSPI_H
