@@ -37,9 +37,11 @@
 /* =====[ List of automated tests ]===== */
     // [x] SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host
     // [x] SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host
+    // [x] SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host
 
 // Spi-master application-level API
 uint16_t SpiMasterPassFakeSensorData(void);  // example for getting a frame
+uint16_t SpiMasterPassAdcFrame(void);        // another example getting a frame
 
 // Automated Testing API
 typedef struct TestResult TestResult;
@@ -521,26 +523,7 @@ void SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(void)
     /* // If test fails, print the byte sent. `0x01` prints as a smiley face. */
     /* if (!this_test.passed) PrintSpiSlaveResponseInColor(response); */
 }
-uint16_t SpiMasterPassFakeSensorData(void)
-{
-    // TODO: refactor the loop to eliminate repetition outside the loop
-    // Pass each byte out as soon as you get it.
-    // Return the number of bytes passed from spi-slave to USB host.
-    SpiMasterWrite(cmd_send_dummy_frame);
-    uint16_t byte_counter = 0;
-    uint8_t byte_buffer;
-    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    while (++byte_counter < sizeof_dummy_frame)
-    {
-        byte_buffer = SpiMasterRead(); // read first byte
-        // must look for slave response right away or you'll miss it
-        SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
-        UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next
-    }
-    byte_buffer = SpiMasterRead(); // read last byte
-    UsbWrite(&byte_buffer, 1); // send last byte out
-    return byte_counter;
-}
+
 void SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host(void)
 {
     /* Pairs with App_version_of_Slave_RespondToRequestsForData */
@@ -619,6 +602,25 @@ void SpiMaster_get_fake_adc_reading_from_slave_and_write_to_USB_host(void)
     TestResult *result = &this_test; RunTest(result, assert_true);
     if (Failed(result)) PrintAdcReading(adc_reading);
 }
+
+void SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    uint16_t nbytes = SpiMasterPassAdcFrame();
+
+    TestResult this_test = {
+        .pcb_name = "simBrd",
+        .test_name = "SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host"
+    };
+    bool assert_true = (nbytes == sizeof_dummy_frame);
+    TestResult *result = &this_test; RunTest(result, assert_true);
+    // Expect 1540 bytes of repeated ABCs, ending in letter `F`
+    if (Failed(result)) PrintSizeOfSpiSlaveResponse(nbytes);
+}
 int main()
 {
     //
@@ -629,9 +631,53 @@ int main()
     SetupDebugLed();
     /* test_EchoByte(); // All tests pass 2018-07-30 */
     /* test_SpiMaster(); // All test pass 2018-08-15 */
-    SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host(); // prints a lot
-    SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host();
-    SpiMaster_get_fake_adc_reading_from_slave_and_write_to_USB_host();
-    SpiMaster_get_adc_reading_from_slave_and_write_to_USB_host();
+    /* =====[ Automated tests ]===== */
+    /* SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host(); // prints a lot */
+    /* SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); */
+    /* SpiMaster_get_fake_adc_reading_from_slave_and_write_to_USB_host(); */
+    /* SpiMaster_get_adc_reading_from_slave_and_write_to_USB_host(); */
+    SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host();
 
 }
+uint16_t SpiMasterPassFakeSensorData(void)
+{
+    // TODO: refactor the loop to eliminate repetition outside the loop
+    // Pass each byte out as soon as you get it.
+    // Return the number of bytes passed from spi-slave to USB host.
+    SpiMasterWrite(cmd_send_dummy_frame);
+    uint16_t byte_counter = 0;
+    uint8_t byte_buffer;
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    while (++byte_counter < sizeof_dummy_frame)
+    {
+        byte_buffer = SpiMasterRead(); // read first byte
+        // must look for slave response right away or you'll miss it
+        SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
+        UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next
+    }
+    byte_buffer = SpiMasterRead(); // read last byte
+    UsbWrite(&byte_buffer, 1); // send last byte out
+    return byte_counter;
+}
+uint16_t SpiMasterPassAdcFrame(void)
+{
+    // Like SpiMasterPassFakeSensorData but it sends ADC readings, not ABCs.
+    // Host should print raw bytes, not print unicode characters.
+    // Pass each byte out as soon as you get it.
+    // Return the number of bytes passed from spi-slave to USB host.
+    SpiMasterWrite(cmd_send_adc_frame);
+    uint16_t byte_counter = 0;
+    uint8_t byte_buffer;
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    while (++byte_counter < sizeof_dummy_frame)
+    {
+        byte_buffer = SpiMasterRead(); // read first byte
+        // must look for slave response right away or you'll miss it
+        SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
+        UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next
+    }
+    byte_buffer = SpiMasterRead(); // read last byte
+    UsbWrite(&byte_buffer, 1); // send last byte out
+    return byte_counter;
+}
+

@@ -3,6 +3,7 @@ uint8_t const cmd_send_four_dummy_bytes = 0x02;
 uint8_t const cmd_send_dummy_frame      = 0x03;
 uint8_t const cmd_send_adc_reading      = 0x04;
 uint8_t const cmd_send_fake_adc_reading = 0x05;
+uint8_t const cmd_send_adc_frame        = 0x06;
 uint16_t const fake_adc_reading = 0x1234;
 // When not printing test results, I can send 1540 bytes no problem
 #define num_bytes_in_a_dummy_frame 1540 // wtf

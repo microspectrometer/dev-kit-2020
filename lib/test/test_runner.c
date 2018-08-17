@@ -209,8 +209,14 @@ void DevelopingUartSpi(bool run_test) {if (run_test) {
     RUN_TEST(UartSpiRead_initiates_adc_conversion_and_readout);
     RUN_TEST(UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC);
     RUN_TEST(UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address);
+    // ADC application examples
+    RUN_TEST(StoreAdcReadingsInFrame_fills_an_array_with_adc_readings);
 }}
 void DevelopingLis(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(LisInit_sets_PixSelect_as_an_output);
+    RUN_TEST(LisInit_sets_Clk_as_an_output);
+    RUN_TEST(LisInit_sets_Rst_as_an_output);
 }}
 int main()
 {
@@ -226,9 +232,5 @@ int main()
     DevelopingSpiSlave        (Nope);
     DevelopingUartSpi         (Nope);
     DevelopingLis             (Yep);
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LisInit_sets_PixSelect_as_an_output);
-    RUN_TEST(LisInit_sets_Clk_as_an_output);
-    RUN_TEST(LisInit_sets_Rst_as_an_output);
     return UNITY_END();
 }

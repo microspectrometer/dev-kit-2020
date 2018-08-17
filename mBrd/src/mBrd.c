@@ -73,8 +73,12 @@ void SendDataMasterAskedFor(void);
 // these examples will turn into useful application functions
 void SendDummyByte(void);
 void SendFourDummyBytes(void);
-void FillDummyFrameWithAlphabet(void); // recording a large array to output
+void FillDummyFrameWithAlphabet(void);      // recording a large array to output
+void FillDummyFrameWithAdcReadings(void);   // recording a large array to output
 void SendDummyFrame(void);             // output a large array
+void SendAdcReading(void);
+void SendFakeAdcReading(void);
+void SendAdcFrame(void);        // just a frame of ADC readings, no LIS yet
 // helpers for command parsing
 void IndicateUnknownCommand(void) { DebugLedsTurnRed(debug_led4); }
 void DoNothing(void){}
@@ -88,12 +92,6 @@ void All_debug_leds_turn_on_and_turn_green(void);
 void All_debug_leds_turn_on_and_turn_red(void);
 void Turn_led1_red_and_the_rest_green(void);
 void Show_data_on_debug_leds(uint8_t four_bits);
-
-/* =====[ UartSpi preliminary work ]===== */
-// Moved to mBrd/src/UartSpi-Hardware.h
-// Moved to lib/src/UartSpi.h
-// Moved to lib/src/UartSpi.c
-// Created lib/test/fake/UartSpi-Hardware.h
 
 int main()
 {
@@ -131,28 +129,6 @@ void RespondToRequestsForData(void)
     // Poll SPI bus. Process data requests, if any.
     if ( SpiTransferIsDone() ) SendDataMasterAskedFor();
 }
-void SendAdcReading(void)
-{
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    uint16_t adc_reading = UartSpiRead();
-    uint8_t adc_lsb = adc_reading & 0xFF;
-    uint8_t adc_msb = adc_reading >> 8;
-
-    uint8_t adc_bytes[] = {adc_msb, adc_lsb};
-    uint16_t nbytes = sizeof(adc_bytes);
-    SpiSlaveSendBytes(adc_bytes, nbytes);
-}
-void SendFakeAdcReading(void)
-{
-    DebugLedsTurnRed(debug_led2);  // for manual testing
-    uint16_t adc_reading = fake_adc_reading;
-    uint8_t adc_lsb = adc_reading & 0xFF;
-    uint8_t adc_msb = adc_reading >> 8;
-
-    uint8_t adc_bytes[] = {adc_msb, adc_lsb};
-    uint16_t nbytes = sizeof(adc_bytes);
-    SpiSlaveSendBytes(adc_bytes, nbytes);
-}
 void SendDataMasterAskedFor(void)
 {
     DebugLedsTurnRed(debug_led1);  // for manual testing
@@ -164,6 +140,7 @@ void SendDataMasterAskedFor(void)
     else if (cmd == cmd_send_dummy_frame) SendDummyFrame();
     else if (cmd == cmd_send_adc_reading) SendAdcReading();
     else if (cmd == cmd_send_fake_adc_reading) SendFakeAdcReading();
+    else if (cmd == cmd_send_adc_frame) SendAdcFrame();
     else if (cmd == slave_ignore) DoNothing();  // PASS 2018-08-03
     // `slave_ignore` is available through spi lib
     // for master to send when slave does read
@@ -200,10 +177,46 @@ void FillDummyFrameWithAlphabet(void)
         *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65'
     }
 }
+void FillDummyFrameWithAdcReadings(void)
+{
+    uint16_t byte_count = 0;
+    uint8_t *pframe = dummy_frame;
+    while (byte_count < num_bytes_in_a_dummy_frame)
+    {
+        UartSpiRead(pframe);
+        pframe++; pframe++; byte_count++; byte_count++;
+    }
+}
 void SendDummyFrame(void)
 {
     DebugLedsTurnRed(debug_led2);  // for manual testing
     FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
+    uint8_t *pdummy_frame = dummy_frame;
+    // Send measurement data to master.
+    SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
+}
+void SendAdcReading(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    uint8_t adc_reading[] = {0,0};
+    UartSpiRead(adc_reading);
+    uint16_t nbytes = sizeof(adc_reading);
+    SpiSlaveSendBytes(adc_reading, nbytes);
+}
+void SendFakeAdcReading(void)
+{
+    DebugLedsTurnRed(debug_led2);  // for manual testing
+    uint8_t adc[] = {0,0};
+    adc[0] = fake_adc_reading >> 8;   // MSByte
+    adc[1] = fake_adc_reading & 0xFF; // LSByte
+
+    uint16_t nbytes = sizeof(adc);
+    SpiSlaveSendBytes(adc, nbytes);
+}
+void SendAdcFrame(void)
+{
+    DebugLedsTurnRed(debug_led2);   // for manual testing
+    FillDummyFrameWithAdcReadings();  // SpiSlaveRunMeasurement();
     uint8_t *pdummy_frame = dummy_frame;
     // Send measurement data to master.
     SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
@@ -365,7 +378,9 @@ void test_SpiSlave(void)
 void Show_four_MSB_of_adc_reading_on_debug_leds(void)
 {
     UartSpiInit();
-    Show_data_on_debug_leds( (UartSpiRead() >> 12) );
+    uint8_t adc[] = {0,0};
+    UartSpiRead(adc);
+    Show_data_on_debug_leds( adc[0] >> 4 );
 }
 void test_UartSpi(void)
 {

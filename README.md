@@ -2787,6 +2787,36 @@ s.inWaiting()
 - expect the response `4L` meaning there are four bytes waiting in the input
   buffer
 
+## Dev kit redesign
+- PCBs for dev kit will change
+- spi-master-simulant and spi-slave will be simpler
+- spectrometer breakout board will have optimized form factor for
+  optics/alignment/mechanical-design
+
+### Notes from 2018-08-16 meeting with Nadia
+- revisit this in the future when we are making decision about ordering the
+  dev kit:
+    - compare lead time tradeoff with design time tradeoff
+    - keep in mind we want to have some minimum redesign, so there will be
+      lead time for an initial test run no matter what
+    - so a redesign to eliminate the reduce the lead time is always a net
+      positive
+- high-level goal:
+    - reduce lead time and cost before placing dev kit order
+    - reach out to support@macrofab.com with lead time questions
+- goal: eliminate all through-hole parts
+    - move FT221X to a custom smt design with USB connector
+    - eliminate switches:
+        - for SPI communication, just connect boards
+        - for programming, just connect programmer
+            - make a breakout board to go from programming header to ribbon
+              cable
+- goal: eliminate cable termination step
+    - switch from 10-pin ribbon cable to 10-pin FFC
+    - also necessary to eliminate through-hole parts
+- look for smt test points
+    - if smt test loops do not exist we can get creative
+
 # Repo links
 Link to this repo: https://bitbucket.org/rainbots/lis-770i/src/master/
 

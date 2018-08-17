@@ -26,6 +26,8 @@
         // - check you get the value 0x1234
         // It is a waste of time to smash bytes together only to have the caller
         // rip them back apart.
+// [ ] ADC application examples
+    // [ ] StoreAdcReadingsInFrame_fills_an_array_with_adc_readings
 
 //
 /* =====[ UartSpiInit ]===== */
@@ -240,4 +242,33 @@ void UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address(void)
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(
         expected_LSB, actual_LSB, "Failed for LSB."
         );
+}
+
+//
+/* =====[ ADC application examples ]===== */
+//
+#define num_bytes_in_frame 2*4 // holds four adc readings
+uint8_t actual_frame[num_bytes_in_frame];
+void StoreAdcReadingsInFrame(void)
+{
+    // Write ADC readings to the global frame array.
+    uint8_t byte_count = 0;
+    uint8_t *pframe = actual_frame;
+    while (byte_count < num_bytes_in_frame)
+    {
+        UartSpiRead(pframe);
+        pframe++; pframe++; byte_count++; byte_count++;
+    }
+}
+void StoreAdcReadingsInFrame_fills_an_array_with_adc_readings(void)
+{
+    /* =====[ Inject stubbed return values for data register reads ]===== */
+    uint8_t ReadDataRegister_returns[] = {0,1,2,3,4,5,6,7};
+    UartSpiReadDataRegister_StubbedReturnValue = ReadDataRegister_returns;
+    /* =====[ Setup ]===== */
+    /* =====[ Operate ]===== */
+    StoreAdcReadingsInFrame();
+    /* =====[ Test ]===== */
+    uint8_t *expected_frame = ReadDataRegister_returns;
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(expected_frame, actual_frame, num_bytes_in_frame);
 }
