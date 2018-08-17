@@ -11,6 +11,7 @@
 #include "test_Usb.h"       // app-level API for FT1248 master on simBrd
 #include "test_Spi.h"       // SPI master on simBrd and SPI slave on mBrd
 #include "test_UartSpi.h"   // mBrd USART in MSPIM mode for ADC readout
+#include "test_Lis.h"       // mBrd I/O to LIS-770i
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -194,20 +195,6 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     RUN_TEST(SpiSlaveSendBytes_waits_for_master_read_between_each_byte);
 }}
 void DevelopingUartSpi(bool run_test) {if (run_test) {
-}}
-int main()
-{
-    UNITY_BEGIN();
-    DevelopingReadWriteBits   (Nope);
-    DevelopingDebugLed        (Nope);
-    DevelopingDebugLeds       (Nope);
-    DevelopingFt1248_lowlevel (Nope);
-    DevelopingFt1248_highlevel(Nope);
-    DevelopingUsb             (Nope);
-    DevelopingSpiPlumbing     (Nope);
-    DevelopingSpiMaster       (Nope);
-    DevelopingSpiSlave        (Nope);
-    DevelopingUartSpi         (Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(UartSpiInit_loads_0_into_baud_rate_register);
     RUN_TEST(UartSpiInit_sets_Sck_as_an_output);
@@ -222,5 +209,26 @@ int main()
     RUN_TEST(UartSpiRead_initiates_adc_conversion_and_readout);
     RUN_TEST(UartSpiRead_does_a_16bit_SPI_transfer_with_the_ADC);
     RUN_TEST(UartSpiRead_writes_the_16bit_adc_reading_to_the_input_address);
+}}
+void DevelopingLis(bool run_test) {if (run_test) {
+}}
+int main()
+{
+    UNITY_BEGIN();
+    DevelopingReadWriteBits   (Nope);
+    DevelopingDebugLed        (Nope);
+    DevelopingDebugLeds       (Nope);
+    DevelopingFt1248_lowlevel (Nope);
+    DevelopingFt1248_highlevel(Nope);
+    DevelopingUsb             (Nope);
+    DevelopingSpiPlumbing     (Nope);
+    DevelopingSpiMaster       (Nope);
+    DevelopingSpiSlave        (Nope);
+    DevelopingUartSpi         (Nope);
+    DevelopingLis             (Yep);
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(LisInit_sets_PixSelect_as_an_output);
+    RUN_TEST(LisInit_sets_Clk_as_an_output);
+    RUN_TEST(LisInit_sets_Rst_as_an_output);
     return UNITY_END();
 }

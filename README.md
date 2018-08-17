@@ -245,53 +245,66 @@
       able to detect when there is a byte to read
 
 ## track progress by lib
-### Ft1248
-- [x] Ft1248
-    - 28 unit tests
-    - 26 functions
-        - 7 API functions for Usb
-        - 19 plumbing functions
-            - some legitimate plumbing, i.e., low-level functionality that is
-              occassionally useful
-            - some only exposed for tests
-        - 0 private functions
-            - I was learning how to mock while writing this lib, so I exposed
-              everything for mocking!
-    - 0 embedded system tests (Usb is the API)
+### [x] Ft1248
+- 28 unit tests
+- 26 functions
+    - 7 API functions for Usb
+    - 19 plumbing functions
+        - some legitimate plumbing, i.e., low-level functionality that is
+          occassionally useful
+        - some only exposed for tests
+    - 0 private functions
+        - I was learning how to mock while writing this lib, so I exposed
+          everything for mocking!
+- 0 embedded system tests (Usb is the API)
 - [ ] TODO: decide if applications using lib `Usb` need to include lib `Ft1248`
     - final application definitely needs to include `Ft1248-Hardware.h`
     - but does it need to include `Ft1248.h`?
-### Usb
-- [x] Usb
-    - 17 unit tests
-    - 5 API functions
-    - 0 private functions (Usb is the API for Ft1248)
-    - 6 embedded system tests
-### Spi
-- [ ] Spi
-    - 16 unit tests
-    - 17 functions
-        - 5 API
-        - 2 plumbing to wrap AVR asm macros
-        - 10 private
-            - not counting private implementations for public function pointers
-    - break down by Master and Slave
-    - SpiMaster
-        - 11 unit tests
-        - 2 embedded system tests
-        - 2 API functions
-    - SpiSlave
-        - 5 unit tests
+### [x] Usb
+- 17 unit tests
+- 5 API functions
+- 0 private functions (Usb is the API for Ft1248)
+- 6 embedded system tests
+### [x] Spi
+- 16 unit tests
+- 17 functions
+    - 5 API
+    - 2 plumbing to wrap AVR asm macros
+    - 10 private
+        - not counting private implementations for public function pointers
+- break down by Master and Slave
+- SpiMaster
+    - 11 unit tests
+    - 10 embedded system tests
+        - 8 manual embedded system tests
+        - 2 automated embedded system tests
+            - tests run on power-up
+            - read tests on a USB host by reading all available bytes on the USB
+              port
+            - automated tests use lib Usb, so these only run on the `simBrd`
+    - 2 API functions
+- SpiSlave
+    - 5 unit tests
+    - 9 embedded system tests
+        - 5 embedded system tests showing application examples
         - 4 embedded system tests
-        - 3 API functions
-        - 2 plumbing functions
-            - one function to wrap each AVR asm macro
-- [ ] UartSpi
+    - 3 API functions
+    - 2 plumbing functions
+        - one function to wrap each AVR asm macro
+### [x] UartSpi
+- 12 unit tests
+- 21 functions
+    - 2 API
+    - 1 plumbing to wrap AVR asm delay loop
+    - 18 private
+        - not counting private implementations for public function pointers
+### LisIo
 - [ ] Lis-io
-- [ ] I2c
+### ReadWriteBits
 - [x] ReadWriteBits
     - 10 tests
     - 5 functions
+### DebugLed
 - [x] DebugLed for one LED
     - 2 tests
     - 9 functions
@@ -302,6 +315,7 @@
                 - `init turns led on`
                 - `init turns led green`
             - add tests for the plumbing behavior
+### DebugLeds
 - [x] DebugLeds for four LEDs
     - *goal*:
         - indicate a four-bit error code redefinable on a per-test basis
@@ -310,7 +324,10 @@
     - *minimum viable*:
         - [x] just use one LED!
         - [x] provide plumbing for all four LEDs!
-
+### I2c
+- [-] I2c
+    - I am not writing this lib anymore
+    - the part it was for communication with is now obsolete!
 # Internal deadline
 ## Context
 - This was originally a writeup for Kulite.
@@ -2412,42 +2429,16 @@ uint8_t const Spi_Sck    =   PB5;    // SPI clock
 
 # UART SPI
 - lib `UartSpi`
-- the motherboard MCU is the SPI master
-- the ADC is the SPI slave
+- the `mBrd` MCU is the SPI master
+- the `mBrd` ADC is the SPI slave
 ## SPI communication with LTC1864LADC
-```c
-// Configure USART to clock ADC SCK at fosc/2 = 5MHz
-    // UBBRn=0 -> XCK clock frequency = fosc/2
-    
-// Cfg XCK as an output.
-    // DDR_XCKn = 1
-
-// Enable SPI mode.
-    // UMSELn1:0 = [1 1]
-
-// Configure clock polarity (CPOL) and clock phase (CPHA).
-    // CPOL = 0 -> clock idles low -> first edge is rising.
-    // CPOL = 1 -> clock idles high -> first edge is falling.
-    // CPHA = 0 -> sample first
-    // CHPA = 1 -> load first
-    // Use CPOL = 1, CPHA = 1:
-        // UCPOLn = 1
-        // UCPHAn = 1
-        // clock idles high
-        // load data on first edge (falling edge)
-        // sample data on rising edges
-
-// Configure bit-order
-    // UDORDn = 
-    
-// Tx a byte.
-//  1.  Wait until bit UDREn in reg UCSRnA is high.
-//  2.  Write two bytes to UDRn for a 16-bit transfer.
-//  3.  Wait for an interrupt that is triggered when the UART
-//      transmission completes. Or, wait until bit RXCn in reg
-//      UCSRnA is high.
-```
-
+Tx a byte:
+- Wait until bit UDREn in reg UCSRnA is high.
+- Write two bytes to UDRn for a 16-bit transfer.
+- Wait for an interrupt that is triggered when the UART transmission completes.
+  Or, wait until bit RXCn in reg UCSRnA is high.
+# LIS
+- lib `Lis`
 # Program Flash
 ## Quick Summary
 - check hardware connection: `;mkp`

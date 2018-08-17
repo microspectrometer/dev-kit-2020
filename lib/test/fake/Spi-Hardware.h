@@ -45,7 +45,3 @@ uint8_t const Spi_DoubleClockRate   = 0;
 uint8_t const Spi_InterruptFlag     = 7;
 
 #endif // _SPI_HW_H
-
-
-
-
