@@ -13,9 +13,14 @@ static void SetRstAsOutput(void)
 {
     SetBit(Lis_ddr1, Lis_Rst);
 }
+static void SetSyncAsInput(void)
+{
+    ClearBit(Lis_ddr1, Lis_Sync);
+}
 void LisInit(void)
 {
     SetPixSelectAsOutput();
     SetClkAsOutput();
     SetRstAsOutput();
+    SetSyncAsInput();
 }

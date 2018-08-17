@@ -217,6 +217,7 @@ void DevelopingLis(bool run_test) {if (run_test) {
     RUN_TEST(LisInit_sets_PixSelect_as_an_output);
     RUN_TEST(LisInit_sets_Clk_as_an_output);
     RUN_TEST(LisInit_sets_Rst_as_an_output);
+    RUN_TEST(LisInit_sets_Sync_as_an_input);
 }}
 int main()
 {

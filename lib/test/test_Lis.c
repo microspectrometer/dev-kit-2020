@@ -38,3 +38,12 @@ void LisInit_sets_Rst_as_an_output(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_ddr1);
 }
+void LisInit_sets_Sync_as_an_input(void)
+{
+    /* =====[ Setup ]===== */
+    *Lis_ddr1 = 0xFF;
+    /* =====[ Operate ]===== */
+    LisInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(Lis_Sync, *Lis_ddr1);
+}
