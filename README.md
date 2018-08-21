@@ -2132,12 +2132,12 @@ other bits in the bus-width nibble are pulled high.
             - i.e., I forgot the trailing `()`
         - [x] I was trying to use `MISO ` as general purpose I/O while the `SPI`
           hardware module was overriding the `PORT` value
-    - [ ] this test: sending bytes
+    - [x] this test: sending bytes
     - next test: write Application versions of `Slave_receives_request`
     - make a version without interrupts and a version with interrupts
 #### unit-tested working code into lib code and refactored
 - [x] SpiMaster
-- [ ] SpiSlave
+- [x] SpiSlave
 #### refactor embedded tests using new lib code
 - [x] SpiMaster
 - [x] SpiSlave
@@ -2342,7 +2342,7 @@ uint8_t const Spi_Sck    =   PB5;    // SPI clock
 
 
 ## Old but useful: SPI master writes to SPI slave
-- [ ] continue copying in from
+- [x] continue copying in from
 > `/cygdrive/c/chromation-dropbox/Dropbox/design files and protocols/circuits/pcb design/eagle/projects/Chromation/20150807_SPI_Wand/doc/design on paper/Communication With FLIR Ex-Series Camera.txt`
 - `simBrd` transmits to `mBrd`:
     - `simBrd` pull `mBrd` `!SS` low
@@ -2439,6 +2439,110 @@ Tx a byte:
   Or, wait until bit RXCn in reg UCSRnA is high.
 # LIS
 - lib `Lis`
+## one frame of data
+- the ADC converts every pixel to a 16-bit value
+- there are 784 pixels
+    - the first 13 are optically dark
+    - the 14th is a dummy
+    - 15-784 are optically active
+- 784 * 2 bytes = 1568 bytes
+- hopefully the ATmega 2K SRAM can handle this
+- if not, we can ignore the first 14 pixels
+    - that makes it 1540 bytes
+- there are probably more pixels we can ignore too
+    - revisit the optical design to see which pixels are actually used
+## power down
+- see `Power Standby Mode`
+- `Lis_Rst` is high
+- `Lis_Clk` stops and idles low
+- remains in power down mode until `Lis_Rst` is pulled low and `Lis_Clk`
+  is restarted
+## power up
+- see `Power Up sequence`
+- `Lis_Rst` is pulled low
+- `Lis_Clk` starts
+- this power up sequence resets the imager
+- default programming is enabled:
+    - select entire active pixel array
+    - set output amplifier gain to 2.5x
+    - turn off the summing mode
+## programmable setup
+- see `Programmable Setup Register`
+- power up
+- pull `Lis_PixSelect` high
+    - [x] `LisInit()` idles `Lis_PixSelect` low
+- first rising clock edge reads `Lis_Rst`
+    - this sets the value of the *summing mode bit*
+    - *Summing Mode = 0* - normal operation
+        - pixels are 7.8um wide
+    - *Summing Mode = 1* - every other pixel is added together during
+      integration
+        - the size of the pixel array is halved to 392 pixels
+        - pixel width becomes 15.6um
+        - only 392 clocks are needed to output the data
+- 2nd and 3rd rising clock edges read `Lis_Rst`
+    - sets the value of gain bits `G2` and `G1`
+    - hold `Lis_Rst` high for 25 clock cycles after the gain bits are set
+    - this completely contradicts what the datasheet says next
+- 4th through 28th rising clock edges read `Lis_Rst`
+    - sets the active pixel sub-arrays in the order P25 to P1
+    - see *Table 5b: Selectable Pixel Array* to see which pixel is in which of
+      the 25 pixel sub-arrays
+        - a pixel has five segments in the *pixel height* direction
+        - each segment is 62.5um tall
+        - each sub-array is one segment tall
+        - each sub-array spans 154 pixels
+    - just keep reset high, this selects every segment of every pixel
+## frame readout
+- `Lis_Clk` is running
+    - [x] `LisInit()` pulls `Lis_Rst` low
+    - [x] `LisInit()` starts the `Lis_Clk`
+        - in the future, `LisInit()` will not start the clock
+        - this will be a separate command to leave power-down mode
+        - but for now intialize in power up mode
+- `Lis_Rst` is low
+    - `LisInit()` has `Lis_Rst` idle high for power-saving
+    - but once the device is in power up mode, `Lis_Rst` is low
+- `Lis_Rst` controls the integration period
+    - in the following, `Lis_Rst` is pulled high and low
+    - the new value is clocked in on the very next rising edge of `Lis_Clk`
+      after `Lis_Rst` has changed
+    - [ ] change the value of `Lis_Rst` just after a `Lis_Clk` falling edge
+        - this avoids confusion over when the LIS shifts in the new value of
+          `Lis_Rst`
+- `ExposureStart()` - pull `Lis_Rst` high
+    - resets all pixels
+    - integration begins
+- `Lis_Rst` goes low
+    - integration ends
+    - integration time is the number of clock cycles that `Lis_Rst` was high
+    - [ ] decide how to track the integration period:
+        - check for N clock cycles in the PWM interrupt?
+            - requires the ISR know about the state of the system
+            - system can take new requests while the camera integrates
+        - or sit and poll the interrupt flag, incrementing a counter
+            - localizes where the state needs to be known to precisely that
+              place where it is used
+            - entire system blocks until integration period ends
+- `Lis_Sync` input is pulsed high
+> Once RST is brought low a synchronization signal (SYNC) pulse is fired
+> starting on the next falling clock edge. Pixel readout then begins on the next
+> rising CLK edge after the SYNC signal goes low and continues for 784 clock
+> cyles. The SYNC signal is one clock period wide. SYNC is again fired during
+> the last pixel readout on the falling edge of CLK.
+    - `ExposureStop()` - pull `Lis_Rst` low
+        - call this just after a `Lis_Clk` falling edge
+        - exposure officially stops on the next `Lis_Clk` rising edge
+    - `WaitForSync()` - watch for `Lis_Sync` to go high, then low
+        - call this just after calling `ExposureStop()`
+        - `Lis_Sync` goes high on the next falling clock edge
+        - `Lis_Sync` then goes low on the next falling clock edge
+        - pixel readout starts on the very next clock rising edge
+    - `PixelReadout()` - sample analog `VOUT` while the clock is high
+        - video output may have disturbance during the falling clock edge
+        - pixels 1 to 13 are dark
+        - pixels 15 to 784 are optical
+
 # Program Flash
 ## Quick Summary
 - check hardware connection: `;mkp`
