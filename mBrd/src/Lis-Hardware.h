@@ -22,10 +22,17 @@
     //      let &path = &path . ',' . avr_include
 
 //  =====[ I/O Register ]=====          =====[ Register's Purpose ]=====
-uint8_t volatile * const Lis_ddr1    =   &DDRD;  // data direction in/out
-uint8_t volatile * const Lis_ddr2    =   &DDRB;  // data direction in/out
-uint8_t volatile * const Lis_port1   =   &PORTD; // output (Port out)
-uint8_t volatile * const Lis_port2   =   &PORTB; // output (Port out)
+uint8_t volatile * const Lis_ddr1   = &DDRD;   // data direction in/out
+uint8_t volatile * const Lis_ddr2   = &DDRB;   // data direction in/out
+uint8_t volatile * const Lis_port1  = &PORTD;  // output (Port out)
+uint8_t volatile * const Lis_port2  = &PORTB;  // output (Port out)
+/* =====[ Use 8-bit PWM for Lis clock ]===== */
+uint8_t volatile * const Lis_tccr0a = &TCCR0A; // timer0 control reg A
+uint8_t volatile * const Lis_tccr0b = &TCCR0B; // timer0 control reg B
+uint8_t volatile * const Lis_clktop  = &OCR0A;  // sets PWM period
+uint8_t volatile * const Lis_clkth  = &OCR0B;  // sets PWM pin duty cycle
+// PWM frequency = fcpu/Lis_clktop
+// PWM duty cycle = Lis_clkth/Lis_clktop
 
 /* =====[ Lis pin connections on `mBrd` ]===== */
 uint8_t const Lis_PixSelect = PB0;

@@ -15,12 +15,23 @@ static uint8_t volatile value_in_fake_Lis_ddr1;
 static uint8_t volatile value_in_fake_Lis_ddr2;
 static uint8_t volatile value_in_fake_Lis_port1;
 static uint8_t volatile value_in_fake_Lis_port2;
+static uint8_t volatile value_in_fake_Lis_tccr0a;
+static uint8_t volatile value_in_fake_Lis_tccr0b;
+static uint8_t volatile value_in_fake_Lis_clktop;
+static uint8_t volatile value_in_fake_Lis_clkth;
 
 //  =====[ I/O Register Address ]=====
 uint8_t volatile * const Lis_ddr1   = &value_in_fake_Lis_ddr1;
 uint8_t volatile * const Lis_ddr2   = &value_in_fake_Lis_ddr2;
 uint8_t volatile * const Lis_port1  = &value_in_fake_Lis_port1;
 uint8_t volatile * const Lis_port2  = &value_in_fake_Lis_port2;
+/* =====[ Use 8-bit PWM for Lis clock ]===== */
+uint8_t volatile * const Lis_tccr0a = &value_in_fake_Lis_tccr0a;
+uint8_t volatile * const Lis_tccr0b = &value_in_fake_Lis_tccr0b;
+uint8_t volatile * const Lis_clktop  = &value_in_fake_Lis_clktop;
+uint8_t volatile * const Lis_clkth  = &value_in_fake_Lis_clkth;
+// PWM frequency = fcpu/Lis_clktop
+// PWM duty cycle = Lis_clkth/Lis_clktop
 // =====[ Faking the Lis pin connection on the mBrd ]=====
 /* ---Pin Names--- */
 uint8_t const Lis_PixSelect = 0;  // PB0 ddr2 port2

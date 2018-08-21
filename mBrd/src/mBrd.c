@@ -27,6 +27,10 @@
 #include "Spi-Commands.h"       // commands understood by the SPI slave
 #include <UartSpi.h>            // mBrd USART in MSPIM mode for ADC readout
 #include "UartSpi-Hardware.h"   // map UART MSPIM I/O to actual hardware
+#include <Lis.h>                // mBrd LIS-770i I/O pins and functions
+#include "Lis-Hardware.h"       // map LIS-770i I/O to actual AVR I/O
+#include <Pwm.h>                // lib `Lis` uses PWM for the clock signal
+#include "Pwm-Hardware.h"       // map `Pwm` I/O to actual AVR I/O
 #include "AvrAsmMacros.h"       // resolve lib dependencies on AVR asm macros
 // avr libs
 #include <avr/interrupt.h>      // defines macro ISR()
@@ -93,6 +97,52 @@ void All_debug_leds_turn_on_and_turn_red(void);
 void Turn_led1_red_and_the_rest_green(void);
 void Show_data_on_debug_leds(uint8_t four_bits);
 
+void Output_100kHz_PWM(void)
+{
+    DebugLedsTurnAllRed();
+    LisInit();
+    // Output PWM on Clk pin
+    // PD5 has alternate PWM function OC0B
+    // 100kHz, 50% duty cycle square wave
+    // Prescaler = 1, OCR0A = 100, OCR0B = 50
+    OCR0A = 100; OCR0B = 50;
+    // Use Fast PWM mode:
+    // TCCR0A: WGM0[1:0] = 11 -- fast PWM mode
+    SetBit(&TCCR0A, WGM00); SetBit(&TCCR0A, WGM01);
+    // TCCR0B: set WGM02 -- TOP is the value in register OCR0A
+    SetBit(&TCCR0B, WGM02);
+    // TCCR0B: CS0[2:0] = 001 clk is fcpu, no prescaling
+    SetBit(&TCCR0B, CS00); ClearBit(&TCCR0B, CS01); ClearBit(&TCCR0B, CS02);
+    // TCCR0A bits COM0B[1:0] control the PWM pin behavior:
+    // 00 - Normal port operation, OC0B disconnected
+    // 10 - set OC0B at bottom, clear OC0B on compare match
+    ClearBit(&TCCR0A, COM0B0); SetBit(&TCCR0A, COM0B1);
+
+    /* =====[ Test ]===== */
+    /* probe `J3` pin `CLK` on scope */
+    /* expect output is a square wave with a period of 10us and 50% duty cycle */
+}
+void oldLisRunClkAt50kHz(void)
+{
+    // 50kHz, 50% duty cycle square wave
+    // Prescaler = 1, OCR0A = 200, OCR0B = 100
+    OCR0A = 200; OCR0B = 100;
+    // Use Fast PWM mode:
+    // TCCR0A: WGM0[1:0] = 11 -- fast PWM mode
+    SetBit(&TCCR0A, WGM00); SetBit(&TCCR0A, WGM01);
+    // TCCR0B: set WGM02 -- TOP is the value in register OCR0A
+    SetBit(&TCCR0B, WGM02);
+    // TCCR0B: CS0[2:0] = 001 clk is fcpu, no prescaling
+    SetBit(&TCCR0B, CS00); ClearBit(&TCCR0B, CS01); ClearBit(&TCCR0B, CS02);
+    // TCCR0A bits COM0B[1:0] control the PWM pin behavior:
+    // 00 - Normal port operation, OC0B disconnected
+    // 10 - set OC0B at bottom, clear OC0B on compare match
+    ClearBit(&TCCR0A, COM0B0); SetBit(&TCCR0A, COM0B1);
+
+    /* =====[ Test ]===== */
+    /* probe `J3` pin `CLK` on scope */
+    /* expect output is a square wave with a period of 10us and 50% duty cycle */
+}
 int main()
 {
     //
@@ -103,7 +153,15 @@ int main()
     SetupDebugLeds();
     /* test_DebugLeds(); // All tests pass 2018-07-30 */
     /* test_SpiSlave();  // All tests pass 2018-08-08 */
-    App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08
+    /* App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08 */
+    /* Output_100kHz_PWM();  // PASS 2018-08-17 */
+    LisInit();              // LIS I/O pins are set up
+    oldLisRunClkAt50kHz();     // LIS CLK is running
+    // LIS RST idles low. Pull it high:
+    /* SetBit(Lis_port1, Lis_Rst); */
+    // Pixels are reset. LIS integrates until Rst goes low again.
+    // See sketch `walk through a frame readout`
+
 }
 /* =====[ SpiSlave application-level API details ]===== */
 void App_version_of_Slave_RespondToRequestsForData(void)

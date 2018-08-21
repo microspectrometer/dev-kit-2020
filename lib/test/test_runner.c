@@ -12,6 +12,7 @@
 #include "test_Spi.h"       // SPI master on simBrd and SPI slave on mBrd
 #include "test_UartSpi.h"   // mBrd USART in MSPIM mode for ADC readout
 #include "test_Lis.h"       // mBrd I/O to LIS-770i
+#include "test_Pwm.h"       // lib `Lis` uses PWM for the clock signal
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -218,6 +219,29 @@ void DevelopingLis(bool run_test) {if (run_test) {
     RUN_TEST(LisInit_sets_Clk_as_an_output);
     RUN_TEST(LisInit_sets_Rst_as_an_output);
     RUN_TEST(LisInit_sets_Sync_as_an_input);
+    RUN_TEST(LisInit_idles_PixSelect_low);
+    RUN_TEST(LisInit_idles_Rst_low);
+    setUp = SetUp_LisInit; tearDown = TearDown_LisInit;
+    RUN_TEST(LisInit_configures_pin_Clk_to_generate_the_clock_signal);
+    RUN_TEST(LisInit_turns_on_the_clock_signal);
+    //
+    setUp = SetUp_LisRunClkAt50kHz; tearDown = TearDown_LisRunClkAt50kHz;
+    RUN_TEST(LisRunClkAt50kHz_sets_clock_to_50kHz);
+    RUN_TEST(LisRunClkAt50kHz_sets_clock_to_50percent_duty_cycle);
+    //
+    setUp = SetUp_LisClkOn; tearDown = TearDown_LisClkOn;
+    RUN_TEST(LisClkOn_outputs_the_clock_signal_on_pin_Clk);
+    //
+    setUp = SetUp_LisClkOff; tearDown = TearDown_LisClkOff;
+    RUN_TEST(LisClkOff_idles_Clk_low);
+}}
+void DevelopingPwm(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(PwmResetCounterAtTop_configures_PWM_for_fast_PWM_mode);
+    RUN_TEST(PwmTopIsOcr0a_uses_the_value_in_OCR0A_for_TOP);
+    RUN_TEST(PwmClkIsCpuClk_uses_the_cpu_clock_with_no_prescaler);
+    RUN_TEST(PwmEnableOutputSetUntilMatch_sets_OC0B_at_bottom_and_clears_on_match);
+    RUN_TEST(PwmDisableOutput_disconnects_OC0B_and_restores_normal_io_output);
 }}
 int main()
 {
@@ -233,5 +257,6 @@ int main()
     DevelopingSpiSlave        (Nope);
     DevelopingUartSpi         (Nope);
     DevelopingLis             (Yep);
+    DevelopingPwm             (Yep);
     return UNITY_END();
 }
