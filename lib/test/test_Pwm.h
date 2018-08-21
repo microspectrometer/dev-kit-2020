@@ -1,0 +1,10 @@
+#ifndef _TEST_PWM_H
+#define _TEST_PWM_H
+
+void PwmResetCounterAtTop_configures_PWM_for_fast_PWM_mode(void);
+void PwmTopIsOcr0a_uses_the_value_in_OCR0A_for_TOP(void);
+void PwmClkIsCpuClk_uses_the_cpu_clock_with_no_prescaler(void);
+void PwmEnableOutputSetUntilMatch_sets_OC0B_at_bottom_and_clears_on_match(void);
+void PwmDisableOutput_disconnects_OC0B_and_restores_normal_io_output(void);
+
+#endif // _TEST_PWM_H
