@@ -12,5 +12,13 @@ void BitIsSet_is_true_if_bit_is_set(void);
 void BitIsSet_is_false_if_bit_is_clear(void);
 void BitIsClear_is_true_if_bit_is_clear(void);
 void BitIsClear_is_false_if_bit_is_set(void);
+void MacroSetBit_sets_a_bit(void);
+void MacroSetBit_does_not_clear_any_bits(void);
+void MacroClearBit_clears_a_bit(void);
+void MacroClearBit_does_not_set_any_bits(void);
+void MacroBitIsSet_is_true_if_bit_is_set(void);
+void MacroBitIsSet_is_false_if_bit_is_clear(void);
+void MacroBitIsClear_is_true_if_bit_is_clear(void);
+void MacroBitIsClear_is_false_if_bit_is_set(void);
 
 #endif // _TEST_READWRITEBITS_H

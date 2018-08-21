@@ -234,6 +234,9 @@ void DevelopingLis(bool run_test) {if (run_test) {
     //
     setUp = SetUp_LisClkOff; tearDown = TearDown_LisClkOff;
     RUN_TEST(LisClkOff_idles_Clk_low);
+    //
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(LisExpose_exposes_pixels_for_nticks_of_LIS_clock);
 }}
 void DevelopingPwm(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
@@ -246,7 +249,7 @@ void DevelopingPwm(bool run_test) {if (run_test) {
 int main()
 {
     UNITY_BEGIN();
-    DevelopingReadWriteBits   (Nope);
+    DevelopingReadWriteBits   (Yep);
     DevelopingDebugLed        (Nope);
     DevelopingDebugLeds       (Nope);
     DevelopingFt1248_lowlevel (Nope);
@@ -256,7 +259,16 @@ int main()
     DevelopingSpiMaster       (Nope);
     DevelopingSpiSlave        (Nope);
     DevelopingUartSpi         (Nope);
-    DevelopingLis             (Yep);
-    DevelopingPwm             (Yep);
+    DevelopingLis             (Nope);
+    DevelopingPwm             (Nope);
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(MacroSetBit_sets_a_bit);
+    RUN_TEST(MacroSetBit_does_not_clear_any_bits);
+    RUN_TEST(MacroClearBit_clears_a_bit);
+    RUN_TEST(MacroClearBit_does_not_set_any_bits);
+    RUN_TEST(MacroBitIsSet_is_true_if_bit_is_set);
+    RUN_TEST(MacroBitIsSet_is_false_if_bit_is_clear);
+    RUN_TEST(MacroBitIsClear_is_true_if_bit_is_clear);
+    RUN_TEST(MacroBitIsClear_is_false_if_bit_is_set);
     return UNITY_END();
 }

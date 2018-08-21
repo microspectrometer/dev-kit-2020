@@ -43,7 +43,8 @@ static void LisRunClkAt50kHz_Implementation(void)
     PwmTopIsOcr0a();
     PwmClkIsCpuClk();
     *Lis_clktop = 200;           // 10MHz / 50kHz = 200 ticks
-    *Lis_clkth = *Lis_clktop/2;  // 50% dutcy cycle
+    *Lis_clkth = *Lis_clktop/2;  // 50% dutcy cycle: PASS 2018-08-21
+    /* *Lis_clkth = *Lis_clktop/10; // 10% dutcy cycle: PASS 2018-08-21*/
 }
 void (*LisRunClkAt50kHz)(void) = LisRunClkAt50kHz_Implementation;
 
@@ -61,4 +62,9 @@ void LisClkOff(void)
 {
     ClkIdleLow();
     PwmDisableOutput();
+}
+bool Lis_exposure_is_done = true;
+void LisExpose(uint16_t nticks)
+{
+    nticks++;
 }

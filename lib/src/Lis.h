@@ -9,6 +9,8 @@ void LisInit(void);
 extern void (*LisRunClkAt50kHz)(void);
 extern void (*LisClkOn)(void);
 void LisClkOff(void);
+extern bool Lis_exposure_is_done;
+void LisExpose(uint16_t nticks);
 
 /* =====[ Hardware dependencies to be resolved in Lis-Hardware.h ]===== */
 /* ---I/O Registers--- */

@@ -24,8 +24,11 @@
 // [x] LisClk
     // [x] LisRunClkAt50kHz_sets_clock_to_50kHz
     // [x] LisRunClkAt50kHz_sets_clock_to_50percent_duty_cycle
+// [x] LisClkOn and LisClkOff
     // [x] LisClkOn_outputs_the_clock_signal_on_pin_Clk
     // [x] LisClkOff_idles_Clk_low
+// [ ] LisExpose
+    // [ ] LisExpose_exposes_pixels_for_nticks_of_LIS_clock
 
 //
 /* =====[ LisInit ]===== */
@@ -119,6 +122,7 @@ void LisInit_turns_on_the_clock_signal(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
+
 //
 /* =====[ Lis_Clk ]===== */
 //
@@ -151,7 +155,6 @@ void LisRunClkAt50kHz_sets_clock_to_50kHz(void)
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
-
 }
 void LisRunClkAt50kHz_sets_clock_to_50percent_duty_cycle(void)
 {
@@ -215,4 +218,28 @@ void LisClkOff_idles_Clk_low(void)
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
+}
+
+//
+/* =====[ LisExpose ]===== */
+//
+void LisExpose_exposes_pixels_for_nticks_of_LIS_clock(void)
+{
+    /* =====[ Setup ]===== */
+    Lis_exposure_is_done = true;  // becomes false during exposure
+    /* =====[ Operate and Test ]===== */
+    uint16_t nticks = 10;     // fake global exposure value set by USB host
+    /* bool LisClkTick = false;  // fake global tick flag set by PWM interrupt */
+    uint16_t actual_nticks = 0;
+    LisExpose(nticks);
+    // LisExpose calls ExposureStart(): pull LisRst high
+    // LisExpose counts nticks of LisClk
+    // LisExpose calls ExposureStop(): pulls LisRst low
+    while (!Lis_exposure_is_done)
+    {
+        /* while(!LisClkTick); */
+        /* LisClkTick = false; */
+        /* actual_nticks++; */
+    }
+    TEST_ASSERT_EQUAL_UINT16(nticks, actual_nticks);
 }

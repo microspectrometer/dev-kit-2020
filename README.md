@@ -300,6 +300,9 @@
         - not counting private implementations for public function pointers
 ### LisIo
 - [ ] Lis-io
+    - [x] initialization
+    - [x] clock signal generation
+    - [ ] frame readout
 ### ReadWriteBits
 - [x] ReadWriteBits
     - 10 tests
@@ -2500,6 +2503,21 @@ Tx a byte:
         - in the future, `LisInit()` will not start the clock
         - this will be a separate command to leave power-down mode
         - but for now intialize in power up mode
+- Do I need to use the *ISR* to do things on clock rising/falling edges?
+- No, this can be done without interrupts by polling flags and manually clearing
+  flags.
+    - The output compare unit sets the output compare flag `OCF0A` or
+      `OCF0B` when `TCNT0` equals `OCR0A` or `OCR0B`.
+    - Clear the flag in software by writing a logical one to its I/O bit
+      location.
+    - I tested with and without interrupts and the fastest performance is to do
+      this without interrupts. That is worth the extra step of manually clearing
+      the flag. The result code is easier to read too.
+    - Unfortunately, I also discovered the high-level code makes the response
+      time to clock edges unacceptably slow. It is so slow that attempting to
+      follow the clock edges on Rst makes Rst output a square wave that jitters
+      between sometimes being half the frequency, sometimes the same frequency,
+      because it only rarely catches adjacent clock edges.
 - `Lis_Rst` is low
     - `LisInit()` has `Lis_Rst` idle high for power-saving
     - but once the device is in power up mode, `Lis_Rst` is low

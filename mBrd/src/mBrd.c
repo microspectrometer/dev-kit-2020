@@ -143,6 +143,65 @@ void oldLisRunClkAt50kHz(void)
     /* probe `J3` pin `CLK` on scope */
     /* expect output is a square wave with a period of 10us and 50% duty cycle */
 }
+/* #define WaitForLisClkFedge while(!(TIFR0 & (1<<OCF0B))); */
+void DemoFastestRstResponseToClk(void)
+{
+    while (1) // PASS with best results: no ISR, use lowest-level code
+    {
+        while(!(TIFR0 & (1<<OCF0A))); // true if bit is clear; wait for clk redge
+        PORTD |= 1<<PD6;    // set bit: Rst High
+        // delay bewteen Clk high and Rst high is 0.4 to 0.6us
+        TIFR0 |= 1<<OCF0A; // clear the flag by setting the bit
+        while(!(TIFR0 & (1<<OCF0B))); // true if bit is clear; wait for clk fedge
+        PORTD &= ~(1<<PD6); // clear bit: Rst Low
+        // delay bewteen Clk low and Rst low is 0.5 to 0.6us
+        TIFR0 |= 1<<OCF0B; // clear the flag by setting the bit
+    }
+}
+// Try inlining. `inline` did nothing. Try macros.
+void DemoMacroFastestRstResponseToClk(void)
+{
+    while (1) // PASS with best results: no ISR, use lowest-level code
+    {
+        while(MacroBitIsClear(&TIFR0, OCF0A)); // wait for clock rising edge
+        MacroSetBit(Lis_port1, Lis_Rst);
+        // delay bewteen Clk high and Rst high is 0.4 to 0.6us
+        MacroSetBit(&TIFR0, OCF0A); // clear the flag
+        while(MacroBitIsClear(&TIFR0, OCF0B)); // wait for clock falling edge
+        MacroClearBit(Lis_port1, Lis_Rst);
+        // delay bewteen Clk low and Rst low is 0.4 to 0.6us
+        MacroSetBit(&TIFR0, OCF0B); // clear the flag
+    }
+}
+void DemoIsrForRstResponseToClk(void)
+{  // This is failingly slow if the ISR uses high-level code.
+    // Enable interrupts for LisClk redge and fedge
+    GlobalInterruptDisable();
+    // Clear pending timer interrupts
+    SetBit(&TIFR0, OCF0A); // clear the clk redge interrupt flag
+    SetBit(&TIFR0, OCF0B); // clear the clk fedge interrupt flag
+    SetBit(&TIMSK0, OCIE0A); // enable clk redge interrupt
+    SetBit(&TIMSK0, OCIE0B); // enable clk fedge interrupt
+    GlobalInterruptEnable();
+    while (1);  // sit in an infinite loop; ISR does everything
+}
+void DemoFailinglySlowRstResponseToClk(void)
+{
+    while(1)
+    {
+        // The delay is so long, edges are missed and the frequency is doubled.
+        {
+            while(BitIsClear(&TIFR0, OCF0B)); // wait for clock falling edge
+            ClearBit(Lis_port1, Lis_Rst);
+            // -O1 delay is about 20us
+            SetBit(&TIFR0, OCF0B); // clear the flag
+            while(BitIsClear(&TIFR0, OCF0A)); // wait for clock rising edge
+            SetBit(Lis_port1, Lis_Rst);
+            // -O1 delay is almost 10us
+            SetBit(&TIFR0, OCF0A); // clear the flag
+        }
+    }
+}
 int main()
 {
     //
@@ -154,10 +213,35 @@ int main()
     /* test_DebugLeds(); // All tests pass 2018-07-30 */
     /* test_SpiSlave();  // All tests pass 2018-08-08 */
     /* App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08 */
-    /* Output_100kHz_PWM();  // PASS 2018-08-17 */
-    LisInit();              // LIS I/O pins are set up
-    oldLisRunClkAt50kHz();     // LIS CLK is running
-    // LIS RST idles low. Pull it high:
+    /* =====[ Test ]===== */
+    // Visually confirm clock is 50kHz: PASS 2018-08-21
+    // Looking at timing. Nasty surprise: readable high-level code is slow.
+    // What if I use the ISR? Is the delay any less?
+        // Not for the high-level code.
+        // Delay time with the ISR is actually longer for the low-level code.
+        // It goes from being under 1us to being almost 2us.
+    LisInit();  // PASS 2018-08-21
+    /* =====[ Test ]===== */
+    // Visually confirm Rst follows Clk.
+        // Rst cannot reliably follow Clk if high-level code is used.
+        // Low-level reliably has Rst following Clk with and without interrupts.
+        // Compare delays for gcc optimization levels -O1, -O2, -O3.
+        // It does not matter what optimization level is used.
+    // Also look at the delay between Rst edges and Clk edges.
+        // Delay time using interrupts is 1.8us to 2us for both edges.
+        // Delay time without interrupts is 0.4-06us for redge and0.5-0.6us for
+        // fedge.
+    /* DemoFastestRstResponseToClk(); // PASS: this has the fastest response */
+    /* DemoMacroFastestRstResponseToClk(); // PASS: just as fast but easier to read */
+    /* DemoIsrForRstResponseToClk(); // PASS but slower than not using ISR */
+    /* DemoFailinglySlowRstResponseToClk(); // FAIL: high-level code is too slow */
+
+    // LIS RST idles low.
+    while(1); // PASS: Rst is low.
+    //  Pull it high just after a Clk fedge:
+    while(!(TIFR0 & (1<<OCF0B))); // wait for Clk fedge
+    // pull Rst high
+    /* LisExposureStart(); */
     /* SetBit(Lis_port1, Lis_Rst); */
     // Pixels are reset. LIS integrates until Rst goes low again.
     // See sketch `walk through a frame readout`
@@ -318,6 +402,22 @@ ISR(SPI_STC_vect)
 {
     DoTaskForThisTest(); // fptr assigned in test code
 }
+ISR(TIMER0_COMPA_vect)
+{
+    // high-level delay:
+    /* SetBit(Lis_port1, Lis_Rst); */
+    // low-level delay:
+    PORTD |= 1<<PD6;    // set bit: Rst High
+    // delay is 1.8us-2us from redge to Rst High
+}
+ISR(TIMER0_COMPB_vect)
+{
+    // high-level delay:
+    /* ClearBit(Lis_port1, Lis_Rst); */
+    // low-level delay:
+    PORTD &= ~(1<<PD6); // clear bit: Rst Low
+    // delay is 1.8us-2us from fedge to Rst low
+} 
 void SPI_interrupt_routine_turns_debug_led1_red(void)
 {
     /* =====[ Setup ]===== */
