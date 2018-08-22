@@ -97,53 +97,6 @@ void All_debug_leds_turn_on_and_turn_red(void);
 void Turn_led1_red_and_the_rest_green(void);
 void Show_data_on_debug_leds(uint8_t four_bits);
 
-void Output_100kHz_PWM(void)
-{
-    DebugLedsTurnAllRed();
-    LisInit();
-    // Output PWM on Clk pin
-    // PD5 has alternate PWM function OC0B
-    // 100kHz, 50% duty cycle square wave
-    // Prescaler = 1, OCR0A = 100, OCR0B = 50
-    OCR0A = 100; OCR0B = 50;
-    // Use Fast PWM mode:
-    // TCCR0A: WGM0[1:0] = 11 -- fast PWM mode
-    SetBit(&TCCR0A, WGM00); SetBit(&TCCR0A, WGM01);
-    // TCCR0B: set WGM02 -- TOP is the value in register OCR0A
-    SetBit(&TCCR0B, WGM02);
-    // TCCR0B: CS0[2:0] = 001 clk is fcpu, no prescaling
-    SetBit(&TCCR0B, CS00); ClearBit(&TCCR0B, CS01); ClearBit(&TCCR0B, CS02);
-    // TCCR0A bits COM0B[1:0] control the PWM pin behavior:
-    // 00 - Normal port operation, OC0B disconnected
-    // 10 - set OC0B at bottom, clear OC0B on compare match
-    ClearBit(&TCCR0A, COM0B0); SetBit(&TCCR0A, COM0B1);
-
-    /* =====[ Test ]===== */
-    /* probe `J3` pin `CLK` on scope */
-    /* expect output is a square wave with a period of 10us and 50% duty cycle */
-}
-void oldLisRunClkAt50kHz(void)
-{
-    // 50kHz, 50% duty cycle square wave
-    // Prescaler = 1, OCR0A = 200, OCR0B = 100
-    OCR0A = 200; OCR0B = 100;
-    // Use Fast PWM mode:
-    // TCCR0A: WGM0[1:0] = 11 -- fast PWM mode
-    SetBit(&TCCR0A, WGM00); SetBit(&TCCR0A, WGM01);
-    // TCCR0B: set WGM02 -- TOP is the value in register OCR0A
-    SetBit(&TCCR0B, WGM02);
-    // TCCR0B: CS0[2:0] = 001 clk is fcpu, no prescaling
-    SetBit(&TCCR0B, CS00); ClearBit(&TCCR0B, CS01); ClearBit(&TCCR0B, CS02);
-    // TCCR0A bits COM0B[1:0] control the PWM pin behavior:
-    // 00 - Normal port operation, OC0B disconnected
-    // 10 - set OC0B at bottom, clear OC0B on compare match
-    ClearBit(&TCCR0A, COM0B0); SetBit(&TCCR0A, COM0B1);
-
-    /* =====[ Test ]===== */
-    /* probe `J3` pin `CLK` on scope */
-    /* expect output is a square wave with a period of 10us and 50% duty cycle */
-}
-/* #define WaitForLisClkFedge while(!(TIFR0 & (1<<OCF0B))); */
 void DemoFastestRstResponseToClk(void)
 {
     while (1) // PASS with best results: no ISR, use lowest-level code
@@ -232,7 +185,7 @@ int main()
         // Delay time without interrupts is 0.4-06us for redge and0.5-0.6us for
         // fedge.
     /* DemoFastestRstResponseToClk(); // PASS: this has the fastest response */
-    /* DemoMacroFastestRstResponseToClk(); // PASS: just as fast but easier to read */
+    DemoMacroFastestRstResponseToClk(); // PASS: just as fast but easier to read
     /* DemoIsrForRstResponseToClk(); // PASS but slower than not using ISR */
     /* DemoFailinglySlowRstResponseToClk(); // FAIL: high-level code is too slow */
 
@@ -621,5 +574,28 @@ void test_Atmel_ice_quirk_requires_flipping_SW2_to_SPI(void)
     /* SpiSlaveSignalDataIsReady_outputs_a_hard_low(); // FAIL 2018-08-03 */
     DebugLedsTurnRed(debug_led4);
     while (1);
+}
+
+/* =====[ Old code to erase ]===== */
+void oldLisRunClkAt50kHz(void)
+{
+    // 50kHz, 50% duty cycle square wave
+    // Prescaler = 1, OCR0A = 200, OCR0B = 100
+    OCR0A = 200; OCR0B = 100;
+    // Use Fast PWM mode:
+    // TCCR0A: WGM0[1:0] = 11 -- fast PWM mode
+    SetBit(&TCCR0A, WGM00); SetBit(&TCCR0A, WGM01);
+    // TCCR0B: set WGM02 -- TOP is the value in register OCR0A
+    SetBit(&TCCR0B, WGM02);
+    // TCCR0B: CS0[2:0] = 001 clk is fcpu, no prescaling
+    SetBit(&TCCR0B, CS00); ClearBit(&TCCR0B, CS01); ClearBit(&TCCR0B, CS02);
+    // TCCR0A bits COM0B[1:0] control the PWM pin behavior:
+    // 00 - Normal port operation, OC0B disconnected
+    // 10 - set OC0B at bottom, clear OC0B on compare match
+    ClearBit(&TCCR0A, COM0B0); SetBit(&TCCR0A, COM0B1);
+
+    /* =====[ Test ]===== */
+    /* probe `J3` pin `CLK` on scope */
+    /* expect output is a square wave with a period of 10us and 50% duty cycle */
 }
 

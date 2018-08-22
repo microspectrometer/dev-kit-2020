@@ -1078,15 +1078,224 @@ the array of return values in the test and *not* rely on the default *example*
 value.
 
 # Weird embedded stuff
+## Compiler optimization
+> https://www.avrfreaks.net/comment/2029696#comment-2029696
+> 
+> Never, ever, ever use -O0. It is simply there as a test mode for the compiler
+> developers so they can see the dreadful code that is fed into the optimiser.
+> Loads of things (timed stuff) won't work if you build -O0 because the code is
+> so slow and bloated it won't meet the timing requirements.
+> 
+> If you pick -O0 to debug because "it's easy" then you will end up debugging
+> something that is quite unlike the -O1..3/s that you eventually release.
+> 
+> AS7 (since I told them back at the AS5 stage) now uses -O1 (not -O0) for
+> "Debug" and -Os for "Release", these are probably sensible choices until -Og
+> is more easily available as a choice for "Debug".
+> 
+> Of course the final release choice between -Os and -O3 kind of depends on the
+> way in which you want it optimised (size or speed). User manual here:
+> 
+> https://gcc.gnu.org/onlinedocs/g...
+> 
+> As you'll read there the -On/-Os choices are really nothing more than a
+> grouping of 10's of -fxxxx options, so if you want even more control you could
+> build your own optimisation by some combination of -Ox and -fxxx selections.
+> Though that's probably for "power users". The 123s choices are sensible
+> groupings for most. Just go with -O3 for speed, -Os for size as a starting
+> point.
+
+- TLDR:
+    - the AVR community compiles with either -O3 for speed or -Os for size
+    - the different optimization levels just set various compiler flags
+    - the idea is you are freeing the compiler from a literal interpretation of
+      your code and letting it optimize either for size or for speed
+    - try the different levels when compiling with avr-gcc:
+        - in `CFLAGS` in the Makefile, just change the numbering of -O1 to:
+            - -O2 and look for a speedup
+            - -O3 and look for even more of a speedup
+            - -Os and look for a size reduction
+        - size: see what happens to the size of the .elf file
+            - see section *Size of the final `.elf` files* below
+            - I have not tried this with -Os
+        - speed: see what instructions change in the disassembly
+        - speed: look for a change in i/o timing on an oscilloscope
+            - I did the latter by comparing the hardware-controlled PWM module
+              output with a software-controlled pin tracking the PWM output pin
+              and measuring the distance between the software-controlled pin
+              rise/fall relative to the hardware-controlled pin rise/fall
+            - I compared these measurements for different optimization levels:
+                - observed no change
+            - I compared these measurements for a high-level abstraction with
+              true function calls vs the same high-level abstraction in terms of
+              readability, but using function-like macros
+                - the function calls are a huge slow down
+                - the function-like macro maintains the readability, but the
+                  code is as fast as it can be without switching to inline
+                  assembly
+                - I did not attempt inline assembly to look for additional
+                  speedup
+            - see my lesson learned in section:
+            - *Abstracting for readability is a performance hit but there is a
+              solution*
+
+## Abstracting for readability is a performance hit but there is a solution
+### Context
+- I often write one-liner comments to explain the code that comes after
+- I then eliminate these one-liner comments by turning that comment into a
+  function that calls whatever code it was explaining.
+- this makes the code readable:
+    - the hard-to-read implementation code is now hidden
+    - the same readable text is there, just in CamelCase
+    - writing an idea in CamelCase helps me be terse to avoid ending up with
+      something that too long to be readable
+- this automates code honesty:
+    - the compiler guarantees the function is called
+        - as opposed to a comment, which the compiler ignores
+        - if there is no automatic check that the comment is true, then there is
+          no sane way to guarantee the comment is still in sync with the code it
+          is explaining
+    - tests check the behavior of that function
+        - the tests gaurantee that the function does what it claims it does
+- this eliminates separate documentation:
+    - the test becomes the documentation
+    - the test cases list all the behaviors
+    - the tests provide multiple examples of calling the function and show the
+      minimum viable on the state setup before the function is called
+### Problem
+- each time a function is called, this adds overhead in execution time
+- this overhead is significant when the system has to respond to events within a
+  time window that is on the order of a few clock cycles
+    - example: fcpu = 10MHz, then a single-cycle instruction takes 0.1us
+    - a function call adds the instruction to jump to the function and the
+      instruction to return from the function
+    - jumping to the function is an `rjmp` or an `icall`
+        - `rjmp` takes 2 clocks
+        - `icall` takes 3 clocks
+    - returning is an `ret`
+        - `ret` takes 4 clocks
+    - so each call adds at least 6 clock cycles
+    - calls add more if the call is passing arguments because those need to be
+      pushed into registers that the subroutine will access
+    - and a calculation result needs to be stored somewhere as well
+    - loading and storing are the `ld` and `st` instructions which each take 2
+      clocks
+    - so something like setting a bit is at a minimum 12 clocks
+    - but that is only 1.2us and while that kind of sucks, it is nowhere near
+      the overhead I was observing -- I was seeing more like 5us to 6 us per
+      high-level function call
+### Solution
+#### Do not make function calls
+- without any function calls, the execution time was only about 5 clock cycles
+- it is hard to imagine this getting any better
+- even using interrupts incurs a *call and return* penalty of about 10 clock
+  cycles
+#### `inline` does not work
+- ideally, `inline` is supposed to eliminate the function call and insert the
+  function implementation code in its place
+    - I could not get `inline` to have any affect
+    - perhaps this is because my code is split across multiple files
+    - so the object file with the `inline` function call does not have any way
+      to get the code inserted in the client application object file that it is
+      linked against
+#### Use function-like macros
+- to maintain readability, I made function-like macros that look and act just
+  like the functions I want to inline, but the name has the prefix `Macro`
+- to avoid macro pitfalls, I mirrored my existing unit tests with versions that
+  test all the same behavior but swapping the `Macro` function-like macros in
+  place of the functions
+### Summary and Takeaway
+- adding function calls slows down execution by adding tens of clock cycles
+- this slow down is a problem when the function needs to respond to an event
+  within a few clock cycles
+- these function calls are added to the code as part of refactoring:
+    - the refactoring steps turns the comment into a function call
+    - the function call provides readable-and-automatically-verified code
+- there is a solution for both fast-and-readable
+    - it doesn't have to be slow-but-readable with calls or fast-but-unreadable
+      without calls
+- develop the code for readability and maintainability by refactoring as usual,
+  introducing function calls
+- where slow downs are problematic, mirror the function calls with function-like
+  macros
+    - use the same function name, but add the prefix `Macro`
+- the existing unit tests guard against the pitfalls of function-like macros
+    - create an identical set of unit tests that swap out the function-like
+      macro for the original function
+- in the slow-down-problem-areas, use the `Macro` version
+    - this is a manual implementation of `inline` for instances when `inline`
+      does not do the job
+
+### disassembly instruction analysis
+- my C code:
+```c
+void DemoMacroFastestRstResponseToClk(void)
+{
+    while (1) // PASS with best results: no ISR, use lowest-level code
+    {
+        while(MacroBitIsClear(&TIFR0, OCF0A)); // wait for clock rising edge
+        MacroSetBit(Lis_port1, Lis_Rst);
+        // delay bewteen Clk high and Rst high is 0.4 to 0.6us
+        MacroSetBit(&TIFR0, OCF0A); // clear the flag
+        while(MacroBitIsClear(&TIFR0, OCF0B)); // wait for clock falling edge
+        MacroClearBit(Lis_port1, Lis_Rst);
+        // delay bewteen Clk low and Rst low is 0.4 to 0.6us
+        MacroSetBit(&TIFR0, OCF0B); // clear the flag
+    }
+}
+```
+- the assembly generated by *avr-gcc*:
+```asm
+00000286 <DemoMacroFastestRstResponseToClk>:
+```
+...
+```
+286:	a9 9b       	sbis	0x15, 1	; 21
+288:	fe cf       	rjmp	.-4      	; 0x286 <DemoMacroFastestRstResponseToClk>
+28a:	5e 9a       	sbi	0x0b, 6	; 11
+28c:	a9 9a       	sbi	0x15, 1	; 21
+28e:	aa 9b       	sbis	0x15, 2	; 21
+290:	fe cf       	rjmp	.-4      	; 0x28e <DemoMacroFastestRstResponseToClk+0x8>
+292:	5e 98       	cbi	0x0b, 6	; 11
+294:	aa 9a       	sbi	0x15, 2	; 21
+296:	f7 cf       	rjmp	.-18     	; 0x286 <DemoMacroFastestRstResponseToClk>
+```
+- `sbi 0x0b, 6 ; 11`
+    - `sbi` [S]et [B]it in [I]/O register
+    - takes 2 clock cycles
+    - register address `0x0b (0x2b)` is register name `PORTD`
+    - bit `6` is bit name `PD6`
+        - I set `const uint8_t Lis_Rst` equal to macro `PD6` in `Lis-Hardware.h`
+        - note there is no overhead penalty for this abstraction
+        - the compiler takes the substitution to the end, using the bit number
+          defined by the macro
+- `sbi 0x15, 1 ; 21`
+    - clear the OCF0A flag by setting the bit
+    - takes 2 clock cycles
+- `sbis 0x15, 1 ; 21`
+    - `sbis` [S]kip if [B]it in [I]/O register is [S]et
+    - register address `0x15 (0x35)` is register name `TIFR0`
+    - bit `1` is bit name `OCF0A`
+    - takes 1/2/3 clock cycles
+- `rjmp .-4 ; 0x286`
+    - `rjmp` is [R]elative [J]u[MP]
+    - takes 2 clock cycles
+    - in hand-written code this would jump to a label
+    - here I guess the notation `.-4` means *relative to the location of the
+      program counter after this line executes* go *back 4 bytes* in program
+      memory
+- after translating this segment of assembly, I think it is the fastest way
+  to express the Rst pin following the Clk pin in software
 ## AVR asm macros
-### Example
 These are macros defined in `avr-libc`.
 
+### Example
 - For example:
     - `Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/avr/interrupt.h` 
 - defines these macros:
     - `sei()` - do the SEI instruction: *Global Interrupt Enable*
     - `cli()` - do the CLI instruction: *Global Interrupt Disable*
+
 ### I wrap these inside functions
 I wrap these macros inside functions because:
 
@@ -2829,6 +3038,264 @@ nnoremap <leader>mfa :call CloseLogfileWindows()<CR>
 - invoke it from any window
 - as long as the *pwd* is correct, it does its job
 - otherwise, it does nothing
+
+## Look at the disassembly instructions
+### read the .lst file
+- the disassembly file has extension `.lst`
+- [x] learn to read the .lst file
+
+- all of the instructions are listed in the datasheet
+- I pulled out a handful below that are used in the `.lst` snippets I attempt to
+  translate
+
+instr   | Operand   | Operation         | Flags     | Description
+------- | --------- | ---------         | --------- | ---------
+ADD     |   Rd, Rr  | Rd←Rd+Rr          | Z,C,N,V,H | Add two Registers
+BRPL    |   k       | if(N=0), PC←PC+k+1| None      | Branch if Plus
+CALL    |   k       | PC←k              | None      | Direct Subroutine Call
+DEC     |   Rd      | Rd←Rd-1           | Z,N,V     | Decrement
+ICALL   |           |                   | None      | Indirect Call to (Z)
+LD      |   Rd, Z   | Rd←(Z)            | None      | Load Indirect
+LDI     |   Rd, K   | Rd←K              | None      | Load Immediate
+LDS     |   Rd, k   | Rd←(k)            | None      | Load Direct from SRAM
+MOVW    |   Rd, Rr  | Rd+1:Rd←Rr+1:Rr   | None      | Copy Register Word
+PUSH    |   Rr      | STACK←Rr          | None      | Push Register on Stack
+RET     |           | PC←STACK          | None      | Subroutine Return
+RJMP    |   k       | PC←PC+k+1         | None      | Relative Jump
+
+```c
+000000f0 <DebugLedTurnOn_Implementation>:
+    DebugLedTurnGreen();
+}
+
+static void DebugLedTurnOn_Implementation(void)
+{
+    SetBit(ddr_register_, debug_led_);
+  f0:	60 91 32 01 	lds	r22, 0x0132	; 0x800132 <__data_end>
+  f4:	80 91 37 01 	lds	r24, 0x0137	; 0x800137 <ddr_register_>
+  f8:	90 91 38 01 	lds	r25, 0x0138	; 0x800138 <ddr_register_+0x1>
+  fc:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 100:	08 95       	ret
+```
+- `0xf0` is the address of this function
+- this function just sets up a function call
+- the input arguments are stored in `SRAM`
+- it loads these arguments from `SRAM` into some registers:
+    - copy value from `SRAM` at address `0x0132` to `r22`
+    - copy value from `SRAM` at address `0x0137` to `r24`
+    - copy value from `SRAM` at address `0x0138` to `r25`
+- then it calls `SetBit`:
+    - `SetBit` is the subroutine at `PC` address `0xa6`
+    - load the `PC` with `0xa6`
+    - when the program counter returns here (address `0xfc`) the final step is
+      to return from this function by popping the return address from the stack
+      and loading the `PC` with that return address
+
+- I don't know where the assembly for `SetBit` is
+- this is all I could find:
+```c
+000000a6 <SetBit>:
+    *port ^= (1<<bit);
+}
+```
+
+```c
+bool BitIsSet(uint8_t volatile * const port, uint8_t const bit) {
+    return *port & (1<<bit);
+}
+  a6:	fc 01       	movw	r30, r24
+  a8:	40 81       	ld	r20, Z
+  aa:	21 e0       	ldi	r18, 0x01	; 1
+  ac:	30 e0       	ldi	r19, 0x00	; 0
+  ae:	02 c0       	rjmp	.+4      	; 0xb4 <SetBit+0xe>
+  b0:	22 0f       	add	r18, r18
+  b2:	33 1f       	adc	r19, r19
+  b4:	6a 95       	dec	r22
+  b6:	e2 f7       	brpl	.-8      	; 0xb0 <SetBit+0xa>
+  b8:	24 2b       	or	r18, r20
+  ba:	20 83       	st	Z, r18
+  bc:	08 95       	ret
+```
+
+- Here is the function in question, `UsbWrite`:
+```c
+0000032a <UsbWrite>:
+uint16_t UsbWrite(uint8_t *write_buffer, uint16_t nbytes)
+{
+```
+- this first part just makes space to work:
+    - save the values in the registers by pushing them onto the stack:
+```c
+ 32a:	ef 92       	push	r14
+ 32c:	ff 92       	push	r15
+ 32e:	0f 93       	push	r16
+ 330:	1f 93       	push	r17
+ 332:	cf 93       	push	r28
+ 334:	df 93       	push	r29
+```
+- now copy the input arguments into the registers just freed up:
+```c
+ 336:	8c 01       	movw	r16, r24
+ 338:	7b 01       	movw	r14, r22
+```
+- `FtSendCommand` is a function pointer:
+```c
+void (*FtSendCommand)(uint8_t) = FtSendCommand_Implementation;
+```
+- function pointers are treated differently from regular functions
+- compare `FtSendCommand` and `SetBit`
+- it is not called like `SetBit`
+- `SetBit` is a `PC` address
+- `SetBit` was called by loading the `PC` with that address
+- the address of `FtSendCommand` is stored in `SRAM`
+- `FtSendCommand` is called by loading a 16-bit address from `SRAM` into
+  registers `r30` and `r31`
+- these comprise the 16-bit `Z` register
+
+```c
+    uint16_t num_bytes_sent = 0;
+    FtSendCommand(FtCmd_Write);
+ 33a:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <FtSendCommand>
+ 33e:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <FtSendCommand+0x1>
+ 342:	80 91 24 01 	lds	r24, 0x0124	; 0x800124 <FtCmd_Write>
+ 346:	09 95       	icall
+    if (!FtBusTurnaround())
+ 348:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtBusTurnaround>
+ 34c:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtBusTurnaround+0x1>
+ 350:	09 95       	icall
+ 352:	81 11       	cpse	r24, r1
+ 354:	0d c0       	rjmp	.+26     	; 0x370 <UsbWrite+0x46>
+    {
+        DebugLedTurnRedToShowError();
+ 356:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <DebugLedTurnRedToShowError>
+ 35a:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <DebugLedTurnRedToShowError+0x1>
+ 35e:	09 95       	icall
+        FtDeactivateInterface();
+ 360:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtDeactivateInterface>
+ 364:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtDeactivateInterface+0x1>
+ 368:	09 95       	icall
+        return num_bytes_sent;
+ 36a:	c0 e0       	ldi	r28, 0x00	; 0
+ 36c:	d0 e0       	ldi	r29, 0x00	; 0
+ 36e:	15 c0       	rjmp	.+42     	; 0x39a <UsbWrite+0x70>
+ 370:	c0 e0       	ldi	r28, 0x00	; 0
+ 372:	d0 e0       	ldi	r29, 0x00	; 0
+    }
+    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
+    bool byte_sent = true; bool finished = false;
+```
+
+- This is where the value is copied.
+- `r16` is the input argument: the address of `write_buffer`
+- so look at `FtWrite`, not `UsbWrite`
+```c
+    while (byte_sent && !finished)
+    {
+        byte_sent = FtWrite(write_buffer++);
+ 374:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtWrite>
+ 378:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtWrite+0x1>
+ 37c:	c8 01       	movw	r24, r16
+ 37e:	8c 0f       	add	r24, r28
+ 380:	9d 1f       	adc	r25, r29
+ 382:	09 95       	icall
+        if (byte_sent) num_bytes_sent++;
+ 384:	88 23       	and	r24, r24
+ 386:	21 f0       	breq	.+8      	; 0x390 <UsbWrite+0x66>
+ 388:	21 96       	adiw	r28, 0x01	; 1
+        FtDeactivateInterface();
+        return num_bytes_sent;
+    }
+    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
+    bool byte_sent = true; bool finished = false;
+    while (byte_sent && !finished)
+ 38a:	ce 15       	cp	r28, r14
+ 38c:	df 05       	cpc	r29, r15
+ 38e:	90 f3       	brcs	.-28     	; 0x374 <UsbWrite+0x4a>
+    {
+        byte_sent = FtWrite(write_buffer++);
+        if (byte_sent) num_bytes_sent++;
+        finished = (num_bytes_sent >= nbytes);
+    }
+    FtDeactivateInterface();
+ 390:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtDeactivateInterface>
+ 394:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtDeactivateInterface+0x1>
+ 398:	09 95       	icall
+    return num_bytes_sent;
+}
+ 39a:	ce 01       	movw	r24, r28
+ 39c:	df 91       	pop	r29
+ 39e:	cf 91       	pop	r28
+ 3a0:	1f 91       	pop	r17
+ 3a2:	0f 91       	pop	r16
+ 3a4:	ff 90       	pop	r15
+ 3a6:	ef 90       	pop	r14
+ 3a8:	08 95       	ret
+```
+
+- looking at `FtWrite`:
+```c
+bool (*FtWrite)(uint8_t *write_buffer) = FtWrite_Implementation;
+```
+- the dissasembly for `FtWrite_Implementation`:
+```c
+000001be <FtWrite_Implementation>:
+ 1be:	cf 93       	push	r28
+ 1c0:	df 93       	push	r29
+ 1c2:	ec 01       	movw	r28, r24
+ 1c4:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <FtPushData>
+ 1c8:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <FtPushData+0x1>
+ 1cc:	09 95       	icall
+ 1ce:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <FtWriteData>
+ 1d2:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <FtWriteData+0x1>
+```
+- here is where the value of the byte in the `write_buffer` gets passed to
+  `FtWriteData`:
+```c
+ 1d6:	88 81       	ld	r24, Y
+ 1d8:	09 95       	icall
+```
+- what is register `Y`?
+- `YL` is `r28`, `YH` is `r29`
+- the input argument, the pointer `write_buffer`, is in `r24`
+- so copy this to `r28`
+- but how could the pointer, which is an address, fit is `r24`?
+
+```c
+ 1da:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <FtPullData>
+ 1de:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <FtPullData+0x1>
+ 1e2:	09 95       	icall
+ 1e4:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <FtIsBusOk>
+ 1e8:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <FtIsBusOk+0x1>
+ 1ec:	09 95       	icall
+ 1ee:	df 91       	pop	r29
+ 1f0:	cf 91       	pop	r28
+ 1f2:	08 95       	ret
+
+```
+### view disassembly in `gdb`
+- `gdb` will not run .elf files, so this is *not useful* for figuring out how
+  `avr-gcc` is turning C into assembly instructions
+- [-] view the disassembly from gcc using the `gdb` command `layout`:
+```bash
+(gdb) help layout
+Change the layout of windows.
+Usage: layout prev | next | <layout_name> 
+Layout names are:
+   src   : Displays source and command windows.
+   asm   : Displays disassembly and command windows.
+   split : Displays source, disassembly and command windows.
+   regs  : Displays register window. If existing layout
+           is source/command or assembly/command, the 
+           register window is displayed. If the
+           source/assembly/command (split) is displayed, 
+           the register window is displayed with 
+           the window that has current logical focus.
+```
+
+Use `layout split` to view source and assembly at the same time. Use the up/down
+arrow keys to move through the source code. The source and assembly windows
+stay in sync. Adding a breakpoint places a `b+` next to the line number for both
+the source and assembly windows.
 
 # USB Host Application
 ## 2017 eval kit `Example Python Interface`
