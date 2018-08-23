@@ -24,6 +24,7 @@
 //  =====[ I/O Register ]=====          =====[ Register's Purpose ]=====
 uint8_t volatile * const Pwm_tccr0a = &TCCR0A; // timer0 control reg A
 uint8_t volatile * const Pwm_tccr0b = &TCCR0B; // timer0 control reg B
+uint8_t volatile * const Pwm_tifr0  = &TIFR0;  // timer0 interrupt flags
 
 /* ---Bit Names--- */
 uint8_t const Pwm_Wgm00 = WGM00;   // tccr0a
@@ -34,5 +35,7 @@ uint8_t const Pwm_Cs01  = CS01;    // tccr0b
 uint8_t const Pwm_Cs02  = CS02;    // tccr0b
 uint8_t const Pwm_Com0b0 = COM0B0; // tccr0a
 uint8_t const Pwm_Com0b1 = COM0B1; // tccr0a
+uint8_t const Pwm_Ocf0a = OCF0A;   // tifr0
+uint8_t const Pwm_Ocf0b = OCF0B;   // tifr0
 
 #endif // _PWM_HW_H

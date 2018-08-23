@@ -25,6 +25,7 @@
 uint8_t volatile * const Lis_ddr1   = &DDRD;   // data direction in/out
 uint8_t volatile * const Lis_ddr2   = &DDRB;   // data direction in/out
 uint8_t volatile * const Lis_port1  = &PORTD;  // output (Port out)
+uint8_t volatile * const Lis_pin1   = &PIND;   // input (Port in)
 uint8_t volatile * const Lis_port2  = &PORTB;  // output (Port out)
 /* =====[ Use 8-bit PWM for Lis clock ]===== */
 uint8_t volatile * const Lis_tccr0a = &TCCR0A; // timer0 control reg A

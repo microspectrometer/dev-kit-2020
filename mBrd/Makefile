@@ -3,7 +3,7 @@ board-name := mBrd
 #=====[ Compiler and Linker flags ]=====
 CFLAGS = -I../lib/src -Isrc \
 	-g -Wall -Wextra -pedantic \
-	-O3 -ffunction-sections -fdata-sections -fshort-enums \
+	-Os -ffunction-sections -fdata-sections -fshort-enums \
 		-mmcu=atmega328p -B ${atmega328_lib}
 # Using -O1:
 # CFLAGS = -I../lib/src -Isrc \

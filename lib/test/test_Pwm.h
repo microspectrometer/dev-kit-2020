@@ -6,5 +6,10 @@ void PwmTopIsOcr0a_uses_the_value_in_OCR0A_for_TOP(void);
 void PwmClkIsCpuClk_uses_the_cpu_clock_with_no_prescaler(void);
 void PwmEnableOutputSetUntilMatch_sets_OC0B_at_bottom_and_clears_on_match(void);
 void PwmDisableOutput_disconnects_OC0B_and_restores_normal_io_output(void);
+void WaitForPwmOutputRisingEdge_blocks_until_the_rising_edge_of_pwm_out(void);
+void MacroWaitForPwmRisingEdge_blocks_until_the_rising_edge_of_pwm_out(void);
+void MacroWaitForPwmRisingEdge_clears_the_interrupt_flag(void);
+void MacroWaitForPwmFallingEdge_blocks_until_the_falling_edge_of_pwm_out(void);
+void MacroWaitForPwmFallingEdge_clears_the_interrupt_flag(void);
 
 #endif // _TEST_PWM_H

@@ -66,5 +66,15 @@ void LisClkOff(void)
 bool Lis_exposure_is_done = true;
 void LisExpose(uint16_t nticks)
 {
+    // Abandoned. Dev done directly on embedded target.
+    // Function call/return overhead is too slow to use function calls.
+    // If I had more time, I'd develop with function calls then insert macro
+    // substitutions, but I do not. The major time sink there is all the
+    // stubbing to fake the hardware behavior in flag checking and clearing.
+    // Stubbing requires creating functions for those behaviors. And that
+    // requires cleverly bypassing all those functions with the macros. I need
+    // to move quick, so I am short-circuiting all of that by working directly
+    // in macros and manually confirming behavior by measuring on an
+    // oscilloscope.
     nticks++;
 }

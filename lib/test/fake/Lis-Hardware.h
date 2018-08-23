@@ -19,11 +19,13 @@ static uint8_t volatile value_in_fake_Lis_tccr0a;
 static uint8_t volatile value_in_fake_Lis_tccr0b;
 static uint8_t volatile value_in_fake_Lis_clktop;
 static uint8_t volatile value_in_fake_Lis_clkth;
+static uint8_t volatile value_in_fake_Lis_pin1;
 
 //  =====[ I/O Register Address ]=====
 uint8_t volatile * const Lis_ddr1   = &value_in_fake_Lis_ddr1;
 uint8_t volatile * const Lis_ddr2   = &value_in_fake_Lis_ddr2;
 uint8_t volatile * const Lis_port1  = &value_in_fake_Lis_port1;
+uint8_t volatile * const Lis_pin1   = &value_in_fake_Lis_pin1;
 uint8_t volatile * const Lis_port2  = &value_in_fake_Lis_port2;
 /* =====[ Use 8-bit PWM for Lis clock ]===== */
 uint8_t volatile * const Lis_tccr0a = &value_in_fake_Lis_tccr0a;
@@ -37,6 +39,6 @@ uint8_t volatile * const Lis_clkth  = &value_in_fake_Lis_clkth;
 uint8_t const Lis_PixSelect = 0;  // PB0 ddr2 port2
 uint8_t const Lis_Clk       = 5;  // PD5 ddr1 port1
 uint8_t const Lis_Rst       = 6;  // PD6 ddr1 port1
-uint8_t const Lis_Sync      = 7;  // PD7 ddr1 port1
+uint8_t const Lis_Sync      = 7;  // PD7 ddr1 pin1
 
 #endif // _LIS_HW_H

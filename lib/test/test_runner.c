@@ -34,6 +34,16 @@ void DevelopingReadWriteBits(bool run_test) { if (run_test) {
     RUN_TEST(BitIsSet_is_false_if_bit_is_clear);
     RUN_TEST(BitIsClear_is_true_if_bit_is_clear);
     RUN_TEST(BitIsClear_is_false_if_bit_is_set);
+    //
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(MacroSetBit_sets_a_bit);
+    RUN_TEST(MacroSetBit_does_not_clear_any_bits);
+    RUN_TEST(MacroClearBit_clears_a_bit);
+    RUN_TEST(MacroClearBit_does_not_set_any_bits);
+    RUN_TEST(MacroBitIsSet_is_true_if_bit_is_set);
+    RUN_TEST(MacroBitIsSet_is_false_if_bit_is_clear);
+    RUN_TEST(MacroBitIsClear_is_true_if_bit_is_clear);
+    RUN_TEST(MacroBitIsClear_is_false_if_bit_is_set);
 }}
 void DevelopingDebugLed(bool run_test) { if (run_test) {
     setUp = SetUp_DebugLedInit; tearDown = TearDown_DebugLedInit;
@@ -245,11 +255,16 @@ void DevelopingPwm(bool run_test) {if (run_test) {
     RUN_TEST(PwmClkIsCpuClk_uses_the_cpu_clock_with_no_prescaler);
     RUN_TEST(PwmEnableOutputSetUntilMatch_sets_OC0B_at_bottom_and_clears_on_match);
     RUN_TEST(PwmDisableOutput_disconnects_OC0B_and_restores_normal_io_output);
+    RUN_TEST(WaitForPwmOutputRisingEdge_blocks_until_the_rising_edge_of_pwm_out);
+    RUN_TEST(MacroWaitForPwmRisingEdge_blocks_until_the_rising_edge_of_pwm_out);
+    RUN_TEST(MacroWaitForPwmRisingEdge_clears_the_interrupt_flag);
+    RUN_TEST(MacroWaitForPwmFallingEdge_blocks_until_the_falling_edge_of_pwm_out);
+    RUN_TEST(MacroWaitForPwmFallingEdge_clears_the_interrupt_flag);
 }}
 int main()
 {
     UNITY_BEGIN();
-    DevelopingReadWriteBits   (Yep);
+    DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
     DevelopingDebugLeds       (Nope);
     DevelopingFt1248_lowlevel (Nope);
@@ -260,15 +275,6 @@ int main()
     DevelopingSpiSlave        (Nope);
     DevelopingUartSpi         (Nope);
     DevelopingLis             (Nope);
-    DevelopingPwm             (Nope);
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(MacroSetBit_sets_a_bit);
-    RUN_TEST(MacroSetBit_does_not_clear_any_bits);
-    RUN_TEST(MacroClearBit_clears_a_bit);
-    RUN_TEST(MacroClearBit_does_not_set_any_bits);
-    RUN_TEST(MacroBitIsSet_is_true_if_bit_is_set);
-    RUN_TEST(MacroBitIsSet_is_false_if_bit_is_clear);
-    RUN_TEST(MacroBitIsClear_is_true_if_bit_is_clear);
-    RUN_TEST(MacroBitIsClear_is_false_if_bit_is_set);
+    DevelopingPwm             (Yep);
     return UNITY_END();
 }

@@ -1,22 +1,14 @@
-test/test_runner.c:27:SetBit_sets_a_bit:PASS
-test/test_runner.c:28:SetBit_does_not_clear_any_bits:PASS
-test/test_runner.c:29:ClearBit_clears_a_bit:PASS
-test/test_runner.c:30:ClearBit_does_not_set_any_bits:PASS
-test/test_runner.c:31:ToggleBit_toggles_a_bit_low_to_high:PASS
-test/test_runner.c:32:ToggleBit_toggles_a_bit_high_to_low:PASS
-test/test_runner.c:33:BitIsSet_is_true_if_bit_is_set:PASS
-test/test_runner.c:34:BitIsSet_is_false_if_bit_is_clear:PASS
-test/test_runner.c:35:BitIsClear_is_true_if_bit_is_clear:PASS
-test/test_runner.c:36:BitIsClear_is_false_if_bit_is_set:PASS
-test/test_runner.c:265:MacroSetBit_sets_a_bit:PASS
-test/test_runner.c:266:MacroSetBit_does_not_clear_any_bits:PASS
-test/test_runner.c:267:MacroClearBit_clears_a_bit:PASS
-test/test_runner.c:268:MacroClearBit_does_not_set_any_bits:PASS
-test/test_runner.c:269:MacroBitIsSet_is_true_if_bit_is_set:PASS
-test/test_runner.c:270:MacroBitIsSet_is_false_if_bit_is_clear:PASS
-test/test_runner.c:271:MacroBitIsClear_is_true_if_bit_is_clear:PASS
-test/test_runner.c:272:MacroBitIsClear_is_false_if_bit_is_set:PASS
+test/test_runner.c:253:PwmResetCounterAtTop_configures_PWM_for_fast_PWM_mode:PASS
+test/test_runner.c:254:PwmTopIsOcr0a_uses_the_value_in_OCR0A_for_TOP:PASS
+test/test_runner.c:255:PwmClkIsCpuClk_uses_the_cpu_clock_with_no_prescaler:PASS
+test/test_runner.c:256:PwmEnableOutputSetUntilMatch_sets_OC0B_at_bottom_and_clears_on_match:PASS
+test/test_runner.c:257:PwmDisableOutput_disconnects_OC0B_and_restores_normal_io_output:PASS
+test/test_runner.c:258:WaitForPwmOutputRisingEdge_blocks_until_the_rising_edge_of_pwm_out:PASS
+test/test_runner.c:259:MacroWaitForPwmRisingEdge_blocks_until_the_rising_edge_of_pwm_out:PASS
+test/test_runner.c:260:MacroWaitForPwmRisingEdge_clears_the_interrupt_flag:PASS
+test/test_runner.c:261:MacroWaitForPwmFallingEdge_blocks_until_the_falling_edge_of_pwm_out:PASS
+test/test_runner.c:262:MacroWaitForPwmFallingEdge_clears_the_interrupt_flag:PASS
 
 -----------------------
-18 Tests 0 Failures 0 Ignored 
+10 Tests 0 Failures 0 Ignored 
 OK

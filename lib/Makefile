@@ -101,12 +101,14 @@ ${obj_libs-mocked}: build/%.o: test/%.c
 clean-all-builds:
 	rm -f build/${file-stem}.exe
 	rm -f build/TestSuite.exe
-	rm -f builde/ReadWriteBits.o
-	rm -f build/Lis.o
+	rm -f build/ReadWriteBits.o
+	rm -f build/test_ReadWriteBits.o
+	# rm -f build/Lis.o
 	rm -f build/Pwm.o
+	rm -f build/test_Pwm.o
 	rm -f build/mock_Pwm.o
-	rm -f build/mock_Lis.o
-	rm -f build/test_Lis_MockUps.o
+	# rm -f build/mock_Lis.o
+	# rm -f build/test_Lis_MockUps.o
 	# rm -f ${obj_dev-libs}
 	# rm -f ${obj_libs-tested}
 	# rm -f ${obj_libs-tested-with-mocks}

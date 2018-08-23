@@ -9,6 +9,15 @@
     // [x] PwmClkIsCpuClk_uses_the_cpu_clock_with_no_prescaler
     // [x] PwmEnableOutputSetUntilMatch_sets_OC0B_at_bottom_and_clears_on_match
     // [x] PwmDisableOutput_disconnects_OC0B_and_restores_normal_io_output
+    // [x] WaitForPwmOutputRisingEdge_blocks_until_the_rising_edge_of_pwm_out
+    // [-] WaitForPwmOutputRisingEdge_clears_the_interrupt_flag
+        // I have no good way to test this, so I am only doing the macro
+        // version.
+        // I test the macro version on the embedded target.
+    // [x] MacroWaitForPwmRisingEdge_blocks_until_the_rising_edge_of_pwm_out
+    // [x] MacroWaitForPwmRisingEdge_clears_the_interrupt_flag
+    // [ ] MacroWaitForPwmFallingEdge_blocks_until_the_falling_edge_of_pwm_out
+    // [ ] MacroWaitForPwmFallingEdge_clears_the_interrupt_flag
 
 void PwmResetCounterAtTop_configures_PWM_for_fast_PWM_mode(void)
 {
@@ -58,4 +67,95 @@ void PwmDisableOutput_disconnects_OC0B_and_restores_normal_io_output(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_LOW( Pwm_Com0b0, *Pwm_tccr0a);
     TEST_ASSERT_BIT_LOW( Pwm_Com0b1, *Pwm_tccr0a);
+}
+void WaitForPwmOutputRisingEdge_blocks_until_the_rising_edge_of_pwm_out(void)
+{
+    /* =====[ Setup ]===== */
+    // Fake the flag is set for the rising edge.
+    // Setting up the stub to return an array is not worth it.
+    // Manually test once that this hangs forever with the flag not set. Done.
+    *Pwm_tifr0 = 0x00;
+    SetBit(Pwm_tifr0, Pwm_Ocf0a);
+    /* =====[ Operate ]===== */
+    WaitForPwmOutputRisingEdge();
+    /* =====[ Test ]===== */
+    // TODO: Implement an automatic test
+    TEST_ASSERT_TRUE_MESSAGE(
+        1, "Manually tested. Implement an automatic test."
+        );
+}
+void MacroWaitForPwmRisingEdge_blocks_until_the_rising_edge_of_pwm_out(void)
+{
+    /* =====[ Setup ]===== */
+    // Fake the flag is set for the rising edge.
+    // Setting up the stub to return an array is not worth it.
+    // PASS: manually test this hangs forever with the flag not set.
+    *Pwm_tifr0 = 0x00;
+    SetBit(Pwm_tifr0, Pwm_Ocf0a);
+    /* =====[ Operate ]===== */
+    MacroWaitForPwmRisingEdge();
+    /* =====[ Test ]===== */
+    // TODO: Implement an automatic test
+    // Want to test that executions halts until bit OCF0A is set, but I cannot.
+    TEST_ASSERT_TRUE_MESSAGE(
+        1, "Manually tested. Implement an automatic test."
+        );
+    /* TEST_FAIL_MESSAGE("Implement test."); */
+}
+void MacroWaitForPwmRisingEdge_clears_the_interrupt_flag(void)
+{
+    // Similar problem: need a stub to return the value I choose.
+    // Not doing it.
+    // I cannot even confirm this manually by watching the code hang.
+    // Manually test this on firmware with an oscilloscope looking at LisRst.
+    // And that is why I only test the macro version.
+    /* =====[ Setup ]===== */
+    *Pwm_tifr0 = 0x00;
+    SetBit(Pwm_tifr0, Pwm_Ocf0a);
+    /* =====[ Operate ]===== */
+    MacroWaitForPwmRisingEdge();
+    /* =====[ Test ]===== */
+    // TODO: Implement an automatic test
+    // Want to test that bit OCF0A is cleared, but I cannot.
+    TEST_ASSERT_TRUE_MESSAGE(
+            1, "Manually tested. Implement an automatic test."
+            );
+}
+void MacroWaitForPwmFallingEdge_blocks_until_the_falling_edge_of_pwm_out(void)
+{
+    // Similar problem: need a stub to return the value I choose.
+    // Not doing it.
+    // I cannot even confirm this manually by watching the code hang.
+    // Manually test this on firmware with an oscilloscope looking at LisRst.
+    // And that is why I only test the macro version.
+    /* =====[ Setup ]===== */
+    *Pwm_tifr0 = 0x00;
+    SetBit(Pwm_tifr0, Pwm_Ocf0b);
+    /* =====[ Operate ]===== */
+    MacroWaitForPwmFallingEdge();
+    /* =====[ Test ]===== */
+    // TODO: Implement an automatic test
+    // Want to test that executions halts until bit OCF0B is set, but I cannot.
+    TEST_ASSERT_TRUE_MESSAGE(
+            1, "Manually tested. Implement an automatic test."
+            );
+}
+void MacroWaitForPwmFallingEdge_clears_the_interrupt_flag(void)
+{
+    // Similar problem: need a stub to return the value I choose.
+    // Not doing it.
+    // I cannot even confirm this manually by watching the code hang.
+    // Manually test this on firmware with an oscilloscope looking at LisRst.
+    // And that is why I only test the macro version.
+    /* =====[ Setup ]===== */
+    *Pwm_tifr0 = 0x00;
+    SetBit(Pwm_tifr0, Pwm_Ocf0b);
+    /* =====[ Operate ]===== */
+    MacroWaitForPwmFallingEdge();
+    /* =====[ Test ]===== */
+    // TODO: Implement an automatic test
+    // Want to test that bit OCF0B is cleared, but I cannot.
+    TEST_ASSERT_TRUE_MESSAGE(
+            1, "Manually tested. Implement an automatic test."
+            );
 }

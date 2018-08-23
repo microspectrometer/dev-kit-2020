@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "ReadWriteBits.h"  // for bit manipulation as macros
 
 /* =====[ AVR asm macros ]===== */
 extern void (*Delay3CpuCyclesPerTick)(uint8_t);
@@ -10,6 +11,25 @@ extern void (*Delay3CpuCyclesPerTick)(uint8_t);
 /* =====[ UartSpi API ]===== */
 void UartSpiInit(void);
 void UartSpiRead(uint8_t *two_bytes_MSB_first);
+
+#define MacroUartSpiStartAdcConversion() do { \
+    MacroSetBit(UartSpi_port, UartSpi_AdcConv); \
+} while (0)
+#define MacroUartSpiStartAdcReadout() do { \
+    MacroClearBit(UartSpi_port, UartSpi_AdcConv); \
+} while (0)
+/* #define MacroUartSpiTxBufferIsEmpty() do { \ */
+/*     MacroBitIsSet(UartSpi_csra, UartSpi_DataRegEmpty); \ */
+/* } while (0) */
+/* #define MacroUartSpiTransferIsDone() do { \ */
+/*     MacroBitIsSet(UartSpi_csra, UartSpi_RxComplete); \ */
+/* } while (0) */
+#define MacroUartSpiTxBufferIsEmpty() MacroBitIsSet(UartSpi_csra, UartSpi_DataRegEmpty)
+#define MacroUartSpiTransferIsDone()  MacroBitIsSet(UartSpi_csra, UartSpi_RxComplete)
+#define MacroUartSpiTransfer16bits() do { \
+    *UartSpi_data = 0x00; \
+    *UartSpi_data = 0x00; \
+} while (0)
 
 /* =====[ Hardware dependencies to be resolved in UartSpi-Hardware.h ]===== */
 /* ---I/O Registers--- */

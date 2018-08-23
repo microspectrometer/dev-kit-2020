@@ -2714,7 +2714,8 @@ Tx a byte:
         - but for now intialize in power up mode
 - Do I need to use the *ISR* to do things on clock rising/falling edges?
 - No, this can be done without interrupts by polling flags and manually clearing
-  flags.
+  flags. In fact it is slightly faster without interrupts because it cuts out
+  the function call/return overhead of the ISR.
     - The output compare unit sets the output compare flag `OCF0A` or
       `OCF0B` when `TCNT0` equals `OCR0A` or `OCR0B`.
     - Clear the flag in software by writing a logical one to its I/O bit
@@ -2734,23 +2735,37 @@ Tx a byte:
     - in the following, `Lis_Rst` is pulled high and low
     - the new value is clocked in on the very next rising edge of `Lis_Clk`
       after `Lis_Rst` has changed
-    - [ ] change the value of `Lis_Rst` just after a `Lis_Clk` falling edge
+    - [x] change the value of `Lis_Rst` just after a `Lis_Clk` falling edge
         - this avoids confusion over when the LIS shifts in the new value of
           `Lis_Rst`
+        - at 50kHz, it is 10us from the clock falling edge to the clock rising
+          edge
+        - there is a 0.6us to 0.8us delay between the actual clock falling edge
+          and the time it takes software to catch the fall and pull `Lis_Rst`
+          high or low
+        - so in effect, I am guaranteed to have `Lis_Rst` always transition
+          about 9us just before the next `Lis_Clk` rising edge, and to never
+          transition during a clock edge
 - `ExposureStart()` - pull `Lis_Rst` high
     - resets all pixels
     - integration begins
 - `Lis_Rst` goes low
     - integration ends
     - integration time is the number of clock cycles that `Lis_Rst` was high
-    - [ ] decide how to track the integration period:
+    - [x] decide how to track the integration period:
         - check for N clock cycles in the PWM interrupt?
             - requires the ISR know about the state of the system
             - system can take new requests while the camera integrates
+            - no -- ISR adds call/return overhead, slowing response time
         - or sit and poll the interrupt flag, incrementing a counter
             - localizes where the state needs to be known to precisely that
               place where it is used
             - entire system blocks until integration period ends
+            - yes -- there is nothing else the system has to do
+- Exposure time
+    - LisRst is high for 20us * nticks + 2us
+    - But the LIS is counting clock pulses, so exposure time is exactly 20us *
+      nticks.
 - `Lis_Sync` input is pulsed high
 > Once RST is brought low a synchronization signal (SYNC) pulse is fired
 > starting on the next falling clock edge. Pixel readout then begins on the next

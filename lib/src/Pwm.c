@@ -33,5 +33,10 @@ static void PwmDisableOutput_Implementation(void)
     ClearBit(Pwm_tccr0a, Pwm_Com0b0);
     ClearBit(Pwm_tccr0a, Pwm_Com0b1);
 }
-
 void (*PwmDisableOutput)(void) = PwmDisableOutput_Implementation;
+
+void WaitForPwmOutputRisingEdge(void)
+{
+    while(MacroBitIsClear(Pwm_tifr0, Pwm_Ocf0a)); // wait until flag is set
+    MacroSetBit(Pwm_tifr0, Pwm_Ocf0a); // set the bit to clear the flag
+}

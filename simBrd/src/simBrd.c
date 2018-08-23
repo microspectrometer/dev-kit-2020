@@ -39,6 +39,9 @@
     // [x] SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host
     // [x] SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host
 
+/* =====[ List of application examples ]===== */
+    // [ ] SpiMaster_get_Lis_frame_and_write_to_USB_host
+
 // Spi-master application-level API
 uint16_t SpiMasterPassFakeSensorData(void);  // example for getting a frame
 uint16_t SpiMasterPassAdcFrame(void);        // another example getting a frame
