@@ -14,7 +14,8 @@ s.open()
 a = s.read(s.inWaiting())
 frame_bytes = a.split('\n')[0]; test_result = a.split('\n')[1]; print test_result
 len(frame_bytes) # returns 1540
-bytes_per_line = 10
+#bytes_per_line = 10
+bytes_per_line = 8
 for i in range(len(frame_bytes)):
     if i%bytes_per_line==0:
         bytegroup = ''

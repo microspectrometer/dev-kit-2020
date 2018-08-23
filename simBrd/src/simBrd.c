@@ -12,6 +12,17 @@
 #include <stdio.h>  // snprintf()
 #include <string.h> // strlen()
 //
+// Comparing Compiler Optimization levels:
+    // -O1
+    // ||    text	   data	    bss	    dec	    hex	filename
+    // ||    3724	   1002	      7	   4733	   127d	build/simBrd.elf
+    // -O3
+    // ||    text	   data	    bss	    dec	    hex	filename
+    // ||    3330	    996	      7	   4333	   10ed	build/simBrd.elf
+    //
+    // -Os
+    // ||    text	   data	    bss	    dec	    hex	filename
+    // ||    3690	   1002	      7	   4699	   125b	build/simBrd.elf
 /* =====[ Required Hardware Settings in FT_Prog ]===== */
 /* - Hardware Specific -> Ft1248 Settings */
 /* - Clock Polarity High: unchecked */
@@ -45,6 +56,7 @@
 // Spi-master application-level API
 uint16_t SpiMasterPassFakeSensorData(void);  // example for getting a frame
 uint16_t SpiMasterPassAdcFrame(void);        // another example getting a frame
+uint16_t SpiMasterPassLisFrame(void);        // get the real Lis frame
 
 // Automated Testing API
 typedef struct TestResult TestResult;
@@ -624,6 +636,45 @@ void SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host(void)
     // Expect 1540 bytes of repeated ABCs, ending in letter `F`
     if (Failed(result)) PrintSizeOfSpiSlaveResponse(nbytes);
 }
+void SpiMaster_get_Lis_frame_and_write_to_USB_host(void)
+{
+    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    /* =====[ Operate ]===== */
+    SpiMasterPassLisFrame();
+}
+void DoCmdSendFourDummyBytes(void)
+{
+    SpiMasterWrite(cmd_send_four_dummy_bytes);
+    uint8_t fake_data[4]; uint8_t * pfake_data = fake_data;
+    uint16_t nbytes = sizeof(fake_data);
+    uint16_t byte_counter = 0;
+    while (byte_counter++ < nbytes)
+    {
+        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+        *(pfake_data++) = SpiMasterRead();
+    }
+    UsbWrite(fake_data, nbytes);
+    DebugLedTurnRed();
+}
+void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
+{
+    while(1) // loop forever responding to the USB host
+    {
+        if (UsbHasDataToRead())
+        {
+            DebugLedToggleColor();
+            uint8_t read_buffer[1];
+            UsbRead(read_buffer);
+            uint8_t cmd = read_buffer[0];
+            if      (cmd == cmd_send_lis_frame) SpiMasterPassLisFrame();
+            // test commands
+            else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
+        }
+    }
+}
 int main()
 {
     //
@@ -639,8 +690,12 @@ int main()
     /* SpiMaster_get_dummy_byte_from_slave_and_write_dummy_byte_to_USB_host(); */
     /* SpiMaster_get_fake_adc_reading_from_slave_and_write_to_USB_host(); */
     /* SpiMaster_get_adc_reading_from_slave_and_write_to_USB_host(); */
-    SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host();
-
+    /* SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host(); */
+    /* SpiMaster_get_Lis_frame_and_write_to_USB_host(); */
+    /* =====[ Setup ]===== */
+    SpiMasterInit();
+    UsbInit();
+    SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave();
 }
 uint16_t SpiMasterPassFakeSensorData(void)
 {
@@ -669,6 +724,28 @@ uint16_t SpiMasterPassAdcFrame(void)
     // Pass each byte out as soon as you get it.
     // Return the number of bytes passed from spi-slave to USB host.
     SpiMasterWrite(cmd_send_adc_frame);
+    uint16_t byte_counter = 0;
+    uint8_t byte_buffer;
+    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    while (++byte_counter < sizeof_dummy_frame)
+    {
+        byte_buffer = SpiMasterRead(); // read first byte
+        // must look for slave response right away or you'll miss it
+        SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
+        UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next
+    }
+    byte_buffer = SpiMasterRead(); // read last byte
+    UsbWrite(&byte_buffer, 1); // send last byte out
+    return byte_counter;
+}
+uint16_t SpiMasterPassLisFrame(void)
+{
+    // Like SpiMasterPassAdcFrame but it sends a Lis frame, not just ADC readings.
+    // Host should print raw bytes, not print unicode characters.
+    // Pass each byte out as soon as you get it.
+    // Return the number of bytes passed from spi-slave to USB host.
+    // TODO: speed this up with macro versions
+    SpiMasterWrite(cmd_send_lis_frame);
     uint16_t byte_counter = 0;
     uint8_t byte_buffer;
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.

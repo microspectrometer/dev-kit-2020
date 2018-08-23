@@ -83,6 +83,7 @@ void SendDummyFrame(void);             // output a large array
 void SendAdcReading(void);
 void SendFakeAdcReading(void);
 void SendAdcFrame(void);        // just a frame of ADC readings, no LIS yet
+void SendLisFrame(void);        // send a Lis frame
 // helpers for command parsing
 void IndicateUnknownCommand(void) { DebugLedsTurnRed(debug_led4); }
 void DoNothing(void){}
@@ -109,7 +110,8 @@ void DemoMacroFastestRstResponseToClk(void)
         MacroClearBit(Lis_port1, Lis_Rst);
     }
 }
-uint16_t Lis_nticks_exposure = 3;  // fake exposure time set by host
+/* uint16_t Lis_nticks_exposure = 3;  // fake exposure time set by host */
+uint16_t Lis_nticks_exposure = 5000;  // fake exposure time set by host
 uint16_t Lis_nticks_counter = 0;   // track the exposure time
 uint16_t Lis_npixels_counter = 0;  // track the number of pixels during readout
 uint8_t *pframe = dummy_frame;     // access memory during readout
@@ -141,8 +143,12 @@ uint8_t *pframe = dummy_frame;     // access memory during readout
 } while (0)
 void LisFrameReadout(void)
 {
+    // Debug: initial readout works fine. Subsequent readouts do not happen.
+    // Lis_Clk and Lis_Rst work.
+    // AdcConv idles low. AdcClk idles high. Neither does anything.
     LisExpose();  // exposes Lis pixels for Lis_nticks_exposure
     pframe = dummy_frame;  // point to the start of pixel readout memory
+    Lis_npixels_counter = 0;  // initialize the pixel counter
     LisWaitForSyncRiseEdge();
     LisWaitForSyncFallEdge();
     while (Lis_npixels_counter++ < npixels)
@@ -159,8 +165,8 @@ int main()
     SpiSlaveInit();   // respond to Spi-master (e.g., USB host)
     UartSpiInit();    // take ADC readings
     LisInit();        // power up Lis, start 50kHz clock
-    LisDoNothingFor10Clocks();
-    LisFrameReadout();  // store pixel readout in SRAM
+    while(1) RespondToRequestsForData();
+    /* LisDoNothingFor10Clocks(); */
     DebugLedsTurnAllRed();
 
 }
@@ -345,6 +351,7 @@ void RespondToRequestsForData(void)
 {
     // Poll SPI bus. Process data requests, if any.
     if ( SpiTransferIsDone() ) SendDataMasterAskedFor();
+    DebugLedsTurnAllGreen(); // go green if idle
 }
 void SendDataMasterAskedFor(void)
 {
@@ -352,12 +359,15 @@ void SendDataMasterAskedFor(void)
     uint8_t cmd = SpiSlaveRead();
     // parse and act
     // each action gets data, loads it into SPDR, and signals master when ready
-    if      (cmd == cmd_send_dummy_byte) SendDummyByte();
+    if      (cmd == cmd_send_lis_frame) SendLisFrame();
+    // test commands
+    else if (cmd == cmd_send_adc_frame) SendAdcFrame();
+    else if (cmd == cmd_send_dummy_byte) SendDummyByte();
     else if (cmd == cmd_send_four_dummy_bytes) SendFourDummyBytes();
     else if (cmd == cmd_send_dummy_frame) SendDummyFrame();
     else if (cmd == cmd_send_adc_reading) SendAdcReading();
     else if (cmd == cmd_send_fake_adc_reading) SendFakeAdcReading();
-    else if (cmd == cmd_send_adc_frame) SendAdcFrame();
+    // catch all
     else if (cmd == slave_ignore) DoNothing();  // PASS 2018-08-03
     // `slave_ignore` is available through spi lib
     // for master to send when slave does read
@@ -437,6 +447,15 @@ void SendAdcFrame(void)
     uint8_t *pdummy_frame = dummy_frame;
     // Send measurement data to master.
     SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
+}
+void SendLisFrame(void)
+{
+    DebugLedsTurnRed(debug_led2);   // for manual testing
+    DebugLedsTurnRed(debug_led4);   // for manual testing
+    LisFrameReadout();  // store pixel readout in SRAM
+    // Send measurement data to master.
+    uint8_t *plisframe = dummy_frame;
+    SpiSlaveSendBytes(plisframe, sizeof_dummy_frame);
 }
 
 /* ---DebugLeds--- */
