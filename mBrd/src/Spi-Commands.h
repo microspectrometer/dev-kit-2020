@@ -5,6 +5,7 @@ uint8_t const cmd_send_adc_reading      = 0xF4;
 uint8_t const cmd_send_fake_adc_reading = 0xF5;
 uint8_t const cmd_send_adc_frame        = 0xF6;
 uint8_t const cmd_send_lis_frame        = 0x01;
+uint8_t const cmd_set_exposure_time     = 0x02;
 uint16_t const fake_adc_reading = 0x1234;
 // When not printing test results, I can send 1540 bytes no problem
 #define npixels 784

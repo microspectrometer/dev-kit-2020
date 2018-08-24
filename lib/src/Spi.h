@@ -30,6 +30,16 @@ void SpiMasterWrite(uint8_t byte_to_send);
     /* Do a throw-away access of reg 0x2e (SPDR) to clear the flag */ \
     *Spi_spdr; \
     MacroSpiMasterCloseSpi(); \
+    /* Cannot put the delay here or master misses MISO rising */ \
+    /* Delay3CpuCyclesPerTick(SpiWriteDelayTicks); \ */ \
+} while (0)
+// Writes followed by a short delay to let the slave catch up.
+// Even with only a few ticks, performance is OK.
+// 50 ticks really guards against commands ever getting garbled.
+#define SpiWriteDelayTicks 50
+#define MacroSpiMasterWriteAndDelay(byte) do { \
+    MacroSpiMasterWrite(byte); \
+    Delay3CpuCyclesPerTick(SpiWriteDelayTicks); \
 } while (0)
 uint8_t SpiMasterRead(void);
 #define MacroReadSpiDataRegister() (*Spi_spdr)
@@ -42,10 +52,14 @@ extern bool (*SpiResponseIsReady)(void);
 #define MacroSpiResponseIsReady() MacroBitIsClear(Spi_pin, Spi_Miso)
 void SpiMasterWaitForResponse(void);
 #define MacroSpiMasterWaitForResponse() do { \
+    /* =====[ wait for master pull-up to pull MISO High ]===== */ \
+    /* right after a transmission, MISO has to recharge */ \
+    /* on the next board, put an explicit 10k pull-up on MISO */ \
+    while(  MacroSpiResponseIsReady() ); \
     /* =====[ wait for slave to pull MISO Low ]===== */ \
     while( !MacroSpiResponseIsReady() ); \
     /* =====[ wait for slave to pull MISO High ]===== */ \
-    /* while(  MacroSpiResponseIsReady() ); \ */ \
+    while(  MacroSpiResponseIsReady() ); \
 } while (0)
 /* =====[ Not part of the API. Exposed for testing SPI Master only. ]===== */
 extern void (*SpiMasterOpenSpi)(void);
@@ -64,7 +78,10 @@ void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes);
     MacroClearBit(Spi_port, Spi_Miso); \
     MacroDisableSpi(); \
     /* ---10 ticks is determined empirically to be the minimum delay--- */ \
+    /* Delay3CpuCyclesPerTick(10); \ */ \
+    /* ---But that only works *when the programmer is connected*--- */ \
     Delay3CpuCyclesPerTick(10); \
+    /* MacroSetBit(Spi_port, Spi_Miso); \ */ \
     MacroEnableSpi(); \
 } while (0)
 #define MacroSpiSlaveSendBytes(byte_array, nbytes) do { \

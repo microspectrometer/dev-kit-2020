@@ -86,6 +86,7 @@ void SendAdcFrame(void);        // just a frame of ADC readings, no LIS yet
 void SendLisFrame(void);        // send a Lis frame
 // helpers for command parsing
 void IndicateUnknownCommand(void) { DebugLedsTurnRed(debug_led4); }
+
 void DoNothing(void){}
 
 /* =====[ Test groups ]===== */
@@ -111,7 +112,7 @@ void DemoMacroFastestRstResponseToClk(void)
     }
 }
 /* uint16_t Lis_nticks_exposure = 3;  // fake exposure time set by host */
-uint16_t Lis_nticks_exposure = 5000;  // fake exposure time set by host
+uint16_t Lis_nticks_exposure = 500;  // fake exposure time set by host
 uint16_t Lis_nticks_counter = 0;   // track the exposure time
 uint16_t Lis_npixels_counter = 0;  // track the number of pixels during readout
 uint8_t *pframe = dummy_frame;     // access memory during readout
@@ -356,28 +357,66 @@ void RespondToRequestsForData(void)
         /* SpiClearFlagTransferIsDone();  // TODO: add unit tests for this */
         SendDataMasterAskedFor();
     }
-    DebugLedsTurnAllGreen(); // go green if idle
+    /* DebugLedsTurnAllGreen(); // go green if idle */
+    /* MacroDebugLedsAllGreen(); */
 }
+void slowestSetExposureTime(void)
+{
+    // Read two bytes over SPI
+    uint8_t byte_msb = SpiSlaveRead(); uint8_t byte_lsb = SpiSlaveRead();
+    // Write the value to Lis_nticks_exposure
+    Lis_nticks_exposure = byte_msb << 8;
+    Lis_nticks_exposure |= byte_lsb;
+    MacroToggleBit(DebugLeds_port, debug_led3);
+    /* MacroDebugLedsTurnRed(debug_led3); */
+}
+void slowSetExposureTime(void)
+{
+    // Read two bytes over SPI
+    /* uint8_t byte_msb = SpiSlaveRead(); uint8_t byte_lsb = SpiSlaveRead(); */
+    while ( !MacroSpiTransferIsDone() );
+    uint8_t byte_msb = *Spi_spdr;
+    while ( !MacroSpiTransferIsDone() );
+    uint8_t byte_lsb = *Spi_spdr;
+    // Write the value to Lis_nticks_exposure
+    Lis_nticks_exposure = byte_msb << 8;
+    Lis_nticks_exposure |= byte_lsb;
+    MacroToggleBit(DebugLeds_port, debug_led3);
+}
+#define SetExposureTime() do { \
+    while ( !MacroSpiTransferIsDone() ); \
+    uint8_t byte_msb = *Spi_spdr; \
+    while ( !MacroSpiTransferIsDone() ); \
+    uint8_t byte_lsb = *Spi_spdr; \
+    Lis_nticks_exposure = byte_msb << 8; \
+    Lis_nticks_exposure |= byte_lsb; \
+    MacroToggleBit(DebugLeds_port, debug_led3); \
+    uint8_t echo_back[2]; echo_back[0] = byte_msb; echo_back[1] = byte_lsb; \
+    MacroSpiSlaveSendBytes(echo_back, 2); \
+} while (0)
 void SendDataMasterAskedFor(void)
 {
-    DebugLedsTurnRed(debug_led1);  // for manual testing
-    uint8_t cmd = SpiSlaveRead();
+    MacroToggleBit(DebugLeds_port, debug_led1);
+    /* uint8_t cmd = SpiSlaveRead(); */
+    while ( !MacroSpiTransferIsDone() );
+    uint8_t cmd = *Spi_spdr;
     // parse and act
     // each action gets data, loads it into SPDR, and signals master when ready
     if      (cmd == cmd_send_lis_frame) SendLisFrame();
+    else if (cmd == cmd_set_exposure_time) SetExposureTime();
     // test commands
-    else if (cmd == cmd_send_adc_frame) SendAdcFrame();
-    else if (cmd == cmd_send_dummy_byte) SendDummyByte();
-    else if (cmd == cmd_send_four_dummy_bytes) SendFourDummyBytes();
-    else if (cmd == cmd_send_dummy_frame) SendDummyFrame();
-    else if (cmd == cmd_send_adc_reading) SendAdcReading();
-    else if (cmd == cmd_send_fake_adc_reading) SendFakeAdcReading();
+    /* else if (cmd == cmd_send_adc_frame) SendAdcFrame(); */
+    /* else if (cmd == cmd_send_dummy_byte) SendDummyByte(); */
+    /* else if (cmd == cmd_send_four_dummy_bytes) SendFourDummyBytes(); */
+    /* else if (cmd == cmd_send_dummy_frame) SendDummyFrame(); */
+    /* else if (cmd == cmd_send_adc_reading) SendAdcReading(); */
+    /* else if (cmd == cmd_send_fake_adc_reading) SendFakeAdcReading(); */
     // catch all
     else if (cmd == slave_ignore) DoNothing();  // PASS 2018-08-03
     // `slave_ignore` is available through spi lib
     // for master to send when slave does read
     else IndicateUnknownCommand();              // PASS 2018-08-03
-    DebugLedsTurnRed(debug_led3);  // for manual testing
+    /* DebugLedsTurnRed(debug_led3);  // for manual testing */
 }
 void SetupDebugLeds(void)
 {
@@ -455,10 +494,16 @@ void SendAdcFrame(void)
 }
 void SendLisFrame(void)
 {
-    DebugLedsTurnRed(debug_led2);   // for manual testing
-    DebugLedsTurnRed(debug_led4);   // for manual testing
+    /* DebugLedsTurnRed(debug_led2);   // for manual testing */
+    /* DebugLedsTurnRed(debug_led4);   // for manual testing */
+
+    /* Indicate frame exposure and readout */
+    MacroDebugLedsTurnRed(debug_led1);
     LisFrameReadout();  // store pixel readout in SRAM
+    MacroDebugLedsTurnGreen(debug_led1);
     // Send measurement data to master.
+    /* Indicate measurement transmitting */
+    MacroDebugLedsTurnRed(debug_led2);
     uint8_t *plisframe = dummy_frame;
     /* SpiSlaveSendBytes(plisframe, sizeof_dummy_frame); */
     // oscilloscope measurement with function call overhead:
@@ -475,8 +520,14 @@ void SendLisFrame(void)
         // I can only probe SpiClk and SpiSs successfully.
         // I cannot see any signal on SpiMosi.
         // Attempting to probe SpiMiso causes the system to stop
+        // The other SPI pins do not have this problem.
+        // I can probe Spi_Ss and see the Spi-active windows.
+        // I can probe Spi_Sck and see the bursts of clock pulses.
+        // I can probe Spi_Mosi and see that it is always high.
+        // But Spi_Miso cannot be probed without blocking everything.
         // communicating and go into an unknown state.
     MacroSpiSlaveSendBytes(plisframe, sizeof_dummy_frame);
+    MacroDebugLedsTurnGreen(debug_led2);
     // oscilloscope measurement without function call overhead:
         // SpiSs is low for 7.5us.
         // UsbWrite takes 62us.

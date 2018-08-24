@@ -13,6 +13,7 @@ WriteBits ToggleBit;
 
 /* =====[ Bit-Operation Macros ]===== */
 // Use these when speed is critical, e.g., responding to a clock edge.
+#define MacroToggleBit(ADDRESS,BIT)       (*ADDRESS ^= (uint8_t)(1<<BIT))
 #define MacroSetBit(ADDRESS,BIT)          (*ADDRESS |= (uint8_t)(1<<BIT))
 #define MacroClearBit(ADDRESS,BIT)        (*ADDRESS &= (uint8_t)~(1<<BIT))
 #define MacroBitIsSet(ADDRESS,BIT)        (*ADDRESS & (uint8_t)(1<<BIT))

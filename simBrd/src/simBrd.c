@@ -660,22 +660,6 @@ void DoCmdSendFourDummyBytes(void)
     UsbWrite(fake_data, nbytes);
     DebugLedTurnRed();
 }
-void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
-{
-    while(1) // loop forever responding to the USB host
-    {
-        if (UsbHasDataToRead())
-        {
-            DebugLedToggleColor();
-            uint8_t read_buffer[1];
-            UsbRead(read_buffer);
-            uint8_t cmd = read_buffer[0];
-            if      (cmd == cmd_send_lis_frame) SpiMasterPassLisFrame();
-            // test commands
-            else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
-        }
-    }
-}
 #define DebugPinInit() do { \
     /* =====[ Make SCL an output for debug on the oscilloscope ]===== */ \
     MacroSetBit(&DDRC,  PC5); \
@@ -684,7 +668,62 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
 } while (0)
 #define DebugPinLow()  MacroClearBit(&PORTC, PC5)
 #define DebugPinHigh() MacroSetBit(&PORTC, PC5)
-#define MacroDebugLedRed() MacroSetBit(DebugLed_port, debug_led)
+#define MacroDebugLedRed()          MacroSetBit(DebugLed_port, debug_led)
+#define MacroDebugLedGreen()        MacroClearBit(DebugLed_port, debug_led)
+#define MacroDebugLedToggleColor()  MacroToggleBit(DebugLed_port, debug_led)
+void slowSetExposureTime(uint8_t *pnticks)
+{
+    // Debug: echo the bytes back.
+    UsbWrite(pnticks, 2);
+    // Pass the exposure time along to the SPI slave.
+    SpiMasterWrite(cmd_set_exposure_time);
+    SpiMasterWrite(*(pnticks++));
+    SpiMasterWrite(*pnticks);
+}
+// 20 ticks gives the slave 7.5us of Spi_Ss high.
+// This is enough time for the slave to prepare to receive the next byte.
+// A smaller delay might be possible, but use 20 ticks for safety.
+/* #define SpiWriteDelayTicks 20 */
+// Use 50 ticks to be extra safe. Why be safe when you can be extra safe.
+// OK, well it turns out the large number of ticks is to deal with function
+// calls. If I eliminate function calls, do I need any delay?
+void SetExposureTime(uint8_t *pnticks)
+{
+    /* // Debug: echo the bytes back. */
+    /* UsbWrite(pnticks, 2); */
+    // Pass the exposure time along to the SPI slave.
+    // Delay after each write to let the slave catch-up before the next byte.
+    MacroSpiMasterWriteAndDelay(cmd_set_exposure_time);
+    MacroSpiMasterWriteAndDelay(*(pnticks++));
+    MacroSpiMasterWrite(*(pnticks--));
+    // Slave echoes back the new exposure time value.
+    MacroSpiMasterWaitForResponse();
+    MacroSpiMasterWrite(slave_ignore);      // transfer msb
+    *(pnticks++) = *Spi_spdr;               // store msb
+    MacroSpiMasterWaitForResponse();
+    MacroSpiMasterWrite(slave_ignore);      // transfer lsb
+    *(pnticks--) = *Spi_spdr;               // store lsb
+    // Debug: echo the bytes back.
+    UsbWrite(pnticks, 2);
+}
+void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
+{
+    while(1) // loop forever responding to the USB host
+    {
+        if (UsbHasDataToRead())
+        {
+            MacroDebugLedToggleColor();
+            uint8_t read_buffer[3];
+            UsbRead(read_buffer);
+            uint8_t cmd = read_buffer[0];
+            uint8_t *pnticks = &read_buffer[1]; // two bytes of nticks_exposure
+            if      (cmd == cmd_send_lis_frame) SpiMasterPassLisFrame();
+            else if (cmd == cmd_set_exposure_time) SetExposureTime(pnticks);
+            // test commands
+            else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
+        }
+    }
+}
 #define UsbWriteDelayTicks 1
 #define MacroUsbWriteByte(pbyte) do { \
     /* =====[ FtSendCommand(FtCmd_Write); \ ]===== */ \
@@ -794,46 +833,32 @@ uint16_t SpiMasterPassAdcFrame(void)
 }
 uint16_t SpiMasterPassLisFrame(void)
 {
-    // Like SpiMasterPassAdcFrame but it sends a Lis frame, not just ADC readings.
-    // Host should print raw bytes, not print unicode characters.
-    // Pass each byte out as soon as you get it.
+    // Send the frame of Lis pixel data.
+    // The slave just finished the readout.
+    // Fetch each byte from the slave and send it to the USB host.
     // Return the number of bytes passed from spi-slave to USB host.
-    // TODO: speed this up with macro versions
-    /* SpiMasterWrite(cmd_send_lis_frame); */
     DebugPinLow();
     MacroSpiMasterWrite(cmd_send_lis_frame);
+    DebugPinHigh();
     uint16_t byte_counter = 0;
     uint8_t byte_buffer;
-    SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    DebugPinHigh();
-    /* MacroSpiMasterWaitForResponse(); // Slave signals when the response is ready. */
+    MacroSpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    DebugPinLow();
     while (++byte_counter < sizeof_dummy_frame)
     {
-        /* byte_buffer = SpiMasterRead(); // read first byte */
-        DebugPinLow();
-        MacroSpiMasterWrite(slave_ignore);          // transfer first byte
-        byte_buffer = *Spi_spdr;   // read first byte
-        // must look for slave response right away or you'll miss it
-        // 31us from spi closed until slave ready signal is received
-        /* SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready */
-        // 27us from spi closed until slave ready signal is received
-        // The rest of that delay comes from the slave
-        MacroSpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
+        /* =====[ byte_buffer = SpiMasterRead(); // read this byte ]===== */
+        MacroSpiMasterWrite(slave_ignore);  // fetch this byte
+        byte_buffer = *Spi_spdr;            // store this byte for sending
+        MacroSpiMasterWaitForResponse();    // slave signals the next byte is ready
         DebugPinHigh();
-        // Now fix the 62us of lag due to the UsbWrite.
-        // I got this down to 3.2us, but after a few seconds of live data, it
-        // hangs. I probably need to add some delays.
-        // I put a 1-tick delay after everything and got this down to 20us.
-        // I removed all delays except the very first one after I activate the
-        // interface. That was all it needed! Total UsbWrite time is now 4.5us.
-        /* UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next */
-        MacroUsbWriteByte(&byte_buffer); // send the first byte out before reading the next
+        /* =====[ MacroUsbWriteByte time is 4.5us. ]===== */
+        MacroUsbWriteByte(&byte_buffer); // send this byte before fetching next
     }
-    /* byte_buffer = SpiMasterRead(); // read last byte */
-    MacroSpiMasterWrite(slave_ignore);          // transfer last byte
-    byte_buffer = *Spi_spdr;   // read last byte
-    /* UsbWrite(&byte_buffer, 1); // send last byte out */
-    MacroUsbWriteByte(&byte_buffer); // send last byte out
+    /* =====[ byte_buffer = SpiMasterRead(); // read last byte ]===== */
+    MacroSpiMasterWrite(slave_ignore);      // fetch last byte
+    byte_buffer = *Spi_spdr;                // store this byte for sending
+    /* =====[ MacroUsbWriteByte time is 4.5us. ]===== */
+    MacroUsbWriteByte(&byte_buffer);        // send last byte
     return byte_counter;
 }
 

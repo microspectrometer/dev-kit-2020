@@ -2257,7 +2257,7 @@ Ft1248 function:
 
 ---
 ## FT1248 reference
-### Hardware Specific Ft1248 Settings
+### Hardware Specific Ft1248 Settings in ftprog
 - Run `FT_Prog`
 - Scan for devices
 - locate the `UMFT221XA`
