@@ -478,17 +478,8 @@ void SendLisFrame(void)
         // communicating and go into an unknown state.
     MacroSpiSlaveSendBytes(plisframe, sizeof_dummy_frame);
     // oscilloscope measurement without function call overhead:
-        // Now there is a 1.5us delay between the Spi master finishing a
-        // transmission and the master catching the Spi slaves response.
-        // this does not work without fixing the simBrd too
-        // the mBrd is responding to fast now for the master to see it
-        // I sped up the part on the master that catches the slave response, but
-        // still no luck. I may have to add a delay. But first I'll speed up the
-        // rest of the master to see if that fixes it.
-        // Now with the rest of the SpiMasterRead in macro form, this *never*
-        // works! What did I break? Try holding the slave signal low for longer.
-        // Go back to the overhead version first.
-        // OK, simBrd is working, now only mBrd breaks it.
+        // SpiSs is low for 7.5us.
+        // UsbWrite takes 62us.
 }
 
 /* ---DebugLeds--- */

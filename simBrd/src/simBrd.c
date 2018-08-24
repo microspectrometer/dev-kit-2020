@@ -684,6 +684,50 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
 } while (0)
 #define DebugPinLow()  MacroClearBit(&PORTC, PC5)
 #define DebugPinHigh() MacroSetBit(&PORTC, PC5)
+#define MacroDebugLedRed() MacroSetBit(DebugLed_port, debug_led)
+#define UsbWriteDelayTicks 1
+#define MacroUsbWriteByte(pbyte) do { \
+    /* =====[ FtSendCommand(FtCmd_Write); \ ]===== */ \
+    /* FtActivateInterface(); \ */ \
+    MacroClearBit(Ft1248_port, Ft1248_Ss); \
+    Delay3CpuCyclesPerTick(UsbWriteDelayTicks); \
+    /* FtPushData(); \ */ \
+    MacroSetBit(Ft1248_port, Ft1248_Sck); \
+    /* FtLetMasterDriveBus(); \ */ \
+    *FtMiosio_ddr = 0xFF; \
+    /* FtOutputByte(FtCmd); \ */ \
+    *FtMiosio_port = FtCmd_Write; \
+    /* FtPullData(); \ */ \
+    MacroClearBit(Ft1248_port, Ft1248_Sck); \
+    /* if (!FtBusTurnaround()) DebugLedTurnRedToShowError(); \ */ \
+    /* FtLetSlaveDriveBus(); */ \
+    *FtMiosio_ddr = 0x00; \
+    /* FtPushData(); \ */ \
+    MacroSetBit(Ft1248_port, Ft1248_Sck); \
+    /* FtPullData(); \ */ \
+    MacroClearBit(Ft1248_port, Ft1248_Sck); \
+    /* return FtIsBusOk(); */ \
+    /* =====[ If bus is not OK, turn LED red and do nothing ]===== */ \
+    if (!MacroBitIsClear(Ft1248_pin, Ft1248_Miso)) MacroDebugLedRed(); \
+    else \
+    { \
+    /* =====[ FtWrite(pbyte); ]===== */ \
+    /* FtLetMasterDriveBus(); \ */ \
+    *FtMiosio_ddr = 0xFF; \
+    /* FtPushData(); \ */ \
+    MacroSetBit(Ft1248_port, Ft1248_Sck); \
+    /* FtWriteData(*write_buffer); */ \
+    *FtMiosio_port = *pbyte; \
+    /* FtPullData(); \ */ \
+    MacroClearBit(Ft1248_port, Ft1248_Sck); \
+    /* if (!FtIsBusOk()) return false; */ \
+    /* =====[ If write failed, turn LED red ]===== */ \
+    if (!MacroBitIsClear(Ft1248_pin, Ft1248_Miso)) MacroDebugLedRed(); \
+    } \
+    /* =====[ No matter what happened, deactivate the interface. ]===== */ \
+    /* FtDeactivateInterface(); \ */ \
+    MacroSetBit(Ft1248_port, Ft1248_Ss); \
+} while (0)
 int main()
 {
     //
@@ -777,12 +821,19 @@ uint16_t SpiMasterPassLisFrame(void)
         MacroSpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
         DebugPinHigh();
         // Now fix the 62us of lag due to the UsbWrite.
-        UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next
+        // I got this down to 3.2us, but after a few seconds of live data, it
+        // hangs. I probably need to add some delays.
+        // I put a 1-tick delay after everything and got this down to 20us.
+        // I removed all delays except the very first one after I activate the
+        // interface. That was all it needed! Total UsbWrite time is now 4.5us.
+        /* UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next */
+        MacroUsbWriteByte(&byte_buffer); // send the first byte out before reading the next
     }
     /* byte_buffer = SpiMasterRead(); // read last byte */
     MacroSpiMasterWrite(slave_ignore);          // transfer last byte
     byte_buffer = *Spi_spdr;   // read last byte
-    UsbWrite(&byte_buffer, 1); // send last byte out
+    /* UsbWrite(&byte_buffer, 1); // send last byte out */
+    MacroUsbWriteByte(&byte_buffer); // send last byte out
     return byte_counter;
 }
 
