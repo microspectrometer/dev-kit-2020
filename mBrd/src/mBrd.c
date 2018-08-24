@@ -156,8 +156,8 @@ void LisFrameReadout(void)
         LisReadOnePixel();
     }
     // PASS: I have the exact number of readings.
-    // The Lis Sync pulse fires on the very last reading.
-    // Should I check for that? Nope.
+    // Observed on scope: the Lis Sync pulse fires on the very last reading.
+    // Should I check for that in software? Nope.
 }
 int main()
 {
@@ -350,7 +350,12 @@ void App_version_of_Slave_RespondToRequestsForData(void)
 void RespondToRequestsForData(void)
 {
     // Poll SPI bus. Process data requests, if any.
-    if ( SpiTransferIsDone() ) SendDataMasterAskedFor();
+    if ( SpiTransferIsDone() )
+    {
+        // Who, doing this throwaway literally throws away the value! What?
+        /* SpiClearFlagTransferIsDone();  // TODO: add unit tests for this */
+        SendDataMasterAskedFor();
+    }
     DebugLedsTurnAllGreen(); // go green if idle
 }
 void SendDataMasterAskedFor(void)
@@ -455,7 +460,35 @@ void SendLisFrame(void)
     LisFrameReadout();  // store pixel readout in SRAM
     // Send measurement data to master.
     uint8_t *plisframe = dummy_frame;
-    SpiSlaveSendBytes(plisframe, sizeof_dummy_frame);
+    /* SpiSlaveSendBytes(plisframe, sizeof_dummy_frame); */
+    // oscilloscope measurement with function call overhead:
+        // Test: Expect fClk = 1.25MHz
+        // PASS: SpiClk has period of 0.8us -> fClk is 1.25MHz
+        // function call overhead has no impact on fClk during a transfer
+        // The problem is the delay between each 8-bit transfer
+        // The time from one transfer starting to the next starting is almost
+        // 94us.
+        // SpiSs is low for about 20us, high for 74us
+        // SpiClk starts up 1.5us after SpiSs goes low.
+        // So the waveform looks like SpiSs is a square wave that dips low
+        // briefly, and SpiClk fires off the 8 bits write after SpiSs is low.
+        // I can only probe SpiClk and SpiSs successfully.
+        // I cannot see any signal on SpiMosi.
+        // Attempting to probe SpiMiso causes the system to stop
+        // communicating and go into an unknown state.
+    MacroSpiSlaveSendBytes(plisframe, sizeof_dummy_frame);
+    // oscilloscope measurement without function call overhead:
+        // Now there is a 1.5us delay between the Spi master finishing a
+        // transmission and the master catching the Spi slaves response.
+        // this does not work without fixing the simBrd too
+        // the mBrd is responding to fast now for the master to see it
+        // I sped up the part on the master that catches the slave response, but
+        // still no luck. I may have to add a delay. But first I'll speed up the
+        // rest of the master to see if that fixes it.
+        // Now with the rest of the SpiMasterRead in macro form, this *never*
+        // works! What did I break? Try holding the slave signal low for longer.
+        // Go back to the overhead version first.
+        // OK, simBrd is working, now only mBrd breaks it.
 }
 
 /* ---DebugLeds--- */

@@ -56,6 +56,14 @@ static bool SpiTransferIsDone_Implementation(void)
 }
 bool (*SpiTransferIsDone)(void) = SpiTransferIsDone_Implementation;
 
+void SpiClearFlagTransferIsDone(void)
+{
+    // Clear the Spi_Interrupt flag by
+    // reading Spi_InterruptFlag while it is set
+    // then reading SPDR
+    *Spi_spdr;  // this serves as a throwaway access
+}
+
 static void (*SlaveSelectIdleHigh)(void) = SpiMasterCloseSpi_Implementation;
 static void SetSlaveSelectAsOutput(void)
 {
@@ -109,6 +117,10 @@ void SpiMasterWrite(uint8_t byte_to_send)
     SpiMasterOpenSpi();
     *Spi_spdr = byte_to_send;  // load tx buffer and start SPI transmission
     while (!SpiTransferIsDone()) ;
+    // You need to now access SPDR to clear the flag!
+    // I do not think the reads are destructive.
+    // Add code here to clear the flag:
+    SpiClearFlagTransferIsDone();  // TODO: add unit tests for this
     SpiMasterCloseSpi();
 }
 static uint8_t ReadSpiDataRegister_Implementation(void)
@@ -185,6 +197,8 @@ void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes)
         WriteSpiDataRegister(bytes[byte_index]);
         SpiSlaveSignalDataIsReady();
         while ( !SpiTransferIsDone() );
+        // Added 2018-08-23: I missed this before
+        SpiClearFlagTransferIsDone(); // TODO: add unit tests for this
     }
     // When is it safe to load the next byte?
         // Just wait for the transmission to end.

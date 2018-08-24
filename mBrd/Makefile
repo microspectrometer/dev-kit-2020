@@ -40,7 +40,8 @@ build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
 	avr-gcc $^ -o $@ $(CFLAGS)  \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
-	avr-size $@ > build/avr-size_mBrd.log
+	avr-size $@
+#	# avr-size $@ > build/avr-size_mBrd.log
 #	# 	-I../lib/src \
 
 # Convert .elf to .lst for disassembly.

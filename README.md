@@ -1078,6 +1078,77 @@ the array of return values in the test and *not* rely on the default *example*
 value.
 
 # Weird embedded stuff
+## C to assembly
+### `cbi` and `sbi` are only for registers `0x00` to `0x1F`
+- `MacroDisableSpi()` is defined as `MacroClearBit(Spi_spcr, Spi_Enable)`
+    - `0x2c` is the address of register `SPCR`
+    - bit 6 is `Spi_Enable`
+    - `cbi` is the instruction to clear a bit
+- I expected a call to `MacroDisableSpi()` to turn into:
+```asm
+cbi 0x2c, 6
+```
+- But instead it turns into:
+```asm
+in      r24, 0x2c
+andi    r24, 0xBF
+out     0x2c, r24
+```
+- Why is this turned into so many instructions in this instance but not other
+  instances?
+### What happens
+- `MacroClearBit` is defined as:
+```c
+#define MacroClearBit(ADDRESS,BIT)        (*ADDRESS &= (uint8_t)~(1<<BIT))
+```
+- so the definition does a logical `AND` with the negation of the bit mask
+- and the `asm` literally does the `AND` with `1011 1111`
+### Why it happens
+- the compiler is unable to use `cbi` and `sbi` on these registers
+- datasheet page 426 states:
+> The CBI and SBI instructions work with registers 0x00 to 0x1F only.
+- so the compiler does the bit set/clear as defined in the macro
+
+### Complete example
+- look at the disassembly to check this macro is defined correctly:
+```C
+#define MacroSpiSlaveSendBytes(byte_array, nbytes) do { \
+    for (uint16_t byte_index = 0; byte_index < nbytes; byte_index++) \
+    { \
+        MacroWriteSpiDataRegister(byte_array[byte_index]); \
+        MacroSpiSlaveSignalDataIsReady(); \
+        while ( !MacroSpiTransferIsDone() ); \
+    } \
+} while (0)
+```
+- `MacroWriteSpiDataRegister(byte_array[byte_index]);`
+- This turns into a 2-cycle `ld` and a 1-cycle `out`:
+```asm
+76a:	81 91       	ld	r24, Z+ ;
+```
+- `X`,`Y`, and `Z` are 16-bit pointers into *SRAM*
+- `Z+` means load the value pointed to by `Z` and post-increment pointer `Z`
+- `Z` is `byte_index`, so incrementing `Z` is part of the *for loop*
+```asm
+76c:	8e bd       	out	0x2e, r24	;
+```
+- `0x2e` is the address of register `SPDR`
+- `MacroSpiSlaveSignalDataIsReady();`
+    - defined as `MacroClearBit(Spi_port, Spi_Miso);`
+```asm
+76e:	2c 98       	cbi	0x05, 4;
+```
+- `0x05` is `PORTB`, `Spi_Miso` is bit `4`
+- `MacroDisableSpi()`:
+    - defined as: `MacroClearBit(Spi_spcr, Spi_Enable)`
+```asm
+770:	8c b5       	in	r24, 0x2c	; 44
+772:	8f 7b       	andi	r24, 0xBF	; 191
+774:	8c bd       	out	0x2c, r24	; 44
+```
+- `MacroEnableSpi();`
+- keep going...
+
 ## Compiler optimization
 > https://www.avrfreaks.net/comment/2029696#comment-2029696
 > 
@@ -2425,7 +2496,13 @@ PS> &$atmega328p_datasheet
     - `Spi_Ss` goes low to high
         - this releases the `mBrd` MCU from *slave* mode
         - SPI slave considers the frame finished
-
+- I am having timing problems.
+- I can try an extra handshake:
+    - slaves wait to be released
+    - master releases slave
+    - this is slaves queue to signal when data is ready
+    - master waits for this signal
+    - master reopens communication with slave
 ## Setup the SPI hardware
 ### Setup the SPI pins
 - see `hardware-connection-and-schematics.pdf`
@@ -2503,6 +2580,12 @@ ClearBit(Spi_port, Spi_Miso);    // signal the slave is ready
 ClearBit(Spi_spcr, Spi_Enable);  // disable SPI -- now MISO goes low
 SetBit  (Spi_spcr, Spi_Enable);  // enable SPI -- MISO is pulled back up
 ```
+##### Well not really -- timing
+The fix only works with the sluggish function call overhead. With that removed,
+this doesn't work at all.
+To make matters worse, I cannot measure the MISO signal on an oscilloscope. The
+pin is not pulled up, so there is nothing to see. Attempting to measure on an
+oscilloscope interferes with communication.
 
 ##### It makes sense in hindsight
 It kind of makes sense that the SPI module works this way, but I'm still

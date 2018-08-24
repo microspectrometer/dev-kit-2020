@@ -11,6 +11,7 @@
 #include <ReadWriteBits.h>
 #include <stdio.h>  // snprintf()
 #include <string.h> // strlen()
+#include "AvrAsmMacros.h"       // resolve lib dependencies on AVR asm macros
 //
 // Comparing Compiler Optimization levels:
     // -O1
@@ -675,6 +676,14 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
         }
     }
 }
+#define DebugPinInit() do { \
+    /* =====[ Make SCL an output for debug on the oscilloscope ]===== */ \
+    MacroSetBit(&DDRC,  PC5); \
+    /* =====[ Init SCL high ]===== */ \
+    MacroSetBit(&PORTC, PC5); \
+} while (0)
+#define DebugPinLow()  MacroClearBit(&PORTC, PC5)
+#define DebugPinHigh() MacroSetBit(&PORTC, PC5)
 int main()
 {
     //
@@ -695,6 +704,7 @@ int main()
     /* =====[ Setup ]===== */
     SpiMasterInit();
     UsbInit();
+    DebugPinInit();
     SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave();
 }
 uint16_t SpiMasterPassFakeSensorData(void)
@@ -745,18 +755,33 @@ uint16_t SpiMasterPassLisFrame(void)
     // Pass each byte out as soon as you get it.
     // Return the number of bytes passed from spi-slave to USB host.
     // TODO: speed this up with macro versions
-    SpiMasterWrite(cmd_send_lis_frame);
+    /* SpiMasterWrite(cmd_send_lis_frame); */
+    DebugPinLow();
+    MacroSpiMasterWrite(cmd_send_lis_frame);
     uint16_t byte_counter = 0;
     uint8_t byte_buffer;
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
+    DebugPinHigh();
+    /* MacroSpiMasterWaitForResponse(); // Slave signals when the response is ready. */
     while (++byte_counter < sizeof_dummy_frame)
     {
-        byte_buffer = SpiMasterRead(); // read first byte
+        /* byte_buffer = SpiMasterRead(); // read first byte */
+        DebugPinLow();
+        MacroSpiMasterWrite(slave_ignore);          // transfer first byte
+        byte_buffer = *Spi_spdr;   // read first byte
         // must look for slave response right away or you'll miss it
-        SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
+        // 31us from spi closed until slave ready signal is received
+        /* SpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready */
+        // 27us from spi closed until slave ready signal is received
+        // The rest of that delay comes from the slave
+        MacroSpiMasterWaitForResponse(); // Slave signals the 2nd byte is ready
+        DebugPinHigh();
+        // Now fix the 62us of lag due to the UsbWrite.
         UsbWrite(&byte_buffer, 1); // send the first byte out before reading the next
     }
-    byte_buffer = SpiMasterRead(); // read last byte
+    /* byte_buffer = SpiMasterRead(); // read last byte */
+    MacroSpiMasterWrite(slave_ignore);          // transfer last byte
+    byte_buffer = *Spi_spdr;   // read last byte
     UsbWrite(&byte_buffer, 1); // send last byte out
     return byte_counter;
 }

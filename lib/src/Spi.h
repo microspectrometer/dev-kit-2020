@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "ReadWriteBits.h"
 
 /* =====[ AVR asm macros ]===== */
 extern void (*GlobalInterruptEnable)(void);
@@ -14,15 +15,43 @@ extern void (*GlobalInterruptDisable)(void);
 
 /* =====[ SPI Master API ]===== */
 void SpiMasterInit(void);
+#define MacroSpiMasterOpenSpi()  MacroClearBit(Spi_port, Spi_Ss)
+#define MacroSpiMasterCloseSpi() MacroSetBit(Spi_port, Spi_Ss)
+#define MacroSpiTransferIsDone() MacroBitIsSet(Spi_spsr, Spi_InterruptFlag)
+#define MacroClearPendingSpiInterrupt() do { \
+    *Spi_spsr; *Spi_spdr; \
+} while (0)
 void SpiMasterWrite(uint8_t byte_to_send);
+#define MacroSpiMasterWrite(byte) do { \
+    MacroSpiMasterOpenSpi(); \
+    *Spi_spdr = byte; \
+    /* MacroClearPendingSpiInterrupt(); \ */ \
+    while ( !MacroSpiTransferIsDone() ); \
+    /* Do a throw-away access of reg 0x2e (SPDR) to clear the flag */ \
+    *Spi_spdr; \
+    MacroSpiMasterCloseSpi(); \
+} while (0)
 uint8_t SpiMasterRead(void);
+#define MacroReadSpiDataRegister() (*Spi_spdr)
+/* ---Macro version of SpiMasterRead--- */
+// This is not a macro because I do not know how to return a value.
+// Inline `SpiMasterRead` by replacing with the following two lines:
+/* MacroSpiMasterWrite(slave_ignore); */
+/* {client_code_var} = MacroReadSpiDataRegister(); */
 extern bool (*SpiResponseIsReady)(void);
+#define MacroSpiResponseIsReady() MacroBitIsClear(Spi_pin, Spi_Miso)
 void SpiMasterWaitForResponse(void);
+#define MacroSpiMasterWaitForResponse() do { \
+    /* =====[ wait for slave to pull MISO Low ]===== */ \
+    while( !MacroSpiResponseIsReady() ); \
+    /* =====[ wait for slave to pull MISO High ]===== */ \
+    /* while(  MacroSpiResponseIsReady() ); \ */ \
+} while (0)
 /* =====[ Not part of the API. Exposed for testing SPI Master only. ]===== */
 extern void (*SpiMasterOpenSpi)(void);
 extern void (*SpiMasterCloseSpi)(void);
 extern bool (*SpiTransferIsDone)(void);
-
+void SpiClearFlagTransferIsDone(void);  // 2018-08-23 - I missed this before
 /* =====[ SPI Slave API ]===== */
 void SpiSlaveInit(void);
 uint8_t SpiSlaveRead(void);
@@ -30,6 +59,25 @@ extern void (*SpiSlaveSignalDataIsReady)(void);
 extern uint8_t const slave_ignore;      // slave ignores cmd `slave_ignore`
 extern uint8_t const test_unknown_cmd;  // tests slave response to unknown cmd
 void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes);
+#define MacroWriteSpiDataRegister(byte) (*Spi_spdr = byte)
+#define MacroSpiSlaveSignalDataIsReady() do { \
+    MacroClearBit(Spi_port, Spi_Miso); \
+    MacroDisableSpi(); \
+    /* ---10 ticks is determined empirically to be the minimum delay--- */ \
+    Delay3CpuCyclesPerTick(10); \
+    MacroEnableSpi(); \
+} while (0)
+#define MacroSpiSlaveSendBytes(byte_array, nbytes) do { \
+    for (uint16_t byte_index = 0; byte_index < nbytes; byte_index++) \
+    { \
+        MacroWriteSpiDataRegister(byte_array[byte_index]); \
+        MacroSpiSlaveSignalDataIsReady(); \
+        /* SpiSlaveSignalDataIsReady(); \ */ \
+        while ( !MacroSpiTransferIsDone() ); \
+        /* Do a throw-away access of reg 0x2e (SPDR) to clear the flag */ \
+        *Spi_spdr; \
+    } \
+} while (0)
 
 /* =====[ Plumbing for all AVR SPI devices, exposed for testing ]===== */
 extern uint8_t (*ReadSpiDataRegister)(void);
@@ -38,7 +86,9 @@ void SpiEnableInterrupt(void);
 extern void (*ClearPendingSpiInterrupt)(void);
 extern uint8_t (*ReadSpiStatusRegister)(void);
 extern void (*DisableSpi)(void);
+#define MacroDisableSpi() MacroClearBit(Spi_spcr, Spi_Enable)
 extern void (*EnableSpi)(void);
+#define MacroEnableSpi() MacroSetBit(Spi_spcr, Spi_Enable)
 
 /* =====[ Hardware dependencies to be resolved in Spi-Hardware.h ]===== */
 /* ---Pin Direction and I/O Registers--- */
