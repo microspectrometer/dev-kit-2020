@@ -18,14 +18,15 @@ void SpiMasterInit(void);
 #define MacroSpiMasterOpenSpi()  MacroClearBit(Spi_port, Spi_Ss)
 #define MacroSpiMasterCloseSpi() MacroSetBit(Spi_port, Spi_Ss)
 #define MacroSpiTransferIsDone() MacroBitIsSet(Spi_spsr, Spi_InterruptFlag)
-#define MacroClearPendingSpiInterrupt() do { \
-    *Spi_spsr; *Spi_spdr; \
-} while (0)
+// TODO: this macro is not used. Erase it? Or is its original function in need
+// of replacement with the macro?
+/* #define MacroClearPendingSpiInterrupt() do { \ */
+/*     *Spi_spsr; *Spi_spdr; \ */
+/* } while (0) */
 void SpiMasterWrite(uint8_t byte_to_send);
 #define MacroSpiMasterWrite(byte) do { \
     MacroSpiMasterOpenSpi(); \
     *Spi_spdr = byte; \
-    /* MacroClearPendingSpiInterrupt(); \ */ \
     while ( !MacroSpiTransferIsDone() ); \
     /* Do a throw-away access of reg 0x2e (SPDR) to clear the flag */ \
     *Spi_spdr; \

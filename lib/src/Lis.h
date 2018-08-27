@@ -50,4 +50,5 @@ extern uint8_t const Lis_Clk;       // port1 and ddr1
 extern uint8_t const Lis_Rst;       // port1 and ddr1
 extern uint8_t const Lis_Sync;      // pin1 and ddr1
 
+/* TODO: rename Lis_port1 Lis_portio and Lis_port2 Lis_portprog */
 #endif // _LIS_H

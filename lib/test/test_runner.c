@@ -244,9 +244,6 @@ void DevelopingLis(bool run_test) {if (run_test) {
     //
     setUp = SetUp_LisClkOff; tearDown = TearDown_LisClkOff;
     RUN_TEST(LisClkOff_idles_Clk_low);
-    //
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LisExpose_exposes_pixels_for_nticks_of_LIS_clock);
 }}
 void DevelopingPwm(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
@@ -264,17 +261,17 @@ void DevelopingPwm(bool run_test) {if (run_test) {
 int main()
 {
     UNITY_BEGIN();
-    DevelopingReadWriteBits   (Nope);
-    DevelopingDebugLed        (Nope);
-    DevelopingDebugLeds       (Nope);
-    DevelopingFt1248_lowlevel (Nope);
-    DevelopingFt1248_highlevel(Nope);
-    DevelopingUsb             (Nope);
-    DevelopingSpiPlumbing     (Nope);
-    DevelopingSpiMaster       (Nope);
-    DevelopingSpiSlave        (Nope);
-    DevelopingUartSpi         (Nope);
-    DevelopingLis             (Nope);
+    DevelopingReadWriteBits   (Yep);
+    DevelopingDebugLed        (Yep);
+    DevelopingDebugLeds       (Yep);
+    DevelopingFt1248_lowlevel (Yep);
+    DevelopingFt1248_highlevel(Yep);
+    DevelopingUsb             (Yep);
+    DevelopingSpiPlumbing     (Yep);
+    DevelopingSpiMaster       (Yep);
+    DevelopingSpiSlave        (Yep);
+    DevelopingUartSpi         (Yep);
+    DevelopingLis             (Yep);
     DevelopingPwm             (Yep);
     return UNITY_END();
 }

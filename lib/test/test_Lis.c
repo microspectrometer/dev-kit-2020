@@ -226,6 +226,8 @@ void LisClkOff_idles_Clk_low(void)
 void LisExpose_exposes_pixels_for_nticks_of_LIS_clock(void)
 {
     // Abandoned. Dev done directly on embedded target.
+    // Removed from test runner.
+    //
     // Function call/return overhead is too slow to use function calls.
     // If I had more time, I'd develop with function calls then insert macro
     // substitutions, but I do not. The major time sink there is all the
@@ -241,7 +243,7 @@ void LisExpose_exposes_pixels_for_nticks_of_LIS_clock(void)
     uint16_t nticks = 10;     // fake global exposure value set by USB host
     /* bool LisClkTick = false;  // fake global tick flag set by PWM interrupt */
     uint16_t actual_nticks = 0;
-    LisExpose(nticks);
+    /* LisExpose(nticks); */
     // LisExpose calls ExposureStart(): pull LisRst high
     // LisExpose counts nticks of LisClk
     // LisExpose calls ExposureStop(): pulls LisRst low

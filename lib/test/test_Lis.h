@@ -20,6 +20,5 @@ void LisClkOn_outputs_the_clock_signal_on_pin_Clk(void);
 //
 void SetUp_LisClkOff(void); void TearDown_LisClkOff(void);
 void LisClkOff_idles_Clk_low(void);
-void LisExpose_exposes_pixels_for_nticks_of_LIS_clock(void);
 
 #endif // _TEST_LIS_H

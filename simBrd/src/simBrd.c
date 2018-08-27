@@ -687,6 +687,11 @@ void slowSetExposureTime(uint8_t *pnticks)
 // Use 50 ticks to be extra safe. Why be safe when you can be extra safe.
 // OK, well it turns out the large number of ticks is to deal with function
 // calls. If I eliminate function calls, do I need any delay?
+/* void SetGain5x(void) */
+/* { */
+/*     MacroSpiMasterWriteAndDelay(cmd_set_gain_5x); */
+/* } */
+
 void SetExposureTime(uint8_t *pnticks)
 {
     /* // Debug: echo the bytes back. */
@@ -714,13 +719,32 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
         {
             MacroDebugLedToggleColor();
             uint8_t read_buffer[3];
-            UsbRead(read_buffer);
+            uint8_t nbytes_in_cmd = UsbRead(read_buffer);
             uint8_t cmd = read_buffer[0];
-            uint8_t *pnticks = &read_buffer[1]; // two bytes of nticks_exposure
-            if      (cmd == cmd_send_lis_frame) SpiMasterPassLisFrame();
-            else if (cmd == cmd_set_exposure_time) SetExposureTime(pnticks);
-            // test commands
-            else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
+            if (1 == nbytes_in_cmd)
+            {
+                if      (cmd == cmd_send_lis_frame) SpiMasterPassLisFrame();
+                else if (cmd == cmd_set_gain_5x)    MacroSpiMasterWriteAndDelay(cmd_set_gain_5x);
+                else if (cmd == cmd_set_gain_4x)    MacroSpiMasterWriteAndDelay(cmd_set_gain_4x);
+                else if (cmd == cmd_set_gain_2pt5x) MacroSpiMasterWriteAndDelay(cmd_set_gain_2pt5x);
+                else if (cmd == cmd_set_gain_1x)    MacroSpiMasterWriteAndDelay(cmd_set_gain_1x);
+                // test commands
+                else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
+            }
+            else if (2 == nbytes_in_cmd)
+            {
+                uint8_t gain_setting = read_buffer[1];
+                if      (gain_setting == cmd_cfg_lis_gain_5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
+                else if (gain_setting == cmd_cfg_lis_gain_4x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
+                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
+                else if (gain_setting == cmd_cfg_lis_gain_1x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
+                if (cmd == cmd_write_cfg_to_lis) MacroSpiMasterWriteAndDelay(cmd_write_cfg_to_lis);
+            }
+            else if (3 == nbytes_in_cmd)
+            {
+                uint8_t *pnticks = &read_buffer[1]; // two bytes of nticks_exposure
+                if      (cmd == cmd_set_exposure_time) SetExposureTime(pnticks);
+            }
         }
     }
 }
