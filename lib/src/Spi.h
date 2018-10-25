@@ -14,7 +14,8 @@ extern void (*GlobalInterruptDisable)(void);
 /* #endif // _AVR_INTERRUPT_H_ */
 
 /* =====[ SPI Master API ]===== */
-void SpiMasterInit(void);
+void SpiMasterInit(void);     // to use the Usb-Spi bridge as intended
+void SpiMasterDisable(void);  // to let another Spi Master take over the SPI bus
 #define MacroSpiMasterOpenSpi()  MacroClearBit(Spi_port, Spi_Ss)
 #define MacroSpiMasterCloseSpi() MacroSetBit(Spi_port, Spi_Ss)
 #define MacroSpiTransferIsDone() MacroBitIsSet(Spi_spsr, Spi_InterruptFlag)

@@ -36,6 +36,28 @@
 
 # Status
 ## Next step
+- [ ] Provide a trigger signal for Tyler at Osram
+    - triggers an LED driver
+    - waiting to hear back about what the LED driver needs
+    - use the SDA and GND pin on the USB-Spi PCB
+- [ ] convert Fluttershy into customer-ready kits:
+    - remove dies to paint minor faces
+    - paint over Nadia's original black paint job
+    - reassemble with gorilla glue
+    - place a machined light-block over the assembly
+    - characterize with the monochromator and wide-angle, wide-bandwidth LEDs
+- [ ] wavelength sweep characterization setup
+- [x] find sources of optical background in Fluttershy
+    - started 2018-09-05, see email update
+    - finished 2018-10-12:
+        - reflection off minor faces of die creates structured stray light
+          around pixel 300
+        - the light input at the input aperture is not completely blocked by the
+          black paint Nadia used and this creates a large smooth stray light
+          hump at the low pixels
+- [x] discover the cause of saturation to inform revising the readout circuit
+    - I was loading the output of the LIS-770i with the poorly chosen capacitor
+      value for the clock filter
 - [x] embedded test of debug LEDs on the `mBrd`
     - the debug LED demonstrates I can program the `mBrd`
 - [x] write a lib to control these four debug LEDs
@@ -62,6 +84,22 @@
         - this is why I need the debug LED on the `mBrd` working first
 - [x] then next embedded test application:
     - control the mBrd debug LED through the simBrd using lib Usb and lib Spi
+
+## Saturation Threshold Lower Than Expected
+### data and notes are here
+> `C:\chromation-dropbox\Dropbox\ChromationBD\customers\Osram\demo-collaboration\spectrometer-tests\2018-09-07-saturation-investigation\readme.md`
+> `/cygdrive/c/chromation-dropbox/Dropbox/ChromationBD/customers/Osram/demo-collaboration/spectrometer-tests/2018-09-07-saturation-investigation/readme.md`
+- NERDTree Bookmark: `fluttershy-saturation-investigation`
+- online repo:
+> `https://rainbots@bitbucket.org/rainbots/fluttershy-saturation-investigation.git`
+
+## Optical background
+### data and notes are here
+> `C:\chromation-dropbox\Dropbox\ChromationBD\customers\Osram\demo-collaboration\spectrometer-tests\2018-09-06-optical-background`
+> `/cygdrive/c/chromation-dropbox/Dropbox/ChromationBD/customers/Osram/demo-collaboration/spectrometer-tests/2018-09-06-optical-background`
+- NERDTree Bookmark: `fluttershy-optical-background`
+- online repo:
+> `https://rainbots@bitbucket.org/rainbots/fluttershy-optical-background.git`
 
 ## Latest improvements
 ### lib USB passed its embedded system tests
@@ -161,6 +199,8 @@
 - talks to the i2c slave LED driver on the RGB LED board
 - RGB LED board connection is available on both the mBrd and simBrd
 - useful for dev and demos
+- this lib was dropped because the LED driver part is obsolete
+    - use these pins for a hardware LED driver trigger signal instead
 
 ### other libs
 
@@ -2261,8 +2301,9 @@ Ft1248 function:
 - Run `FT_Prog`
 - Scan for devices
 - locate the `UMFT221XA`
+- Name it `Chromation Mod UsbSpi Bridge`
 - Select `Hardware Specific -> Ft1248 Settings`
-- 8-bit wide config used on the LIS-770i interface:
+- *8-bit wide config used on the LIS-770i interface:*
     - Clock Polarity High: unchecked
     - Bit Order LSB: *checked*
     - Flow Ctrl not selected: *checked*
@@ -2537,7 +2578,12 @@ pin         | direction
 
 ### SPI Errata
 I discovered a weird-but-obvious-in-hindsight behavior that is not documented
-anywhere.
+anywhere. Below I ramble on about this for a while, but there is a more
+significant takeaway in:
+    - writing the logic for the SPI master to detect when the SPI slave sends
+      the *data is ready* signal
+    - characterizing the setup and hold times for when the SPI slave sends the
+      *data is ready* signal and providing this information in the datasheet
 
 #### Loss of MISO as general purpose IO when SPI is enabled
 ##### Context
@@ -2607,6 +2653,171 @@ enabled, the pin can only drive the MISO line when the slave is select. This
 protects against the slave driving MISO while another slave is driving MISO. The
 SPI protocol handles selecting one slave at a time, and the SPI hardware module
 tri-states the MISO for inactive slaves.
+
+### Detection logic for SPI data-ready signal includes tri-state
+- the SPI slave uses MISO to signal when data is ready
+- this happens in software
+- this happens *outside* the SPI transfer
+- therefore the SPI module is disabled to let the slave do this
+- but disabling the SPI module is not the main problem
+- the main problem is that the slave *does not* disable the SPI module until it
+  wants to signal that it is ready
+- if the transfer ends with a low, `MISO` is *slowly* pulled high, it is not
+  driven high as it is during the transfer
+- if the SPI master starts right away checking for a low on `MISO`, it will
+  think this slowly rising `MISO` voltage *is* a low driven by the slave
+- luckily, the pull-up at least ensures a monotonic rise
+- the SPI master must first look for a high on `MISO`
+- a high and a low are separated by some voltage, so by the time `MISO` is high
+  enough to look high, it is *definitely* not going to look low from noise
+  - there is no need for any debouncing
+  - this is kind of like a Schmitt trigger providing hysteresis:
+    - look for a high
+    - after high, look for a low
+    - by the time the signal is high, it well above the threshold for low
+- the SPI master starts looking for `MISO` low after it sees `MISO` high
+- to make sure the SPI slave is ready, the SPI master again waits for `MISO` to
+  go high before continuing
+- after the SPI slave pulls `MISO` high, it re-enables the SPI hardware module
+
+#### what I implemented in the firmware sent to Osram 2018-08-28
+```c
+#define MacroSpiResponseIsReady() MacroBitIsClear(Spi_pin, Spi_Miso)
+#define MacroSpiMasterWaitForResponse() do { \
+    while(  MacroSpiResponseIsReady() ); \
+    while( !MacroSpiResponseIsReady() ); \
+    while(  MacroSpiResponseIsReady() ); \
+} while (0)
+```
+- the first `while` loop:
+    - loop and do nothing while `MISO` is low
+    - exit the loop when `MISO` is high
+    - this guarantees `MISO` is high before the SPI master looks for `MISO` low
+- the second `while` loop:
+    - loop and do nothing while `MISO` is high
+    - exit the loop when `MISO` is low
+    - this is the SPI slave signaling *data is ready*
+- the third `while` loop:
+    - loop and do nothing while `MISO` is low
+    - exit the loop when `MISO` is high
+    - this is the SPI master catching when the SPI slave is done sending the
+      *data is ready* signal and is now going to re-enable the SPI slave
+      hardware module
+- but the SPI slave does not actively drive `MISO` high again:
+```c
+#define MacroSpiSlaveSignalDataIsReady() do { \
+    MacroClearBit(Spi_port, Spi_Miso); \
+    MacroDisableSpi(); \
+    Delay3CpuCyclesPerTick(10); \
+    MacroEnableSpi(); \
+} while (0)
+```
+- and `MacroEnableSpi()` does not drive `MISO` high:
+```c
+#define MacroEnableSpi() MacroSetBit(Spi_spcr, Spi_Enable)
+```
+- the SPI slave does *not* pull `MISO` high first!
+- it just re-enables SPI and lets `MISO` slowly rise up again
+    - this guarantees the SPI slave has time to get ready
+    - but I'd rather:
+        - the slave ends *data is ready* by driving `MISO` high
+        - then release `MISO` by re-enabling the SPI slave hardware module
+    - in this scenario, the SPI master uses a fixed delay before starting
+      communication
+    - this will cut-down on unnecssary wait time
+    - and it will make the overall system more deterministic by making it less
+      dependent on the pull-up resistor value and the parasitic capacitance on
+      the `MISO` pin
+
+#### philosophizing
+- this is a case where logic is not binary
+- *not low* does not imply *high*
+- the tri-state makes *not low* ambiguous
+    - it could mean *high*
+    - or it could mean *tri-state*
+    - the abstraction of *negation* is not sufficient in this context
+- since it is a SPI pin, *not low* means *tri-state*
+    - the pin has a pull-up resistor
+    - this gives predictable behavior:
+        - if the transfer ends with `MISO` high
+            - then *not ready* is `MISO` high
+        - if the transfer ends with `MISO` low
+            - then *not ready* is an exponential decay from 0V to 3.0V
+        - in both cases, the SPI master first looks for `MISO` high
+        - this ensures the `MISO` pin is in a high state
+        - the SPI slave must then also set a minimum high time on `MISO` for
+          setup, not just a minimum low time
+        - and to make sure the SPI master does not start the transfer before the
+          SPI slave re-enables communication, the SPI slave must also set a
+          maximum time from `MISO` high to when it has renabled its SPI hardware
+          module
+            - this does not have to be a minimum because after `MISO` goes high,
+              the SPI slave does nothing until the SPI master starts
+              communication, so the SPI master has all the time it needs to
+              check `MISO`
+            - it is a maximum because the SPI master has no other way to know
+              the SPI slave is ready
+### TODO: implement bullet-proof logic to detect *data is ready* signal
+- I did not fully implement the bullet-proof logic outlined above
+- I look for `MISO` high
+- then I look for `MISO` low
+- then I delay to give the SPI slave time to re-enable the SPI hardware module
+- so I have no protection against two scenarios:
+    1. the SPI slave pulls `MISO` low before it ever has a chance to rise high
+        - then the SPI master sits in an infinite loop waiting for `MISO` to go
+          high
+        - this never happens, but there is no guarantee I will not extend
+          functionality and continue to avoid this
+        - fix: the SPI slave first holds `MISO` high for a guaranteed minimum
+          before pulling `MISO` low to signal data is ready
+    2. the SPI master starts the transfer before the SPI slave re-enables the
+       `SPI` hardware module
+        - again, this never happens, but there is no guarantee it will never
+          happen in the future as functionality grows
+        - fix: the SPI slave has a maximum guaranteed time from `MISO` high
+          until the SPI hardware module is enabled
+        - if the SPI master waits for this amount of time after detecting `MISO`
+          high, it is guaranteed the SPI slave is ready
+- another protocol rule to implement is that the Chromation Digital Interface
+  maintains control over `MISO` once the SPI master requests data
+    - no other SPI slave may drive `MISO` until the SPI master reads the
+      requested data
+    - this is to avoid contention where another device is trying to signal the
+      SPI master
+    - this contention is easily avoided by the SPI master
+    - the SPI master must not attempt to communicate with other SPI devices once
+      it has requested data from the Chromation Digital Interface
+    - this guarantees it is OK for the Chromation Digital Interface to use
+      `MISO` to signal when data is ready
+    - but the *data is ready* signal is highly deterministic, so if the SPI
+      master *does* attempt to pipeline communication with other SPI slaves,
+      e.g., requesting a frame of data with a long integration time, it is up to
+      the SPI master to time everything so that the Chromation Digital Interface
+      is *the only* SPI slave that drives `MISO` when the Chromation Digital
+      Interface sends the *data is ready* signal
+- [ ] add a 10k resistor on the next design of the Chromation Digital Interface
+    - purpose: want the SPI MISO pull-up to be independent of the value of the
+      internal pull-up resistor in the SPI slave hardware module
+
+### TODO: code for bad actor SPI scenarios
+- I have done nothing to handle the cases where the SPI master is a bad actor:
+    - the SPI master sends a second data request before receiving the data from
+      the previous data request
+    - the SPI master sends commands to change exposure time or to change the LIS
+      programming settings while the SPI slave is still acquiring data to
+      fulfill a previous data request
+- the SPI slave implementation sent to Osram on 2018-08-28 might already handle
+  these cases:
+    - see `Commands affect the state of the spectrometer chip digital interface`
+    - TLDR:
+        - the `SPI slave` ignores communications sent while it still has unread
+          frame data
+        - the `SPI slave` interprets data sent after commands as the values for
+          those commands
+    - [ ] but I still need to write tests to see what happens in these cases
+        - show the effect is:
+            - the slave simply ignores the bad communications
+            - the master gets meaningless garbage back
 
 ## SPI simBrd and mBrd hardware
 - the `SPI` pin connections on the `mBrd` are exactly the same as on the
@@ -2795,6 +3006,8 @@ Tx a byte:
         - in the future, `LisInit()` will not start the clock
         - this will be a separate command to leave power-down mode
         - but for now intialize in power up mode
+- [ ] TODO: implement a power-down mode
+    - [ ] provide a SPI command to enter/exit power-down mode
 - Do I need to use the *ISR* to do things on clock rising/falling edges?
 - No, this can be done without interrupts by polling flags and manually clearing
   flags. In fact it is slightly faster without interrupts because it cuts out
@@ -2873,6 +3086,9 @@ Tx a byte:
 - check hardware connection: `;mkp`
     - Expect device signature is `0x1E950F`
     - Expect fuse settings are `EXTENDED 0xFF, HIGH 0xD9, LOW 0xF7`
+    - [ ] to do: program fuses from Vim
+        - off the shelf, LOW is 0x62
+        - for now just go into AtmelStudio to set the LOW to 0xF7
 - check build recipe: `;mna`
     - Expect build output is `simBrd.elf` if programming the `simBrd` MCU
 - build and check size: `;mka`
@@ -3396,6 +3612,11 @@ stay in sync. Adding a breakpoint places a `b+` next to the line number for both
 the source and assembly windows.
 
 # USB Host Application
+## LisSweep
+- send this command to get a frame of data:
+- `cmd_send_lis_frame`
+- this is defined as 0x01 in `Spi-Commands.h` in the `mBrd/src`
+
 ## 2017 eval kit `Example Python Interface`
 ### Use legacy Python environment
 - the `s.write()` calls in this example code requires my legacy Python

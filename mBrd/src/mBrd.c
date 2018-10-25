@@ -405,9 +405,24 @@ void slowSetExposureTime(void)
     MacroClearBit(Lis_port1, Lis_Rst); \
     MacroClearBit(Lis_port2, Lis_PixSelect); \
 } while (0)
+// LisProgramSummingModeOff is not used
 #define LisProgramSummingModeOff() do { \
     /* =====[ Setup summing mode bit: 0 yields 784 pixels ]===== */ \
     MacroClearBit(Lis_port1, Lis_Rst); \
+    /* =====[ Clock in bit 1 ]===== */ \
+    LisWaitForClkRiseEdge(); \
+    LisWaitForClkFallEdge(); \
+} while (0)
+#define LisSummingModeOff() do { \
+    /* =====[ Setup summing mode bit: 0 yields 784 pixels ]===== */ \
+    MacroClearBit(Lis_port1, Lis_Rst); \
+    /* =====[ Clock in bit 1 ]===== */ \
+    LisWaitForClkRiseEdge(); \
+    LisWaitForClkFallEdge(); \
+} while (0)
+#define LisSummingModeOn() do { \
+    /* =====[ Setup summing mode bit: 1 yields 392 pixels ]===== */ \
+    MacroSetBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 1 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
@@ -488,6 +503,127 @@ void CfgLisGain5x(void)
 uint8_t progbit_i=0;
 uint8_t nprogbits_rowselect = 25;
 uint8_t progbits_rowselect_all[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+/* pixel sub-array selections are sent in the order P25 to P1; 1 is on; 0 is off */
+uint8_t progbits_rowselect_row12[]   ={ 0,0,0,1,1, // rows 1,2 of columns 631-784
+                                        0,0,0,1,1, // rows 1,2 of columns 477-630
+                                        0,0,0,1,1, // rows 1,2 of columns 323-476
+                                        0,0,0,1,1, // rows 1,2 of columns 169-322
+                                        0,0,0,1,1, // rows 1,2 of columns 15-168
+                                        };
+uint8_t progbits_rowselect_row123[]  ={ 0,0,1,1,1, // rows 1,2,3 of columns 631-784
+                                        0,0,1,1,1, // rows 1,2,3 of columns 477-630
+                                        0,0,1,1,1, // rows 1,2,3 of columns 323-476
+                                        0,0,1,1,1, // rows 1,2,3 of columns 169-322
+                                        0,0,1,1,1, // rows 1,2,3 of columns 15-168
+                                        };
+uint8_t progbits_rowselect_row1234[] ={ 0,1,1,1,1, // rows 1,2,3,4 of columns 631-784
+                                        0,1,1,1,1, // rows 1,2,3,4 of columns 477-630
+                                        0,1,1,1,1, // rows 1,2,3,4 of columns 323-476
+                                        0,1,1,1,1, // rows 1,2,3,4 of columns 169-322
+                                        0,1,1,1,1, // rows 1,2,3,4 of columns 15-168
+                                        };
+uint8_t progbits_rowselect_row5[] ={1,0,0,0,0, // row 5 of columns 631-784
+                                    1,0,0,0,0, // row 5 of columns 477-630
+                                    1,0,0,0,0, // row 5 of columns 323-476
+                                    1,0,0,0,0, // row 5 of columns 169-322
+                                    1,0,0,0,0, // row 5 of columns 15-168
+                                    };
+uint8_t progbits_rowselect_row4[] ={0,1,0,0,0, // row 5 of columns 631-784
+                                    0,1,0,0,0, // row 5 of columns 477-630
+                                    0,1,0,0,0, // row 5 of columns 323-476
+                                    0,1,0,0,0, // row 5 of columns 169-322
+                                    0,1,0,0,0, // row 5 of columns 15-168
+                                    };
+uint8_t progbits_rowselect_row3[] ={0,0,1,0,0, // row 5 of columns 631-784
+                                    0,0,1,0,0, // row 5 of columns 477-630
+                                    0,0,1,0,0, // row 5 of columns 323-476
+                                    0,0,1,0,0, // row 5 of columns 169-322
+                                    0,0,1,0,0, // row 5 of columns 15-168
+                                    };
+uint8_t progbits_rowselect_row2[] ={0,0,0,1,0, // row 5 of columns 631-784
+                                    0,0,0,1,0, // row 5 of columns 477-630
+                                    0,0,0,1,0, // row 5 of columns 323-476
+                                    0,0,0,1,0, // row 5 of columns 169-322
+                                    0,0,0,1,0, // row 5 of columns 15-168
+                                    };
+uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
+                                    0,0,0,0,1, // row 5 of columns 477-630
+                                    0,0,0,0,1, // row 5 of columns 323-476
+                                    0,0,0,0,1, // row 5 of columns 169-322
+                                    0,0,0,0,1, // row 5 of columns 15-168
+                                    };
+#define LisSelectRow1Only() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row1[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
+#define LisSelectRow2Only() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row2[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
+#define LisSelectRow3Only() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row3[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
+#define LisSelectRow4Only() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row4[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
+#define LisSelectRow5Only() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row5[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
+#define LisSelectRow12() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row12[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
+#define LisSelectRow123() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row123[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
+#define LisSelectRow1234() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row1234[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
 #define LisSelectAllRows() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
@@ -497,22 +633,49 @@ uint8_t progbits_rowselect_all[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         LisWaitForClkFallEdge(); \
     } \
 } while (0)
+#define lis_summing_off 0
+#define lis_summing_on  1
+uint8_t lis_sum_mode = lis_summing_off;
 #define lis_gain_5x     5
 #define lis_gain_4x     4
 #define lis_gain_2pt5x  2
 #define lis_gain_1x     1
 uint8_t lis_gain = lis_gain_5x;  // default gain is 5x, set when parsing cmd
+#define lis_row12345    0
+#define lis_row1        1
+#define lis_row2        2
+#define lis_row3        3
+#define lis_row4        4
+#define lis_row5        5
+#define lis_row12       6
+#define lis_row123      7
+#define lis_row1234     8
+uint8_t lis_rowselect = lis_row12345;
+
 void WriteCfgToLis(void)
 {
     MacroToggleBit(DebugLeds_port, debug_led3);
     MacroToggleBit(DebugLeds_port, debug_led2);
     LisStartProgramMode();
     LisProgramSummingModeOff();
+    /* =====[ Summing Mode ]===== */
+    if      (lis_sum_mode == lis_summing_on)    { LisSummingModeOn(); }
+    else                                        { LisSummingModeOff(); }
+    /* =====[ Gain ]===== */
     if      (lis_gain == lis_gain_4x)       { LisProgramGain4x(); }
     else if (lis_gain == lis_gain_2pt5x)    { LisProgramGain2Point5x(); }
     else if (lis_gain == lis_gain_1x)       { LisProgramGain1x(); }
     else                                    { LisProgramGain5x(); }
-    LisSelectAllRows();
+    /* =====[ Pixel height selection ]===== */
+    if      (lis_rowselect == lis_row1)     { LisSelectRow1Only(); }
+    else if (lis_rowselect == lis_row2)     { LisSelectRow2Only(); }
+    else if (lis_rowselect == lis_row3)     { LisSelectRow3Only(); }
+    else if (lis_rowselect == lis_row4)     { LisSelectRow4Only(); }
+    else if (lis_rowselect == lis_row5)     { LisSelectRow5Only(); }
+    else if (lis_rowselect == lis_row12)    { LisSelectRow12(); }
+    else if (lis_rowselect == lis_row123)   { LisSelectRow123(); }
+    else if (lis_rowselect == lis_row1234)  { LisSelectRow1234(); }
+    else                                    { LisSelectAllRows(); }
     LisStopProgramMode();
 }
 /* Function pointers cannot change at runtime */
@@ -678,15 +841,31 @@ void SendDataMasterAskedFor(void)
     // each action gets data, loads it into SPDR, and signals master when ready
     if      (cmd == cmd_send_lis_frame) SendLisFrame();
     else if (cmd == cmd_set_exposure_time) SetExposureTime();
-    else if (cmd == cmd_set_gain_5x)    SetGain5x();
-    else if (cmd == cmd_set_gain_4x)    SetGain4x();
-    else if (cmd == cmd_set_gain_2pt5x) SetGain2Point5x();
-    else if (cmd == cmd_set_gain_1x)    SetGain1x();
+    /* Old gain commands that write config with gain and all pixels */
+    /* else if (cmd == cmd_set_gain_5x)    SetGain5x(); */
+    /* else if (cmd == cmd_set_gain_4x)    SetGain4x(); */
+    /* else if (cmd == cmd_set_gain_2pt5x) SetGain2Point5x(); */
+    /* else if (cmd == cmd_set_gain_1x)    SetGain1x(); */
     /* else if (cmd == cmd_cfg_lis_gain_5x) LisProgramGain = CfgLisGain5x; */
+    /* Summing mode on/off commands that just write the mBrd sum mode variable */
+    else if (cmd == cmd_cfg_summing_mode_on)    lis_sum_mode = lis_summing_on;
+    else if (cmd == cmd_cfg_summing_mode_off)   lis_sum_mode = lis_summing_off;
+    /* New gain commands that just write the mBrd gain variable */
     else if (cmd == cmd_cfg_lis_gain_5x)    lis_gain = lis_gain_5x;
     else if (cmd == cmd_cfg_lis_gain_4x)    lis_gain = lis_gain_4x;
     else if (cmd == cmd_cfg_lis_gain_2pt5x) lis_gain = lis_gain_2pt5x;
     else if (cmd == cmd_cfg_lis_gain_1x)    lis_gain = lis_gain_1x;
+    /* Rowselect commands that just write the mBrd rowselect variable */
+    else if (cmd == cmd_cfg_lis_rowselect_12345) lis_rowselect = lis_row12345;
+    else if (cmd == cmd_cfg_lis_rowselect_1)    lis_rowselect = lis_row1;
+    else if (cmd == cmd_cfg_lis_rowselect_2)    lis_rowselect = lis_row2;
+    else if (cmd == cmd_cfg_lis_rowselect_3)    lis_rowselect = lis_row3;
+    else if (cmd == cmd_cfg_lis_rowselect_4)    lis_rowselect = lis_row4;
+    else if (cmd == cmd_cfg_lis_rowselect_5)    lis_rowselect = lis_row5;
+    else if (cmd == cmd_cfg_lis_rowselect_12)   lis_rowselect = lis_row12;
+    else if (cmd == cmd_cfg_lis_rowselect_123)  lis_rowselect = lis_row123;
+    else if (cmd == cmd_cfg_lis_rowselect_1234) lis_rowselect = lis_row1234;
+    /* Write the cfg to the Lis using the values of the gain and rowselect variables */
     else if (cmd == cmd_write_cfg_to_lis) WriteCfgToLis();
     // test commands
     /* else if (cmd == cmd_send_adc_frame) SendAdcFrame(); */

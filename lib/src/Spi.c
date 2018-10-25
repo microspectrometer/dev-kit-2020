@@ -112,6 +112,24 @@ void SpiMasterInit(void)
     EnableSpi();
     ClearPendingSpiInterrupt();
 }
+void SpiMasterDisable(void)
+{
+    // Release control of all SPI lines to let another SPI master take control.
+    /* Undo SlaveSelectIdleHigh(); */
+    ClearBit(Spi_ddr, Spi_Ss); ClearBit(Spi_port, Spi_Ss);
+    /* SetMisoAsPullupInput(); // protect against false SpiResponseIsReady signals */
+    /* SetSlaveSelectAsOutput();  // pin-direction is user-defined */
+    /* Undo SetMosiAsOutput();         // pin-direction is user-defined */
+    ClearBit(Spi_ddr, Spi_Mosi);
+    /* Undo SetSckAsOutput();          // pin-direction is user-defined */
+    ClearBit(Spi_ddr, Spi_Sck);
+    /* MakeMeTheMaster(); */
+    /* SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz */
+    /* Undo EnableSpi(); */
+    DisableSpi();
+    /* ClearPendingSpiInterrupt(); */
+}
+
 void SpiMasterWrite(uint8_t byte_to_send)
 {
     SpiMasterOpenSpi();
