@@ -204,7 +204,7 @@ void FillDummyFrameWithAlphabet(void)
 {
     uint8_t * pdummy_frame = full_frame;
     uint16_t byte_index;
-    for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
+    for (byte_index = 0; byte_index < sizeof_full_frame; byte_index++)
     {
         /* fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65' */
         /* full_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
@@ -230,7 +230,7 @@ void SendDummyFrame(void)
     FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
     uint8_t *pdummy_frame = full_frame;
     // Send measurement data to master.
-    SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
+    SpiSlaveSendBytes(pdummy_frame, sizeof_full_frame);
 }
 void IndicateUnknownCommand(void)
 {

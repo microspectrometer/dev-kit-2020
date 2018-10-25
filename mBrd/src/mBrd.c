@@ -906,7 +906,7 @@ void FillDummyFrameWithAlphabet(void)
 {
     uint8_t * pdummy_frame = full_frame;
     uint16_t byte_index;
-    for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
+    for (byte_index = 0; byte_index < sizeof_full_frame; byte_index++)
     {
         *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65'
     }
@@ -927,7 +927,7 @@ void SendDummyFrame(void)
     FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
     uint8_t *pdummy_frame = full_frame;
     // Send measurement data to master.
-    SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
+    SpiSlaveSendBytes(pdummy_frame, sizeof_full_frame);
 }
 void SendAdcReading(void)
 {
@@ -953,7 +953,7 @@ void SendAdcFrame(void)
     FillDummyFrameWithAdcReadings();  // SpiSlaveRunMeasurement();
     uint8_t *pdummy_frame = full_frame;
     // Send measurement data to master.
-    SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
+    SpiSlaveSendBytes(pdummy_frame, sizeof_full_frame);
 }
 void SendLisFrame(void)
 {
@@ -968,7 +968,7 @@ void SendLisFrame(void)
     /* Indicate measurement transmitting */
     MacroDebugLedsTurnRed(debug_led2);
     uint8_t *plisframe = full_frame;
-    /* SpiSlaveSendBytes(plisframe, sizeof_dummy_frame); */
+    /* SpiSlaveSendBytes(plisframe, sizeof_full_frame); */
     // oscilloscope measurement with function call overhead:
         // Test: Expect fClk = 1.25MHz
         // PASS: SpiClk has period of 0.8us -> fClk is 1.25MHz
@@ -989,7 +989,7 @@ void SendLisFrame(void)
         // I can probe Spi_Mosi and see that it is always high.
         // But Spi_Miso cannot be probed without blocking everything.
         // communicating and go into an unknown state.
-    MacroSpiSlaveSendBytes(plisframe, sizeof_dummy_frame);
+    MacroSpiSlaveSendBytes(plisframe, sizeof_full_frame);
     MacroDebugLedsTurnGreen(debug_led2);
     // oscilloscope measurement without function call overhead:
         // SpiSs is low for 7.5us.

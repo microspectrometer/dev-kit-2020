@@ -34,5 +34,5 @@ uint16_t const fake_adc_reading = 0x1234;
 /* #define num_bytes_in_a_full_frame 1385 // last byte will be clobbered */
 /* #define num_bytes_in_a_full_frame 1384 // largest frame I can send! */
 uint8_t full_frame[num_bytes_in_a_full_frame];
-uint16_t const sizeof_dummy_frame = sizeof(full_frame); //num_bytes_in_a_full_frame;
+uint16_t const sizeof_full_frame = sizeof(full_frame); //num_bytes_in_a_full_frame;
 // TODO: rename dummy_frame to full_frame in preparation for sizing a half_frame

@@ -419,7 +419,7 @@ void SpiMasterReadFakeSensorData(void)
     // half-frame at a time
     SpiMasterWrite(cmd_send_dummy_frame);
     uint8_t * pfake_data = full_frame; uint16_t byte_counter = 0;
-    while (byte_counter++ < sizeof_dummy_frame)
+    while (byte_counter++ < sizeof_full_frame)
     {
         SpiMasterWaitForResponse(); // Slave signals when the response is ready.
         *(pfake_data++) = SpiMasterRead();
@@ -458,7 +458,7 @@ void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
         .pcb_name = "simBrd",
         .test_name = "Get_a_frame_from_slave_and_write_frame_to_USB_host"
     };
-    this_test.passed = (nbytes == sizeof_dummy_frame);
+    this_test.passed = (nbytes == sizeof_full_frame);
     PrintTestResultInColor(this_test);
     // If test fails, report number of bytes.
     if (!this_test.passed) PrintSizeOfSpiSlaveResponse(nbytes);
@@ -558,7 +558,7 @@ void SpiMaster_get_a_frame_from_slave_and_write_frame_to_USB_host(void)
         .pcb_name = "simBrd",
         .test_name = "Get_a_frame_from_slave_and_write_frame_to_USB_host"
     };
-    bool assert_true = (nbytes == sizeof_dummy_frame);
+    bool assert_true = (nbytes == sizeof_full_frame);
     TestResult *result = &this_test; RunTest(result, assert_true);
     // Expect 1540 bytes of repeated ABCs, ending in letter `F`
     if (Failed(result)) PrintSizeOfSpiSlaveResponse(nbytes);
@@ -632,7 +632,7 @@ void SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host(void)
         .pcb_name = "simBrd",
         .test_name = "SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host"
     };
-    bool assert_true = (nbytes == sizeof_dummy_frame);
+    bool assert_true = (nbytes == sizeof_full_frame);
     TestResult *result = &this_test; RunTest(result, assert_true);
     // Expect 1540 bytes of repeated ABCs, ending in letter `F`
     if (Failed(result)) PrintSizeOfSpiSlaveResponse(nbytes);
@@ -846,7 +846,7 @@ uint16_t SpiMasterPassFakeSensorData(void)
     uint16_t byte_counter = 0;
     uint8_t byte_buffer;
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    while (++byte_counter < sizeof_dummy_frame)
+    while (++byte_counter < sizeof_full_frame)
     {
         byte_buffer = SpiMasterRead(); // read first byte
         // must look for slave response right away or you'll miss it
@@ -867,7 +867,7 @@ uint16_t SpiMasterPassAdcFrame(void)
     uint16_t byte_counter = 0;
     uint8_t byte_buffer;
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    while (++byte_counter < sizeof_dummy_frame)
+    while (++byte_counter < sizeof_full_frame)
     {
         byte_buffer = SpiMasterRead(); // read first byte
         // must look for slave response right away or you'll miss it
@@ -891,7 +891,7 @@ uint16_t SpiMasterPassLisFrame(void)
     uint8_t byte_buffer;
     MacroSpiMasterWaitForResponse(); // Slave signals when the response is ready.
     DebugPinLow();
-    while (++byte_counter < sizeof_dummy_frame)
+    while (++byte_counter < sizeof_full_frame)
     {
         /* =====[ byte_buffer = SpiMasterRead(); // read this byte ]===== */
         MacroSpiMasterWrite(slave_ignore);  // fetch this byte

@@ -508,7 +508,7 @@ void FillDummyFrameWithAlphabet(void)
 {
     uint8_t * pdummy_frame = full_frame;
     uint16_t byte_index;
-    for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
+    for (byte_index = 0; byte_index < sizeof_full_frame; byte_index++)
     {
         /* fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65' */
         /* dummy_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
@@ -517,9 +517,9 @@ void FillDummyFrameWithAlphabet(void)
 }
 void FillDummyFrameWithHAAAAAAAAA(void)
 {
-    uint8_t *pdummy_frame = dummy_frame;
+    uint8_t *pdummy_frame = full_frame;
     uint16_t byte_index;
-    for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
+    for (byte_index = 0; byte_index < sizeof_full_frame; byte_index++)
     {
         uint8_t this_char;
         if      (byte_index%10 == 0)    this_char = 0;      // NULL is whitespace
@@ -545,8 +545,8 @@ void SpiMasterFakeReadingByFillingArrayYourself(void)
 void SpiMasterReadFakeSensorData(void)
 {
     SpiMasterWrite(cmd_send_dummy_frame);
-    uint8_t * pfake_data = dummy_frame; uint16_t byte_counter = 0;
-    while (byte_counter++ < sizeof_dummy_frame)
+    uint8_t * pfake_data = full_frame; uint16_t byte_counter = 0;
+    while (byte_counter++ < sizeof_full_frame)
     {
         SpiMasterWaitForResponse(); // Slave signals when the response is ready.
         *(pfake_data++) = SpiMasterRead();
@@ -581,7 +581,7 @@ uint16_t SpiMasterPassFakeSensorData(void)
     uint16_t byte_counter = 0;
     uint8_t byte_buffer;
     SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-    while (++byte_counter < sizeof_dummy_frame)
+    while (++byte_counter < sizeof_full_frame)
     {
         byte_buffer = SpiMasterRead(); // read first byte
         // must look for slave response right away or you'll miss it
