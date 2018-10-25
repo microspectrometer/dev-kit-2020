@@ -506,7 +506,7 @@ void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
 /* uint8_t dummy_frame[num_bytes_in_a_full_frame]; */
 void FillDummyFrameWithAlphabet(void)
 {
-    uint8_t * pdummy_frame = dummy_frame;
+    uint8_t * pdummy_frame = full_frame;
     uint16_t byte_index;
     for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
     {

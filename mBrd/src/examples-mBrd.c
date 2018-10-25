@@ -199,28 +199,28 @@ void SendFourDummyBytes(void)
     uint16_t nbytes = sizeof(fake_data);
     SpiSlaveSendBytes(fake_data, nbytes);
 }
-/* uint8_t dummy_frame[num_bytes_in_a_dummy_frame]; */
+/* uint8_t full_frame[num_bytes_in_a_full_frame]; */
 void FillDummyFrameWithAlphabet(void)
 {
-    uint8_t * pdummy_frame = dummy_frame;
+    uint8_t * pdummy_frame = full_frame;
     uint16_t byte_index;
     for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
     {
         /* fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65' */
-        /* dummy_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
+        /* full_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
         *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65'
     }
-    /* uint8_t fake_data[num_bytes_in_a_dummy_frame]; */
+    /* uint8_t fake_data[num_bytes_in_a_full_frame]; */
     // NO: this didn't work.
     // Is there a 1K limit to the stack frame?
     // This needs to go in SRAM.
     // No, that didn't make any difference.
-    /* uint8_t * pdummy_frame = dummy_frame; */
+    /* uint8_t * pdummy_frame = full_frame; */
     /* uint16_t byte_index; */
-    /* for (byte_index = 0; byte_index < num_bytes_in_a_dummy_frame; byte_index++) */
+    /* for (byte_index = 0; byte_index < num_bytes_in_a_full_frame; byte_index++) */
     /* { */
         /* fake_data[byte_index] = byte_index + 65; // 'A' is '\x41' is '65' */
-        /* dummy_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
+        /* full_frame[byte_index] = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
         /* *(pdummy_frame++) = (byte_index%26) + 65; // 'A' is '\x41' is '65' */
     /* } */
 }
@@ -228,7 +228,7 @@ void SendDummyFrame(void)
 {
     DebugLedsTurnRed(debug_led2);  // for manual testing
     FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
-    uint8_t *pdummy_frame = dummy_frame;
+    uint8_t *pdummy_frame = full_frame;
     // Send measurement data to master.
     SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
 }

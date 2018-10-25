@@ -115,7 +115,7 @@ void DemoMacroFastestRstResponseToClk(void)
 uint16_t Lis_nticks_exposure = 500;  // fake exposure time set by host
 uint16_t Lis_nticks_counter = 0;   // track the exposure time
 uint16_t Lis_npixels_counter = 0;  // track the number of pixels during readout
-uint8_t *pframe = dummy_frame;     // access memory during readout
+uint8_t *pframe = full_frame;     // access memory during readout
 #define LisExpose() do { \
     LisWaitForClkFallEdge(); \
     LisExposureStart(); \
@@ -148,7 +148,7 @@ void LisFrameReadout(void)
     // Lis_Clk and Lis_Rst work.
     // AdcConv idles low. AdcClk idles high. Neither does anything.
     LisExpose();  // exposes Lis pixels for Lis_nticks_exposure
-    pframe = dummy_frame;  // point to the start of pixel readout memory
+    pframe = full_frame;  // point to the start of pixel readout memory
     Lis_npixels_counter = 0;  // initialize the pixel counter
     LisWaitForSyncRiseEdge();
     LisWaitForSyncFallEdge();
@@ -282,7 +282,7 @@ void testing_main()  // all of my measurement notes are here
     // Try with the actual read function:
         // Converstion starts 5.2us after clk redge
         // tconv is 10us
-    /* uint8_t *pframe = dummy_frame; */
+    /* uint8_t *pframe = full_frame; */
     /* UartSpiRead(pframe); */
     // OK, I have to do this manually. Not a surprise.
     MacroUartSpiStartAdcConversion(); // AdcConv high 0.7us after clk redge
@@ -904,7 +904,7 @@ void SendFourDummyBytes(void)
 }
 void FillDummyFrameWithAlphabet(void)
 {
-    uint8_t * pdummy_frame = dummy_frame;
+    uint8_t * pdummy_frame = full_frame;
     uint16_t byte_index;
     for (byte_index = 0; byte_index < sizeof_dummy_frame; byte_index++)
     {
@@ -914,7 +914,7 @@ void FillDummyFrameWithAlphabet(void)
 void FillDummyFrameWithAdcReadings(void)
 {
     uint16_t byte_count = 0;
-    uint8_t *pframe = dummy_frame;
+    uint8_t *pframe = full_frame;
     while (byte_count < num_bytes_in_a_full_frame)
     {
         UartSpiRead(pframe);
@@ -925,7 +925,7 @@ void SendDummyFrame(void)
 {
     DebugLedsTurnRed(debug_led2);  // for manual testing
     FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
-    uint8_t *pdummy_frame = dummy_frame;
+    uint8_t *pdummy_frame = full_frame;
     // Send measurement data to master.
     SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
 }
@@ -951,7 +951,7 @@ void SendAdcFrame(void)
 {
     DebugLedsTurnRed(debug_led2);   // for manual testing
     FillDummyFrameWithAdcReadings();  // SpiSlaveRunMeasurement();
-    uint8_t *pdummy_frame = dummy_frame;
+    uint8_t *pdummy_frame = full_frame;
     // Send measurement data to master.
     SpiSlaveSendBytes(pdummy_frame, sizeof_dummy_frame);
 }
@@ -967,7 +967,7 @@ void SendLisFrame(void)
     // Send measurement data to master.
     /* Indicate measurement transmitting */
     MacroDebugLedsTurnRed(debug_led2);
-    uint8_t *plisframe = dummy_frame;
+    uint8_t *plisframe = full_frame;
     /* SpiSlaveSendBytes(plisframe, sizeof_dummy_frame); */
     // oscilloscope measurement with function call overhead:
         // Test: Expect fClk = 1.25MHz

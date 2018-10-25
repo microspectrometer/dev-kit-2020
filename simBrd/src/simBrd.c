@@ -418,7 +418,7 @@ void SpiMasterReadFakeSensorData(void)
     // TODO: split frame in half, use this function to read from the slave a
     // half-frame at a time
     SpiMasterWrite(cmd_send_dummy_frame);
-    uint8_t * pfake_data = dummy_frame; uint16_t byte_counter = 0;
+    uint8_t * pfake_data = full_frame; uint16_t byte_counter = 0;
     while (byte_counter++ < sizeof_dummy_frame)
     {
         SpiMasterWaitForResponse(); // Slave signals when the response is ready.
