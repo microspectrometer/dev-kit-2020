@@ -503,7 +503,7 @@ void Get_several_bytes_from_slave_and_write_bytes_to_USB_host(void)
     // SPI slave responded with  ♦
     // Confirm slave leds 1, 2, and 3 turn red.
 }
-/* uint8_t dummy_frame[num_bytes_in_a_dummy_frame]; */
+/* uint8_t dummy_frame[num_bytes_in_a_full_frame]; */
 void FillDummyFrameWithAlphabet(void)
 {
     uint8_t * pdummy_frame = dummy_frame;
@@ -721,7 +721,7 @@ void Get_a_frame_from_slave_and_write_frame_to_USB_host(void)
         //
         // Previous version with messages:
         /* uint8_t * pfake_data = dummy_frame; uint16_t byte_counter = 0; */
-        /* while (byte_counter++ < num_bytes_in_a_dummy_frame) */
+        /* while (byte_counter++ < num_bytes_in_a_full_frame) */
         /* { */
         /*     PrintSpiSlaveResponseInColor( *(pfake_data++) ); */
         /* } */

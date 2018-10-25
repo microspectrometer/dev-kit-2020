@@ -319,7 +319,7 @@ void testing_main()  // all of my measurement notes are here
     /* adc_reading[1] =  *UartSpi_data;  // LSB */
     //
     //
-    /* while (byte_count < num_bytes_in_a_dummy_frame) */
+    /* while (byte_count < num_bytes_in_a_full_frame) */
     /* { */
     /*     LisWaitForClkRiseEdge(); */
     /*     UartSpiRead(pframe); // perform the ADC and readout the result */
@@ -915,7 +915,7 @@ void FillDummyFrameWithAdcReadings(void)
 {
     uint16_t byte_count = 0;
     uint8_t *pframe = dummy_frame;
-    while (byte_count < num_bytes_in_a_dummy_frame)
+    while (byte_count < num_bytes_in_a_full_frame)
     {
         UartSpiRead(pframe);
         pframe++; pframe++; byte_count++; byte_count++;
