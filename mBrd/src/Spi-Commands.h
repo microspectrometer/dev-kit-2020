@@ -39,5 +39,5 @@ uint8_t full_frame[num_bytes_in_a_full_frame];
 /* uint16_t const sizeof_full_frame = sizeof(full_frame); //num_bytes_in_a_full_frame; */
 uint16_t const sizeof_full_frame = num_bytes_in_a_full_frame;
 uint16_t const sizeof_half_frame = num_bytes_in_a_half_frame;
-// TODO: set up sizeof_half_frame and add conditionals to use sizeof_half_frame
-// or sizeof_full_frame
+// TODO: add conditionals to use sizeof_half_frame or sizeof_full_frame: line
+// 992 in mBrd.c and 894 in simBrd.c

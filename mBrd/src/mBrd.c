@@ -142,6 +142,26 @@ uint8_t *pframe = full_frame;     // access memory during readout
     Lis_nticks_counter = 0; \
     while (Lis_nticks_counter++ < 10) LisWaitForClkFallEdge(); \
 } while (0)
+/* Define Lis config and defaults. */
+#define lis_summing_off 0
+#define lis_summing_on  1
+uint8_t lis_sum_mode = lis_summing_off;
+#define lis_gain_5x     5
+#define lis_gain_4x     4
+#define lis_gain_2pt5x  2
+#define lis_gain_1x     1
+uint8_t lis_gain = lis_gain_5x;  // default gain is 5x, set when parsing cmd
+#define lis_row12345    0
+#define lis_row1        1
+#define lis_row2        2
+#define lis_row3        3
+#define lis_row4        4
+#define lis_row5        5
+#define lis_row12       6
+#define lis_row123      7
+#define lis_row1234     8
+uint8_t lis_rowselect = lis_row12345;
+
 void LisFrameReadout(void)
 {
     // Debug: initial readout works fine. Subsequent readouts do not happen.
@@ -152,7 +172,12 @@ void LisFrameReadout(void)
     Lis_npixels_counter = 0;  // initialize the pixel counter
     LisWaitForSyncRiseEdge();
     LisWaitForSyncFallEdge();
-    while (Lis_npixels_counter++ < npixels)
+    // TODO: add conditional to send sizeof_full_frame or sizeof_half_frame.
+    //
+    uint16_t npixels_in_frame;
+    if (lis_sum_mode == lis_summing_on) npixels_in_frame = npixels_binned;
+    else                                npixels_in_frame = npixels;
+    while (Lis_npixels_counter++ < npixels_in_frame)
     {
         LisReadOnePixel();
     }
@@ -633,24 +658,6 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
         LisWaitForClkFallEdge(); \
     } \
 } while (0)
-#define lis_summing_off 0
-#define lis_summing_on  1
-uint8_t lis_sum_mode = lis_summing_off;
-#define lis_gain_5x     5
-#define lis_gain_4x     4
-#define lis_gain_2pt5x  2
-#define lis_gain_1x     1
-uint8_t lis_gain = lis_gain_5x;  // default gain is 5x, set when parsing cmd
-#define lis_row12345    0
-#define lis_row1        1
-#define lis_row2        2
-#define lis_row3        3
-#define lis_row4        4
-#define lis_row5        5
-#define lis_row12       6
-#define lis_row123      7
-#define lis_row1234     8
-uint8_t lis_rowselect = lis_row12345;
 
 void WriteCfgToLis(void)
 {
@@ -990,8 +997,10 @@ void SendLisFrame(void)
         // But Spi_Miso cannot be probed without blocking everything.
         // communicating and go into an unknown state.
     // TODO: add conditional to send sizeof_full_frame or sizeof_half_frame.
-    uint16_t nbytes = sizeof_full_frame;
-    MacroSpiSlaveSendBytes(plisframe, nbytes);
+    uint16_t nbytes_in_frame;
+    if (lis_sum_mode == lis_summing_on) nbytes_in_frame = sizeof_half_frame;
+    else                                nbytes_in_frame = sizeof_full_frame;
+    MacroSpiSlaveSendBytes(plisframe, nbytes_in_frame);
     MacroDebugLedsTurnGreen(debug_led2);
     // oscilloscope measurement without function call overhead:
         // SpiSs is low for 7.5us.

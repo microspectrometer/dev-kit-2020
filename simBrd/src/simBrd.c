@@ -58,6 +58,7 @@
 uint16_t SpiMasterPassFakeSensorData(void);  // example for getting a frame
 uint16_t SpiMasterPassAdcFrame(void);        // another example getting a frame
 uint16_t SpiMasterPassLisFrame(void);        // get the real Lis frame
+uint16_t nbytes_in_frame;
 
 // Automated Testing API
 typedef struct TestResult TestResult;
@@ -752,6 +753,8 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
                 uint8_t rowselect       = read_buffer[3];
                 if      (summing_mode == cmd_cfg_summing_mode_on)   MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
                 else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_off);
+                if      (summing_mode == cmd_cfg_summing_mode_on)   nbytes_in_frame = sizeof_half_frame;
+                else                                                nbytes_in_frame = sizeof_full_frame;
                 if      (gain_setting == cmd_cfg_lis_gain_5x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
                 else if (gain_setting == cmd_cfg_lis_gain_4x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
                 else if (gain_setting == cmd_cfg_lis_gain_2pt5x)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
@@ -835,6 +838,7 @@ int main()
     SpiMasterInit();
     UsbInit();
     DebugPinInit();
+    nbytes_in_frame = sizeof_full_frame; // initialize global `nbytes_in_frame`
     SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave();
 }
 uint16_t SpiMasterPassFakeSensorData(void)
@@ -892,7 +896,7 @@ uint16_t SpiMasterPassLisFrame(void)
     MacroSpiMasterWaitForResponse(); // Slave signals when the response is ready.
     DebugPinLow();
     // TODO: add conditional to fetch sizeof_full_frame or sizeof_half_frame.
-    while (++byte_counter < sizeof_full_frame)
+    while (++byte_counter < nbytes_in_frame)
     {
         /* =====[ byte_buffer = SpiMasterRead(); // read this byte ]===== */
         MacroSpiMasterWrite(slave_ignore);  // fetch this byte
