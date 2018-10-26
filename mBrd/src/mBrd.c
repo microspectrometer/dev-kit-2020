@@ -989,7 +989,9 @@ void SendLisFrame(void)
         // I can probe Spi_Mosi and see that it is always high.
         // But Spi_Miso cannot be probed without blocking everything.
         // communicating and go into an unknown state.
-    MacroSpiSlaveSendBytes(plisframe, sizeof_full_frame);
+    // TODO: add conditional to send sizeof_full_frame or sizeof_half_frame.
+    uint16_t nbytes = sizeof_full_frame;
+    MacroSpiSlaveSendBytes(plisframe, nbytes);
     MacroDebugLedsTurnGreen(debug_led2);
     // oscilloscope measurement without function call overhead:
         // SpiSs is low for 7.5us.
