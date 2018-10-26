@@ -40,6 +40,7 @@
     - triggers an LED driver
     - waiting to hear back about what the LED driver needs
     - use the SDA and GND pin on the USB-Spi PCB
+- [ ] redesign readout board to have the trigger breakout
 - [ ] convert Fluttershy into customer-ready kits:
     - remove dies to paint minor faces
     - paint over Nadia's original black paint job

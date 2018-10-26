@@ -116,6 +116,13 @@ uint16_t Lis_nticks_exposure = 500;  // fake exposure time set by host
 uint16_t Lis_nticks_counter = 0;   // track the exposure time
 uint16_t Lis_npixels_counter = 0;  // track the number of pixels during readout
 uint8_t *pframe = full_frame;     // access memory during readout
+// TODO: [ ] implement TriggerStart and TriggerStop
+#define TriggerStart() do { \
+    /* Trigger pin goes high */ \
+} while (0)
+#define TriggerStop() do { \
+    /* Trigger pin goes low */ \
+} while (0)
 #define LisExpose() do { \
     LisWaitForClkFallEdge(); \
     LisExposureStart(); \
@@ -167,7 +174,32 @@ void LisFrameReadout(void)
     // Debug: initial readout works fine. Subsequent readouts do not happen.
     // Lis_Clk and Lis_Rst work.
     // AdcConv idles low. AdcClk idles high. Neither does anything.
+    // TODO: implement machine vision type of LED driver trigger
+    /* I quickly looked at two kinds of LED driver solutions: */
+    /* 1. an LDO regulator wired as a constant current source */
+    /* 2. a switchmode LED driver made by Linear Technology with a feature */
+    /* specific to machine vision applications */
+    /* https://www.analog.com/en/analog-dialogue/articles/led-driver-for-high-power-machine-vision-flash.html */
+    /* LT#3805 is an LDO regulator. */
+    /* If the power dissipation is not too bad, the simplest solution is the */
+    /* LDO regulator. LT#3805 sinks up to 500mA. For higher currents, I */
+    /* think multiple LT#3805 can simply be wired in parallel. */
+    /* LT#3932 is a buck LED driver. */
+    /* - the machine vision feature is that the output capacitor recevies a */
+    /*     maintenance charge to keep it at the previous output voltage forever */
+    /* - I'd imagine the demo power source is 5V. */
+    /* - For prototyping the demo, the 5V source is a USB-to-2.1mm-jack cable */
+    /* from a laptop. */
+    /* - The LT3932 bucks the 5V down to whatever is needed for the LED forward */
+    /* voltage plus the other small voltage drops. */
+    /* - The delay time from the trigger signal to the turn-on/turn-off is */
+    /* about 100ns. */
+    /* assume the driver is the LT3932 or LT3805 */
+    /* then trigger goes high just before exposure starts and goes low just after */
+    /* exposure ends */
+    TriggerStart();
     LisExpose();  // exposes Lis pixels for Lis_nticks_exposure
+    TriggerStop();
     pframe = full_frame;  // point to the start of pixel readout memory
     Lis_npixels_counter = 0;  // initialize the pixel counter
     LisWaitForSyncRiseEdge();
