@@ -47,6 +47,22 @@
     - place a machined light-block over the assembly
     - characterize with the monochromator and wide-angle, wide-bandwidth LEDs
 - [ ] wavelength sweep characterization setup
+- [x] revise firmware on simBrd and mBrd to use the correct number of bytes in a
+  frame
+    - summing mode on:  pixels are binned (392)
+    - summing mode off: pixels are not binned (784)
+    - [x] correct number of bytes in a frame is driven by the number of pixels
+    - [x] revise firmware on mBrd to use the correct number of pixels during LIS
+      readout
+    - [x] revise firmware on mBrd to send the correct number of bytes in a frame
+    - [x] revise firmware on simBrd to request the correct number of bytes in a
+      frame
+    - [x] host PC app reads the correct number of bytes, driven by the UI
+      setting for pixel binning
+    - [x] host PC app initializes the LIS config immediately after opening
+      communication
+        - ensures the host PC app and the two MCU all agree on the number of
+          pixels in a frame before any frames are acquired
 - [x] find sources of optical background in Fluttershy
     - started 2018-09-05, see email update
     - finished 2018-10-12:

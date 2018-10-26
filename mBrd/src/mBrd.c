@@ -172,8 +172,6 @@ void LisFrameReadout(void)
     Lis_npixels_counter = 0;  // initialize the pixel counter
     LisWaitForSyncRiseEdge();
     LisWaitForSyncFallEdge();
-    // TODO: add conditional to send sizeof_full_frame or sizeof_half_frame.
-    //
     uint16_t npixels_in_frame;
     if (lis_sum_mode == lis_summing_on) npixels_in_frame = npixels_binned;
     else                                npixels_in_frame = npixels;
@@ -996,7 +994,6 @@ void SendLisFrame(void)
         // I can probe Spi_Mosi and see that it is always high.
         // But Spi_Miso cannot be probed without blocking everything.
         // communicating and go into an unknown state.
-    // TODO: add conditional to send sizeof_full_frame or sizeof_half_frame.
     uint16_t nbytes_in_frame;
     if (lis_sum_mode == lis_summing_on) nbytes_in_frame = sizeof_half_frame;
     else                                nbytes_in_frame = sizeof_full_frame;

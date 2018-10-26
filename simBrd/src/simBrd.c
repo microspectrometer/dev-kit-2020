@@ -895,7 +895,6 @@ uint16_t SpiMasterPassLisFrame(void)
     uint8_t byte_buffer;
     MacroSpiMasterWaitForResponse(); // Slave signals when the response is ready.
     DebugPinLow();
-    // TODO: add conditional to fetch sizeof_full_frame or sizeof_half_frame.
     while (++byte_counter < nbytes_in_frame)
     {
         /* =====[ byte_buffer = SpiMasterRead(); // read this byte ]===== */
