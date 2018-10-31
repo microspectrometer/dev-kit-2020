@@ -38,8 +38,21 @@
 ## Next step
 - [ ] Provide a trigger signal for Tyler at Osram
     - triggers an LED driver
-    - waiting to hear back about what the LED driver needs
     - use the SDA and GND pin on the USB-Spi PCB
+    - I looked up LED driver solutions for machine vision to answer the
+      trigger-requirements question because Tyler has gone silent on this
+    - I had two takeaways:
+        1. the trigger signal is simply an LED on/off signal, i.e., sketch "B"
+           in my email to Tyler
+        2. driver delay time is negligible compared with the spectrometer
+           integration time
+        - conclusion:
+            - the trigger signal goes high just before exposure starts
+            - the trigger signal goes low just after exposure ends
+    - waiting to hear back a confirmation from Tyler that this sounds good
+    - if I do not hear back, I think it is safe to proceed with this design
+- [ ] design an LED driver circuit with the LT3805 LDO or LT3932 buck to
+  demostrate the trigger
 - [ ] redesign readout board to have the trigger breakout
 - [ ] convert Fluttershy into customer-ready kits:
     - remove dies to paint minor faces
