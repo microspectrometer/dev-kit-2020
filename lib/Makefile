@@ -23,7 +23,7 @@ CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
 
 # List the libs under dev:
-names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb Spi UartSpi Lis Pwm
+names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb Spi UartSpi Lis Pwm Auto
 # All libs under dev will be tested!
 # All libs under test need a `test_dev-lib.c` for the tests to build.
 #
@@ -99,12 +99,12 @@ ${obj_libs-mocked}: build/%.o: test/%.c
 #;mc
 .PHONY: clean-all-builds
 clean-all-builds:
-	rm -f build/${file-stem}.exe
 	rm -f build/TestSuite.exe
-	rm -f ${obj_dev-libs}
-	rm -f ${obj_libs-tested}
-	rm -f ${obj_libs-tested-with-mocks}
-	rm -f ${obj_libs-mocked}
+	# rm -f build/${file-stem}.exe
+	# rm -f ${obj_dev-libs}
+	# rm -f ${obj_libs-tested}
+	# rm -f ${obj_libs-tested-with-mocks}
+	# rm -f ${obj_libs-mocked}
 	# rm -f build/ReadWriteBits.o
 	# rm -f build/test_ReadWriteBits.o
 	# rm -f build/Lis.o

@@ -13,6 +13,7 @@
 #include "test_UartSpi.h"   // mBrd USART in MSPIM mode for ADC readout
 #include "test_Lis.h"       // mBrd I/O to LIS-770i
 #include "test_Pwm.h"       // lib `Lis` uses PWM for the clock signal
+#include "test_Auto.h"      // lib `Auto` for running auto-exposure on the mBrd
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -258,20 +259,25 @@ void DevelopingPwm(bool run_test) {if (run_test) {
     RUN_TEST(MacroWaitForPwmFallingEdge_blocks_until_the_falling_edge_of_pwm_out);
     RUN_TEST(MacroWaitForPwmFallingEdge_clears_the_interrupt_flag);
 }}
+void DevelopingAuto(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+}}
 int main()
 {
     UNITY_BEGIN();
-    DevelopingReadWriteBits   (Yep);
-    DevelopingDebugLed        (Yep);
-    DevelopingDebugLeds       (Yep);
-    DevelopingFt1248_lowlevel (Yep);
-    DevelopingFt1248_highlevel(Yep);
-    DevelopingUsb             (Yep);
-    DevelopingSpiPlumbing     (Yep);
-    DevelopingSpiMaster       (Yep);
-    DevelopingSpiSlave        (Yep);
-    DevelopingUartSpi         (Yep);
-    DevelopingLis             (Yep);
-    DevelopingPwm             (Yep);
+    DevelopingReadWriteBits   (Nope);
+    DevelopingDebugLed        (Nope);
+    DevelopingDebugLeds       (Nope);
+    DevelopingFt1248_lowlevel (Nope);
+    DevelopingFt1248_highlevel(Nope);
+    DevelopingUsb             (Nope);
+    DevelopingSpiPlumbing     (Nope);
+    DevelopingSpiMaster       (Nope);
+    DevelopingSpiSlave        (Nope);
+    DevelopingUartSpi         (Nope);
+    DevelopingLis             (Nope);
+    DevelopingPwm             (Nope);
+    DevelopingAuto            (Yep);
+    RUN_TEST(test_NticsExposureToHitTarget);
     return UNITY_END();
 }
