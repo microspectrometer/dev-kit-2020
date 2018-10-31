@@ -63,11 +63,12 @@ void SpiMasterWaitForResponse(void);
     /* =====[ wait for slave to pull MISO High ]===== */ \
     while(  MacroSpiResponseIsReady() ); \
 } while (0)
-// TODO: create a special version of MacroSpiMasterWaitForResponse that is
+// The following TODO is obsolete. Instead of outputting a PWM signal to set the
+// led current, Osram is making the LED driver a SPI slave.
+// ~TODO~: create a special version of MacroSpiMasterWaitForResponse that is
 // MacroDriveLedWhileSpiMasterWaitsForResponse
-    // TODO: put software PWM here for Osram to control the current in their LED
-    // The PWM signal connects to the Dim pin on their OnSemi board.
-    // PWM frequency range of the OnSemi driver:
+    // ~TODO~: put software PWM here for Osram to control the current in their
+    // LED The PWM signal connects to the Dim pin on their OnSemi board.
 
 /* =====[ Not part of the API. Exposed for testing SPI Master only. ]===== */
 extern void (*SpiMasterOpenSpi)(void);
