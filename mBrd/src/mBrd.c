@@ -67,6 +67,14 @@
         // Slave signals to master it has a response ready.
         // Master gets response from slave.
 
+/* =====[ Test auto-exposure ]===== */
+// [x] SendExposureTime_sends_the_exposure_time_over_SPI
+// [ ] cmd_auto_expose_sends_the_final_exposure_time
+// - [x] first test that it is not recognized: debug led 4 turns red
+// - [ ] mBrd recognizes the command
+// - [ ] mBrd sends back a dummy value
+// LabVIEW consumer state SpectAutoExpose sends the command
+
 /* =====[ Spi-slave application-level API ]===== */
 void SetupDebugLeds(void);
 void App_version_of_Slave_RespondToRequestsForData(void);
@@ -82,8 +90,12 @@ void FillDummyFrameWithAdcReadings(void);   // recording a large array to output
 void SendDummyFrame(void);             // output a large array
 void SendAdcReading(void);
 void SendFakeAdcReading(void);
-void SendAdcFrame(void);        // just a frame of ADC readings, no LIS yet
-void SendLisFrame(void);        // send a Lis frame
+void SendAdcFrame(void);         // just a frame of ADC readings, no LIS yet
+void SendLisFrame(void); // send a Lis frame
+// ---BEGIN 2018-10-31 new stuff---
+void AutoExpose(void);   // run auto-expose and send the final exposure time
+// ---END 2018-10-31 new stuff---
+
 // helpers for command parsing
 void IndicateUnknownCommand(void) { DebugLedsTurnRed(debug_led4); }
 
@@ -175,28 +187,40 @@ void LisFrameReadout(void)
     // Lis_Clk and Lis_Rst work.
     // AdcConv idles low. AdcClk idles high. Neither does anything.
     // TODO: implement machine vision type of LED driver trigger
-    /* I quickly looked at two kinds of LED driver solutions: */
-    /* 1. an LDO regulator wired as a constant current source */
-    /* 2. a switchmode LED driver made by Linear Technology with a feature */
-    /* specific to machine vision applications */
-    /* https://www.analog.com/en/analog-dialogue/articles/led-driver-for-high-power-machine-vision-flash.html */
-    /* LT#3805 is an LDO regulator. */
-    /* If the power dissipation is not too bad, the simplest solution is the */
-    /* LDO regulator. LT#3805 sinks up to 500mA. For higher currents, I */
-    /* think multiple LT#3805 can simply be wired in parallel. */
-    /* LT#3932 is a buck LED driver. */
-    /* - the machine vision feature is that the output capacitor recevies a */
-    /*     maintenance charge to keep it at the previous output voltage forever */
-    /* - I'd imagine the demo power source is 5V. */
-    /* - For prototyping the demo, the 5V source is a USB-to-2.1mm-jack cable */
-    /* from a laptop. */
-    /* - The LT3932 bucks the 5V down to whatever is needed for the LED forward */
-    /* voltage plus the other small voltage drops. */
-    /* - The delay time from the trigger signal to the turn-on/turn-off is */
-    /* about 100ns. */
-    /* assume the driver is the LT3932 or LT3805 */
-    /* then trigger goes high just before exposure starts and goes low just after */
-    /* exposure ends */
+    /* Osram LED driver trigger for simBrd from 2018-10-31 meeting */
+        /* - Chromation will still implement the simple trigger on the mBrd */
+        /* - Osram does not need this simple trigger */
+        /* - Osram needs an analog trigger signal from the simBrd */
+        /* - Osram LED driver has a SPI DAC that drives the Dim pin */
+        /* - simBrd is the SPI master so the signal must come from the simBrd */
+        /* - simBrd sends the desired current drive level to the SPI DAC */
+        /* - this also turns the LED on */
+        /* - simBrd sends current drive = 0 to the SPI DAC to turn the LED off */
+    /* Chromation simple LED driver trigger for mBrd: */
+        /* I quickly looked at two kinds of LED driver solutions: */
+        /* I did this before the meeting. */
+        /* It turns out Osram has OnSemi making the driver. */
+        /* 1. an LDO regulator wired as a constant current source */
+        /* 2. a switchmode LED driver made by Linear Technology with a feature */
+        /* specific to machine vision applications */
+        /* https://www.analog.com/en/analog-dialogue/articles/led-driver-for-high-power-machine-vision-flash.html */
+        /* LT#3805 is an LDO regulator. */
+        /* If the power dissipation is not too bad, the simplest solution is the */
+        /* LDO regulator. LT#3805 sinks up to 500mA. For higher currents, I */
+        /* think multiple LT#3805 can simply be wired in parallel. */
+        /* LT#3932 is a buck LED driver. */
+        /* - the machine vision feature is that the output capacitor recevies a */
+        /*     maintenance charge to keep it at the previous output voltage forever */
+        /* - I'd imagine the demo power source is 5V. */
+        /* - For prototyping the demo, the 5V source is a USB-to-2.1mm-jack cable */
+        /* from a laptop. */
+        /* - The LT3932 bucks the 5V down to whatever is needed for the LED forward */
+        /* voltage plus the other small voltage drops. */
+        /* - The delay time from the trigger signal to the turn-on/turn-off is */
+        /* about 100ns. */
+        /* assume the driver is the LT3932 or LT3805 */
+        /* then trigger goes high just before exposure starts and goes low just after */
+        /* exposure ends */
     TriggerStart();
     LisExpose();  // exposes Lis pixels for Lis_nticks_exposure
     TriggerStop();
@@ -438,6 +462,11 @@ void slowSetExposureTime(void)
     Lis_nticks_exposure |= byte_lsb;
     MacroToggleBit(DebugLeds_port, debug_led3);
 }
+// [ ] TODO: refactor `SendExposureTime` to use `MSB` and `LSB` macros
+#define SendExposureTime() do { \
+    uint8_t echo_back[2]; echo_back[0] = Lis_nticks_exposure >> 8; echo_back[1] = Lis_nticks_exposure & 0xFF; \
+    MacroSpiSlaveSendBytes(echo_back, 2); \
+} while (0)
 #define SetExposureTime() do { \
     while ( !MacroSpiTransferIsDone() ); \
     uint8_t byte_msb = *Spi_spdr; \
@@ -446,8 +475,7 @@ void slowSetExposureTime(void)
     Lis_nticks_exposure = byte_msb << 8; \
     Lis_nticks_exposure |= byte_lsb; \
     MacroToggleBit(DebugLeds_port, debug_led3); \
-    uint8_t echo_back[2]; echo_back[0] = byte_msb; echo_back[1] = byte_lsb; \
-    MacroSpiSlaveSendBytes(echo_back, 2); \
+    SendExposureTime(); \
 } while (0)
 #define  LisStartProgramMode() do { \
     /* =====[ Do all setup of Lis_Rst while Lis_Clk is low ]===== */ \
@@ -877,7 +905,11 @@ void SendDataMasterAskedFor(void)
     // parse and act
     // each action gets data, loads it into SPDR, and signals master when ready
     if      (cmd == cmd_send_lis_frame) SendLisFrame();
-    else if (cmd == cmd_set_exposure_time) SetExposureTime();
+    else if (cmd == cmd_set_exposure_time) SetExposureTime(); // w&r integration time
+    // ---BEGIN 2018-10-31 new stuff---
+    else if (cmd == cmd_auto_expose) AutoExpose();  // find&w&r integration time
+    // ---END 2018-10-31 new stuff---
+
     /* Old gain commands that write config with gain and all pixels */
     /* else if (cmd == cmd_set_gain_5x)    SetGain5x(); */
     /* else if (cmd == cmd_set_gain_4x)    SetGain4x(); */
@@ -916,8 +948,30 @@ void SendDataMasterAskedFor(void)
     // `slave_ignore` is available through spi lib
     // for master to send when slave does read
     else IndicateUnknownCommand();              // PASS 2018-08-03
-    /* DebugLedsTurnRed(debug_led3);  // for manual testing */
+    /* DebugLedsTurnRed(debug_led4);  // for manual testing */
 }
+// ---BEGIN 2018-10-31 new stuff---
+/* =====[ AutoExpose ]===== */
+uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCounts)(void))
+{
+    // Implement the algorithm here
+    // dummy placeholder to test SPI communication
+    uint16_t peak_counts = PeakCounts();
+    return target_peak_counts - peak_counts;
+}
+void AutoExpose(void)
+{
+    DebugLedsToggleAll();
+    // call NticsExposureToHitTarget(target_peak_counts, PeakCounts);
+    // PeakCounts is a function pointer to a function to get a frame and return
+    // the peak counts.
+    // PeakCounts must be a function pointer because the peak_counts value
+    // changes while the auto-expsoure algorithm runs. The auto-exposure
+    // algorithm repeatedly grabs frames, looks at the peak value, and compares
+    // with the target, adjusting integration time, and comparing again.
+    SendExposureTime();
+}
+// ---END 2018-10-31 new stuff---
 void SetupDebugLeds(void)
 {
     DebugLedsTurnAllOn();
@@ -974,6 +1028,7 @@ void SendAdcReading(void)
     uint16_t nbytes = sizeof(adc_reading);
     SpiSlaveSendBytes(adc_reading, nbytes);
 }
+
 void SendFakeAdcReading(void)
 {
     DebugLedsTurnRed(debug_led2);  // for manual testing

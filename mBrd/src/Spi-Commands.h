@@ -24,6 +24,7 @@ uint8_t const cmd_cfg_lis_rowselect_5       = 0x11;
 uint8_t const cmd_cfg_lis_rowselect_12      = 0x12;
 uint8_t const cmd_cfg_lis_rowselect_123     = 0x13;
 uint8_t const cmd_cfg_lis_rowselect_1234    = 0x14;
+uint8_t const cmd_auto_expose           = 0x15;
 
 uint16_t const fake_adc_reading = 0x1234;
 // When not printing test results, I can send 1540 bytes no problem

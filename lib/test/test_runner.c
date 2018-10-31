@@ -59,6 +59,7 @@ void DevelopingDebugLeds(bool run_test) { if (run_test) {
     RUN_TEST(DebugLedsTurnAllRed_turns_all_4_leds_red);
     RUN_TEST(DebugLedsTurnAllGreen_turns_all_4_leds_green);
     RUN_TEST(DebugLedsTurnAllOn_turns_on_all_4_leds);
+    RUN_TEST(DebugLedsToggleAll_toggles_all_the_leds);
 }}
 void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
@@ -261,13 +262,15 @@ void DevelopingPwm(bool run_test) {if (run_test) {
 }}
 void DevelopingAuto(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    // Throw-away tests
+    RUN_TEST(test_NticsExposureToHitTarget_returns_target_minus_peak_counts);
 }}
 int main()
 {
     UNITY_BEGIN();
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
-    DevelopingDebugLeds       (Nope);
+    DevelopingDebugLeds       (Yep);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
@@ -277,7 +280,6 @@ int main()
     DevelopingUartSpi         (Nope);
     DevelopingLis             (Nope);
     DevelopingPwm             (Nope);
-    DevelopingAuto            (Yep);
-    RUN_TEST(test_NticsExposureToHitTarget);
+    DevelopingAuto            (Nope); // tabled -- see test
     return UNITY_END();
 }

@@ -9,7 +9,7 @@
     // [x] DebugLedsTurnGreen_led_N_turns_led_N_green
     // [x] DebugLedsTurnAllRed_turns_all_4_leds_red
     // [x] DebugLedsTurnAllGreen_turns_all_4_leds_green
-    //
+    // [ ] DebugLedsToggleAll_toggles_all_the_leds
 uint8_t const debug_led1 = 0;
 uint8_t const debug_led2 = 1;
 uint8_t const debug_led3 = 2;
@@ -82,3 +82,25 @@ void DebugLedsTurnAllGreen_turns_all_4_leds_green(void)
     TEST_ASSERT_BIT_LOW(debug_led3, *DebugLeds_port);
     TEST_ASSERT_BIT_LOW(debug_led4, *DebugLeds_port);
 }
+void DebugLedsToggleAll_toggles_all_the_leds(void)
+{
+    /* =====[ Setup ]===== */
+    *DebugLeds_port = 0xFF;
+    /* =====[ Operate ]===== */
+    DebugLedsToggleAll();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(debug_led1, *DebugLeds_port);
+    TEST_ASSERT_BIT_LOW(debug_led2, *DebugLeds_port);
+    TEST_ASSERT_BIT_LOW(debug_led3, *DebugLeds_port);
+    TEST_ASSERT_BIT_LOW(debug_led4, *DebugLeds_port);
+    /* =====[ Setup ]===== */
+    *DebugLeds_port = 0x00;
+    /* =====[ Operate ]===== */
+    DebugLedsToggleAll();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(debug_led1, *DebugLeds_port);
+    TEST_ASSERT_BIT_HIGH(debug_led2, *DebugLeds_port);
+    TEST_ASSERT_BIT_HIGH(debug_led3, *DebugLeds_port);
+    TEST_ASSERT_BIT_HIGH(debug_led4, *DebugLeds_port);
+}
+

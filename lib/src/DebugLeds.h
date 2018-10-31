@@ -24,5 +24,6 @@ void DebugLedsTurnAllGreen(void);
 } while (0)
 
 void DebugLedsTurnAllOn(void);
+void DebugLedsToggleAll(void);
 
 #endif // _DEBUGLEDS_H

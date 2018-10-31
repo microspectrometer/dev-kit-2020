@@ -8,5 +8,6 @@ void DebugLedsTurnRed_led_N_turns_led_N_red(void);
 void DebugLedsTurnGreen_led_N_turns_led_N_green(void);
 void DebugLedsTurnAllRed_turns_all_4_leds_red(void);
 void DebugLedsTurnAllGreen_turns_all_4_leds_green(void);
+void DebugLedsToggleAll_toggles_all_the_leds(void);
 
 #endif // _TEST_DEBUGLEDS_H

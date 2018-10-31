@@ -39,3 +39,11 @@ void DebugLedsTurnAllGreen(void)
     ClearBit(DebugLeds_port, debug_led3);
     ClearBit(DebugLeds_port, debug_led4);
 }
+
+void DebugLedsToggleAll(void)
+{
+    ToggleBit(DebugLeds_port, debug_led1);
+    ToggleBit(DebugLeds_port, debug_led2);
+    ToggleBit(DebugLeds_port, debug_led3);
+    ToggleBit(DebugLeds_port, debug_led4);
+}

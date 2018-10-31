@@ -693,6 +693,27 @@ void slowSetExposureTime(uint8_t *pnticks)
 /*     MacroSpiMasterWriteAndDelay(cmd_set_gain_5x); */
 /* } */
 
+void AutoExpose(void)
+{
+    // stub the actual call, just test USB communication 
+    /* // send dummy result back to host */
+    /* uint8_t nticks[2]; */
+    /* nticks[0]=0xAB; nticks[1]=0xCD; */
+    /* UsbWrite(nticks, 2); */
+
+    // actual call -- talk to SPI slave
+    MacroSpiMasterWriteAndDelay(cmd_auto_expose);
+    // Slave echoes back the new exposure time value.
+    uint8_t nticks[2];
+    MacroSpiMasterWaitForResponse();
+    MacroSpiMasterWrite(slave_ignore);      // transfer msb
+    nticks[0] = *Spi_spdr;               // store msb
+    MacroSpiMasterWaitForResponse();
+    MacroSpiMasterWrite(slave_ignore);      // transfer lsb
+    nticks[1] = *Spi_spdr;               // store lsb
+    // Debug: echo the bytes back.
+    UsbWrite(nticks, 2);
+}
 void SetExposureTime(uint8_t *pnticks)
 {
     /* // Debug: echo the bytes back. */
@@ -731,6 +752,7 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
                 else if (cmd == cmd_enable_spi_master)  { SpiMasterInit(); MacroDebugLedGreen(); }
                 // test commands
                 else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
+                else if (cmd == cmd_auto_expose) AutoExpose();
             }
             else if (2 == nbytes_in_cmd)
             {
