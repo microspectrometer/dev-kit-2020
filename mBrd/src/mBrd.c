@@ -225,7 +225,7 @@ void LisFrameReadout(void)
     LisExpose();  // exposes Lis pixels for Lis_nticks_exposure
     TriggerStop();
     pframe = full_frame;  // point to the start of pixel readout memory
-    Lis_npixels_counter = 0;  // initialize the pixel counter
+    Lis_npixels_counter = 0;  // initialize the global pixel counter
     LisWaitForSyncRiseEdge();
     LisWaitForSyncFallEdge();
     uint16_t npixels_in_frame;
@@ -954,22 +954,151 @@ void SendDataMasterAskedFor(void)
 /* =====[ AutoExpose ]===== */
 uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCounts)(void))
 {
-    // Implement the algorithm here
-    // dummy placeholder to test SPI communication
-    uint16_t peak_counts = PeakCounts();
-    return target_peak_counts - peak_counts;
+    // TODO: [ ] make max exposure to try an input
+    bool done = false;
+    uint16_t const peak_min = 0;
+    // 2018-10-31 measurements with RGB LED:
+        // measure soft saturation starting at 60000 counts
+        // measured hard clipping around 63000 counts
+    uint16_t const peak_max = 60000;
+    // max exposure to try:
+    /* uint16_t const max_ntics = 65535; */
+    uint16_t const max_ntics = 15000; // max exposure to try
+    while (!done)
+    {
+        DebugLedsToggleAll();
+        /* uint16_t ntics = Lis_nticks_exposure;  // default value: no change */
+        uint16_t peak = PeakCounts(); // peak will be between 0 and 65535
+        DebugLedsToggleAll();
+        if (peak == peak_min)
+        {
+            // [ ] stop trying if ntics is already at max and there is no signal
+            if (Lis_nticks_exposure >= max_ntics)
+            {
+                done = true;
+                Lis_nticks_exposure = max_ntics;
+            }
+            else
+            {
+                // [x] if peak == 0, gain is 10
+                /* if (peak == peak_min) ntics = ntics * 10;  // gain is 10 */
+                Lis_nticks_exposure *= 10;  // gain is 10
+            }
+        }
+        // [x] if peak == 65501, gain is halved
+        /* else if (peak > peak_max) ntics = ntics >> 1; // gain is 0.5 */
+        else if (peak > peak_max) Lis_nticks_exposure >>= 1; // gain is 0.5
+        // [x] if peak == 30000 and int_time is 8ms, gain is 50000/30000 (1.67), so
+        // ntics is 666 and int_time is 13.32ms
+        else // min < peak < max
+        {
+            if (target_peak_counts <= peak) done = true; // leave gain <= 1
+            else // calculate the new integration time to achieve the target
+            {
+                // [ ] stop trying if still below target at max ntics
+                if (Lis_nticks_exposure >= max_ntics)
+                {
+                    done = true;
+                    Lis_nticks_exposure = max_ntics;
+                }
+                else
+                {
+                    // multiplying by ntics first obtains a big number to divide
+                    // dividing a big number is much more accurate than dividing first
+                    // to get a proper gain expression, and then scaling int_time by
+                    // gain
+                    /* uint32_t time_target_product = (uint32_t)ntics * target_peak_counts; */
+                    uint32_t time_target_product = (uint32_t)Lis_nticks_exposure * target_peak_counts;
+                    uint32_t calc_ntics = time_target_product/peak;
+                    // guard against 16-bit overflow by limiting ntics:
+                    /* if (calc_ntics > max_ntics) ntics = max_ntics; */
+                    if (calc_ntics > max_ntics) Lis_nticks_exposure = max_ntics;
+                    /* else ntics = calc_ntics; */
+                    else Lis_nticks_exposure = calc_ntics;
+                }
+            }
+        }
+    }
+    /* return ntics; */
+    return Lis_nticks_exposure;
+
+    /* uint32_t ntics = ntics_1000ms;  // 4 bytes prevents trunc in next calc */
+    /* uint16_t ntics = 50000; */
+    /* // cast as 32-bit prevents 16-bit truncation */
+    /* uint32_t time_target_product = (uint32_t)ntics*target_peak_counts; */
+    /* uint32_t calc_gain = time_target_product; */
+    /* // extra 2 bytes is necessary to store the product before dividing */
+    /* // 32 bits is big enough for the largest possible product: */
+    /* // 2**32 - 2**16 * 50000 = 1018167296 */
+    /* uint16_t gain; uint16_t const max_gain = 65535; */
+    /* if (calc_gain > max_gain) gain = max_gain; */
+    /* else gain = calc_gain; */
+    /* return gain; */
+    // The division is integer truncated:
+    //
+    /* target_peak_counts  |   peak_counts |    ans     |   calc */
+    /*     30000           |   30000       |       1.0  |   1 */
+    /*     30000           |   10000       |       3.0  |   3 */
+    /*     30000           |   20000       |       1.5  |   1 */
+    /*     10000           |   30000       |       0.33 |   0 */
+    /*     20000           |   30000       |       0.67 |   0 */
+    //
+    /*  int_time*target |   peak_counts |    ans       |   calc */
+    /*     2500*20000   |   30000       |    1666.67   |   1666 */
+    /*    50000*65535   |   1           | 3276800000.0 |   */
+}
+/* static uint16_t PeakCounts_Stub(void) */
+/* { */
+/*     // stub getting a frame and calculating peak counts */
+/*     return 30000; */
+/*     return 20000; */
+/*     return 0; */
+/*     return 65501; */
+/* } */
+static uint16_t PeakCounts_Implementation(void)
+{
+    /* =====[ get a frame ]===== */
+    MacroDebugLedsTurnRed(debug_led1);
+    LisFrameReadout();  // store pixel readout in SRAM
+    MacroDebugLedsTurnGreen(debug_led1);
+    /* =====[ get the peak ]===== */
+    // determine the number of pixels in a frame
+    uint16_t npixels_in_frame;
+    if (lis_sum_mode == lis_summing_on) npixels_in_frame = npixels_binned;
+    else                                npixels_in_frame = npixels;
+    // walk the frame to find the peak
+    Lis_npixels_counter = 0;  // initialize the global pixel counter
+    pframe = full_frame;  // point to the start of pixel readout memory
+    uint16_t peak = 0;
+    while (Lis_npixels_counter++ < npixels_in_frame)
+    {
+        uint16_t this = (*(pframe++))<<8;
+        this |= (*(pframe++));
+        if (this > peak) peak = this;
+    }
+    return peak;
 }
 void AutoExpose(void)
 {
+    // TODO: [ ] make target_peak_counts an input
     DebugLedsToggleAll();
-    // call NticsExposureToHitTarget(target_peak_counts, PeakCounts);
-    // PeakCounts is a function pointer to a function to get a frame and return
-    // the peak counts.
+    // hard-coded for now, but will come from host eventually:
+    uint16_t target_peak_counts = 50000;
+    // a func-ptr to how to get a frame and return the peak counts
+    /* uint16_t (*PeakCounts)(void) = PeakCounts_Stub; */
+    uint16_t (*PeakCounts)(void) = PeakCounts_Implementation;
+    uint16_t calc = NticsExposureToHitTarget(target_peak_counts, PeakCounts);
     // PeakCounts must be a function pointer because the peak_counts value
     // changes while the auto-expsoure algorithm runs. The auto-exposure
     // algorithm repeatedly grabs frames, looks at the peak value, and compares
     // with the target, adjusting integration time, and comparing again.
-    SendExposureTime();
+    /* =====[ production code: calc result is the global exposure ]===== */
+    //SendExposureTime();
+    /* =====[ test code: echo back the calc output ]===== */
+    uint8_t echo_back[2];
+    echo_back[0] = calc >> 8;
+    echo_back[1] = calc & 0xFF;
+    MacroSpiSlaveSendBytes(echo_back, 2);
 }
 // ---END 2018-10-31 new stuff---
 void SetupDebugLeds(void)

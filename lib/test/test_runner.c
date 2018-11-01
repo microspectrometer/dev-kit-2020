@@ -264,13 +264,14 @@ void DevelopingAuto(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     // Throw-away tests
     RUN_TEST(test_NticsExposureToHitTarget_returns_target_minus_peak_counts);
+    RUN_TEST(test_peak_algorithm);
 }}
 int main()
 {
     UNITY_BEGIN();
     DevelopingReadWriteBits   (Nope);
     DevelopingDebugLed        (Nope);
-    DevelopingDebugLeds       (Yep);
+    DevelopingDebugLeds       (Nope);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
@@ -280,6 +281,6 @@ int main()
     DevelopingUartSpi         (Nope);
     DevelopingLis             (Nope);
     DevelopingPwm             (Nope);
-    DevelopingAuto            (Nope); // tabled -- see test
+    DevelopingAuto            (Yep); // tabled -- see test
     return UNITY_END();
 }

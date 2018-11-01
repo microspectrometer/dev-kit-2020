@@ -38,3 +38,25 @@ void test_NticsExposureToHitTarget_returns_target_minus_peak_counts(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL(dummy_result, ntics);
 }
+void test_peak_algorithm(void)
+{
+    /* =====[ Setup ]===== */
+    uint16_t npixels_in_frame = 5;
+    // each pixel is 2 bytes
+    uint8_t frame[10] = {0x0A,0x04, 0x0A,0x05, 0x0A,0x06, 0x0A,0x05, 0x0A,0x04};
+    uint16_t expected_peak = 256*10 + 1*6;
+    uint8_t *pframe = frame;     // pointer for accessing memory
+    /* =====[ Operate Algorithm ]===== */
+    uint16_t Lis_npixels_counter = 0;  // initialize the pixel counter
+    uint16_t peak = 0;
+    while (Lis_npixels_counter++ < npixels_in_frame)
+    {
+        uint16_t this = (*(pframe++))<<8;
+        this |= (*(pframe++));
+        if (this > peak) peak = this;
+    }
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL(expected_peak, peak);
+}
+
+
