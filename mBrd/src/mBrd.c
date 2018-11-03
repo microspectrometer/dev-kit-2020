@@ -69,10 +69,14 @@
 
 /* =====[ Test auto-exposure ]===== */
 // [x] SendExposureTime_sends_the_exposure_time_over_SPI
-// [ ] cmd_auto_expose_sends_the_final_exposure_time
+// [x] cmd_auto_expose_sends_the_final_exposure_time
 // - [x] first test that it is not recognized: debug led 4 turns red
-// - [ ] mBrd recognizes the command
-// - [ ] mBrd sends back a dummy value
+// - [x] mBrd recognizes the command
+// - [x] mBrd sends back a dummy value
+// - [x] mBrd does integer division correctly
+// - [x] mBrd calculates the peak correctly (tested in test_Auto.c)
+// - [x] runs the auto-exposure algorithm
+// [ ] cmd_auto_expose is followed by target_peak_counts and max_ntics
 // LabVIEW consumer state SpectAutoExpose sends the command
 
 /* =====[ Spi-slave application-level API ]===== */
@@ -960,10 +964,12 @@ uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCo
     // 2018-10-31 measurements with RGB LED:
         // measure soft saturation starting at 60000 counts
         // measured hard clipping around 63000 counts
-    uint16_t const peak_max = 60000;
+    uint16_t const peak_max = 60000; // for 2.048V Vref
+    /* uint16_t const peak_max = 45000; // for 2.5V Vref - 2018-11-03 */
     // max exposure to try:
     /* uint16_t const max_ntics = 65535; */
-    uint16_t const max_ntics = 15000; // max exposure to try
+    /* uint16_t const max_ntics = 15000; // max exposure to try */
+    uint16_t const max_ntics = 50000; // max exposure to try
     while (!done)
     {
         DebugLedsToggleAll();
@@ -1083,7 +1089,8 @@ void AutoExpose(void)
     // TODO: [ ] make target_peak_counts an input
     DebugLedsToggleAll();
     // hard-coded for now, but will come from host eventually:
-    uint16_t target_peak_counts = 50000;
+    uint16_t target_peak_counts = 50000; // for 2.048V Vref
+    /* uint16_t target_peak_counts = 35000; // for 2.5V Vref - 2018-11-03 */
     // a func-ptr to how to get a frame and return the peak counts
     /* uint16_t (*PeakCounts)(void) = PeakCounts_Stub; */
     uint16_t (*PeakCounts)(void) = PeakCounts_Implementation;

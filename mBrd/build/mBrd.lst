@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 00000420  00000000  00000000  00000f94  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00003b0c  00000000  00000000  000013b4  2**0
+  6 .debug_info   00003b0e  00000000  00000000  000013b4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000012bd  00000000  00000000  00004ec0  2**0
+  7 .debug_abbrev 000012ae  00000000  00000000  00004ec2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000021b8  00000000  00000000  0000617d  2**0
+  8 .debug_line   000021b8  00000000  00000000  00006170  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000009c4  00000000  00000000  00008338  2**2
+  9 .debug_frame  000009c4  00000000  00000000  00008328  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00001990  00000000  00000000  00008cfc  2**0
+ 10 .debug_str    00001990  00000000  00000000  00008cec  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000efe  00000000  00000000  0000a68c  2**0
+ 11 .debug_loc    00000efe  00000000  00000000  0000a67c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000003b8  00000000  00000000  0000b58a  2**0
+ 12 .debug_ranges 000003b8  00000000  00000000  0000b57a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1257,9 +1257,9 @@ void ShowSpiDataOnDebugLeds(void)
  900:	df 93       	push	r29
  902:	ec 01       	movw	r28, r24
  904:	8b 01       	movw	r16, r22
- 906:	98 e9       	ldi	r25, 0x98	; 152
+ 906:	90 e5       	ldi	r25, 0x50	; 80
  908:	e9 2e       	mov	r14, r25
- 90a:	9a e3       	ldi	r25, 0x3A	; 58
+ 90a:	93 ec       	ldi	r25, 0xC3	; 195
  90c:	f9 2e       	mov	r15, r25
  90e:	2a e0       	ldi	r18, 0x0A	; 10
  910:	b2 2e       	mov	r11, r18
@@ -1273,12 +1273,12 @@ void ShowSpiDataOnDebugLeds(void)
  928:	c1 14       	cp	r12, r1
  92a:	d1 04       	cpc	r13, r1
  92c:	a9 f4       	brne	.+42     	; 0x958 <__stack+0x59>
- 92e:	28 39       	cpi	r18, 0x98	; 152
- 930:	fa e3       	ldi	r31, 0x3A	; 58
+ 92e:	20 35       	cpi	r18, 0x50	; 80
+ 930:	f3 ec       	ldi	r31, 0xC3	; 195
  932:	3f 07       	cpc	r19, r31
  934:	38 f0       	brcs	.+14     	; 0x944 <__stack+0x45>
- 936:	88 e9       	ldi	r24, 0x98	; 152
- 938:	9a e3       	ldi	r25, 0x3A	; 58
+ 936:	80 e5       	ldi	r24, 0x50	; 80
+ 938:	93 ec       	ldi	r25, 0xC3	; 195
  93a:	90 93 fc 01 	sts	0x01FC, r25	; 0x8001fc <Lis_nticks_exposure+0x1>
  93e:	80 93 fb 01 	sts	0x01FB, r24	; 0x8001fb <Lis_nticks_exposure>
  942:	31 c0       	rjmp	.+98     	; 0x9a6 <__stack+0xa7>
@@ -1301,8 +1301,8 @@ void ShowSpiDataOnDebugLeds(void)
  968:	cc 16       	cp	r12, r28
  96a:	dd 06       	cpc	r13, r29
  96c:	e0 f4       	brcc	.+56     	; 0x9a6 <__stack+0xa7>
- 96e:	28 39       	cpi	r18, 0x98	; 152
- 970:	ea e3       	ldi	r30, 0x3A	; 58
+ 96e:	20 35       	cpi	r18, 0x50	; 80
+ 970:	e3 ec       	ldi	r30, 0xC3	; 195
  972:	3e 07       	cpc	r19, r30
  974:	00 f7       	brcc	.-64     	; 0x936 <__stack+0x37>
  976:	de 01       	movw	r26, r28
@@ -1311,8 +1311,8 @@ void ShowSpiDataOnDebugLeds(void)
  97e:	40 e0       	ldi	r20, 0x00	; 0
  980:	50 e0       	ldi	r21, 0x00	; 0
  982:	0e 94 74 06 	call	0xce8	; 0xce8 <__udivmodsi4>
- 986:	29 39       	cpi	r18, 0x99	; 153
- 988:	fa e3       	ldi	r31, 0x3A	; 58
+ 986:	21 35       	cpi	r18, 0x51	; 81
+ 988:	f3 ec       	ldi	r31, 0xC3	; 195
  98a:	3f 07       	cpc	r19, r31
  98c:	41 05       	cpc	r20, r1
  98e:	51 05       	cpc	r21, r1
