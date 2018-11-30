@@ -964,7 +964,8 @@ uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCo
     // 2018-10-31 measurements with RGB LED:
         // measure soft saturation starting at 60000 counts
         // measured hard clipping around 63000 counts
-    uint16_t const peak_max = 60000; // for 2.048V Vref
+    /* uint16_t const peak_max = 60000; // for 2.048V Vref */
+    uint16_t const peak_max = 40000; // [ ] 2018-11-28 not tested: does this help the sweep data for the 2.048V Vref?
     /* uint16_t const peak_max = 45000; // for 2.5V Vref - 2018-11-03 */
     // max exposure to try:
     /* uint16_t const max_ntics = 65535; */

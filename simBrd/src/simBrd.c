@@ -701,8 +701,8 @@ void AutoExpose(void)
     /* nticks[0]=0xAB; nticks[1]=0xCD; */
     /* UsbWrite(nticks, 2); */
 
-    // actual call -- talk to SPI slave
-    MacroSpiMasterWriteAndDelay(cmd_auto_expose);
+    // actual call
+    MacroSpiMasterWrite(cmd_auto_expose);
     // Slave echoes back the new exposure time value.
     uint8_t nticks[2];
     MacroSpiMasterWaitForResponse();

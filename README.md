@@ -35,7 +35,21 @@
 ---e-n-d---
 
 # Status
+## Bugs
+- [ ] fix bug found on 2018-11-04:
+    - spectrometer USB communication times out if only one row is selected and
+      the auto-expose command is sent
+    - probably a problem with the firmware, not the host PC application
+    - also times out on integration times around 300ms with all rows selected
+
 ## Next step
+- [ ] fix bugs
+- [ ] failed to add parameters to auto-expose SPI command
+    - this should have been straight-forward
+    - the fact I could not get it to work suggests a problem with the SPI
+      interface itself
+    - I worked on this at the 11th hour in getting the California kits ready, so
+      attack this again with more time and patience
 - [ ] Provide a trigger signal for Tyler at Osram
     - triggers an LED driver
     - use the SDA and GND pin on the USB-Spi PCB
