@@ -726,6 +726,8 @@ void WriteCfgToLis(void)
     MacroToggleBit(DebugLeds_port, debug_led3);
     MacroToggleBit(DebugLeds_port, debug_led2);
     LisStartProgramMode();
+    // TODO: why is LisProgramSummingModeOff called here?
+    // This cannot be right! The first bit is the summing mode.
     LisProgramSummingModeOff();
     /* =====[ Summing Mode ]===== */
     if      (lis_sum_mode == lis_summing_on)    { LisSummingModeOn(); }
