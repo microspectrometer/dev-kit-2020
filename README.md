@@ -2706,6 +2706,8 @@ tri-states the MISO for inactive slaves.
 - but disabling the SPI module is not the main problem
 - the main problem is that the slave *does not* disable the SPI module until it
   wants to signal that it is ready
+- [ ] TODO: so why didn't I just change that do teh SpiDisable() when the SPI
+  slave recieves the `request_frame` command?
 - if the transfer ends with a low, `MISO` is *slowly* pulled high, it is not
   driven high as it is during the transfer
 - if the SPI master starts right away checking for a low on `MISO`, it will
