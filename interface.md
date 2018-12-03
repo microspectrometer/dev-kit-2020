@@ -427,9 +427,9 @@ list of commands:
 Here are the bytes to output on the MIOSIO port to specify 8-bit-wide read and
 write:
 ```c
-                                    // BW:8 (0)────────┐
-                                    //                 │
-                                    // CMD-nibble:  -01▾ 2--3
+                                    // BW:8 (0)---------
+                                    //                 |
+                                    // CMD-nibble:  -01| 2--3
 #define FT1248_CMD_WRITE8   0x86    //              1000 0110
 #define FT1248_CMD_READ8    0xC6    //              1100 0110
                                     // Bit numbers: 7654 3210
