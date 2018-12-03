@@ -1,7 +1,5 @@
 % Chromation Spectrometer: Interface Information for Preliminary Datasheet
-
 % Mike Gazes
-
 % December 3rd, 2018
 
 # List of tasks
@@ -17,13 +15,17 @@
   `request_frame` command
 
 ## table of operating conditions
-- [ ] setup and hold times
-- [ ] supply voltage
-- [ ] clock frequency
+- [x] setup and hold times
+- [x] supply voltage
+- [x] clock frequency
 
 ## general
 - [ ] make up titles for the TODO images
 - [ ] make the actual images called in the TODO images
+- [ ] get pandoc to output my godamn table correctly
+    - nope, there is *no* way to add vertical lines
+    - so what is the point of extension `grid_tables`?
+
 - [x] spell-check with Vim spelling:
     - `setlocal spell spelllang=en_us` enables spelling in this buffer
     - `[s` goes to next mis-spelled word
@@ -32,13 +34,16 @@
 
 --- actual writeup starts here ---
 
+
 # Recommended Operating Conditions
-+-------+-------------------+---------------+---------------+-------+
-| Symbol| Parameter         | Conditions    | MIN  TYP  MAX | UNITS |
-+:=====:|:==================|:==============|:=============:|:=====:+
-| VDD   | Supply Voltage    |               | ---  3.0  --- |   V   |
-| f_CLK | Clock Frequency   |               | 15   50   200 |  kHz  |
-+-------+-------------------+---------------+---------------+-------+
+ Symbol  Parameter           MIN   TYP   MAX     Units
+-------- ----------         ----- ----- -----   -------
+  VDD    Supply Voltage     --      3.0 --      V
+  f~CLK~ Clock Frequency    15      50  200     kHz
+  CLK~S~ Setup time         --      10  --      ns
+  CLK~H~ Hold time          --      10  --      ns
+
+Table: Recommended operating conditions
 
 # Spectrometer Interface
 The following describes how to interface the Chromation spectrometer. Since the
