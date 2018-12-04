@@ -14,10 +14,6 @@
   particularly only doing the SPI disable/enable when responding to the
   `request_frame` command
 
-## table of operating conditions
-- [x] setup and hold times
-- [x] supply voltage
-- [x] clock frequency
 
 ## general
 - [ ] make up titles for the TODO images
@@ -66,6 +62,7 @@ measurement system executes requests from the system host application by writing
 high-level commands recognized by the *SPI slave*.
 
 ## Spectrometer I/O
+![spectrometer interface block diagram](/img/test-png.png)
 - TODO: block diagram of spectrometer with I/O grouped in a schematic
   representation
     - include ADC and MCU, label power supply value and VREF value
