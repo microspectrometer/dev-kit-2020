@@ -34,7 +34,7 @@
 # Recommended Operating Conditions
  Symbol  Parameter           MIN   TYP   MAX     Units
 -------- ----------         ----- ----- -----   -------
-  VDD    Supply Voltage     --      3.0 --      V
+  V~DD~  Supply Voltage     --      3.0 --      V
   f~CLK~ Clock Frequency    15      50  200     kHz
   CLK~S~ Setup time         --      10  --      ns
   CLK~H~ Hold time          --      10  --      ns
