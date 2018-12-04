@@ -62,7 +62,8 @@ measurement system executes requests from the system host application by writing
 high-level commands recognized by the *SPI slave*.
 
 ## Spectrometer I/O
-![spectrometer interface block diagram](/img/test-png.png)
+![spectrometer interface block diagram](img/test-png.png "Spectrometer Interface
+Block Diagram")
 - TODO: block diagram of spectrometer with I/O grouped in a schematic
   representation
     - include ADC and MCU, label power supply value and VREF value
