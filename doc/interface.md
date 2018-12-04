@@ -36,6 +36,14 @@ External hardware is required to drive the spectrometer to achieve its
 higher-level function: *acquire a spectrum*. Chromation refers to this external
 hardware as the **spectrometer digital interface**.
 
+## Spectrometer Interface Block Diagram
+The block diagram below shows the spectrometer signals referred to in the
+following sequences to initialize, configure, and acquire a spectrum. The block
+diagram also shows how the **spectrometer digital interface** converts the
+spectrometer to a *SPI slave* device.
+
+![Spectrometer Interface Block Diagram](img/spectrometer-interface-block-diagram.png)
+
 The purpose of the **spectrometer digital interface** is to hide the operational
 details of the `LIS-770i` and ADC, and instead provide the measurement system
 with a standard interface. Chromation recommends presenting the spectrometer
@@ -43,10 +51,10 @@ interface to upstream devices as a *SPI slave*. A *SPI master* in the upstream
 measurement system executes requests from the system host application by writing
 high-level commands recognized by the *SPI slave*.
 
-## Spectrometer I/O
-![Spectrometer Interface Block Diagram](img/spectrometer-interface-block-diagram.png)
 
 ## Initialize the spectrometer after power-up
+- TODO: initialize-spectrometer-signal-diagram
+
 - drive `PIX_SELECT` *LOW*
     - `PIX_SELECT` idles *LOW*
 - drive `RST` *LOW*
@@ -60,6 +68,8 @@ high-level commands recognized by the *SPI slave*.
 - NOTE: input pin values are *clocked in* on the *rising edges* of `CLK`
 
 ## Configure the spectrometer
+- TODO: configure-spectrometer-signal-diagram
+
 The spectrometer's linear pixel array has configurable parameters:
 
 - analog gain: 1x, 2.5x, 4x, 5x
@@ -106,6 +116,8 @@ consists of shifting in 28 bits. Bits are shifted in on the rising edge of
     - drive `PIX_SELECT` *LOW*
 
 ## Acquire a spectrum
+- TODO: acquire-spectrum-signal-diagram
+
 The linear pixel array has internal switching logic to execute the spectrometer
 **exposure** and **readout** sequence, but like most other linear pixel arrays,
 the `LIS-770i` requires external logic-level signals to drive this internal
