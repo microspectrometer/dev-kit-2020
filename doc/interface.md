@@ -14,7 +14,7 @@
 --------        ----------                               -----       ----- ------- --------
   V~DD~         Supply Voltage                            2.8         3.0   3.3       V
   --            Power Consumption while active            --          5.0   10       mW
-  --            Power Consumption in low-power mode       --          30    --       uW
+  --            Power Consumption in low-power mode       --          30    --       µW
   V~in,HIGH~    Input logic-level *HIGH*                  V~DD~-0.7   --    V~DD~     V
   V~in,LOW~     Input logic-level *LOW*                   --          --    0.7       V
   f~CLK~        Clock Frequency                           15          50    200     kHz
@@ -34,8 +34,8 @@ clock rising edge.
 # Electrical Characteristics
 Parameter                   Condition                           MIN   TYP       MAX     Units
 ----------                  ----------                          ----- -----     -----   -------
-V~OUT~ output impedance     --                                  --    10        --      kOhms
-V~OUT~ settling time        --                                  --    1         --      us
+V~OUT~ output impedance     --                                  --    10        --      kΩ
+V~OUT~ settling time        --                                  --    1         --      µs
 V~OUT~ maximum swing        2.5x gain                           --    V~DD~-0.3 --      V
 V~OUT~ at dark              no light                            0.60  0.84      1.1     V
 Full well                   pixels: 312.5um tall, 15.6um pitch  --    3.0e5     --      electrons
@@ -82,15 +82,15 @@ Table: Recommended ADC configuration for the spectrometer interface
 # Recommended Clock Filter
 
 The rising edge of the `CLK` signal couples into the `VOUT` signal. Filter this
-transient with a simple passive RC filter with f~3dB~ ≥ 1/2f~CLK~ or higher.
-This filter is not essential so it is safe to eliminate on ultra-low
-component-count designs. The table below shows recommended values.
+transient with a simple passive RC filter with f~3dB~ ≥ $\frac{1}{2}$f~CLK~. This filter
+is not essential so it is safe to eliminate on ultra-low component-count
+designs. The table below shows recommended values.
 
- Symbol   Parameter                     Condition      MIN         TYP       MAX    Units
---------  ----------                    ----------    -----       -----     -----  -------
-  f~3dB~  Clock filter cutoff frequency --            1/2f~CLK~     --       --     kHz
-  R~filt~ Clock filter R                f~CLK~=50kHz   --           10       --     kOhms
-  C~filt~ Clock filter C                f~CLK~=50kHz   --          680       --     pF
+ Symbol   Parameter                     Condition      MIN                 TYP       MAX    Units
+--------  ----------                    ----------    -----               -----     -----  -------
+  f~3dB~  Clock filter cutoff frequency --            $\frac{1}{2}$f~CLK~   --       --     kHz
+  R~filt~ Clock filter R                f~CLK~=50kHz   --                   10       --     kΩ
+  C~filt~ Clock filter C                f~CLK~=50kHz   --                  680       --     pF
 
 Table: Recommended spectrometer `VOUT` passive RC clock filter
 
@@ -214,7 +214,7 @@ output.
     - pixel exposure starts when the *HIGH* on `RST` is sampled on the rising
       edge of `CLK`
 - wait the desired integration time by counting falling edges of `CLK`
-    - for a 50kHz `CLK`, falling edges represent 20us ticks
+    - for a 50kHz `CLK`, falling edges represent 20µs ticks
     - for example, waiting 500 ticks is a 10ms integration time
 - drive `RST` *LOW* to stop exposure
     - again, the *LOW* is sampled on the next rising edge of `CLK`
