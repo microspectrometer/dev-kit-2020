@@ -35,6 +35,228 @@
 ---e-n-d---
 
 # Status
+
+## Old `external user notes` I wrote in initial Osram repo
+
+### Context
+I must have wrote this up imagining I was about to freeze the API. It talks
+about a protocol (the SPI slave) that doesn't actually exist. We have a working
+SPI slave, but the API is not ready for external use.
+
+### Spectrometer Chip Digital Interface Protocol
+- the digital interface makes it easy for client hardware to obtain raw spectra
+  from the spectrometer chip
+- the digital interface protocol describes how to:
+    - request a frame of pixel data
+    - detect when the data is ready
+    - read the data out
+#### A raw spectrum is a frame of dark-corrected pixel data
+- each spectrum is a frame of pixel data
+    - there are 784 pixels
+    - starting from pixel 1 and reading to pixel 784, there are:
+        - 13 optically black
+        - 1 dummy between the black and active
+        - 770 optically active
+    - each pixel is a 16-bit value
+- the pixel values are dark-corrected in hardware
+    - the dark-correction is done prior to digital conversion
+    - this is unlike most other spectrometers which require the user to perform
+      a dark-correciton step by collecting a separate frame of dark data to
+      subtract from all subsequent data
+    - the dark reference voltage comes from the optically black pixels, so any
+      changes to the dark voltage are accounted for at the time of pixel readout
+    - this makes dark-correction more convenient since it is done for you and
+      more accurate since it is based on the real-time dark voltage
+- the frame of pixel data is *raw* only in the sense that it is not
+  power-calibrated, i.e., the magnitude of each pixel response is weighted by:
+    - the spectral responsivities of the photodiode array and photonic crystal
+    - and as a second-order consideration, any non-linearities in the amplifier
+      and ADC of the digital interface
+        - at the time of this writing, 2018-09-05, there is saturation, either
+          in the output stage of the linear photodiode array or in the ADC input
+          stage on the digital interface PCB, that causes gain to have a
+          nonlinear effect
+        - the nonlinearity is only dependent on the amplitude of the output
+          signal, e.g., gain through increased integration time, increased
+          amplifier gain, or increased pixel height all manifest this
+          nonlinearity
+        - the digital interface is being revised to eliminate this saturation
+          and restore the expected linearity
+
+#### Context: how pixel data is collected
+##### light inside the spectrometer chip
+- the spectrometer chip is a linear photodiode array of pixels mated with an
+  optical device
+- the optical device consists of a photonic crystal and mirrors to structure the
+  input light before it interacts with the photonic crystal
+- the photonic crystal operation is similar to a diffraction grating in that it
+  separates the input light into a continuous spectrum of wavelengths
+- each pixel subtends some angular spread of the continuous spectrum, thus the
+  continuous spectrum is binned into pixels at the plane where it is incident
+  upon the linear photodiode array
+##### control of the linear photodiode array
+- the linear photodiode array has signal lines for:
+    - controlling exposure time
+    - clocking out the pixel voltages after exposure
+- the pixel voltages are available one-at-a-time on an analog output pin during
+  the high-time of the pixel clock
+- the dark reference voltage is available at all times on an analog output pin
+##### pixel data is collected by the digital interface
+- the digital interface is idle until it receives a request for a frame of pixel
+  data
+- the digital interface collects a frame of pixel data by:
+    - exposing the pixels for the desired exposure time
+    - running the pixel clock to access all of the pixels for digital conversion
+- for each pixel accessed, the digital interface:
+    - takes the difference between the analog pixel and dark voltages
+    - converts this differential voltage to a 16-bit value
+    - stores that 16-bit value in memory
+- after the entire frame is in memory, the digital interface signals it is ready
+  to transmit the data
+- the digital interface ignores any further commands send to it until it has
+  transmitted the entire frame of data
+- the digital interface begins *listening* again to incoming data from the
+  client hardware during the last byte of pixel data transferred out
+##### exposure time ranges from 200us to 13.1s
+- exposure time:
+    - defaults to 10ms
+    - is easily changed by the client hardware (see next section)
+    - can be set to any value between 200us and 13.1s in increments of 200us
+    - 2018-09-05 update:
+        - the version sent to Tyler works in 20us steps
+        - the range of integration times is 20us to 1.31s
+        - this was a mistake, but I did not have time to fix it
+        - there was no reason to make this a priority:
+            - the output runs into saturation issues when output is large
+            - Tyler can also use the gain control to increase signal
+            - in my tests with a 5mm LED, I never needed integration times
+              beyond 200ms
+        - when we ship Tyler the new spectrometers, we will send new PCBs with
+          corrected firmware and a new LabVIEW application that sends the
+          correct integration time value
+#### Communication with the digital interface
+- the spectrometer chip digital interface is a SPI slave
+- see Spi-Commands.h for the list of commands recognized by the SPI slave
+#### SPI overview
+- one SPI master communicates with N SPI slaves
+- SPI is synchronous meaning that the SPI master controls the speed of
+  communication by controlling the SPI clock
+- there are two uni-directional data lines: MOSI (master out slave in) and MISO
+  (master in slave out)
+- there are four possible modes for the relationship between clock and data
+    - all SPI slaves expect to operate in one of these four modes
+#### Special considerations for the spectrometer chip digital interface
+##### SPI mode
+- the SPI slave uses the mode known as `CPOL=0 CPHA=0` meaning that:
+    - the SPI clock is idle low
+    - the data lines are sampled on the rising edge of the clock
+    - the next bit to transfer is set up on the data lines on the falling edge
+      of the clock
+- data is sent MSB (most significant bit) first
+##### transfer bytes one at a time and synchronize between transfers
+- SPI transfers are done on a byte-by-byte basis:
+    - the SPI master starts a byte transfer by pulling Slave Select low
+    - the SPI master runs the clock for a total of eight rising edges
+    - the master ends the byte transfer by pulling Slave Select high
+- therefore if multiple bytes are sent, Slave Select pulses high between every
+  byte
+    - pulsing Slave Select in between byte transfers adds redundancy in keeping
+      the SPI master and slave synchronized
+##### delay between transfers when writing consecutive bytes
+- when the SPI master is writing consecutive bytes to the SPI slave, leave Slave
+  Select high for 16.5us betweeen every byte
+    - this guarantees the SPI slave has time to move the received byte into
+      memory before receiving the next byte
+    - 16.5us is a conservatively long time to wait, but the SPI master never
+      needs to write more than a few bytes to the SPI slave for a given command,
+      so there is no harm in using a conservatively long delay to guarantee the
+      SPI slave is ready for the next byte
+##### wait for data-ready signal when reading bytes
+- when the SPI master is reading bytes from the SPI slave, wait for the SPI
+  slave to signal the data is ready before starting each byte transfer
+    - for example, when requesting a frame, the master waits for the slave to
+      signal the data is ready
+        - this initial wait is relatively long as the SPI slave has to conduct a
+          frame readout with the spectrometer chip to buffer a frame of pixel
+          data
+    - after transferring the first byte of data, the master again waits for the
+      slave to signal the data is ready, and so on for all 1568 bytes
+        - this guarantees the slave always has the next byte of data ready in
+          the SPI transmit buffer before the master reads the byte
+##### checking the data-ready signal requires awareness of the tri-state
+- the SPI slave signals data is ready by pulling MISO low for 4.5us
+- the SPI master guarantees it correctly detects this signal using the following
+  macro:
+```c
+#define MacroSpiResponseIsReady() MacroBitIsClear(Spi_pin, Spi_Miso)
+#define MacroSpiMasterWaitForResponse() do { \
+    while(  MacroSpiResponseIsReady() ); \
+    while( !MacroSpiResponseIsReady() ); \
+    while(  MacroSpiResponseIsReady() ); \
+} while (0)
+```
+- this guarantees that
+    - low is detected on `MISO` because the SPI slave pulled `MISO` low
+        - and not because `MISO` is still recovering from a final low at the end
+          of a SPI transmission
+        - the first two while loops provide this guarantee
+    - the SPI slave is ready for the next data transfer
+        - the last while loop is the SPI master waiting for `MISO` to slowly
+          pull high
+        - the SPI slave has plenty of time to re-enable its SPI hardware module
+          while this happens
+        - this last while loop guarantees the SPI master does not attempt to
+          communicate until the SPI slave is ready for another SPI transfer
+
+#### Commands affect the state of the spectrometer chip digital interface
+- the interface is normally in an idle state
+- in this state it responds to the commands listed in `Spi-Commands.h`
+- once the interface receives a command, it enters a state that must be carried
+  to completion before it can hear new commands
+    - if the SPI slave expects the command to be followed by additional data
+      from the master, then the master must send that data for the SPI slave to
+      return to its idle state
+    - for example the command to set to exposure time must be followed by two
+      bytes (and the SPI slave interprets these two bytes as the desired
+      exposure time)
+    - if the command requests data from the SPI slave, then the master must
+      carry out the expected number of SPI transfers for the slave to shift out
+      all of the requested data
+    - for example, setting exposure time and requesting a frame both cause the
+      SPI slave to send data back to the SPI master
+- there is no command to abort a data frame once it has been requested
+
+#### Set the exposure time
+- set the exposure time by sending the byte `0x02`
+- the `Spi` lib defines this as:
+```c
+uint8_t const cmd_set_exposure_time     = 0x02;
+```
+- follow the command with the exposure time as a 16-bit value
+- for example, to set the exposure time to 40ms, send `0x02` `0x07` `0xD0`
+    - 40ms is `2000` 20us ticks
+    - TODO: revise this example for the 200us ticks
+    - `2000` as two bytes is `7` for the *MSB* and `208` for the *LSB*
+    - `7` in hexadecimal is `0x07` and `208` in hexadecimal is `0xD0`
+- the spectrometer chip digital interface echoes back the 16-bit exposure time:
+    - the spectrometer chip signals that it has data to send by pulling `MISO` low
+      for 4.3us
+    - the SPI master waits for this signal, then does two SPI transfers to read
+      the two bytes
+    - in the eval kit, the SPI master relays this values back to the USB host
+      for the application user to verify that the spectrometer is using the
+      desired exposure time
+- client hardware *must* read this data:
+    - the SPI slave ignores any further commands from the SPI master until the
+      SPI master does two SPI transfers to shift out these two bytes
+#### Request a frame of data
+- request a frame by sending the byte `0x01`
+- the `Spi` lib defines this as:
+```c
+uint8_t const cmd_send_lis_frame        = 0x01;
+```
+- wait 
+
 ## Bugs
 - [ ] fix bug found on 2018-11-04:
     - spectrometer USB communication times out if only one row is selected and

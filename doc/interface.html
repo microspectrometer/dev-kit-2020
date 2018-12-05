@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Mike Gazes" />
+  <title>Chromation Spectrometer: Interface Information for Preliminary Datasheet</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="pandoc.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Chromation Spectrometer: Interface Information for Preliminary Datasheet</h1>
+<p class="author">Mike Gazes</p>
+<p class="date">December 3rd, 2018</p>
+</header>
+<h1 id="spectrometer-sequencing-diagrams">Spectrometer Sequencing Diagrams</h1>
+<figure>
+<img src="img/initialize-spectrometer-sequence.png" alt="Spectrometer Initialization Sequence" /><figcaption>Spectrometer Initialization Sequence</figcaption>
+</figure>
+<figure>
+<img src="img/configure-spectrometer-sequence.png" alt="Spectrometer Configuration Sequence" /><figcaption>Spectrometer Configuration Sequence</figcaption>
+</figure>
+<figure>
+<img src="img/acquire-spectrum-sequence.png" alt="Spectrum Acquisition Sequence" /><figcaption>Spectrum Acquisition Sequence</figcaption>
+</figure>
+<h1 id="recommended-operating-conditions">Recommended Operating Conditions</h1>
+<table>
+<caption>Recommended operating conditions</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">MIN</th>
+<th style="text-align: center;">TYP</th>
+<th style="text-align: center;">MAX</th>
+<th style="text-align: center;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">V<sub>DD</sub></td>
+<td style="text-align: left;">Supply Voltage</td>
+<td style="text-align: center;">2.8</td>
+<td style="text-align: center;">3.0</td>
+<td style="text-align: center;">3.3</td>
+<td style="text-align: center;">V</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">–</td>
+<td style="text-align: left;">Power Consumption while active</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">mW</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">–</td>
+<td style="text-align: left;">Power Consumption in low-power mode</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">uW</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">V<sub>in,HIGH</sub></td>
+<td style="text-align: left;">Input logic-level <em>HIGH</em></td>
+<td style="text-align: center;">V<sub>DD</sub>-0.7</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">V<sub>DD</sub></td>
+<td style="text-align: center;">V</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">V<sub>in,LOW</sub></td>
+<td style="text-align: left;">Input logic-level <em>LOW</em></td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">0.7</td>
+<td style="text-align: center;">V</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">f<sub>CLK</sub></td>
+<td style="text-align: left;">Clock Frequency</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">kHz</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">CLK<sub>HOLD</sub></td>
+<td style="text-align: left;">Clock Hold-time</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">ns</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CLK<sub>SETUP</sub></td>
+<td style="text-align: left;">Clock Setup-time</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">ns</td>
+</tr>
+</tbody>
+</table>
+<p>Pins <code>CLK</code>, <code>RST</code>, and <code>PIX_SELECT</code> are logic-level inputs. The spectrometer samples inputs on the <strong>rising edges</strong> of <code>CLK</code>.</p>
+<p><em>CLK<sub>HOLD</sub></em> is the minimum time <strong>after a falling edge of <code>CLK</code></strong> before <code>RST</code> is allowed to change value. <em>CLK<sub>SETUP</sub></em> is the minimum time <code>RST</code> must be stable <strong>before a rising edge of <code>CLK</code></strong> to guarantee its value is sampled on the clock rising edge.</p>
+<h1 id="electrical-characteristics">Electrical Characteristics</h1>
+<table>
+<caption>Electrical characteristics relevant to analog signal conditioning and ADC component selection</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Condition</th>
+<th style="text-align: left;">MIN</th>
+<th style="text-align: left;">TYP</th>
+<th style="text-align: left;">MAX</th>
+<th style="text-align: left;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">V<sub>OUT</sub> output impedance</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">kOhms</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">V<sub>OUT</sub> settling time</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">us</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">V<sub>OUT</sub> maximum swing</td>
+<td style="text-align: left;">2.5x gain</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">V<sub>DD</sub>-0.3</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">V</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">V<sub>OUT</sub> at dark</td>
+<td style="text-align: left;">no light</td>
+<td style="text-align: left;">0.60</td>
+<td style="text-align: left;">0.84</td>
+<td style="text-align: left;">1.1</td>
+<td style="text-align: left;">V</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Full well</td>
+<td style="text-align: left;">pixels: 312.5um tall, 15.6um pitch</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">3.0e5</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">electrons</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Linearity error per pixel</td>
+<td style="text-align: left;">1x gain, V<sub>OUT</sub>=5%-70% full-well</td>
+<td style="text-align: left;">0.5</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">%<sub>error</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Conversion efficiency</td>
+<td style="text-align: left;">pixels: 312.5um tall</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">6.5</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">uV/electron</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Image lag</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">0.1</td>
+<td style="text-align: left;">0.3</td>
+<td style="text-align: left;">3.0</td>
+<td style="text-align: left;">%V<sub>SAT</sub></td>
+</tr>
+</tbody>
+</table>
+<p><em>Linearity error per pixel</em> is quantified by measuring the mean gray value (digital counts) at several voltages from V<sub>OUT</sub> = 5% of full-well to V<sub>OUT</sub> = 70% of full-well, finding the least-squares fit to a straight-line, and reporting the greatest percentage error between the measured values and the straight-line fit. The ideal is 0% error, indicating that an increase in the amount of photons incident on the pixel active area causes a linearly proportional increase in the dark-corrected output voltage.</p>
+<p><em>Full well</em> is the number of electrons a pixel stores at the saturation voltage. The saturation voltage, V<sub>SAT</sub>, is the product of the <em>full well</em> and the <em>conversion efficiency</em>. When configured for 15.6um-pitch, therefore, V<sub>SAT</sub> is 1.95V and 70% of V<sub>SAT</sub> is 1.365V.</p>
+<p>Chromation recommends dark-correcting the analog output before input to the ADC and selecting an ADC voltage reference between 70% and 100% of V<sub>SAT</sub>. Of course, V<sub>SAT</sub> and 70% of V<sub>SAT</sub> do not correspond to standard voltage reference values. Voltage reference selection depends on application-specific design considerations.</p>
+<h1 id="recommended-adc-values">Recommended ADC values</h1>
+<p>Chromation uses a 16-bit SAR ADC and 2.048V reference in the Chromation Spectrometer Evaluation Kit. The voltage reference value is based on the Chromation recommendations for linear pixel array configuration and analog dark-correction. See the reference design for the specific part numbers used in the Chromation Spectrometer Evaluation Kit.</p>
+<table>
+<caption>Recommended ADC configuration for the spectrometer interface</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">MIN</th>
+<th style="text-align: center;">TYP</th>
+<th style="text-align: center;">MAX</th>
+<th style="text-align: center;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Resolution</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">bits</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Voltage reference</td>
+<td style="text-align: center;">1.25</td>
+<td style="text-align: center;">1.8</td>
+<td style="text-align: center;">2.048</td>
+<td style="text-align: center;">V</td>
+</tr>
+</tbody>
+</table>
+<h1 id="recommended-clock-filter">Recommended Clock Filter</h1>
+<p>The rising edge of the <code>CLK</code> signal couples into the <code>VOUT</code> signal. Filter this transient with a simple passive RC filter with f<sub>3dB</sub> ≥ 1/2f<sub>CLK</sub> or higher. This filter is not essential so it is safe to eliminate on ultra-low component-count designs. The table below shows recommended values.</p>
+<table>
+<caption>Recommended spectrometer <code>VOUT</code> passive RC clock filter</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Condition</th>
+<th style="text-align: center;">MIN</th>
+<th style="text-align: center;">TYP</th>
+<th style="text-align: center;">MAX</th>
+<th style="text-align: center;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">f<sub>3dB</sub></td>
+<td style="text-align: left;">Clock filter cutoff frequency</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: center;">1/2f<sub>CLK</sub></td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">kHz</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">R<sub>filt</sub></td>
+<td style="text-align: left;">Clock filter R</td>
+<td style="text-align: left;">f<sub>CLK</sub>=50kHz</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">kOhms</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">C<sub>filt</sub></td>
+<td style="text-align: left;">Clock filter C</td>
+<td style="text-align: left;">f<sub>CLK</sub>=50kHz</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">680</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">pF</td>
+</tr>
+</tbody>
+</table>
+<h1 id="spectrometer-configuration-during-wavelength-calibration">Spectrometer Configuration During Wavelength Calibration</h1>
+<table>
+<caption>Spectrometer configuration used during wavelength calibration</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">MIN</th>
+<th style="text-align: center;">TYP</th>
+<th style="text-align: center;">MAX</th>
+<th style="text-align: center;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Integration time</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">ms</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Internal analog gain</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">1x</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pixel height</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">312.5</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">um</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pixel pitch</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">15.6</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">um</td>
+</tr>
+</tbody>
+</table>
+<h1 id="spectrometer-interface">Spectrometer Interface</h1>
+<p>The following describes how to interface the Chromation spectrometer. Since the Chromation spectrometer is simply optical components mounted around the <code>LIS-770i</code>, <em>the spectrometer interface is the <code>LIS-770i</code> interface</em>. The interface description here is sufficient to operate the spectrometer but for simplicity some information about the <code>LIS-770i</code> is excluded. See the <code>LIS-770i</code> datasheet for additional operating conditions, waveforms, and details about other functionality not covered here, in particular the <code>power-down</code> mode.</p>
+<p>External hardware is required to drive the spectrometer to achieve its higher-level function: <em>acquire a spectrum</em>. Chromation refers to this external hardware as the <strong>spectrometer digital interface</strong>.</p>
+<h2 id="spectrometer-interface-block-diagram">Spectrometer Interface Block Diagram</h2>
+<p>The block diagram below shows the spectrometer signals referred to in the following sequences to initialize, configure, and acquire a spectrum. The block diagram also shows how the <strong>spectrometer digital interface</strong> converts the spectrometer to a <em>SPI slave</em> device.</p>
+<figure>
+<img src="img/spectrometer-interface-block-diagram.png" alt="Spectrometer Interface Block Diagram" /><figcaption>Spectrometer Interface Block Diagram</figcaption>
+</figure>
+<p>The purpose of the <strong>spectrometer digital interface</strong> is to hide the operational details of the <code>LIS-770i</code> and ADC, and instead provide the measurement system with a standard interface. Chromation recommends presenting the spectrometer interface to upstream devices as a <em>SPI slave</em>. A <em>SPI master</em> in the upstream measurement system executes requests from the system host application by writing high-level commands recognized by the <em>SPI slave</em>.</p>
+<h2 id="initialize-the-spectrometer-after-power-up">Initialize the spectrometer after power-up</h2>
+<p>The following sequence shows the recommended input logic-levels to apply after power-on. Start the clock signal on <code>CLK</code> after <code>PIX_SELECT</code> and <code>RST</code> are driven <em>LOW</em>.</p>
+<figure>
+<img src="img/initialize-spectrometer-sequence.png" alt="Spectrometer Initialization Sequence" /><figcaption>Spectrometer Initialization Sequence</figcaption>
+</figure>
+<ul>
+<li>drive <code>PIX_SELECT</code> <em>LOW</em>
+<ul>
+<li><code>PIX_SELECT</code> idles <em>LOW</em></li>
+</ul></li>
+<li>drive <code>RST</code> <em>LOW</em>
+<ul>
+<li><code>RST</code> idles <em>LOW</em></li>
+</ul></li>
+<li>drive <code>CLK</code> with a 50kHz PWM, 50% duty cycle
+<ul>
+<li>the choice of clock speed is determined by the ADC conversion settling time and the speed of communication with the ADC</li>
+<li>50kHz is slow enough for a 16-bit SAR ADC to convert pixel voltages and to read out the converted digital value</li>
+</ul></li>
+</ul>
+<h2 id="configure-the-spectrometer">Configure the spectrometer</h2>
+<figure>
+<img src="img/configure-spectrometer-sequence.png" alt="Spectrometer Configuration Sequence" /><figcaption>Spectrometer Configuration Sequence</figcaption>
+</figure>
+<p>The spectrometer’s linear pixel array has configurable parameters:</p>
+<ul>
+<li>analog gain: 1x, 2.5x, 4x, 5x</li>
+<li>pixel height: 62.5um, 125um, 187.5um, 250um, 312.5um</li>
+<li>pixel pitch: 7.8um (array is 784 pixels), 15.6um (array is 392 pixels)</li>
+</ul>
+<p>The linear pixel array does <em>not</em> have a known default configuration on power-up. At a minimum, these parameters must be hard-coded in firmware and the linear pixel array must be programmed each time the device is powered-up.</p>
+<p>Making these parameters configurable by the upstream measurement system may be beneficial in some context, particularly the analog gain. The spectrometer performance specifications only apply for the configuration intended by Chromation. This configuration matches the optical design of the Chromation spectrometer.</p>
+<p>This is the intended configuration:</p>
+<ul>
+<li>analog gain: 1x</li>
+<li>pixel height: 312.5um</li>
+<li>pixel pitch: 15.6um (the array contains 392 pixels)</li>
+</ul>
+<p>The following programming sequence configures the parameters of the linear pixel array parameters to match the intended configuration. The programming sequence consists of shifting in 28 bits. Bits are shifted in on the rising edge of <code>CLK</code>. The sequence starts with bit 1 and ends with bit 28.</p>
+<ul>
+<li>start the programming sequence:
+<ul>
+<li>drive <code>PIX_SELECT</code> <em>HIGH</em> on a falling edge of <code>CLK</code></li>
+</ul></li>
+<li>bit 1 <em>HIGH</em> programs the pixel pitch for 15.6um
+<ul>
+<li>drive <code>RST</code> <em>HIGH</em></li>
+<li>wait for the next falling edge of <code>CLK</code></li>
+</ul></li>
+<li>bits 2 and 3 <em>LOW</em> set the analog gain to 1x
+<ul>
+<li>drive <code>RST</code> <em>LOW</em></li>
+<li>wait for the next falling edge of <code>CLK</code></li>
+<li>drive <code>RST</code> <em>LOW</em></li>
+<li>wait for the next falling edge of <code>CLK</code></li>
+</ul></li>
+<li>the next 25 bits are <em>HIGH</em> to select the 312.5um pixel height
+<ul>
+<li>drive <code>RST</code> <em>HIGH</em></li>
+<li>wait for the next falling edge of <code>CLK</code></li>
+<li>repeat 24 more times</li>
+</ul></li>
+<li>stop the programming sequence:
+<ul>
+<li>drive <code>RST</code> <em>LOW</em></li>
+<li>drive <code>PIX_SELECT</code> <em>LOW</em></li>
+</ul></li>
+</ul>
+<h2 id="acquire-a-spectrum">Acquire a spectrum</h2>
+<figure>
+<img src="img/acquire-spectrum-sequence.png" alt="Spectrum Acquisition Sequence" /><figcaption>Spectrum Acquisition Sequence</figcaption>
+</figure>
+<p>The linear pixel array has internal switching logic to execute the spectrometer <strong>exposure</strong> and <strong>readout</strong> sequence, but like most other linear pixel arrays, the <code>LIS-770i</code> requires external logic-level signals to drive this internal switching. The <code>LIS-770i</code> also requires an external ADC to convert its analog output.</p>
+<h3 id="expose-the-spectrometer-pixels">Expose the spectrometer pixels</h3>
+<ul>
+<li>drive <code>RST</code> <em>HIGH</em> to start exposure
+<ul>
+<li>Chromation recommends waiting for the falling edge of <code>CLK</code> to drive <code>RST</code> <em>HIGH</em></li>
+<li>pixel exposure starts when the <em>HIGH</em> on <code>RST</code> is clocked in on the next rising edge of <code>CLK</code></li>
+</ul></li>
+<li>wait the desired integration time by counting falling edges of <code>CLK</code>
+<ul>
+<li>for a 50kHz <code>CLK</code>, falling edges represent 20us ticks</li>
+<li>for example, waiting 500 ticks is a 10ms integration time</li>
+</ul></li>
+<li>drive <code>RST</code> <em>LOW</em> to stop exposure
+<ul>
+<li>again, the <em>LOW</em> is clocked in on the next rising edge of <code>CLK</code></li>
+</ul></li>
+</ul>
+<h3 id="immediately-readout-the-pixel-voltages">Immediately readout the pixel voltages</h3>
+<ul>
+<li>wait for a pulse on <code>SYNC</code>:
+<ul>
+<li>after <code>RST</code> is driven <em>LOW</em>, spectrometer output pin <code>SYNC</code> goes <em>HIGH</em> on the next falling edge of <code>CLK</code></li>
+<li><code>SYNC</code> goes <em>LOW</em> on the next falling edge of <code>CLK</code> (<code>SYNC</code> is <em>HIGH</em> for one clock period)</li>
+</ul></li>
+<li>pixel readout begins on the next rising <code>CLK</code> edge after <code>SYNC</code> goes <em>LOW</em></li>
+<li>start each ADC conversion on each rising edge of <code>CLK</code></li>
+<li>finish each ADC conversion before the falling edge of <code>CLK</code>
+<ul>
+<li>the falling edge of <code>CLK</code> may couple into the pixel output voltage, so it is preferable to finish the ADC conversion before the <code>CLK</code> falling edge</li>
+<li>and it is good practice in general to avoid transients during an ADC conversion</li>
+<li>this is easily achieved using a 50kHz clock</li>
+<li>in fact, using <em>Linear Technology #LTC1864L</em> as the ADC, both the conversion and readout of the converted samples fits within the <code>CLK</code> high time</li>
+</ul></li>
+<li>on the last pixel readout, <code>SYNC</code> pulses <em>HIGH</em> again for one clock period, starting on the falling edge of <code>CLK</code></li>
+</ul>
+<h1 id="reference-design">Reference Design</h1>
+<p>This is the spectrometer interface in the Chromation Spectrometer Evaluation Kit.</p>
+<figure>
+<img src="img/reference-design.png" alt="Reference Design" /><figcaption>Reference Design</figcaption>
+</figure>
+</body>
+</html>

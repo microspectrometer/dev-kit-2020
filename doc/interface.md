@@ -2,35 +2,117 @@
 % Mike Gazes
 % December 3rd, 2018
 
+# Spectrometer Sequencing Diagrams
+![Spectrometer Initialization Sequence](img/initialize-spectrometer-sequence.png)
+
+![Spectrometer Configuration Sequence](img/configure-spectrometer-sequence.png)
+
+![Spectrum Acquisition Sequence](img/acquire-spectrum-sequence.png)
+
 # Recommended Operating Conditions
- Symbol  Parameter           MIN   TYP   MAX     Units
--------- ----------         ----- ----- -----   -------
-  V~DD~  Supply Voltage     --      3.0 --      V
-  f~CLK~ Clock Frequency    15      50  200     kHz
-  CLK~S~ Setup time         --      10  --      ns
-  CLK~H~ Hold time          --      10  --      ns
+ Symbol         Parameter                                 MIN         TYP   MAX     Units
+--------        ----------                               -----       ----- ------- --------
+  V~DD~         Supply Voltage                            2.8         3.0   3.3       V
+  --            Power Consumption while active            --          5.0   10       mW
+  --            Power Consumption in low-power mode       --          30    --       uW
+  V~in,HIGH~    Input logic-level *HIGH*                  V~DD~-0.7   --    V~DD~     V
+  V~in,LOW~     Input logic-level *LOW*                   --          --    0.7       V
+  f~CLK~        Clock Frequency                           15          50    200     kHz
+  CLK~HOLD~     Clock Hold-time                           --          10    --       ns
+  CLK~SETUP~    Clock Setup-time                          --          10    --       ns
 
 Table: Recommended operating conditions
 
-# Recommended Interface Design Parameters
+Pins `CLK`, `RST`, and `PIX_SELECT` are logic-level inputs. The spectrometer
+samples inputs on the **rising edges** of `CLK`.
 
-TODO: correct the values in this table
+*CLK~HOLD~* is the minimum time **after a falling edge of `CLK`** before `RST`
+is allowed to change value. *CLK~SETUP~* is the minimum time `RST` must be
+stable **before a rising edge of `CLK`** to guarantee its value is sampled on the
+clock rising edge.
+
+# Electrical Characteristics
+Parameter                   Condition                           MIN   TYP       MAX     Units
+----------                  ----------                          ----- -----     -----   -------
+V~OUT~ output impedance     --                                  --    10        --      kOhms
+V~OUT~ settling time        --                                  --    1         --      us
+V~OUT~ maximum swing        2.5x gain                           --    V~DD~-0.3 --      V
+V~OUT~ at dark              no light                            0.60  0.84      1.1     V
+Full well                   pixels: 312.5um tall, 15.6um pitch  --    3.0e5     --      electrons
+Linearity error per pixel   1x gain, V~OUT~=5%-70% full-well    0.5   1         5       %~error~
+Conversion efficiency       pixels: 312.5um tall                --    6.5       --      uV/electron
+Image lag                   --                                  0.1   0.3       3.0     %V~SAT~
+
+Table: Electrical characteristics relevant to analog signal conditioning and ADC
+component selection
+
+*Linearity error per pixel* is quantified by measuring the mean gray value
+(digital counts) at several voltages from V~OUT~ = 5% of full-well to V~OUT~ =
+70% of full-well, finding the least-squares fit to a straight-line, and
+reporting the greatest percentage error between the measured values and the
+straight-line fit. The ideal is 0% error, indicating that an increase in the
+amount of photons incident on the pixel active area causes a linearly
+proportional increase in the dark-corrected output voltage.
+
+*Full well* is the number of electrons a pixel stores at the saturation voltage.
+The saturation voltage, V~SAT~, is the product of the *full well* and the
+*conversion efficiency*. When configured for 15.6um-pitch, therefore, V~SAT~
+is 1.95V and 70% of V~SAT~ is 1.365V.
+
+Chromation recommends dark-correcting the analog output before input to the ADC
+and selecting an ADC voltage reference between 70% and 100% of V~SAT~. Of
+course, V~SAT~ and 70% of V~SAT~ do not correspond to standard voltage reference
+values. Voltage reference selection depends on application-specific design
+considerations.
+
+# Recommended ADC values
+Chromation uses a 16-bit SAR ADC and 2.048V reference in the Chromation
+Spectrometer Evaluation Kit. The voltage reference value is based on the
+Chromation recommendations for linear pixel array configuration and analog
+dark-correction. See the reference design for the specific part numbers used in
+the Chromation Spectrometer Evaluation Kit.
 
 Parameter           MIN    TYP   MAX   Units
 ----------         -----  ----- ----- -------
 Resolution          10      16  --      bits
-Voltage reference   1.8    2.048        V
+Voltage reference   1.25   1.8  2.048    V
 
 Table: Recommended ADC configuration for the spectrometer interface
+
+# Recommended Clock Filter
+
+The rising edge of the `CLK` signal couples into the `VOUT` signal. Filter this
+transient with a simple passive RC filter with f~3dB~ ≥ 1/2f~CLK~ or higher.
+This filter is not essential so it is safe to eliminate on ultra-low
+component-count designs. The table below shows recommended values.
+
+ Symbol   Parameter                     Condition      MIN         TYP       MAX    Units
+--------  ----------                    ----------    -----       -----     -----  -------
+  f~3dB~  Clock filter cutoff frequency --            1/2f~CLK~     --       --     kHz
+  R~filt~ Clock filter R                f~CLK~=50kHz   --           10       --     kOhms
+  C~filt~ Clock filter C                f~CLK~=50kHz   --          680       --     pF
+
+Table: Recommended spectrometer `VOUT` passive RC clock filter
+
+# Spectrometer Configuration During Wavelength Calibration
+Parameter               MIN   TYP    MAX     Units
+----------             ----- -----  -----   -------
+Integration time       1       10   1000     ms
+Internal analog gain   --      1x   --       --
+Pixel height           --     312.5 --       um
+Pixel pitch            --     15.6  --       um
+
+Table: Spectrometer configuration used during wavelength calibration
+
 
 # Spectrometer Interface
 The following describes how to interface the Chromation spectrometer. Since the
 Chromation spectrometer is simply optical components mounted around the
 `LIS-770i`, *the spectrometer interface is the `LIS-770i` interface*. The
-interface description here is greatly simplified but still sufficient to operate
-the spectrometer. See the `LIS-770i` datasheet for additional operating
-conditions, waveforms, and details about other functionality not covered here,
-in particular the `power-down` mode.
+interface description here is sufficient to operate the spectrometer but for
+simplicity some information about the `LIS-770i` is excluded. See the `LIS-770i`
+datasheet for additional operating conditions, waveforms, and details about
+other functionality not covered here, in particular the `power-down` mode.
 
 External hardware is required to drive the spectrometer to achieve its
 higher-level function: *acquire a spectrum*. Chromation refers to this external
@@ -53,7 +135,11 @@ high-level commands recognized by the *SPI slave*.
 
 
 ## Initialize the spectrometer after power-up
-- TODO: initialize-spectrometer-signal-diagram
+The following sequence shows the recommended input logic-levels to apply after
+power-on. Start the clock signal on `CLK` after `PIX_SELECT` and `RST` are
+driven *LOW*.
+
+![Spectrometer Initialization Sequence](img/initialize-spectrometer-sequence.png)
 
 - drive `PIX_SELECT` *LOW*
     - `PIX_SELECT` idles *LOW*
@@ -65,10 +151,8 @@ high-level commands recognized by the *SPI slave*.
     - 50kHz is slow enough for a 16-bit SAR ADC to convert pixel
       voltages and to read out the converted digital value
 
-- NOTE: input pin values are *clocked in* on the *rising edges* of `CLK`
-
 ## Configure the spectrometer
-- TODO: configure-spectrometer-signal-diagram
+![Spectrometer Configuration Sequence](img/configure-spectrometer-sequence.png)
 
 The spectrometer's linear pixel array has configurable parameters:
 
@@ -116,7 +200,7 @@ consists of shifting in 28 bits. Bits are shifted in on the rising edge of
     - drive `PIX_SELECT` *LOW*
 
 ## Acquire a spectrum
-- TODO: acquire-spectrum-signal-diagram
+![Spectrum Acquisition Sequence](img/acquire-spectrum-sequence.png)
 
 The linear pixel array has internal switching logic to execute the spectrometer
 **exposure** and **readout** sequence, but like most other linear pixel arrays,
@@ -126,15 +210,14 @@ output.
 
 ### Expose the spectrometer pixels
 - drive `RST` *HIGH* to start exposure
-    - Chromation recommends waiting for the falling edge of `CLK` to drive `RST`
-      *HIGH*
-    - pixel exposure starts when the *HIGH* on `RST` is clocked in on the next
-      rising edge of `CLK`
+    - drive `RST` *HIGH* after a falling edge of `CLK`
+    - pixel exposure starts when the *HIGH* on `RST` is sampled on the rising
+      edge of `CLK`
 - wait the desired integration time by counting falling edges of `CLK`
     - for a 50kHz `CLK`, falling edges represent 20us ticks
     - for example, waiting 500 ticks is a 10ms integration time
 - drive `RST` *LOW* to stop exposure
-    - again, the *LOW* is clocked in on the next rising edge of `CLK`
+    - again, the *LOW* is sampled on the next rising edge of `CLK`
 
 ### Immediately readout the pixel voltages
 - wait for a pulse on `SYNC`:
@@ -156,3 +239,8 @@ output.
 - on the last pixel readout, `SYNC` pulses *HIGH* again for one clock period,
   starting on the falling edge of `CLK`
 
+# Reference Design
+This is the spectrometer interface in the Chromation Spectrometer Evaluation
+Kit.
+
+![Reference Design](img/reference-design.png)
