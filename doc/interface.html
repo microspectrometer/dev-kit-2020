@@ -5,7 +5,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Mike Gazes" />
-  <title>Chromation Spectrometer: Interface Information for Preliminary Datasheet</title>
+  <title>Chromation Spectrometer Interface Information for Preliminary Datasheet</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -19,7 +19,7 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Chromation Spectrometer: Interface Information for Preliminary Datasheet</h1>
+<h1 class="title">Chromation Spectrometer Interface Information for Preliminary Datasheet</h1>
 <p class="author">Mike Gazes</p>
 <p class="date">December 3rd, 2018</p>
 </header>
@@ -69,11 +69,11 @@
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">30</td>
 <td style="text-align: center;">–</td>
-<td style="text-align: center;">uW</td>
+<td style="text-align: center;">µW</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">V<sub>in,HIGH</sub></td>
-<td style="text-align: left;">Input logic-level <em>HIGH</em></td>
+<td style="text-align: left;">Input logic-level <strong>HIGH</strong></td>
 <td style="text-align: center;">V<sub>DD</sub>-0.7</td>
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">V<sub>DD</sub></td>
@@ -81,7 +81,7 @@
 </tr>
 <tr class="odd">
 <td style="text-align: center;">V<sub>in,LOW</sub></td>
-<td style="text-align: left;">Input logic-level <em>LOW</em></td>
+<td style="text-align: left;">Input logic-level <strong>LOW</strong></td>
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">0.7</td>
@@ -135,7 +135,7 @@
 <td style="text-align: left;">–</td>
 <td style="text-align: left;">10</td>
 <td style="text-align: left;">–</td>
-<td style="text-align: left;">kOhms</td>
+<td style="text-align: left;">kΩ</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">V<sub>OUT</sub> settling time</td>
@@ -143,7 +143,7 @@
 <td style="text-align: left;">–</td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">–</td>
-<td style="text-align: left;">us</td>
+<td style="text-align: left;">µs</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">V<sub>OUT</sub> maximum swing</td>
@@ -183,7 +183,7 @@
 <td style="text-align: left;">–</td>
 <td style="text-align: left;">6.5</td>
 <td style="text-align: left;">–</td>
-<td style="text-align: left;">uV/electron</td>
+<td style="text-align: left;">µV/electron</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Image lag</td>
@@ -229,9 +229,9 @@
 </tbody>
 </table>
 <h1 id="recommended-clock-filter">Recommended Clock Filter</h1>
-<p>The rising edge of the <code>CLK</code> signal couples into the <code>VOUT</code> signal. Filter this transient with a simple passive RC filter with f<sub>3dB</sub> ≥ 1/2f<sub>CLK</sub> or higher. This filter is not essential so it is safe to eliminate on ultra-low component-count designs. The table below shows recommended values.</p>
+<p>The rising edge of the clock signal couples into the V<sub>OUT</sub> signal. Filter this transient with a simple passive RC filter with f<sub>3dB</sub> ≥ <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D" alt="\frac{1}{2}" title="\frac{1}{2}" />f<sub>CLK</sub>. This filter is not essential so it is safe to eliminate on ultra-low component-count designs. The table below shows recommended values.</p>
 <table>
-<caption>Recommended spectrometer <code>VOUT</code> passive RC clock filter</caption>
+<caption>Recommended spectrometer V<sub>OUT</sub> passive RC clock filter</caption>
 <thead>
 <tr class="header">
 <th style="text-align: center;">Symbol</th>
@@ -248,7 +248,7 @@
 <td style="text-align: center;">f<sub>3dB</sub></td>
 <td style="text-align: left;">Clock filter cutoff frequency</td>
 <td style="text-align: left;">–</td>
-<td style="text-align: center;">1/2f<sub>CLK</sub></td>
+<td style="text-align: center;"><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D" alt="\frac{1}{2}" title="\frac{1}{2}" />f<sub>CLK</sub></td>
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">kHz</td>
@@ -260,7 +260,7 @@
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">10</td>
 <td style="text-align: center;">–</td>
-<td style="text-align: center;">kOhms</td>
+<td style="text-align: center;">kΩ</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">C<sub>filt</sub></td>
@@ -326,18 +326,18 @@
 </figure>
 <p>The purpose of the <strong>spectrometer digital interface</strong> is to hide the operational details of the <code>LIS-770i</code> and ADC, and instead provide the measurement system with a standard interface. Chromation recommends presenting the spectrometer interface to upstream devices as a <em>SPI slave</em>. A <em>SPI master</em> in the upstream measurement system executes requests from the system host application by writing high-level commands recognized by the <em>SPI slave</em>.</p>
 <h2 id="initialize-the-spectrometer-after-power-up">Initialize the spectrometer after power-up</h2>
-<p>The following sequence shows the recommended input logic-levels to apply after power-on. Start the clock signal on <code>CLK</code> after <code>PIX_SELECT</code> and <code>RST</code> are driven <em>LOW</em>.</p>
+<p>The following sequence shows the recommended input logic-levels to apply after power-on. Start the clock signal on <code>CLK</code> after <code>PIX_SELECT</code> and <code>RST</code> are driven <strong>LOW</strong>.</p>
 <figure>
 <img src="img/initialize-spectrometer-sequence.png" alt="Spectrometer Initialization Sequence" /><figcaption>Spectrometer Initialization Sequence</figcaption>
 </figure>
 <ul>
-<li>drive <code>PIX_SELECT</code> <em>LOW</em>
+<li>drive <code>PIX_SELECT</code> <strong>LOW</strong>
 <ul>
-<li><code>PIX_SELECT</code> idles <em>LOW</em></li>
+<li><code>PIX_SELECT</code> idles <strong>LOW</strong></li>
 </ul></li>
-<li>drive <code>RST</code> <em>LOW</em>
+<li>drive <code>RST</code> <strong>LOW</strong>
 <ul>
-<li><code>RST</code> idles <em>LOW</em></li>
+<li><code>RST</code> idles <strong>LOW</strong></li>
 </ul></li>
 <li>drive <code>CLK</code> with a 50kHz PWM, 50% duty cycle
 <ul>
@@ -367,30 +367,30 @@
 <ul>
 <li>start the programming sequence:
 <ul>
-<li>drive <code>PIX_SELECT</code> <em>HIGH</em> on a falling edge of <code>CLK</code></li>
+<li>drive <code>PIX_SELECT</code> <strong>HIGH</strong> on a falling edge of <code>CLK</code></li>
 </ul></li>
-<li>bit 1 <em>HIGH</em> programs the pixel pitch for 15.6um
+<li>bit 1 <strong>HIGH</strong> programs the pixel pitch for 15.6um
 <ul>
-<li>drive <code>RST</code> <em>HIGH</em></li>
+<li>drive <code>RST</code> <strong>HIGH</strong></li>
 <li>wait for the next falling edge of <code>CLK</code></li>
 </ul></li>
-<li>bits 2 and 3 <em>LOW</em> set the analog gain to 1x
+<li>bits 2 and 3 <strong>LOW</strong> set the analog gain to 1x
 <ul>
-<li>drive <code>RST</code> <em>LOW</em></li>
+<li>drive <code>RST</code> <strong>LOW</strong></li>
 <li>wait for the next falling edge of <code>CLK</code></li>
-<li>drive <code>RST</code> <em>LOW</em></li>
+<li>drive <code>RST</code> <strong>LOW</strong></li>
 <li>wait for the next falling edge of <code>CLK</code></li>
 </ul></li>
-<li>the next 25 bits are <em>HIGH</em> to select the 312.5um pixel height
+<li>the next 25 bits are <strong>HIGH</strong> to select the 312.5um pixel height
 <ul>
-<li>drive <code>RST</code> <em>HIGH</em></li>
+<li>drive <code>RST</code> <strong>HIGH</strong></li>
 <li>wait for the next falling edge of <code>CLK</code></li>
 <li>repeat 24 more times</li>
 </ul></li>
 <li>stop the programming sequence:
 <ul>
-<li>drive <code>RST</code> <em>LOW</em></li>
-<li>drive <code>PIX_SELECT</code> <em>LOW</em></li>
+<li>drive <code>RST</code> <strong>LOW</strong></li>
+<li>drive <code>PIX_SELECT</code> <strong>LOW</strong></li>
 </ul></li>
 </ul>
 <h2 id="acquire-a-spectrum">Acquire a spectrum</h2>
@@ -400,29 +400,29 @@
 <p>The linear pixel array has internal switching logic to execute the spectrometer <strong>exposure</strong> and <strong>readout</strong> sequence, but like most other linear pixel arrays, the <code>LIS-770i</code> requires external logic-level signals to drive this internal switching. The <code>LIS-770i</code> also requires an external ADC to convert its analog output.</p>
 <h3 id="expose-the-spectrometer-pixels">Expose the spectrometer pixels</h3>
 <ul>
-<li>drive <code>RST</code> <em>HIGH</em> to start exposure
+<li>drive <code>RST</code> <strong>HIGH</strong> to start exposure
 <ul>
-<li>Chromation recommends waiting for the falling edge of <code>CLK</code> to drive <code>RST</code> <em>HIGH</em></li>
-<li>pixel exposure starts when the <em>HIGH</em> on <code>RST</code> is clocked in on the next rising edge of <code>CLK</code></li>
+<li>drive <code>RST</code> <strong>HIGH</strong> after a falling edge of <code>CLK</code></li>
+<li>pixel exposure starts when the <strong>HIGH</strong> on <code>RST</code> is sampled on the rising edge of <code>CLK</code></li>
 </ul></li>
 <li>wait the desired integration time by counting falling edges of <code>CLK</code>
 <ul>
-<li>for a 50kHz <code>CLK</code>, falling edges represent 20us ticks</li>
+<li>for a 50kHz <code>CLK</code>, falling edges represent 20µs ticks</li>
 <li>for example, waiting 500 ticks is a 10ms integration time</li>
 </ul></li>
-<li>drive <code>RST</code> <em>LOW</em> to stop exposure
+<li>drive <code>RST</code> <strong>LOW</strong> to stop exposure
 <ul>
-<li>again, the <em>LOW</em> is clocked in on the next rising edge of <code>CLK</code></li>
+<li>again, the <strong>LOW</strong> is sampled on the next rising edge of <code>CLK</code></li>
 </ul></li>
 </ul>
 <h3 id="immediately-readout-the-pixel-voltages">Immediately readout the pixel voltages</h3>
 <ul>
 <li>wait for a pulse on <code>SYNC</code>:
 <ul>
-<li>after <code>RST</code> is driven <em>LOW</em>, spectrometer output pin <code>SYNC</code> goes <em>HIGH</em> on the next falling edge of <code>CLK</code></li>
-<li><code>SYNC</code> goes <em>LOW</em> on the next falling edge of <code>CLK</code> (<code>SYNC</code> is <em>HIGH</em> for one clock period)</li>
+<li>after <code>RST</code> is driven <strong>LOW</strong>, spectrometer output pin <code>SYNC</code> goes <strong>HIGH</strong> on the next falling edge of <code>CLK</code></li>
+<li><code>SYNC</code> goes <strong>LOW</strong> on the next falling edge of <code>CLK</code> (<code>SYNC</code> is <strong>HIGH</strong> for one clock period)</li>
 </ul></li>
-<li>pixel readout begins on the next rising <code>CLK</code> edge after <code>SYNC</code> goes <em>LOW</em></li>
+<li>pixel readout begins on the next rising <code>CLK</code> edge after <code>SYNC</code> goes <strong>LOW</strong></li>
 <li>start each ADC conversion on each rising edge of <code>CLK</code></li>
 <li>finish each ADC conversion before the falling edge of <code>CLK</code>
 <ul>
@@ -431,7 +431,7 @@
 <li>this is easily achieved using a 50kHz clock</li>
 <li>in fact, using <em>Linear Technology #LTC1864L</em> as the ADC, both the conversion and readout of the converted samples fits within the <code>CLK</code> high time</li>
 </ul></li>
-<li>on the last pixel readout, <code>SYNC</code> pulses <em>HIGH</em> again for one clock period, starting on the falling edge of <code>CLK</code></li>
+<li>on the last pixel readout, <code>SYNC</code> pulses <strong>HIGH</strong> again for one clock period, starting on the falling edge of <code>CLK</code></li>
 </ul>
 <h1 id="reference-design">Reference Design</h1>
 <p>This is the spectrometer interface in the Chromation Spectrometer Evaluation Kit.</p>

@@ -1,4 +1,5 @@
-% Chromation Spectrometer: Interface Information for Preliminary Datasheet
+% Chromation Spectrometer Interface
+  Information for Preliminary Datasheet
 % Mike Gazes
 % December 3rd, 2018
 
@@ -15,8 +16,8 @@
   V~DD~         Supply Voltage                            2.8         3.0   3.3       V
   --            Power Consumption while active            --          5.0   10       mW
   --            Power Consumption in low-power mode       --          30    --       µW
-  V~in,HIGH~    Input logic-level *HIGH*                  V~DD~-0.7   --    V~DD~     V
-  V~in,LOW~     Input logic-level *LOW*                   --          --    0.7       V
+  V~in,HIGH~    Input logic-level **HIGH**                V~DD~-0.7   --    V~DD~     V
+  V~in,LOW~     Input logic-level **LOW**                 --          --    0.7       V
   f~CLK~        Clock Frequency                           15          50    200     kHz
   CLK~HOLD~     Clock Hold-time                           --          10    --       ns
   CLK~SETUP~    Clock Setup-time                          --          10    --       ns
@@ -40,7 +41,7 @@ V~OUT~ maximum swing        2.5x gain                           --    V~DD~-0.3 
 V~OUT~ at dark              no light                            0.60  0.84      1.1     V
 Full well                   pixels: 312.5um tall, 15.6um pitch  --    3.0e5     --      electrons
 Linearity error per pixel   1x gain, V~OUT~=5%-70% full-well    0.5   1         5       %~error~
-Conversion efficiency       pixels: 312.5um tall                --    6.5       --      uV/electron
+Conversion efficiency       pixels: 312.5um tall                --    6.5       --      µV/electron
 Image lag                   --                                  0.1   0.3       3.0     %V~SAT~
 
 Table: Electrical characteristics relevant to analog signal conditioning and ADC
@@ -81,10 +82,10 @@ Table: Recommended ADC configuration for the spectrometer interface
 
 # Recommended Clock Filter
 
-The rising edge of the `CLK` signal couples into the `VOUT` signal. Filter this
-transient with a simple passive RC filter with f~3dB~ ≥ $\frac{1}{2}$f~CLK~. This filter
-is not essential so it is safe to eliminate on ultra-low component-count
-designs. The table below shows recommended values.
+The rising edge of the clock signal couples into the V~OUT~ signal. Filter this
+transient with a simple passive RC filter with f~3dB~ ≥ $\frac{1}{2}$f~CLK~.
+This filter is not essential so it is safe to eliminate on ultra-low
+component-count designs. The table below shows recommended values.
 
  Symbol   Parameter                     Condition      MIN                 TYP       MAX    Units
 --------  ----------                    ----------    -----               -----     -----  -------
@@ -92,7 +93,7 @@ designs. The table below shows recommended values.
   R~filt~ Clock filter R                f~CLK~=50kHz   --                   10       --     kΩ
   C~filt~ Clock filter C                f~CLK~=50kHz   --                  680       --     pF
 
-Table: Recommended spectrometer `VOUT` passive RC clock filter
+Table: Recommended spectrometer V~OUT~ passive RC clock filter
 
 # Spectrometer Configuration During Wavelength Calibration
 Parameter               MIN   TYP    MAX     Units
@@ -137,14 +138,14 @@ high-level commands recognized by the *SPI slave*.
 ## Initialize the spectrometer after power-up
 The following sequence shows the recommended input logic-levels to apply after
 power-on. Start the clock signal on `CLK` after `PIX_SELECT` and `RST` are
-driven *LOW*.
+driven **LOW**.
 
 ![Spectrometer Initialization Sequence](img/initialize-spectrometer-sequence.png)
 
-- drive `PIX_SELECT` *LOW*
-    - `PIX_SELECT` idles *LOW*
-- drive `RST` *LOW*
-    - `RST` idles *LOW*
+- drive `PIX_SELECT` **LOW**
+    - `PIX_SELECT` idles **LOW**
+- drive `RST` **LOW**
+    - `RST` idles **LOW**
 - drive `CLK` with a 50kHz PWM, 50% duty cycle
     - the choice of clock speed is determined by the ADC conversion settling
       time and the speed of communication with the ADC
@@ -182,22 +183,22 @@ consists of shifting in 28 bits. Bits are shifted in on the rising edge of
 `CLK`. The sequence starts with bit 1 and ends with bit 28.
 
 - start the programming sequence:
-    - drive `PIX_SELECT` *HIGH* on a falling edge of `CLK`
-- bit 1 *HIGH* programs the pixel pitch for 15.6um
-    - drive `RST` *HIGH*
+    - drive `PIX_SELECT` **HIGH** on a falling edge of `CLK`
+- bit 1 **HIGH** programs the pixel pitch for 15.6um
+    - drive `RST` **HIGH**
     - wait for the next falling edge of `CLK`
-- bits 2 and 3 *LOW* set the analog gain to 1x
-    - drive `RST` *LOW*
+- bits 2 and 3 **LOW** set the analog gain to 1x
+    - drive `RST` **LOW**
     - wait for the next falling edge of `CLK`
-    - drive `RST` *LOW*
+    - drive `RST` **LOW**
     - wait for the next falling edge of `CLK`
-- the next 25 bits are *HIGH* to select the 312.5um pixel height
-    - drive `RST` *HIGH*
+- the next 25 bits are **HIGH** to select the 312.5um pixel height
+    - drive `RST` **HIGH**
     - wait for the next falling edge of `CLK`
     - repeat 24 more times
 - stop the programming sequence:
-    - drive `RST` *LOW*
-    - drive `PIX_SELECT` *LOW*
+    - drive `RST` **LOW**
+    - drive `PIX_SELECT` **LOW**
 
 ## Acquire a spectrum
 ![Spectrum Acquisition Sequence](img/acquire-spectrum-sequence.png)
@@ -209,23 +210,23 @@ switching. The `LIS-770i` also requires an external ADC to convert its analog
 output.
 
 ### Expose the spectrometer pixels
-- drive `RST` *HIGH* to start exposure
-    - drive `RST` *HIGH* after a falling edge of `CLK`
-    - pixel exposure starts when the *HIGH* on `RST` is sampled on the rising
+- drive `RST` **HIGH** to start exposure
+    - drive `RST` **HIGH** after a falling edge of `CLK`
+    - pixel exposure starts when the **HIGH** on `RST` is sampled on the rising
       edge of `CLK`
 - wait the desired integration time by counting falling edges of `CLK`
     - for a 50kHz `CLK`, falling edges represent 20µs ticks
     - for example, waiting 500 ticks is a 10ms integration time
-- drive `RST` *LOW* to stop exposure
-    - again, the *LOW* is sampled on the next rising edge of `CLK`
+- drive `RST` **LOW** to stop exposure
+    - again, the **LOW** is sampled on the next rising edge of `CLK`
 
 ### Immediately readout the pixel voltages
 - wait for a pulse on `SYNC`:
-    - after `RST` is driven *LOW*, spectrometer output pin `SYNC` goes *HIGH* on
+    - after `RST` is driven **LOW**, spectrometer output pin `SYNC` goes **HIGH** on
       the next falling edge of `CLK`
-    - `SYNC` goes *LOW* on the next falling edge of `CLK` (`SYNC` is *HIGH* for
+    - `SYNC` goes **LOW** on the next falling edge of `CLK` (`SYNC` is **HIGH** for
       one clock period)
-- pixel readout begins on the next rising `CLK` edge after `SYNC` goes *LOW*
+- pixel readout begins on the next rising `CLK` edge after `SYNC` goes **LOW**
 - start each ADC conversion on each rising edge of `CLK`
 - finish each ADC conversion before the falling edge of `CLK`
     - the falling edge of `CLK` may couple into the pixel output voltage, so it
@@ -236,7 +237,7 @@ output.
     - in fact, using *Linear Technology #LTC1864L* as the ADC, both the
       conversion and readout of the converted samples fits within the `CLK` high
       time
-- on the last pixel readout, `SYNC` pulses *HIGH* again for one clock period,
+- on the last pixel readout, `SYNC` pulses **HIGH** again for one clock period,
   starting on the falling edge of `CLK`
 
 # Reference Design
