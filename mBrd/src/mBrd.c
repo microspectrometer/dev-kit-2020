@@ -970,9 +970,11 @@ uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCo
     // test that peak_max does not exceed max linear value, about 45000 counts
     /* uint16_t const peak_max = 60000; // for 2.048V Vref */
      // [x] the next line of code was tested on 2018-12-13
-    uint16_t const peak_max = target_peak_counts + 10000;
-     // Does the above line of code eliminate the stair-case?
-     // Does the above line of code improve FWHM?
+    /* uint16_t const peak_max = target_peak_counts + 10000; */
+     // Does the above line of code eliminate the stair-case? almost
+     // Does the above line of code improve FWHM? don't know yet
+     // [x] the next line of code was tested on 2018-12-14
+    uint16_t const peak_max = target_peak_counts + 5000; // trying for more linearity
     /* uint16_t const peak_max = 45000; // for 2.5V Vref - 2018-11-03 */
     // max exposure to try:
     /* uint16_t const max_ntics = 65535; */
@@ -1099,7 +1101,10 @@ void AutoExpose(void)
     DebugLedsToggleAll();
     // hard-coded for now, but will come from host eventually:
     /* uint16_t target_peak_counts = 50000; // for 2.048V Vref */
-    uint16_t target_peak_counts = 30000; // for 2.048V Vref
+    // Tested 2018-12-13:
+    /* uint16_t target_peak_counts = 30000; // for 2.048V Vref */
+    // Tested 2018-12-14:
+    uint16_t target_peak_counts = 25000; // trying for more linearity
     /* uint16_t target_peak_counts = 35000; // for 2.5V Vref - 2018-11-03 */
     // a func-ptr to how to get a frame and return the peak counts
     /* uint16_t (*PeakCounts)(void) = PeakCounts_Stub; */
