@@ -56,11 +56,14 @@ build/%.lst: build/%.elf
 # Add `avr-size blah.elf` to see how much memory is used.
 .PHONY: download_flash
 download_flash: build/${board-name}.elf
-	atprogram.exe --tool avrispmk2 --interface isp \
+	atprogram.exe --tool atmelice --interface isp \
 		--device atmega328p program --chiperase --verify --file $^
 	avr-size $^
-#	atprogram.exe --tool atmelice --interface isp \
+
+.PHONY: other_download_flash_commands
+	# atprogram.exe --tool avrispmk2 --interface isp \
 		--device atmega328p program --chiperase --verify --file $^
+	# avr-size $^
 #	# atprogram.exe --verbose --tool atmelice --interface isp \
 #	# 	--device atmega328p program --chiperase --verify --file \
 #	# 	$^ > \
@@ -72,8 +75,8 @@ download_flash: build/${board-name}.elf
 # Test USB communication with the AVR programmer.
 .PHONY: test_programmer_is_connected
 test_programmer_is_connected:
-#	atprogram.exe --tool atmelice --interface isp --device atmega328p info
-	atprogram.exe --tool avrispmk2 --interface isp --device atmega328p info
+	atprogram.exe --tool atmelice --interface isp --device atmega328p info
+	# atprogram.exe --tool avrispmk2 --interface isp --device atmega328p info
 # ;mkv
 # Check voltage on target PCB. 2018-03-20: I see 2.94V.
 # This is included in the output of 'info'.

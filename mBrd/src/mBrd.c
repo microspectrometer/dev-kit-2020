@@ -966,13 +966,19 @@ uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCo
     // 2018-10-31 measurements with RGB LED:
         // measure soft saturation starting at 60000 counts
         // measured hard clipping around 63000 counts
+    // TODO: [ ] set peak_max as 10000 counts above target_peak_counts so add
+    // test that peak_max does not exceed max linear value, about 45000 counts
     /* uint16_t const peak_max = 60000; // for 2.048V Vref */
-    uint16_t const peak_max = 40000; // [ ] 2018-11-28 not tested: does this help the sweep data for the 2.048V Vref?
+     // [x] the next line of code was tested on 2018-12-13
+    uint16_t const peak_max = target_peak_counts + 10000;
+     // Does the above line of code eliminate the stair-case?
+     // Does the above line of code improve FWHM?
     /* uint16_t const peak_max = 45000; // for 2.5V Vref - 2018-11-03 */
     // max exposure to try:
     /* uint16_t const max_ntics = 65535; */
     /* uint16_t const max_ntics = 15000; // max exposure to try */
-    uint16_t const max_ntics = 50000; // max exposure to try
+    /* uint16_t const max_ntics = 50000; // max exposure to try is 1s */
+    uint16_t const max_ntics = 25000; // max exposure to try is 0.5s
     while (!done)
     {
         DebugLedsToggleAll();
@@ -1092,7 +1098,8 @@ void AutoExpose(void)
     // TODO: [ ] make target_peak_counts an input
     DebugLedsToggleAll();
     // hard-coded for now, but will come from host eventually:
-    uint16_t target_peak_counts = 50000; // for 2.048V Vref
+    /* uint16_t target_peak_counts = 50000; // for 2.048V Vref */
+    uint16_t target_peak_counts = 30000; // for 2.048V Vref
     /* uint16_t target_peak_counts = 35000; // for 2.5V Vref - 2018-11-03 */
     // a func-ptr to how to get a frame and return the peak counts
     /* uint16_t (*PeakCounts)(void) = PeakCounts_Stub; */
