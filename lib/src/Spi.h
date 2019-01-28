@@ -6,6 +6,8 @@
 #include "ReadWriteBits.h"
 
 /* =====[ AVR asm macros ]===== */
+// TODO: replace the next two lines of code with a #include "AvrAsmMacros.h"
+// and put the #include in the Spi.c lib file.
 extern void (*GlobalInterruptEnable)(void);
 extern void (*GlobalInterruptDisable)(void);
 /* #ifndef _AVR_INTERRUPT_H_ */

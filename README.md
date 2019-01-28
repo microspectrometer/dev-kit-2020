@@ -1383,6 +1383,235 @@ two calls, e.g., `{true, true}`. So it is good practice to always explicitly put
 the array of return values in the test and *not* rely on the default *example*
 value.
 
+# Design patterns
+I use two design patterns. I call them the `API pattern` and the `Hardware
+Abstraction pattern`.
+
+## API pattern
+This is the standard C style of modular programming. Start with some
+application code and separate details out to libs. The motivation is to make the
+application code easier to reason about.
+
+All of my simple APIs are function calls. A more complex API provides abstract
+data types and function calls to work with instances of those abstract data
+types.
+
+The application code includes the lib header so that it can access the
+API provided by the lib. The lib has functions and variables the application
+does not need. These are kept private by keeping their declarations out of the
+header, so the application cannot see these. The application uses functions and
+variables with the same name without a name conflict when the application object
+file is linked with the lib object file.
+
+### The lib header is only declarations for the API or for testing
+*The lib puts declarations in the header, but no definitions.* The declarations
+are functions, function pointers declared extern, and abstract data types
+(forward-declared structs).
+
+#### function declarations
+- **function declarations** are the API calls
+- Example:
+```c
+uint8_t SpiSlaveRead(void);
+```
+
+#### function pointer extern declarations
+- **function pointer extern declarations** expose lib private functions for
+  testing
+- Example:
+```c
+extern uint8_t (*ReadSpiStatusRegister)(void);
+```
+- the client application is not *supposed to* call this function, but it has to
+  be exposed for testing: the best I can do is indicate this with commented
+  headings to separate the porcelain from the plumbing
+- in the above example, `test_Spi_MockUps.c` provides the recipe for
+  `test_Spi.c` to reassign `ReadSpiStatusRegister` to a stubbed definition;
+  `test_Spi.c` assigns it to the stub during test setup and reassigns it to the
+  actual implementation during test teardown
+- this way, `test_Spi.c` mocks `ReadSpiStatusRegister` while testing other code
+  that calls it
+- the mock enables the test to verify the function is called, was passed the
+  correct inputs if any, and to control the value it returns if any
+
+- **function pointer extern declarations** also enable tests to redirect API
+  calls
+- Example:
+```c
+extern void (*SpiSlaveSignalDataIsReady)(void);
+```
+- same idea as redirecting private function calls, except here it is an API call
+  that needs mocking in the test suite
+- not all API calls need mocking, so some are left as function declarations
+
+#### abstract data type declarations
+- **abstract data type declarations** are the API objects
+- I don't have any in LIS-770i API, but the idea is the client uses the API to
+  interace the object without knowing its internal structure which is hidden in
+  the lib.c file. There's not enough memory on the microcontroller to store
+  large data structures. Most of the memory is taken up by the LIS frame
+  readout. But I do use an abstract data type in my `mock-c` lib.
+- Example:
+```c
+// mock-c/include/Mock.h
+typedef struct Mock_s Mock_s;
+```
+- the implementation of `Mock_s` is hidden, but API calls are provided for
+  working with the `Mock_s`:
+```c
+Mock_s * Mock_new(void);
+void Mock_destroy(Mock_s *self);
+void RecordExpectedCall(Mock_s *self, RecordedCall *func_call);
+void RecordActualCall(Mock_s *self, RecordedCall *func_call);
+void RecordArg(RecordedCall *self, RecordedArg *input_arg);
+void PrintAllCalls(Mock_s *self);  // Example
+bool RanAsHoped(Mock_s *self);
+char const * WhyDidItFail(Mock_s *self);
+char const * ListAllCalls(Mock_s *self);  // alternate to WhyDidItFail()
+```
+
+### Lib header has definitions for `inline` and `#define`
+Everything in the header is a delcaration, no definitions. But there are two
+exceptions:
+
+1. `inline` functions: To enable the compiler to inline a lib function in the
+   client code, the definition must go in the lib header (and the declaration
+   goes in the lib .c file to emit the symbol when the lib is compiled).
+2. `#define` macros: The presence of a `#define` macro in one of my lib headers
+   indicates a kludge fix.
+
+## Hardware abstraction pattern
+The lib depends on a value specific to the application: a pin name, register
+name, or vendor-specific macro. Breaking this dependency makes the lib re-usable
+with other microcontroller targets. More importantly, it makes the lib testable
+on the development target.
+
+### Scheme for variables: extern in lib header, defined in client
+The lib header declares the variable `extern` and does not define it. The
+variable is linked to the definition in the client when lib.o is linked to
+the client.o. If client.o is the application, this is the actual hardware value.
+If client.o is the test code, this is a fake value. This may not seem too
+important for pin names, but register names it is essential. The address space
+used on a microcontroller is completely forbidden to the user space on the
+development computer that runs the unit tests.
+
+Here are the details on how this plays out for a variable.
+
+#### Variable definition goes in the client code
+The definition goes in the application. To reduce noise in the application code,
+this goes in its own header:
+```c
+// mBrd/src/Spi-Hardware.h
+uint8_t const Spi_Ss    =   PB2;    // slave select driven by the master
+```
+which the application includes:
+```c
+// mBrd/src/mBrd.c
+#include "Spi-Hardware.h"       // map SPI I/O to actual hardware
+```
+
+The lib test code follows the same structure. The definition goes in a fake
+version of this hardware header:
+```c
+// lib/test/fake/Spi-Hardware.h
+uint8_t const Spi_Ss    =   2;    // slave select driven by the master
+```
+which the test includes:
+```c
+// lib/test/test_Spi.c
+#include "fake/Spi-Hardware.h"  // fake hardware dependencies in Spi.h
+```
+
+#### Variable `extern` declaration goes in the lib header
+The lib code uses the variable defined in the client. The variable must be
+defined `extern` in the lib so that the variable name in `test_lib.o` is linked
+with the symbol defined in `client.o`.
+
+```c
+// lib/src/Spi.h
+extern uint8_t const Spi_Ss;
+```
+and of course the lib.c can see this variable because it includes lib.h:
+```c
+// lib/src/Spi.c
+#include "Spi.h"
+```
+
+
+### Scheme for macros: same as scheme for variables
+The implementation looks a little different but the idea is exactly the same.
+Unlike the variables, macros are not tied to a specific lib. For example, many
+libs call the interrupt enable and disable macros or the delay macros. So the
+macros go in their own header-only lib. And this headery-only lib doesn't
+actually contain the macros, just declarations for pointers to functions that
+are called in place of the macro:
+```c
+// lib/src/AvrAsmMacros.h
+extern void (*GlobalInterruptEnable)(void);
+extern void (*GlobalInterruptDisable)(void);
+```
+
+The macro is wrapped in a function in an `AvrAsmMacros.c` that is compiled and
+linked with the application code:
+```c
+// simBrd/src/AvrAsmMacros.c
+static void GlobalInterruptEnable_Implementation(void)
+{ sei(); }
+```
+
+The test client is compiled and linked with a fake `AvrAsmMacros.c` that defines
+an empty implementation to stub the wrapper:
+```c
+// lib/test/fake/AvrAsmMacros.c
+static void GlobalInterruptEnable_Implementation(void) {}
+```
+
+Both source files define a function pointer assigned to the implementation:
+```c
+// simBrd/src/AvrAsmMacros.c
+// lib/test/fake/AvrAsmMacros.c
+void (*GlobalInterruptEnable)(void) = GlobalInterruptEnable_Implementation;
+```
+
+The function pointer is declared extern in a header-only lib. The header is
+included in .c source files that call the function (in lieu of the macro). The
+.c source files include libs, test code, and the application.
+
+Here is the header again:
+```c
+// lib/src/AvrAsmMacros.h
+extern void (*GlobalInterruptEnable)(void);
+extern void (*GlobalInterruptDisable)(void);
+```
+
+The client code and lib code call the function pointer in place of the macro.
+When the client is the application, the function call points to a definition
+that calls the macro. When the client is the test code, the function call points
+to the empty definition. The lib code does not define the function pointer --
+calls to the function are resolved when the lib.o is linked to the client.o.
+
+The last part that makes all this work is the build recipe:
+
+```make
+# mBrd/Makefile
+avr-asm-macros := src/AvrAsmMacros.c
+build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
+```
+
+```make
+# simBrd/Makefile
+avr-asm-macros := src/AvrAsmMacros.c
+build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
+```
+
+And the Makefile for the lib test code is with the libs:
+```make
+# lib/Makefile
+avr-asm-macros := test/fake/AvrAsmMacros.c
+build/TestSuite.exe: ${test-runner} ${avr-asm-macros} ${obj_dev-libs} ${obj_libs-tested} \
+${obj_libs-tested-with-mocks} ${obj_libs-mocked} ${obj_shared-lib_mock-c}
+```
+
 # Weird embedded stuff
 ## C to assembly
 ### `cbi` and `sbi` are only for registers `0x00` to `0x1F`
@@ -1718,43 +1947,86 @@ My solution is similar to how I fake register and pin names.
 - the `hardware` header file defines variables and assigns them to the
   register and pin names, just as a variable would be assigned to any literal
   value
-    - e.g.:
+- e.g.:
 ```c
+// mBrd/src/Spi-Hardware.h
 uint8_t volatile * const Spi_spcr   = &SPCR;  // SPI control register
 uint8_t const Spi_ClockRateBit0     = SPR0;
 ```
-- I create the *faking* seam by substituting the macro with a variable
-- a `uint8_t const` is a ~~good~~ great substitute for a macro defined with an
-  unsigned 8-bit value
-- this is where I get to suffix the variables with names reflecting which of my
-  libs they belong to
-    - this is just the old *no magic numbers* mantra
-    - I shift the name from the langauge domain into the solution domain
-    - for example, while developing code, I care about what the pin is used for,
-      e.g., the `Spi` lib, so I suffix it:
+
+This creates a seam for the *stub* or *fake*. It substitutes the macro with a
+variable. I need a variable rather than a macro so that I can assign the value
+appropriate to the translation unit it is in: the test runner's translation unit
+stubs the value, and the application's translation unit assigns the
+hardware-specific value. For example, use `uint8_t const` to substitute for a
+macro defining an 8-bit register or a bit number. `const` gives me help from the
+compiler if I accidentally try to write the variable after initialization. This
+replaces `#define` which uses the pre-processor to achieve the same end goal.
+
+While creating this seam I also abstract the name. I suffix the variables with
+names reflecting which of my libs they belong to.
+
+- this is just the old *no magic numbers* mantra
+- I shift the name from the language domain or hardware domain into the solution
+  domain
+
+For example, while developing code, I care about what the pin is used for, e.g.,
+the `Spi` lib, so I suffix it:
 ```c
+// mBrd/src/Spi-Hardware.h
 uint8_t const Spi_Ss    =   PB2;    // slave select driven by the master
 ```
-    - I do not care that a pin is on `PORTB` -- that detail was
-      important during PCB layout and planning for the functionality of the
-      embedded system, but I want to forget that detail while developing code
-    - My lib header only has the solution-domain name:
+I do not care that a pin is on `PORTB` -- that detail was important during PCB
+layout and planning for the functionality of the embedded system, but I want to
+forget that detail while developing code. My lib header only has the
+solution-domain name:
 ```c
+// lib/src/Spi.h
 extern uint8_t const Spi_Ss;
 ```
-    - the same pin can even be used by more than one lib!
+The same hardware pin can even be used by more than one lib! The lib code is
+truly abstracted from the hardware.
+
+To make this scheme work:
+
 - The lib header file:
     - declares those variables as `extern`
     - only has to match the datatype in the `hardware` header file
 - My test code is otherwise ignorant of the `hardware` header file and defines
-  those variables with arbitrary values
+  those variables in a `fake` header folder to mirror how it is done in the
+  application code:
+```c
+// lib/test/test_Spi.c
+#include "Spi.h"                // lib under test
+#include "fake/Spi-Hardware.h"  // fake hardware dependencies in Spi.h
+```
+- the `extern` is resolved here:
+```c
+// lib/test/fake/Spi-Hardware.h
+uint8_t const Spi_Ss    =   2;    // slave select driven by the master
+```
+- My application code defines the hardware values in a separate `hardware` file
+  to keep the code clean:
+```c
+// mBrd/src/Spi-Hardware.h
+uint8_t const Spi_Ss    =   PB2;    // slave select driven by the master
+```
+- And the application code includes the lib header to access the lib and the
+  hardware header to define the `extern` hardware abstractions in the lib:
+```c
+#include <Spi.h>                // Chromation spectrometer is a SPI slave
+#include "Spi-Hardware.h"       // map SPI I/O to actual hardware
+```
+
 
 #### Solution for faking AVR asm macros
 The solution is a little different because the asm macros are not just numbers,
 they are inline assembly code. I cannot create the *faking seam* with a simple
-`const` variable. I create the *faking seam* by wrapping the macro in a
-function. Similar to setting up a function for stubbing, I keep the macro
-wrapper as a private implementation and expose the function pointer for the API.
+`const` variable.
+
+I create the *faking seam* by wrapping the macro in a function. Similar to
+setting up a function for stubbing, I keep the macro wrapper as a private
+implementation and expose the function pointer for the API.
 
 Here is the implementation in the `.c` file for the avr targets:
 ```c

@@ -25,9 +25,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  10 .debug_str    00001990  00000000  00000000  00008d18  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000f4f  00000000  00000000  0000a6a8  2**0
+ 11 .debug_loc    00000f50  00000000  00000000  0000a6a8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000003b8  00000000  00000000  0000b5f7  2**0
+ 12 .debug_ranges 000003b8  00000000  00000000  0000b5f8  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1260,8 +1260,8 @@ void ShowSpiDataOnDebugLeds(void)
  906:	ec 01       	movw	r28, r24
  908:	7b 01       	movw	r14, r22
  90a:	8c 01       	movw	r16, r24
- 90c:	08 57       	subi	r16, 0x78	; 120
- 90e:	1c 4e       	sbci	r17, 0xEC	; 236
+ 90c:	00 5f       	subi	r16, 0xF0	; 240
+ 90e:	18 4d       	sbci	r17, 0xD8	; 216
  910:	98 ea       	ldi	r25, 0xA8	; 168
  912:	c9 2e       	mov	r12, r25
  914:	91 e6       	ldi	r25, 0x61	; 97
@@ -1354,8 +1354,8 @@ void ShowSpiDataOnDebugLeds(void)
  9de:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
  9e2:	66 e9       	ldi	r22, 0x96	; 150
  9e4:	72 e0       	ldi	r23, 0x02	; 2
- 9e6:	88 ea       	ldi	r24, 0xA8	; 168
- 9e8:	91 e6       	ldi	r25, 0x61	; 97
+ 9e6:	80 e2       	ldi	r24, 0x20	; 32
+ 9e8:	9e e4       	ldi	r25, 0x4E	; 78
  9ea:	0e 94 78 04 	call	0x8f0	; 0x8f0 <NticsExposureToHitTarget>
  9ee:	99 83       	std	Y+1, r25	; 0x01
  9f0:	8a 83       	std	Y+2, r24	; 0x02
