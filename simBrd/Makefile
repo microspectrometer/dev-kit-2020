@@ -10,8 +10,9 @@ unit-test: ${test-output}
 #=====[ Compiler and Linker flags ]=====
 CFLAGS = -I../lib/src -Isrc \
 	-g -Wall -Wextra -pedantic -Wno-pointer-sign\
-	-O1 -ffunction-sections -fdata-sections -fshort-enums \
+	-O3 -ffunction-sections -fdata-sections -fshort-enums \
 		-mmcu=atmega328p -B ${atmega328_lib}
+#Used to be -O1, not sure why.
 #The avr ld.exe does not recognize any of these
 #LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
 
@@ -58,16 +59,17 @@ build/%.lst: build/%.elf
 # Add `avr-size blah.elf` to see how much memory is used.
 .PHONY: download_flash
 download_flash: build/${board-name}.elf
-	atprogram.exe --tool avrispmk2 --interface isp \
+	atprogram.exe --tool atmelice --interface isp \
 		--device atmega328p program --chiperase --verify --file $^
 	avr-size $^
-#	atprogram.exe --tool atmelice --interface isp \
-		--device atmega328p program --chiperase --verify --file $^
-#	# atprogram.exe --verbose --tool atmelice --interface isp \
+# atprogram.exe --verbose --tool atmelice --interface isp \
 #		# --device atmega328p program --chiperase --verify --file \
 #		# $^ > \
 #		# build/atprogram-download_flash-stdout.log 2> \
 #		# build/atprogram-download_flash-stderr.log
+#	atprogram.exe --tool avrispmk2 --interface isp \
+#		--device atmega328p program --chiperase --verify --file $^
+#	avr-size $^
 
 #---Development---
 # ;mkp
