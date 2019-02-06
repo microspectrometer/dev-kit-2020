@@ -6,6 +6,7 @@
 #include "ReadWriteBits.h"  // for bit manipulation as macros
 
 /* =====[ AVR asm macros ]===== */
+// TODO: replace following line with a #include AvrAsmMacros.h
 extern void (*Delay3CpuCyclesPerTick)(uint8_t);
 
 /* =====[ UartSpi API ]===== */
