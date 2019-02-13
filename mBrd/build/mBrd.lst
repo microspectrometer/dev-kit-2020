@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 00000420  00000000  00000000  00001050  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00004201  00000000  00000000  00001470  2**0
+  6 .debug_info   00004203  00000000  00000000  00001470  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000013f1  00000000  00000000  00005671  2**0
+  7 .debug_abbrev 000013f1  00000000  00000000  00005673  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000239e  00000000  00000000  00006a62  2**0
+  8 .debug_line   0000239e  00000000  00000000  00006a64  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000a28  00000000  00000000  00008e00  2**2
+  9 .debug_frame  00000a28  00000000  00000000  00008e04  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000019e6  00000000  00000000  00009828  2**0
+ 10 .debug_str    000019e6  00000000  00000000  0000982c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000153a  00000000  00000000  0000b20e  2**0
+ 11 .debug_loc    0000153a  00000000  00000000  0000b212  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000004d0  00000000  00000000  0000c748  2**0
+ 12 .debug_ranges 000004d0  00000000  00000000  0000c74c  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1293,9 +1293,9 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  93a:	cd b7       	in	r28, 0x3d	; 61
  93c:	de b7       	in	r29, 0x3e	; 62
  93e:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- 942:	78 ea       	ldi	r23, 0xA8	; 168
+ 942:	70 e5       	ldi	r23, 0x50	; 80
  944:	e7 2e       	mov	r14, r23
- 946:	71 e6       	ldi	r23, 0x61	; 97
+ 946:	73 ec       	ldi	r23, 0xC3	; 195
  948:	f7 2e       	mov	r15, r23
  94a:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
  94e:	40 9a       	sbi	0x08, 0	; 8
@@ -1356,8 +1356,8 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  9d2:	bb cf       	rjmp	.-138    	; 0x94a <AutoExpose+0x1e>
  9d4:	80 91 fb 01 	lds	r24, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
  9d8:	90 91 fc 01 	lds	r25, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
- 9dc:	88 3a       	cpi	r24, 0xA8	; 168
- 9de:	21 e6       	ldi	r18, 0x61	; 97
+ 9dc:	80 35       	cpi	r24, 0x50	; 80
+ 9de:	23 ec       	ldi	r18, 0xC3	; 195
  9e0:	92 07       	cpc	r25, r18
  9e2:	80 f4       	brcc	.+32     	; 0xa04 <AutoExpose+0xd8>
  9e4:	9c 01       	movw	r18, r24
@@ -1374,12 +1374,12 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  9fa:	90 93 fc 01 	sts	0x01FC, r25	; 0x8001fc <Lis_nticks_exposure+0x1>
  9fe:	80 93 fb 01 	sts	0x01FB, r24	; 0x8001fb <Lis_nticks_exposure>
  a02:	a3 cf       	rjmp	.-186    	; 0x94a <AutoExpose+0x1e>
- a04:	88 ea       	ldi	r24, 0xA8	; 168
- a06:	91 e6       	ldi	r25, 0x61	; 97
+ a04:	80 e5       	ldi	r24, 0x50	; 80
+ a06:	93 ec       	ldi	r25, 0xC3	; 195
  a08:	90 93 fc 01 	sts	0x01FC, r25	; 0x8001fc <Lis_nticks_exposure+0x1>
  a0c:	80 93 fb 01 	sts	0x01FB, r24	; 0x8001fb <Lis_nticks_exposure>
- a10:	88 ea       	ldi	r24, 0xA8	; 168
- a12:	91 e6       	ldi	r25, 0x61	; 97
+ a10:	80 e5       	ldi	r24, 0x50	; 80
+ a12:	93 ec       	ldi	r25, 0xC3	; 195
  a14:	99 83       	std	Y+1, r25	; 0x01
  a16:	8a 83       	std	Y+2, r24	; 0x02
  a18:	8e 01       	movw	r16, r28
@@ -1433,8 +1433,8 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  a7c:	e8 f4       	brcc	.+58     	; 0xab8 <AutoExpose+0x18c>
  a7e:	20 91 fb 01 	lds	r18, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
  a82:	30 91 fc 01 	lds	r19, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
- a86:	28 3a       	cpi	r18, 0xA8	; 168
- a88:	f1 e6       	ldi	r31, 0x61	; 97
+ a86:	20 35       	cpi	r18, 0x50	; 80
+ a88:	f3 ec       	ldi	r31, 0xC3	; 195
  a8a:	3f 07       	cpc	r19, r31
  a8c:	08 f0       	brcs	.+2      	; 0xa90 <AutoExpose+0x164>
  a8e:	ba cf       	rjmp	.-140    	; 0xa04 <AutoExpose+0xd8>
@@ -1445,8 +1445,8 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  a9a:	40 e0       	ldi	r20, 0x00	; 0
  a9c:	50 e0       	ldi	r21, 0x00	; 0
  a9e:	0e 94 d1 06 	call	0xda2	; 0xda2 <__udivmodsi4>
- aa2:	29 3a       	cpi	r18, 0xA9	; 169
- aa4:	81 e6       	ldi	r24, 0x61	; 97
+ aa2:	21 35       	cpi	r18, 0x51	; 81
+ aa4:	83 ec       	ldi	r24, 0xC3	; 195
  aa6:	38 07       	cpc	r19, r24
  aa8:	41 05       	cpc	r20, r1
  aaa:	51 05       	cpc	r21, r1

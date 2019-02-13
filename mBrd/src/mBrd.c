@@ -1027,8 +1027,8 @@ uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCo
     // max exposure to try:
     /* uint16_t const max_ntics = 65535; */
     /* uint16_t const max_ntics = 15000; // max exposure to try */
-    /* uint16_t const max_ntics = 50000; // max exposure to try is 1s */
-    uint16_t const max_ntics = 25000; // max exposure to try is 0.5s
+    uint16_t const max_ntics = 50000; // max exposure to try is 1s
+    /* uint16_t const max_ntics = 25000; // max exposure to try is 0.5s */
     /* // track values already tried to avoid oscillating forever */
     /* uint16_t tried_Lis_nticks_exposure_10x = 0 */
     /* uint16_t tried_Lis_nticks_exposure_half = 0 */
