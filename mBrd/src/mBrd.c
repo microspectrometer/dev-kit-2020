@@ -185,6 +185,47 @@ uint8_t lis_gain = lis_gain_5x;  // default gain is 5x, set when parsing cmd
 #define lis_row1234     8
 uint8_t lis_rowselect = lis_row12345;
 
+void ZeroOutUnusedPixels(void)
+{
+    /* =====[ Context ]===== */
+    // This is a throwaway function to meet today's goal.
+    // Today's goal is to ship a kit to STMicro.
+    //
+    // Auto-exposing a weak response is cripppled by bad pixels.
+    // A bad pixel has a stronger dark response than a weakly illuminated pixel.
+    // Auto-expose thinks it is done if a bad pixel hits the counts target.
+    // Auto-expose does not know what the usable pixel range is.
+    //
+    // Responsivity is weak at the extremes of the wavelength range.
+    // Bad pixels, therefore, prevent characterizing the full wavlength range.
+    //
+    // My temporary fix is to zero the unused pixels in SRAM after readout.
+    //
+    // TODO: implement this by *not reading* the unused pixels in the first
+    // place. I am not doing this *now* because I don't have time.
+    // This requires getting the SPI master, SPI slave, *and* the host PC
+    // to all agree on how many pixels are in a frame.
+    //
+    // What I am doing in the temporary fix is *stupid*. I spend time reading
+    // out 392 pixels and sending those pixels over SPI and over USB, and
+    // 292 of those 392 pixels are just zero.
+
+    // determine the first used pixel
+    // usable range is 292-to-end binned, 292*2-to-end not binned
+    uint16_t first_used_pixel;
+    if (lis_sum_mode == lis_summing_on) first_used_pixel = 292;
+    else                                first_used_pixel = 292*2;
+
+    // walk the frame and zero out unused pixels
+    Lis_npixels_counter = 0;  // initialize the global pixel counter
+    pframe = full_frame;  // point to the start of pixel readout memory
+    while (Lis_npixels_counter++ < first_used_pixel)
+    {
+        *pframe++ = 0;
+        *pframe++ = 0;
+    }
+}
+
 void LisFrameReadout(void)
 {
     // Debug: initial readout works fine. Subsequent readouts do not happen.
@@ -242,6 +283,9 @@ void LisFrameReadout(void)
     // PASS: I have the exact number of readings.
     // Observed on scope: the Lis Sync pulse fires on the very last reading.
     // Should I check for that in software? Nope.
+
+    // [ ] 2019-02-13 temporary fix: zero-out pixels outside the usable range.
+    ZeroOutUnusedPixels();
 }
 int main()
 {
@@ -1082,6 +1126,31 @@ uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCo
 /*     return 65501; */
 /* } */
 static uint16_t PeakCounts_Implementation(void)
+{
+    // TODO: Restrict peak finding to the usable pixel range.
+
+    /* =====[ get a frame ]===== */
+    MacroDebugLedsTurnRed(debug_led1);
+    LisFrameReadout();  // store pixel readout in SRAM
+    MacroDebugLedsTurnGreen(debug_led1);
+    /* =====[ get the peak ]===== */
+    // determine the number of pixels in a frame
+    uint16_t npixels_in_frame;
+    if (lis_sum_mode == lis_summing_on) npixels_in_frame = npixels_binned;
+    else                                npixels_in_frame = npixels;
+    // walk the frame to find the peak
+    Lis_npixels_counter = 0;  // initialize the global pixel counter
+    pframe = full_frame;  // point to the start of pixel readout memory
+    uint16_t peak = 0;
+    while (Lis_npixels_counter++ < npixels_in_frame)
+    {
+        uint16_t this = (*(pframe++))<<8;
+        this |= (*(pframe++));
+        if (this > peak) peak = this;
+    }
+    return peak;
+}
+static uint16_t PeakCounts_Implementation_Use_All_Pixels(void)
 {
     /* =====[ get a frame ]===== */
     MacroDebugLedsTurnRed(debug_led1);
