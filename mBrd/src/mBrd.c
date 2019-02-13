@@ -187,9 +187,12 @@ uint8_t lis_rowselect = lis_row12345;
 
 void ZeroOutUnusedPixels(void)
 {
+    /* =====[ Replaced by updated version of `PeakCounts` ]===== */
+
     /* =====[ Context ]===== */
     // This is a throwaway function to meet today's goal.
     // Today's goal is to ship a kit to STMicro.
+    // And I threw it away after updating `PeakCounts`.
     //
     // Auto-exposing a weak response is cripppled by bad pixels.
     // A bad pixel has a stronger dark response than a weakly illuminated pixel.
@@ -284,8 +287,9 @@ void LisFrameReadout(void)
     // Observed on scope: the Lis Sync pulse fires on the very last reading.
     // Should I check for that in software? Nope.
 
-    // [ ] 2019-02-13 temporary fix: zero-out pixels outside the usable range.
-    ZeroOutUnusedPixels();
+    // [x] 2019-02-13 temporary fix: zero-out pixels outside the usable range.
+    // this fix works, but I made a better fix in `PeakCounts()`
+    /* ZeroOutUnusedPixels(); */
 }
 int main()
 {
@@ -1134,13 +1138,22 @@ static uint16_t PeakCounts_Implementation(void)
     LisFrameReadout();  // store pixel readout in SRAM
     MacroDebugLedsTurnGreen(debug_led1);
     /* =====[ get the peak ]===== */
+    // determine the first used pixel
+    // usable range is 292-to-end binned, 292*2-to-end not binned
+    uint16_t first_used_pixel;
+    if (lis_sum_mode == lis_summing_on) first_used_pixel = 292;
+    else                                first_used_pixel = 292*2;
+
     // determine the number of pixels in a frame
     uint16_t npixels_in_frame;
     if (lis_sum_mode == lis_summing_on) npixels_in_frame = npixels_binned;
     else                                npixels_in_frame = npixels;
+
     // walk the frame to find the peak
-    Lis_npixels_counter = 0;  // initialize the global pixel counter
-    pframe = full_frame;  // point to the start of pixel readout memory
+    Lis_npixels_counter = first_used_pixel;  // initialize the global pixel counter
+    uint8_t const bytes_per_pixel = 2;
+    uint16_t offset_into_frame = first_used_pixel*bytes_per_pixel;
+    pframe = full_frame + offset_into_frame;  // point to first used pixel in readout memory
     uint16_t peak = 0;
     while (Lis_npixels_counter++ < npixels_in_frame)
     {
