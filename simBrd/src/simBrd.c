@@ -789,6 +789,7 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
                 else if (rowselect == cmd_cfg_lis_rowselect_12)     MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12);
                 else if (rowselect == cmd_cfg_lis_rowselect_123)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_123);
                 else if (rowselect == cmd_cfg_lis_rowselect_1234)   MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1234);
+                else if (rowselect == cmd_cfg_lis_rowselect_124)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_124);
                 else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12345);
                 if (cmd == cmd_write_cfg_to_lis) MacroSpiMasterWriteAndDelay(cmd_write_cfg_to_lis);
             }

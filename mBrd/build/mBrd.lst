@@ -3,31 +3,31 @@ build/mBrd.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000144  00800100  00000e40  00000ed4  2**0
+  0 .data         0000015e  00800100  00000e96  00000f2a  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000e40  00000000  00000000  00000094  2**1
+  1 .text         00000e96  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000629  00800244  00800244  00001018  2**0
+  2 .bss          00000629  0080025e  0080025e  00001088  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00001018  2**0
+  3 .comment      00000030  00000000  00000000  00001088  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00001048  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000010b8  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000420  00000000  00000000  00001088  2**0
+  5 .debug_aranges 00000420  00000000  00000000  000010f8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000041f8  00000000  00000000  000014a8  2**0
+  6 .debug_info   0000421d  00000000  00000000  00001518  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000013e0  00000000  00000000  000056a0  2**0
+  7 .debug_abbrev 000013e0  00000000  00000000  00005735  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000023a5  00000000  00000000  00006a80  2**0
+  8 .debug_line   00002417  00000000  00000000  00006b15  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000a28  00000000  00000000  00008e28  2**2
+  9 .debug_frame  00000a28  00000000  00000000  00008f2c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000019e6  00000000  00000000  00009850  2**0
+ 10 .debug_str    00001a1a  00000000  00000000  00009954  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00001525  00000000  00000000  0000b236  2**0
+ 11 .debug_loc    00001530  00000000  00000000  0000b36e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000004e0  00000000  00000000  0000c75b  2**0
+ 12 .debug_ranges 000004e0  00000000  00000000  0000c89e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -47,10 +47,10 @@ Disassembly of section .text:
   2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  38:	0c 94 d4 06 	jmp	0xda8	; 0xda8 <__vector_14>
-  3c:	0c 94 df 06 	jmp	0xdbe	; 0xdbe <__vector_15>
+  38:	0c 94 ff 06 	jmp	0xdfe	; 0xdfe <__vector_14>
+  3c:	0c 94 0a 07 	jmp	0xe14	; 0xe14 <__vector_15>
   40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  44:	0c 94 ad 06 	jmp	0xd5a	; 0xd5a <__vector_17>
+  44:	0c 94 d8 06 	jmp	0xdb0	; 0xdb0 <__vector_17>
   48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -72,18 +72,18 @@ Disassembly of section .text:
   74:	12 e0       	ldi	r17, 0x02	; 2
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e0 e4       	ldi	r30, 0x40	; 64
+  7a:	e6 e9       	ldi	r30, 0x96	; 150
   7c:	fe e0       	ldi	r31, 0x0E	; 14
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
-  84:	a4 34       	cpi	r26, 0x44	; 68
+  84:	ae 35       	cpi	r26, 0x5E	; 94
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
 
 0000008a <__do_clear_bss>:
   8a:	28 e0       	ldi	r18, 0x08	; 8
-  8c:	a4 e4       	ldi	r26, 0x44	; 68
+  8c:	ae e5       	ldi	r26, 0x5E	; 94
   8e:	b2 e0       	ldi	r27, 0x02	; 2
   90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
 
@@ -91,11 +91,11 @@ Disassembly of section .text:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	ad 36       	cpi	r26, 0x6D	; 109
+  94:	a7 38       	cpi	r26, 0x87	; 135
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 99 06 	call	0xd32	; 0xd32 <main>
-  9e:	0c 94 1e 07 	jmp	0xe3c	; 0xe3c <_exit>
+  9a:	0e 94 c4 06 	call	0xd88	; 0xd88 <main>
+  9e:	0c 94 49 07 	jmp	0xe92	; 0xe92 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -185,18 +185,18 @@ void DebugLedsTurnAllRed(void)
     SetBit(DebugLeds_port, debug_led4);
  10c:	cf 93       	push	r28
  10e:	df 93       	push	r29
- 110:	c0 91 42 02 	lds	r28, 0x0242	; 0x800242 <DebugLeds_ddr>
- 114:	d0 91 43 02 	lds	r29, 0x0243	; 0x800243 <DebugLeds_ddr+0x1>
- 118:	60 91 3f 02 	lds	r22, 0x023F	; 0x80023f <debug_led1>
+ 110:	c0 91 5b 02 	lds	r28, 0x025B	; 0x80025b <DebugLeds_ddr>
+ 114:	d0 91 5c 02 	lds	r29, 0x025C	; 0x80025c <DebugLeds_ddr+0x1>
+ 118:	60 91 58 02 	lds	r22, 0x0258	; 0x800258 <debug_led1>
  11c:	ce 01       	movw	r24, r28
  11e:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
- 122:	60 91 3e 02 	lds	r22, 0x023E	; 0x80023e <debug_led2>
+ 122:	60 91 57 02 	lds	r22, 0x0257	; 0x800257 <debug_led2>
  126:	ce 01       	movw	r24, r28
  128:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
- 12c:	60 91 3d 02 	lds	r22, 0x023D	; 0x80023d <debug_led3>
+ 12c:	60 91 56 02 	lds	r22, 0x0256	; 0x800256 <debug_led3>
  130:	ce 01       	movw	r24, r28
  132:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
- 136:	60 91 3c 02 	lds	r22, 0x023C	; 0x80023c <debug_led4>
+ 136:	60 91 55 02 	lds	r22, 0x0255	; 0x800255 <debug_led4>
  13a:	ce 01       	movw	r24, r28
  13c:	df 91       	pop	r29
  13e:	cf 91       	pop	r28
@@ -204,8 +204,8 @@ void DebugLedsTurnAllRed(void)
 
 00000144 <DebugLedsTurnRed>:
  144:	68 2f       	mov	r22, r24
- 146:	80 91 40 02 	lds	r24, 0x0240	; 0x800240 <DebugLeds_port>
- 14a:	90 91 41 02 	lds	r25, 0x0241	; 0x800241 <DebugLeds_port+0x1>
+ 146:	80 91 59 02 	lds	r24, 0x0259	; 0x800259 <DebugLeds_port>
+ 14a:	90 91 5a 02 	lds	r25, 0x025A	; 0x80025a <DebugLeds_port+0x1>
  14e:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
 00000152 <DebugLedsTurnAllGreen>:
@@ -216,21 +216,21 @@ void DebugLedsTurnAllGreen(void)
  152:	cf 93       	push	r28
  154:	df 93       	push	r29
     ClearBit(DebugLeds_port, debug_led1);
- 156:	c0 91 40 02 	lds	r28, 0x0240	; 0x800240 <DebugLeds_port>
- 15a:	d0 91 41 02 	lds	r29, 0x0241	; 0x800241 <DebugLeds_port+0x1>
- 15e:	60 91 3f 02 	lds	r22, 0x023F	; 0x80023f <debug_led1>
+ 156:	c0 91 59 02 	lds	r28, 0x0259	; 0x800259 <DebugLeds_port>
+ 15a:	d0 91 5a 02 	lds	r29, 0x025A	; 0x80025a <DebugLeds_port+0x1>
+ 15e:	60 91 58 02 	lds	r22, 0x0258	; 0x800258 <debug_led1>
  162:	ce 01       	movw	r24, r28
  164:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     ClearBit(DebugLeds_port, debug_led2);
- 168:	60 91 3e 02 	lds	r22, 0x023E	; 0x80023e <debug_led2>
+ 168:	60 91 57 02 	lds	r22, 0x0257	; 0x800257 <debug_led2>
  16c:	ce 01       	movw	r24, r28
  16e:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     ClearBit(DebugLeds_port, debug_led3);
- 172:	60 91 3d 02 	lds	r22, 0x023D	; 0x80023d <debug_led3>
+ 172:	60 91 56 02 	lds	r22, 0x0256	; 0x800256 <debug_led3>
  176:	ce 01       	movw	r24, r28
  178:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     ClearBit(DebugLeds_port, debug_led4);
- 17c:	60 91 3c 02 	lds	r22, 0x023C	; 0x80023c <debug_led4>
+ 17c:	60 91 55 02 	lds	r22, 0x0255	; 0x800255 <debug_led4>
  180:	ce 01       	movw	r24, r28
 }
  182:	df 91       	pop	r29
@@ -251,21 +251,21 @@ void DebugLedsToggleAll(void)
  18a:	cf 93       	push	r28
  18c:	df 93       	push	r29
     ToggleBit(DebugLeds_port, debug_led1);
- 18e:	c0 91 40 02 	lds	r28, 0x0240	; 0x800240 <DebugLeds_port>
- 192:	d0 91 41 02 	lds	r29, 0x0241	; 0x800241 <DebugLeds_port+0x1>
- 196:	60 91 3f 02 	lds	r22, 0x023F	; 0x80023f <debug_led1>
+ 18e:	c0 91 59 02 	lds	r28, 0x0259	; 0x800259 <DebugLeds_port>
+ 192:	d0 91 5a 02 	lds	r29, 0x025A	; 0x80025a <DebugLeds_port+0x1>
+ 196:	60 91 58 02 	lds	r22, 0x0258	; 0x800258 <debug_led1>
  19a:	ce 01       	movw	r24, r28
  19c:	0e 94 6a 00 	call	0xd4	; 0xd4 <ToggleBit>
     ToggleBit(DebugLeds_port, debug_led2);
- 1a0:	60 91 3e 02 	lds	r22, 0x023E	; 0x80023e <debug_led2>
+ 1a0:	60 91 57 02 	lds	r22, 0x0257	; 0x800257 <debug_led2>
  1a4:	ce 01       	movw	r24, r28
  1a6:	0e 94 6a 00 	call	0xd4	; 0xd4 <ToggleBit>
     ToggleBit(DebugLeds_port, debug_led3);
- 1aa:	60 91 3d 02 	lds	r22, 0x023D	; 0x80023d <debug_led3>
+ 1aa:	60 91 56 02 	lds	r22, 0x0256	; 0x800256 <debug_led3>
  1ae:	ce 01       	movw	r24, r28
  1b0:	0e 94 6a 00 	call	0xd4	; 0xd4 <ToggleBit>
     ToggleBit(DebugLeds_port, debug_led4);
- 1b4:	60 91 3c 02 	lds	r22, 0x023C	; 0x80023c <debug_led4>
+ 1b4:	60 91 55 02 	lds	r22, 0x0255	; 0x800255 <debug_led4>
  1b8:	ce 01       	movw	r24, r28
 }
  1ba:	df 91       	pop	r29
@@ -293,27 +293,27 @@ void SpiMasterWaitForResponse(void)
  1d4:	09 94       	ijmp
 
 000001d6 <ReadSpiStatusRegister_Implementation>:
- 1d6:	e0 91 36 02 	lds	r30, 0x0236	; 0x800236 <Spi_spsr>
- 1da:	f0 91 37 02 	lds	r31, 0x0237	; 0x800237 <Spi_spsr+0x1>
+ 1d6:	e0 91 4f 02 	lds	r30, 0x024F	; 0x80024f <Spi_spsr>
+ 1da:	f0 91 50 02 	lds	r31, 0x0250	; 0x800250 <Spi_spsr+0x1>
  1de:	80 81       	ld	r24, Z
  1e0:	08 95       	ret
 
 000001e2 <ReadSpiDataRegister_Implementation>:
- 1e2:	e0 91 34 02 	lds	r30, 0x0234	; 0x800234 <Spi_spdr>
- 1e6:	f0 91 35 02 	lds	r31, 0x0235	; 0x800235 <Spi_spdr+0x1>
+ 1e2:	e0 91 4d 02 	lds	r30, 0x024D	; 0x80024d <Spi_spdr>
+ 1e6:	f0 91 4e 02 	lds	r31, 0x024E	; 0x80024e <Spi_spdr+0x1>
  1ea:	80 81       	ld	r24, Z
  1ec:	08 95       	ret
 
 000001ee <EnableSpi_Implementation>:
- 1ee:	60 91 32 02 	lds	r22, 0x0232	; 0x800232 <Spi_Enable>
- 1f2:	80 91 38 02 	lds	r24, 0x0238	; 0x800238 <Spi_spcr>
- 1f6:	90 91 39 02 	lds	r25, 0x0239	; 0x800239 <Spi_spcr+0x1>
+ 1ee:	60 91 4b 02 	lds	r22, 0x024B	; 0x80024b <Spi_Enable>
+ 1f2:	80 91 51 02 	lds	r24, 0x0251	; 0x800251 <Spi_spcr>
+ 1f6:	90 91 52 02 	lds	r25, 0x0252	; 0x800252 <Spi_spcr+0x1>
  1fa:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
 000001fe <SpiTransferIsDone_Implementation>:
- 1fe:	60 91 31 02 	lds	r22, 0x0231	; 0x800231 <Spi_InterruptFlag>
- 202:	80 91 36 02 	lds	r24, 0x0236	; 0x800236 <Spi_spsr>
- 206:	90 91 37 02 	lds	r25, 0x0237	; 0x800237 <Spi_spsr+0x1>
+ 1fe:	60 91 4a 02 	lds	r22, 0x024A	; 0x80024a <Spi_InterruptFlag>
+ 202:	80 91 4f 02 	lds	r24, 0x024F	; 0x80024f <Spi_spsr>
+ 206:	90 91 50 02 	lds	r25, 0x0250	; 0x800250 <Spi_spsr+0x1>
  20a:	0c 94 75 00 	jmp	0xea	; 0xea <BitIsSet>
 
 0000020e <SpiSlaveInit>:
@@ -323,9 +323,9 @@ void SpiMasterWaitForResponse(void)
 static void SetMisoAsOutput(void)
 {
     SetBit(Spi_ddr, Spi_Miso);
- 20e:	60 91 33 02 	lds	r22, 0x0233	; 0x800233 <Spi_Miso>
- 212:	80 91 3a 02 	lds	r24, 0x023A	; 0x80023a <Spi_ddr>
- 216:	90 91 3b 02 	lds	r25, 0x023B	; 0x80023b <Spi_ddr+0x1>
+ 20e:	60 91 4c 02 	lds	r22, 0x024C	; 0x80024c <Spi_Miso>
+ 212:	80 91 53 02 	lds	r24, 0x0253	; 0x800253 <Spi_ddr>
+ 216:	90 91 54 02 	lds	r25, 0x0254	; 0x800254 <Spi_ddr+0x1>
  21a:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     // MISO is only driven hard high or hard low when:
     // - a SPI tranfer is in progress
@@ -348,9 +348,9 @@ static bool Received8bits(void)
 {
     // Check `data receive done` flag RXC0
     return BitIsSet(UartSpi_csra, UartSpi_RxComplete);
- 232:	60 91 26 02 	lds	r22, 0x0226	; 0x800226 <UartSpi_AdcConv>
- 236:	80 91 2d 02 	lds	r24, 0x022D	; 0x80022d <UartSpi_port>
- 23a:	90 91 2e 02 	lds	r25, 0x022E	; 0x80022e <UartSpi_port+0x1>
+ 232:	60 91 3f 02 	lds	r22, 0x023F	; 0x80023f <UartSpi_AdcConv>
+ 236:	80 91 46 02 	lds	r24, 0x0246	; 0x800246 <UartSpi_port>
+ 23a:	90 91 47 02 	lds	r25, 0x0247	; 0x800247 <UartSpi_port+0x1>
  23e:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
 
 00000242 <UartSpiInit>:
@@ -370,8 +370,8 @@ void UartSpiInit(void)
         // UBRR0 (baud rate register)  = ( fosc/(2*baudrate) ) -1
         // yes, UBBR0 is 0 if fosc=10MHz and baudrate=5MHz
     *UartSpi_br = 0;
- 24a:	00 91 27 02 	lds	r16, 0x0227	; 0x800227 <UartSpi_br>
- 24e:	10 91 28 02 	lds	r17, 0x0228	; 0x800228 <UartSpi_br+0x1>
+ 24a:	00 91 40 02 	lds	r16, 0x0240	; 0x800240 <UartSpi_br>
+ 24e:	10 91 41 02 	lds	r17, 0x0241	; 0x800241 <UartSpi_br+0x1>
  252:	f8 01       	movw	r30, r16
  254:	11 82       	std	Z+1, r1	; 0x01
  256:	10 82       	st	Z, r1
@@ -380,9 +380,9 @@ static void SetSckAsOutput(void)
 {
     // Cfg XCK as an output. CPOL=1 makes the clock idle high.
     SetBit(UartSpi_ddr, UartSpi_Sck);
- 258:	c0 91 2f 02 	lds	r28, 0x022F	; 0x80022f <UartSpi_ddr>
- 25c:	d0 91 30 02 	lds	r29, 0x0230	; 0x800230 <UartSpi_ddr+0x1>
- 260:	60 91 25 02 	lds	r22, 0x0225	; 0x800225 <UartSpi_Sck>
+ 258:	c0 91 48 02 	lds	r28, 0x0248	; 0x800248 <UartSpi_ddr>
+ 25c:	d0 91 49 02 	lds	r29, 0x0249	; 0x800249 <UartSpi_ddr+0x1>
+ 260:	60 91 3e 02 	lds	r22, 0x023E	; 0x80023e <UartSpi_Sck>
  264:	ce 01       	movw	r24, r28
  266:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
@@ -398,20 +398,20 @@ static void SetAdcConvAsOutput(void)
 {
     // cfg general purpose output for conversion-start and readout-start
     SetBit(UartSpi_ddr, UartSpi_AdcConv);
- 26e:	60 91 26 02 	lds	r22, 0x0226	; 0x800226 <UartSpi_AdcConv>
+ 26e:	60 91 3f 02 	lds	r22, 0x023F	; 0x80023f <UartSpi_AdcConv>
  272:	ce 01       	movw	r24, r28
  274:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 static void EnableAtmega328UsartInSpiMasterMode(void)
 {
     SetBit(UartSpi_csrc, UartSpi_ModeSelect0);
- 278:	c0 91 29 02 	lds	r28, 0x0229	; 0x800229 <UartSpi_csrc>
- 27c:	d0 91 2a 02 	lds	r29, 0x022A	; 0x80022a <UartSpi_csrc+0x1>
- 280:	60 91 24 02 	lds	r22, 0x0224	; 0x800224 <UartSpi_ModeSelect0>
+ 278:	c0 91 42 02 	lds	r28, 0x0242	; 0x800242 <UartSpi_csrc>
+ 27c:	d0 91 43 02 	lds	r29, 0x0243	; 0x800243 <UartSpi_csrc+0x1>
+ 280:	60 91 3d 02 	lds	r22, 0x023D	; 0x80023d <UartSpi_ModeSelect0>
  284:	ce 01       	movw	r24, r28
  286:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     SetBit(UartSpi_csrc, UartSpi_ModeSelect1);
- 28a:	60 91 23 02 	lds	r22, 0x0223	; 0x800223 <UartSpi_ModeSelect1>
+ 28a:	60 91 3c 02 	lds	r22, 0x023C	; 0x80023c <UartSpi_ModeSelect1>
  28e:	ce 01       	movw	r24, r28
  290:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 {
@@ -420,18 +420,18 @@ static void EnableAtmega328UsartInSpiMasterMode(void)
         // load data on falling  clock edge
         // sample data on rising clock edge
     SetBit(UartSpi_csrc, UartSpi_ClockPolarity);  // clock idles high
- 294:	60 91 20 02 	lds	r22, 0x0220	; 0x800220 <UartSpi_ClockPolarity>
+ 294:	60 91 39 02 	lds	r22, 0x0239	; 0x800239 <UartSpi_ClockPolarity>
  298:	ce 01       	movw	r24, r28
  29a:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     SetBit(UartSpi_csrc, UartSpi_ClockPhase);     // load data then sample data
- 29e:	60 91 1f 02 	lds	r22, 0x021F	; 0x80021f <UartSpi_ClockPhase>
+ 29e:	60 91 38 02 	lds	r22, 0x0238	; 0x800238 <UartSpi_ClockPhase>
  2a2:	ce 01       	movw	r24, r28
  2a4:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 static void CfgSpiToTransferMsbFirst(void)
 {
     ClearBit(UartSpi_csrc, UartSpi_DataOrder);
- 2a8:	60 91 1e 02 	lds	r22, 0x021E	; 0x80021e <UartSpi_DataOrder>
+ 2a8:	60 91 37 02 	lds	r22, 0x0237	; 0x800237 <UartSpi_DataOrder>
  2ac:	ce 01       	movw	r24, r28
  2ae:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
 }
@@ -440,14 +440,14 @@ static void GiveSpiControlOverMisoAndMosiPins(void)
     /* ---Enabling Rx and Tx overrides normal port operation--- */
     // Enable the receiver. The UART Rx pin becomes the SPI Miso.
     SetBit(UartSpi_csrb, UartSpi_RxEnable);
- 2b2:	c0 91 2b 02 	lds	r28, 0x022B	; 0x80022b <UartSpi_csrb>
- 2b6:	d0 91 2c 02 	lds	r29, 0x022C	; 0x80022c <UartSpi_csrb+0x1>
- 2ba:	60 91 22 02 	lds	r22, 0x0222	; 0x800222 <UartSpi_RxEnable>
+ 2b2:	c0 91 44 02 	lds	r28, 0x0244	; 0x800244 <UartSpi_csrb>
+ 2b6:	d0 91 45 02 	lds	r29, 0x0245	; 0x800245 <UartSpi_csrb+0x1>
+ 2ba:	60 91 3b 02 	lds	r22, 0x023B	; 0x80023b <UartSpi_RxEnable>
  2be:	ce 01       	movw	r24, r28
  2c0:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     // Enable the transmitter. The UART Tx pin becomes the SPI Mosi.
     SetBit(UartSpi_csrb, UartSpi_TxEnable);
- 2c4:	60 91 21 02 	lds	r22, 0x0221	; 0x800221 <UartSpi_TxEnable>
+ 2c4:	60 91 3a 02 	lds	r22, 0x023A	; 0x80023a <UartSpi_TxEnable>
  2c8:	ce 01       	movw	r24, r28
  2ca:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
         // baudrate in bits per second = fosc/(2*(UBBR0+1))
@@ -490,13 +490,13 @@ static void LisRunClkAt50kHz_Implementation(void)
  2f6:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <PwmClkIsCpuClk+0x1>
  2fa:	09 95       	icall
     *Lis_clktop = 200;           // 10MHz / 50kHz = 200 ticks
- 2fc:	e0 91 14 02 	lds	r30, 0x0214	; 0x800214 <Lis_clktop>
- 300:	f0 91 15 02 	lds	r31, 0x0215	; 0x800215 <Lis_clktop+0x1>
+ 2fc:	e0 91 2d 02 	lds	r30, 0x022D	; 0x80022d <Lis_clktop>
+ 300:	f0 91 2e 02 	lds	r31, 0x022E	; 0x80022e <Lis_clktop+0x1>
  304:	88 ec       	ldi	r24, 0xC8	; 200
  306:	80 83       	st	Z, r24
     *Lis_clkth = *Lis_clktop/2;  // 50% dutcy cycle: PASS 2018-08-21
- 308:	80 91 12 02 	lds	r24, 0x0212	; 0x800212 <Lis_clkth>
- 30c:	90 91 13 02 	lds	r25, 0x0213	; 0x800213 <Lis_clkth+0x1>
+ 308:	80 91 2b 02 	lds	r24, 0x022B	; 0x80022b <Lis_clkth>
+ 30c:	90 91 2c 02 	lds	r25, 0x022C	; 0x80022c <Lis_clkth+0x1>
  310:	20 81       	ld	r18, Z
  312:	26 95       	lsr	r18
  314:	fc 01       	movw	r30, r24
@@ -530,10 +530,10 @@ void LisInit(void)
 static void SetPixSelectAsOutput(void)
 {
     SetBit(Lis_ddr2, Lis_PixSelect);
- 32a:	c0 91 11 02 	lds	r28, 0x0211	; 0x800211 <Lis_PixSelect>
+ 32a:	c0 91 2a 02 	lds	r28, 0x022A	; 0x80022a <Lis_PixSelect>
  32e:	6c 2f       	mov	r22, r28
- 330:	80 91 1a 02 	lds	r24, 0x021A	; 0x80021a <Lis_ddr2>
- 334:	90 91 1b 02 	lds	r25, 0x021B	; 0x80021b <Lis_ddr2+0x1>
+ 330:	80 91 33 02 	lds	r24, 0x0233	; 0x800233 <Lis_ddr2>
+ 334:	90 91 34 02 	lds	r25, 0x0234	; 0x800234 <Lis_ddr2+0x1>
  338:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 {
     ClearBit(Lis_ddr1, Lis_Sync);
@@ -542,8 +542,8 @@ static void PixSelectIdleLow(void)
 {
     ClearBit(Lis_port2, Lis_PixSelect);
  33c:	6c 2f       	mov	r22, r28
- 33e:	80 91 16 02 	lds	r24, 0x0216	; 0x800216 <Lis_port2>
- 342:	90 91 17 02 	lds	r25, 0x0217	; 0x800217 <Lis_port2+0x1>
+ 33e:	80 91 2f 02 	lds	r24, 0x022F	; 0x80022f <Lis_port2>
+ 342:	90 91 30 02 	lds	r25, 0x0230	; 0x800230 <Lis_port2+0x1>
  346:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
 {
     SetBit(Lis_ddr2, Lis_PixSelect);
@@ -551,16 +551,16 @@ static void PixSelectIdleLow(void)
 static void SetClkAsOutput(void)
 {
     SetBit(Lis_ddr1, Lis_Clk);
- 34a:	c0 91 1c 02 	lds	r28, 0x021C	; 0x80021c <Lis_ddr1>
- 34e:	d0 91 1d 02 	lds	r29, 0x021D	; 0x80021d <Lis_ddr1+0x1>
- 352:	60 91 10 02 	lds	r22, 0x0210	; 0x800210 <Lis_Clk>
+ 34a:	c0 91 35 02 	lds	r28, 0x0235	; 0x800235 <Lis_ddr1>
+ 34e:	d0 91 36 02 	lds	r29, 0x0236	; 0x800236 <Lis_ddr1+0x1>
+ 352:	60 91 29 02 	lds	r22, 0x0229	; 0x800229 <Lis_Clk>
  356:	ce 01       	movw	r24, r28
  358:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 static void SetRstAsOutput(void)
 {
     SetBit(Lis_ddr1, Lis_Rst);
- 35c:	10 91 0f 02 	lds	r17, 0x020F	; 0x80020f <Lis_Rst>
+ 35c:	10 91 28 02 	lds	r17, 0x0228	; 0x800228 <Lis_Rst>
  360:	61 2f       	mov	r22, r17
  362:	ce 01       	movw	r24, r28
  364:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
@@ -571,8 +571,8 @@ static void RstIdleLowAfterPowerUp(void)
 {
     ClearBit(Lis_port1, Lis_Rst);
  368:	61 2f       	mov	r22, r17
- 36a:	80 91 18 02 	lds	r24, 0x0218	; 0x800218 <Lis_port1>
- 36e:	90 91 19 02 	lds	r25, 0x0219	; 0x800219 <Lis_port1+0x1>
+ 36a:	80 91 31 02 	lds	r24, 0x0231	; 0x800231 <Lis_port1>
+ 36e:	90 91 32 02 	lds	r25, 0x0232	; 0x800232 <Lis_port1+0x1>
  372:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
 {
     SetBit(Lis_ddr1, Lis_Rst);
@@ -580,7 +580,7 @@ static void RstIdleLowAfterPowerUp(void)
 static void SetSyncAsInput(void)
 {
     ClearBit(Lis_ddr1, Lis_Sync);
- 376:	60 91 0e 02 	lds	r22, 0x020E	; 0x80020e <Lis_Sync>
+ 376:	60 91 27 02 	lds	r22, 0x0227	; 0x800227 <Lis_Sync>
  37a:	ce 01       	movw	r24, r28
  37c:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     PixSelectIdleLow();
@@ -615,13 +615,13 @@ static void ResetCounterAtTop(void)
  39a:	cf 93       	push	r28
  39c:	df 93       	push	r29
     SetBit(Pwm_tccr0a, Pwm_Wgm00);
- 39e:	c0 91 0c 02 	lds	r28, 0x020C	; 0x80020c <Pwm_tccr0a>
- 3a2:	d0 91 0d 02 	lds	r29, 0x020D	; 0x80020d <Pwm_tccr0a+0x1>
- 3a6:	60 91 09 02 	lds	r22, 0x0209	; 0x800209 <Pwm_Wgm00>
+ 39e:	c0 91 25 02 	lds	r28, 0x0225	; 0x800225 <Pwm_tccr0a>
+ 3a2:	d0 91 26 02 	lds	r29, 0x0226	; 0x800226 <Pwm_tccr0a+0x1>
+ 3a6:	60 91 22 02 	lds	r22, 0x0222	; 0x800222 <Pwm_Wgm00>
  3aa:	ce 01       	movw	r24, r28
  3ac:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     SetBit(Pwm_tccr0a, Pwm_Wgm01);
- 3b0:	60 91 08 02 	lds	r22, 0x0208	; 0x800208 <Pwm_Wgm01>
+ 3b0:	60 91 21 02 	lds	r22, 0x0221	; 0x800221 <Pwm_Wgm01>
  3b4:	ce 01       	movw	r24, r28
 }
  3b6:	df 91       	pop	r29
@@ -641,9 +641,9 @@ void (*PwmResetCounterAtTop)(void) = ResetCounterAtTop;
 static void TopIsOcr0a(void)
 {
     SetBit(Pwm_tccr0b, Pwm_Wgm02);
- 3be:	60 91 07 02 	lds	r22, 0x0207	; 0x800207 <Pwm_Wgm02>
- 3c2:	80 91 0a 02 	lds	r24, 0x020A	; 0x80020a <Pwm_tccr0b>
- 3c6:	90 91 0b 02 	lds	r25, 0x020B	; 0x80020b <Pwm_tccr0b+0x1>
+ 3be:	60 91 20 02 	lds	r22, 0x0220	; 0x800220 <Pwm_Wgm02>
+ 3c2:	80 91 23 02 	lds	r24, 0x0223	; 0x800223 <Pwm_tccr0b>
+ 3c6:	90 91 24 02 	lds	r25, 0x0224	; 0x800224 <Pwm_tccr0b+0x1>
  3ca:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
 000003ce <PwmClkIsCpuClk_Implementation>:
@@ -655,17 +655,17 @@ static void PwmClkIsCpuClk_Implementation(void)
  3ce:	cf 93       	push	r28
  3d0:	df 93       	push	r29
     SetBit  (Pwm_tccr0b, Pwm_Cs00);
- 3d2:	c0 91 0a 02 	lds	r28, 0x020A	; 0x80020a <Pwm_tccr0b>
- 3d6:	d0 91 0b 02 	lds	r29, 0x020B	; 0x80020b <Pwm_tccr0b+0x1>
- 3da:	60 91 06 02 	lds	r22, 0x0206	; 0x800206 <Pwm_Cs00>
+ 3d2:	c0 91 23 02 	lds	r28, 0x0223	; 0x800223 <Pwm_tccr0b>
+ 3d6:	d0 91 24 02 	lds	r29, 0x0224	; 0x800224 <Pwm_tccr0b+0x1>
+ 3da:	60 91 1f 02 	lds	r22, 0x021F	; 0x80021f <Pwm_Cs00>
  3de:	ce 01       	movw	r24, r28
  3e0:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     ClearBit(Pwm_tccr0b, Pwm_Cs01);
- 3e4:	60 91 05 02 	lds	r22, 0x0205	; 0x800205 <Pwm_Cs01>
+ 3e4:	60 91 1e 02 	lds	r22, 0x021E	; 0x80021e <Pwm_Cs01>
  3e8:	ce 01       	movw	r24, r28
  3ea:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     ClearBit(Pwm_tccr0b, Pwm_Cs02);
- 3ee:	60 91 04 02 	lds	r22, 0x0204	; 0x800204 <Pwm_Cs02>
+ 3ee:	60 91 1d 02 	lds	r22, 0x021D	; 0x80021d <Pwm_Cs02>
  3f2:	ce 01       	movw	r24, r28
 }
  3f4:	df 91       	pop	r29
@@ -687,13 +687,13 @@ static void EnableOutputSetUntilMatch(void)
  3fc:	cf 93       	push	r28
  3fe:	df 93       	push	r29
     ClearBit(Pwm_tccr0a, Pwm_Com0b0);
- 400:	c0 91 0c 02 	lds	r28, 0x020C	; 0x80020c <Pwm_tccr0a>
- 404:	d0 91 0d 02 	lds	r29, 0x020D	; 0x80020d <Pwm_tccr0a+0x1>
- 408:	60 91 03 02 	lds	r22, 0x0203	; 0x800203 <Pwm_Com0b0>
+ 400:	c0 91 25 02 	lds	r28, 0x0225	; 0x800225 <Pwm_tccr0a>
+ 404:	d0 91 26 02 	lds	r29, 0x0226	; 0x800226 <Pwm_tccr0a+0x1>
+ 408:	60 91 1c 02 	lds	r22, 0x021C	; 0x80021c <Pwm_Com0b0>
  40c:	ce 01       	movw	r24, r28
  40e:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     SetBit  (Pwm_tccr0a, Pwm_Com0b1);
- 412:	60 91 02 02 	lds	r22, 0x0202	; 0x800202 <Pwm_Com0b1>
+ 412:	60 91 1b 02 	lds	r22, 0x021B	; 0x80021b <Pwm_Com0b1>
  416:	ce 01       	movw	r24, r28
 }
  418:	df 91       	pop	r29
@@ -722,40 +722,40 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  42c:	5e 9a       	sbi	0x0b, 6	; 11
  42e:	81 e0       	ldi	r24, 0x01	; 1
  430:	90 e0       	ldi	r25, 0x00	; 0
- 432:	90 93 4a 02 	sts	0x024A, r25	; 0x80024a <Lis_nticks_counter+0x1>
- 436:	80 93 49 02 	sts	0x0249, r24	; 0x800249 <Lis_nticks_counter>
- 43a:	80 91 fb 01 	lds	r24, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
- 43e:	90 91 fc 01 	lds	r25, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
+ 432:	90 93 64 02 	sts	0x0264, r25	; 0x800264 <Lis_nticks_counter+0x1>
+ 436:	80 93 63 02 	sts	0x0263, r24	; 0x800263 <Lis_nticks_counter>
+ 43a:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
+ 43e:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
  442:	89 2b       	or	r24, r25
  444:	b1 f0       	breq	.+44     	; 0x472 <LisFrameReadout+0x52>
  446:	aa 9a       	sbi	0x15, 2	; 21
  448:	aa 9b       	sbis	0x15, 2	; 21
  44a:	fe cf       	rjmp	.-4      	; 0x448 <LisFrameReadout+0x28>
  44c:	aa 9a       	sbi	0x15, 2	; 21
- 44e:	80 91 49 02 	lds	r24, 0x0249	; 0x800249 <Lis_nticks_counter>
- 452:	90 91 4a 02 	lds	r25, 0x024A	; 0x80024a <Lis_nticks_counter+0x1>
+ 44e:	80 91 63 02 	lds	r24, 0x0263	; 0x800263 <Lis_nticks_counter>
+ 452:	90 91 64 02 	lds	r25, 0x0264	; 0x800264 <Lis_nticks_counter+0x1>
  456:	9c 01       	movw	r18, r24
  458:	2f 5f       	subi	r18, 0xFF	; 255
  45a:	3f 4f       	sbci	r19, 0xFF	; 255
- 45c:	30 93 4a 02 	sts	0x024A, r19	; 0x80024a <Lis_nticks_counter+0x1>
- 460:	20 93 49 02 	sts	0x0249, r18	; 0x800249 <Lis_nticks_counter>
- 464:	20 91 fb 01 	lds	r18, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
- 468:	30 91 fc 01 	lds	r19, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
+ 45c:	30 93 64 02 	sts	0x0264, r19	; 0x800264 <Lis_nticks_counter+0x1>
+ 460:	20 93 63 02 	sts	0x0263, r18	; 0x800263 <Lis_nticks_counter>
+ 464:	20 91 14 02 	lds	r18, 0x0214	; 0x800214 <Lis_nticks_exposure>
+ 468:	30 91 15 02 	lds	r19, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
  46c:	82 17       	cp	r24, r18
  46e:	93 07       	cpc	r25, r19
  470:	50 f3       	brcs	.-44     	; 0x446 <LisFrameReadout+0x26>
  472:	5e 98       	cbi	0x0b, 6	; 11
- 474:	8d e4       	ldi	r24, 0x4D	; 77
+ 474:	87 e6       	ldi	r24, 0x67	; 103
  476:	92 e0       	ldi	r25, 0x02	; 2
- 478:	90 93 fa 01 	sts	0x01FA, r25	; 0x8001fa <pframe+0x1>
- 47c:	80 93 f9 01 	sts	0x01F9, r24	; 0x8001f9 <pframe>
- 480:	10 92 48 02 	sts	0x0248, r1	; 0x800248 <Lis_npixels_counter+0x1>
- 484:	10 92 47 02 	sts	0x0247, r1	; 0x800247 <Lis_npixels_counter>
+ 478:	90 93 13 02 	sts	0x0213, r25	; 0x800213 <pframe+0x1>
+ 47c:	80 93 12 02 	sts	0x0212, r24	; 0x800212 <pframe>
+ 480:	10 92 62 02 	sts	0x0262, r1	; 0x800262 <Lis_npixels_counter+0x1>
+ 484:	10 92 61 02 	sts	0x0261, r1	; 0x800261 <Lis_npixels_counter>
  488:	4f 9b       	sbis	0x09, 7	; 9
  48a:	fe cf       	rjmp	.-4      	; 0x488 <LisFrameReadout+0x68>
  48c:	4f 99       	sbic	0x09, 7	; 9
  48e:	fe cf       	rjmp	.-4      	; 0x48c <LisFrameReadout+0x6c>
- 490:	80 91 46 02 	lds	r24, 0x0246	; 0x800246 <lis_sum_mode>
+ 490:	80 91 60 02 	lds	r24, 0x0260	; 0x800260 <lis_sum_mode>
  494:	81 30       	cpi	r24, 0x01	; 1
  496:	09 f4       	brne	.+2      	; 0x49a <LisFrameReadout+0x7a>
  498:	50 c0       	rjmp	.+160    	; 0x53a <LisFrameReadout+0x11a>
@@ -763,15 +763,15 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  49c:	d3 e0       	ldi	r29, 0x03	; 3
  49e:	81 e0       	ldi	r24, 0x01	; 1
  4a0:	90 e0       	ldi	r25, 0x00	; 0
- 4a2:	90 93 48 02 	sts	0x0248, r25	; 0x800248 <Lis_npixels_counter+0x1>
- 4a6:	80 93 47 02 	sts	0x0247, r24	; 0x800247 <Lis_npixels_counter>
+ 4a2:	90 93 62 02 	sts	0x0262, r25	; 0x800262 <Lis_npixels_counter+0x1>
+ 4a6:	80 93 61 02 	sts	0x0261, r24	; 0x800261 <Lis_npixels_counter>
  4aa:	a9 9a       	sbi	0x15, 1	; 21
  4ac:	a9 9b       	sbis	0x15, 1	; 21
  4ae:	fe cf       	rjmp	.-4      	; 0x4ac <LisFrameReadout+0x8c>
  4b0:	a9 9a       	sbi	0x15, 1	; 21
  4b2:	5a 9a       	sbi	0x0b, 2	; 11
- 4b4:	e0 91 ff 01 	lds	r30, 0x01FF	; 0x8001ff <Delay3CpuCyclesPerTick>
- 4b8:	f0 91 00 02 	lds	r31, 0x0200	; 0x800200 <Delay3CpuCyclesPerTick+0x1>
+ 4b4:	e0 91 18 02 	lds	r30, 0x0218	; 0x800218 <Delay3CpuCyclesPerTick>
+ 4b8:	f0 91 19 02 	lds	r31, 0x0219	; 0x800219 <Delay3CpuCyclesPerTick+0x1>
  4bc:	8b e0       	ldi	r24, 0x0B	; 11
  4be:	09 95       	icall
  4c0:	5a 98       	cbi	0x0b, 2	; 11
@@ -783,32 +783,32 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  4d2:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7e00c0>
  4d6:	87 ff       	sbrs	r24, 7
  4d8:	fc cf       	rjmp	.-8      	; 0x4d2 <LisFrameReadout+0xb2>
- 4da:	e0 91 f9 01 	lds	r30, 0x01F9	; 0x8001f9 <pframe>
- 4de:	f0 91 fa 01 	lds	r31, 0x01FA	; 0x8001fa <pframe+0x1>
+ 4da:	e0 91 12 02 	lds	r30, 0x0212	; 0x800212 <pframe>
+ 4de:	f0 91 13 02 	lds	r31, 0x0213	; 0x800213 <pframe+0x1>
  4e2:	cf 01       	movw	r24, r30
  4e4:	01 96       	adiw	r24, 0x01	; 1
- 4e6:	90 93 fa 01 	sts	0x01FA, r25	; 0x8001fa <pframe+0x1>
- 4ea:	80 93 f9 01 	sts	0x01F9, r24	; 0x8001f9 <pframe>
+ 4e6:	90 93 13 02 	sts	0x0213, r25	; 0x800213 <pframe+0x1>
+ 4ea:	80 93 12 02 	sts	0x0212, r24	; 0x800212 <pframe>
  4ee:	80 91 c6 00 	lds	r24, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
  4f2:	80 83       	st	Z, r24
  4f4:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7e00c0>
  4f8:	87 ff       	sbrs	r24, 7
  4fa:	fc cf       	rjmp	.-8      	; 0x4f4 <LisFrameReadout+0xd4>
- 4fc:	e0 91 f9 01 	lds	r30, 0x01F9	; 0x8001f9 <pframe>
- 500:	f0 91 fa 01 	lds	r31, 0x01FA	; 0x8001fa <pframe+0x1>
+ 4fc:	e0 91 12 02 	lds	r30, 0x0212	; 0x800212 <pframe>
+ 500:	f0 91 13 02 	lds	r31, 0x0213	; 0x800213 <pframe+0x1>
  504:	cf 01       	movw	r24, r30
  506:	01 96       	adiw	r24, 0x01	; 1
- 508:	90 93 fa 01 	sts	0x01FA, r25	; 0x8001fa <pframe+0x1>
- 50c:	80 93 f9 01 	sts	0x01F9, r24	; 0x8001f9 <pframe>
+ 508:	90 93 13 02 	sts	0x0213, r25	; 0x800213 <pframe+0x1>
+ 50c:	80 93 12 02 	sts	0x0212, r24	; 0x800212 <pframe>
  510:	80 91 c6 00 	lds	r24, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
  514:	80 83       	st	Z, r24
- 516:	80 91 47 02 	lds	r24, 0x0247	; 0x800247 <Lis_npixels_counter>
- 51a:	90 91 48 02 	lds	r25, 0x0248	; 0x800248 <Lis_npixels_counter+0x1>
+ 516:	80 91 61 02 	lds	r24, 0x0261	; 0x800261 <Lis_npixels_counter>
+ 51a:	90 91 62 02 	lds	r25, 0x0262	; 0x800262 <Lis_npixels_counter+0x1>
  51e:	9c 01       	movw	r18, r24
  520:	2f 5f       	subi	r18, 0xFF	; 255
  522:	3f 4f       	sbci	r19, 0xFF	; 255
- 524:	30 93 48 02 	sts	0x0248, r19	; 0x800248 <Lis_npixels_counter+0x1>
- 528:	20 93 47 02 	sts	0x0247, r18	; 0x800247 <Lis_npixels_counter>
+ 524:	30 93 62 02 	sts	0x0262, r19	; 0x800262 <Lis_npixels_counter+0x1>
+ 528:	20 93 61 02 	sts	0x0261, r18	; 0x800261 <Lis_npixels_counter>
  52c:	8c 17       	cp	r24, r28
  52e:	9d 07       	cpc	r25, r29
  530:	08 f4       	brcc	.+2      	; 0x534 <LisFrameReadout+0x114>
@@ -843,10 +843,10 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  566:	aa 9b       	sbis	0x15, 2	; 21
  568:	fe cf       	rjmp	.-4      	; 0x566 <WriteCfgToLis+0x26>
  56a:	aa 9a       	sbi	0x15, 2	; 21
- 56c:	80 91 46 02 	lds	r24, 0x0246	; 0x800246 <lis_sum_mode>
+ 56c:	80 91 60 02 	lds	r24, 0x0260	; 0x800260 <lis_sum_mode>
  570:	81 30       	cpi	r24, 0x01	; 1
  572:	09 f4       	brne	.+2      	; 0x576 <WriteCfgToLis+0x36>
- 574:	a1 c0       	rjmp	.+322    	; 0x6b8 <WriteCfgToLis+0x178>
+ 574:	a4 c0       	rjmp	.+328    	; 0x6be <WriteCfgToLis+0x17e>
  576:	5e 98       	cbi	0x0b, 6	; 11
  578:	a9 9a       	sbi	0x15, 1	; 21
  57a:	a9 9b       	sbis	0x15, 1	; 21
@@ -856,16 +856,16 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  582:	aa 9b       	sbis	0x15, 2	; 21
  584:	fe cf       	rjmp	.-4      	; 0x582 <WriteCfgToLis+0x42>
  586:	aa 9a       	sbi	0x15, 2	; 21
- 588:	80 91 f8 01 	lds	r24, 0x01F8	; 0x8001f8 <lis_gain>
+ 588:	80 91 11 02 	lds	r24, 0x0211	; 0x800211 <lis_gain>
  58c:	84 30       	cpi	r24, 0x04	; 4
  58e:	09 f4       	brne	.+2      	; 0x592 <WriteCfgToLis+0x52>
- 590:	55 c0       	rjmp	.+170    	; 0x63c <WriteCfgToLis+0xfc>
+ 590:	58 c0       	rjmp	.+176    	; 0x642 <WriteCfgToLis+0x102>
  592:	82 30       	cpi	r24, 0x02	; 2
  594:	09 f4       	brne	.+2      	; 0x598 <WriteCfgToLis+0x58>
- 596:	99 c0       	rjmp	.+306    	; 0x6ca <WriteCfgToLis+0x18a>
+ 596:	9c c0       	rjmp	.+312    	; 0x6d0 <WriteCfgToLis+0x190>
  598:	81 30       	cpi	r24, 0x01	; 1
  59a:	09 f4       	brne	.+2      	; 0x59e <WriteCfgToLis+0x5e>
- 59c:	cf c0       	rjmp	.+414    	; 0x73c <WriteCfgToLis+0x1fc>
+ 59c:	d2 c0       	rjmp	.+420    	; 0x742 <WriteCfgToLis+0x202>
  59e:	5e 9a       	sbi	0x0b, 6	; 11
  5a0:	a9 9a       	sbi	0x15, 1	; 21
  5a2:	a9 9b       	sbis	0x15, 1	; 21
@@ -884,1027 +884,1065 @@ void Show_data_on_debug_leds(uint8_t four_bits)
  5bc:	aa 9b       	sbis	0x15, 2	; 21
  5be:	fe cf       	rjmp	.-4      	; 0x5bc <WriteCfgToLis+0x7c>
  5c0:	aa 9a       	sbi	0x15, 2	; 21
- 5c2:	80 91 45 02 	lds	r24, 0x0245	; 0x800245 <lis_rowselect>
- 5c6:	10 92 44 02 	sts	0x0244, r1	; 0x800244 <__data_end>
+ 5c2:	80 91 5f 02 	lds	r24, 0x025F	; 0x80025f <lis_rowselect>
+ 5c6:	10 92 5e 02 	sts	0x025E, r1	; 0x80025e <__data_end>
  5ca:	81 30       	cpi	r24, 0x01	; 1
  5cc:	09 f4       	brne	.+2      	; 0x5d0 <WriteCfgToLis+0x90>
- 5ce:	4f c0       	rjmp	.+158    	; 0x66e <WriteCfgToLis+0x12e>
+ 5ce:	52 c0       	rjmp	.+164    	; 0x674 <WriteCfgToLis+0x134>
  5d0:	82 30       	cpi	r24, 0x02	; 2
  5d2:	09 f4       	brne	.+2      	; 0x5d6 <WriteCfgToLis+0x96>
- 5d4:	8c c0       	rjmp	.+280    	; 0x6ee <WriteCfgToLis+0x1ae>
+ 5d4:	8f c0       	rjmp	.+286    	; 0x6f4 <WriteCfgToLis+0x1b4>
  5d6:	83 30       	cpi	r24, 0x03	; 3
  5d8:	09 f4       	brne	.+2      	; 0x5dc <WriteCfgToLis+0x9c>
- 5da:	eb c0       	rjmp	.+470    	; 0x7b2 <WriteCfgToLis+0x272>
+ 5da:	ee c0       	rjmp	.+476    	; 0x7b8 <WriteCfgToLis+0x278>
  5dc:	84 30       	cpi	r24, 0x04	; 4
  5de:	09 f4       	brne	.+2      	; 0x5e2 <WriteCfgToLis+0xa2>
- 5e0:	0f c1       	rjmp	.+542    	; 0x800 <WriteCfgToLis+0x2c0>
+ 5e0:	12 c1       	rjmp	.+548    	; 0x806 <WriteCfgToLis+0x2c6>
  5e2:	85 30       	cpi	r24, 0x05	; 5
  5e4:	09 f4       	brne	.+2      	; 0x5e8 <WriteCfgToLis+0xa8>
- 5e6:	bc c0       	rjmp	.+376    	; 0x760 <WriteCfgToLis+0x220>
+ 5e6:	bf c0       	rjmp	.+382    	; 0x766 <WriteCfgToLis+0x226>
  5e8:	86 30       	cpi	r24, 0x06	; 6
  5ea:	09 f4       	brne	.+2      	; 0x5ee <WriteCfgToLis+0xae>
- 5ec:	30 c1       	rjmp	.+608    	; 0x84e <WriteCfgToLis+0x30e>
+ 5ec:	33 c1       	rjmp	.+614    	; 0x854 <WriteCfgToLis+0x314>
  5ee:	87 30       	cpi	r24, 0x07	; 7
  5f0:	09 f4       	brne	.+2      	; 0x5f4 <WriteCfgToLis+0xb4>
- 5f2:	54 c1       	rjmp	.+680    	; 0x89c <WriteCfgToLis+0x35c>
+ 5f2:	57 c1       	rjmp	.+686    	; 0x8a2 <WriteCfgToLis+0x362>
  5f4:	88 30       	cpi	r24, 0x08	; 8
  5f6:	09 f4       	brne	.+2      	; 0x5fa <WriteCfgToLis+0xba>
- 5f8:	78 c1       	rjmp	.+752    	; 0x8ea <WriteCfgToLis+0x3aa>
- 5fa:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 5fe:	88 23       	and	r24, r24
- 600:	d1 f0       	breq	.+52     	; 0x636 <WriteCfgToLis+0xf6>
- 602:	e0 e0       	ldi	r30, 0x00	; 0
- 604:	f0 e0       	ldi	r31, 0x00	; 0
- 606:	e2 52       	subi	r30, 0x22	; 34
- 608:	fe 4f       	sbci	r31, 0xFE	; 254
- 60a:	80 81       	ld	r24, Z
- 60c:	81 30       	cpi	r24, 0x01	; 1
- 60e:	09 f4       	brne	.+2      	; 0x612 <WriteCfgToLis+0xd2>
- 610:	ce c0       	rjmp	.+412    	; 0x7ae <WriteCfgToLis+0x26e>
- 612:	5e 98       	cbi	0x0b, 6	; 11
- 614:	a9 9a       	sbi	0x15, 1	; 21
- 616:	a9 9b       	sbis	0x15, 1	; 21
- 618:	fe cf       	rjmp	.-4      	; 0x616 <WriteCfgToLis+0xd6>
+ 5f8:	7b c1       	rjmp	.+758    	; 0x8f0 <WriteCfgToLis+0x3b0>
+ 5fa:	89 30       	cpi	r24, 0x09	; 9
+ 5fc:	09 f4       	brne	.+2      	; 0x600 <WriteCfgToLis+0xc0>
+ 5fe:	99 c1       	rjmp	.+818    	; 0x932 <__stack+0x33>
+ 600:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 604:	88 23       	and	r24, r24
+ 606:	d1 f0       	breq	.+52     	; 0x63c <WriteCfgToLis+0xfc>
+ 608:	e0 e0       	ldi	r30, 0x00	; 0
+ 60a:	f0 e0       	ldi	r31, 0x00	; 0
+ 60c:	e9 50       	subi	r30, 0x09	; 9
+ 60e:	fe 4f       	sbci	r31, 0xFE	; 254
+ 610:	80 81       	ld	r24, Z
+ 612:	81 30       	cpi	r24, 0x01	; 1
+ 614:	09 f4       	brne	.+2      	; 0x618 <WriteCfgToLis+0xd8>
+ 616:	ce c0       	rjmp	.+412    	; 0x7b4 <WriteCfgToLis+0x274>
+ 618:	5e 98       	cbi	0x0b, 6	; 11
  61a:	a9 9a       	sbi	0x15, 1	; 21
- 61c:	aa 9a       	sbi	0x15, 2	; 21
- 61e:	aa 9b       	sbis	0x15, 2	; 21
- 620:	fe cf       	rjmp	.-4      	; 0x61e <WriteCfgToLis+0xde>
+ 61c:	a9 9b       	sbis	0x15, 1	; 21
+ 61e:	fe cf       	rjmp	.-4      	; 0x61c <WriteCfgToLis+0xdc>
+ 620:	a9 9a       	sbi	0x15, 1	; 21
  622:	aa 9a       	sbi	0x15, 2	; 21
- 624:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 628:	ef 5f       	subi	r30, 0xFF	; 255
- 62a:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 62e:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 632:	e8 17       	cp	r30, r24
- 634:	38 f3       	brcs	.-50     	; 0x604 <WriteCfgToLis+0xc4>
- 636:	5e 98       	cbi	0x0b, 6	; 11
- 638:	28 98       	cbi	0x05, 0	; 5
- 63a:	08 95       	ret
- 63c:	5e 9a       	sbi	0x0b, 6	; 11
- 63e:	a9 9a       	sbi	0x15, 1	; 21
- 640:	a9 9b       	sbis	0x15, 1	; 21
- 642:	fe cf       	rjmp	.-4      	; 0x640 <WriteCfgToLis+0x100>
+ 624:	aa 9b       	sbis	0x15, 2	; 21
+ 626:	fe cf       	rjmp	.-4      	; 0x624 <WriteCfgToLis+0xe4>
+ 628:	aa 9a       	sbi	0x15, 2	; 21
+ 62a:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 62e:	ef 5f       	subi	r30, 0xFF	; 255
+ 630:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 634:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 638:	e8 17       	cp	r30, r24
+ 63a:	38 f3       	brcs	.-50     	; 0x60a <WriteCfgToLis+0xca>
+ 63c:	5e 98       	cbi	0x0b, 6	; 11
+ 63e:	28 98       	cbi	0x05, 0	; 5
+ 640:	08 95       	ret
+ 642:	5e 9a       	sbi	0x0b, 6	; 11
  644:	a9 9a       	sbi	0x15, 1	; 21
- 646:	aa 9a       	sbi	0x15, 2	; 21
- 648:	aa 9b       	sbis	0x15, 2	; 21
- 64a:	fe cf       	rjmp	.-4      	; 0x648 <WriteCfgToLis+0x108>
+ 646:	a9 9b       	sbis	0x15, 1	; 21
+ 648:	fe cf       	rjmp	.-4      	; 0x646 <WriteCfgToLis+0x106>
+ 64a:	a9 9a       	sbi	0x15, 1	; 21
  64c:	aa 9a       	sbi	0x15, 2	; 21
- 64e:	5e 98       	cbi	0x0b, 6	; 11
- 650:	a9 9a       	sbi	0x15, 1	; 21
- 652:	a9 9b       	sbis	0x15, 1	; 21
- 654:	fe cf       	rjmp	.-4      	; 0x652 <WriteCfgToLis+0x112>
+ 64e:	aa 9b       	sbis	0x15, 2	; 21
+ 650:	fe cf       	rjmp	.-4      	; 0x64e <WriteCfgToLis+0x10e>
+ 652:	aa 9a       	sbi	0x15, 2	; 21
+ 654:	5e 98       	cbi	0x0b, 6	; 11
  656:	a9 9a       	sbi	0x15, 1	; 21
- 658:	aa 9a       	sbi	0x15, 2	; 21
- 65a:	aa 9b       	sbis	0x15, 2	; 21
- 65c:	fe cf       	rjmp	.-4      	; 0x65a <WriteCfgToLis+0x11a>
+ 658:	a9 9b       	sbis	0x15, 1	; 21
+ 65a:	fe cf       	rjmp	.-4      	; 0x658 <WriteCfgToLis+0x118>
+ 65c:	a9 9a       	sbi	0x15, 1	; 21
  65e:	aa 9a       	sbi	0x15, 2	; 21
- 660:	80 91 45 02 	lds	r24, 0x0245	; 0x800245 <lis_rowselect>
- 664:	10 92 44 02 	sts	0x0244, r1	; 0x800244 <__data_end>
- 668:	81 30       	cpi	r24, 0x01	; 1
- 66a:	09 f0       	breq	.+2      	; 0x66e <WriteCfgToLis+0x12e>
- 66c:	b1 cf       	rjmp	.-158    	; 0x5d0 <WriteCfgToLis+0x90>
- 66e:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 672:	88 23       	and	r24, r24
- 674:	01 f3       	breq	.-64     	; 0x636 <WriteCfgToLis+0xf6>
- 676:	e0 e0       	ldi	r30, 0x00	; 0
- 678:	f0 e0       	ldi	r31, 0x00	; 0
- 67a:	ea 5e       	subi	r30, 0xEA	; 234
- 67c:	fe 4f       	sbci	r31, 0xFE	; 254
- 67e:	80 81       	ld	r24, Z
- 680:	81 30       	cpi	r24, 0x01	; 1
- 682:	c1 f0       	breq	.+48     	; 0x6b4 <WriteCfgToLis+0x174>
- 684:	5e 98       	cbi	0x0b, 6	; 11
- 686:	a9 9a       	sbi	0x15, 1	; 21
- 688:	a9 9b       	sbis	0x15, 1	; 21
- 68a:	fe cf       	rjmp	.-4      	; 0x688 <WriteCfgToLis+0x148>
+ 660:	aa 9b       	sbis	0x15, 2	; 21
+ 662:	fe cf       	rjmp	.-4      	; 0x660 <WriteCfgToLis+0x120>
+ 664:	aa 9a       	sbi	0x15, 2	; 21
+ 666:	80 91 5f 02 	lds	r24, 0x025F	; 0x80025f <lis_rowselect>
+ 66a:	10 92 5e 02 	sts	0x025E, r1	; 0x80025e <__data_end>
+ 66e:	81 30       	cpi	r24, 0x01	; 1
+ 670:	09 f0       	breq	.+2      	; 0x674 <WriteCfgToLis+0x134>
+ 672:	ae cf       	rjmp	.-164    	; 0x5d0 <WriteCfgToLis+0x90>
+ 674:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 678:	88 23       	and	r24, r24
+ 67a:	01 f3       	breq	.-64     	; 0x63c <WriteCfgToLis+0xfc>
+ 67c:	e0 e0       	ldi	r30, 0x00	; 0
+ 67e:	f0 e0       	ldi	r31, 0x00	; 0
+ 680:	ea 5e       	subi	r30, 0xEA	; 234
+ 682:	fe 4f       	sbci	r31, 0xFE	; 254
+ 684:	80 81       	ld	r24, Z
+ 686:	81 30       	cpi	r24, 0x01	; 1
+ 688:	c1 f0       	breq	.+48     	; 0x6ba <WriteCfgToLis+0x17a>
+ 68a:	5e 98       	cbi	0x0b, 6	; 11
  68c:	a9 9a       	sbi	0x15, 1	; 21
- 68e:	aa 9a       	sbi	0x15, 2	; 21
- 690:	aa 9b       	sbis	0x15, 2	; 21
- 692:	fe cf       	rjmp	.-4      	; 0x690 <WriteCfgToLis+0x150>
+ 68e:	a9 9b       	sbis	0x15, 1	; 21
+ 690:	fe cf       	rjmp	.-4      	; 0x68e <WriteCfgToLis+0x14e>
+ 692:	a9 9a       	sbi	0x15, 1	; 21
  694:	aa 9a       	sbi	0x15, 2	; 21
- 696:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 69a:	ef 5f       	subi	r30, 0xFF	; 255
- 69c:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 6a0:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 6a4:	e8 17       	cp	r30, r24
- 6a6:	38 f6       	brcc	.-114    	; 0x636 <WriteCfgToLis+0xf6>
- 6a8:	f0 e0       	ldi	r31, 0x00	; 0
- 6aa:	ea 5e       	subi	r30, 0xEA	; 234
- 6ac:	fe 4f       	sbci	r31, 0xFE	; 254
- 6ae:	80 81       	ld	r24, Z
- 6b0:	81 30       	cpi	r24, 0x01	; 1
- 6b2:	41 f7       	brne	.-48     	; 0x684 <WriteCfgToLis+0x144>
- 6b4:	5e 9a       	sbi	0x0b, 6	; 11
- 6b6:	e7 cf       	rjmp	.-50     	; 0x686 <WriteCfgToLis+0x146>
- 6b8:	5e 9a       	sbi	0x0b, 6	; 11
- 6ba:	a9 9a       	sbi	0x15, 1	; 21
- 6bc:	a9 9b       	sbis	0x15, 1	; 21
- 6be:	fe cf       	rjmp	.-4      	; 0x6bc <WriteCfgToLis+0x17c>
+ 696:	aa 9b       	sbis	0x15, 2	; 21
+ 698:	fe cf       	rjmp	.-4      	; 0x696 <WriteCfgToLis+0x156>
+ 69a:	aa 9a       	sbi	0x15, 2	; 21
+ 69c:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 6a0:	ef 5f       	subi	r30, 0xFF	; 255
+ 6a2:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 6a6:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 6aa:	e8 17       	cp	r30, r24
+ 6ac:	38 f6       	brcc	.-114    	; 0x63c <WriteCfgToLis+0xfc>
+ 6ae:	f0 e0       	ldi	r31, 0x00	; 0
+ 6b0:	ea 5e       	subi	r30, 0xEA	; 234
+ 6b2:	fe 4f       	sbci	r31, 0xFE	; 254
+ 6b4:	80 81       	ld	r24, Z
+ 6b6:	81 30       	cpi	r24, 0x01	; 1
+ 6b8:	41 f7       	brne	.-48     	; 0x68a <WriteCfgToLis+0x14a>
+ 6ba:	5e 9a       	sbi	0x0b, 6	; 11
+ 6bc:	e7 cf       	rjmp	.-50     	; 0x68c <WriteCfgToLis+0x14c>
+ 6be:	5e 9a       	sbi	0x0b, 6	; 11
  6c0:	a9 9a       	sbi	0x15, 1	; 21
- 6c2:	aa 9a       	sbi	0x15, 2	; 21
- 6c4:	aa 9b       	sbis	0x15, 2	; 21
- 6c6:	fe cf       	rjmp	.-4      	; 0x6c4 <WriteCfgToLis+0x184>
- 6c8:	5e cf       	rjmp	.-324    	; 0x586 <WriteCfgToLis+0x46>
- 6ca:	5e 98       	cbi	0x0b, 6	; 11
- 6cc:	a9 9a       	sbi	0x15, 1	; 21
- 6ce:	a9 9b       	sbis	0x15, 1	; 21
- 6d0:	fe cf       	rjmp	.-4      	; 0x6ce <WriteCfgToLis+0x18e>
+ 6c2:	a9 9b       	sbis	0x15, 1	; 21
+ 6c4:	fe cf       	rjmp	.-4      	; 0x6c2 <WriteCfgToLis+0x182>
+ 6c6:	a9 9a       	sbi	0x15, 1	; 21
+ 6c8:	aa 9a       	sbi	0x15, 2	; 21
+ 6ca:	aa 9b       	sbis	0x15, 2	; 21
+ 6cc:	fe cf       	rjmp	.-4      	; 0x6ca <WriteCfgToLis+0x18a>
+ 6ce:	5b cf       	rjmp	.-330    	; 0x586 <WriteCfgToLis+0x46>
+ 6d0:	5e 98       	cbi	0x0b, 6	; 11
  6d2:	a9 9a       	sbi	0x15, 1	; 21
- 6d4:	aa 9a       	sbi	0x15, 2	; 21
- 6d6:	aa 9b       	sbis	0x15, 2	; 21
- 6d8:	fe cf       	rjmp	.-4      	; 0x6d6 <WriteCfgToLis+0x196>
+ 6d4:	a9 9b       	sbis	0x15, 1	; 21
+ 6d6:	fe cf       	rjmp	.-4      	; 0x6d4 <WriteCfgToLis+0x194>
+ 6d8:	a9 9a       	sbi	0x15, 1	; 21
  6da:	aa 9a       	sbi	0x15, 2	; 21
- 6dc:	5e 9a       	sbi	0x0b, 6	; 11
- 6de:	a9 9a       	sbi	0x15, 1	; 21
- 6e0:	a9 9b       	sbis	0x15, 1	; 21
- 6e2:	fe cf       	rjmp	.-4      	; 0x6e0 <WriteCfgToLis+0x1a0>
+ 6dc:	aa 9b       	sbis	0x15, 2	; 21
+ 6de:	fe cf       	rjmp	.-4      	; 0x6dc <WriteCfgToLis+0x19c>
+ 6e0:	aa 9a       	sbi	0x15, 2	; 21
+ 6e2:	5e 9a       	sbi	0x0b, 6	; 11
  6e4:	a9 9a       	sbi	0x15, 1	; 21
- 6e6:	aa 9a       	sbi	0x15, 2	; 21
- 6e8:	aa 9b       	sbis	0x15, 2	; 21
- 6ea:	fe cf       	rjmp	.-4      	; 0x6e8 <WriteCfgToLis+0x1a8>
- 6ec:	69 cf       	rjmp	.-302    	; 0x5c0 <WriteCfgToLis+0x80>
- 6ee:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 6f2:	88 23       	and	r24, r24
- 6f4:	09 f4       	brne	.+2      	; 0x6f8 <WriteCfgToLis+0x1b8>
- 6f6:	9f cf       	rjmp	.-194    	; 0x636 <WriteCfgToLis+0xf6>
- 6f8:	e0 e0       	ldi	r30, 0x00	; 0
- 6fa:	f0 e0       	ldi	r31, 0x00	; 0
- 6fc:	e1 5d       	subi	r30, 0xD1	; 209
- 6fe:	fe 4f       	sbci	r31, 0xFE	; 254
- 700:	80 81       	ld	r24, Z
- 702:	81 30       	cpi	r24, 0x01	; 1
- 704:	c9 f0       	breq	.+50     	; 0x738 <WriteCfgToLis+0x1f8>
- 706:	5e 98       	cbi	0x0b, 6	; 11
- 708:	a9 9a       	sbi	0x15, 1	; 21
- 70a:	a9 9b       	sbis	0x15, 1	; 21
- 70c:	fe cf       	rjmp	.-4      	; 0x70a <WriteCfgToLis+0x1ca>
+ 6e6:	a9 9b       	sbis	0x15, 1	; 21
+ 6e8:	fe cf       	rjmp	.-4      	; 0x6e6 <WriteCfgToLis+0x1a6>
+ 6ea:	a9 9a       	sbi	0x15, 1	; 21
+ 6ec:	aa 9a       	sbi	0x15, 2	; 21
+ 6ee:	aa 9b       	sbis	0x15, 2	; 21
+ 6f0:	fe cf       	rjmp	.-4      	; 0x6ee <WriteCfgToLis+0x1ae>
+ 6f2:	66 cf       	rjmp	.-308    	; 0x5c0 <WriteCfgToLis+0x80>
+ 6f4:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 6f8:	88 23       	and	r24, r24
+ 6fa:	09 f4       	brne	.+2      	; 0x6fe <WriteCfgToLis+0x1be>
+ 6fc:	9f cf       	rjmp	.-194    	; 0x63c <WriteCfgToLis+0xfc>
+ 6fe:	e0 e0       	ldi	r30, 0x00	; 0
+ 700:	f0 e0       	ldi	r31, 0x00	; 0
+ 702:	e1 5d       	subi	r30, 0xD1	; 209
+ 704:	fe 4f       	sbci	r31, 0xFE	; 254
+ 706:	80 81       	ld	r24, Z
+ 708:	81 30       	cpi	r24, 0x01	; 1
+ 70a:	c9 f0       	breq	.+50     	; 0x73e <WriteCfgToLis+0x1fe>
+ 70c:	5e 98       	cbi	0x0b, 6	; 11
  70e:	a9 9a       	sbi	0x15, 1	; 21
- 710:	aa 9a       	sbi	0x15, 2	; 21
- 712:	aa 9b       	sbis	0x15, 2	; 21
- 714:	fe cf       	rjmp	.-4      	; 0x712 <WriteCfgToLis+0x1d2>
+ 710:	a9 9b       	sbis	0x15, 1	; 21
+ 712:	fe cf       	rjmp	.-4      	; 0x710 <WriteCfgToLis+0x1d0>
+ 714:	a9 9a       	sbi	0x15, 1	; 21
  716:	aa 9a       	sbi	0x15, 2	; 21
- 718:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 71c:	ef 5f       	subi	r30, 0xFF	; 255
- 71e:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 722:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 726:	e8 17       	cp	r30, r24
- 728:	08 f0       	brcs	.+2      	; 0x72c <WriteCfgToLis+0x1ec>
- 72a:	85 cf       	rjmp	.-246    	; 0x636 <WriteCfgToLis+0xf6>
- 72c:	f0 e0       	ldi	r31, 0x00	; 0
- 72e:	e1 5d       	subi	r30, 0xD1	; 209
- 730:	fe 4f       	sbci	r31, 0xFE	; 254
- 732:	80 81       	ld	r24, Z
- 734:	81 30       	cpi	r24, 0x01	; 1
- 736:	39 f7       	brne	.-50     	; 0x706 <WriteCfgToLis+0x1c6>
- 738:	5e 9a       	sbi	0x0b, 6	; 11
- 73a:	e6 cf       	rjmp	.-52     	; 0x708 <WriteCfgToLis+0x1c8>
- 73c:	5e 98       	cbi	0x0b, 6	; 11
- 73e:	a9 9a       	sbi	0x15, 1	; 21
- 740:	a9 9b       	sbis	0x15, 1	; 21
- 742:	fe cf       	rjmp	.-4      	; 0x740 <WriteCfgToLis+0x200>
+ 718:	aa 9b       	sbis	0x15, 2	; 21
+ 71a:	fe cf       	rjmp	.-4      	; 0x718 <WriteCfgToLis+0x1d8>
+ 71c:	aa 9a       	sbi	0x15, 2	; 21
+ 71e:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 722:	ef 5f       	subi	r30, 0xFF	; 255
+ 724:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 728:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 72c:	e8 17       	cp	r30, r24
+ 72e:	08 f0       	brcs	.+2      	; 0x732 <WriteCfgToLis+0x1f2>
+ 730:	85 cf       	rjmp	.-246    	; 0x63c <WriteCfgToLis+0xfc>
+ 732:	f0 e0       	ldi	r31, 0x00	; 0
+ 734:	e1 5d       	subi	r30, 0xD1	; 209
+ 736:	fe 4f       	sbci	r31, 0xFE	; 254
+ 738:	80 81       	ld	r24, Z
+ 73a:	81 30       	cpi	r24, 0x01	; 1
+ 73c:	39 f7       	brne	.-50     	; 0x70c <WriteCfgToLis+0x1cc>
+ 73e:	5e 9a       	sbi	0x0b, 6	; 11
+ 740:	e6 cf       	rjmp	.-52     	; 0x70e <WriteCfgToLis+0x1ce>
+ 742:	5e 98       	cbi	0x0b, 6	; 11
  744:	a9 9a       	sbi	0x15, 1	; 21
- 746:	aa 9a       	sbi	0x15, 2	; 21
- 748:	aa 9b       	sbis	0x15, 2	; 21
- 74a:	fe cf       	rjmp	.-4      	; 0x748 <WriteCfgToLis+0x208>
+ 746:	a9 9b       	sbis	0x15, 1	; 21
+ 748:	fe cf       	rjmp	.-4      	; 0x746 <WriteCfgToLis+0x206>
+ 74a:	a9 9a       	sbi	0x15, 1	; 21
  74c:	aa 9a       	sbi	0x15, 2	; 21
- 74e:	5e 98       	cbi	0x0b, 6	; 11
- 750:	a9 9a       	sbi	0x15, 1	; 21
- 752:	a9 9b       	sbis	0x15, 1	; 21
- 754:	fe cf       	rjmp	.-4      	; 0x752 <WriteCfgToLis+0x212>
+ 74e:	aa 9b       	sbis	0x15, 2	; 21
+ 750:	fe cf       	rjmp	.-4      	; 0x74e <WriteCfgToLis+0x20e>
+ 752:	aa 9a       	sbi	0x15, 2	; 21
+ 754:	5e 98       	cbi	0x0b, 6	; 11
  756:	a9 9a       	sbi	0x15, 1	; 21
- 758:	aa 9a       	sbi	0x15, 2	; 21
- 75a:	aa 9b       	sbis	0x15, 2	; 21
- 75c:	fe cf       	rjmp	.-4      	; 0x75a <WriteCfgToLis+0x21a>
- 75e:	30 cf       	rjmp	.-416    	; 0x5c0 <WriteCfgToLis+0x80>
- 760:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 764:	88 23       	and	r24, r24
- 766:	09 f4       	brne	.+2      	; 0x76a <WriteCfgToLis+0x22a>
- 768:	66 cf       	rjmp	.-308    	; 0x636 <WriteCfgToLis+0xf6>
- 76a:	e0 e0       	ldi	r30, 0x00	; 0
- 76c:	f0 e0       	ldi	r31, 0x00	; 0
- 76e:	e6 58       	subi	r30, 0x86	; 134
- 770:	fe 4f       	sbci	r31, 0xFE	; 254
- 772:	80 81       	ld	r24, Z
- 774:	81 30       	cpi	r24, 0x01	; 1
- 776:	c9 f0       	breq	.+50     	; 0x7aa <WriteCfgToLis+0x26a>
- 778:	5e 98       	cbi	0x0b, 6	; 11
- 77a:	a9 9a       	sbi	0x15, 1	; 21
- 77c:	a9 9b       	sbis	0x15, 1	; 21
- 77e:	fe cf       	rjmp	.-4      	; 0x77c <WriteCfgToLis+0x23c>
+ 758:	a9 9b       	sbis	0x15, 1	; 21
+ 75a:	fe cf       	rjmp	.-4      	; 0x758 <WriteCfgToLis+0x218>
+ 75c:	a9 9a       	sbi	0x15, 1	; 21
+ 75e:	aa 9a       	sbi	0x15, 2	; 21
+ 760:	aa 9b       	sbis	0x15, 2	; 21
+ 762:	fe cf       	rjmp	.-4      	; 0x760 <WriteCfgToLis+0x220>
+ 764:	2d cf       	rjmp	.-422    	; 0x5c0 <WriteCfgToLis+0x80>
+ 766:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 76a:	88 23       	and	r24, r24
+ 76c:	09 f4       	brne	.+2      	; 0x770 <WriteCfgToLis+0x230>
+ 76e:	66 cf       	rjmp	.-308    	; 0x63c <WriteCfgToLis+0xfc>
+ 770:	e0 e0       	ldi	r30, 0x00	; 0
+ 772:	f0 e0       	ldi	r31, 0x00	; 0
+ 774:	e6 58       	subi	r30, 0x86	; 134
+ 776:	fe 4f       	sbci	r31, 0xFE	; 254
+ 778:	80 81       	ld	r24, Z
+ 77a:	81 30       	cpi	r24, 0x01	; 1
+ 77c:	c9 f0       	breq	.+50     	; 0x7b0 <WriteCfgToLis+0x270>
+ 77e:	5e 98       	cbi	0x0b, 6	; 11
  780:	a9 9a       	sbi	0x15, 1	; 21
- 782:	aa 9a       	sbi	0x15, 2	; 21
- 784:	aa 9b       	sbis	0x15, 2	; 21
- 786:	fe cf       	rjmp	.-4      	; 0x784 <WriteCfgToLis+0x244>
+ 782:	a9 9b       	sbis	0x15, 1	; 21
+ 784:	fe cf       	rjmp	.-4      	; 0x782 <WriteCfgToLis+0x242>
+ 786:	a9 9a       	sbi	0x15, 1	; 21
  788:	aa 9a       	sbi	0x15, 2	; 21
- 78a:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 78e:	ef 5f       	subi	r30, 0xFF	; 255
- 790:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 794:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 798:	e8 17       	cp	r30, r24
- 79a:	08 f0       	brcs	.+2      	; 0x79e <WriteCfgToLis+0x25e>
- 79c:	4c cf       	rjmp	.-360    	; 0x636 <WriteCfgToLis+0xf6>
- 79e:	f0 e0       	ldi	r31, 0x00	; 0
- 7a0:	e6 58       	subi	r30, 0x86	; 134
- 7a2:	fe 4f       	sbci	r31, 0xFE	; 254
- 7a4:	80 81       	ld	r24, Z
- 7a6:	81 30       	cpi	r24, 0x01	; 1
- 7a8:	39 f7       	brne	.-50     	; 0x778 <WriteCfgToLis+0x238>
- 7aa:	5e 9a       	sbi	0x0b, 6	; 11
- 7ac:	e6 cf       	rjmp	.-52     	; 0x77a <WriteCfgToLis+0x23a>
- 7ae:	5e 9a       	sbi	0x0b, 6	; 11
- 7b0:	31 cf       	rjmp	.-414    	; 0x614 <WriteCfgToLis+0xd4>
- 7b2:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 7b6:	88 23       	and	r24, r24
- 7b8:	09 f4       	brne	.+2      	; 0x7bc <WriteCfgToLis+0x27c>
- 7ba:	3d cf       	rjmp	.-390    	; 0x636 <WriteCfgToLis+0xf6>
- 7bc:	e0 e0       	ldi	r30, 0x00	; 0
- 7be:	f0 e0       	ldi	r31, 0x00	; 0
- 7c0:	e8 5b       	subi	r30, 0xB8	; 184
- 7c2:	fe 4f       	sbci	r31, 0xFE	; 254
- 7c4:	80 81       	ld	r24, Z
- 7c6:	81 30       	cpi	r24, 0x01	; 1
- 7c8:	c9 f0       	breq	.+50     	; 0x7fc <WriteCfgToLis+0x2bc>
- 7ca:	5e 98       	cbi	0x0b, 6	; 11
- 7cc:	a9 9a       	sbi	0x15, 1	; 21
- 7ce:	a9 9b       	sbis	0x15, 1	; 21
- 7d0:	fe cf       	rjmp	.-4      	; 0x7ce <WriteCfgToLis+0x28e>
+ 78a:	aa 9b       	sbis	0x15, 2	; 21
+ 78c:	fe cf       	rjmp	.-4      	; 0x78a <WriteCfgToLis+0x24a>
+ 78e:	aa 9a       	sbi	0x15, 2	; 21
+ 790:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 794:	ef 5f       	subi	r30, 0xFF	; 255
+ 796:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 79a:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 79e:	e8 17       	cp	r30, r24
+ 7a0:	08 f0       	brcs	.+2      	; 0x7a4 <WriteCfgToLis+0x264>
+ 7a2:	4c cf       	rjmp	.-360    	; 0x63c <WriteCfgToLis+0xfc>
+ 7a4:	f0 e0       	ldi	r31, 0x00	; 0
+ 7a6:	e6 58       	subi	r30, 0x86	; 134
+ 7a8:	fe 4f       	sbci	r31, 0xFE	; 254
+ 7aa:	80 81       	ld	r24, Z
+ 7ac:	81 30       	cpi	r24, 0x01	; 1
+ 7ae:	39 f7       	brne	.-50     	; 0x77e <WriteCfgToLis+0x23e>
+ 7b0:	5e 9a       	sbi	0x0b, 6	; 11
+ 7b2:	e6 cf       	rjmp	.-52     	; 0x780 <WriteCfgToLis+0x240>
+ 7b4:	5e 9a       	sbi	0x0b, 6	; 11
+ 7b6:	31 cf       	rjmp	.-414    	; 0x61a <WriteCfgToLis+0xda>
+ 7b8:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 7bc:	88 23       	and	r24, r24
+ 7be:	09 f4       	brne	.+2      	; 0x7c2 <WriteCfgToLis+0x282>
+ 7c0:	3d cf       	rjmp	.-390    	; 0x63c <WriteCfgToLis+0xfc>
+ 7c2:	e0 e0       	ldi	r30, 0x00	; 0
+ 7c4:	f0 e0       	ldi	r31, 0x00	; 0
+ 7c6:	e8 5b       	subi	r30, 0xB8	; 184
+ 7c8:	fe 4f       	sbci	r31, 0xFE	; 254
+ 7ca:	80 81       	ld	r24, Z
+ 7cc:	81 30       	cpi	r24, 0x01	; 1
+ 7ce:	c9 f0       	breq	.+50     	; 0x802 <WriteCfgToLis+0x2c2>
+ 7d0:	5e 98       	cbi	0x0b, 6	; 11
  7d2:	a9 9a       	sbi	0x15, 1	; 21
- 7d4:	aa 9a       	sbi	0x15, 2	; 21
- 7d6:	aa 9b       	sbis	0x15, 2	; 21
- 7d8:	fe cf       	rjmp	.-4      	; 0x7d6 <WriteCfgToLis+0x296>
+ 7d4:	a9 9b       	sbis	0x15, 1	; 21
+ 7d6:	fe cf       	rjmp	.-4      	; 0x7d4 <WriteCfgToLis+0x294>
+ 7d8:	a9 9a       	sbi	0x15, 1	; 21
  7da:	aa 9a       	sbi	0x15, 2	; 21
- 7dc:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 7e0:	ef 5f       	subi	r30, 0xFF	; 255
- 7e2:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 7e6:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 7ea:	e8 17       	cp	r30, r24
- 7ec:	08 f0       	brcs	.+2      	; 0x7f0 <WriteCfgToLis+0x2b0>
- 7ee:	23 cf       	rjmp	.-442    	; 0x636 <WriteCfgToLis+0xf6>
- 7f0:	f0 e0       	ldi	r31, 0x00	; 0
- 7f2:	e8 5b       	subi	r30, 0xB8	; 184
- 7f4:	fe 4f       	sbci	r31, 0xFE	; 254
- 7f6:	80 81       	ld	r24, Z
- 7f8:	81 30       	cpi	r24, 0x01	; 1
- 7fa:	39 f7       	brne	.-50     	; 0x7ca <WriteCfgToLis+0x28a>
- 7fc:	5e 9a       	sbi	0x0b, 6	; 11
- 7fe:	e6 cf       	rjmp	.-52     	; 0x7cc <WriteCfgToLis+0x28c>
- 800:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 804:	88 23       	and	r24, r24
- 806:	09 f4       	brne	.+2      	; 0x80a <WriteCfgToLis+0x2ca>
- 808:	16 cf       	rjmp	.-468    	; 0x636 <WriteCfgToLis+0xf6>
- 80a:	e0 e0       	ldi	r30, 0x00	; 0
- 80c:	f0 e0       	ldi	r31, 0x00	; 0
- 80e:	ef 59       	subi	r30, 0x9F	; 159
- 810:	fe 4f       	sbci	r31, 0xFE	; 254
- 812:	80 81       	ld	r24, Z
- 814:	81 30       	cpi	r24, 0x01	; 1
- 816:	c9 f0       	breq	.+50     	; 0x84a <WriteCfgToLis+0x30a>
- 818:	5e 98       	cbi	0x0b, 6	; 11
- 81a:	a9 9a       	sbi	0x15, 1	; 21
- 81c:	a9 9b       	sbis	0x15, 1	; 21
- 81e:	fe cf       	rjmp	.-4      	; 0x81c <WriteCfgToLis+0x2dc>
+ 7dc:	aa 9b       	sbis	0x15, 2	; 21
+ 7de:	fe cf       	rjmp	.-4      	; 0x7dc <WriteCfgToLis+0x29c>
+ 7e0:	aa 9a       	sbi	0x15, 2	; 21
+ 7e2:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 7e6:	ef 5f       	subi	r30, 0xFF	; 255
+ 7e8:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 7ec:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 7f0:	e8 17       	cp	r30, r24
+ 7f2:	08 f0       	brcs	.+2      	; 0x7f6 <WriteCfgToLis+0x2b6>
+ 7f4:	23 cf       	rjmp	.-442    	; 0x63c <WriteCfgToLis+0xfc>
+ 7f6:	f0 e0       	ldi	r31, 0x00	; 0
+ 7f8:	e8 5b       	subi	r30, 0xB8	; 184
+ 7fa:	fe 4f       	sbci	r31, 0xFE	; 254
+ 7fc:	80 81       	ld	r24, Z
+ 7fe:	81 30       	cpi	r24, 0x01	; 1
+ 800:	39 f7       	brne	.-50     	; 0x7d0 <WriteCfgToLis+0x290>
+ 802:	5e 9a       	sbi	0x0b, 6	; 11
+ 804:	e6 cf       	rjmp	.-52     	; 0x7d2 <WriteCfgToLis+0x292>
+ 806:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 80a:	88 23       	and	r24, r24
+ 80c:	09 f4       	brne	.+2      	; 0x810 <WriteCfgToLis+0x2d0>
+ 80e:	16 cf       	rjmp	.-468    	; 0x63c <WriteCfgToLis+0xfc>
+ 810:	e0 e0       	ldi	r30, 0x00	; 0
+ 812:	f0 e0       	ldi	r31, 0x00	; 0
+ 814:	ef 59       	subi	r30, 0x9F	; 159
+ 816:	fe 4f       	sbci	r31, 0xFE	; 254
+ 818:	80 81       	ld	r24, Z
+ 81a:	81 30       	cpi	r24, 0x01	; 1
+ 81c:	c9 f0       	breq	.+50     	; 0x850 <WriteCfgToLis+0x310>
+ 81e:	5e 98       	cbi	0x0b, 6	; 11
  820:	a9 9a       	sbi	0x15, 1	; 21
- 822:	aa 9a       	sbi	0x15, 2	; 21
- 824:	aa 9b       	sbis	0x15, 2	; 21
- 826:	fe cf       	rjmp	.-4      	; 0x824 <WriteCfgToLis+0x2e4>
+ 822:	a9 9b       	sbis	0x15, 1	; 21
+ 824:	fe cf       	rjmp	.-4      	; 0x822 <WriteCfgToLis+0x2e2>
+ 826:	a9 9a       	sbi	0x15, 1	; 21
  828:	aa 9a       	sbi	0x15, 2	; 21
- 82a:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 82e:	ef 5f       	subi	r30, 0xFF	; 255
- 830:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 834:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 838:	e8 17       	cp	r30, r24
- 83a:	08 f0       	brcs	.+2      	; 0x83e <WriteCfgToLis+0x2fe>
- 83c:	fc ce       	rjmp	.-520    	; 0x636 <WriteCfgToLis+0xf6>
- 83e:	f0 e0       	ldi	r31, 0x00	; 0
- 840:	ef 59       	subi	r30, 0x9F	; 159
- 842:	fe 4f       	sbci	r31, 0xFE	; 254
- 844:	80 81       	ld	r24, Z
- 846:	81 30       	cpi	r24, 0x01	; 1
- 848:	39 f7       	brne	.-50     	; 0x818 <WriteCfgToLis+0x2d8>
- 84a:	5e 9a       	sbi	0x0b, 6	; 11
- 84c:	e6 cf       	rjmp	.-52     	; 0x81a <WriteCfgToLis+0x2da>
- 84e:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 852:	88 23       	and	r24, r24
- 854:	09 f4       	brne	.+2      	; 0x858 <WriteCfgToLis+0x318>
- 856:	ef ce       	rjmp	.-546    	; 0x636 <WriteCfgToLis+0xf6>
- 858:	e0 e0       	ldi	r30, 0x00	; 0
- 85a:	f0 e0       	ldi	r31, 0x00	; 0
- 85c:	eb 53       	subi	r30, 0x3B	; 59
- 85e:	fe 4f       	sbci	r31, 0xFE	; 254
- 860:	80 81       	ld	r24, Z
- 862:	81 30       	cpi	r24, 0x01	; 1
- 864:	c9 f0       	breq	.+50     	; 0x898 <WriteCfgToLis+0x358>
- 866:	5e 98       	cbi	0x0b, 6	; 11
- 868:	a9 9a       	sbi	0x15, 1	; 21
- 86a:	a9 9b       	sbis	0x15, 1	; 21
- 86c:	fe cf       	rjmp	.-4      	; 0x86a <WriteCfgToLis+0x32a>
+ 82a:	aa 9b       	sbis	0x15, 2	; 21
+ 82c:	fe cf       	rjmp	.-4      	; 0x82a <WriteCfgToLis+0x2ea>
+ 82e:	aa 9a       	sbi	0x15, 2	; 21
+ 830:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 834:	ef 5f       	subi	r30, 0xFF	; 255
+ 836:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 83a:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 83e:	e8 17       	cp	r30, r24
+ 840:	08 f0       	brcs	.+2      	; 0x844 <WriteCfgToLis+0x304>
+ 842:	fc ce       	rjmp	.-520    	; 0x63c <WriteCfgToLis+0xfc>
+ 844:	f0 e0       	ldi	r31, 0x00	; 0
+ 846:	ef 59       	subi	r30, 0x9F	; 159
+ 848:	fe 4f       	sbci	r31, 0xFE	; 254
+ 84a:	80 81       	ld	r24, Z
+ 84c:	81 30       	cpi	r24, 0x01	; 1
+ 84e:	39 f7       	brne	.-50     	; 0x81e <WriteCfgToLis+0x2de>
+ 850:	5e 9a       	sbi	0x0b, 6	; 11
+ 852:	e6 cf       	rjmp	.-52     	; 0x820 <WriteCfgToLis+0x2e0>
+ 854:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 858:	88 23       	and	r24, r24
+ 85a:	09 f4       	brne	.+2      	; 0x85e <WriteCfgToLis+0x31e>
+ 85c:	ef ce       	rjmp	.-546    	; 0x63c <WriteCfgToLis+0xfc>
+ 85e:	e0 e0       	ldi	r30, 0x00	; 0
+ 860:	f0 e0       	ldi	r31, 0x00	; 0
+ 862:	e2 52       	subi	r30, 0x22	; 34
+ 864:	fe 4f       	sbci	r31, 0xFE	; 254
+ 866:	80 81       	ld	r24, Z
+ 868:	81 30       	cpi	r24, 0x01	; 1
+ 86a:	c9 f0       	breq	.+50     	; 0x89e <WriteCfgToLis+0x35e>
+ 86c:	5e 98       	cbi	0x0b, 6	; 11
  86e:	a9 9a       	sbi	0x15, 1	; 21
- 870:	aa 9a       	sbi	0x15, 2	; 21
- 872:	aa 9b       	sbis	0x15, 2	; 21
- 874:	fe cf       	rjmp	.-4      	; 0x872 <WriteCfgToLis+0x332>
+ 870:	a9 9b       	sbis	0x15, 1	; 21
+ 872:	fe cf       	rjmp	.-4      	; 0x870 <WriteCfgToLis+0x330>
+ 874:	a9 9a       	sbi	0x15, 1	; 21
  876:	aa 9a       	sbi	0x15, 2	; 21
- 878:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 87c:	ef 5f       	subi	r30, 0xFF	; 255
- 87e:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 882:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 886:	e8 17       	cp	r30, r24
- 888:	08 f0       	brcs	.+2      	; 0x88c <WriteCfgToLis+0x34c>
- 88a:	d5 ce       	rjmp	.-598    	; 0x636 <WriteCfgToLis+0xf6>
- 88c:	f0 e0       	ldi	r31, 0x00	; 0
- 88e:	eb 53       	subi	r30, 0x3B	; 59
- 890:	fe 4f       	sbci	r31, 0xFE	; 254
- 892:	80 81       	ld	r24, Z
- 894:	81 30       	cpi	r24, 0x01	; 1
- 896:	39 f7       	brne	.-50     	; 0x866 <WriteCfgToLis+0x326>
- 898:	5e 9a       	sbi	0x0b, 6	; 11
- 89a:	e6 cf       	rjmp	.-52     	; 0x868 <WriteCfgToLis+0x328>
- 89c:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 8a0:	88 23       	and	r24, r24
- 8a2:	09 f4       	brne	.+2      	; 0x8a6 <WriteCfgToLis+0x366>
- 8a4:	c8 ce       	rjmp	.-624    	; 0x636 <WriteCfgToLis+0xf6>
- 8a6:	e0 e0       	ldi	r30, 0x00	; 0
- 8a8:	f0 e0       	ldi	r31, 0x00	; 0
- 8aa:	e4 55       	subi	r30, 0x54	; 84
- 8ac:	fe 4f       	sbci	r31, 0xFE	; 254
- 8ae:	80 81       	ld	r24, Z
- 8b0:	81 30       	cpi	r24, 0x01	; 1
- 8b2:	c9 f0       	breq	.+50     	; 0x8e6 <WriteCfgToLis+0x3a6>
- 8b4:	5e 98       	cbi	0x0b, 6	; 11
- 8b6:	a9 9a       	sbi	0x15, 1	; 21
- 8b8:	a9 9b       	sbis	0x15, 1	; 21
- 8ba:	fe cf       	rjmp	.-4      	; 0x8b8 <WriteCfgToLis+0x378>
+ 878:	aa 9b       	sbis	0x15, 2	; 21
+ 87a:	fe cf       	rjmp	.-4      	; 0x878 <WriteCfgToLis+0x338>
+ 87c:	aa 9a       	sbi	0x15, 2	; 21
+ 87e:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 882:	ef 5f       	subi	r30, 0xFF	; 255
+ 884:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 888:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 88c:	e8 17       	cp	r30, r24
+ 88e:	08 f0       	brcs	.+2      	; 0x892 <WriteCfgToLis+0x352>
+ 890:	d5 ce       	rjmp	.-598    	; 0x63c <WriteCfgToLis+0xfc>
+ 892:	f0 e0       	ldi	r31, 0x00	; 0
+ 894:	e2 52       	subi	r30, 0x22	; 34
+ 896:	fe 4f       	sbci	r31, 0xFE	; 254
+ 898:	80 81       	ld	r24, Z
+ 89a:	81 30       	cpi	r24, 0x01	; 1
+ 89c:	39 f7       	brne	.-50     	; 0x86c <WriteCfgToLis+0x32c>
+ 89e:	5e 9a       	sbi	0x0b, 6	; 11
+ 8a0:	e6 cf       	rjmp	.-52     	; 0x86e <WriteCfgToLis+0x32e>
+ 8a2:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 8a6:	88 23       	and	r24, r24
+ 8a8:	09 f4       	brne	.+2      	; 0x8ac <WriteCfgToLis+0x36c>
+ 8aa:	c8 ce       	rjmp	.-624    	; 0x63c <WriteCfgToLis+0xfc>
+ 8ac:	e0 e0       	ldi	r30, 0x00	; 0
+ 8ae:	f0 e0       	ldi	r31, 0x00	; 0
+ 8b0:	eb 53       	subi	r30, 0x3B	; 59
+ 8b2:	fe 4f       	sbci	r31, 0xFE	; 254
+ 8b4:	80 81       	ld	r24, Z
+ 8b6:	81 30       	cpi	r24, 0x01	; 1
+ 8b8:	c9 f0       	breq	.+50     	; 0x8ec <WriteCfgToLis+0x3ac>
+ 8ba:	5e 98       	cbi	0x0b, 6	; 11
  8bc:	a9 9a       	sbi	0x15, 1	; 21
- 8be:	aa 9a       	sbi	0x15, 2	; 21
- 8c0:	aa 9b       	sbis	0x15, 2	; 21
- 8c2:	fe cf       	rjmp	.-4      	; 0x8c0 <WriteCfgToLis+0x380>
+ 8be:	a9 9b       	sbis	0x15, 1	; 21
+ 8c0:	fe cf       	rjmp	.-4      	; 0x8be <WriteCfgToLis+0x37e>
+ 8c2:	a9 9a       	sbi	0x15, 1	; 21
  8c4:	aa 9a       	sbi	0x15, 2	; 21
- 8c6:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 8ca:	ef 5f       	subi	r30, 0xFF	; 255
- 8cc:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 8d0:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 8d4:	e8 17       	cp	r30, r24
- 8d6:	08 f0       	brcs	.+2      	; 0x8da <WriteCfgToLis+0x39a>
- 8d8:	ae ce       	rjmp	.-676    	; 0x636 <WriteCfgToLis+0xf6>
- 8da:	f0 e0       	ldi	r31, 0x00	; 0
- 8dc:	e4 55       	subi	r30, 0x54	; 84
- 8de:	fe 4f       	sbci	r31, 0xFE	; 254
- 8e0:	80 81       	ld	r24, Z
- 8e2:	81 30       	cpi	r24, 0x01	; 1
- 8e4:	39 f7       	brne	.-50     	; 0x8b4 <WriteCfgToLis+0x374>
- 8e6:	5e 9a       	sbi	0x0b, 6	; 11
- 8e8:	e6 cf       	rjmp	.-52     	; 0x8b6 <WriteCfgToLis+0x376>
- 8ea:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 8ee:	88 23       	and	r24, r24
- 8f0:	09 f4       	brne	.+2      	; 0x8f4 <WriteCfgToLis+0x3b4>
- 8f2:	a1 ce       	rjmp	.-702    	; 0x636 <WriteCfgToLis+0xf6>
- 8f4:	e0 e0       	ldi	r30, 0x00	; 0
- 8f6:	f0 e0       	ldi	r31, 0x00	; 0
- 8f8:	ed 56       	subi	r30, 0x6D	; 109
- 8fa:	fe 4f       	sbci	r31, 0xFE	; 254
- 8fc:	80 81       	ld	r24, Z
- 8fe:	81 30       	cpi	r24, 0x01	; 1
- 900:	99 f0       	breq	.+38     	; 0x928 <__stack+0x29>
- 902:	5e 98       	cbi	0x0b, 6	; 11
- 904:	a9 9a       	sbi	0x15, 1	; 21
- 906:	a9 9b       	sbis	0x15, 1	; 21
- 908:	fe cf       	rjmp	.-4      	; 0x906 <__stack+0x7>
+ 8c6:	aa 9b       	sbis	0x15, 2	; 21
+ 8c8:	fe cf       	rjmp	.-4      	; 0x8c6 <WriteCfgToLis+0x386>
+ 8ca:	aa 9a       	sbi	0x15, 2	; 21
+ 8cc:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 8d0:	ef 5f       	subi	r30, 0xFF	; 255
+ 8d2:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 8d6:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 8da:	e8 17       	cp	r30, r24
+ 8dc:	08 f0       	brcs	.+2      	; 0x8e0 <WriteCfgToLis+0x3a0>
+ 8de:	ae ce       	rjmp	.-676    	; 0x63c <WriteCfgToLis+0xfc>
+ 8e0:	f0 e0       	ldi	r31, 0x00	; 0
+ 8e2:	eb 53       	subi	r30, 0x3B	; 59
+ 8e4:	fe 4f       	sbci	r31, 0xFE	; 254
+ 8e6:	80 81       	ld	r24, Z
+ 8e8:	81 30       	cpi	r24, 0x01	; 1
+ 8ea:	39 f7       	brne	.-50     	; 0x8ba <WriteCfgToLis+0x37a>
+ 8ec:	5e 9a       	sbi	0x0b, 6	; 11
+ 8ee:	e6 cf       	rjmp	.-52     	; 0x8bc <WriteCfgToLis+0x37c>
+ 8f0:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 8f4:	88 23       	and	r24, r24
+ 8f6:	09 f4       	brne	.+2      	; 0x8fa <WriteCfgToLis+0x3ba>
+ 8f8:	a1 ce       	rjmp	.-702    	; 0x63c <WriteCfgToLis+0xfc>
+ 8fa:	e0 e0       	ldi	r30, 0x00	; 0
+ 8fc:	f0 e0       	ldi	r31, 0x00	; 0
+ 8fe:	e4 55       	subi	r30, 0x54	; 84
+ 900:	fe 4f       	sbci	r31, 0xFE	; 254
+ 902:	80 81       	ld	r24, Z
+ 904:	81 30       	cpi	r24, 0x01	; 1
+ 906:	99 f0       	breq	.+38     	; 0x92e <__stack+0x2f>
+ 908:	5e 98       	cbi	0x0b, 6	; 11
  90a:	a9 9a       	sbi	0x15, 1	; 21
- 90c:	aa 9a       	sbi	0x15, 2	; 21
- 90e:	aa 9b       	sbis	0x15, 2	; 21
- 910:	fe cf       	rjmp	.-4      	; 0x90e <__stack+0xf>
+ 90c:	a9 9b       	sbis	0x15, 1	; 21
+ 90e:	fe cf       	rjmp	.-4      	; 0x90c <__stack+0xd>
+ 910:	a9 9a       	sbi	0x15, 1	; 21
  912:	aa 9a       	sbi	0x15, 2	; 21
- 914:	e0 91 44 02 	lds	r30, 0x0244	; 0x800244 <__data_end>
- 918:	ef 5f       	subi	r30, 0xFF	; 255
- 91a:	e0 93 44 02 	sts	0x0244, r30	; 0x800244 <__data_end>
- 91e:	80 91 f7 01 	lds	r24, 0x01F7	; 0x8001f7 <nprogbits_rowselect>
- 922:	e8 17       	cp	r30, r24
- 924:	40 f3       	brcs	.-48     	; 0x8f6 <WriteCfgToLis+0x3b6>
- 926:	87 ce       	rjmp	.-754    	; 0x636 <WriteCfgToLis+0xf6>
- 928:	5e 9a       	sbi	0x0b, 6	; 11
- 92a:	ec cf       	rjmp	.-40     	; 0x904 <__stack+0x5>
+ 914:	aa 9b       	sbis	0x15, 2	; 21
+ 916:	fe cf       	rjmp	.-4      	; 0x914 <__stack+0x15>
+ 918:	aa 9a       	sbi	0x15, 2	; 21
+ 91a:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 91e:	ef 5f       	subi	r30, 0xFF	; 255
+ 920:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 924:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 928:	e8 17       	cp	r30, r24
+ 92a:	40 f3       	brcs	.-48     	; 0x8fc <WriteCfgToLis+0x3bc>
+ 92c:	87 ce       	rjmp	.-754    	; 0x63c <WriteCfgToLis+0xfc>
+ 92e:	5e 9a       	sbi	0x0b, 6	; 11
+ 930:	ec cf       	rjmp	.-40     	; 0x90a <__stack+0xb>
+ 932:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 936:	88 23       	and	r24, r24
+ 938:	09 f4       	brne	.+2      	; 0x93c <__stack+0x3d>
+ 93a:	80 ce       	rjmp	.-768    	; 0x63c <WriteCfgToLis+0xfc>
+ 93c:	e0 e0       	ldi	r30, 0x00	; 0
+ 93e:	f0 e0       	ldi	r31, 0x00	; 0
+ 940:	ed 56       	subi	r30, 0x6D	; 109
+ 942:	fe 4f       	sbci	r31, 0xFE	; 254
+ 944:	80 81       	ld	r24, Z
+ 946:	81 30       	cpi	r24, 0x01	; 1
+ 948:	99 f0       	breq	.+38     	; 0x970 <__stack+0x71>
+ 94a:	5e 98       	cbi	0x0b, 6	; 11
+ 94c:	a9 9a       	sbi	0x15, 1	; 21
+ 94e:	a9 9b       	sbis	0x15, 1	; 21
+ 950:	fe cf       	rjmp	.-4      	; 0x94e <__stack+0x4f>
+ 952:	a9 9a       	sbi	0x15, 1	; 21
+ 954:	aa 9a       	sbi	0x15, 2	; 21
+ 956:	aa 9b       	sbis	0x15, 2	; 21
+ 958:	fe cf       	rjmp	.-4      	; 0x956 <__stack+0x57>
+ 95a:	aa 9a       	sbi	0x15, 2	; 21
+ 95c:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
+ 960:	ef 5f       	subi	r30, 0xFF	; 255
+ 962:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
+ 966:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+ 96a:	e8 17       	cp	r30, r24
+ 96c:	40 f3       	brcs	.-48     	; 0x93e <__stack+0x3f>
+ 96e:	66 ce       	rjmp	.-820    	; 0x63c <WriteCfgToLis+0xfc>
+ 970:	5e 9a       	sbi	0x0b, 6	; 11
+ 972:	ec cf       	rjmp	.-40     	; 0x94c <__stack+0x4d>
 
-0000092c <AutoExpose>:
- 92c:	ef 92       	push	r14
- 92e:	ff 92       	push	r15
- 930:	0f 93       	push	r16
- 932:	1f 93       	push	r17
- 934:	cf 93       	push	r28
- 936:	df 93       	push	r29
- 938:	00 d0       	rcall	.+0      	; 0x93a <AutoExpose+0xe>
- 93a:	cd b7       	in	r28, 0x3d	; 61
- 93c:	de b7       	in	r29, 0x3e	; 62
- 93e:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- 942:	f0 e5       	ldi	r31, 0x50	; 80
- 944:	ef 2e       	mov	r14, r31
- 946:	f3 ec       	ldi	r31, 0xC3	; 195
- 948:	ff 2e       	mov	r15, r31
- 94a:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- 94e:	40 9a       	sbi	0x08, 0	; 8
- 950:	0e 94 10 02 	call	0x420	; 0x420 <LisFrameReadout>
- 954:	40 98       	cbi	0x08, 0	; 8
- 956:	80 91 46 02 	lds	r24, 0x0246	; 0x800246 <lis_sum_mode>
- 95a:	20 91 fd 01 	lds	r18, 0x01FD	; 0x8001fd <first_used_pixel>
- 95e:	30 91 fe 01 	lds	r19, 0x01FE	; 0x8001fe <first_used_pixel+0x1>
- 962:	81 11       	cpse	r24, r1
- 964:	50 c0       	rjmp	.+160    	; 0xa06 <AutoExpose+0xda>
- 966:	22 0f       	add	r18, r18
- 968:	33 1f       	adc	r19, r19
- 96a:	30 93 fe 01 	sts	0x01FE, r19	; 0x8001fe <first_used_pixel+0x1>
- 96e:	20 93 fd 01 	sts	0x01FD, r18	; 0x8001fd <first_used_pixel>
- 972:	40 e1       	ldi	r20, 0x10	; 16
- 974:	53 e0       	ldi	r21, 0x03	; 3
- 976:	f9 01       	movw	r30, r18
- 978:	ee 0f       	add	r30, r30
- 97a:	ff 1f       	adc	r31, r31
- 97c:	e3 5b       	subi	r30, 0xB3	; 179
- 97e:	fd 4f       	sbci	r31, 0xFD	; 253
- 980:	f0 93 fa 01 	sts	0x01FA, r31	; 0x8001fa <pframe+0x1>
- 984:	e0 93 f9 01 	sts	0x01F9, r30	; 0x8001f9 <pframe>
- 988:	c9 01       	movw	r24, r18
- 98a:	01 96       	adiw	r24, 0x01	; 1
- 98c:	90 93 48 02 	sts	0x0248, r25	; 0x800248 <Lis_npixels_counter+0x1>
- 990:	80 93 47 02 	sts	0x0247, r24	; 0x800247 <Lis_npixels_counter>
- 994:	24 17       	cp	r18, r20
- 996:	35 07       	cpc	r19, r21
- 998:	e0 f5       	brcc	.+120    	; 0xa12 <AutoExpose+0xe6>
- 99a:	2e 5f       	subi	r18, 0xFE	; 254
- 99c:	3f 4f       	sbci	r19, 0xFF	; 255
- 99e:	df 01       	movw	r26, r30
- 9a0:	11 96       	adiw	r26, 0x01	; 1
- 9a2:	4e 5f       	subi	r20, 0xFE	; 254
- 9a4:	5f 4f       	sbci	r21, 0xFF	; 255
- 9a6:	00 e0       	ldi	r16, 0x00	; 0
- 9a8:	10 e0       	ldi	r17, 0x00	; 0
- 9aa:	80 81       	ld	r24, Z
- 9ac:	90 e0       	ldi	r25, 0x00	; 0
- 9ae:	98 2f       	mov	r25, r24
- 9b0:	88 27       	eor	r24, r24
- 9b2:	32 96       	adiw	r30, 0x02	; 2
- 9b4:	f0 93 fa 01 	sts	0x01FA, r31	; 0x8001fa <pframe+0x1>
- 9b8:	e0 93 f9 01 	sts	0x01F9, r30	; 0x8001f9 <pframe>
- 9bc:	6c 91       	ld	r22, X
- 9be:	86 2b       	or	r24, r22
- 9c0:	08 17       	cp	r16, r24
- 9c2:	19 07       	cpc	r17, r25
- 9c4:	08 f4       	brcc	.+2      	; 0x9c8 <AutoExpose+0x9c>
- 9c6:	8c 01       	movw	r16, r24
- 9c8:	30 93 48 02 	sts	0x0248, r19	; 0x800248 <Lis_npixels_counter+0x1>
- 9cc:	20 93 47 02 	sts	0x0247, r18	; 0x800247 <Lis_npixels_counter>
- 9d0:	2f 5f       	subi	r18, 0xFF	; 255
- 9d2:	3f 4f       	sbci	r19, 0xFF	; 255
- 9d4:	12 96       	adiw	r26, 0x02	; 2
- 9d6:	42 17       	cp	r20, r18
- 9d8:	53 07       	cpc	r21, r19
- 9da:	39 f7       	brne	.-50     	; 0x9aa <AutoExpose+0x7e>
- 9dc:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- 9e0:	01 15       	cp	r16, r1
- 9e2:	11 05       	cpc	r17, r1
- 9e4:	c1 f0       	breq	.+48     	; 0xa16 <AutoExpose+0xea>
- 9e6:	01 33       	cpi	r16, 0x31	; 49
- 9e8:	85 e7       	ldi	r24, 0x75	; 117
- 9ea:	18 07       	cpc	r17, r24
- 9ec:	08 f4       	brcc	.+2      	; 0x9f0 <AutoExpose+0xc4>
- 9ee:	5d c0       	rjmp	.+186    	; 0xaaa <AutoExpose+0x17e>
- 9f0:	80 91 fb 01 	lds	r24, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
- 9f4:	90 91 fc 01 	lds	r25, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
- 9f8:	96 95       	lsr	r25
- 9fa:	87 95       	ror	r24
- 9fc:	90 93 fc 01 	sts	0x01FC, r25	; 0x8001fc <Lis_nticks_exposure+0x1>
- a00:	80 93 fb 01 	sts	0x01FB, r24	; 0x8001fb <Lis_nticks_exposure>
- a04:	a2 cf       	rjmp	.-188    	; 0x94a <AutoExpose+0x1e>
- a06:	81 30       	cpi	r24, 0x01	; 1
- a08:	09 f0       	breq	.+2      	; 0xa0c <AutoExpose+0xe0>
- a0a:	6f c0       	rjmp	.+222    	; 0xaea <AutoExpose+0x1be>
- a0c:	48 e8       	ldi	r20, 0x88	; 136
- a0e:	51 e0       	ldi	r21, 0x01	; 1
- a10:	b2 cf       	rjmp	.-156    	; 0x976 <AutoExpose+0x4a>
- a12:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- a16:	80 91 fb 01 	lds	r24, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
- a1a:	90 91 fc 01 	lds	r25, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
- a1e:	80 35       	cpi	r24, 0x50	; 80
- a20:	23 ec       	ldi	r18, 0xC3	; 195
- a22:	92 07       	cpc	r25, r18
- a24:	80 f4       	brcc	.+32     	; 0xa46 <AutoExpose+0x11a>
- a26:	9c 01       	movw	r18, r24
- a28:	22 0f       	add	r18, r18
- a2a:	33 1f       	adc	r19, r19
- a2c:	88 0f       	add	r24, r24
- a2e:	99 1f       	adc	r25, r25
- a30:	88 0f       	add	r24, r24
- a32:	99 1f       	adc	r25, r25
- a34:	88 0f       	add	r24, r24
- a36:	99 1f       	adc	r25, r25
- a38:	82 0f       	add	r24, r18
- a3a:	93 1f       	adc	r25, r19
- a3c:	90 93 fc 01 	sts	0x01FC, r25	; 0x8001fc <Lis_nticks_exposure+0x1>
- a40:	80 93 fb 01 	sts	0x01FB, r24	; 0x8001fb <Lis_nticks_exposure>
- a44:	82 cf       	rjmp	.-252    	; 0x94a <AutoExpose+0x1e>
- a46:	80 e5       	ldi	r24, 0x50	; 80
- a48:	93 ec       	ldi	r25, 0xC3	; 195
- a4a:	90 93 fc 01 	sts	0x01FC, r25	; 0x8001fc <Lis_nticks_exposure+0x1>
- a4e:	80 93 fb 01 	sts	0x01FB, r24	; 0x8001fb <Lis_nticks_exposure>
- a52:	80 e5       	ldi	r24, 0x50	; 80
- a54:	93 ec       	ldi	r25, 0xC3	; 195
- a56:	99 83       	std	Y+1, r25	; 0x01
- a58:	8a 83       	std	Y+2, r24	; 0x02
- a5a:	8e 01       	movw	r16, r28
- a5c:	0f 5f       	subi	r16, 0xFF	; 255
- a5e:	1f 4f       	sbci	r17, 0xFF	; 255
- a60:	7e 01       	movw	r14, r28
- a62:	f3 e0       	ldi	r31, 0x03	; 3
- a64:	ef 0e       	add	r14, r31
- a66:	f1 1c       	adc	r15, r1
- a68:	f8 01       	movw	r30, r16
- a6a:	81 91       	ld	r24, Z+
- a6c:	8f 01       	movw	r16, r30
- a6e:	8e bd       	out	0x2e, r24	; 46
- a70:	2c 98       	cbi	0x05, 4	; 5
- a72:	8c b5       	in	r24, 0x2c	; 44
- a74:	8f 7b       	andi	r24, 0xBF	; 191
- a76:	8c bd       	out	0x2c, r24	; 44
- a78:	e0 91 ff 01 	lds	r30, 0x01FF	; 0x8001ff <Delay3CpuCyclesPerTick>
- a7c:	f0 91 00 02 	lds	r31, 0x0200	; 0x800200 <Delay3CpuCyclesPerTick+0x1>
- a80:	8a e0       	ldi	r24, 0x0A	; 10
- a82:	09 95       	icall
- a84:	8c b5       	in	r24, 0x2c	; 44
- a86:	80 64       	ori	r24, 0x40	; 64
- a88:	8c bd       	out	0x2c, r24	; 44
- a8a:	0d b4       	in	r0, 0x2d	; 45
- a8c:	07 fe       	sbrs	r0, 7
- a8e:	fd cf       	rjmp	.-6      	; 0xa8a <AutoExpose+0x15e>
- a90:	8e b5       	in	r24, 0x2e	; 46
- a92:	e0 16       	cp	r14, r16
- a94:	f1 06       	cpc	r15, r17
- a96:	41 f7       	brne	.-48     	; 0xa68 <AutoExpose+0x13c>
- a98:	0f 90       	pop	r0
- a9a:	0f 90       	pop	r0
- a9c:	df 91       	pop	r29
- a9e:	cf 91       	pop	r28
- aa0:	1f 91       	pop	r17
- aa2:	0f 91       	pop	r16
- aa4:	ff 90       	pop	r15
- aa6:	ef 90       	pop	r14
- aa8:	08 95       	ret
- aaa:	00 32       	cpi	r16, 0x20	; 32
- aac:	ee e4       	ldi	r30, 0x4E	; 78
- aae:	1e 07       	cpc	r17, r30
- ab0:	f8 f4       	brcc	.+62     	; 0xaf0 <AutoExpose+0x1c4>
- ab2:	20 91 fb 01 	lds	r18, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
- ab6:	30 91 fc 01 	lds	r19, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
- aba:	20 35       	cpi	r18, 0x50	; 80
- abc:	f3 ec       	ldi	r31, 0xC3	; 195
- abe:	3f 07       	cpc	r19, r31
- ac0:	10 f6       	brcc	.-124    	; 0xa46 <AutoExpose+0x11a>
- ac2:	a0 e2       	ldi	r26, 0x20	; 32
- ac4:	be e4       	ldi	r27, 0x4E	; 78
- ac6:	0e 94 0f 07 	call	0xe1e	; 0xe1e <__umulhisi3>
- aca:	98 01       	movw	r18, r16
- acc:	40 e0       	ldi	r20, 0x00	; 0
- ace:	50 e0       	ldi	r21, 0x00	; 0
- ad0:	0e 94 ed 06 	call	0xdda	; 0xdda <__udivmodsi4>
- ad4:	21 35       	cpi	r18, 0x51	; 81
- ad6:	83 ec       	ldi	r24, 0xC3	; 195
- ad8:	38 07       	cpc	r19, r24
- ada:	41 05       	cpc	r20, r1
- adc:	51 05       	cpc	r21, r1
- ade:	68 f0       	brcs	.+26     	; 0xafa <AutoExpose+0x1ce>
- ae0:	f0 92 fc 01 	sts	0x01FC, r15	; 0x8001fc <Lis_nticks_exposure+0x1>
- ae4:	e0 92 fb 01 	sts	0x01FB, r14	; 0x8001fb <Lis_nticks_exposure>
- ae8:	30 cf       	rjmp	.-416    	; 0x94a <AutoExpose+0x1e>
- aea:	40 e1       	ldi	r20, 0x10	; 16
- aec:	53 e0       	ldi	r21, 0x03	; 3
- aee:	43 cf       	rjmp	.-378    	; 0x976 <AutoExpose+0x4a>
- af0:	90 91 fc 01 	lds	r25, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
- af4:	80 91 fb 01 	lds	r24, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
- af8:	ae cf       	rjmp	.-164    	; 0xa56 <AutoExpose+0x12a>
- afa:	30 93 fc 01 	sts	0x01FC, r19	; 0x8001fc <Lis_nticks_exposure+0x1>
- afe:	20 93 fb 01 	sts	0x01FB, r18	; 0x8001fb <Lis_nticks_exposure>
- b02:	23 cf       	rjmp	.-442    	; 0x94a <AutoExpose+0x1e>
+00000974 <AutoExpose>:
+ 974:	ef 92       	push	r14
+ 976:	ff 92       	push	r15
+ 978:	0f 93       	push	r16
+ 97a:	1f 93       	push	r17
+ 97c:	cf 93       	push	r28
+ 97e:	df 93       	push	r29
+ 980:	00 d0       	rcall	.+0      	; 0x982 <AutoExpose+0xe>
+ 982:	cd b7       	in	r28, 0x3d	; 61
+ 984:	de b7       	in	r29, 0x3e	; 62
+ 986:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
+ 98a:	f0 e5       	ldi	r31, 0x50	; 80
+ 98c:	ef 2e       	mov	r14, r31
+ 98e:	f3 ec       	ldi	r31, 0xC3	; 195
+ 990:	ff 2e       	mov	r15, r31
+ 992:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
+ 996:	40 9a       	sbi	0x08, 0	; 8
+ 998:	0e 94 10 02 	call	0x420	; 0x420 <LisFrameReadout>
+ 99c:	40 98       	cbi	0x08, 0	; 8
+ 99e:	80 91 60 02 	lds	r24, 0x0260	; 0x800260 <lis_sum_mode>
+ 9a2:	20 91 16 02 	lds	r18, 0x0216	; 0x800216 <first_used_pixel>
+ 9a6:	30 91 17 02 	lds	r19, 0x0217	; 0x800217 <first_used_pixel+0x1>
+ 9aa:	81 11       	cpse	r24, r1
+ 9ac:	50 c0       	rjmp	.+160    	; 0xa4e <AutoExpose+0xda>
+ 9ae:	22 0f       	add	r18, r18
+ 9b0:	33 1f       	adc	r19, r19
+ 9b2:	30 93 17 02 	sts	0x0217, r19	; 0x800217 <first_used_pixel+0x1>
+ 9b6:	20 93 16 02 	sts	0x0216, r18	; 0x800216 <first_used_pixel>
+ 9ba:	40 e1       	ldi	r20, 0x10	; 16
+ 9bc:	53 e0       	ldi	r21, 0x03	; 3
+ 9be:	f9 01       	movw	r30, r18
+ 9c0:	ee 0f       	add	r30, r30
+ 9c2:	ff 1f       	adc	r31, r31
+ 9c4:	e9 59       	subi	r30, 0x99	; 153
+ 9c6:	fd 4f       	sbci	r31, 0xFD	; 253
+ 9c8:	f0 93 13 02 	sts	0x0213, r31	; 0x800213 <pframe+0x1>
+ 9cc:	e0 93 12 02 	sts	0x0212, r30	; 0x800212 <pframe>
+ 9d0:	c9 01       	movw	r24, r18
+ 9d2:	01 96       	adiw	r24, 0x01	; 1
+ 9d4:	90 93 62 02 	sts	0x0262, r25	; 0x800262 <Lis_npixels_counter+0x1>
+ 9d8:	80 93 61 02 	sts	0x0261, r24	; 0x800261 <Lis_npixels_counter>
+ 9dc:	24 17       	cp	r18, r20
+ 9de:	35 07       	cpc	r19, r21
+ 9e0:	e0 f5       	brcc	.+120    	; 0xa5a <AutoExpose+0xe6>
+ 9e2:	2e 5f       	subi	r18, 0xFE	; 254
+ 9e4:	3f 4f       	sbci	r19, 0xFF	; 255
+ 9e6:	df 01       	movw	r26, r30
+ 9e8:	11 96       	adiw	r26, 0x01	; 1
+ 9ea:	4e 5f       	subi	r20, 0xFE	; 254
+ 9ec:	5f 4f       	sbci	r21, 0xFF	; 255
+ 9ee:	00 e0       	ldi	r16, 0x00	; 0
+ 9f0:	10 e0       	ldi	r17, 0x00	; 0
+ 9f2:	80 81       	ld	r24, Z
+ 9f4:	90 e0       	ldi	r25, 0x00	; 0
+ 9f6:	98 2f       	mov	r25, r24
+ 9f8:	88 27       	eor	r24, r24
+ 9fa:	32 96       	adiw	r30, 0x02	; 2
+ 9fc:	f0 93 13 02 	sts	0x0213, r31	; 0x800213 <pframe+0x1>
+ a00:	e0 93 12 02 	sts	0x0212, r30	; 0x800212 <pframe>
+ a04:	6c 91       	ld	r22, X
+ a06:	86 2b       	or	r24, r22
+ a08:	08 17       	cp	r16, r24
+ a0a:	19 07       	cpc	r17, r25
+ a0c:	08 f4       	brcc	.+2      	; 0xa10 <AutoExpose+0x9c>
+ a0e:	8c 01       	movw	r16, r24
+ a10:	30 93 62 02 	sts	0x0262, r19	; 0x800262 <Lis_npixels_counter+0x1>
+ a14:	20 93 61 02 	sts	0x0261, r18	; 0x800261 <Lis_npixels_counter>
+ a18:	2f 5f       	subi	r18, 0xFF	; 255
+ a1a:	3f 4f       	sbci	r19, 0xFF	; 255
+ a1c:	12 96       	adiw	r26, 0x02	; 2
+ a1e:	42 17       	cp	r20, r18
+ a20:	53 07       	cpc	r21, r19
+ a22:	39 f7       	brne	.-50     	; 0x9f2 <AutoExpose+0x7e>
+ a24:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
+ a28:	01 15       	cp	r16, r1
+ a2a:	11 05       	cpc	r17, r1
+ a2c:	c1 f0       	breq	.+48     	; 0xa5e <AutoExpose+0xea>
+ a2e:	01 33       	cpi	r16, 0x31	; 49
+ a30:	85 e7       	ldi	r24, 0x75	; 117
+ a32:	18 07       	cpc	r17, r24
+ a34:	08 f4       	brcc	.+2      	; 0xa38 <AutoExpose+0xc4>
+ a36:	5d c0       	rjmp	.+186    	; 0xaf2 <AutoExpose+0x17e>
+ a38:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
+ a3c:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
+ a40:	96 95       	lsr	r25
+ a42:	87 95       	ror	r24
+ a44:	90 93 15 02 	sts	0x0215, r25	; 0x800215 <Lis_nticks_exposure+0x1>
+ a48:	80 93 14 02 	sts	0x0214, r24	; 0x800214 <Lis_nticks_exposure>
+ a4c:	a2 cf       	rjmp	.-188    	; 0x992 <AutoExpose+0x1e>
+ a4e:	81 30       	cpi	r24, 0x01	; 1
+ a50:	09 f0       	breq	.+2      	; 0xa54 <AutoExpose+0xe0>
+ a52:	6f c0       	rjmp	.+222    	; 0xb32 <AutoExpose+0x1be>
+ a54:	48 e8       	ldi	r20, 0x88	; 136
+ a56:	51 e0       	ldi	r21, 0x01	; 1
+ a58:	b2 cf       	rjmp	.-156    	; 0x9be <AutoExpose+0x4a>
+ a5a:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
+ a5e:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
+ a62:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
+ a66:	80 35       	cpi	r24, 0x50	; 80
+ a68:	23 ec       	ldi	r18, 0xC3	; 195
+ a6a:	92 07       	cpc	r25, r18
+ a6c:	80 f4       	brcc	.+32     	; 0xa8e <AutoExpose+0x11a>
+ a6e:	9c 01       	movw	r18, r24
+ a70:	22 0f       	add	r18, r18
+ a72:	33 1f       	adc	r19, r19
+ a74:	88 0f       	add	r24, r24
+ a76:	99 1f       	adc	r25, r25
+ a78:	88 0f       	add	r24, r24
+ a7a:	99 1f       	adc	r25, r25
+ a7c:	88 0f       	add	r24, r24
+ a7e:	99 1f       	adc	r25, r25
+ a80:	82 0f       	add	r24, r18
+ a82:	93 1f       	adc	r25, r19
+ a84:	90 93 15 02 	sts	0x0215, r25	; 0x800215 <Lis_nticks_exposure+0x1>
+ a88:	80 93 14 02 	sts	0x0214, r24	; 0x800214 <Lis_nticks_exposure>
+ a8c:	82 cf       	rjmp	.-252    	; 0x992 <AutoExpose+0x1e>
+ a8e:	80 e5       	ldi	r24, 0x50	; 80
+ a90:	93 ec       	ldi	r25, 0xC3	; 195
+ a92:	90 93 15 02 	sts	0x0215, r25	; 0x800215 <Lis_nticks_exposure+0x1>
+ a96:	80 93 14 02 	sts	0x0214, r24	; 0x800214 <Lis_nticks_exposure>
+ a9a:	80 e5       	ldi	r24, 0x50	; 80
+ a9c:	93 ec       	ldi	r25, 0xC3	; 195
+ a9e:	99 83       	std	Y+1, r25	; 0x01
+ aa0:	8a 83       	std	Y+2, r24	; 0x02
+ aa2:	8e 01       	movw	r16, r28
+ aa4:	0f 5f       	subi	r16, 0xFF	; 255
+ aa6:	1f 4f       	sbci	r17, 0xFF	; 255
+ aa8:	7e 01       	movw	r14, r28
+ aaa:	f3 e0       	ldi	r31, 0x03	; 3
+ aac:	ef 0e       	add	r14, r31
+ aae:	f1 1c       	adc	r15, r1
+ ab0:	f8 01       	movw	r30, r16
+ ab2:	81 91       	ld	r24, Z+
+ ab4:	8f 01       	movw	r16, r30
+ ab6:	8e bd       	out	0x2e, r24	; 46
+ ab8:	2c 98       	cbi	0x05, 4	; 5
+ aba:	8c b5       	in	r24, 0x2c	; 44
+ abc:	8f 7b       	andi	r24, 0xBF	; 191
+ abe:	8c bd       	out	0x2c, r24	; 44
+ ac0:	e0 91 18 02 	lds	r30, 0x0218	; 0x800218 <Delay3CpuCyclesPerTick>
+ ac4:	f0 91 19 02 	lds	r31, 0x0219	; 0x800219 <Delay3CpuCyclesPerTick+0x1>
+ ac8:	8a e0       	ldi	r24, 0x0A	; 10
+ aca:	09 95       	icall
+ acc:	8c b5       	in	r24, 0x2c	; 44
+ ace:	80 64       	ori	r24, 0x40	; 64
+ ad0:	8c bd       	out	0x2c, r24	; 44
+ ad2:	0d b4       	in	r0, 0x2d	; 45
+ ad4:	07 fe       	sbrs	r0, 7
+ ad6:	fd cf       	rjmp	.-6      	; 0xad2 <AutoExpose+0x15e>
+ ad8:	8e b5       	in	r24, 0x2e	; 46
+ ada:	e0 16       	cp	r14, r16
+ adc:	f1 06       	cpc	r15, r17
+ ade:	41 f7       	brne	.-48     	; 0xab0 <AutoExpose+0x13c>
+ ae0:	0f 90       	pop	r0
+ ae2:	0f 90       	pop	r0
+ ae4:	df 91       	pop	r29
+ ae6:	cf 91       	pop	r28
+ ae8:	1f 91       	pop	r17
+ aea:	0f 91       	pop	r16
+ aec:	ff 90       	pop	r15
+ aee:	ef 90       	pop	r14
+ af0:	08 95       	ret
+ af2:	00 32       	cpi	r16, 0x20	; 32
+ af4:	ee e4       	ldi	r30, 0x4E	; 78
+ af6:	1e 07       	cpc	r17, r30
+ af8:	f8 f4       	brcc	.+62     	; 0xb38 <AutoExpose+0x1c4>
+ afa:	20 91 14 02 	lds	r18, 0x0214	; 0x800214 <Lis_nticks_exposure>
+ afe:	30 91 15 02 	lds	r19, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
+ b02:	20 35       	cpi	r18, 0x50	; 80
+ b04:	f3 ec       	ldi	r31, 0xC3	; 195
+ b06:	3f 07       	cpc	r19, r31
+ b08:	10 f6       	brcc	.-124    	; 0xa8e <AutoExpose+0x11a>
+ b0a:	a0 e2       	ldi	r26, 0x20	; 32
+ b0c:	be e4       	ldi	r27, 0x4E	; 78
+ b0e:	0e 94 3a 07 	call	0xe74	; 0xe74 <__umulhisi3>
+ b12:	98 01       	movw	r18, r16
+ b14:	40 e0       	ldi	r20, 0x00	; 0
+ b16:	50 e0       	ldi	r21, 0x00	; 0
+ b18:	0e 94 18 07 	call	0xe30	; 0xe30 <__udivmodsi4>
+ b1c:	21 35       	cpi	r18, 0x51	; 81
+ b1e:	83 ec       	ldi	r24, 0xC3	; 195
+ b20:	38 07       	cpc	r19, r24
+ b22:	41 05       	cpc	r20, r1
+ b24:	51 05       	cpc	r21, r1
+ b26:	68 f0       	brcs	.+26     	; 0xb42 <AutoExpose+0x1ce>
+ b28:	f0 92 15 02 	sts	0x0215, r15	; 0x800215 <Lis_nticks_exposure+0x1>
+ b2c:	e0 92 14 02 	sts	0x0214, r14	; 0x800214 <Lis_nticks_exposure>
+ b30:	30 cf       	rjmp	.-416    	; 0x992 <AutoExpose+0x1e>
+ b32:	40 e1       	ldi	r20, 0x10	; 16
+ b34:	53 e0       	ldi	r21, 0x03	; 3
+ b36:	43 cf       	rjmp	.-378    	; 0x9be <AutoExpose+0x4a>
+ b38:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
+ b3c:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
+ b40:	ae cf       	rjmp	.-164    	; 0xa9e <AutoExpose+0x12a>
+ b42:	30 93 15 02 	sts	0x0215, r19	; 0x800215 <Lis_nticks_exposure+0x1>
+ b46:	20 93 14 02 	sts	0x0214, r18	; 0x800214 <Lis_nticks_exposure>
+ b4a:	23 cf       	rjmp	.-442    	; 0x992 <AutoExpose+0x1e>
 
-00000b04 <SendDataMasterAskedFor>:
- b04:	ef 92       	push	r14
- b06:	ff 92       	push	r15
- b08:	0f 93       	push	r16
- b0a:	1f 93       	push	r17
- b0c:	cf 93       	push	r28
- b0e:	df 93       	push	r29
- b10:	00 d0       	rcall	.+0      	; 0xb12 <SendDataMasterAskedFor+0xe>
- b12:	cd b7       	in	r28, 0x3d	; 61
- b14:	de b7       	in	r29, 0x3e	; 62
- b16:	98 b1       	in	r25, 0x08	; 8
- b18:	81 e0       	ldi	r24, 0x01	; 1
- b1a:	89 27       	eor	r24, r25
- b1c:	88 b9       	out	0x08, r24	; 8
- b1e:	0d b4       	in	r0, 0x2d	; 45
- b20:	07 fe       	sbrs	r0, 7
- b22:	fd cf       	rjmp	.-6      	; 0xb1e <SendDataMasterAskedFor+0x1a>
- b24:	8e b5       	in	r24, 0x2e	; 46
- b26:	81 30       	cpi	r24, 0x01	; 1
- b28:	09 f4       	brne	.+2      	; 0xb2c <SendDataMasterAskedFor+0x28>
- b2a:	8d c0       	rjmp	.+282    	; 0xc46 <SendDataMasterAskedFor+0x142>
- b2c:	82 30       	cpi	r24, 0x02	; 2
- b2e:	09 f4       	brne	.+2      	; 0xb32 <SendDataMasterAskedFor+0x2e>
- b30:	43 c0       	rjmp	.+134    	; 0xbb8 <SendDataMasterAskedFor+0xb4>
- b32:	85 31       	cpi	r24, 0x15	; 21
- b34:	09 f4       	brne	.+2      	; 0xb38 <SendDataMasterAskedFor+0x34>
- b36:	bb c0       	rjmp	.+374    	; 0xcae <SendDataMasterAskedFor+0x1aa>
- b38:	86 30       	cpi	r24, 0x06	; 6
- b3a:	09 f4       	brne	.+2      	; 0xb3e <SendDataMasterAskedFor+0x3a>
- b3c:	7d c0       	rjmp	.+250    	; 0xc38 <SendDataMasterAskedFor+0x134>
- b3e:	85 30       	cpi	r24, 0x05	; 5
- b40:	09 f4       	brne	.+2      	; 0xb44 <SendDataMasterAskedFor+0x40>
- b42:	7e c0       	rjmp	.+252    	; 0xc40 <SendDataMasterAskedFor+0x13c>
- b44:	88 30       	cpi	r24, 0x08	; 8
- b46:	09 f4       	brne	.+2      	; 0xb4a <SendDataMasterAskedFor+0x46>
- b48:	aa c0       	rjmp	.+340    	; 0xc9e <SendDataMasterAskedFor+0x19a>
- b4a:	89 30       	cpi	r24, 0x09	; 9
- b4c:	09 f4       	brne	.+2      	; 0xb50 <SendDataMasterAskedFor+0x4c>
- b4e:	ab c0       	rjmp	.+342    	; 0xca6 <SendDataMasterAskedFor+0x1a2>
- b50:	8a 30       	cpi	r24, 0x0A	; 10
- b52:	09 f4       	brne	.+2      	; 0xb56 <SendDataMasterAskedFor+0x52>
- b54:	b6 c0       	rjmp	.+364    	; 0xcc2 <SendDataMasterAskedFor+0x1be>
- b56:	8b 30       	cpi	r24, 0x0B	; 11
- b58:	09 f4       	brne	.+2      	; 0xb5c <SendDataMasterAskedFor+0x58>
- b5a:	bb c0       	rjmp	.+374    	; 0xcd2 <SendDataMasterAskedFor+0x1ce>
- b5c:	8c 30       	cpi	r24, 0x0C	; 12
- b5e:	09 f4       	brne	.+2      	; 0xb62 <SendDataMasterAskedFor+0x5e>
- b60:	bc c0       	rjmp	.+376    	; 0xcda <SendDataMasterAskedFor+0x1d6>
- b62:	8d 30       	cpi	r24, 0x0D	; 13
- b64:	09 f4       	brne	.+2      	; 0xb68 <SendDataMasterAskedFor+0x64>
- b66:	bf c0       	rjmp	.+382    	; 0xce6 <SendDataMasterAskedFor+0x1e2>
- b68:	8e 30       	cpi	r24, 0x0E	; 14
- b6a:	09 f4       	brne	.+2      	; 0xb6e <SendDataMasterAskedFor+0x6a>
- b6c:	c0 c0       	rjmp	.+384    	; 0xcee <SendDataMasterAskedFor+0x1ea>
- b6e:	8f 30       	cpi	r24, 0x0F	; 15
- b70:	09 f4       	brne	.+2      	; 0xb74 <SendDataMasterAskedFor+0x70>
- b72:	c1 c0       	rjmp	.+386    	; 0xcf6 <SendDataMasterAskedFor+0x1f2>
- b74:	80 31       	cpi	r24, 0x10	; 16
- b76:	09 f4       	brne	.+2      	; 0xb7a <SendDataMasterAskedFor+0x76>
- b78:	c2 c0       	rjmp	.+388    	; 0xcfe <SendDataMasterAskedFor+0x1fa>
- b7a:	81 31       	cpi	r24, 0x11	; 17
- b7c:	09 f4       	brne	.+2      	; 0xb80 <SendDataMasterAskedFor+0x7c>
- b7e:	a5 c0       	rjmp	.+330    	; 0xcca <SendDataMasterAskedFor+0x1c6>
- b80:	82 31       	cpi	r24, 0x12	; 18
- b82:	09 f4       	brne	.+2      	; 0xb86 <SendDataMasterAskedFor+0x82>
- b84:	c0 c0       	rjmp	.+384    	; 0xd06 <SendDataMasterAskedFor+0x202>
- b86:	83 31       	cpi	r24, 0x13	; 19
- b88:	09 f4       	brne	.+2      	; 0xb8c <SendDataMasterAskedFor+0x88>
- b8a:	c1 c0       	rjmp	.+386    	; 0xd0e <SendDataMasterAskedFor+0x20a>
- b8c:	84 31       	cpi	r24, 0x14	; 20
- b8e:	09 f4       	brne	.+2      	; 0xb92 <SendDataMasterAskedFor+0x8e>
- b90:	c2 c0       	rjmp	.+388    	; 0xd16 <SendDataMasterAskedFor+0x212>
- b92:	87 30       	cpi	r24, 0x07	; 7
- b94:	09 f4       	brne	.+2      	; 0xb98 <SendDataMasterAskedFor+0x94>
- b96:	c3 c0       	rjmp	.+390    	; 0xd1e <SendDataMasterAskedFor+0x21a>
- b98:	90 91 01 02 	lds	r25, 0x0201	; 0x800201 <slave_ignore>
- b9c:	89 17       	cp	r24, r25
- b9e:	09 f4       	brne	.+2      	; 0xba2 <SendDataMasterAskedFor+0x9e>
- ba0:	42 c0       	rjmp	.+132    	; 0xc26 <SendDataMasterAskedFor+0x122>
- ba2:	83 e0       	ldi	r24, 0x03	; 3
- ba4:	0f 90       	pop	r0
- ba6:	0f 90       	pop	r0
- ba8:	df 91       	pop	r29
- baa:	cf 91       	pop	r28
- bac:	1f 91       	pop	r17
- bae:	0f 91       	pop	r16
- bb0:	ff 90       	pop	r15
- bb2:	ef 90       	pop	r14
- bb4:	0c 94 a2 00 	jmp	0x144	; 0x144 <DebugLedsTurnRed>
- bb8:	0d b4       	in	r0, 0x2d	; 45
- bba:	07 fe       	sbrs	r0, 7
- bbc:	fd cf       	rjmp	.-6      	; 0xbb8 <SendDataMasterAskedFor+0xb4>
- bbe:	2e b5       	in	r18, 0x2e	; 46
- bc0:	0d b4       	in	r0, 0x2d	; 45
- bc2:	07 fe       	sbrs	r0, 7
- bc4:	fd cf       	rjmp	.-6      	; 0xbc0 <SendDataMasterAskedFor+0xbc>
- bc6:	8e b5       	in	r24, 0x2e	; 46
- bc8:	90 e0       	ldi	r25, 0x00	; 0
- bca:	92 2b       	or	r25, r18
- bcc:	90 93 fc 01 	sts	0x01FC, r25	; 0x8001fc <Lis_nticks_exposure+0x1>
- bd0:	80 93 fb 01 	sts	0x01FB, r24	; 0x8001fb <Lis_nticks_exposure>
- bd4:	98 b1       	in	r25, 0x08	; 8
- bd6:	84 e0       	ldi	r24, 0x04	; 4
- bd8:	89 27       	eor	r24, r25
- bda:	88 b9       	out	0x08, r24	; 8
- bdc:	80 91 fb 01 	lds	r24, 0x01FB	; 0x8001fb <Lis_nticks_exposure>
- be0:	90 91 fc 01 	lds	r25, 0x01FC	; 0x8001fc <Lis_nticks_exposure+0x1>
- be4:	99 83       	std	Y+1, r25	; 0x01
- be6:	8a 83       	std	Y+2, r24	; 0x02
- be8:	8e 01       	movw	r16, r28
- bea:	0f 5f       	subi	r16, 0xFF	; 255
- bec:	1f 4f       	sbci	r17, 0xFF	; 255
- bee:	7e 01       	movw	r14, r28
- bf0:	f3 e0       	ldi	r31, 0x03	; 3
- bf2:	ef 0e       	add	r14, r31
- bf4:	f1 1c       	adc	r15, r1
- bf6:	f8 01       	movw	r30, r16
- bf8:	81 91       	ld	r24, Z+
- bfa:	8f 01       	movw	r16, r30
- bfc:	8e bd       	out	0x2e, r24	; 46
- bfe:	2c 98       	cbi	0x05, 4	; 5
- c00:	8c b5       	in	r24, 0x2c	; 44
- c02:	8f 7b       	andi	r24, 0xBF	; 191
- c04:	8c bd       	out	0x2c, r24	; 44
- c06:	e0 91 ff 01 	lds	r30, 0x01FF	; 0x8001ff <Delay3CpuCyclesPerTick>
- c0a:	f0 91 00 02 	lds	r31, 0x0200	; 0x800200 <Delay3CpuCyclesPerTick+0x1>
- c0e:	8a e0       	ldi	r24, 0x0A	; 10
- c10:	09 95       	icall
- c12:	8c b5       	in	r24, 0x2c	; 44
- c14:	80 64       	ori	r24, 0x40	; 64
- c16:	8c bd       	out	0x2c, r24	; 44
- c18:	0d b4       	in	r0, 0x2d	; 45
- c1a:	07 fe       	sbrs	r0, 7
- c1c:	fd cf       	rjmp	.-6      	; 0xc18 <SendDataMasterAskedFor+0x114>
- c1e:	8e b5       	in	r24, 0x2e	; 46
- c20:	0e 15       	cp	r16, r14
- c22:	1f 05       	cpc	r17, r15
- c24:	41 f7       	brne	.-48     	; 0xbf6 <SendDataMasterAskedFor+0xf2>
- c26:	0f 90       	pop	r0
- c28:	0f 90       	pop	r0
- c2a:	df 91       	pop	r29
- c2c:	cf 91       	pop	r28
- c2e:	1f 91       	pop	r17
- c30:	0f 91       	pop	r16
- c32:	ff 90       	pop	r15
- c34:	ef 90       	pop	r14
- c36:	08 95       	ret
- c38:	81 e0       	ldi	r24, 0x01	; 1
- c3a:	80 93 46 02 	sts	0x0246, r24	; 0x800246 <lis_sum_mode>
- c3e:	f3 cf       	rjmp	.-26     	; 0xc26 <SendDataMasterAskedFor+0x122>
- c40:	10 92 46 02 	sts	0x0246, r1	; 0x800246 <lis_sum_mode>
- c44:	f0 cf       	rjmp	.-32     	; 0xc26 <SendDataMasterAskedFor+0x122>
- c46:	40 9a       	sbi	0x08, 0	; 8
- c48:	0e 94 10 02 	call	0x420	; 0x420 <LisFrameReadout>
- c4c:	40 98       	cbi	0x08, 0	; 8
- c4e:	41 9a       	sbi	0x08, 1	; 8
- c50:	80 91 46 02 	lds	r24, 0x0246	; 0x800246 <lis_sum_mode>
- c54:	81 30       	cpi	r24, 0x01	; 1
- c56:	09 f4       	brne	.+2      	; 0xc5a <SendDataMasterAskedFor+0x156>
- c58:	43 c0       	rjmp	.+134    	; 0xce0 <SendDataMasterAskedFor+0x1dc>
- c5a:	80 e2       	ldi	r24, 0x20	; 32
- c5c:	96 e0       	ldi	r25, 0x06	; 6
- c5e:	0d e4       	ldi	r16, 0x4D	; 77
- c60:	12 e0       	ldi	r17, 0x02	; 2
- c62:	9c 01       	movw	r18, r24
- c64:	23 5b       	subi	r18, 0xB3	; 179
- c66:	3d 4f       	sbci	r19, 0xFD	; 253
- c68:	79 01       	movw	r14, r18
- c6a:	f8 01       	movw	r30, r16
- c6c:	81 91       	ld	r24, Z+
- c6e:	8f 01       	movw	r16, r30
- c70:	8e bd       	out	0x2e, r24	; 46
- c72:	2c 98       	cbi	0x05, 4	; 5
- c74:	8c b5       	in	r24, 0x2c	; 44
- c76:	8f 7b       	andi	r24, 0xBF	; 191
- c78:	8c bd       	out	0x2c, r24	; 44
- c7a:	e0 91 ff 01 	lds	r30, 0x01FF	; 0x8001ff <Delay3CpuCyclesPerTick>
- c7e:	f0 91 00 02 	lds	r31, 0x0200	; 0x800200 <Delay3CpuCyclesPerTick+0x1>
- c82:	8a e0       	ldi	r24, 0x0A	; 10
- c84:	09 95       	icall
- c86:	8c b5       	in	r24, 0x2c	; 44
- c88:	80 64       	ori	r24, 0x40	; 64
- c8a:	8c bd       	out	0x2c, r24	; 44
- c8c:	0d b4       	in	r0, 0x2d	; 45
- c8e:	07 fe       	sbrs	r0, 7
- c90:	fd cf       	rjmp	.-6      	; 0xc8c <SendDataMasterAskedFor+0x188>
- c92:	8e b5       	in	r24, 0x2e	; 46
- c94:	e0 16       	cp	r14, r16
- c96:	f1 06       	cpc	r15, r17
- c98:	41 f7       	brne	.-48     	; 0xc6a <SendDataMasterAskedFor+0x166>
- c9a:	41 98       	cbi	0x08, 1	; 8
- c9c:	c4 cf       	rjmp	.-120    	; 0xc26 <SendDataMasterAskedFor+0x122>
- c9e:	85 e0       	ldi	r24, 0x05	; 5
- ca0:	80 93 f8 01 	sts	0x01F8, r24	; 0x8001f8 <lis_gain>
- ca4:	c0 cf       	rjmp	.-128    	; 0xc26 <SendDataMasterAskedFor+0x122>
- ca6:	84 e0       	ldi	r24, 0x04	; 4
- ca8:	80 93 f8 01 	sts	0x01F8, r24	; 0x8001f8 <lis_gain>
- cac:	bc cf       	rjmp	.-136    	; 0xc26 <SendDataMasterAskedFor+0x122>
- cae:	0f 90       	pop	r0
- cb0:	0f 90       	pop	r0
- cb2:	df 91       	pop	r29
- cb4:	cf 91       	pop	r28
- cb6:	1f 91       	pop	r17
- cb8:	0f 91       	pop	r16
- cba:	ff 90       	pop	r15
- cbc:	ef 90       	pop	r14
- cbe:	0c 94 96 04 	jmp	0x92c	; 0x92c <AutoExpose>
- cc2:	82 e0       	ldi	r24, 0x02	; 2
- cc4:	80 93 f8 01 	sts	0x01F8, r24	; 0x8001f8 <lis_gain>
- cc8:	ae cf       	rjmp	.-164    	; 0xc26 <SendDataMasterAskedFor+0x122>
- cca:	85 e0       	ldi	r24, 0x05	; 5
- ccc:	80 93 45 02 	sts	0x0245, r24	; 0x800245 <lis_rowselect>
- cd0:	aa cf       	rjmp	.-172    	; 0xc26 <SendDataMasterAskedFor+0x122>
- cd2:	81 e0       	ldi	r24, 0x01	; 1
- cd4:	80 93 f8 01 	sts	0x01F8, r24	; 0x8001f8 <lis_gain>
- cd8:	a6 cf       	rjmp	.-180    	; 0xc26 <SendDataMasterAskedFor+0x122>
- cda:	10 92 45 02 	sts	0x0245, r1	; 0x800245 <lis_rowselect>
- cde:	a3 cf       	rjmp	.-186    	; 0xc26 <SendDataMasterAskedFor+0x122>
- ce0:	80 e1       	ldi	r24, 0x10	; 16
- ce2:	93 e0       	ldi	r25, 0x03	; 3
- ce4:	bc cf       	rjmp	.-136    	; 0xc5e <SendDataMasterAskedFor+0x15a>
- ce6:	81 e0       	ldi	r24, 0x01	; 1
- ce8:	80 93 45 02 	sts	0x0245, r24	; 0x800245 <lis_rowselect>
- cec:	9c cf       	rjmp	.-200    	; 0xc26 <SendDataMasterAskedFor+0x122>
- cee:	82 e0       	ldi	r24, 0x02	; 2
- cf0:	80 93 45 02 	sts	0x0245, r24	; 0x800245 <lis_rowselect>
- cf4:	98 cf       	rjmp	.-208    	; 0xc26 <SendDataMasterAskedFor+0x122>
- cf6:	83 e0       	ldi	r24, 0x03	; 3
- cf8:	80 93 45 02 	sts	0x0245, r24	; 0x800245 <lis_rowselect>
- cfc:	94 cf       	rjmp	.-216    	; 0xc26 <SendDataMasterAskedFor+0x122>
- cfe:	84 e0       	ldi	r24, 0x04	; 4
- d00:	80 93 45 02 	sts	0x0245, r24	; 0x800245 <lis_rowselect>
- d04:	90 cf       	rjmp	.-224    	; 0xc26 <SendDataMasterAskedFor+0x122>
- d06:	86 e0       	ldi	r24, 0x06	; 6
- d08:	80 93 45 02 	sts	0x0245, r24	; 0x800245 <lis_rowselect>
- d0c:	8c cf       	rjmp	.-232    	; 0xc26 <SendDataMasterAskedFor+0x122>
- d0e:	87 e0       	ldi	r24, 0x07	; 7
- d10:	80 93 45 02 	sts	0x0245, r24	; 0x800245 <lis_rowselect>
- d14:	88 cf       	rjmp	.-240    	; 0xc26 <SendDataMasterAskedFor+0x122>
- d16:	88 e0       	ldi	r24, 0x08	; 8
- d18:	80 93 45 02 	sts	0x0245, r24	; 0x800245 <lis_rowselect>
- d1c:	84 cf       	rjmp	.-248    	; 0xc26 <SendDataMasterAskedFor+0x122>
- d1e:	0f 90       	pop	r0
- d20:	0f 90       	pop	r0
- d22:	df 91       	pop	r29
- d24:	cf 91       	pop	r28
- d26:	1f 91       	pop	r17
- d28:	0f 91       	pop	r16
- d2a:	ff 90       	pop	r15
- d2c:	ef 90       	pop	r14
- d2e:	0c 94 a0 02 	jmp	0x540	; 0x540 <WriteCfgToLis>
+00000b4c <SendDataMasterAskedFor>:
+ b4c:	ef 92       	push	r14
+ b4e:	ff 92       	push	r15
+ b50:	0f 93       	push	r16
+ b52:	1f 93       	push	r17
+ b54:	cf 93       	push	r28
+ b56:	df 93       	push	r29
+ b58:	00 d0       	rcall	.+0      	; 0xb5a <SendDataMasterAskedFor+0xe>
+ b5a:	cd b7       	in	r28, 0x3d	; 61
+ b5c:	de b7       	in	r29, 0x3e	; 62
+ b5e:	98 b1       	in	r25, 0x08	; 8
+ b60:	81 e0       	ldi	r24, 0x01	; 1
+ b62:	89 27       	eor	r24, r25
+ b64:	88 b9       	out	0x08, r24	; 8
+ b66:	0d b4       	in	r0, 0x2d	; 45
+ b68:	07 fe       	sbrs	r0, 7
+ b6a:	fd cf       	rjmp	.-6      	; 0xb66 <SendDataMasterAskedFor+0x1a>
+ b6c:	8e b5       	in	r24, 0x2e	; 46
+ b6e:	81 30       	cpi	r24, 0x01	; 1
+ b70:	09 f4       	brne	.+2      	; 0xb74 <SendDataMasterAskedFor+0x28>
+ b72:	90 c0       	rjmp	.+288    	; 0xc94 <SendDataMasterAskedFor+0x148>
+ b74:	82 30       	cpi	r24, 0x02	; 2
+ b76:	09 f4       	brne	.+2      	; 0xb7a <SendDataMasterAskedFor+0x2e>
+ b78:	46 c0       	rjmp	.+140    	; 0xc06 <SendDataMasterAskedFor+0xba>
+ b7a:	85 31       	cpi	r24, 0x15	; 21
+ b7c:	09 f4       	brne	.+2      	; 0xb80 <SendDataMasterAskedFor+0x34>
+ b7e:	be c0       	rjmp	.+380    	; 0xcfc <SendDataMasterAskedFor+0x1b0>
+ b80:	86 30       	cpi	r24, 0x06	; 6
+ b82:	09 f4       	brne	.+2      	; 0xb86 <SendDataMasterAskedFor+0x3a>
+ b84:	80 c0       	rjmp	.+256    	; 0xc86 <SendDataMasterAskedFor+0x13a>
+ b86:	85 30       	cpi	r24, 0x05	; 5
+ b88:	09 f4       	brne	.+2      	; 0xb8c <SendDataMasterAskedFor+0x40>
+ b8a:	81 c0       	rjmp	.+258    	; 0xc8e <SendDataMasterAskedFor+0x142>
+ b8c:	88 30       	cpi	r24, 0x08	; 8
+ b8e:	09 f4       	brne	.+2      	; 0xb92 <SendDataMasterAskedFor+0x46>
+ b90:	ad c0       	rjmp	.+346    	; 0xcec <SendDataMasterAskedFor+0x1a0>
+ b92:	89 30       	cpi	r24, 0x09	; 9
+ b94:	09 f4       	brne	.+2      	; 0xb98 <SendDataMasterAskedFor+0x4c>
+ b96:	ae c0       	rjmp	.+348    	; 0xcf4 <SendDataMasterAskedFor+0x1a8>
+ b98:	8a 30       	cpi	r24, 0x0A	; 10
+ b9a:	09 f4       	brne	.+2      	; 0xb9e <SendDataMasterAskedFor+0x52>
+ b9c:	b9 c0       	rjmp	.+370    	; 0xd10 <SendDataMasterAskedFor+0x1c4>
+ b9e:	8b 30       	cpi	r24, 0x0B	; 11
+ ba0:	09 f4       	brne	.+2      	; 0xba4 <SendDataMasterAskedFor+0x58>
+ ba2:	be c0       	rjmp	.+380    	; 0xd20 <SendDataMasterAskedFor+0x1d4>
+ ba4:	8c 30       	cpi	r24, 0x0C	; 12
+ ba6:	09 f4       	brne	.+2      	; 0xbaa <SendDataMasterAskedFor+0x5e>
+ ba8:	bf c0       	rjmp	.+382    	; 0xd28 <SendDataMasterAskedFor+0x1dc>
+ baa:	8d 30       	cpi	r24, 0x0D	; 13
+ bac:	09 f4       	brne	.+2      	; 0xbb0 <SendDataMasterAskedFor+0x64>
+ bae:	c2 c0       	rjmp	.+388    	; 0xd34 <SendDataMasterAskedFor+0x1e8>
+ bb0:	8e 30       	cpi	r24, 0x0E	; 14
+ bb2:	09 f4       	brne	.+2      	; 0xbb6 <SendDataMasterAskedFor+0x6a>
+ bb4:	c3 c0       	rjmp	.+390    	; 0xd3c <SendDataMasterAskedFor+0x1f0>
+ bb6:	8f 30       	cpi	r24, 0x0F	; 15
+ bb8:	09 f4       	brne	.+2      	; 0xbbc <SendDataMasterAskedFor+0x70>
+ bba:	c4 c0       	rjmp	.+392    	; 0xd44 <SendDataMasterAskedFor+0x1f8>
+ bbc:	80 31       	cpi	r24, 0x10	; 16
+ bbe:	09 f4       	brne	.+2      	; 0xbc2 <SendDataMasterAskedFor+0x76>
+ bc0:	c5 c0       	rjmp	.+394    	; 0xd4c <SendDataMasterAskedFor+0x200>
+ bc2:	81 31       	cpi	r24, 0x11	; 17
+ bc4:	09 f4       	brne	.+2      	; 0xbc8 <SendDataMasterAskedFor+0x7c>
+ bc6:	a8 c0       	rjmp	.+336    	; 0xd18 <SendDataMasterAskedFor+0x1cc>
+ bc8:	82 31       	cpi	r24, 0x12	; 18
+ bca:	09 f4       	brne	.+2      	; 0xbce <SendDataMasterAskedFor+0x82>
+ bcc:	c3 c0       	rjmp	.+390    	; 0xd54 <SendDataMasterAskedFor+0x208>
+ bce:	83 31       	cpi	r24, 0x13	; 19
+ bd0:	09 f4       	brne	.+2      	; 0xbd4 <SendDataMasterAskedFor+0x88>
+ bd2:	c4 c0       	rjmp	.+392    	; 0xd5c <SendDataMasterAskedFor+0x210>
+ bd4:	84 31       	cpi	r24, 0x14	; 20
+ bd6:	09 f4       	brne	.+2      	; 0xbda <SendDataMasterAskedFor+0x8e>
+ bd8:	c5 c0       	rjmp	.+394    	; 0xd64 <SendDataMasterAskedFor+0x218>
+ bda:	86 31       	cpi	r24, 0x16	; 22
+ bdc:	09 f4       	brne	.+2      	; 0xbe0 <SendDataMasterAskedFor+0x94>
+ bde:	c6 c0       	rjmp	.+396    	; 0xd6c <SendDataMasterAskedFor+0x220>
+ be0:	87 30       	cpi	r24, 0x07	; 7
+ be2:	09 f4       	brne	.+2      	; 0xbe6 <SendDataMasterAskedFor+0x9a>
+ be4:	c7 c0       	rjmp	.+398    	; 0xd74 <SendDataMasterAskedFor+0x228>
+ be6:	90 91 1a 02 	lds	r25, 0x021A	; 0x80021a <slave_ignore>
+ bea:	89 17       	cp	r24, r25
+ bec:	09 f4       	brne	.+2      	; 0xbf0 <SendDataMasterAskedFor+0xa4>
+ bee:	42 c0       	rjmp	.+132    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ bf0:	83 e0       	ldi	r24, 0x03	; 3
+ bf2:	0f 90       	pop	r0
+ bf4:	0f 90       	pop	r0
+ bf6:	df 91       	pop	r29
+ bf8:	cf 91       	pop	r28
+ bfa:	1f 91       	pop	r17
+ bfc:	0f 91       	pop	r16
+ bfe:	ff 90       	pop	r15
+ c00:	ef 90       	pop	r14
+ c02:	0c 94 a2 00 	jmp	0x144	; 0x144 <DebugLedsTurnRed>
+ c06:	0d b4       	in	r0, 0x2d	; 45
+ c08:	07 fe       	sbrs	r0, 7
+ c0a:	fd cf       	rjmp	.-6      	; 0xc06 <SendDataMasterAskedFor+0xba>
+ c0c:	2e b5       	in	r18, 0x2e	; 46
+ c0e:	0d b4       	in	r0, 0x2d	; 45
+ c10:	07 fe       	sbrs	r0, 7
+ c12:	fd cf       	rjmp	.-6      	; 0xc0e <SendDataMasterAskedFor+0xc2>
+ c14:	8e b5       	in	r24, 0x2e	; 46
+ c16:	90 e0       	ldi	r25, 0x00	; 0
+ c18:	92 2b       	or	r25, r18
+ c1a:	90 93 15 02 	sts	0x0215, r25	; 0x800215 <Lis_nticks_exposure+0x1>
+ c1e:	80 93 14 02 	sts	0x0214, r24	; 0x800214 <Lis_nticks_exposure>
+ c22:	98 b1       	in	r25, 0x08	; 8
+ c24:	84 e0       	ldi	r24, 0x04	; 4
+ c26:	89 27       	eor	r24, r25
+ c28:	88 b9       	out	0x08, r24	; 8
+ c2a:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
+ c2e:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
+ c32:	99 83       	std	Y+1, r25	; 0x01
+ c34:	8a 83       	std	Y+2, r24	; 0x02
+ c36:	8e 01       	movw	r16, r28
+ c38:	0f 5f       	subi	r16, 0xFF	; 255
+ c3a:	1f 4f       	sbci	r17, 0xFF	; 255
+ c3c:	7e 01       	movw	r14, r28
+ c3e:	f3 e0       	ldi	r31, 0x03	; 3
+ c40:	ef 0e       	add	r14, r31
+ c42:	f1 1c       	adc	r15, r1
+ c44:	f8 01       	movw	r30, r16
+ c46:	81 91       	ld	r24, Z+
+ c48:	8f 01       	movw	r16, r30
+ c4a:	8e bd       	out	0x2e, r24	; 46
+ c4c:	2c 98       	cbi	0x05, 4	; 5
+ c4e:	8c b5       	in	r24, 0x2c	; 44
+ c50:	8f 7b       	andi	r24, 0xBF	; 191
+ c52:	8c bd       	out	0x2c, r24	; 44
+ c54:	e0 91 18 02 	lds	r30, 0x0218	; 0x800218 <Delay3CpuCyclesPerTick>
+ c58:	f0 91 19 02 	lds	r31, 0x0219	; 0x800219 <Delay3CpuCyclesPerTick+0x1>
+ c5c:	8a e0       	ldi	r24, 0x0A	; 10
+ c5e:	09 95       	icall
+ c60:	8c b5       	in	r24, 0x2c	; 44
+ c62:	80 64       	ori	r24, 0x40	; 64
+ c64:	8c bd       	out	0x2c, r24	; 44
+ c66:	0d b4       	in	r0, 0x2d	; 45
+ c68:	07 fe       	sbrs	r0, 7
+ c6a:	fd cf       	rjmp	.-6      	; 0xc66 <SendDataMasterAskedFor+0x11a>
+ c6c:	8e b5       	in	r24, 0x2e	; 46
+ c6e:	0e 15       	cp	r16, r14
+ c70:	1f 05       	cpc	r17, r15
+ c72:	41 f7       	brne	.-48     	; 0xc44 <SendDataMasterAskedFor+0xf8>
+ c74:	0f 90       	pop	r0
+ c76:	0f 90       	pop	r0
+ c78:	df 91       	pop	r29
+ c7a:	cf 91       	pop	r28
+ c7c:	1f 91       	pop	r17
+ c7e:	0f 91       	pop	r16
+ c80:	ff 90       	pop	r15
+ c82:	ef 90       	pop	r14
+ c84:	08 95       	ret
+ c86:	81 e0       	ldi	r24, 0x01	; 1
+ c88:	80 93 60 02 	sts	0x0260, r24	; 0x800260 <lis_sum_mode>
+ c8c:	f3 cf       	rjmp	.-26     	; 0xc74 <SendDataMasterAskedFor+0x128>
+ c8e:	10 92 60 02 	sts	0x0260, r1	; 0x800260 <lis_sum_mode>
+ c92:	f0 cf       	rjmp	.-32     	; 0xc74 <SendDataMasterAskedFor+0x128>
+ c94:	40 9a       	sbi	0x08, 0	; 8
+ c96:	0e 94 10 02 	call	0x420	; 0x420 <LisFrameReadout>
+ c9a:	40 98       	cbi	0x08, 0	; 8
+ c9c:	41 9a       	sbi	0x08, 1	; 8
+ c9e:	80 91 60 02 	lds	r24, 0x0260	; 0x800260 <lis_sum_mode>
+ ca2:	81 30       	cpi	r24, 0x01	; 1
+ ca4:	09 f4       	brne	.+2      	; 0xca8 <SendDataMasterAskedFor+0x15c>
+ ca6:	43 c0       	rjmp	.+134    	; 0xd2e <SendDataMasterAskedFor+0x1e2>
+ ca8:	80 e2       	ldi	r24, 0x20	; 32
+ caa:	96 e0       	ldi	r25, 0x06	; 6
+ cac:	07 e6       	ldi	r16, 0x67	; 103
+ cae:	12 e0       	ldi	r17, 0x02	; 2
+ cb0:	9c 01       	movw	r18, r24
+ cb2:	29 59       	subi	r18, 0x99	; 153
+ cb4:	3d 4f       	sbci	r19, 0xFD	; 253
+ cb6:	79 01       	movw	r14, r18
+ cb8:	f8 01       	movw	r30, r16
+ cba:	81 91       	ld	r24, Z+
+ cbc:	8f 01       	movw	r16, r30
+ cbe:	8e bd       	out	0x2e, r24	; 46
+ cc0:	2c 98       	cbi	0x05, 4	; 5
+ cc2:	8c b5       	in	r24, 0x2c	; 44
+ cc4:	8f 7b       	andi	r24, 0xBF	; 191
+ cc6:	8c bd       	out	0x2c, r24	; 44
+ cc8:	e0 91 18 02 	lds	r30, 0x0218	; 0x800218 <Delay3CpuCyclesPerTick>
+ ccc:	f0 91 19 02 	lds	r31, 0x0219	; 0x800219 <Delay3CpuCyclesPerTick+0x1>
+ cd0:	8a e0       	ldi	r24, 0x0A	; 10
+ cd2:	09 95       	icall
+ cd4:	8c b5       	in	r24, 0x2c	; 44
+ cd6:	80 64       	ori	r24, 0x40	; 64
+ cd8:	8c bd       	out	0x2c, r24	; 44
+ cda:	0d b4       	in	r0, 0x2d	; 45
+ cdc:	07 fe       	sbrs	r0, 7
+ cde:	fd cf       	rjmp	.-6      	; 0xcda <SendDataMasterAskedFor+0x18e>
+ ce0:	8e b5       	in	r24, 0x2e	; 46
+ ce2:	e0 16       	cp	r14, r16
+ ce4:	f1 06       	cpc	r15, r17
+ ce6:	41 f7       	brne	.-48     	; 0xcb8 <SendDataMasterAskedFor+0x16c>
+ ce8:	41 98       	cbi	0x08, 1	; 8
+ cea:	c4 cf       	rjmp	.-120    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ cec:	85 e0       	ldi	r24, 0x05	; 5
+ cee:	80 93 11 02 	sts	0x0211, r24	; 0x800211 <lis_gain>
+ cf2:	c0 cf       	rjmp	.-128    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ cf4:	84 e0       	ldi	r24, 0x04	; 4
+ cf6:	80 93 11 02 	sts	0x0211, r24	; 0x800211 <lis_gain>
+ cfa:	bc cf       	rjmp	.-136    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ cfc:	0f 90       	pop	r0
+ cfe:	0f 90       	pop	r0
+ d00:	df 91       	pop	r29
+ d02:	cf 91       	pop	r28
+ d04:	1f 91       	pop	r17
+ d06:	0f 91       	pop	r16
+ d08:	ff 90       	pop	r15
+ d0a:	ef 90       	pop	r14
+ d0c:	0c 94 ba 04 	jmp	0x974	; 0x974 <AutoExpose>
+ d10:	82 e0       	ldi	r24, 0x02	; 2
+ d12:	80 93 11 02 	sts	0x0211, r24	; 0x800211 <lis_gain>
+ d16:	ae cf       	rjmp	.-164    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d18:	85 e0       	ldi	r24, 0x05	; 5
+ d1a:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d1e:	aa cf       	rjmp	.-172    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d20:	81 e0       	ldi	r24, 0x01	; 1
+ d22:	80 93 11 02 	sts	0x0211, r24	; 0x800211 <lis_gain>
+ d26:	a6 cf       	rjmp	.-180    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d28:	10 92 5f 02 	sts	0x025F, r1	; 0x80025f <lis_rowselect>
+ d2c:	a3 cf       	rjmp	.-186    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d2e:	80 e1       	ldi	r24, 0x10	; 16
+ d30:	93 e0       	ldi	r25, 0x03	; 3
+ d32:	bc cf       	rjmp	.-136    	; 0xcac <SendDataMasterAskedFor+0x160>
+ d34:	81 e0       	ldi	r24, 0x01	; 1
+ d36:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d3a:	9c cf       	rjmp	.-200    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d3c:	82 e0       	ldi	r24, 0x02	; 2
+ d3e:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d42:	98 cf       	rjmp	.-208    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d44:	83 e0       	ldi	r24, 0x03	; 3
+ d46:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d4a:	94 cf       	rjmp	.-216    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d4c:	84 e0       	ldi	r24, 0x04	; 4
+ d4e:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d52:	90 cf       	rjmp	.-224    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d54:	86 e0       	ldi	r24, 0x06	; 6
+ d56:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d5a:	8c cf       	rjmp	.-232    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d5c:	87 e0       	ldi	r24, 0x07	; 7
+ d5e:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d62:	88 cf       	rjmp	.-240    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d64:	88 e0       	ldi	r24, 0x08	; 8
+ d66:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d6a:	84 cf       	rjmp	.-248    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d6c:	89 e0       	ldi	r24, 0x09	; 9
+ d6e:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
+ d72:	80 cf       	rjmp	.-256    	; 0xc74 <SendDataMasterAskedFor+0x128>
+ d74:	0f 90       	pop	r0
+ d76:	0f 90       	pop	r0
+ d78:	df 91       	pop	r29
+ d7a:	cf 91       	pop	r28
+ d7c:	1f 91       	pop	r17
+ d7e:	0f 91       	pop	r16
+ d80:	ff 90       	pop	r15
+ d82:	ef 90       	pop	r14
+ d84:	0c 94 a0 02 	jmp	0x540	; 0x540 <WriteCfgToLis>
 
-00000d32 <main>:
- d32:	0e 94 86 00 	call	0x10c	; 0x10c <DebugLedsTurnAllOn>
- d36:	0e 94 a9 00 	call	0x152	; 0x152 <DebugLedsTurnAllGreen>
- d3a:	0e 94 07 01 	call	0x20e	; 0x20e <SpiSlaveInit>
- d3e:	0e 94 21 01 	call	0x242	; 0x242 <UartSpiInit>
- d42:	0e 94 92 01 	call	0x324	; 0x324 <LisInit>
- d46:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiTransferIsDone>
- d4a:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiTransferIsDone+0x1>
- d4e:	09 95       	icall
- d50:	88 23       	and	r24, r24
- d52:	c9 f3       	breq	.-14     	; 0xd46 <main+0x14>
- d54:	0e 94 82 05 	call	0xb04	; 0xb04 <SendDataMasterAskedFor>
- d58:	f6 cf       	rjmp	.-20     	; 0xd46 <main+0x14>
+00000d88 <main>:
+ d88:	0e 94 86 00 	call	0x10c	; 0x10c <DebugLedsTurnAllOn>
+ d8c:	0e 94 a9 00 	call	0x152	; 0x152 <DebugLedsTurnAllGreen>
+ d90:	0e 94 07 01 	call	0x20e	; 0x20e <SpiSlaveInit>
+ d94:	0e 94 21 01 	call	0x242	; 0x242 <UartSpiInit>
+ d98:	0e 94 92 01 	call	0x324	; 0x324 <LisInit>
+ d9c:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiTransferIsDone>
+ da0:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiTransferIsDone+0x1>
+ da4:	09 95       	icall
+ da6:	88 23       	and	r24, r24
+ da8:	c9 f3       	breq	.-14     	; 0xd9c <main+0x14>
+ daa:	0e 94 a6 05 	call	0xb4c	; 0xb4c <SendDataMasterAskedFor>
+ dae:	f6 cf       	rjmp	.-20     	; 0xd9c <main+0x14>
 
-00000d5a <__vector_17>:
+00000db0 <__vector_17>:
 void SPI_read_in_ISR_and_show_data_on_debug_leds(void);
 /* =====[ Move control over the SPI ISR into the test code ]===== */
 typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
 //
 ISR(SPI_STC_vect)
 {
- d5a:	1f 92       	push	r1
- d5c:	0f 92       	push	r0
- d5e:	0f b6       	in	r0, 0x3f	; 63
- d60:	0f 92       	push	r0
- d62:	11 24       	eor	r1, r1
- d64:	2f 93       	push	r18
- d66:	3f 93       	push	r19
- d68:	4f 93       	push	r20
- d6a:	5f 93       	push	r21
- d6c:	6f 93       	push	r22
- d6e:	7f 93       	push	r23
- d70:	8f 93       	push	r24
- d72:	9f 93       	push	r25
- d74:	af 93       	push	r26
- d76:	bf 93       	push	r27
- d78:	ef 93       	push	r30
- d7a:	ff 93       	push	r31
+ db0:	1f 92       	push	r1
+ db2:	0f 92       	push	r0
+ db4:	0f b6       	in	r0, 0x3f	; 63
+ db6:	0f 92       	push	r0
+ db8:	11 24       	eor	r1, r1
+ dba:	2f 93       	push	r18
+ dbc:	3f 93       	push	r19
+ dbe:	4f 93       	push	r20
+ dc0:	5f 93       	push	r21
+ dc2:	6f 93       	push	r22
+ dc4:	7f 93       	push	r23
+ dc6:	8f 93       	push	r24
+ dc8:	9f 93       	push	r25
+ dca:	af 93       	push	r26
+ dcc:	bf 93       	push	r27
+ dce:	ef 93       	push	r30
+ dd0:	ff 93       	push	r31
     DoTaskForThisTest(); // fptr assigned in test code
- d7c:	e0 91 4b 02 	lds	r30, 0x024B	; 0x80024b <DoTaskForThisTest>
- d80:	f0 91 4c 02 	lds	r31, 0x024C	; 0x80024c <DoTaskForThisTest+0x1>
- d84:	09 95       	icall
+ dd2:	e0 91 65 02 	lds	r30, 0x0265	; 0x800265 <DoTaskForThisTest>
+ dd6:	f0 91 66 02 	lds	r31, 0x0266	; 0x800266 <DoTaskForThisTest+0x1>
+ dda:	09 95       	icall
 }
- d86:	ff 91       	pop	r31
- d88:	ef 91       	pop	r30
- d8a:	bf 91       	pop	r27
- d8c:	af 91       	pop	r26
- d8e:	9f 91       	pop	r25
- d90:	8f 91       	pop	r24
- d92:	7f 91       	pop	r23
- d94:	6f 91       	pop	r22
- d96:	5f 91       	pop	r21
- d98:	4f 91       	pop	r20
- d9a:	3f 91       	pop	r19
- d9c:	2f 91       	pop	r18
- d9e:	0f 90       	pop	r0
- da0:	0f be       	out	0x3f, r0	; 63
- da2:	0f 90       	pop	r0
- da4:	1f 90       	pop	r1
- da6:	18 95       	reti
+ ddc:	ff 91       	pop	r31
+ dde:	ef 91       	pop	r30
+ de0:	bf 91       	pop	r27
+ de2:	af 91       	pop	r26
+ de4:	9f 91       	pop	r25
+ de6:	8f 91       	pop	r24
+ de8:	7f 91       	pop	r23
+ dea:	6f 91       	pop	r22
+ dec:	5f 91       	pop	r21
+ dee:	4f 91       	pop	r20
+ df0:	3f 91       	pop	r19
+ df2:	2f 91       	pop	r18
+ df4:	0f 90       	pop	r0
+ df6:	0f be       	out	0x3f, r0	; 63
+ df8:	0f 90       	pop	r0
+ dfa:	1f 90       	pop	r1
+ dfc:	18 95       	reti
 
-00000da8 <__vector_14>:
+00000dfe <__vector_14>:
 ISR(TIMER0_COMPA_vect)
 {
- da8:	1f 92       	push	r1
- daa:	0f 92       	push	r0
- dac:	0f b6       	in	r0, 0x3f	; 63
- dae:	0f 92       	push	r0
- db0:	11 24       	eor	r1, r1
+ dfe:	1f 92       	push	r1
+ e00:	0f 92       	push	r0
+ e02:	0f b6       	in	r0, 0x3f	; 63
+ e04:	0f 92       	push	r0
+ e06:	11 24       	eor	r1, r1
     // high-level delay:
     /* SetBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD |= 1<<PD6;    // set bit: Rst High
- db2:	5e 9a       	sbi	0x0b, 6	; 11
+ e08:	5e 9a       	sbi	0x0b, 6	; 11
     // delay is 1.8us-2us from redge to Rst High
 }
- db4:	0f 90       	pop	r0
- db6:	0f be       	out	0x3f, r0	; 63
- db8:	0f 90       	pop	r0
- dba:	1f 90       	pop	r1
- dbc:	18 95       	reti
+ e0a:	0f 90       	pop	r0
+ e0c:	0f be       	out	0x3f, r0	; 63
+ e0e:	0f 90       	pop	r0
+ e10:	1f 90       	pop	r1
+ e12:	18 95       	reti
 
-00000dbe <__vector_15>:
+00000e14 <__vector_15>:
 ISR(TIMER0_COMPB_vect)
 {
- dbe:	1f 92       	push	r1
- dc0:	0f 92       	push	r0
- dc2:	0f b6       	in	r0, 0x3f	; 63
- dc4:	0f 92       	push	r0
- dc6:	11 24       	eor	r1, r1
+ e14:	1f 92       	push	r1
+ e16:	0f 92       	push	r0
+ e18:	0f b6       	in	r0, 0x3f	; 63
+ e1a:	0f 92       	push	r0
+ e1c:	11 24       	eor	r1, r1
     // high-level delay:
     /* ClearBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD &= ~(1<<PD6); // clear bit: Rst Low
- dc8:	5e 98       	cbi	0x0b, 6	; 11
+ e1e:	5e 98       	cbi	0x0b, 6	; 11
     // delay is 1.8us-2us from fedge to Rst low
 } 
- dca:	0f 90       	pop	r0
- dcc:	0f be       	out	0x3f, r0	; 63
- dce:	0f 90       	pop	r0
- dd0:	1f 90       	pop	r1
- dd2:	18 95       	reti
+ e20:	0f 90       	pop	r0
+ e22:	0f be       	out	0x3f, r0	; 63
+ e24:	0f 90       	pop	r0
+ e26:	1f 90       	pop	r1
+ e28:	18 95       	reti
 
-00000dd4 <Delay3CpuCyclesPerTick_Implementation>:
+00000e2a <Delay3CpuCyclesPerTick_Implementation>:
     can be achieved.
 */
 void
 _delay_loop_1(uint8_t __count)
 {
 	__asm__ volatile (
- dd4:	8a 95       	dec	r24
- dd6:	f1 f7       	brne	.-4      	; 0xdd4 <Delay3CpuCyclesPerTick_Implementation>
- dd8:	08 95       	ret
+ e2a:	8a 95       	dec	r24
+ e2c:	f1 f7       	brne	.-4      	; 0xe2a <Delay3CpuCyclesPerTick_Implementation>
+ e2e:	08 95       	ret
 
-00000dda <__udivmodsi4>:
- dda:	a1 e2       	ldi	r26, 0x21	; 33
- ddc:	1a 2e       	mov	r1, r26
- dde:	aa 1b       	sub	r26, r26
- de0:	bb 1b       	sub	r27, r27
- de2:	fd 01       	movw	r30, r26
- de4:	0d c0       	rjmp	.+26     	; 0xe00 <__udivmodsi4_ep>
+00000e30 <__udivmodsi4>:
+ e30:	a1 e2       	ldi	r26, 0x21	; 33
+ e32:	1a 2e       	mov	r1, r26
+ e34:	aa 1b       	sub	r26, r26
+ e36:	bb 1b       	sub	r27, r27
+ e38:	fd 01       	movw	r30, r26
+ e3a:	0d c0       	rjmp	.+26     	; 0xe56 <__udivmodsi4_ep>
 
-00000de6 <__udivmodsi4_loop>:
- de6:	aa 1f       	adc	r26, r26
- de8:	bb 1f       	adc	r27, r27
- dea:	ee 1f       	adc	r30, r30
- dec:	ff 1f       	adc	r31, r31
- dee:	a2 17       	cp	r26, r18
- df0:	b3 07       	cpc	r27, r19
- df2:	e4 07       	cpc	r30, r20
- df4:	f5 07       	cpc	r31, r21
- df6:	20 f0       	brcs	.+8      	; 0xe00 <__udivmodsi4_ep>
- df8:	a2 1b       	sub	r26, r18
- dfa:	b3 0b       	sbc	r27, r19
- dfc:	e4 0b       	sbc	r30, r20
- dfe:	f5 0b       	sbc	r31, r21
+00000e3c <__udivmodsi4_loop>:
+ e3c:	aa 1f       	adc	r26, r26
+ e3e:	bb 1f       	adc	r27, r27
+ e40:	ee 1f       	adc	r30, r30
+ e42:	ff 1f       	adc	r31, r31
+ e44:	a2 17       	cp	r26, r18
+ e46:	b3 07       	cpc	r27, r19
+ e48:	e4 07       	cpc	r30, r20
+ e4a:	f5 07       	cpc	r31, r21
+ e4c:	20 f0       	brcs	.+8      	; 0xe56 <__udivmodsi4_ep>
+ e4e:	a2 1b       	sub	r26, r18
+ e50:	b3 0b       	sbc	r27, r19
+ e52:	e4 0b       	sbc	r30, r20
+ e54:	f5 0b       	sbc	r31, r21
 
-00000e00 <__udivmodsi4_ep>:
- e00:	66 1f       	adc	r22, r22
- e02:	77 1f       	adc	r23, r23
- e04:	88 1f       	adc	r24, r24
- e06:	99 1f       	adc	r25, r25
- e08:	1a 94       	dec	r1
- e0a:	69 f7       	brne	.-38     	; 0xde6 <__udivmodsi4_loop>
- e0c:	60 95       	com	r22
- e0e:	70 95       	com	r23
- e10:	80 95       	com	r24
- e12:	90 95       	com	r25
- e14:	9b 01       	movw	r18, r22
- e16:	ac 01       	movw	r20, r24
- e18:	bd 01       	movw	r22, r26
- e1a:	cf 01       	movw	r24, r30
- e1c:	08 95       	ret
+00000e56 <__udivmodsi4_ep>:
+ e56:	66 1f       	adc	r22, r22
+ e58:	77 1f       	adc	r23, r23
+ e5a:	88 1f       	adc	r24, r24
+ e5c:	99 1f       	adc	r25, r25
+ e5e:	1a 94       	dec	r1
+ e60:	69 f7       	brne	.-38     	; 0xe3c <__udivmodsi4_loop>
+ e62:	60 95       	com	r22
+ e64:	70 95       	com	r23
+ e66:	80 95       	com	r24
+ e68:	90 95       	com	r25
+ e6a:	9b 01       	movw	r18, r22
+ e6c:	ac 01       	movw	r20, r24
+ e6e:	bd 01       	movw	r22, r26
+ e70:	cf 01       	movw	r24, r30
+ e72:	08 95       	ret
 
-00000e1e <__umulhisi3>:
- e1e:	a2 9f       	mul	r26, r18
- e20:	b0 01       	movw	r22, r0
- e22:	b3 9f       	mul	r27, r19
- e24:	c0 01       	movw	r24, r0
- e26:	a3 9f       	mul	r26, r19
- e28:	70 0d       	add	r23, r0
- e2a:	81 1d       	adc	r24, r1
- e2c:	11 24       	eor	r1, r1
- e2e:	91 1d       	adc	r25, r1
- e30:	b2 9f       	mul	r27, r18
- e32:	70 0d       	add	r23, r0
- e34:	81 1d       	adc	r24, r1
- e36:	11 24       	eor	r1, r1
- e38:	91 1d       	adc	r25, r1
- e3a:	08 95       	ret
+00000e74 <__umulhisi3>:
+ e74:	a2 9f       	mul	r26, r18
+ e76:	b0 01       	movw	r22, r0
+ e78:	b3 9f       	mul	r27, r19
+ e7a:	c0 01       	movw	r24, r0
+ e7c:	a3 9f       	mul	r26, r19
+ e7e:	70 0d       	add	r23, r0
+ e80:	81 1d       	adc	r24, r1
+ e82:	11 24       	eor	r1, r1
+ e84:	91 1d       	adc	r25, r1
+ e86:	b2 9f       	mul	r27, r18
+ e88:	70 0d       	add	r23, r0
+ e8a:	81 1d       	adc	r24, r1
+ e8c:	11 24       	eor	r1, r1
+ e8e:	91 1d       	adc	r25, r1
+ e90:	08 95       	ret
 
-00000e3c <_exit>:
- e3c:	f8 94       	cli
+00000e92 <_exit>:
+ e92:	f8 94       	cli
 
-00000e3e <__stop_program>:
- e3e:	ff cf       	rjmp	.-2      	; 0xe3e <__stop_program>
+00000e94 <__stop_program>:
+ e94:	ff cf       	rjmp	.-2      	; 0xe94 <__stop_program>

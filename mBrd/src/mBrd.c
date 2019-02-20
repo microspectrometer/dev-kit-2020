@@ -1005,6 +1005,7 @@ void SendDataMasterAskedFor(void)
     else if (cmd == cmd_cfg_lis_rowselect_12)   lis_rowselect = lis_row12;
     else if (cmd == cmd_cfg_lis_rowselect_123)  lis_rowselect = lis_row123;
     else if (cmd == cmd_cfg_lis_rowselect_1234) lis_rowselect = lis_row1234;
+    else if (cmd == cmd_cfg_lis_rowselect_124)  lis_rowselect = lis_row124;
     /* Write the cfg to the Lis using the values of the gain and rowselect variables */
     else if (cmd == cmd_write_cfg_to_lis) WriteCfgToLis();
     // test commands
