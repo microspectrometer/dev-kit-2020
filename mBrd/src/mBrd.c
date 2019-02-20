@@ -127,6 +127,8 @@ void DemoMacroFastestRstResponseToClk(void)
         MacroClearBit(Lis_port1, Lis_Rst);
     }
 }
+/* =====[ GLOBAL VARIABLES ]===== */
+uint16_t first_used_pixel = 297; // for STMicro kit shipped 2019-02-14
 /* uint16_t Lis_nticks_exposure = 3;  // fake exposure time set by host */
 uint16_t Lis_nticks_exposure = 500;  // fake exposure time set by host
 uint16_t Lis_nticks_counter = 0;   // track the exposure time
@@ -183,6 +185,7 @@ uint8_t lis_gain = lis_gain_5x;  // default gain is 5x, set when parsing cmd
 #define lis_row12       6
 #define lis_row123      7
 #define lis_row1234     8
+#define lis_row124      9
 uint8_t lis_rowselect = lis_row12345;
 
 void ZeroOutUnusedPixels(void)
@@ -215,9 +218,7 @@ void ZeroOutUnusedPixels(void)
 
     // determine the first used pixel
     // usable range is 292-to-end binned, 292*2-to-end not binned
-    uint16_t first_used_pixel;
-    if (lis_sum_mode == lis_summing_on) first_used_pixel = 292;
-    else                                first_used_pixel = 292*2;
+    if (lis_sum_mode == lis_summing_off) first_used_pixel *= 2;
 
     // walk the frame and zero out unused pixels
     Lis_npixels_counter = 0;  // initialize the global pixel counter
@@ -657,6 +658,12 @@ uint8_t progbits_rowselect_row1234[] ={ 0,1,1,1,1, // rows 1,2,3,4 of columns 63
                                         0,1,1,1,1, // rows 1,2,3,4 of columns 169-322
                                         0,1,1,1,1, // rows 1,2,3,4 of columns 15-168
                                         };
+uint8_t progbits_rowselect_row124[]  ={ 0,1,0,1,1, // rows 1,2,3,4 of columns 631-784
+                                        0,1,0,1,1, // rows 1,2,3,4 of columns 477-630
+                                        0,1,0,1,1, // rows 1,2,3,4 of columns 323-476
+                                        0,1,0,1,1, // rows 1,2,3,4 of columns 169-322
+                                        0,1,0,1,1, // rows 1,2,3,4 of columns 15-168
+                                        };
 uint8_t progbits_rowselect_row5[] ={1,0,0,0,0, // row 5 of columns 631-784
                                     1,0,0,0,0, // row 5 of columns 477-630
                                     1,0,0,0,0, // row 5 of columns 323-476
@@ -759,6 +766,15 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
         LisWaitForClkFallEdge(); \
     } \
 } while (0)
+#define LisSelectRow124() do { \
+    for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
+    { \
+        if (1 == progbits_rowselect_row124[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
+        else MacroClearBit(Lis_port1, Lis_Rst); \
+        LisWaitForClkRiseEdge(); \
+        LisWaitForClkFallEdge(); \
+    } \
+} while (0)
 #define LisSelectAllRows() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
@@ -794,6 +810,7 @@ void WriteCfgToLis(void)
     else if (lis_rowselect == lis_row12)    { LisSelectRow12(); }
     else if (lis_rowselect == lis_row123)   { LisSelectRow123(); }
     else if (lis_rowselect == lis_row1234)  { LisSelectRow1234(); }
+    else if (lis_rowselect == lis_row124)   { LisSelectRow124(); }
     else                                    { LisSelectAllRows(); }
     LisStopProgramMode();
 }
@@ -1008,7 +1025,11 @@ void SendDataMasterAskedFor(void)
 /* =====[ AutoExpose ]===== */
 uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCounts)(void))
 {
-    // TODO: [ ] make max exposure to try an input
+    // TODO: [ ] this hangs if starting integration time is 800us and there is
+    // no light input
+    // Expect NticsExposureToHitTarget to give up and return 1000ms
+    //
+    // TODO: [ ] make `max exposure to try` an input
     bool done = false;
     uint16_t const peak_min = 0;
     // 2018-10-31 measurements with RGB LED:
@@ -1140,9 +1161,9 @@ static uint16_t PeakCounts_Implementation(void)
     /* =====[ get the peak ]===== */
     // determine the first used pixel
     // usable range is 292-to-end binned, 292*2-to-end not binned
-    uint16_t first_used_pixel;
-    if (lis_sum_mode == lis_summing_on) first_used_pixel = 292;
-    else                                first_used_pixel = 292*2;
+    if (lis_sum_mode == lis_summing_off) first_used_pixel *= 2;
+   /* if (lis_sum_mode == lis_summing_on) first_used_pixel = 292; */
+    /* else                                first_used_pixel = 292*2; */
 
     // determine the number of pixels in a frame
     uint16_t npixels_in_frame;
@@ -1154,29 +1175,6 @@ static uint16_t PeakCounts_Implementation(void)
     uint8_t const bytes_per_pixel = 2;
     uint16_t offset_into_frame = first_used_pixel*bytes_per_pixel;
     pframe = full_frame + offset_into_frame;  // point to first used pixel in readout memory
-    uint16_t peak = 0;
-    while (Lis_npixels_counter++ < npixels_in_frame)
-    {
-        uint16_t this = (*(pframe++))<<8;
-        this |= (*(pframe++));
-        if (this > peak) peak = this;
-    }
-    return peak;
-}
-static uint16_t PeakCounts_Implementation_Use_All_Pixels(void)
-{
-    /* =====[ get a frame ]===== */
-    MacroDebugLedsTurnRed(debug_led1);
-    LisFrameReadout();  // store pixel readout in SRAM
-    MacroDebugLedsTurnGreen(debug_led1);
-    /* =====[ get the peak ]===== */
-    // determine the number of pixels in a frame
-    uint16_t npixels_in_frame;
-    if (lis_sum_mode == lis_summing_on) npixels_in_frame = npixels_binned;
-    else                                npixels_in_frame = npixels;
-    // walk the frame to find the peak
-    Lis_npixels_counter = 0;  // initialize the global pixel counter
-    pframe = full_frame;  // point to the start of pixel readout memory
     uint16_t peak = 0;
     while (Lis_npixels_counter++ < npixels_in_frame)
     {
