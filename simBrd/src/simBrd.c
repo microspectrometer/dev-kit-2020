@@ -737,6 +737,56 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
 {
     while(1) // loop forever responding to the USB host
     {
+        uint8_t cmd;
+        if (UsbReadOneByte(&cmd))
+        {
+            if (cmd == cmd_write_cfg_to_lis)
+            {
+              /* TODO: change this to two bytes: */
+              /* bin_on_off : 1 (on or off) */
+              /* gain_select: 2 (2 bits for four values) */
+              /* row_select: 5 (1 bit per row) */
+                // Expect three more bytes: bin on/off, gain, row select
+                typedef struct {
+                    uint8_t bin_on_off;
+                    uint8_t gain_select;
+                    uint8_t row_select;
+                } CfgParams_s;
+                CfgParams_s cfg;
+
+                /* Wait until each byte is available, then read it. */
+                // TODO: add timeout to while looping
+                while (!UsbReadOneByte(&cfg.bin_on_off));
+                while (!UsbReadOneByte(&cfg.gain_select));
+                while (!UsbReadOneByte(&cfg.row_select));
+                // TODO: guard against invalid bytes
+                    // exit if any byte is not valid
+                // TODO: gain and row select are themselves structs
+                /* =====[ Quick dumb test for now ]===== */
+                if (cfg.bin_on_off == cmd_cfg_summing_mode_on)
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
+                }
+                if (cfg.gain_select == cmd_cfg_lis_gain_1x)
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
+                }
+                if (cfg.row_select == cmd_cfg_lis_rowselect_12345)
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12345);
+                }
+/* TODO: the if == blah then do this command move to a jump-table */
+/* TODO: turn cmd parameters directly into global state where applicable */
+/* result: there will be *no* conditionals here */
+            }
+        }
+    }
+}
+
+void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave_old(void)
+{
+    while(1) // loop forever responding to the USB host
+    {
         if (UsbHasDataToRead())
         {
             /* MacroDebugLedToggleColor(); */

@@ -6,6 +6,24 @@ void UsbInit(void)
 {
     FtInit();
 }
+uint8_t UsbReadOneByte(uint8_t *read_buffer)
+{
+    uint8_t num_bytes_read = 0;
+    FtSendCommand(FtCmd_Read);
+    bool has_data_to_read = FtBusTurnaround();
+    if (!has_data_to_read)
+    {
+        // sad path
+        // No, not an error. Not a sad path.
+        // Use this in place of checking if Ft_Miso is low in app.
+        /* DebugLedTurnRedToShowError(); */
+        FtDeactivateInterface();
+        return num_bytes_read;
+    }
+    FtRead(read_buffer); num_bytes_read++;
+    FtDeactivateInterface();
+    return num_bytes_read;
+}
 uint16_t UsbRead(uint8_t *read_buffer)
 {
     uint16_t num_bytes_read = 0;

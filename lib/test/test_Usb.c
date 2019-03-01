@@ -543,3 +543,75 @@ void UsbRead_happy_path_is_implemented_like_this(void) // happy path
         WhyDidItFail(mock)          // print this message.
         );
 }
+
+/* =====[ UsbReadOneByte behavioral tests ]===== */
+void UsbReadOneByte_copies_the_next_available_byte_to_the_input_read_buffer(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t expect_cmd = 0x07;
+    /* =====[ Stub dependencies ]===== */
+    FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
+    bool ack_nak_sequence[] = {true};
+    FtRead_StubbedReturnValue = ack_nak_sequence;
+    uint8_t fake_rx_buffer[] = {expect_cmd};
+    FtRead_StubbedDataBusPtr = fake_rx_buffer;
+    /* =====[ Operate ]===== */
+    uint8_t cmd;
+    uint8_t nbytes = UsbReadOneByte(&cmd);
+    TEST_ASSERT_EQUAL(1, nbytes);
+    TEST_ASSERT_EQUAL(expect_cmd, cmd);
+}
+void UsbReadOneByte_returns_0_if_there_are_no_bytes_to_read(void)
+{
+    /* =====[ Stub dependencies ]===== */
+    FtBusTurnaround_StubbedReturnValue = false;  // bus is not OK
+    /* =====[ Operate ]===== */
+    uint8_t cmd;
+    TEST_ASSERT_FALSE(UsbReadOneByte(&cmd));
+}
+void UsbReadOneByte_returns_1_if_there_is_at_least_one_byte_to_read(void)
+{
+    /* =====[ Stub dependencies ]===== */
+    FtBusTurnaround_StubbedReturnValue = true;  // bus is not OK
+    /* =====[ Operate ]===== */
+    uint8_t cmd;
+    TEST_ASSERT_TRUE(UsbReadOneByte(&cmd));
+}
+void UsbReadOneByte_example_readings_several_bytes(void)
+{
+    // FtBusTurnaround returns a bool
+    FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
+    //
+    // FtRead returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
+    bool ack_nak_sequence[] = {true, true, true, true, false};
+    FtRead_StubbedReturnValue = ack_nak_sequence;
+    //=====[ Check test code for desired scenario ]=====
+    uint16_t num_bytes_in_buffer = sizeof(ack_nak_sequence)-1;
+    TEST_ASSERT_EQUAL_UINT16(4, num_bytes_in_buffer);
+    //
+    // FtRead copies data from rx buffer to address of buffer passed in.
+    uint8_t const cfg_cmd = 0x07;
+    uint8_t const bin_on = 0x06;
+    uint8_t const gain_1x = 0x0B;
+    uint8_t const all_rows = 0x0C;
+    uint8_t fake_rx_buffer[] = {cfg_cmd, bin_on, gain_1x, all_rows};
+    TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, sizeof(fake_rx_buffer));
+    FtRead_StubbedDataBusPtr = fake_rx_buffer;
+    //
+    //=====[ Operate and Test ]=====
+    uint8_t cmd;
+    UsbReadOneByte(&cmd);
+    TEST_ASSERT_EQUAL_HEX8(cfg_cmd, cmd);
+    typedef struct {
+        uint8_t bin_on_off;
+        uint8_t gain_select;
+        uint8_t row_select;
+    } CfgParams_s;
+    CfgParams_s cfg;
+    UsbReadOneByte(&cfg.bin_on_off);
+    TEST_ASSERT_EQUAL_HEX8(bin_on, cfg.bin_on_off);
+    UsbReadOneByte(&cfg.gain_select);
+    TEST_ASSERT_EQUAL_HEX8(gain_1x, cfg.gain_select);
+    UsbReadOneByte(&cfg.row_select);
+    TEST_ASSERT_EQUAL_HEX8(all_rows, cfg.row_select);
+}

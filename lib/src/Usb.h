@@ -10,4 +10,7 @@ uint16_t UsbWrite(uint8_t *write_buffer, uint16_t nbytes);
 bool UsbHasDataToRead(void);
 bool UsbHasRoomToWrite(void);
 
+/* =====[ WIP: robust UsbRead functionality started 2019-03-01 ]===== */
+uint8_t UsbReadOneByte(uint8_t *read_buffer);
+
 #endif // _USB_H

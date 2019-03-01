@@ -266,6 +266,13 @@ void DevelopingAuto(bool run_test) {if (run_test) {
     RUN_TEST(test_NticsExposureToHitTarget_returns_target_minus_peak_counts);
     RUN_TEST(test_peak_algorithm);
 }}
+void DevelopingUsbReadOneByte(bool run_test) {if (run_test) {
+    setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead;
+    RUN_TEST(UsbReadOneByte_copies_the_next_available_byte_to_the_input_read_buffer);
+    RUN_TEST(UsbReadOneByte_returns_0_if_there_are_no_bytes_to_read);
+    RUN_TEST(UsbReadOneByte_returns_1_if_there_is_at_least_one_byte_to_read);
+    RUN_TEST(UsbReadOneByte_example_readings_several_bytes);
+}}
 int main()
 {
     UNITY_BEGIN();
@@ -281,6 +288,7 @@ int main()
     DevelopingUartSpi         (Nope);
     DevelopingLis             (Nope);
     DevelopingPwm             (Nope);
-    DevelopingAuto            (Yep); // tabled -- see test
+    DevelopingAuto            (Nope); // tabled -- see test
+    DevelopingUsbReadOneByte  (Yep);
     return UNITY_END();
 }

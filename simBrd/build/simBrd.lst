@@ -3,31 +3,31 @@ build/simBrd.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000060  00800100  00000ba4  00000c38  2**0
+  0 .data         0000004a  00800100  000004fa  0000058e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000ba4  00000000  00000000  00000094  2**1
+  1 .text         000004fa  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000629  00800160  00800160  00000c98  2**0
+  2 .bss          00000629  0080014a  0080014a  000005d8  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000c98  2**0
+  3 .comment      00000030  00000000  00000000  000005d8  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000cc8  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000608  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000003c8  00000000  00000000  00000d08  2**0
+  5 .debug_aranges 000003d8  00000000  00000000  00000648  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00004370  00000000  00000000  000010d0  2**0
+  6 .debug_info   000044f4  00000000  00000000  00000a20  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 0000135b  00000000  00000000  00005440  2**0
+  7 .debug_abbrev 00001384  00000000  00000000  00004f14  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00001f7c  00000000  00000000  0000679b  2**0
+  8 .debug_line   00002074  00000000  00000000  00006298  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000b50  00000000  00000000  00008718  2**2
+  9 .debug_frame  00000b8c  00000000  00000000  0000830c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000017df  00000000  00000000  00009268  2**0
+ 10 .debug_str    0000185b  00000000  00000000  00008e98  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00002310  00000000  00000000  0000aa47  2**0
+ 11 .debug_loc    00002425  00000000  00000000  0000a6f3  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000580  00000000  00000000  0000cd57  2**0
+ 12 .debug_ranges 000005c0  00000000  00000000  0000cb18  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -72,18 +72,18 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e4 ea       	ldi	r30, 0xA4	; 164
-  7c:	fb e0       	ldi	r31, 0x0B	; 11
+  7a:	ea ef       	ldi	r30, 0xFA	; 250
+  7c:	f4 e0       	ldi	r31, 0x04	; 4
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
-  84:	a0 36       	cpi	r26, 0x60	; 96
+  84:	aa 34       	cpi	r26, 0x4A	; 74
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
 
 0000008a <__do_clear_bss>:
   8a:	27 e0       	ldi	r18, 0x07	; 7
-  8c:	a0 e6       	ldi	r26, 0x60	; 96
+  8c:	aa e4       	ldi	r26, 0x4A	; 74
   8e:	b1 e0       	ldi	r27, 0x01	; 1
   90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
 
@@ -91,22 +91,22 @@ Disassembly of section .text:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	a9 38       	cpi	r26, 0x89	; 137
+  94:	a3 37       	cpi	r26, 0x73	; 115
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 b6 05 	call	0xb6c	; 0xb6c <main>
-  9e:	0c 94 d0 05 	jmp	0xba0	; 0xba0 <_exit>
+  9a:	0e 94 61 02 	call	0x4c2	; 0x4c2 <main>
+  9e:	0c 94 7b 02 	jmp	0x4f6	; 0x4f6 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000000a6 <SetBit>:
-inline void ClearBit(uint8_t volatile * const port, uint8_t const bit) {
-    *port &= ~(1<<bit);
+    *port ^= (1<<bit);
 }
 
-inline void ToggleBit(uint8_t volatile * const port, uint8_t const bit) {
-    *port ^= (1<<bit);
+inline bool BitIsSet(uint8_t volatile * const port, uint8_t const bit) {
+    return *port & (1<<bit);
+}
   a6:	fc 01       	movw	r30, r24
   a8:	40 81       	ld	r20, Z
   aa:	21 e0       	ldi	r18, 0x01	; 1
@@ -133,1791 +133,684 @@ inline void ToggleBit(uint8_t volatile * const port, uint8_t const bit) {
   d0:	20 83       	st	Z, r18
   d2:	08 95       	ret
 
-000000d4 <BitIsSet>:
-}
-
-inline bool BitIsSet(uint8_t volatile * const port, uint8_t const bit) {
-    return *port & (1<<bit);
-  d4:	fc 01       	movw	r30, r24
-  d6:	80 81       	ld	r24, Z
-  d8:	21 e0       	ldi	r18, 0x01	; 1
-  da:	30 e0       	ldi	r19, 0x00	; 0
-  dc:	02 c0       	rjmp	.+4      	; 0xe2 <BitIsSet+0xe>
-  de:	22 0f       	add	r18, r18
-  e0:	33 1f       	adc	r19, r19
-  e2:	6a 95       	dec	r22
-  e4:	e2 f7       	brpl	.-8      	; 0xde <BitIsSet+0xa>
-  e6:	90 e0       	ldi	r25, 0x00	; 0
-  e8:	28 23       	and	r18, r24
-  ea:	39 23       	and	r19, r25
-  ec:	81 e0       	ldi	r24, 0x01	; 1
-  ee:	23 2b       	or	r18, r19
-  f0:	09 f4       	brne	.+2      	; 0xf4 <BitIsSet+0x20>
-  f2:	80 e0       	ldi	r24, 0x00	; 0
-}
-  f4:	08 95       	ret
-
-000000f6 <BitIsClear>:
+000000d4 <BitIsClear>:
 
 inline bool BitIsClear(uint8_t volatile * const port, uint8_t const bit) {
     return !(*port & (1<<bit));
-  f6:	fc 01       	movw	r30, r24
-  f8:	80 81       	ld	r24, Z
-  fa:	90 e0       	ldi	r25, 0x00	; 0
-  fc:	02 c0       	rjmp	.+4      	; 0x102 <BitIsClear+0xc>
-  fe:	95 95       	asr	r25
- 100:	87 95       	ror	r24
- 102:	6a 95       	dec	r22
- 104:	e2 f7       	brpl	.-8      	; 0xfe <BitIsClear+0x8>
- 106:	81 70       	andi	r24, 0x01	; 1
- 108:	99 27       	eor	r25, r25
- 10a:	f1 e0       	ldi	r31, 0x01	; 1
- 10c:	8f 27       	eor	r24, r31
+  d4:	fc 01       	movw	r30, r24
+  d6:	80 81       	ld	r24, Z
+  d8:	90 e0       	ldi	r25, 0x00	; 0
+  da:	02 c0       	rjmp	.+4      	; 0xe0 <BitIsClear+0xc>
+  dc:	95 95       	asr	r25
+  de:	87 95       	ror	r24
+  e0:	6a 95       	dec	r22
+  e2:	e2 f7       	brpl	.-8      	; 0xdc <BitIsClear+0x8>
+  e4:	81 70       	andi	r24, 0x01	; 1
+  e6:	99 27       	eor	r25, r25
+  e8:	f1 e0       	ldi	r31, 0x01	; 1
+  ea:	8f 27       	eor	r24, r31
 }
- 10e:	81 70       	andi	r24, 0x01	; 1
- 110:	08 95       	ret
+  ec:	81 70       	andi	r24, 0x01	; 1
+  ee:	08 95       	ret
 
-00000112 <DebugLedTurnOn_Implementation>:
-    DebugLedTurnGreen();
-}
-
-static void DebugLedTurnOn_Implementation(void)
-{
-    SetBit(ddr_register_, debug_led_);
- 112:	60 91 60 01 	lds	r22, 0x0160	; 0x800160 <__data_end>
- 116:	80 91 65 01 	lds	r24, 0x0165	; 0x800165 <ddr_register_>
- 11a:	90 91 66 01 	lds	r25, 0x0166	; 0x800166 <ddr_register_+0x1>
- 11e:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
-
-00000122 <DebugLedTurnRed>:
+000000f0 <DebugLedTurnOn_Implementation>:
 }
 void (*DebugLedTurnGreen)(void) = DebugLedTurnGreen_Implementation;
 
 void DebugLedTurnRed(void)
 {
     SetBit(port_register_, debug_led_);
- 122:	60 91 60 01 	lds	r22, 0x0160	; 0x800160 <__data_end>
- 126:	80 91 63 01 	lds	r24, 0x0163	; 0x800163 <port_register_>
- 12a:	90 91 64 01 	lds	r25, 0x0164	; 0x800164 <port_register_+0x1>
- 12e:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
+  f0:	60 91 4a 01 	lds	r22, 0x014A	; 0x80014a <__data_end>
+  f4:	80 91 4f 01 	lds	r24, 0x014F	; 0x80014f <ddr_register_>
+  f8:	90 91 50 01 	lds	r25, 0x0150	; 0x800150 <ddr_register_+0x1>
+  fc:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
-00000132 <DebugLedTurnGreen_Implementation>:
+00000100 <DebugLedTurnGreen_Implementation>:
     ClearBit(ddr_register_, debug_led_);
 }
 
 static void DebugLedTurnGreen_Implementation(void)
 {
     ClearBit(port_register_, debug_led_);
- 132:	60 91 60 01 	lds	r22, 0x0160	; 0x800160 <__data_end>
- 136:	80 91 63 01 	lds	r24, 0x0163	; 0x800163 <port_register_>
- 13a:	90 91 64 01 	lds	r25, 0x0164	; 0x800164 <port_register_+0x1>
- 13e:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
+ 100:	60 91 4a 01 	lds	r22, 0x014A	; 0x80014a <__data_end>
+ 104:	80 91 4d 01 	lds	r24, 0x014D	; 0x80014d <port_register_>
+ 108:	90 91 4e 01 	lds	r25, 0x014E	; 0x80014e <port_register_+0x1>
+ 10c:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
 
-00000142 <DebugLedInit>:
+00000110 <DebugLedInit>:
     uint8_t volatile * const ddr_register,
     uint8_t volatile * const port_register,
     uint8_t volatile * const pin_register,
     uint8_t const debug_led)
 {
     ddr_register_ = ddr_register;
- 142:	90 93 66 01 	sts	0x0166, r25	; 0x800166 <ddr_register_+0x1>
- 146:	80 93 65 01 	sts	0x0165, r24	; 0x800165 <ddr_register_>
+ 110:	90 93 50 01 	sts	0x0150, r25	; 0x800150 <ddr_register_+0x1>
+ 114:	80 93 4f 01 	sts	0x014F, r24	; 0x80014f <ddr_register_>
     port_register_ = port_register;
- 14a:	70 93 64 01 	sts	0x0164, r23	; 0x800164 <port_register_+0x1>
- 14e:	60 93 63 01 	sts	0x0163, r22	; 0x800163 <port_register_>
+ 118:	70 93 4e 01 	sts	0x014E, r23	; 0x80014e <port_register_+0x1>
+ 11c:	60 93 4d 01 	sts	0x014D, r22	; 0x80014d <port_register_>
     pin_register_ = pin_register;
- 152:	50 93 62 01 	sts	0x0162, r21	; 0x800162 <pin_register_+0x1>
- 156:	40 93 61 01 	sts	0x0161, r20	; 0x800161 <pin_register_>
+ 120:	50 93 4c 01 	sts	0x014C, r21	; 0x80014c <pin_register_+0x1>
+ 124:	40 93 4b 01 	sts	0x014B, r20	; 0x80014b <pin_register_>
     debug_led_ = debug_led;
- 15a:	20 93 60 01 	sts	0x0160, r18	; 0x800160 <__data_end>
+ 128:	20 93 4a 01 	sts	0x014A, r18	; 0x80014a <__data_end>
     DebugLedTurnOn();
- 15e:	e0 91 04 01 	lds	r30, 0x0104	; 0x800104 <DebugLedTurnOn>
- 162:	f0 91 05 01 	lds	r31, 0x0105	; 0x800105 <DebugLedTurnOn+0x1>
- 166:	09 95       	icall
+ 12c:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <DebugLedTurnOn>
+ 130:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <DebugLedTurnOn+0x1>
+ 134:	09 95       	icall
     DebugLedTurnGreen();
- 168:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <DebugLedTurnGreen>
- 16c:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <DebugLedTurnGreen+0x1>
- 170:	09 94       	ijmp
+ 136:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <DebugLedTurnGreen>
+ 13a:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <DebugLedTurnGreen+0x1>
+ 13e:	09 94       	ijmp
 
-00000172 <FtSendCommand_Implementation>:
+00000140 <FtSendCommand_Implementation>:
 bool (*FtIsBusOk)(void) = FtIsBusOk_Implementation;
 bool (*FtHasDataToRead)(void) = FtIsBusOk_Implementation;
 
 static bool FtHasRoomToWrite_Implementation(void)
 {
     return BitIsClear(FtMiosio_pin, FtMiosio0);
- 172:	cf 93       	push	r28
- 174:	c8 2f       	mov	r28, r24
- 176:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtActivateInterface>
- 17a:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtActivateInterface+0x1>
- 17e:	09 95       	icall
- 180:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtPushData>
- 184:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtPushData+0x1>
- 188:	09 95       	icall
- 18a:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtLetMasterDriveBus>
- 18e:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtLetMasterDriveBus+0x1>
- 192:	09 95       	icall
- 194:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtOutputByte>
- 198:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtOutputByte+0x1>
- 19c:	8c 2f       	mov	r24, r28
- 19e:	09 95       	icall
- 1a0:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <FtPullData>
- 1a4:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <FtPullData+0x1>
- 1a8:	cf 91       	pop	r28
- 1aa:	09 94       	ijmp
+ 140:	cf 93       	push	r28
+ 142:	c8 2f       	mov	r28, r24
+ 144:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtActivateInterface>
+ 148:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtActivateInterface+0x1>
+ 14c:	09 95       	icall
+ 14e:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtPushData>
+ 152:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtPushData+0x1>
+ 156:	09 95       	icall
+ 158:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <FtLetMasterDriveBus>
+ 15c:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <FtLetMasterDriveBus+0x1>
+ 160:	09 95       	icall
+ 162:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <FtOutputByte>
+ 166:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <FtOutputByte+0x1>
+ 16a:	8c 2f       	mov	r24, r28
+ 16c:	09 95       	icall
+ 16e:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <FtPullData>
+ 172:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <FtPullData+0x1>
+ 176:	cf 91       	pop	r28
+ 178:	09 94       	ijmp
 
-000001ac <FtBusTurnaround_Implementation>:
- 1ac:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <FtLetSlaveDriveBus>
- 1b0:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <FtLetSlaveDriveBus+0x1>
- 1b4:	09 95       	icall
- 1b6:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtPushData>
- 1ba:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtPushData+0x1>
- 1be:	09 95       	icall
- 1c0:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <FtPullData>
- 1c4:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <FtPullData+0x1>
- 1c8:	09 95       	icall
- 1ca:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <FtIsBusOk>
- 1ce:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <FtIsBusOk+0x1>
- 1d2:	09 94       	ijmp
+0000017a <FtBusTurnaround_Implementation>:
+ 17a:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <FtLetSlaveDriveBus>
+ 17e:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <FtLetSlaveDriveBus+0x1>
+ 182:	09 95       	icall
+ 184:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtPushData>
+ 188:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtPushData+0x1>
+ 18c:	09 95       	icall
+ 18e:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <FtPullData>
+ 192:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <FtPullData+0x1>
+ 196:	09 95       	icall
+ 198:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <FtIsBusOk>
+ 19c:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <FtIsBusOk+0x1>
+ 1a0:	09 94       	ijmp
 
-000001d4 <FtWrite_Implementation>:
- 1d4:	cf 93       	push	r28
- 1d6:	df 93       	push	r29
- 1d8:	ec 01       	movw	r28, r24
- 1da:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtLetMasterDriveBus>
- 1de:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtLetMasterDriveBus+0x1>
- 1e2:	09 95       	icall
- 1e4:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtPushData>
- 1e8:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtPushData+0x1>
- 1ec:	09 95       	icall
- 1ee:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <FtWriteData>
- 1f2:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <FtWriteData+0x1>
- 1f6:	88 81       	ld	r24, Y
- 1f8:	09 95       	icall
- 1fa:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <FtPullData>
- 1fe:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <FtPullData+0x1>
- 202:	09 95       	icall
- 204:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <FtIsBusOk>
- 208:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <FtIsBusOk+0x1>
- 20c:	df 91       	pop	r29
- 20e:	cf 91       	pop	r28
- 210:	09 94       	ijmp
+000001a2 <FtLetMasterDriveBus_Implementation>:
+ 1a2:	e0 91 41 01 	lds	r30, 0x0141	; 0x800141 <FtMiosio_ddr>
+ 1a6:	f0 91 42 01 	lds	r31, 0x0142	; 0x800142 <FtMiosio_ddr+0x1>
+ 1aa:	8f ef       	ldi	r24, 0xFF	; 255
+ 1ac:	80 83       	st	Z, r24
+ 1ae:	08 95       	ret
 
-00000212 <FtLetMasterDriveBus_Implementation>:
- 212:	e0 91 58 01 	lds	r30, 0x0158	; 0x800158 <FtMiosio_ddr>
- 216:	f0 91 59 01 	lds	r31, 0x0159	; 0x800159 <FtMiosio_ddr+0x1>
- 21a:	8f ef       	ldi	r24, 0xFF	; 255
- 21c:	80 83       	st	Z, r24
- 21e:	08 95       	ret
+000001b0 <FtLetSlaveDriveBus_Implementation>:
+ 1b0:	e0 91 41 01 	lds	r30, 0x0141	; 0x800141 <FtMiosio_ddr>
+ 1b4:	f0 91 42 01 	lds	r31, 0x0142	; 0x800142 <FtMiosio_ddr+0x1>
+ 1b8:	10 82       	st	Z, r1
+ 1ba:	08 95       	ret
 
-00000220 <FtLetSlaveDriveBus_Implementation>:
- 220:	e0 91 58 01 	lds	r30, 0x0158	; 0x800158 <FtMiosio_ddr>
- 224:	f0 91 59 01 	lds	r31, 0x0159	; 0x800159 <FtMiosio_ddr+0x1>
- 228:	10 82       	st	Z, r1
- 22a:	08 95       	ret
+000001bc <FtReadData_Implementation>:
+ 1bc:	e0 91 3d 01 	lds	r30, 0x013D	; 0x80013d <FtMiosio_pin>
+ 1c0:	f0 91 3e 01 	lds	r31, 0x013E	; 0x80013e <FtMiosio_pin+0x1>
+ 1c4:	80 81       	ld	r24, Z
+ 1c6:	08 95       	ret
 
-0000022c <FtReadData_Implementation>:
- 22c:	e0 91 54 01 	lds	r30, 0x0154	; 0x800154 <FtMiosio_pin>
- 230:	f0 91 55 01 	lds	r31, 0x0155	; 0x800155 <FtMiosio_pin+0x1>
- 234:	80 81       	ld	r24, Z
- 236:	08 95       	ret
+000001c8 <FtActivateInterface_Implementation>:
+ 1c8:	60 91 3c 01 	lds	r22, 0x013C	; 0x80013c <Ft1248_Ss>
+ 1cc:	80 91 45 01 	lds	r24, 0x0145	; 0x800145 <Ft1248_port>
+ 1d0:	90 91 46 01 	lds	r25, 0x0146	; 0x800146 <Ft1248_port+0x1>
+ 1d4:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
 
-00000238 <FtWriteData_Implementation>:
- 238:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <FtMiosio_port>
- 23c:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <FtMiosio_port+0x1>
- 240:	80 83       	st	Z, r24
- 242:	08 95       	ret
+000001d8 <FtPullData_Implementation>:
+ 1d8:	60 91 3b 01 	lds	r22, 0x013B	; 0x80013b <Ft1248_Sck>
+ 1dc:	80 91 45 01 	lds	r24, 0x0145	; 0x800145 <Ft1248_port>
+ 1e0:	90 91 46 01 	lds	r25, 0x0146	; 0x800146 <Ft1248_port+0x1>
+ 1e4:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
 
-00000244 <FtActivateInterface_Implementation>:
- 244:	60 91 53 01 	lds	r22, 0x0153	; 0x800153 <Ft1248_Ss>
- 248:	80 91 5c 01 	lds	r24, 0x015C	; 0x80015c <Ft1248_port>
- 24c:	90 91 5d 01 	lds	r25, 0x015D	; 0x80015d <Ft1248_port+0x1>
- 250:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
+000001e8 <FtDeactivateInterface_Implementation>:
+ 1e8:	60 91 3c 01 	lds	r22, 0x013C	; 0x80013c <Ft1248_Ss>
+ 1ec:	80 91 45 01 	lds	r24, 0x0145	; 0x800145 <Ft1248_port>
+ 1f0:	90 91 46 01 	lds	r25, 0x0146	; 0x800146 <Ft1248_port+0x1>
+ 1f4:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
-00000254 <FtPullData_Implementation>:
- 254:	60 91 52 01 	lds	r22, 0x0152	; 0x800152 <Ft1248_Sck>
- 258:	80 91 5c 01 	lds	r24, 0x015C	; 0x80015c <Ft1248_port>
- 25c:	90 91 5d 01 	lds	r25, 0x015D	; 0x80015d <Ft1248_port+0x1>
- 260:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
+000001f8 <FtPushData_Implementation>:
+ 1f8:	60 91 3b 01 	lds	r22, 0x013B	; 0x80013b <Ft1248_Sck>
+ 1fc:	80 91 45 01 	lds	r24, 0x0145	; 0x800145 <Ft1248_port>
+ 200:	90 91 46 01 	lds	r25, 0x0146	; 0x800146 <Ft1248_port+0x1>
+ 204:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
-00000264 <FtDeactivateInterface_Implementation>:
- 264:	60 91 53 01 	lds	r22, 0x0153	; 0x800153 <Ft1248_Ss>
- 268:	80 91 5c 01 	lds	r24, 0x015C	; 0x80015c <Ft1248_port>
- 26c:	90 91 5d 01 	lds	r25, 0x015D	; 0x80015d <Ft1248_port+0x1>
- 270:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
+00000208 <FtIsBusOk_Implementation>:
+ 208:	60 91 3a 01 	lds	r22, 0x013A	; 0x80013a <Ft1248_Miso>
+ 20c:	80 91 43 01 	lds	r24, 0x0143	; 0x800143 <Ft1248_pin>
+ 210:	90 91 44 01 	lds	r25, 0x0144	; 0x800144 <Ft1248_pin+0x1>
+ 214:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <BitIsClear>
 
-00000274 <FtPushData_Implementation>:
- 274:	60 91 52 01 	lds	r22, 0x0152	; 0x800152 <Ft1248_Sck>
- 278:	80 91 5c 01 	lds	r24, 0x015C	; 0x80015c <Ft1248_port>
- 27c:	90 91 5d 01 	lds	r25, 0x015D	; 0x80015d <Ft1248_port+0x1>
- 280:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
-
-00000284 <FtIsBusOk_Implementation>:
- 284:	60 91 51 01 	lds	r22, 0x0151	; 0x800151 <Ft1248_Miso>
- 288:	80 91 5a 01 	lds	r24, 0x015A	; 0x80015a <Ft1248_pin>
- 28c:	90 91 5b 01 	lds	r25, 0x015B	; 0x80015b <Ft1248_pin+0x1>
- 290:	0c 94 7b 00 	jmp	0xf6	; 0xf6 <BitIsClear>
-
-00000294 <FtRead_Implementation>:
+00000218 <FtRead_Implementation>:
     return FtIsBusOk();
 }
 bool (*FtBusTurnaround)(void) = FtBusTurnaround_Implementation;
 
 static bool FtRead_Implementation(uint8_t *read_buffer)
 {
- 294:	0f 93       	push	r16
- 296:	1f 93       	push	r17
- 298:	cf 93       	push	r28
- 29a:	8c 01       	movw	r16, r24
+ 218:	0f 93       	push	r16
+ 21a:	1f 93       	push	r17
+ 21c:	cf 93       	push	r28
+ 21e:	8c 01       	movw	r16, r24
     FtPushData();                   // tells everyone to output to bus
- 29c:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtPushData>
- 2a0:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtPushData+0x1>
- 2a4:	09 95       	icall
+ 220:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtPushData>
+ 224:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtPushData+0x1>
+ 228:	09 95       	icall
     FtPullData();                   // tells everyone to input from bus
- 2a6:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <FtPullData>
- 2aa:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <FtPullData+0x1>
- 2ae:	09 95       	icall
+ 22a:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <FtPullData>
+ 22e:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <FtPullData+0x1>
+ 232:	09 95       	icall
     if (!FtIsBusOk()) return false; // buffer is empty
- 2b0:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <FtIsBusOk>
- 2b4:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <FtIsBusOk+0x1>
- 2b8:	09 95       	icall
- 2ba:	c8 2f       	mov	r28, r24
- 2bc:	88 23       	and	r24, r24
- 2be:	39 f0       	breq	.+14     	; 0x2ce <FtRead_Implementation+0x3a>
+ 234:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <FtIsBusOk>
+ 238:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <FtIsBusOk+0x1>
+ 23c:	09 95       	icall
+ 23e:	c8 2f       	mov	r28, r24
+ 240:	88 23       	and	r24, r24
+ 242:	39 f0       	breq	.+14     	; 0x252 <FtRead_Implementation+0x3a>
     *read_buffer = FtReadData();   // buffer is not empty, write to mem
- 2c0:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <FtReadData>
- 2c4:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <FtReadData+0x1>
- 2c8:	09 95       	icall
- 2ca:	f8 01       	movw	r30, r16
- 2cc:	80 83       	st	Z, r24
+ 244:	e0 91 04 01 	lds	r30, 0x0104	; 0x800104 <FtReadData>
+ 248:	f0 91 05 01 	lds	r31, 0x0105	; 0x800105 <FtReadData+0x1>
+ 24c:	09 95       	icall
+ 24e:	f8 01       	movw	r30, r16
+ 250:	80 83       	st	Z, r24
     return true;
 }
- 2ce:	8c 2f       	mov	r24, r28
- 2d0:	cf 91       	pop	r28
- 2d2:	1f 91       	pop	r17
- 2d4:	0f 91       	pop	r16
- 2d6:	08 95       	ret
+ 252:	8c 2f       	mov	r24, r28
+ 254:	cf 91       	pop	r28
+ 256:	1f 91       	pop	r17
+ 258:	0f 91       	pop	r16
+ 25a:	08 95       	ret
 
-000002d8 <FtOutputByte_Implementation>:
- 2d8:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <FtMiosio_port>
- 2dc:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <FtMiosio_port+0x1>
- 2e0:	80 83       	st	Z, r24
- 2e2:	08 95       	ret
+0000025c <FtOutputByte_Implementation>:
+ 25c:	e0 91 3f 01 	lds	r30, 0x013F	; 0x80013f <FtMiosio_port>
+ 260:	f0 91 40 01 	lds	r31, 0x0140	; 0x800140 <FtMiosio_port+0x1>
+ 264:	80 83       	st	Z, r24
+ 266:	08 95       	ret
 
-000002e4 <FtInit>:
+00000268 <FtInit>:
 //static uint8_t const FT1248Cmd_8BitWide_Write = 0x86;
 
 //=====[ High-level API ]=====
 #include "DebugLed.h"
 void FtInit(void)
 {
- 2e4:	ff 92       	push	r15
- 2e6:	0f 93       	push	r16
- 2e8:	1f 93       	push	r17
- 2ea:	cf 93       	push	r28
- 2ec:	df 93       	push	r29
+ 268:	ff 92       	push	r15
+ 26a:	0f 93       	push	r16
+ 26c:	1f 93       	push	r17
+ 26e:	cf 93       	push	r28
+ 270:	df 93       	push	r29
     FtSckLow();
     FtSsHigh();
 }
 void FtSetMisoAsInput(void)
 {
     ClearBit(Ft1248_ddr, Ft1248_Miso);
- 2ee:	10 91 51 01 	lds	r17, 0x0151	; 0x800151 <Ft1248_Miso>
- 2f2:	c0 91 5e 01 	lds	r28, 0x015E	; 0x80015e <Ft1248_ddr>
- 2f6:	d0 91 5f 01 	lds	r29, 0x015F	; 0x80015f <Ft1248_ddr+0x1>
- 2fa:	61 2f       	mov	r22, r17
- 2fc:	ce 01       	movw	r24, r28
- 2fe:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
+ 272:	10 91 3a 01 	lds	r17, 0x013A	; 0x80013a <Ft1248_Miso>
+ 276:	c0 91 47 01 	lds	r28, 0x0147	; 0x800147 <Ft1248_ddr>
+ 27a:	d0 91 48 01 	lds	r29, 0x0148	; 0x800148 <Ft1248_ddr+0x1>
+ 27e:	61 2f       	mov	r22, r17
+ 280:	ce 01       	movw	r24, r28
+ 282:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
 }
 void FtEnablePullupOnMiso(void)
 {
     SetBit(Ft1248_port, Ft1248_Miso);
- 302:	80 91 5c 01 	lds	r24, 0x015C	; 0x80015c <Ft1248_port>
- 306:	90 91 5d 01 	lds	r25, 0x015D	; 0x80015d <Ft1248_port+0x1>
- 30a:	61 2f       	mov	r22, r17
- 30c:	8c 01       	movw	r16, r24
- 30e:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 286:	80 91 45 01 	lds	r24, 0x0145	; 0x800145 <Ft1248_port>
+ 28a:	90 91 46 01 	lds	r25, 0x0146	; 0x800146 <Ft1248_port+0x1>
+ 28e:	61 2f       	mov	r22, r17
+ 290:	8c 01       	movw	r16, r24
+ 292:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 void FtSetMiosioAsInputs(void)
 {
     *FtMiosio_ddr = 0x00;
- 312:	e0 91 58 01 	lds	r30, 0x0158	; 0x800158 <FtMiosio_ddr>
- 316:	f0 91 59 01 	lds	r31, 0x0159	; 0x800159 <FtMiosio_ddr+0x1>
- 31a:	10 82       	st	Z, r1
+ 296:	e0 91 41 01 	lds	r30, 0x0141	; 0x800141 <FtMiosio_ddr>
+ 29a:	f0 91 42 01 	lds	r31, 0x0142	; 0x800142 <FtMiosio_ddr+0x1>
+ 29e:	10 82       	st	Z, r1
 }
 void FtEnablePullupsOnMiosio(void)
 {
     *FtMiosio_port = 0xFF;
- 31c:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <FtMiosio_port>
- 320:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <FtMiosio_port+0x1>
- 324:	8f ef       	ldi	r24, 0xFF	; 255
- 326:	80 83       	st	Z, r24
+ 2a0:	e0 91 3f 01 	lds	r30, 0x013F	; 0x80013f <FtMiosio_port>
+ 2a4:	f0 91 40 01 	lds	r31, 0x0140	; 0x800140 <FtMiosio_port+0x1>
+ 2a8:	8f ef       	ldi	r24, 0xFF	; 255
+ 2aa:	80 83       	st	Z, r24
 }
 void FtSckLow(void)
 {
     ClearBit(Ft1248_port, Ft1248_Sck);  // drive low
- 328:	f0 90 52 01 	lds	r15, 0x0152	; 0x800152 <Ft1248_Sck>
- 32c:	6f 2d       	mov	r22, r15
- 32e:	c8 01       	movw	r24, r16
- 330:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
+ 2ac:	f0 90 3b 01 	lds	r15, 0x013B	; 0x80013b <Ft1248_Sck>
+ 2b0:	6f 2d       	mov	r22, r15
+ 2b2:	c8 01       	movw	r24, r16
+ 2b4:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     SetBit(Ft1248_ddr, Ft1248_Sck);     // cfg as output
- 334:	6f 2d       	mov	r22, r15
- 336:	ce 01       	movw	r24, r28
- 338:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 2b8:	6f 2d       	mov	r22, r15
+ 2ba:	ce 01       	movw	r24, r28
+ 2bc:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 void FtSsHigh(void)
 {
     SetBit(Ft1248_port, Ft1248_Ss);     // drive high
- 33c:	f0 90 53 01 	lds	r15, 0x0153	; 0x800153 <Ft1248_Ss>
- 340:	6f 2d       	mov	r22, r15
- 342:	c8 01       	movw	r24, r16
- 344:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 2c0:	f0 90 3c 01 	lds	r15, 0x013C	; 0x80013c <Ft1248_Ss>
+ 2c4:	6f 2d       	mov	r22, r15
+ 2c6:	c8 01       	movw	r24, r16
+ 2c8:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     SetBit(Ft1248_ddr, Ft1248_Ss);      // cfg as output
- 348:	6f 2d       	mov	r22, r15
- 34a:	ce 01       	movw	r24, r28
+ 2cc:	6f 2d       	mov	r22, r15
+ 2ce:	ce 01       	movw	r24, r28
     FtEnablePullupOnMiso();
     FtSetMiosioAsInputs();
     FtEnablePullupsOnMiosio();
     FtSckLow();
     FtSsHigh();
 }
- 34c:	df 91       	pop	r29
- 34e:	cf 91       	pop	r28
- 350:	1f 91       	pop	r17
- 352:	0f 91       	pop	r16
- 354:	ff 90       	pop	r15
+ 2d0:	df 91       	pop	r29
+ 2d2:	cf 91       	pop	r28
+ 2d4:	1f 91       	pop	r17
+ 2d6:	0f 91       	pop	r16
+ 2d8:	ff 90       	pop	r15
     SetBit(Ft1248_ddr, Ft1248_Sck);     // cfg as output
 }
 void FtSsHigh(void)
 {
     SetBit(Ft1248_port, Ft1248_Ss);     // drive high
     SetBit(Ft1248_ddr, Ft1248_Ss);      // cfg as output
- 356:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
+ 2da:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
-0000035a <UsbInit>:
+000002de <UsbInit>:
 #include "Ft1248.h"
 #include "DebugLed.h"
 
 void UsbInit(void)
 {
     FtInit();
- 35a:	0c 94 72 01 	jmp	0x2e4	; 0x2e4 <FtInit>
+ 2de:	0c 94 34 01 	jmp	0x268	; 0x268 <FtInit>
 
-0000035e <UsbRead>:
+000002e2 <UsbReadOneByte>:
 }
-uint16_t UsbRead(uint8_t *read_buffer)
+uint8_t UsbReadOneByte(uint8_t *read_buffer)
 {
- 35e:	0f 93       	push	r16
- 360:	1f 93       	push	r17
- 362:	cf 93       	push	r28
- 364:	df 93       	push	r29
- 366:	8c 01       	movw	r16, r24
-    uint16_t num_bytes_read = 0;
+ 2e2:	cf 93       	push	r28
+ 2e4:	df 93       	push	r29
+ 2e6:	ec 01       	movw	r28, r24
+    uint8_t num_bytes_read = 0;
     FtSendCommand(FtCmd_Read);
- 368:	e0 91 22 01 	lds	r30, 0x0122	; 0x800122 <FtSendCommand>
- 36c:	f0 91 23 01 	lds	r31, 0x0123	; 0x800123 <FtSendCommand+0x1>
- 370:	80 91 39 01 	lds	r24, 0x0139	; 0x800139 <FtCmd_Read>
- 374:	09 95       	icall
+ 2e8:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtSendCommand>
+ 2ec:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtSendCommand+0x1>
+ 2f0:	80 91 26 01 	lds	r24, 0x0126	; 0x800126 <FtCmd_Read>
+ 2f4:	09 95       	icall
     bool has_data_to_read = FtBusTurnaround();
- 376:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <FtBusTurnaround>
- 37a:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <FtBusTurnaround+0x1>
- 37e:	09 95       	icall
+ 2f6:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtBusTurnaround>
+ 2fa:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtBusTurnaround+0x1>
+ 2fe:	09 95       	icall
     if (!has_data_to_read)
- 380:	88 23       	and	r24, r24
- 382:	c9 f0       	breq	.+50     	; 0x3b6 <UsbRead+0x58>
- 384:	c0 e0       	ldi	r28, 0x00	; 0
- 386:	d0 e0       	ldi	r29, 0x00	; 0
- 388:	01 c0       	rjmp	.+2      	; 0x38c <UsbRead+0x2e>
+ 300:	88 23       	and	r24, r24
+ 302:	79 f0       	breq	.+30     	; 0x322 <UsbReadOneByte+0x40>
+        // Use this in place of checking if Ft_Miso is low in app.
+        /* DebugLedTurnRedToShowError(); */
         FtDeactivateInterface();
         return num_bytes_read;
     }
-    while (FtRead(read_buffer++))
-    {
-        num_bytes_read++;
- 38a:	21 96       	adiw	r28, 0x01	; 1
-        // sad path
-        DebugLedTurnRedToShowError();
-        FtDeactivateInterface();
-        return num_bytes_read;
-    }
-    while (FtRead(read_buffer++))
- 38c:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <FtRead>
- 390:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <FtRead+0x1>
- 394:	c8 01       	movw	r24, r16
- 396:	8c 0f       	add	r24, r28
- 398:	9d 1f       	adc	r25, r29
- 39a:	09 95       	icall
- 39c:	81 11       	cpse	r24, r1
- 39e:	f5 cf       	rjmp	.-22     	; 0x38a <UsbRead+0x2c>
-    {
-        num_bytes_read++;
-    }
-
+    FtRead(read_buffer); num_bytes_read++;
+ 304:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtRead>
+ 308:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtRead+0x1>
+ 30c:	ce 01       	movw	r24, r28
+ 30e:	09 95       	icall
     FtDeactivateInterface();
- 3a0:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtDeactivateInterface>
- 3a4:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtDeactivateInterface+0x1>
- 3a8:	09 95       	icall
+ 310:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <FtDeactivateInterface>
+ 314:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <FtDeactivateInterface+0x1>
+ 318:	09 95       	icall
     return num_bytes_read;
+ 31a:	81 e0       	ldi	r24, 0x01	; 1
 }
- 3aa:	ce 01       	movw	r24, r28
- 3ac:	df 91       	pop	r29
- 3ae:	cf 91       	pop	r28
- 3b0:	1f 91       	pop	r17
- 3b2:	0f 91       	pop	r16
- 3b4:	08 95       	ret
-    FtSendCommand(FtCmd_Read);
-    bool has_data_to_read = FtBusTurnaround();
-    if (!has_data_to_read)
+ 31c:	df 91       	pop	r29
+ 31e:	cf 91       	pop	r28
+ 320:	08 95       	ret
     {
         // sad path
-        DebugLedTurnRedToShowError();
- 3b6:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <DebugLedTurnRedToShowError>
- 3ba:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <DebugLedTurnRedToShowError+0x1>
- 3be:	09 95       	icall
+        // No, not an error. Not a sad path.
+        // Use this in place of checking if Ft_Miso is low in app.
+        /* DebugLedTurnRedToShowError(); */
         FtDeactivateInterface();
- 3c0:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtDeactivateInterface>
- 3c4:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtDeactivateInterface+0x1>
- 3c8:	09 95       	icall
+ 322:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <FtDeactivateInterface>
+ 326:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <FtDeactivateInterface+0x1>
+ 32a:	09 95       	icall
         return num_bytes_read;
- 3ca:	c0 e0       	ldi	r28, 0x00	; 0
- 3cc:	d0 e0       	ldi	r29, 0x00	; 0
-        num_bytes_read++;
+ 32c:	80 e0       	ldi	r24, 0x00	; 0
     }
-
+    FtRead(read_buffer); num_bytes_read++;
     FtDeactivateInterface();
     return num_bytes_read;
 }
- 3ce:	ce 01       	movw	r24, r28
- 3d0:	df 91       	pop	r29
- 3d2:	cf 91       	pop	r28
- 3d4:	1f 91       	pop	r17
- 3d6:	0f 91       	pop	r16
- 3d8:	08 95       	ret
+ 32e:	df 91       	pop	r29
+ 330:	cf 91       	pop	r28
+ 332:	08 95       	ret
 
-000003da <UsbWrite>:
-uint16_t UsbWrite(uint8_t *write_buffer, uint16_t nbytes)
-{
- 3da:	ef 92       	push	r14
- 3dc:	ff 92       	push	r15
- 3de:	0f 93       	push	r16
- 3e0:	1f 93       	push	r17
- 3e2:	cf 93       	push	r28
- 3e4:	df 93       	push	r29
- 3e6:	8c 01       	movw	r16, r24
- 3e8:	7b 01       	movw	r14, r22
-    uint16_t num_bytes_sent = 0;
-    FtSendCommand(FtCmd_Write);
- 3ea:	e0 91 22 01 	lds	r30, 0x0122	; 0x800122 <FtSendCommand>
- 3ee:	f0 91 23 01 	lds	r31, 0x0123	; 0x800123 <FtSendCommand+0x1>
- 3f2:	80 91 38 01 	lds	r24, 0x0138	; 0x800138 <FtCmd_Write>
- 3f6:	09 95       	icall
-    if (!FtBusTurnaround())
- 3f8:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <FtBusTurnaround>
- 3fc:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <FtBusTurnaround+0x1>
- 400:	09 95       	icall
- 402:	88 23       	and	r24, r24
- 404:	f1 f0       	breq	.+60     	; 0x442 <__LOCK_REGION_LENGTH__+0x42>
- 406:	c0 e0       	ldi	r28, 0x00	; 0
- 408:	d0 e0       	ldi	r29, 0x00	; 0
-    }
-    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
-    bool byte_sent = true; bool finished = false;
-    while (byte_sent && !finished)
-    {
-        byte_sent = FtWrite(write_buffer++);
- 40a:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <FtWrite>
- 40e:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <FtWrite+0x1>
- 412:	c8 01       	movw	r24, r16
- 414:	8c 0f       	add	r24, r28
- 416:	9d 1f       	adc	r25, r29
- 418:	09 95       	icall
-        if (byte_sent) num_bytes_sent++;
- 41a:	81 11       	cpse	r24, r1
- 41c:	0d c0       	rjmp	.+26     	; 0x438 <__LOCK_REGION_LENGTH__+0x38>
-        finished = (num_bytes_sent >= nbytes);
-    }
-    FtDeactivateInterface();
- 41e:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtDeactivateInterface>
- 422:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtDeactivateInterface+0x1>
- 426:	09 95       	icall
-    return num_bytes_sent;
-}
- 428:	ce 01       	movw	r24, r28
- 42a:	df 91       	pop	r29
- 42c:	cf 91       	pop	r28
- 42e:	1f 91       	pop	r17
- 430:	0f 91       	pop	r16
- 432:	ff 90       	pop	r15
- 434:	ef 90       	pop	r14
- 436:	08 95       	ret
-    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
-    bool byte_sent = true; bool finished = false;
-    while (byte_sent && !finished)
-    {
-        byte_sent = FtWrite(write_buffer++);
-        if (byte_sent) num_bytes_sent++;
- 438:	21 96       	adiw	r28, 0x01	; 1
-        FtDeactivateInterface();
-        return num_bytes_sent;
-    }
-    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
-    bool byte_sent = true; bool finished = false;
-    while (byte_sent && !finished)
- 43a:	ce 15       	cp	r28, r14
- 43c:	df 05       	cpc	r29, r15
- 43e:	28 f3       	brcs	.-54     	; 0x40a <__LOCK_REGION_LENGTH__+0xa>
- 440:	ee cf       	rjmp	.-36     	; 0x41e <__LOCK_REGION_LENGTH__+0x1e>
-{
-    uint16_t num_bytes_sent = 0;
-    FtSendCommand(FtCmd_Write);
-    if (!FtBusTurnaround())
-    {
-        DebugLedTurnRedToShowError();
- 442:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <DebugLedTurnRedToShowError>
- 446:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <DebugLedTurnRedToShowError+0x1>
- 44a:	09 95       	icall
-        FtDeactivateInterface();
- 44c:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtDeactivateInterface>
- 450:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtDeactivateInterface+0x1>
- 454:	09 95       	icall
-        return num_bytes_sent;
- 456:	c0 e0       	ldi	r28, 0x00	; 0
- 458:	d0 e0       	ldi	r29, 0x00	; 0
-        if (byte_sent) num_bytes_sent++;
-        finished = (num_bytes_sent >= nbytes);
-    }
-    FtDeactivateInterface();
-    return num_bytes_sent;
-}
- 45a:	ce 01       	movw	r24, r28
- 45c:	df 91       	pop	r29
- 45e:	cf 91       	pop	r28
- 460:	1f 91       	pop	r17
- 462:	0f 91       	pop	r16
- 464:	ff 90       	pop	r15
- 466:	ef 90       	pop	r14
- 468:	08 95       	ret
-
-0000046a <UsbHasDataToRead>:
-bool UsbHasDataToRead(void) { return FtHasDataToRead(); }
- 46a:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <FtHasDataToRead>
- 46e:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <FtHasDataToRead+0x1>
- 472:	09 94       	ijmp
-
-00000474 <ClearPendingSpiInterrupt_Implementation>:
+00000334 <ClearPendingSpiInterrupt_Implementation>:
 void SpiClearFlagTransferIsDone(void)
 {
     // Clear the Spi_Interrupt flag by
     // reading Spi_InterruptFlag while it is set
     // then reading SPDR
     *Spi_spdr;  // this serves as a throwaway access
- 474:	e0 91 32 01 	lds	r30, 0x0132	; 0x800132 <ReadSpiStatusRegister>
- 478:	f0 91 33 01 	lds	r31, 0x0133	; 0x800133 <ReadSpiStatusRegister+0x1>
- 47c:	09 95       	icall
- 47e:	e0 91 26 01 	lds	r30, 0x0126	; 0x800126 <ReadSpiDataRegister>
- 482:	f0 91 27 01 	lds	r31, 0x0127	; 0x800127 <ReadSpiDataRegister+0x1>
- 486:	09 94       	ijmp
+ 334:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <ReadSpiStatusRegister>
+ 338:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <ReadSpiStatusRegister+0x1>
+ 33c:	09 95       	icall
+ 33e:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <ReadSpiDataRegister>
+ 342:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <ReadSpiDataRegister+0x1>
+ 346:	09 94       	ijmp
 
-00000488 <ReadSpiStatusRegister_Implementation>:
- 488:	e0 91 47 01 	lds	r30, 0x0147	; 0x800147 <Spi_spsr>
- 48c:	f0 91 48 01 	lds	r31, 0x0148	; 0x800148 <Spi_spsr+0x1>
- 490:	80 81       	ld	r24, Z
- 492:	08 95       	ret
+00000348 <ReadSpiStatusRegister_Implementation>:
+ 348:	e0 91 32 01 	lds	r30, 0x0132	; 0x800132 <Spi_spsr>
+ 34c:	f0 91 33 01 	lds	r31, 0x0133	; 0x800133 <Spi_spsr+0x1>
+ 350:	80 81       	ld	r24, Z
+ 352:	08 95       	ret
 
-00000494 <ReadSpiDataRegister_Implementation>:
- 494:	e0 91 45 01 	lds	r30, 0x0145	; 0x800145 <Spi_spdr>
- 498:	f0 91 46 01 	lds	r31, 0x0146	; 0x800146 <Spi_spdr+0x1>
- 49c:	80 81       	ld	r24, Z
- 49e:	08 95       	ret
+00000354 <ReadSpiDataRegister_Implementation>:
+ 354:	e0 91 30 01 	lds	r30, 0x0130	; 0x800130 <Spi_spdr>
+ 358:	f0 91 31 01 	lds	r31, 0x0131	; 0x800131 <Spi_spdr+0x1>
+ 35c:	80 81       	ld	r24, Z
+ 35e:	08 95       	ret
 
-000004a0 <DisableSpi_Implementation>:
- 4a0:	60 91 3d 01 	lds	r22, 0x013D	; 0x80013d <Spi_Enable>
- 4a4:	80 91 49 01 	lds	r24, 0x0149	; 0x800149 <Spi_spcr>
- 4a8:	90 91 4a 01 	lds	r25, 0x014A	; 0x80014a <Spi_spcr+0x1>
- 4ac:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
+00000360 <EnableSpi_Implementation>:
+ 360:	60 91 28 01 	lds	r22, 0x0128	; 0x800128 <Spi_Enable>
+ 364:	80 91 34 01 	lds	r24, 0x0134	; 0x800134 <Spi_spcr>
+ 368:	90 91 35 01 	lds	r25, 0x0135	; 0x800135 <Spi_spcr+0x1>
+ 36c:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
-000004b0 <SpiMasterOpenSpi_Implementation>:
- 4b0:	60 91 44 01 	lds	r22, 0x0144	; 0x800144 <Spi_Ss>
- 4b4:	80 91 4d 01 	lds	r24, 0x014D	; 0x80014d <Spi_port>
- 4b8:	90 91 4e 01 	lds	r25, 0x014E	; 0x80014e <Spi_port+0x1>
- 4bc:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
+00000370 <SpiMasterCloseSpi_Implementation>:
+ 370:	60 91 2f 01 	lds	r22, 0x012F	; 0x80012f <Spi_Ss>
+ 374:	80 91 36 01 	lds	r24, 0x0136	; 0x800136 <Spi_port>
+ 378:	90 91 37 01 	lds	r25, 0x0137	; 0x800137 <Spi_port+0x1>
+ 37c:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
 
-000004c0 <EnableSpi_Implementation>:
- 4c0:	60 91 3d 01 	lds	r22, 0x013D	; 0x80013d <Spi_Enable>
- 4c4:	80 91 49 01 	lds	r24, 0x0149	; 0x800149 <Spi_spcr>
- 4c8:	90 91 4a 01 	lds	r25, 0x014A	; 0x80014a <Spi_spcr+0x1>
- 4cc:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
-
-000004d0 <SpiMasterCloseSpi_Implementation>:
- 4d0:	60 91 44 01 	lds	r22, 0x0144	; 0x800144 <Spi_Ss>
- 4d4:	80 91 4d 01 	lds	r24, 0x014D	; 0x80014d <Spi_port>
- 4d8:	90 91 4e 01 	lds	r25, 0x014E	; 0x80014e <Spi_port+0x1>
- 4dc:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
-
-000004e0 <SpiTransferIsDone_Implementation>:
- 4e0:	60 91 3b 01 	lds	r22, 0x013B	; 0x80013b <Spi_InterruptFlag>
- 4e4:	80 91 47 01 	lds	r24, 0x0147	; 0x800147 <Spi_spsr>
- 4e8:	90 91 48 01 	lds	r25, 0x0148	; 0x800148 <Spi_spsr+0x1>
- 4ec:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <BitIsSet>
-
-000004f0 <SpiResponseIsReady_Implementation>:
- 4f0:	60 91 42 01 	lds	r22, 0x0142	; 0x800142 <Spi_Miso>
- 4f4:	80 91 4b 01 	lds	r24, 0x014B	; 0x80014b <Spi_pin>
- 4f8:	90 91 4c 01 	lds	r25, 0x014C	; 0x80014c <Spi_pin+0x1>
- 4fc:	0c 94 7b 00 	jmp	0xf6	; 0xf6 <BitIsClear>
-
-00000500 <SpiMasterInit>:
+00000380 <SpiMasterInit>:
 {
     ClearBit(Spi_ddr, Spi_Miso);    // make it an input
     SetBit(Spi_port, Spi_Miso);     // enable pull-up
 }
 void SpiMasterInit(void)
 {
- 500:	1f 93       	push	r17
- 502:	cf 93       	push	r28
- 504:	df 93       	push	r29
+ 380:	1f 93       	push	r17
+ 382:	cf 93       	push	r28
+ 384:	df 93       	push	r29
     SlaveSelectIdleHigh();
- 506:	0e 94 68 02 	call	0x4d0	; 0x4d0 <SpiMasterCloseSpi_Implementation>
+ 386:	0e 94 b8 01 	call	0x370	; 0x370 <SpiMasterCloseSpi_Implementation>
 // Instead, it prevents the SPI master from ever receiving `DataIsReady`.
 // It behaves like MISO is always high, but I have not measured it.
 //
 static void SetMisoAsPullupInput(void)
 {
     ClearBit(Spi_ddr, Spi_Miso);    // make it an input
- 50a:	10 91 42 01 	lds	r17, 0x0142	; 0x800142 <Spi_Miso>
- 50e:	c0 91 4f 01 	lds	r28, 0x014F	; 0x80014f <Spi_ddr>
- 512:	d0 91 50 01 	lds	r29, 0x0150	; 0x800150 <Spi_ddr+0x1>
- 516:	61 2f       	mov	r22, r17
- 518:	ce 01       	movw	r24, r28
- 51a:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
+ 38a:	10 91 2d 01 	lds	r17, 0x012D	; 0x80012d <Spi_Miso>
+ 38e:	c0 91 38 01 	lds	r28, 0x0138	; 0x800138 <Spi_ddr>
+ 392:	d0 91 39 01 	lds	r29, 0x0139	; 0x800139 <Spi_ddr+0x1>
+ 396:	61 2f       	mov	r22, r17
+ 398:	ce 01       	movw	r24, r28
+ 39a:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     SetBit(Spi_port, Spi_Miso);     // enable pull-up
- 51e:	61 2f       	mov	r22, r17
- 520:	80 91 4d 01 	lds	r24, 0x014D	; 0x80014d <Spi_port>
- 524:	90 91 4e 01 	lds	r25, 0x014E	; 0x80014e <Spi_port+0x1>
- 528:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 39e:	61 2f       	mov	r22, r17
+ 3a0:	80 91 36 01 	lds	r24, 0x0136	; 0x800136 <Spi_port>
+ 3a4:	90 91 37 01 	lds	r25, 0x0137	; 0x800137 <Spi_port+0x1>
+ 3a8:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 
 static void (*SlaveSelectIdleHigh)(void) = SpiMasterCloseSpi_Implementation;
 static void SetSlaveSelectAsOutput(void)
 {
     SetBit(Spi_ddr, Spi_Ss);
- 52c:	60 91 44 01 	lds	r22, 0x0144	; 0x800144 <Spi_Ss>
- 530:	ce 01       	movw	r24, r28
- 532:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 3ac:	60 91 2f 01 	lds	r22, 0x012F	; 0x80012f <Spi_Ss>
+ 3b0:	ce 01       	movw	r24, r28
+ 3b2:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 static void SetMosiAsOutput(void)
 {
     SetBit(Spi_ddr, Spi_Mosi);
- 536:	60 91 43 01 	lds	r22, 0x0143	; 0x800143 <Spi_Mosi>
- 53a:	ce 01       	movw	r24, r28
- 53c:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 3b6:	60 91 2e 01 	lds	r22, 0x012E	; 0x80012e <Spi_Mosi>
+ 3ba:	ce 01       	movw	r24, r28
+ 3bc:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 static void SetSckAsOutput(void)
 {
     SetBit(Spi_ddr, Spi_Sck);
- 540:	60 91 41 01 	lds	r22, 0x0141	; 0x800141 <Spi_Sck>
- 544:	ce 01       	movw	r24, r28
- 546:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 3c0:	60 91 2c 01 	lds	r22, 0x012C	; 0x80012c <Spi_Sck>
+ 3c4:	ce 01       	movw	r24, r28
+ 3c6:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 static void MakeMeTheMaster(void)
 {
     SetBit(Spi_spcr, Spi_MasterSlaveSelect);
- 54a:	c0 91 49 01 	lds	r28, 0x0149	; 0x800149 <Spi_spcr>
- 54e:	d0 91 4a 01 	lds	r29, 0x014A	; 0x80014a <Spi_spcr+0x1>
- 552:	60 91 40 01 	lds	r22, 0x0140	; 0x800140 <Spi_MasterSlaveSelect>
- 556:	ce 01       	movw	r24, r28
- 558:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 3ca:	c0 91 34 01 	lds	r28, 0x0134	; 0x800134 <Spi_spcr>
+ 3ce:	d0 91 35 01 	lds	r29, 0x0135	; 0x800135 <Spi_spcr+0x1>
+ 3d2:	60 91 2b 01 	lds	r22, 0x012B	; 0x80012b <Spi_MasterSlaveSelect>
+ 3d6:	ce 01       	movw	r24, r28
+ 3d8:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 static void SetClockRateToFoscDividedBy8(void)
 {
     // SPI master and slave are both an ATmega328P with a 10MHz oscillator.
     // Use SCK = fosc/8 = 1.25MHz.
     SetBit  (Spi_spcr, Spi_ClockRateBit0);
- 55c:	60 91 3f 01 	lds	r22, 0x013F	; 0x80013f <Spi_ClockRateBit0>
- 560:	ce 01       	movw	r24, r28
- 562:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 3dc:	60 91 2a 01 	lds	r22, 0x012A	; 0x80012a <Spi_ClockRateBit0>
+ 3e0:	ce 01       	movw	r24, r28
+ 3e2:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     ClearBit(Spi_spcr, Spi_ClockRateBit1);
- 566:	60 91 3e 01 	lds	r22, 0x013E	; 0x80013e <Spi_ClockRateBit1>
- 56a:	ce 01       	movw	r24, r28
- 56c:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
+ 3e6:	60 91 29 01 	lds	r22, 0x0129	; 0x800129 <Spi_ClockRateBit1>
+ 3ea:	ce 01       	movw	r24, r28
+ 3ec:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
     SetBit(Spi_spsr, Spi_DoubleClockRate);
- 570:	60 91 3c 01 	lds	r22, 0x013C	; 0x80013c <Spi_DoubleClockRate>
- 574:	80 91 47 01 	lds	r24, 0x0147	; 0x800147 <Spi_spsr>
- 578:	90 91 48 01 	lds	r25, 0x0148	; 0x800148 <Spi_spsr+0x1>
- 57c:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 3f0:	60 91 27 01 	lds	r22, 0x0127	; 0x800127 <Spi_DoubleClockRate>
+ 3f4:	80 91 32 01 	lds	r24, 0x0132	; 0x800132 <Spi_spsr>
+ 3f8:	90 91 33 01 	lds	r25, 0x0133	; 0x800133 <Spi_spsr+0x1>
+ 3fc:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
     SetSlaveSelectAsOutput();  // pin-direction is user-defined
     SetMosiAsOutput();         // pin-direction is user-defined
     SetSckAsOutput();          // pin-direction is user-defined
     MakeMeTheMaster();
     SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
     EnableSpi();
- 580:	e0 91 2e 01 	lds	r30, 0x012E	; 0x80012e <EnableSpi>
- 584:	f0 91 2f 01 	lds	r31, 0x012F	; 0x80012f <EnableSpi+0x1>
- 588:	09 95       	icall
+ 400:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <EnableSpi>
+ 404:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <EnableSpi+0x1>
+ 408:	09 95       	icall
     ClearPendingSpiInterrupt();
- 58a:	e0 91 34 01 	lds	r30, 0x0134	; 0x800134 <ClearPendingSpiInterrupt>
- 58e:	f0 91 35 01 	lds	r31, 0x0135	; 0x800135 <ClearPendingSpiInterrupt+0x1>
+ 40a:	e0 91 22 01 	lds	r30, 0x0122	; 0x800122 <ClearPendingSpiInterrupt>
+ 40e:	f0 91 23 01 	lds	r31, 0x0123	; 0x800123 <ClearPendingSpiInterrupt+0x1>
 }
- 592:	df 91       	pop	r29
- 594:	cf 91       	pop	r28
- 596:	1f 91       	pop	r17
+ 412:	df 91       	pop	r29
+ 414:	cf 91       	pop	r28
+ 416:	1f 91       	pop	r17
     SetMosiAsOutput();         // pin-direction is user-defined
     SetSckAsOutput();          // pin-direction is user-defined
     MakeMeTheMaster();
     SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
     EnableSpi();
     ClearPendingSpiInterrupt();
- 598:	09 94       	ijmp
+ 418:	09 94       	ijmp
 
-0000059a <SpiMasterDisable>:
-}
-void SpiMasterDisable(void)
-{
- 59a:	1f 93       	push	r17
- 59c:	cf 93       	push	r28
- 59e:	df 93       	push	r29
-    // Release control of all SPI lines to let another SPI master take control.
-    /* Undo SlaveSelectIdleHigh(); */
-    ClearBit(Spi_ddr, Spi_Ss); ClearBit(Spi_port, Spi_Ss);
- 5a0:	10 91 44 01 	lds	r17, 0x0144	; 0x800144 <Spi_Ss>
- 5a4:	c0 91 4f 01 	lds	r28, 0x014F	; 0x80014f <Spi_ddr>
- 5a8:	d0 91 50 01 	lds	r29, 0x0150	; 0x800150 <Spi_ddr+0x1>
- 5ac:	61 2f       	mov	r22, r17
- 5ae:	ce 01       	movw	r24, r28
- 5b0:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
- 5b4:	61 2f       	mov	r22, r17
- 5b6:	80 91 4d 01 	lds	r24, 0x014D	; 0x80014d <Spi_port>
- 5ba:	90 91 4e 01 	lds	r25, 0x014E	; 0x80014e <Spi_port+0x1>
- 5be:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-    /* SetMisoAsPullupInput(); // protect against false SpiResponseIsReady signals */
-    /* SetSlaveSelectAsOutput();  // pin-direction is user-defined */
-    /* Undo SetMosiAsOutput();         // pin-direction is user-defined */
-    ClearBit(Spi_ddr, Spi_Mosi);
- 5c2:	60 91 43 01 	lds	r22, 0x0143	; 0x800143 <Spi_Mosi>
- 5c6:	ce 01       	movw	r24, r28
- 5c8:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-    /* Undo SetSckAsOutput();          // pin-direction is user-defined */
-    ClearBit(Spi_ddr, Spi_Sck);
- 5cc:	60 91 41 01 	lds	r22, 0x0141	; 0x800141 <Spi_Sck>
- 5d0:	ce 01       	movw	r24, r28
- 5d2:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-    /* MakeMeTheMaster(); */
-    /* SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz */
-    /* Undo EnableSpi(); */
-    DisableSpi();
- 5d6:	e0 91 30 01 	lds	r30, 0x0130	; 0x800130 <DisableSpi>
- 5da:	f0 91 31 01 	lds	r31, 0x0131	; 0x800131 <DisableSpi+0x1>
-    /* ClearPendingSpiInterrupt(); */
-}
- 5de:	df 91       	pop	r29
- 5e0:	cf 91       	pop	r28
- 5e2:	1f 91       	pop	r17
-    /* Undo SetSckAsOutput();          // pin-direction is user-defined */
-    ClearBit(Spi_ddr, Spi_Sck);
-    /* MakeMeTheMaster(); */
-    /* SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz */
-    /* Undo EnableSpi(); */
-    DisableSpi();
- 5e4:	09 94       	ijmp
-
-000005e6 <SpiMasterWrite>:
-    /* ClearPendingSpiInterrupt(); */
-}
-
-void SpiMasterWrite(uint8_t byte_to_send)
-{
- 5e6:	1f 93       	push	r17
- 5e8:	cf 93       	push	r28
- 5ea:	df 93       	push	r29
- 5ec:	18 2f       	mov	r17, r24
-    SpiMasterOpenSpi();
- 5ee:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SpiMasterOpenSpi>
- 5f2:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SpiMasterOpenSpi+0x1>
- 5f6:	09 95       	icall
-    *Spi_spdr = byte_to_send;  // load tx buffer and start SPI transmission
- 5f8:	c0 91 45 01 	lds	r28, 0x0145	; 0x800145 <Spi_spdr>
- 5fc:	d0 91 46 01 	lds	r29, 0x0146	; 0x800146 <Spi_spdr+0x1>
- 600:	18 83       	st	Y, r17
-    while (!SpiTransferIsDone()) ;
- 602:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SpiTransferIsDone>
- 606:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SpiTransferIsDone+0x1>
- 60a:	09 95       	icall
- 60c:	88 23       	and	r24, r24
- 60e:	c9 f3       	breq	.-14     	; 0x602 <SpiMasterWrite+0x1c>
-void SpiClearFlagTransferIsDone(void)
-{
-    // Clear the Spi_Interrupt flag by
-    // reading Spi_InterruptFlag while it is set
-    // then reading SPDR
-    *Spi_spdr;  // this serves as a throwaway access
- 610:	88 81       	ld	r24, Y
-    while (!SpiTransferIsDone()) ;
-    // You need to now access SPDR to clear the flag!
-    // I do not think the reads are destructive.
-    // Add code here to clear the flag:
-    SpiClearFlagTransferIsDone();  // TODO: add unit tests for this
-    SpiMasterCloseSpi();
- 612:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiMasterCloseSpi>
- 616:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiMasterCloseSpi+0x1>
-}
- 61a:	df 91       	pop	r29
- 61c:	cf 91       	pop	r28
- 61e:	1f 91       	pop	r17
-    while (!SpiTransferIsDone()) ;
-    // You need to now access SPDR to clear the flag!
-    // I do not think the reads are destructive.
-    // Add code here to clear the flag:
-    SpiClearFlagTransferIsDone();  // TODO: add unit tests for this
-    SpiMasterCloseSpi();
- 620:	09 94       	ijmp
-
-00000622 <SpiMasterRead>:
-}
-uint8_t (*ReadSpiDataRegister)(void) = ReadSpiDataRegister_Implementation;
-uint8_t const slave_ignore     = 0xFF;  // slave ignores 0xFF from the master
-uint8_t const test_unknown_cmd = 0xFE;  // guarantee 0xFE to be an unknown cmd
-uint8_t SpiMasterRead(void)
-{
- 622:	cf 93       	push	r28
- 624:	df 93       	push	r29
-    /* ClearPendingSpiInterrupt(); */
-}
-
-void SpiMasterWrite(uint8_t byte_to_send)
-{
-    SpiMasterOpenSpi();
- 626:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SpiMasterOpenSpi>
- 62a:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SpiMasterOpenSpi+0x1>
- 62e:	09 95       	icall
-    *Spi_spdr = byte_to_send;  // load tx buffer and start SPI transmission
- 630:	c0 91 45 01 	lds	r28, 0x0145	; 0x800145 <Spi_spdr>
- 634:	d0 91 46 01 	lds	r29, 0x0146	; 0x800146 <Spi_spdr+0x1>
- 638:	8f ef       	ldi	r24, 0xFF	; 255
- 63a:	88 83       	st	Y, r24
-    while (!SpiTransferIsDone()) ;
- 63c:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SpiTransferIsDone>
- 640:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SpiTransferIsDone+0x1>
- 644:	09 95       	icall
- 646:	88 23       	and	r24, r24
- 648:	c9 f3       	breq	.-14     	; 0x63c <SpiMasterRead+0x1a>
-void SpiClearFlagTransferIsDone(void)
-{
-    // Clear the Spi_Interrupt flag by
-    // reading Spi_InterruptFlag while it is set
-    // then reading SPDR
-    *Spi_spdr;  // this serves as a throwaway access
- 64a:	88 81       	ld	r24, Y
-    while (!SpiTransferIsDone()) ;
-    // You need to now access SPDR to clear the flag!
-    // I do not think the reads are destructive.
-    // Add code here to clear the flag:
-    SpiClearFlagTransferIsDone();  // TODO: add unit tests for this
-    SpiMasterCloseSpi();
- 64c:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiMasterCloseSpi>
- 650:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiMasterCloseSpi+0x1>
- 654:	09 95       	icall
-uint8_t const slave_ignore     = 0xFF;  // slave ignores 0xFF from the master
-uint8_t const test_unknown_cmd = 0xFE;  // guarantee 0xFE to be an unknown cmd
-uint8_t SpiMasterRead(void)
-{
-    SpiMasterWrite(slave_ignore);
-    return ReadSpiDataRegister();
- 656:	e0 91 26 01 	lds	r30, 0x0126	; 0x800126 <ReadSpiDataRegister>
- 65a:	f0 91 27 01 	lds	r31, 0x0127	; 0x800127 <ReadSpiDataRegister+0x1>
-}
- 65e:	df 91       	pop	r29
- 660:	cf 91       	pop	r28
-uint8_t const slave_ignore     = 0xFF;  // slave ignores 0xFF from the master
-uint8_t const test_unknown_cmd = 0xFE;  // guarantee 0xFE to be an unknown cmd
-uint8_t SpiMasterRead(void)
-{
-    SpiMasterWrite(slave_ignore);
-    return ReadSpiDataRegister();
- 662:	09 94       	ijmp
-
-00000664 <SpiMasterWaitForResponse>:
-    return BitIsClear(Spi_pin, Spi_Miso);
-}
-bool (*SpiResponseIsReady)(void) = SpiResponseIsReady_Implementation;
-void SpiMasterWaitForResponse(void)
-{
-    while( !SpiResponseIsReady() );
- 664:	e0 91 24 01 	lds	r30, 0x0124	; 0x800124 <SpiResponseIsReady>
- 668:	f0 91 25 01 	lds	r31, 0x0125	; 0x800125 <SpiResponseIsReady+0x1>
- 66c:	09 95       	icall
- 66e:	88 23       	and	r24, r24
- 670:	c9 f3       	breq	.-14     	; 0x664 <SpiMasterWaitForResponse>
-}
- 672:	08 95       	ret
-
-00000674 <AutoExpose>:
-    /* Pairs with App_version_of_Slave_RespondToRequestsForData */
-    /* =====[ Setup ]===== */
-    SpiMasterInit();
-    UsbInit();
-    /* =====[ Operate ]===== */
-    SpiMasterPassLisFrame();
- 674:	cf 93       	push	r28
- 676:	df 93       	push	r29
- 678:	00 d0       	rcall	.+0      	; 0x67a <AutoExpose+0x6>
- 67a:	cd b7       	in	r28, 0x3d	; 61
- 67c:	de b7       	in	r29, 0x3e	; 62
- 67e:	2a 98       	cbi	0x05, 2	; 5
- 680:	85 e1       	ldi	r24, 0x15	; 21
- 682:	8e bd       	out	0x2e, r24	; 46
- 684:	0d b4       	in	r0, 0x2d	; 45
- 686:	07 fe       	sbrs	r0, 7
- 688:	fd cf       	rjmp	.-6      	; 0x684 <AutoExpose+0x10>
- 68a:	8e b5       	in	r24, 0x2e	; 46
- 68c:	2a 9a       	sbi	0x05, 2	; 5
- 68e:	1c 9b       	sbis	0x03, 4	; 3
- 690:	fe cf       	rjmp	.-4      	; 0x68e <AutoExpose+0x1a>
- 692:	1c 99       	sbic	0x03, 4	; 3
- 694:	fe cf       	rjmp	.-4      	; 0x692 <AutoExpose+0x1e>
- 696:	1c 9b       	sbis	0x03, 4	; 3
- 698:	fe cf       	rjmp	.-4      	; 0x696 <AutoExpose+0x22>
- 69a:	2a 98       	cbi	0x05, 2	; 5
- 69c:	80 91 3a 01 	lds	r24, 0x013A	; 0x80013a <slave_ignore>
- 6a0:	8e bd       	out	0x2e, r24	; 46
- 6a2:	0d b4       	in	r0, 0x2d	; 45
- 6a4:	07 fe       	sbrs	r0, 7
- 6a6:	fd cf       	rjmp	.-6      	; 0x6a2 <AutoExpose+0x2e>
- 6a8:	9e b5       	in	r25, 0x2e	; 46
- 6aa:	2a 9a       	sbi	0x05, 2	; 5
- 6ac:	9e b5       	in	r25, 0x2e	; 46
- 6ae:	99 83       	std	Y+1, r25	; 0x01
- 6b0:	1c 9b       	sbis	0x03, 4	; 3
- 6b2:	fe cf       	rjmp	.-4      	; 0x6b0 <AutoExpose+0x3c>
- 6b4:	1c 99       	sbic	0x03, 4	; 3
- 6b6:	fe cf       	rjmp	.-4      	; 0x6b4 <AutoExpose+0x40>
- 6b8:	1c 9b       	sbis	0x03, 4	; 3
- 6ba:	fe cf       	rjmp	.-4      	; 0x6b8 <AutoExpose+0x44>
- 6bc:	2a 98       	cbi	0x05, 2	; 5
- 6be:	8e bd       	out	0x2e, r24	; 46
- 6c0:	0d b4       	in	r0, 0x2d	; 45
- 6c2:	07 fe       	sbrs	r0, 7
- 6c4:	fd cf       	rjmp	.-6      	; 0x6c0 <AutoExpose+0x4c>
- 6c6:	8e b5       	in	r24, 0x2e	; 46
- 6c8:	2a 9a       	sbi	0x05, 2	; 5
- 6ca:	8e b5       	in	r24, 0x2e	; 46
- 6cc:	8a 83       	std	Y+2, r24	; 0x02
- 6ce:	62 e0       	ldi	r22, 0x02	; 2
- 6d0:	70 e0       	ldi	r23, 0x00	; 0
- 6d2:	ce 01       	movw	r24, r28
- 6d4:	01 96       	adiw	r24, 0x01	; 1
- 6d6:	0e 94 ed 01 	call	0x3da	; 0x3da <UsbWrite>
- 6da:	0f 90       	pop	r0
- 6dc:	0f 90       	pop	r0
- 6de:	df 91       	pop	r29
- 6e0:	cf 91       	pop	r28
- 6e2:	08 95       	ret
-
-000006e4 <SetExposureTime>:
- 6e4:	cf 93       	push	r28
- 6e6:	df 93       	push	r29
- 6e8:	ec 01       	movw	r28, r24
- 6ea:	2a 98       	cbi	0x05, 2	; 5
- 6ec:	82 e0       	ldi	r24, 0x02	; 2
- 6ee:	8e bd       	out	0x2e, r24	; 46
- 6f0:	0d b4       	in	r0, 0x2d	; 45
- 6f2:	07 fe       	sbrs	r0, 7
- 6f4:	fd cf       	rjmp	.-6      	; 0x6f0 <SetExposureTime+0xc>
- 6f6:	8e b5       	in	r24, 0x2e	; 46
- 6f8:	2a 9a       	sbi	0x05, 2	; 5
- 6fa:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 6fe:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 702:	82 e3       	ldi	r24, 0x32	; 50
- 704:	09 95       	icall
- 706:	2a 98       	cbi	0x05, 2	; 5
- 708:	88 81       	ld	r24, Y
- 70a:	8e bd       	out	0x2e, r24	; 46
- 70c:	0d b4       	in	r0, 0x2d	; 45
- 70e:	07 fe       	sbrs	r0, 7
- 710:	fd cf       	rjmp	.-6      	; 0x70c <SetExposureTime+0x28>
- 712:	8e b5       	in	r24, 0x2e	; 46
- 714:	2a 9a       	sbi	0x05, 2	; 5
- 716:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 71a:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 71e:	82 e3       	ldi	r24, 0x32	; 50
- 720:	09 95       	icall
- 722:	2a 98       	cbi	0x05, 2	; 5
- 724:	89 81       	ldd	r24, Y+1	; 0x01
- 726:	8e bd       	out	0x2e, r24	; 46
- 728:	0d b4       	in	r0, 0x2d	; 45
- 72a:	07 fe       	sbrs	r0, 7
- 72c:	fd cf       	rjmp	.-6      	; 0x728 <SetExposureTime+0x44>
- 72e:	8e b5       	in	r24, 0x2e	; 46
- 730:	2a 9a       	sbi	0x05, 2	; 5
- 732:	1c 9b       	sbis	0x03, 4	; 3
- 734:	fe cf       	rjmp	.-4      	; 0x732 <SetExposureTime+0x4e>
- 736:	1c 99       	sbic	0x03, 4	; 3
- 738:	fe cf       	rjmp	.-4      	; 0x736 <SetExposureTime+0x52>
- 73a:	1c 9b       	sbis	0x03, 4	; 3
- 73c:	fe cf       	rjmp	.-4      	; 0x73a <SetExposureTime+0x56>
- 73e:	2a 98       	cbi	0x05, 2	; 5
- 740:	80 91 3a 01 	lds	r24, 0x013A	; 0x80013a <slave_ignore>
- 744:	8e bd       	out	0x2e, r24	; 46
- 746:	0d b4       	in	r0, 0x2d	; 45
- 748:	07 fe       	sbrs	r0, 7
- 74a:	fd cf       	rjmp	.-6      	; 0x746 <SetExposureTime+0x62>
- 74c:	9e b5       	in	r25, 0x2e	; 46
- 74e:	2a 9a       	sbi	0x05, 2	; 5
- 750:	9e b5       	in	r25, 0x2e	; 46
- 752:	98 83       	st	Y, r25
- 754:	1c 9b       	sbis	0x03, 4	; 3
- 756:	fe cf       	rjmp	.-4      	; 0x754 <SetExposureTime+0x70>
- 758:	1c 99       	sbic	0x03, 4	; 3
- 75a:	fe cf       	rjmp	.-4      	; 0x758 <SetExposureTime+0x74>
- 75c:	1c 9b       	sbis	0x03, 4	; 3
- 75e:	fe cf       	rjmp	.-4      	; 0x75c <SetExposureTime+0x78>
- 760:	2a 98       	cbi	0x05, 2	; 5
- 762:	8e bd       	out	0x2e, r24	; 46
- 764:	0d b4       	in	r0, 0x2d	; 45
- 766:	07 fe       	sbrs	r0, 7
- 768:	fd cf       	rjmp	.-6      	; 0x764 <SetExposureTime+0x80>
- 76a:	8e b5       	in	r24, 0x2e	; 46
- 76c:	2a 9a       	sbi	0x05, 2	; 5
- 76e:	8e b5       	in	r24, 0x2e	; 46
- 770:	89 83       	std	Y+1, r24	; 0x01
- 772:	62 e0       	ldi	r22, 0x02	; 2
- 774:	70 e0       	ldi	r23, 0x00	; 0
- 776:	ce 01       	movw	r24, r28
- 778:	df 91       	pop	r29
- 77a:	cf 91       	pop	r28
- 77c:	0c 94 ed 01 	jmp	0x3da	; 0x3da <UsbWrite>
-
-00000780 <SpiMasterPassLisFrame>:
- 780:	ef 92       	push	r14
- 782:	ff 92       	push	r15
- 784:	0f 93       	push	r16
- 786:	1f 93       	push	r17
- 788:	cf 93       	push	r28
- 78a:	df 93       	push	r29
- 78c:	45 98       	cbi	0x08, 5	; 8
- 78e:	2a 98       	cbi	0x05, 2	; 5
- 790:	81 e0       	ldi	r24, 0x01	; 1
- 792:	8e bd       	out	0x2e, r24	; 46
- 794:	0d b4       	in	r0, 0x2d	; 45
- 796:	07 fe       	sbrs	r0, 7
- 798:	fd cf       	rjmp	.-6      	; 0x794 <SpiMasterPassLisFrame+0x14>
- 79a:	8e b5       	in	r24, 0x2e	; 46
- 79c:	2a 9a       	sbi	0x05, 2	; 5
- 79e:	45 9a       	sbi	0x08, 5	; 8
- 7a0:	1c 9b       	sbis	0x03, 4	; 3
- 7a2:	fe cf       	rjmp	.-4      	; 0x7a0 <SpiMasterPassLisFrame+0x20>
- 7a4:	1c 99       	sbic	0x03, 4	; 3
- 7a6:	fe cf       	rjmp	.-4      	; 0x7a4 <SpiMasterPassLisFrame+0x24>
- 7a8:	1c 9b       	sbis	0x03, 4	; 3
- 7aa:	fe cf       	rjmp	.-4      	; 0x7a8 <SpiMasterPassLisFrame+0x28>
- 7ac:	45 98       	cbi	0x08, 5	; 8
- 7ae:	80 91 87 07 	lds	r24, 0x0787	; 0x800787 <nbytes_in_frame>
- 7b2:	90 91 88 07 	lds	r25, 0x0788	; 0x800788 <nbytes_in_frame+0x1>
- 7b6:	c1 e0       	ldi	r28, 0x01	; 1
- 7b8:	d0 e0       	ldi	r29, 0x00	; 0
- 7ba:	e0 90 3a 01 	lds	r14, 0x013A	; 0x80013a <slave_ignore>
- 7be:	f0 90 38 01 	lds	r15, 0x0138	; 0x800138 <FtCmd_Write>
- 7c2:	02 97       	sbiw	r24, 0x02	; 2
- 7c4:	78 f1       	brcs	.+94     	; 0x824 <SpiMasterPassLisFrame+0xa4>
- 7c6:	1f ef       	ldi	r17, 0xFF	; 255
- 7c8:	2a 98       	cbi	0x05, 2	; 5
- 7ca:	ee bc       	out	0x2e, r14	; 46
- 7cc:	0d b4       	in	r0, 0x2d	; 45
- 7ce:	07 fe       	sbrs	r0, 7
- 7d0:	fd cf       	rjmp	.-6      	; 0x7cc <SpiMasterPassLisFrame+0x4c>
- 7d2:	8e b5       	in	r24, 0x2e	; 46
- 7d4:	2a 9a       	sbi	0x05, 2	; 5
- 7d6:	0e b5       	in	r16, 0x2e	; 46
- 7d8:	1c 9b       	sbis	0x03, 4	; 3
- 7da:	fe cf       	rjmp	.-4      	; 0x7d8 <SpiMasterPassLisFrame+0x58>
- 7dc:	1c 99       	sbic	0x03, 4	; 3
- 7de:	fe cf       	rjmp	.-4      	; 0x7dc <SpiMasterPassLisFrame+0x5c>
- 7e0:	1c 9b       	sbis	0x03, 4	; 3
- 7e2:	fe cf       	rjmp	.-4      	; 0x7e0 <SpiMasterPassLisFrame+0x60>
- 7e4:	45 9a       	sbi	0x08, 5	; 8
- 7e6:	40 98       	cbi	0x08, 0	; 8
- 7e8:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 7ec:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 7f0:	81 e0       	ldi	r24, 0x01	; 1
- 7f2:	09 95       	icall
- 7f4:	41 9a       	sbi	0x08, 1	; 8
- 7f6:	1a b9       	out	0x0a, r17	; 10
- 7f8:	fb b8       	out	0x0b, r15	; 11
- 7fa:	41 98       	cbi	0x08, 1	; 8
- 7fc:	1a b8       	out	0x0a, r1	; 10
- 7fe:	41 9a       	sbi	0x08, 1	; 8
- 800:	41 98       	cbi	0x08, 1	; 8
- 802:	32 99       	sbic	0x06, 2	; 6
- 804:	05 c0       	rjmp	.+10     	; 0x810 <SpiMasterPassLisFrame+0x90>
- 806:	1a b9       	out	0x0a, r17	; 10
- 808:	41 9a       	sbi	0x08, 1	; 8
- 80a:	0b b9       	out	0x0b, r16	; 11
- 80c:	41 98       	cbi	0x08, 1	; 8
- 80e:	32 99       	sbic	0x06, 2	; 6
- 810:	43 9a       	sbi	0x08, 3	; 8
- 812:	40 9a       	sbi	0x08, 0	; 8
- 814:	21 96       	adiw	r28, 0x01	; 1
- 816:	80 91 87 07 	lds	r24, 0x0787	; 0x800787 <nbytes_in_frame>
- 81a:	90 91 88 07 	lds	r25, 0x0788	; 0x800788 <nbytes_in_frame+0x1>
- 81e:	c8 17       	cp	r28, r24
- 820:	d9 07       	cpc	r29, r25
- 822:	90 f2       	brcs	.-92     	; 0x7c8 <SpiMasterPassLisFrame+0x48>
- 824:	2a 98       	cbi	0x05, 2	; 5
- 826:	ee bc       	out	0x2e, r14	; 46
- 828:	0d b4       	in	r0, 0x2d	; 45
- 82a:	07 fe       	sbrs	r0, 7
- 82c:	fd cf       	rjmp	.-6      	; 0x828 <SpiMasterPassLisFrame+0xa8>
- 82e:	8e b5       	in	r24, 0x2e	; 46
- 830:	2a 9a       	sbi	0x05, 2	; 5
- 832:	1e b5       	in	r17, 0x2e	; 46
- 834:	40 98       	cbi	0x08, 0	; 8
- 836:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 83a:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 83e:	81 e0       	ldi	r24, 0x01	; 1
- 840:	09 95       	icall
- 842:	41 9a       	sbi	0x08, 1	; 8
- 844:	8f ef       	ldi	r24, 0xFF	; 255
- 846:	8a b9       	out	0x0a, r24	; 10
- 848:	fb b8       	out	0x0b, r15	; 11
- 84a:	41 98       	cbi	0x08, 1	; 8
- 84c:	1a b8       	out	0x0a, r1	; 10
- 84e:	41 9a       	sbi	0x08, 1	; 8
- 850:	41 98       	cbi	0x08, 1	; 8
- 852:	32 99       	sbic	0x06, 2	; 6
- 854:	05 c0       	rjmp	.+10     	; 0x860 <SpiMasterPassLisFrame+0xe0>
- 856:	8a b9       	out	0x0a, r24	; 10
- 858:	41 9a       	sbi	0x08, 1	; 8
- 85a:	1b b9       	out	0x0b, r17	; 11
- 85c:	41 98       	cbi	0x08, 1	; 8
- 85e:	32 99       	sbic	0x06, 2	; 6
- 860:	43 9a       	sbi	0x08, 3	; 8
- 862:	40 9a       	sbi	0x08, 0	; 8
- 864:	ce 01       	movw	r24, r28
- 866:	df 91       	pop	r29
- 868:	cf 91       	pop	r28
- 86a:	1f 91       	pop	r17
- 86c:	0f 91       	pop	r16
- 86e:	ff 90       	pop	r15
- 870:	ef 90       	pop	r14
- 872:	08 95       	ret
-
-00000874 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave>:
+0000041a <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave>:
     *(pnticks--) = *Spi_spdr;               // store lsb
     // Debug: echo the bytes back.
     UsbWrite(pnticks, 2);
 }
 void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
 {
- 874:	cf 93       	push	r28
- 876:	df 93       	push	r29
- 878:	cd b7       	in	r28, 0x3d	; 61
- 87a:	de b7       	in	r29, 0x3e	; 62
- 87c:	28 97       	sbiw	r28, 0x08	; 8
- 87e:	0f b6       	in	r0, 0x3f	; 63
- 880:	f8 94       	cli
- 882:	de bf       	out	0x3e, r29	; 62
- 884:	0f be       	out	0x3f, r0	; 63
- 886:	cd bf       	out	0x3d, r28	; 61
- 888:	ce 01       	movw	r24, r28
- 88a:	05 96       	adiw	r24, 0x05	; 5
- 88c:	7c 01       	movw	r14, r24
-                else if (rowselect == cmd_cfg_lis_rowselect_5)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_5);
-                else if (rowselect == cmd_cfg_lis_rowselect_12)     MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12);
-                else if (rowselect == cmd_cfg_lis_rowselect_123)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_123);
-                else if (rowselect == cmd_cfg_lis_rowselect_1234)   MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1234);
-                else if (rowselect == cmd_cfg_lis_rowselect_124)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_124);
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12345);
- 88e:	8c e0       	ldi	r24, 0x0C	; 12
- 890:	68 2e       	mov	r6, r24
-                if      (summing_mode == cmd_cfg_summing_mode_on)   nbytes_in_frame = sizeof_half_frame;
-                else                                                nbytes_in_frame = sizeof_full_frame;
-                if      (gain_setting == cmd_cfg_lis_gain_5x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
-                else if (gain_setting == cmd_cfg_lis_gain_4x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
- 892:	9b e0       	ldi	r25, 0x0B	; 11
- 894:	79 2e       	mov	r7, r25
-            {
-                uint8_t summing_mode    = read_buffer[1];
-                uint8_t gain_setting    = read_buffer[2];
-                uint8_t rowselect       = read_buffer[3];
-                if      (summing_mode == cmd_cfg_summing_mode_on)   MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_off);
- 896:	25 e0       	ldi	r18, 0x05	; 5
- 898:	82 2e       	mov	r8, r18
-                if      (summing_mode == cmd_cfg_summing_mode_on)   nbytes_in_frame = sizeof_half_frame;
-                else                                                nbytes_in_frame = sizeof_full_frame;
- 89a:	30 e2       	ldi	r19, 0x20	; 32
- 89c:	c3 2e       	mov	r12, r19
- 89e:	36 e0       	ldi	r19, 0x06	; 6
- 8a0:	d3 2e       	mov	r13, r19
-                uint8_t summing_mode    = read_buffer[1];
-                uint8_t gain_setting    = read_buffer[2];
-                uint8_t rowselect       = read_buffer[3];
-                if      (summing_mode == cmd_cfg_summing_mode_on)   MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_off);
-                if      (summing_mode == cmd_cfg_summing_mode_on)   nbytes_in_frame = sizeof_half_frame;
- 8a2:	40 e1       	ldi	r20, 0x10	; 16
- 8a4:	a4 2e       	mov	r10, r20
- 8a6:	43 e0       	ldi	r20, 0x03	; 3
- 8a8:	b4 2e       	mov	r11, r20
-}
-void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave(void)
-{
+ 41a:	cf 93       	push	r28
+ 41c:	df 93       	push	r29
+ 41e:	00 d0       	rcall	.+0      	; 0x420 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x6>
+ 420:	00 d0       	rcall	.+0      	; 0x422 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x8>
+ 422:	cd b7       	in	r28, 0x3d	; 61
+ 424:	de b7       	in	r29, 0x3e	; 62
     while(1) // loop forever responding to the USB host
     {
-        if (UsbHasDataToRead())
- 8aa:	0e 94 35 02 	call	0x46a	; 0x46a <UsbHasDataToRead>
- 8ae:	88 23       	and	r24, r24
- 8b0:	e1 f3       	breq	.-8      	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
+        uint8_t cmd;
+        if (UsbReadOneByte(&cmd))
+ 426:	ce 01       	movw	r24, r28
+ 428:	04 96       	adiw	r24, 0x04	; 4
+ 42a:	0e 94 71 01 	call	0x2e2	; 0x2e2 <UsbReadOneByte>
+ 42e:	88 23       	and	r24, r24
+ 430:	d1 f3       	breq	.-12     	; 0x426 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0xc>
         {
-            /* MacroDebugLedToggleColor(); */
-            /* MacroDebugLedRed(); */
-            uint8_t read_buffer[4];
-            uint8_t nbytes_in_cmd = UsbRead(read_buffer);
- 8b2:	c7 01       	movw	r24, r14
- 8b4:	0e 94 af 01 	call	0x35e	; 0x35e <UsbRead>
-            uint8_t cmd = read_buffer[0];
- 8b8:	1d 81       	ldd	r17, Y+5	; 0x05
-            if (1 == nbytes_in_cmd)
- 8ba:	81 30       	cpi	r24, 0x01	; 1
- 8bc:	09 f4       	brne	.+2      	; 0x8c0 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x4c>
- 8be:	71 c0       	rjmp	.+226    	; 0x9a2 <__stack+0xa3>
-                else if (cmd == cmd_enable_spi_master)  { SpiMasterInit(); MacroDebugLedGreen(); }
-                // test commands
-                else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
-                else if (cmd == cmd_auto_expose) AutoExpose();
-            }
-            else if (2 == nbytes_in_cmd)
- 8c0:	82 30       	cpi	r24, 0x02	; 2
- 8c2:	09 f4       	brne	.+2      	; 0x8c6 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x52>
- 8c4:	80 c0       	rjmp	.+256    	; 0x9c6 <__stack+0xc7>
-                else if (gain_setting == cmd_cfg_lis_gain_4x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
-                else if (gain_setting == cmd_cfg_lis_gain_1x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
-                if (cmd == cmd_write_cfg_to_lis) MacroSpiMasterWriteAndDelay(cmd_write_cfg_to_lis);
-            }
-            else if (3 == nbytes_in_cmd)
- 8c6:	83 30       	cpi	r24, 0x03	; 3
- 8c8:	09 f4       	brne	.+2      	; 0x8cc <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x58>
- 8ca:	99 c0       	rjmp	.+306    	; 0x9fe <__stack+0xff>
-            {
-                uint8_t *pnticks = &read_buffer[1]; // two bytes of nticks_exposure
-                if      (cmd == cmd_set_exposure_time) SetExposureTime(pnticks);
-            }
-            else if (4 == nbytes_in_cmd)
- 8cc:	84 30       	cpi	r24, 0x04	; 4
- 8ce:	69 f7       	brne	.-38     	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-            {
-                uint8_t summing_mode    = read_buffer[1];
-                uint8_t gain_setting    = read_buffer[2];
- 8d0:	9f 80       	ldd	r9, Y+7	; 0x07
-                uint8_t rowselect       = read_buffer[3];
- 8d2:	08 85       	ldd	r16, Y+8	; 0x08
-                if      (summing_mode == cmd_cfg_summing_mode_on)   MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
- 8d4:	8e 81       	ldd	r24, Y+6	; 0x06
- 8d6:	2a 98       	cbi	0x05, 2	; 5
- 8d8:	86 30       	cpi	r24, 0x06	; 6
- 8da:	09 f4       	brne	.+2      	; 0x8de <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x6a>
- 8dc:	c1 c0       	rjmp	.+386    	; 0xa60 <__stack+0x161>
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_off);
- 8de:	8e bc       	out	0x2e, r8	; 46
- 8e0:	0d b4       	in	r0, 0x2d	; 45
- 8e2:	07 fe       	sbrs	r0, 7
- 8e4:	fd cf       	rjmp	.-6      	; 0x8e0 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x6c>
- 8e6:	8e b5       	in	r24, 0x2e	; 46
- 8e8:	2a 9a       	sbi	0x05, 2	; 5
- 8ea:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 8ee:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 8f2:	82 e3       	ldi	r24, 0x32	; 50
- 8f4:	09 95       	icall
-                if      (summing_mode == cmd_cfg_summing_mode_on)   nbytes_in_frame = sizeof_half_frame;
-                else                                                nbytes_in_frame = sizeof_full_frame;
- 8f6:	d0 92 88 07 	sts	0x0788, r13	; 0x800788 <nbytes_in_frame+0x1>
- 8fa:	c0 92 87 07 	sts	0x0787, r12	; 0x800787 <nbytes_in_frame>
-                if      (gain_setting == cmd_cfg_lis_gain_5x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
- 8fe:	f8 e0       	ldi	r31, 0x08	; 8
- 900:	9f 16       	cp	r9, r31
- 902:	09 f4       	brne	.+2      	; 0x906 <__stack+0x7>
- 904:	c0 c0       	rjmp	.+384    	; 0xa86 <__stack+0x187>
-                else if (gain_setting == cmd_cfg_lis_gain_4x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
- 906:	89 e0       	ldi	r24, 0x09	; 9
- 908:	98 16       	cp	r9, r24
- 90a:	09 f4       	brne	.+2      	; 0x90e <__stack+0xf>
- 90c:	fc c0       	rjmp	.+504    	; 0xb06 <__stack+0x207>
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
- 90e:	9a e0       	ldi	r25, 0x0A	; 10
- 910:	2a 98       	cbi	0x05, 2	; 5
- 912:	99 16       	cp	r9, r25
- 914:	09 f4       	brne	.+2      	; 0x918 <__stack+0x19>
- 916:	02 c1       	rjmp	.+516    	; 0xb1c <__stack+0x21d>
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
- 918:	7e bc       	out	0x2e, r7	; 46
- 91a:	0d b4       	in	r0, 0x2d	; 45
- 91c:	07 fe       	sbrs	r0, 7
- 91e:	fd cf       	rjmp	.-6      	; 0x91a <__stack+0x1b>
- 920:	8e b5       	in	r24, 0x2e	; 46
- 922:	2a 9a       	sbi	0x05, 2	; 5
- 924:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 928:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 92c:	82 e3       	ldi	r24, 0x32	; 50
- 92e:	09 95       	icall
-                if      (rowselect == cmd_cfg_lis_rowselect_1)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1);
- 930:	2a 98       	cbi	0x05, 2	; 5
- 932:	0d 30       	cpi	r16, 0x0D	; 13
- 934:	09 f4       	brne	.+2      	; 0x938 <__stack+0x39>
- 936:	bb c0       	rjmp	.+374    	; 0xaae <__stack+0x1af>
-                else if (rowselect == cmd_cfg_lis_rowselect_2)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_2);
- 938:	0e 30       	cpi	r16, 0x0E	; 14
- 93a:	09 f4       	brne	.+2      	; 0x93e <__stack+0x3f>
- 93c:	ea c0       	rjmp	.+468    	; 0xb12 <__stack+0x213>
-                else if (rowselect == cmd_cfg_lis_rowselect_3)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_3);
- 93e:	0f 30       	cpi	r16, 0x0F	; 15
- 940:	09 f4       	brne	.+2      	; 0x944 <__stack+0x45>
- 942:	f1 c0       	rjmp	.+482    	; 0xb26 <__stack+0x227>
-                else if (rowselect == cmd_cfg_lis_rowselect_4)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_4);
- 944:	00 31       	cpi	r16, 0x10	; 16
- 946:	09 f4       	brne	.+2      	; 0x94a <__stack+0x4b>
- 948:	f3 c0       	rjmp	.+486    	; 0xb30 <__stack+0x231>
-                else if (rowselect == cmd_cfg_lis_rowselect_5)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_5);
- 94a:	01 31       	cpi	r16, 0x11	; 17
- 94c:	09 f4       	brne	.+2      	; 0x950 <__stack+0x51>
- 94e:	f5 c0       	rjmp	.+490    	; 0xb3a <__stack+0x23b>
-                else if (rowselect == cmd_cfg_lis_rowselect_12)     MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12);
- 950:	02 31       	cpi	r16, 0x12	; 18
- 952:	09 f4       	brne	.+2      	; 0x956 <__stack+0x57>
- 954:	f7 c0       	rjmp	.+494    	; 0xb44 <__stack+0x245>
-                else if (rowselect == cmd_cfg_lis_rowselect_123)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_123);
- 956:	03 31       	cpi	r16, 0x13	; 19
- 958:	09 f4       	brne	.+2      	; 0x95c <__stack+0x5d>
- 95a:	f9 c0       	rjmp	.+498    	; 0xb4e <__stack+0x24f>
-                else if (rowselect == cmd_cfg_lis_rowselect_1234)   MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1234);
- 95c:	04 31       	cpi	r16, 0x14	; 20
- 95e:	09 f4       	brne	.+2      	; 0x962 <__stack+0x63>
- 960:	fb c0       	rjmp	.+502    	; 0xb58 <__stack+0x259>
-                else if (rowselect == cmd_cfg_lis_rowselect_124)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_124);
- 962:	06 31       	cpi	r16, 0x16	; 22
- 964:	09 f4       	brne	.+2      	; 0x968 <__stack+0x69>
- 966:	fd c0       	rjmp	.+506    	; 0xb62 <__stack+0x263>
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12345);
- 968:	6e bc       	out	0x2e, r6	; 46
- 96a:	0d b4       	in	r0, 0x2d	; 45
- 96c:	07 fe       	sbrs	r0, 7
- 96e:	fd cf       	rjmp	.-6      	; 0x96a <__stack+0x6b>
- 970:	8e b5       	in	r24, 0x2e	; 46
- 972:	2a 9a       	sbi	0x05, 2	; 5
- 974:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 978:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 97c:	82 e3       	ldi	r24, 0x32	; 50
- 97e:	09 95       	icall
-                if (cmd == cmd_write_cfg_to_lis) MacroSpiMasterWriteAndDelay(cmd_write_cfg_to_lis);
- 980:	17 30       	cpi	r17, 0x07	; 7
- 982:	09 f0       	breq	.+2      	; 0x986 <__stack+0x87>
- 984:	92 cf       	rjmp	.-220    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
- 986:	2a 98       	cbi	0x05, 2	; 5
- 988:	1e bd       	out	0x2e, r17	; 46
- 98a:	0d b4       	in	r0, 0x2d	; 45
- 98c:	07 fe       	sbrs	r0, 7
- 98e:	fd cf       	rjmp	.-6      	; 0x98a <__stack+0x8b>
- 990:	8e b5       	in	r24, 0x2e	; 46
- 992:	2a 9a       	sbi	0x05, 2	; 5
- 994:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 998:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 99c:	82 e3       	ldi	r24, 0x32	; 50
- 99e:	09 95       	icall
- 9a0:	84 cf       	rjmp	.-248    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-            uint8_t read_buffer[4];
-            uint8_t nbytes_in_cmd = UsbRead(read_buffer);
-            uint8_t cmd = read_buffer[0];
-            if (1 == nbytes_in_cmd)
-            {
-                if      (cmd == cmd_send_lis_frame) { MacroDebugLedRed(); SpiMasterPassLisFrame(); MacroDebugLedGreen(); }
- 9a2:	11 30       	cpi	r17, 0x01	; 1
- 9a4:	09 f4       	brne	.+2      	; 0x9a8 <__stack+0xa9>
- 9a6:	4f c0       	rjmp	.+158    	; 0xa46 <__stack+0x147>
-                // for using Arduino as the SPI master via the ISP header:
-                else if (cmd == cmd_disable_spi_master) { SpiMasterDisable(); MacroDebugLedRed(); }
- 9a8:	13 30       	cpi	r17, 0x03	; 3
- 9aa:	09 f4       	brne	.+2      	; 0x9ae <__stack+0xaf>
- 9ac:	51 c0       	rjmp	.+162    	; 0xa50 <__stack+0x151>
-                else if (cmd == cmd_enable_spi_master)  { SpiMasterInit(); MacroDebugLedGreen(); }
- 9ae:	14 30       	cpi	r17, 0x04	; 4
- 9b0:	09 f4       	brne	.+2      	; 0x9b4 <__stack+0xb5>
- 9b2:	52 c0       	rjmp	.+164    	; 0xa58 <__stack+0x159>
-                // test commands
-                else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
- 9b4:	12 3f       	cpi	r17, 0xF2	; 242
- 9b6:	09 f4       	brne	.+2      	; 0x9ba <__stack+0xbb>
- 9b8:	7f c0       	rjmp	.+254    	; 0xab8 <__stack+0x1b9>
-                else if (cmd == cmd_auto_expose) AutoExpose();
- 9ba:	15 31       	cpi	r17, 0x15	; 21
- 9bc:	09 f0       	breq	.+2      	; 0x9c0 <__stack+0xc1>
- 9be:	75 cf       	rjmp	.-278    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
- 9c0:	0e 94 3a 03 	call	0x674	; 0x674 <AutoExpose>
- 9c4:	72 cf       	rjmp	.-284    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-            }
-            else if (2 == nbytes_in_cmd)
-            {
-                uint8_t gain_setting = read_buffer[1];
- 9c6:	8e 81       	ldd	r24, Y+6	; 0x06
-                if      (gain_setting == cmd_cfg_lis_gain_5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
- 9c8:	88 30       	cpi	r24, 0x08	; 8
- 9ca:	09 f1       	breq	.+66     	; 0xa0e <__stack+0x10f>
-                else if (gain_setting == cmd_cfg_lis_gain_4x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
- 9cc:	89 30       	cpi	r24, 0x09	; 9
- 9ce:	69 f1       	breq	.+90     	; 0xa2a <__stack+0x12b>
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
- 9d0:	8a 30       	cpi	r24, 0x0A	; 10
- 9d2:	09 f4       	brne	.+2      	; 0x9d6 <__stack+0xd7>
- 9d4:	5e c0       	rjmp	.+188    	; 0xa92 <__stack+0x193>
-                else if (gain_setting == cmd_cfg_lis_gain_1x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
- 9d6:	8b 30       	cpi	r24, 0x0B	; 11
- 9d8:	09 f4       	brne	.+2      	; 0x9dc <__stack+0xdd>
- 9da:	87 c0       	rjmp	.+270    	; 0xaea <__stack+0x1eb>
-                if (cmd == cmd_write_cfg_to_lis) MacroSpiMasterWriteAndDelay(cmd_write_cfg_to_lis);
- 9dc:	17 30       	cpi	r17, 0x07	; 7
- 9de:	09 f0       	breq	.+2      	; 0x9e2 <__stack+0xe3>
- 9e0:	64 cf       	rjmp	.-312    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
- 9e2:	2a 98       	cbi	0x05, 2	; 5
- 9e4:	1e bd       	out	0x2e, r17	; 46
- 9e6:	0d b4       	in	r0, 0x2d	; 45
- 9e8:	07 fe       	sbrs	r0, 7
- 9ea:	fd cf       	rjmp	.-6      	; 0x9e6 <__stack+0xe7>
-                else if (rowselect == cmd_cfg_lis_rowselect_12)     MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12);
-                else if (rowselect == cmd_cfg_lis_rowselect_123)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_123);
-                else if (rowselect == cmd_cfg_lis_rowselect_1234)   MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1234);
-                else if (rowselect == cmd_cfg_lis_rowselect_124)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_124);
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12345);
-                if (cmd == cmd_write_cfg_to_lis) MacroSpiMasterWriteAndDelay(cmd_write_cfg_to_lis);
- 9ec:	8e b5       	in	r24, 0x2e	; 46
- 9ee:	2a 9a       	sbi	0x05, 2	; 5
- 9f0:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- 9f4:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- 9f8:	82 e3       	ldi	r24, 0x32	; 50
- 9fa:	09 95       	icall
- 9fc:	56 cf       	rjmp	.-340    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-                if (cmd == cmd_write_cfg_to_lis) MacroSpiMasterWriteAndDelay(cmd_write_cfg_to_lis);
-            }
-            else if (3 == nbytes_in_cmd)
-            {
-                uint8_t *pnticks = &read_buffer[1]; // two bytes of nticks_exposure
-                if      (cmd == cmd_set_exposure_time) SetExposureTime(pnticks);
- 9fe:	12 30       	cpi	r17, 0x02	; 2
- a00:	09 f0       	breq	.+2      	; 0xa04 <__stack+0x105>
- a02:	53 cf       	rjmp	.-346    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
- a04:	ce 01       	movw	r24, r28
- a06:	06 96       	adiw	r24, 0x06	; 6
- a08:	0e 94 72 03 	call	0x6e4	; 0x6e4 <SetExposureTime>
- a0c:	4e cf       	rjmp	.-356    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-                else if (cmd == cmd_auto_expose) AutoExpose();
-            }
-            else if (2 == nbytes_in_cmd)
-            {
-                uint8_t gain_setting = read_buffer[1];
-                if      (gain_setting == cmd_cfg_lis_gain_5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
- a0e:	2a 98       	cbi	0x05, 2	; 5
- a10:	8e bd       	out	0x2e, r24	; 46
- a12:	0d b4       	in	r0, 0x2d	; 45
- a14:	07 fe       	sbrs	r0, 7
- a16:	fd cf       	rjmp	.-6      	; 0xa12 <__stack+0x113>
-                else if (gain_setting == cmd_cfg_lis_gain_4x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
-                else if (gain_setting == cmd_cfg_lis_gain_1x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
- a18:	8e b5       	in	r24, 0x2e	; 46
- a1a:	2a 9a       	sbi	0x05, 2	; 5
- a1c:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- a20:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- a24:	82 e3       	ldi	r24, 0x32	; 50
- a26:	09 95       	icall
- a28:	d9 cf       	rjmp	.-78     	; 0x9dc <__stack+0xdd>
-            }
-            else if (2 == nbytes_in_cmd)
-            {
-                uint8_t gain_setting = read_buffer[1];
-                if      (gain_setting == cmd_cfg_lis_gain_5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
-                else if (gain_setting == cmd_cfg_lis_gain_4x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
- a2a:	2a 98       	cbi	0x05, 2	; 5
- a2c:	8e bd       	out	0x2e, r24	; 46
- a2e:	0d b4       	in	r0, 0x2d	; 45
- a30:	07 fe       	sbrs	r0, 7
- a32:	fd cf       	rjmp	.-6      	; 0xa2e <__stack+0x12f>
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
-                else if (gain_setting == cmd_cfg_lis_gain_1x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
- a34:	8e b5       	in	r24, 0x2e	; 46
- a36:	2a 9a       	sbi	0x05, 2	; 5
- a38:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- a3c:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- a40:	82 e3       	ldi	r24, 0x32	; 50
- a42:	09 95       	icall
- a44:	cb cf       	rjmp	.-106    	; 0x9dc <__stack+0xdd>
-            uint8_t read_buffer[4];
-            uint8_t nbytes_in_cmd = UsbRead(read_buffer);
-            uint8_t cmd = read_buffer[0];
-            if (1 == nbytes_in_cmd)
-            {
-                if      (cmd == cmd_send_lis_frame) { MacroDebugLedRed(); SpiMasterPassLisFrame(); MacroDebugLedGreen(); }
- a46:	43 9a       	sbi	0x08, 3	; 8
- a48:	0e 94 c0 03 	call	0x780	; 0x780 <SpiMasterPassLisFrame>
- a4c:	43 98       	cbi	0x08, 3	; 8
- a4e:	2d cf       	rjmp	.-422    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-                // for using Arduino as the SPI master via the ISP header:
-                else if (cmd == cmd_disable_spi_master) { SpiMasterDisable(); MacroDebugLedRed(); }
- a50:	0e 94 cd 02 	call	0x59a	; 0x59a <SpiMasterDisable>
- a54:	43 9a       	sbi	0x08, 3	; 8
- a56:	29 cf       	rjmp	.-430    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-                else if (cmd == cmd_enable_spi_master)  { SpiMasterInit(); MacroDebugLedGreen(); }
- a58:	0e 94 80 02 	call	0x500	; 0x500 <SpiMasterInit>
- a5c:	43 98       	cbi	0x08, 3	; 8
- a5e:	25 cf       	rjmp	.-438    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-            else if (4 == nbytes_in_cmd)
-            {
-                uint8_t summing_mode    = read_buffer[1];
-                uint8_t gain_setting    = read_buffer[2];
-                uint8_t rowselect       = read_buffer[3];
-                if      (summing_mode == cmd_cfg_summing_mode_on)   MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
- a60:	8e bd       	out	0x2e, r24	; 46
- a62:	0d b4       	in	r0, 0x2d	; 45
- a64:	07 fe       	sbrs	r0, 7
- a66:	fd cf       	rjmp	.-6      	; 0xa62 <__stack+0x163>
- a68:	8e b5       	in	r24, 0x2e	; 46
- a6a:	2a 9a       	sbi	0x05, 2	; 5
- a6c:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- a70:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- a74:	82 e3       	ldi	r24, 0x32	; 50
- a76:	09 95       	icall
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_off);
-                if      (summing_mode == cmd_cfg_summing_mode_on)   nbytes_in_frame = sizeof_half_frame;
- a78:	b0 92 88 07 	sts	0x0788, r11	; 0x800788 <nbytes_in_frame+0x1>
- a7c:	a0 92 87 07 	sts	0x0787, r10	; 0x800787 <nbytes_in_frame>
-                else                                                nbytes_in_frame = sizeof_full_frame;
-                if      (gain_setting == cmd_cfg_lis_gain_5x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
- a80:	f8 e0       	ldi	r31, 0x08	; 8
- a82:	9f 12       	cpse	r9, r31
- a84:	40 cf       	rjmp	.-384    	; 0x906 <__stack+0x7>
- a86:	2a 98       	cbi	0x05, 2	; 5
- a88:	9e bc       	out	0x2e, r9	; 46
- a8a:	0d b4       	in	r0, 0x2d	; 45
- a8c:	07 fe       	sbrs	r0, 7
- a8e:	fd cf       	rjmp	.-6      	; 0xa8a <__stack+0x18b>
- a90:	47 cf       	rjmp	.-370    	; 0x920 <__stack+0x21>
-            else if (2 == nbytes_in_cmd)
-            {
-                uint8_t gain_setting = read_buffer[1];
-                if      (gain_setting == cmd_cfg_lis_gain_5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
-                else if (gain_setting == cmd_cfg_lis_gain_4x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
- a92:	2a 98       	cbi	0x05, 2	; 5
- a94:	8e bd       	out	0x2e, r24	; 46
- a96:	0d b4       	in	r0, 0x2d	; 45
- a98:	07 fe       	sbrs	r0, 7
- a9a:	fd cf       	rjmp	.-6      	; 0xa96 <__stack+0x197>
-                else if (gain_setting == cmd_cfg_lis_gain_1x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
- a9c:	8e b5       	in	r24, 0x2e	; 46
- a9e:	2a 9a       	sbi	0x05, 2	; 5
- aa0:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- aa4:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- aa8:	82 e3       	ldi	r24, 0x32	; 50
- aaa:	09 95       	icall
- aac:	97 cf       	rjmp	.-210    	; 0x9dc <__stack+0xdd>
-                else                                                nbytes_in_frame = sizeof_full_frame;
-                if      (gain_setting == cmd_cfg_lis_gain_5x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
-                else if (gain_setting == cmd_cfg_lis_gain_4x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
-                if      (rowselect == cmd_cfg_lis_rowselect_1)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1);
- aae:	0e bd       	out	0x2e, r16	; 46
- ab0:	0d b4       	in	r0, 0x2d	; 45
- ab2:	07 fe       	sbrs	r0, 7
- ab4:	fd cf       	rjmp	.-6      	; 0xab0 <__stack+0x1b1>
- ab6:	5c cf       	rjmp	.-328    	; 0x970 <__stack+0x71>
-    /* =====[ Operate ]===== */
-    SpiMasterPassLisFrame();
-}
-void DoCmdSendFourDummyBytes(void)
-{
-    SpiMasterWrite(cmd_send_four_dummy_bytes);
- ab8:	82 ef       	ldi	r24, 0xF2	; 242
- aba:	0e 94 f3 02 	call	0x5e6	; 0x5e6 <SpiMasterWrite>
- abe:	8e 01       	movw	r16, r28
- ac0:	0f 5f       	subi	r16, 0xFF	; 255
- ac2:	1f 4f       	sbci	r17, 0xFF	; 255
-    uint8_t fake_data[4]; uint8_t * pfake_data = fake_data;
-    uint16_t nbytes = sizeof(fake_data);
-    uint16_t byte_counter = 0;
-    while (byte_counter++ < nbytes)
-    {
-        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
- ac4:	0e 94 32 03 	call	0x664	; 0x664 <SpiMasterWaitForResponse>
-        *(pfake_data++) = SpiMasterRead();
- ac8:	0e 94 11 03 	call	0x622	; 0x622 <SpiMasterRead>
- acc:	f8 01       	movw	r30, r16
- ace:	81 93       	st	Z+, r24
- ad0:	8f 01       	movw	r16, r30
-{
-    SpiMasterWrite(cmd_send_four_dummy_bytes);
-    uint8_t fake_data[4]; uint8_t * pfake_data = fake_data;
-    uint16_t nbytes = sizeof(fake_data);
-    uint16_t byte_counter = 0;
-    while (byte_counter++ < nbytes)
- ad2:	ee 15       	cp	r30, r14
- ad4:	ff 05       	cpc	r31, r15
- ad6:	b1 f7       	brne	.-20     	; 0xac4 <__stack+0x1c5>
-    {
-        SpiMasterWaitForResponse(); // Slave signals when the response is ready.
-        *(pfake_data++) = SpiMasterRead();
-    }
-    UsbWrite(fake_data, nbytes);
- ad8:	64 e0       	ldi	r22, 0x04	; 4
- ada:	70 e0       	ldi	r23, 0x00	; 0
- adc:	ce 01       	movw	r24, r28
- ade:	01 96       	adiw	r24, 0x01	; 1
- ae0:	0e 94 ed 01 	call	0x3da	; 0x3da <UsbWrite>
-    DebugLedTurnRed();
- ae4:	0e 94 91 00 	call	0x122	; 0x122 <DebugLedTurnRed>
- ae8:	e0 ce       	rjmp	.-576    	; 0x8aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
-            {
-                uint8_t gain_setting = read_buffer[1];
-                if      (gain_setting == cmd_cfg_lis_gain_5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
-                else if (gain_setting == cmd_cfg_lis_gain_4x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
-                else if (gain_setting == cmd_cfg_lis_gain_1x)  MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
- aea:	2a 98       	cbi	0x05, 2	; 5
- aec:	8e bd       	out	0x2e, r24	; 46
- aee:	0d b4       	in	r0, 0x2d	; 45
- af0:	07 fe       	sbrs	r0, 7
- af2:	fd cf       	rjmp	.-6      	; 0xaee <__stack+0x1ef>
- af4:	8e b5       	in	r24, 0x2e	; 46
- af6:	2a 9a       	sbi	0x05, 2	; 5
- af8:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Delay3CpuCyclesPerTick>
- afc:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Delay3CpuCyclesPerTick+0x1>
- b00:	82 e3       	ldi	r24, 0x32	; 50
- b02:	09 95       	icall
- b04:	6b cf       	rjmp	.-298    	; 0x9dc <__stack+0xdd>
-                if      (summing_mode == cmd_cfg_summing_mode_on)   MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_off);
-                if      (summing_mode == cmd_cfg_summing_mode_on)   nbytes_in_frame = sizeof_half_frame;
-                else                                                nbytes_in_frame = sizeof_full_frame;
-                if      (gain_setting == cmd_cfg_lis_gain_5x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
-                else if (gain_setting == cmd_cfg_lis_gain_4x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
- b06:	2a 98       	cbi	0x05, 2	; 5
- b08:	9e bc       	out	0x2e, r9	; 46
- b0a:	0d b4       	in	r0, 0x2d	; 45
- b0c:	07 fe       	sbrs	r0, 7
- b0e:	fd cf       	rjmp	.-6      	; 0xb0a <__stack+0x20b>
- b10:	07 cf       	rjmp	.-498    	; 0x920 <__stack+0x21>
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
-                if      (rowselect == cmd_cfg_lis_rowselect_1)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1);
-                else if (rowselect == cmd_cfg_lis_rowselect_2)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_2);
- b12:	0e bd       	out	0x2e, r16	; 46
- b14:	0d b4       	in	r0, 0x2d	; 45
- b16:	07 fe       	sbrs	r0, 7
- b18:	fd cf       	rjmp	.-6      	; 0xb14 <__stack+0x215>
- b1a:	2a cf       	rjmp	.-428    	; 0x970 <__stack+0x71>
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_off);
-                if      (summing_mode == cmd_cfg_summing_mode_on)   nbytes_in_frame = sizeof_half_frame;
-                else                                                nbytes_in_frame = sizeof_full_frame;
-                if      (gain_setting == cmd_cfg_lis_gain_5x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_5x);
-                else if (gain_setting == cmd_cfg_lis_gain_4x)       MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_4x);
-                else if (gain_setting == cmd_cfg_lis_gain_2pt5x)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_2pt5x);
- b1c:	9e bc       	out	0x2e, r9	; 46
- b1e:	0d b4       	in	r0, 0x2d	; 45
- b20:	07 fe       	sbrs	r0, 7
- b22:	fd cf       	rjmp	.-6      	; 0xb1e <__stack+0x21f>
- b24:	fd ce       	rjmp	.-518    	; 0x920 <__stack+0x21>
-                else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
-                if      (rowselect == cmd_cfg_lis_rowselect_1)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1);
-                else if (rowselect == cmd_cfg_lis_rowselect_2)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_2);
-                else if (rowselect == cmd_cfg_lis_rowselect_3)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_3);
- b26:	0e bd       	out	0x2e, r16	; 46
- b28:	0d b4       	in	r0, 0x2d	; 45
- b2a:	07 fe       	sbrs	r0, 7
- b2c:	fd cf       	rjmp	.-6      	; 0xb28 <__stack+0x229>
- b2e:	20 cf       	rjmp	.-448    	; 0x970 <__stack+0x71>
-                else if (rowselect == cmd_cfg_lis_rowselect_4)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_4);
- b30:	0e bd       	out	0x2e, r16	; 46
- b32:	0d b4       	in	r0, 0x2d	; 45
- b34:	07 fe       	sbrs	r0, 7
- b36:	fd cf       	rjmp	.-6      	; 0xb32 <__stack+0x233>
- b38:	1b cf       	rjmp	.-458    	; 0x970 <__stack+0x71>
-                else if (rowselect == cmd_cfg_lis_rowselect_5)      MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_5);
- b3a:	0e bd       	out	0x2e, r16	; 46
- b3c:	0d b4       	in	r0, 0x2d	; 45
- b3e:	07 fe       	sbrs	r0, 7
- b40:	fd cf       	rjmp	.-6      	; 0xb3c <__stack+0x23d>
- b42:	16 cf       	rjmp	.-468    	; 0x970 <__stack+0x71>
-                else if (rowselect == cmd_cfg_lis_rowselect_12)     MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12);
- b44:	0e bd       	out	0x2e, r16	; 46
- b46:	0d b4       	in	r0, 0x2d	; 45
- b48:	07 fe       	sbrs	r0, 7
- b4a:	fd cf       	rjmp	.-6      	; 0xb46 <__stack+0x247>
- b4c:	11 cf       	rjmp	.-478    	; 0x970 <__stack+0x71>
-                else if (rowselect == cmd_cfg_lis_rowselect_123)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_123);
- b4e:	0e bd       	out	0x2e, r16	; 46
- b50:	0d b4       	in	r0, 0x2d	; 45
- b52:	07 fe       	sbrs	r0, 7
- b54:	fd cf       	rjmp	.-6      	; 0xb50 <__stack+0x251>
- b56:	0c cf       	rjmp	.-488    	; 0x970 <__stack+0x71>
-                else if (rowselect == cmd_cfg_lis_rowselect_1234)   MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_1234);
- b58:	0e bd       	out	0x2e, r16	; 46
- b5a:	0d b4       	in	r0, 0x2d	; 45
- b5c:	07 fe       	sbrs	r0, 7
- b5e:	fd cf       	rjmp	.-6      	; 0xb5a <__stack+0x25b>
- b60:	07 cf       	rjmp	.-498    	; 0x970 <__stack+0x71>
-                else if (rowselect == cmd_cfg_lis_rowselect_124)    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_124);
- b62:	0e bd       	out	0x2e, r16	; 46
- b64:	0d b4       	in	r0, 0x2d	; 45
- b66:	07 fe       	sbrs	r0, 7
- b68:	fd cf       	rjmp	.-6      	; 0xb64 <__stack+0x265>
- b6a:	02 cf       	rjmp	.-508    	; 0x970 <__stack+0x71>
+            if (cmd == cmd_write_cfg_to_lis)
+ 432:	8c 81       	ldd	r24, Y+4	; 0x04
+ 434:	87 30       	cpi	r24, 0x07	; 7
+ 436:	b9 f7       	brne	.-18     	; 0x426 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0xc>
+                    // exit if any byte is not valid
+                // TODO: gain and row select are themselves structs
 
-00000b6c <main>:
+                /* Wait until each byte is available, then read it. */
+                // TODO: add timeout to while looping
+                while (!UsbReadOneByte(&cfg.bin_on_off));
+ 438:	ce 01       	movw	r24, r28
+ 43a:	01 96       	adiw	r24, 0x01	; 1
+ 43c:	0e 94 71 01 	call	0x2e2	; 0x2e2 <UsbReadOneByte>
+ 440:	88 23       	and	r24, r24
+ 442:	d1 f3       	breq	.-12     	; 0x438 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x1e>
+                while (!UsbReadOneByte(&cfg.gain_select));
+ 444:	ce 01       	movw	r24, r28
+ 446:	02 96       	adiw	r24, 0x02	; 2
+ 448:	0e 94 71 01 	call	0x2e2	; 0x2e2 <UsbReadOneByte>
+ 44c:	88 23       	and	r24, r24
+ 44e:	d1 f3       	breq	.-12     	; 0x444 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x2a>
+                while (!UsbReadOneByte(&cfg.row_select));
+ 450:	ce 01       	movw	r24, r28
+ 452:	03 96       	adiw	r24, 0x03	; 3
+ 454:	0e 94 71 01 	call	0x2e2	; 0x2e2 <UsbReadOneByte>
+ 458:	88 23       	and	r24, r24
+ 45a:	d1 f3       	breq	.-12     	; 0x450 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x36>
+                /* =====[ Quick dumb test for now ]===== */
+                if (cfg.bin_on_off == cmd_cfg_summing_mode_on)
+ 45c:	89 81       	ldd	r24, Y+1	; 0x01
+ 45e:	86 30       	cpi	r24, 0x06	; 6
+ 460:	11 f1       	breq	.+68     	; 0x4a6 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x8c>
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
+                }
+                if (cfg.gain_select == cmd_cfg_lis_gain_1x)
+ 462:	8a 81       	ldd	r24, Y+2	; 0x02
+ 464:	8b 30       	cpi	r24, 0x0B	; 11
+ 466:	89 f0       	breq	.+34     	; 0x48a <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x70>
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
+                }
+                if (cfg.row_select == cmd_cfg_lis_rowselect_12345)
+ 468:	8b 81       	ldd	r24, Y+3	; 0x03
+ 46a:	8c 30       	cpi	r24, 0x0C	; 12
+ 46c:	e1 f6       	brne	.-72     	; 0x426 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0xc>
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12345);
+ 46e:	2a 98       	cbi	0x05, 2	; 5
+ 470:	8e bd       	out	0x2e, r24	; 46
+ 472:	0d b4       	in	r0, 0x2d	; 45
+ 474:	07 fe       	sbrs	r0, 7
+ 476:	fd cf       	rjmp	.-6      	; 0x472 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x58>
+ 478:	8e b5       	in	r24, 0x2e	; 46
+ 47a:	2a 9a       	sbi	0x05, 2	; 5
+ 47c:	e0 91 24 01 	lds	r30, 0x0124	; 0x800124 <Delay3CpuCyclesPerTick>
+ 480:	f0 91 25 01 	lds	r31, 0x0125	; 0x800125 <Delay3CpuCyclesPerTick+0x1>
+ 484:	82 e3       	ldi	r24, 0x32	; 50
+ 486:	09 95       	icall
+                }
+            }
+        }
+    }
+ 488:	ce cf       	rjmp	.-100    	; 0x426 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0xc>
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
+                }
+                if (cfg.gain_select == cmd_cfg_lis_gain_1x)
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_lis_gain_1x);
+ 48a:	2a 98       	cbi	0x05, 2	; 5
+ 48c:	8e bd       	out	0x2e, r24	; 46
+ 48e:	0d b4       	in	r0, 0x2d	; 45
+ 490:	07 fe       	sbrs	r0, 7
+ 492:	fd cf       	rjmp	.-6      	; 0x48e <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x74>
+ 494:	8e b5       	in	r24, 0x2e	; 46
+ 496:	2a 9a       	sbi	0x05, 2	; 5
+ 498:	e0 91 24 01 	lds	r30, 0x0124	; 0x800124 <Delay3CpuCyclesPerTick>
+ 49c:	f0 91 25 01 	lds	r31, 0x0125	; 0x800125 <Delay3CpuCyclesPerTick+0x1>
+ 4a0:	82 e3       	ldi	r24, 0x32	; 50
+ 4a2:	09 95       	icall
+ 4a4:	e1 cf       	rjmp	.-62     	; 0x468 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x4e>
+                while (!UsbReadOneByte(&cfg.gain_select));
+                while (!UsbReadOneByte(&cfg.row_select));
+                /* =====[ Quick dumb test for now ]===== */
+                if (cfg.bin_on_off == cmd_cfg_summing_mode_on)
+                {
+                    MacroSpiMasterWriteAndDelay(cmd_cfg_summing_mode_on);
+ 4a6:	2a 98       	cbi	0x05, 2	; 5
+ 4a8:	8e bd       	out	0x2e, r24	; 46
+ 4aa:	0d b4       	in	r0, 0x2d	; 45
+ 4ac:	07 fe       	sbrs	r0, 7
+ 4ae:	fd cf       	rjmp	.-6      	; 0x4aa <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x90>
+ 4b0:	8e b5       	in	r24, 0x2e	; 46
+ 4b2:	2a 9a       	sbi	0x05, 2	; 5
+ 4b4:	e0 91 24 01 	lds	r30, 0x0124	; 0x800124 <Delay3CpuCyclesPerTick>
+ 4b8:	f0 91 25 01 	lds	r31, 0x0125	; 0x800125 <Delay3CpuCyclesPerTick+0x1>
+ 4bc:	82 e3       	ldi	r24, 0x32	; 50
+ 4be:	09 95       	icall
+ 4c0:	d0 cf       	rjmp	.-96     	; 0x462 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave+0x48>
+
+000004c2 <main>:
 {
     EchoByte_reads_a_byte_and_writes_it_back_to_the_host(); // PASS 2018-07-28
 }
 void SetupDebugLed(void)
 {
     DebugLedInit(
- b6c:	23 e0       	ldi	r18, 0x03	; 3
- b6e:	46 e2       	ldi	r20, 0x26	; 38
- b70:	50 e0       	ldi	r21, 0x00	; 0
- b72:	68 e2       	ldi	r22, 0x28	; 40
- b74:	70 e0       	ldi	r23, 0x00	; 0
- b76:	87 e2       	ldi	r24, 0x27	; 39
- b78:	90 e0       	ldi	r25, 0x00	; 0
- b7a:	0e 94 a1 00 	call	0x142	; 0x142 <DebugLedInit>
+ 4c2:	23 e0       	ldi	r18, 0x03	; 3
+ 4c4:	46 e2       	ldi	r20, 0x26	; 38
+ 4c6:	50 e0       	ldi	r21, 0x00	; 0
+ 4c8:	68 e2       	ldi	r22, 0x28	; 40
+ 4ca:	70 e0       	ldi	r23, 0x00	; 0
+ 4cc:	87 e2       	ldi	r24, 0x27	; 39
+ 4ce:	90 e0       	ldi	r25, 0x00	; 0
+ 4d0:	0e 94 88 00 	call	0x110	; 0x110 <DebugLedInit>
     /* SpiMaster_get_fake_adc_reading_from_slave_and_write_to_USB_host(); */
     /* SpiMaster_get_adc_reading_from_slave_and_write_to_USB_host(); */
     /* SpiMaster_get_frame_of_adc_readings_and_write_to_USB_host(); */
     /* SpiMaster_get_Lis_frame_and_write_to_USB_host(); */
     /* =====[ Setup ]===== */
     SpiMasterInit();
- b7e:	0e 94 80 02 	call	0x500	; 0x500 <SpiMasterInit>
+ 4d4:	0e 94 c0 01 	call	0x380	; 0x380 <SpiMasterInit>
     UsbInit();
- b82:	0e 94 ad 01 	call	0x35a	; 0x35a <UsbInit>
+ 4d8:	0e 94 6f 01 	call	0x2de	; 0x2de <UsbInit>
     DebugPinInit();
- b86:	3d 9a       	sbi	0x07, 5	; 7
- b88:	45 9a       	sbi	0x08, 5	; 8
+ 4dc:	3d 9a       	sbi	0x07, 5	; 7
+ 4de:	45 9a       	sbi	0x08, 5	; 8
     nbytes_in_frame = sizeof_full_frame; // initialize global `nbytes_in_frame`
- b8a:	80 e2       	ldi	r24, 0x20	; 32
- b8c:	96 e0       	ldi	r25, 0x06	; 6
- b8e:	90 93 88 07 	sts	0x0788, r25	; 0x800788 <nbytes_in_frame+0x1>
- b92:	80 93 87 07 	sts	0x0787, r24	; 0x800787 <nbytes_in_frame>
+ 4e0:	80 e2       	ldi	r24, 0x20	; 32
+ 4e2:	96 e0       	ldi	r25, 0x06	; 6
+ 4e4:	90 93 72 07 	sts	0x0772, r25	; 0x800772 <nbytes_in_frame+0x1>
+ 4e8:	80 93 71 07 	sts	0x0771, r24	; 0x800771 <nbytes_in_frame>
     SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave();
- b96:	0e 94 3a 04 	call	0x874	; 0x874 <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave>
+ 4ec:	0e 94 0d 02 	call	0x41a	; 0x41a <SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave>
 
-00000b9a <Delay3CpuCyclesPerTick_Implementation>:
+000004f0 <Delay3CpuCyclesPerTick_Implementation>:
     can be achieved.
 */
 void
 _delay_loop_1(uint8_t __count)
 {
 	__asm__ volatile (
- b9a:	8a 95       	dec	r24
- b9c:	f1 f7       	brne	.-4      	; 0xb9a <Delay3CpuCyclesPerTick_Implementation>
- b9e:	08 95       	ret
+ 4f0:	8a 95       	dec	r24
+ 4f2:	f1 f7       	brne	.-4      	; 0x4f0 <Delay3CpuCyclesPerTick_Implementation>
+ 4f4:	08 95       	ret
 
-00000ba0 <_exit>:
- ba0:	f8 94       	cli
+000004f6 <_exit>:
+ 4f6:	f8 94       	cli
 
-00000ba2 <__stop_program>:
- ba2:	ff cf       	rjmp	.-2      	; 0xba2 <__stop_program>
+000004f8 <__stop_program>:
+ 4f8:	ff cf       	rjmp	.-2      	; 0x4f8 <__stop_program>
