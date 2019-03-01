@@ -225,6 +225,14 @@ void DevelopingUartSpi(bool run_test) {if (run_test) {
     // ADC application examples
     RUN_TEST(StoreAdcReadingsInFrame_fills_an_array_with_adc_readings);
 }}
+void DevelopingWriteCfgToLis(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(LoadNextCfgBit_outputs_bit_0_of_cfg_on_Lis_Rst_pin);
+    RUN_TEST(EnterLisProgrammingMode_outputs_high_on_Lis_PixSelect_pin);
+    RUN_TEST(ExitLisProgrammingMode_outputs_low_on_pins_Lis_PixSelect_and_Rst);
+    printf("\n# WIP:\n");
+    RUN_TEST(LisWriteCfg_outputs_cfg_bits_on_Lis_Rst_pin);
+}}
 void DevelopingLis(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(LisInit_sets_PixSelect_as_an_output);
@@ -289,6 +297,7 @@ int main()
     DevelopingLis             (Nope);
     DevelopingPwm             (Nope);
     DevelopingAuto            (Nope); // tabled -- see test
-    DevelopingUsbReadOneByte  (Yep);
+    DevelopingUsbReadOneByte  (Nope);
+    DevelopingWriteCfgToLis   (Yep);
     return UNITY_END();
 }

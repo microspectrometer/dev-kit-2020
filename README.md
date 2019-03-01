@@ -806,6 +806,34 @@ Libraries are shared:
 *The `avr` headers and libraries set up the memory-mapped I/O registers as if
 their name is a dereferenced pointer.*
 
+See the ATmega328 header for definitions:
+`/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/avr/iom328p.h`
+
+Each library has a `lib-Hardware.h` file that includes `avr/io.h` which I think
+then uses the `iom328p.h` file via the `-mmcu` compiler flag:
+
+```make
+#=====[ AVR ]=====
+# atmega328_lib has the .o and .a lib files and the spec file.
+atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
+
+-mmcu=atmega328p -B ${atmega328_lib}
+```
+
+And for standard C libraries like `stdint` and `stdbool`, `avrgcc` defines its
+own implementations. For example, here is `stdint.h`:
+
+`/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/stdint.h`
+
+The `_BV()` macro for the `bit-value of` is here:
+```c
+// /cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/avr/sfr_defs.h
+#define _BV(bit) (1 << (bit))
+#define bit_is_set(sfr, bit) (_SFR_BYTE(sfr) & _BV(bit))
+#define bit_is_clear(sfr, bit) (!(_SFR_BYTE(sfr) & _BV(bit)))
+```
+Of course you cannot use `_BV()` in your libs because they are cross-compiled.
+
 - Use I/O register names and pin names specific to the embedded project instead
   of names specific to the AVR microcontroller.
 - Declare these names as `extern` in the lib header.

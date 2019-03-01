@@ -2,6 +2,56 @@
 #include "Pwm.h"
 #include "ReadWriteBits.h"
 
+void LisWriteCfg(uint32_t cfg)
+{
+    /* Cfg needs 28 bits: use 4 bytes */
+    /* bit 0: bin_on_off */
+    /*     bin_on: bin_on_off = 1 */
+    /* bit 1: gain bit G2 */
+    /* bit 2: gain bit G1 */
+    /*     gain_1x: G2 G1 = 0 0 */
+    /* next are 25 bits to select pixels by row in groups of 154 */
+    /* use these 25 bits to select entire rows (groups of 784) */
+
+    EnterLisProgrammingMode();
+
+    uint8_t ncfgbits = 28;
+    for (uint8_t cfgbit_i = 0; cfgbit_i < ncfgbits; cfgbit_i++)
+    {
+        LoadNextCfgBit(cfg);
+        /* Then wait for the bit to clock in before loading the next bit. */
+        LisWaitForClkRiseEdge(); // bit is read on rising edge
+        LisWaitForClkFallEdge(); // hold bit until falling edge
+    }
+
+    ExitLisProgrammingMode();
+}
+
+inline void LoadNextCfgBit(uint32_t cfg)
+{
+/* expect this function to be inlined when called within this translation unit */
+/* to allow for inlining *outside*: */
+/*     - move this body to the header */
+/*     - move declaration into this file */
+/*     - prefix name with `Lis` */
+    if (cfg & (1<<0)) { MacroSetBit(Lis_port1, Lis_Rst); }
+    else { MacroClearBit(Lis_port1, Lis_Rst); }
+}
+inline void EnterLisProgrammingMode(void)
+{
+    /* Do all setup of Lis_Rst while Lis_Clk is low */
+    LisWaitForClkFallEdge();
+    /* Assert Pix_Select to program the LIS */
+    MacroSetBit(Lis_port2, Lis_PixSelect);
+}
+inline void ExitLisProgrammingMode(void)
+{
+    /* Reset is low during normal (not programming mode) operation. */
+    MacroClearBit(Lis_port1, Lis_Rst);
+    /* De-assert Pix_Select to stop programming the LIS. */
+    MacroClearBit(Lis_port2, Lis_PixSelect);
+}
+
 static void SetPixSelectAsOutput(void)
 {
     SetBit(Lis_ddr2, Lis_PixSelect);

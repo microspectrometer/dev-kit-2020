@@ -19,7 +19,7 @@ path_shared-lib_mock-c := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/
 CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 	-I${path_shared-lib_mock-c}include -I${path_shared-lib_mock-c}test/unity \
 	-Iinclude -Isrc \
-	-g -Wall -Wextra -pedantic
+	-g -Wall -Wextra -pedantic -Winline
 LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
 
 # List the libs under dev:
@@ -67,7 +67,7 @@ obj_shared-lib_mock-c := ${mock-c-objects} ${obj_unity}
 build/%.md: build/%.exe
 	$^ > $@
 build/%.exe: src/%.c ${obj_shared-lib_mock-c}
-	${compiler} $^ -o $@ $(LFLAGS) $(CFLAGS)
+	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 
 #=====[ unit-test recipe ]=====
 ${test-output}: build/TestSuite.exe
@@ -76,46 +76,35 @@ test-runner := test/test_runner.c
 avr-asm-macros := test/fake/AvrAsmMacros.c
 build/TestSuite.exe: ${test-runner} ${avr-asm-macros} ${obj_dev-libs} ${obj_libs-tested} \
 ${obj_libs-tested-with-mocks} ${obj_libs-mocked} ${obj_shared-lib_mock-c}
-	${compiler} $^ -o $@ $(LFLAGS) $(CFLAGS) \
-		-Itest
+	${compiler} $(CFLAGS) -Itest $^ -o $@ $(LFLAGS)
 
 #=====[ Explicit rule for obj_dev-libs ]=====
 ${obj_dev-libs}: build/%.o: src/%.c
-	${compiler} -c $^ -o $@ $(CFLAGS)
+	${compiler} $(CFLAGS) -c $^ -o $@
 
 #=====[ Explicit rule for obj_libs-tested ]=====
 ${obj_libs-tested}: build/%.o: test/%.c
-	${compiler} -c $^ -o $@ $(CFLAGS)
+	${compiler} $(CFLAGS) -c $^ -o $@
 
 #=====[ Explicit rule for obj_libs-tested-with-mocks ]=====
 ${obj_libs-tested-with-mocks}: build/%.o: test/%.c
-	${compiler} -c $^ -o $@ $(CFLAGS)
+	${compiler} $(CFLAGS) -c $^ -o $@
 
 #=====[ Explicit rule for obj_libs-mocked ]=====
 ${obj_libs-mocked}: build/%.o: test/%.c
-	${compiler} -c $^ -o $@ $(CFLAGS)
+	${compiler} $(CFLAGS) -c $^ -o $@
 
-
-#;mc
-.PHONY: clean-all-builds
+# unused:
+# rm -f build/${file-stem}.exe
+# ;mct to clean out test only
+# ;mca to clean all
+.PHONY: clean-TestSuite clean-all-builds
+clean-TestSuite:
+	rm -f build/TestSuite.exe
 clean-all-builds:
 	rm -f build/TestSuite.exe
-	# rm -f build/${file-stem}.exe
-	# rm -f ${obj_dev-libs}
-	# rm -f ${obj_libs-tested}
-	# rm -f ${obj_libs-tested-with-mocks}
-	# rm -f ${obj_libs-mocked}
-	# rm -f build/ReadWriteBits.o
-	# rm -f build/test_ReadWriteBits.o
-	# rm -f build/Lis.o
-	# rm -f build/Pwm.o
-	# rm -f build/test_Pwm.o
-	# rm -f build/mock_Pwm.o
-	# rm -f build/mock_Lis.o
-	# rm -f build/test_Lis_MockUps.o
-	# rm -f build/UartSpi.o
-	# rm -f build/Spi.o
-	# rm -f build/test_Spi.o
-	# rm -f build/mock_Spi.o
-	# rm -f build/test_Spi_MockUps.o
+	rm -f ${obj_dev-libs}
+	rm -f ${obj_libs-tested}
+	rm -f ${obj_libs-tested-with-mocks}
+	rm -f ${obj_libs-mocked}
 

@@ -50,5 +50,16 @@ extern uint8_t const Lis_Clk;       // port1 and ddr1
 extern uint8_t const Lis_Rst;       // port1 and ddr1
 extern uint8_t const Lis_Sync;      // pin1 and ddr1
 
+/* ----------------------------------------- */
+/* | 2019-03-01: refactoring WriteCfgToLis | */
+/* ----------------------------------------- */
+/* =====[ Internal helper functions, not part of API ]===== */
+void LoadNextCfgBit(uint32_t cfg);
+void EnterLisProgrammingMode(void);
+void ExitLisProgrammingMode(void);
+/* =====[ API ]===== */
+void LisWriteCfg(uint32_t cfg);
+/* ----------------------------------------- */
+
 /* TODO: rename Lis_port1 Lis_portio and Lis_port2 Lis_portprog */
 #endif // _LIS_H

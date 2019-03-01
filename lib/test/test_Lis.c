@@ -30,6 +30,58 @@
 // [ ] LisExpose
     // [ ] LisExpose_exposes_pixels_for_nticks_of_LIS_clock
 
+/* =====[ LisWriteCfg ]===== */
+/* This is an API call for the client to load a configuration into the LIS. */
+void LisWriteCfg_outputs_cfg_bits_on_Lis_Rst_pin(void) // 4 bytes: 28 bits
+{
+    /* =====[ Setup ]===== */
+    *Lis_port1 = 0x00; // fake port with Lis_Rst pin
+    /* =====[ Operate ]===== */
+    uint32_t cfg = 0xFFFFFFFF; // cfg to write to Lis
+    LisWriteCfg(cfg);
+    /* =====[ Test ]===== */
+    /* This only tests the first last bit is written correctly. */
+    /* TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_ddr1); */
+    /* Shoot, no, I can't even test that. */
+    /* I have to mock this if I want to be sure it's working correclty. */
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+
+void LoadNextCfgBit_outputs_bit_0_of_cfg_on_Lis_Rst_pin(void)
+{
+    /* =====[ Setup ]===== */
+    *Lis_port1 = 0xFF; // fake port with Lis_Rst pin
+    /* =====[ Operate ]===== */
+    uint32_t cfg = 0xFFFFFFFF; // cfg to write to Lis
+    LoadNextCfgBit(cfg);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_port1);
+    /* =====[ Operate ]===== */
+    cfg = 0xFFFFFFFE; // cfg to write to Lis
+    LoadNextCfgBit(cfg);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+}
+void EnterLisProgrammingMode_outputs_high_on_Lis_PixSelect_pin(void)
+{
+    /* =====[ Setup ]===== */
+    *Lis_port2 = 0x00; // fake port with Lis_PixSelect pin
+    /* =====[ Operate ]===== */
+    EnterLisProgrammingMode();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Lis_PixSelect, *Lis_port2);
+}
+void ExitLisProgrammingMode_outputs_low_on_pins_Lis_PixSelect_and_Rst(void)
+{
+    /* =====[ Setup ]===== */
+    *Lis_port1 = 0xFF; // fake port with Lis_Rst pin
+    *Lis_port2 = 0xFF; // fake port with Lis_PixSelect pin
+    /* =====[ Operate ]===== */
+    ExitLisProgrammingMode();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    TEST_ASSERT_BIT_LOW(Lis_PixSelect, *Lis_port2);
+}
 //
 /* =====[ LisInit ]===== */
 //
