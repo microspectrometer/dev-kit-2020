@@ -6,6 +6,7 @@
 void SetUp_UsbRead(void); void TearDown_UsbRead(void);
 void UsbRead_returns_0_if_there_was_no_data_to_read(void);
 void UsbRead_returns_N_if_there_were_N_bytes_to_read(void);
+void UsbReadN_reads_N_bytes_and_returns_num_bytes_read(void);
 void UsbRead_turns_LED_red_if_there_was_no_data_to_read(void);
 void UsbRead_copies_bytes_to_the_input_read_buffer(void);
 /* ---------------------------------------------------------------------- */
@@ -37,5 +38,15 @@ void SetUp_UsbHasRoomToWrite(void); void TearDown_UsbHasRoomToWrite(void);
 void UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full(void);
 void UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full(void);
 
+/* =====[ WIP: Clean Command Parsing with jump tables started 2019-03-01 ]===== */
+void LookupCmd_returns_Nth_fn_for_Nth_key(void);
+void LookupCmd_returns_NULL_if_key_is_not_in_jump_table(void);
+void LookupCmd_example_calling_the_command(void);
+void LookupCmd_example_storing_the_returned_pointer(void);
+void UsbWriteStatusOk_tells_UsbHost_command_was_success(void);
+void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void);
+void LookupCmd_sad_example_using_UsbWriteStatus_API(void);
+void LookupCmd_happy_example_using_UsbWriteStatus_API(void);
+void CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes(void);
 
 #endif // _TEST_USB_H

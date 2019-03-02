@@ -128,6 +128,7 @@ void DevelopingUsb(bool run_test) {if (run_test) {
     setUp = SetUp_UsbRead; tearDown = TearDown_UsbRead;
     RUN_TEST(UsbRead_returns_0_if_there_was_no_data_to_read);
     RUN_TEST(UsbRead_returns_N_if_there_were_N_bytes_to_read);
+    RUN_TEST(UsbReadN_reads_N_bytes_and_returns_num_bytes_read);
     RUN_TEST(UsbRead_turns_LED_red_if_there_was_no_data_to_read);
     RUN_TEST(UsbRead_copies_bytes_to_the_input_read_buffer);
     //
@@ -230,8 +231,10 @@ void DevelopingWriteCfgToLis(bool run_test) {if (run_test) {
     RUN_TEST(LoadNextCfgBit_outputs_bit_0_of_cfg_on_Lis_Rst_pin);
     RUN_TEST(EnterLisProgrammingMode_outputs_high_on_Lis_PixSelect_pin);
     RUN_TEST(ExitLisProgrammingMode_outputs_low_on_pins_Lis_PixSelect_and_Rst);
-    printf("\n# WIP:\n");
+    //
+    setUp = SetUp_LisWriteCfg; tearDown = TearDown_LisWriteCfg;
     RUN_TEST(LisWriteCfg_outputs_cfg_bits_on_Lis_Rst_pin);
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
 }}
 void DevelopingLis(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
@@ -281,6 +284,19 @@ void DevelopingUsbReadOneByte(bool run_test) {if (run_test) {
     RUN_TEST(UsbReadOneByte_returns_1_if_there_is_at_least_one_byte_to_read);
     RUN_TEST(UsbReadOneByte_example_readings_several_bytes);
 }}
+void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(LookupCmd_returns_Nth_fn_for_Nth_key);
+    RUN_TEST(LookupCmd_returns_NULL_if_key_is_not_in_jump_table);
+    RUN_TEST(LookupCmd_example_calling_the_command);
+    RUN_TEST(LookupCmd_example_storing_the_returned_pointer);
+    RUN_TEST(UsbWriteStatusOk_tells_UsbHost_command_was_success);
+    RUN_TEST(UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command);
+    RUN_TEST(LookupCmd_sad_example_using_UsbWriteStatus_API);
+    RUN_TEST(LookupCmd_happy_example_using_UsbWriteStatus_API);
+    RUN_TEST(CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes);
+
+}}
 int main()
 {
     UNITY_BEGIN();
@@ -298,6 +314,7 @@ int main()
     DevelopingPwm             (Nope);
     DevelopingAuto            (Nope); // tabled -- see test
     DevelopingUsbReadOneByte  (Nope);
-    DevelopingWriteCfgToLis   (Yep);
+    DevelopingWriteCfgToLis   (Nope);
+    UsbCmdParser_JumpTableSandbox (Yep);
     return UNITY_END();
 }

@@ -32,19 +32,39 @@
 
 /* =====[ LisWriteCfg ]===== */
 /* This is an API call for the client to load a configuration into the LIS. */
+void SetUp_LisWriteCfg(void){
+    SetUpMock_LisWriteCfg();    // create the mock object to record calls
+    // other setup code
+}
+void TearDown_LisWriteCfg(void){
+    TearDownMock_LisWriteCfg();    // destroy the mock object
+    // other teardown code
+}
 void LisWriteCfg_outputs_cfg_bits_on_Lis_Rst_pin(void) // 4 bytes: 28 bits
 {
     /* =====[ Setup ]===== */
-    *Lis_port1 = 0x00; // fake port with Lis_Rst pin
-    /* =====[ Operate ]===== */
+    /* *Lis_port1 = 0x00; // fake port with Lis_Rst pin */
     uint32_t cfg = 0xFFFFFFFF; // cfg to write to Lis
-    LisWriteCfg(cfg);
     /* =====[ Test ]===== */
     /* This only tests the first last bit is written correctly. */
     /* TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_ddr1); */
     /* Shoot, no, I can't even test that. */
-    /* I have to mock this if I want to be sure it's working correclty. */
-    TEST_FAIL_MESSAGE("Implement test.");
+    /* I have to mock this to be sure it's working correctly. */
+    /* =====[ Set Expectations ]===== */
+    /* Expect 28 calls (one per bit of cfg) */
+    uint8_t ncfgbits = 28;
+    for (uint8_t cfgbit_i = 0; cfgbit_i < ncfgbits; cfgbit_i++)
+    {
+        _MOCK_LIS_H; Expect_LoadNextCfgBit(cfg);
+    }
+    /* =====[ Operate ]===== */
+    LisWriteCfg(cfg);
+    /* =====[ Mockist Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        RanAsHoped(mock),           // If this is false,
+        WhyDidItFail(mock)          // print this message.
+        );
+    /* I'm still not sure how to check that the right values showed up on Rst. */
 }
 
 void LoadNextCfgBit_outputs_bit_0_of_cfg_on_Lis_Rst_pin(void)

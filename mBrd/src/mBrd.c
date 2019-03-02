@@ -785,6 +785,7 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
     } \
 } while (0)
 
+// TODO: Replace this with lib/Lis.c LisWriteCfg(uint32_t cfg)
 void WriteCfgToLis(void)
 {
     MacroToggleBit(DebugLeds_port, debug_led3);

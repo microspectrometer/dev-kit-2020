@@ -119,3 +119,24 @@ void TearDownMock_LisClkOff(void)  // FUT
     Unstub_PwmDisableOutput();  // DOF
 }
 
+static void (*LoadNextCfgBit_Saved)(uint32_t);
+static void Stub_LoadNextCfgBit(void) {
+    LoadNextCfgBit_Saved = LoadNextCfgBit;
+    LoadNextCfgBit = LoadNextCfgBit_Stubbed;
+}
+static void Unstub_LoadNextCfgBit(void) {
+    LoadNextCfgBit = LoadNextCfgBit_Saved;
+}
+void SetUpMock_LisWriteCfg(void)  // FUT
+{
+    mock = Mock_new();
+    //
+    Stub_LoadNextCfgBit();  // DOF
+}
+void TearDownMock_LisWriteCfg(void)  // FUT
+{
+    Mock_destroy(mock); mock = NULL;
+    //
+    Unstub_LoadNextCfgBit();  // DOF
+}
+

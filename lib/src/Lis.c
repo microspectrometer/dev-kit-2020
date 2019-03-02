@@ -12,9 +12,7 @@ void LisWriteCfg(uint32_t cfg)
     /*     gain_1x: G2 G1 = 0 0 */
     /* next are 25 bits to select pixels by row in groups of 154 */
     /* use these 25 bits to select entire rows (groups of 784) */
-
     EnterLisProgrammingMode();
-
     uint8_t ncfgbits = 28;
     for (uint8_t cfgbit_i = 0; cfgbit_i < ncfgbits; cfgbit_i++)
     {
@@ -23,12 +21,13 @@ void LisWriteCfg(uint32_t cfg)
         LisWaitForClkRiseEdge(); // bit is read on rising edge
         LisWaitForClkFallEdge(); // hold bit until falling edge
     }
-
     ExitLisProgrammingMode();
 }
 
-inline void LoadNextCfgBit(uint32_t cfg)
+static inline void LoadNextCfgBit_Implementation(uint32_t cfg)
 {
+// TODO: is this still going to be inlined now that the call must go through the
+// function pointer?
 /* expect this function to be inlined when called within this translation unit */
 /* to allow for inlining *outside*: */
 /*     - move this body to the header */
@@ -37,6 +36,8 @@ inline void LoadNextCfgBit(uint32_t cfg)
     if (cfg & (1<<0)) { MacroSetBit(Lis_port1, Lis_Rst); }
     else { MacroClearBit(Lis_port1, Lis_Rst); }
 }
+void (*LoadNextCfgBit)(uint32_t) = LoadNextCfgBit_Implementation;
+
 inline void EnterLisProgrammingMode(void)
 {
     /* Do all setup of Lis_Rst while Lis_Clk is low */
@@ -128,3 +129,4 @@ void LisExpose(uint16_t nticks)
     // oscilloscope.
     nticks++;
 }
+

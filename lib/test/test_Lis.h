@@ -27,7 +27,7 @@ void LisClkOff_idles_Clk_low(void);
 void LoadNextCfgBit_outputs_bit_0_of_cfg_on_Lis_Rst_pin(void);
 void EnterLisProgrammingMode_outputs_high_on_Lis_PixSelect_pin(void);
 void ExitLisProgrammingMode_outputs_low_on_pins_Lis_PixSelect_and_Rst(void);
-/* WIP */
+void SetUp_LisWriteCfg(void); void TearDown_LisWriteCfg(void);
 void LisWriteCfg_outputs_cfg_bits_on_Lis_Rst_pin(void);
 /* ----------------------------------------- */
 

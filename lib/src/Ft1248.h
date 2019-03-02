@@ -58,6 +58,6 @@ extern uint8_t const FtCmd_Write;
 extern void (*FtSendCommand)(uint8_t FtCmd);
 extern bool (*FtBusTurnaround)(void);
 extern bool (*FtRead)(uint8_t *read_buffer);
-extern bool (*FtWrite)(uint8_t *write_buffer);
+extern bool (*FtWrite)(uint8_t const * write_buffer);
 
 #endif // _FT1248_H

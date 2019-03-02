@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h> // define 'bool' for c-compilers
 
+/* This sucks. Why is it so complicated. Make this like the other headers. */
+/* The ports and pins should be extern so that a test can easily redefine them. */
 //                      =====[ Porcelain ]=====
 void DebugLedInit( // cfg i/o, make LED lit green
     uint8_t volatile * const DDR_register_address,

@@ -431,6 +431,32 @@ void UsbRead_returns_N_if_there_were_N_bytes_to_read(void)
     //=====[ Test ]=====
     TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, num_bytes_read);
 }
+void UsbReadN_reads_N_bytes_and_returns_num_bytes_read(void)
+{
+    //=====[ Mock-up test scenario by defining return values ]=====
+    //
+    // FtBusTurnaround returns a bool
+    FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
+    //
+    // FtRead returns a bool: ACK:=true, NAK:=false, num_bytes:=num_ACKs
+    // Simulate scenario of CmdCfgLis reading 4 bytes.
+    bool ack_nak_sequence[] = {true, true, true, true, false};
+    FtRead_StubbedReturnValue = ack_nak_sequence;
+    //=====[ Check test code for desired scenario ]=====
+    uint16_t num_bytes_in_buffer = sizeof(ack_nak_sequence)-1;
+    TEST_ASSERT_EQUAL_UINT16(4, num_bytes_in_buffer);
+    //
+    // FtRead copies data from rx buffer to address of buffer passed in.
+    uint8_t fake_rx_buffer[] = {0, 1, 2, 3};
+    TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, sizeof(fake_rx_buffer));
+    FtRead_StubbedDataBusPtr = fake_rx_buffer;
+    //
+    /* =====[ Operate ]===== */
+    uint8_t read_buffer[num_bytes_in_buffer];
+    uint16_t nbytes_read = UsbReadN(read_buffer, num_bytes_in_buffer);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, nbytes_read);
+}
 void UsbRead_turns_LED_red_if_there_was_no_data_to_read(void)
 {
     //=====[ Mock-up test scenario by defining return values ]=====
@@ -614,4 +640,112 @@ void UsbReadOneByte_example_readings_several_bytes(void)
     TEST_ASSERT_EQUAL_HEX8(gain_1x, cfg.gain_select);
     UsbReadOneByte(&cfg.row_select);
     TEST_ASSERT_EQUAL_HEX8(all_rows, cfg.row_select);
+}
+/* =====[ Jump Table Sandbox ]===== */
+/* Functions of type `UsbCmd` take nothing and return nothing. */
+void LookupCmd_returns_Nth_fn_for_Nth_key(void){
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_EQUAL(CmdLedRed, LookupCmd(CmdLedRed_key));
+    TEST_ASSERT_EQUAL(CmdLedGreen, LookupCmd(CmdLedGreen_key));
+}
+static jump_index const CmdBlackHat_key = 255; // out-of-bounds: return NULL ptr
+void LookupCmd_returns_NULL_if_key_is_not_in_jump_table(void){
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_NULL(LookupCmd(CmdBlackHat_key));
+}
+void LookupCmd_example_calling_the_command(void){
+    //TODO: erase this when I fix the DebugLed.h hardware interface.
+    //=====[ Stupid Setup ]=====
+    /* DebugLed.h does not follow the simple extern everything format. */
+    uint8_t fake_ddr, fake_port, fake_pin; // compiler picks safe fake addresses
+    uint8_t *DebugLed_port = &fake_port; uint8_t debug_led = 3; // test only needs these two
+    DebugLedInit( &fake_ddr, DebugLed_port, &fake_pin, debug_led); // pass fakes to init
+    //=====[ Setup ]=====
+    *DebugLed_port = 0x00; // fake port with DebugLed pin green
+    /* ------------------------------- */
+    /* =====[ Operate ]===== */
+    /* Note the parentheses to make it a function call */
+    LookupCmd(CmdLedRed_key)(); // call the function returned by lookup
+    /* ------------------------------- */
+    //=====[ Test ]=====
+    TEST_ASSERT_BIT_HIGH(debug_led, *DebugLed_port);
+}
+void LookupCmd_example_storing_the_returned_pointer(void){
+    /* =====[ Setup ]===== */
+    jump_index cmd;
+    /* =====[ Operate ]===== */
+    cmd = CmdLedRed_key;
+    UsbCmd* CmdFn = LookupCmd(cmd);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL(CmdLedRed, CmdFn);
+    /* =====[ Operate ]===== */
+    cmd = CmdBlackHat_key;
+    CmdFn = LookupCmd(cmd);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_NULL(CmdFn);
+}
+/* TODO: write API for a caller of LookupCmd to respond to all command keys with: */
+/* 0 (OK) */
+/* or non-0 (error code) */
+    /* If command was understood and everything followed a happy path, then first */
+    /* byte sent back is always 0 (OK) followed by extra bytes if appropriate. */
+    /* If first byte back is *not* zero, look at the error code and see how to */
+    /* interpret what follows. */
+    /* ---error codes--- */
+    /* 1: command key is not recognized */
+/* This implies I want to return a function pointer to let the caller send the */
+/* appropriate response to the USB host. */
+void UsbWriteStatusOk_tells_UsbHost_command_was_success(void){
+    /* =====[ Operate and Test]===== */
+    TEST_ASSERT_TRUE(UsbWriteStatusOk());
+    /* Wrap the write in a conditional if you are paranoid and check if the */
+    /* status was sent. */
+}
+void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void){
+    /* =====[ Operate and Test ]===== */
+    jump_index cmd = CmdBlackHat_key;
+    TEST_ASSERT_EQUAL(2,UsbWriteStatusInvalid(cmd));
+    /* Wrap the write in a conditional if you are paranoid and check if the */
+    /* status was sent. */
+}
+void LookupCmd_sad_example_using_UsbWriteStatus_API(void){
+    /* =====[ Setup ]===== */
+    jump_index cmd = CmdBlackHat_key; // receive an invalid command
+    /* =====[ Operate Example of Invalid Command (no test here) ]===== */
+    UsbCmd* CmdFn = LookupCmd(cmd);
+    if (CmdFn == NULL) // sad
+    {
+        /* Send two bytes: error-code and cmd */
+        UsbWriteStatusInvalid(cmd);
+    }
+    else CmdFn();
+}
+void LookupCmd_happy_example_using_UsbWriteStatus_API(void){
+    /* =====[ Setup ]===== */
+    jump_index cmd = CmdLedRed_key;
+    /* =====[ Operate Example of Valid Command (no test here) ]===== */
+    UsbCmd* CmdFn = LookupCmd(cmd);
+    if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
+    else CmdFn();
+    /* It is the CmdFn() responsibility to send UsbWriteStatusOk() at the end of a */
+    /*     successful command (or some other code). */
+    /* If a CmdFn() sends additional data, it must send UsbWriteStatusOk() prior to */
+    /* sending the requested data. */
+}
+void CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes(void){
+    /* =====[ Setup ]===== */
+    jump_index cmd = CmdCfgLis_key;
+    /* =====[ Operate ]===== */
+    UsbCmd* CmdFn = LookupCmd(cmd);
+     // Make sure the command is in the jump table.
+    TEST_ASSERT_NOT_NULL(CmdFn);
+    if (CmdFn == NULL) UsbWriteStatusInvalid(cmd); // just showing the test as example
+    else CmdFn(); // This is `CmdCfgLis()`
+    //
+    /* =====[ Test ]===== */
+    //
+    /* CmdFn() sends additional data, it must send UsbWriteStatusOk() prior to */
+    /* sending the requested data. */
+    /* [ ] How do I test that this wrote StatusOK and then echoed the 4 bytes? */
+    /*     I can check how many times UsbWrite is called if I mock it out. */
 }

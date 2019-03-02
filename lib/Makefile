@@ -78,6 +78,9 @@ build/TestSuite.exe: ${test-runner} ${avr-asm-macros} ${obj_dev-libs} ${obj_libs
 ${obj_libs-tested-with-mocks} ${obj_libs-mocked} ${obj_shared-lib_mock-c}
 	${compiler} $(CFLAGS) -Itest $^ -o $@ $(LFLAGS)
 
+# =====[ Explicit rule to update mock-c object files if that lib changes ]=====
+# ${obj_shared-lib_mock-c}: ${path_shared-lib_mock-c}build/%.o: src/%.c
+
 #=====[ Explicit rule for obj_dev-libs ]=====
 ${obj_dev-libs}: build/%.o: src/%.c
 	${compiler} $(CFLAGS) -c $^ -o $@

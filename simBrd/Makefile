@@ -76,8 +76,8 @@ download_flash: build/${board-name}.elf
 # Test USB communication with the AVR programmer.
 .PHONY: test_programmer_is_connected
 test_programmer_is_connected:
-#	atprogram.exe --tool atmelice --interface isp --device atmega328p info
-	atprogram.exe --tool avrispmk2 --interface isp --device atmega328p info
+	atprogram.exe --tool atmelice --interface isp --device atmega328p info
+	# atprogram.exe --tool avrispmk2 --interface isp --device atmega328p info
 # Check voltage on target PCB. 2018-03-20: I see 2.94V.
 # This is included in the output of 'info'.
 .PHONY: display_target_voltage

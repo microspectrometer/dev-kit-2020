@@ -77,7 +77,7 @@ static bool FtRead_Implementation(uint8_t *read_buffer)
 }
 bool (*FtRead)(uint8_t *read_buffer) = FtRead_Implementation;
 
-static bool FtWrite_Implementation(uint8_t *write_buffer)
+static bool FtWrite_Implementation(uint8_t const *write_buffer)
 {
     FtLetMasterDriveBus();
     FtPushData();                   // tells everyone to output to bus
@@ -87,7 +87,7 @@ static bool FtWrite_Implementation(uint8_t *write_buffer)
     return true;
 }
 
-bool (*FtWrite)(uint8_t *write_buffer) = FtWrite_Implementation;
+bool (*FtWrite)(uint8_t const *write_buffer) = FtWrite_Implementation;
 //=====[ Low-level API ]=====
 static void FtActivateInterface_Implementation(void)
 {

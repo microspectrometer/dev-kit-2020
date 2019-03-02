@@ -54,7 +54,7 @@ extern uint8_t const Lis_Sync;      // pin1 and ddr1
 /* | 2019-03-01: refactoring WriteCfgToLis | */
 /* ----------------------------------------- */
 /* =====[ Internal helper functions, not part of API ]===== */
-void LoadNextCfgBit(uint32_t cfg);
+extern void (*LoadNextCfgBit)(uint32_t); // extern fp for mocking out
 void EnterLisProgrammingMode(void);
 void ExitLisProgrammingMode(void);
 /* =====[ API ]===== */
