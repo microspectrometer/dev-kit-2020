@@ -292,9 +292,23 @@ void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
     RUN_TEST(LookupCmd_example_storing_the_returned_pointer);
     RUN_TEST(UsbWriteStatusOk_tells_UsbHost_command_was_success);
     RUN_TEST(UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command);
+    RUN_TEST(UsbWriteStatusMismatch_sends_error_byte_and_echoes_invalid_command);
+    RUN_TEST(UsbWriteStatusTimedOut_sends_error_byte_and_echoes_invalid_command);
     RUN_TEST(LookupCmd_sad_example_using_UsbWriteStatus_API);
     RUN_TEST(LookupCmd_happy_example_using_UsbWriteStatus_API);
     RUN_TEST(CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes);
+    RUN_TEST(CfgTurnsOffAllPixels_returns_true_if_cfg_turns_off_all_pixels);
+    RUN_TEST(CfgTurnsOffAllPixels_ignores_the_3LSB_and_4MSB_of_cfg);
+    RUN_TEST(CfgTurnsOffAllPixels_returns_false_if_any_pixels_are_on);
+    RUN_TEST(XOR_returns_true_if_a_is_true_and_b_is_false);
+    RUN_TEST(CfgTurnsRowPartiallyOn_returns_false_if_cfg_turns_on_all_of_row1);
+    RUN_TEST(CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row1);
+    RUN_TEST(CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row5);
+    RUN_TEST(CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds);
+    RUN_TEST(CfgBytesAreValid_checks_against_all_255_valid_configs); 
+    printf("\n# WIP:\n");
+    RUN_TEST(CmdCfgLis_returns_StatusMismatch_if_cfg_bytes_are_invalid);
+    RUN_TEST(CmdCfgLis_sends_cfg_to_mBrd_and_reads_back_new_cfg_before_reporting_StatusOk);
 
 }}
 int main()

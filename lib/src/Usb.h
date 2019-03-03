@@ -40,5 +40,9 @@ uint8_t UsbWriteStatusMismatch(jump_index bad_args_cmd); // args are wrong val
 uint8_t UsbWriteStatusTimedOut(jump_index missing_args_cmd); // not enough args
 // TODO: rename UsbRead to UsbReadAll then UsbReadN to UsbRead
 uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes);
+bool CfgBytesAreValid(uint8_t const *cfg_bytes);
+bool CfgTurnsOffAllPixels(uint8_t const *cfg_bytes);
+bool CfgTurnsRowPartiallyOn(uint8_t const *cfg_bytes, uint8_t row_number);
+bool XOR(bool a, bool b);
 
 #endif // _USB_H

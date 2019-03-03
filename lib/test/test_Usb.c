@@ -695,18 +695,90 @@ void LookupCmd_example_storing_the_returned_pointer(void){
     /* 1: command key is not recognized */
 /* This implies I want to return a function pointer to let the caller send the */
 /* appropriate response to the USB host. */
-void UsbWriteStatusOk_tells_UsbHost_command_was_success(void){
-    /* =====[ Operate and Test]===== */
-    TEST_ASSERT_TRUE(UsbWriteStatusOk());
-    /* Wrap the write in a conditional if you are paranoid and check if the */
-    /* status was sent. */
+void UsbWriteStatusOk_tells_UsbHost_command_was_success(void)
+{
+    /* =====[ Setup ]===== */
+    jump_index cmd = CmdCfgLis_key;
+    /* =====[ Operate ]===== */
+    /* StatusOk means the command is valid and was successfully carried out. */
+    /* So LookupCmd returns a non-NULL function pointer. */
+    TEST_ASSERT_NOT_NULL(LookupCmd(cmd));
+    /* simBrd calls CmdFn() and execution enters CmdCfgLis() */
+    /* Fake that CmdCfgLis() runs without any errors. */
+    bool success = true;
+    /* Get a value to unit test without going mock crazy. */
+    bool status_sent = false;
+    /* =====[ Operate ]===== */
+    /* The conditional check shows how UsbWriteStatusOk is used in CmdCfgLis. */
+    if (!success) { ; /* Placeholder for code to send error code to UsbHost.*/ }
+    else // received valid command and parameters
+    {
+        ; // Placeholder for code that does the command.
+        status_sent = UsbWriteStatusOk();
+        ; // Placeholder for code that sends updated Lis cfg value to UsbHost.
+    };
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE(status_sent);
 }
-void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void){
-    /* =====[ Operate and Test ]===== */
+void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void)
+{
+    /* =====[ Setup ]===== */
     jump_index cmd = CmdBlackHat_key;
-    TEST_ASSERT_EQUAL(2,UsbWriteStatusInvalid(cmd));
-    /* Wrap the write in a conditional if you are paranoid and check if the */
-    /* status was sent. */
+    /* =====[ Operate ]===== */
+    /* StatusInvalid means the command is not valid. */
+    /* So LookupCmd returns a NULL function pointer. */
+    UsbCmd* CmdFn = LookupCmd(cmd);
+    TEST_ASSERT_NULL(CmdFn);
+    /* Get a value to unit test without going mock crazy. */
+    uint8_t num_status_bytes_sent = 0;
+    /* =====[ Operate ]===== */
+    /* The conditional check shows how UsbWriteStatusInvalid is used in simBrd. */
+    if (CmdFn == NULL) num_status_bytes_sent = UsbWriteStatusInvalid(cmd);
+    else CmdFn();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL(2, num_status_bytes_sent);
+}
+void UsbWriteStatusMismatch_sends_error_byte_and_echoes_invalid_command(void)
+{
+    /* =====[ Setup ]===== */
+    jump_index cmd = CmdCfgLis_key;
+    /* A mismatch status means the command is valid, but not its parameters. */
+    /* So LookupCmd returns a non-NULL function pointer. */
+    TEST_ASSERT_NOT_NULL(LookupCmd(cmd));
+    /* simBrd calls CmdFn() and execution enters CmdCfgLis() */
+    /* Fake that CmdCfgLis() has an error: CfgByesAreValid() returns false. */
+    bool cfg_bytes_are_valid = false;
+    /* Get a value to unit test without going mock crazy. */
+    uint8_t num_status_bytes_sent = 0;
+    /* =====[ Operate ]===== */
+    /* Here is how UsbWriteStatusMismatch is used in CmdCfgLis. */
+    if (!cfg_bytes_are_valid) { num_status_bytes_sent = UsbWriteStatusMismatch(cmd); }
+    else {; /* received valid command and parameters, go configure the Lis */ }
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL(2,num_status_bytes_sent);
+}
+void UsbWriteStatusTimedOut_sends_error_byte_and_echoes_invalid_command(void){
+    /* =====[ Setup ]===== */
+    jump_index cmd = CmdCfgLis_key;
+    /* TimedOut means the command is valid, but a timer expired */
+    /* before receiving the expected number of bytes. */
+    /* So LookupCmd returns a non-NULL function pointer. */
+    TEST_ASSERT_NOT_NULL(LookupCmd(cmd));
+    /* simBrd calls CmdFn() and execution enters CmdCfgLis() */
+    /* CmdCfgLis() calls UsbRead to read the four cfg bytes. */
+    /* Execution enters UsbRead, but UsbRead timeouts and reads < 4 bytes. */
+    /* Fake that UsbReadN() returns nbytes_read < 4. */
+    bool nybtes_read_is_less_than_num_cfgbytes = true;
+    /* Get a value to unit test without going mock crazy. */
+    uint8_t num_status_bytes_sent = 0;
+    /* =====[ Operate ]===== */
+    /* Here is how UsbWriteStatusTimedOut is used in CmdCfgLis. */
+    if (nybtes_read_is_less_than_num_cfgbytes)
+    {
+        num_status_bytes_sent = UsbWriteStatusTimedOut(CmdCfgLis_key);
+    }
+    else {; /* number of bytes is correct, go check the bytes are valid */ }
+    TEST_ASSERT_EQUAL(2,num_status_bytes_sent);
 }
 void LookupCmd_sad_example_using_UsbWriteStatus_API(void){
     /* =====[ Setup ]===== */
@@ -746,6 +818,139 @@ void CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes(void){
     //
     /* CmdFn() sends additional data, it must send UsbWriteStatusOk() prior to */
     /* sending the requested data. */
-    /* [ ] How do I test that this wrote StatusOK and then echoed the 4 bytes? */
+    /* [-] How do I test that this wrote StatusOK and then echoed the 4 bytes? */
     /*     I can check how many times UsbWrite is called if I mock it out. */
+    /* Nah, do systems-level tests for this using Python script. */
+}
+void CmdCfgLis_returns_StatusMismatch_if_cfg_bytes_are_invalid(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+void CmdCfgLis_sends_cfg_to_mBrd_and_reads_back_new_cfg_before_reporting_StatusOk(void)
+{
+    TEST_FAIL_MESSAGE("Functionality not implemented yet.");
+}
+void CfgTurnsOffAllPixels_returns_true_if_cfg_turns_off_all_pixels(void)
+{
+    /* =====[ Setup ]===== */
+    /* This is the special case of invalid config: all pixels off. */
+    /* Pixel on/off bits are all zero. Test with all bits zero. */
+    uint8_t const invalid_cfg[] = {0x00, 0x00, 0x00, 0x00};
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE(CfgTurnsOffAllPixels(invalid_cfg));
+}
+void CfgTurnsOffAllPixels_ignores_the_3LSB_and_4MSB_of_cfg(void)
+{
+    /* =====[ Setup ]===== */
+    /* This is the special case invalid config. */
+    /* Pixel on/off bits are all zero. Test with don't-care bits all one. */
+    uint8_t const invalid_cfg[] = {0xF0, 0x00, 0x00, 0x07};
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE(CfgTurnsOffAllPixels(invalid_cfg));
+}
+void CfgTurnsOffAllPixels_returns_false_if_any_pixels_are_on(void)
+{
+    /* =====[ Setup ]===== */
+    /* There are many (2^25-1) ways for 1 or more of 25 bits to be 1. */
+    /* Just test a few. */
+    uint8_t const cfg_with_1_pixel_on[] = {0xF1, 0x00, 0x00, 0x07};
+    uint8_t const cfg_with_2_pixels_on[] = {0xF1, 0x01, 0x00, 0x07};
+    uint8_t const cfg_with_3_pixels_on[] = {0xF0, 0x00, 0x03, 0x17};
+    /* =====[ Test ]===== */
+    TEST_ASSERT_FALSE(CfgTurnsOffAllPixels(cfg_with_1_pixel_on));
+    TEST_ASSERT_FALSE(CfgTurnsOffAllPixels(cfg_with_2_pixels_on));
+    TEST_ASSERT_FALSE(CfgTurnsOffAllPixels(cfg_with_3_pixels_on));
+}
+void XOR_returns_true_if_a_is_true_and_b_is_false(void)
+{
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE(XOR(true,false));
+    TEST_ASSERT_TRUE(XOR(false,true));
+    TEST_ASSERT_FALSE(XOR(false,false));
+    TEST_ASSERT_FALSE(XOR(true,true));
+}
+void CfgTurnsRowPartiallyOn_returns_false_if_cfg_turns_on_all_of_row1(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t row1 = 1;
+    /*                 xxxx5432154321543215432154321ggb */
+    /* row1        = 0b00000000100001000010000100001001 */
+    uint8_t const cfg_row_all_on[] = {0x00, 0x84, 0x21, 0x09};
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_FALSE( CfgTurnsRowPartiallyOn(cfg_row_all_on, row1) );
+}
+void CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row1(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t row1 = 1;
+    /*                 xxxx5432154321543215432154321ggb */
+    /* row1        = 0b00000000000001000010000100000001 */
+    uint8_t const cfg_row_partly_on[] = {0x00, 0x04, 0x21, 0x01};
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE( CfgTurnsRowPartiallyOn(cfg_row_partly_on, row1) );
+
+}
+void CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row5(void)
+{
+    /* Row 5 is important to test to catch for indexing off-by-one errors. */
+    /* Row_number (not zero-indexed) indexes into */
+    /* the array of row_masks (zero-indexed because it's an array). */
+    /* =====[ Setup ]===== */
+    uint8_t row5 = 5;
+    uint8_t const cfg_row_partly_on[] = {0x00, 0x42, 0x10, 0x81};
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE( CfgTurnsRowPartiallyOn(cfg_row_partly_on, row5) );
+}
+void CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds(void)
+{
+    /* This is to make sure my own programming mistakes don't result in a core */
+    /* dump. But I should be careful with this. It could turn into a hard to */
+    /* trace bug if everything is compiling but CfgBytesAreValid seems to */
+    /* misbehave, all because I accidentally passed it the wrong row number. */
+    /* Not sure there's a better solution though. */
+
+    /* =====[ Setup ]===== */
+    uint8_t row_whoops = 6;
+    /*                 xxxx5432154321543215432154321ggb */
+    /* row1        = 0b00000000100001000010000100001001 */
+    uint8_t const cfg_row_all_on[] = {0x00, 0x84, 0x21, 0x09};
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        CfgTurnsRowPartiallyOn(cfg_row_all_on, row_whoops),
+        "Expected false because cfg turns on *all* of row 1. Received true because "
+        "row number is out of bounds. This is the way CfgTurnsRowPartiallyOn() "
+        "deals with out of bounds row numbers."
+        );
+}
+
+void CfgBytesAreValid_checks_against_all_255_valid_configs(void)
+{
+    /* Plan of attack: check a handful of valid and invalid cases. */
+    /* =====[ Operate and Test ]===== */
+    /* CfgBytes are invalid if they turn off *all* rows. */
+    uint8_t const invalid_cfg[] = {0x00, 0x00, 0x00, 0x00};
+    TEST_ASSERT_FALSE(CfgBytesAreValid(invalid_cfg));
+    /* Here are some standard valid configs. */
+    uint8_t const all_rows_on[] = {0x0F, 0xFF, 0xFF, 0xF9};
+    TEST_ASSERT_TRUE_MESSAGE(CfgBytesAreValid(all_rows_on),"all_rows_on");
+    uint8_t const row_1_on[] = {0x00, 0x84, 0x21, 0x09};
+    TEST_ASSERT_TRUE(CfgBytesAreValid(row_1_on));
+    uint8_t const row_2_on[] = {0x01, 0x08, 0x42, 0x11};
+    TEST_ASSERT_TRUE(CfgBytesAreValid(row_2_on));
+    uint8_t const row_3_on[] = {0x02, 0x10, 0x84, 0x21};
+    TEST_ASSERT_TRUE(CfgBytesAreValid(row_3_on));
+    uint8_t const row_4_on[] = {0x04, 0x21, 0x08, 0x41};
+    TEST_ASSERT_TRUE(CfgBytesAreValid(row_4_on));
+    uint8_t const row_5_on[] = {0x08, 0x42, 0x10, 0x81};
+    TEST_ASSERT_TRUE(CfgBytesAreValid(row_5_on));
+    /* Here is a valid config that is not the default all rows on. */
+    uint8_t const row_1_2_3_on[] = {0x03, 0x9C, 0xE7, 0x39};
+    TEST_ASSERT_TRUE(CfgBytesAreValid(row_1_2_3_on));
+    /* Here are some invalid configs. */
+    uint8_t const invalid_cfg1[] = {0x0F, 0x83, 0xE0, 0xF9};
+    TEST_ASSERT_FALSE(CfgBytesAreValid(invalid_cfg1));
+    uint8_t const invalid_cfg2[] = {0x0F, 0xFF, 0xE0, 0x01};
+    TEST_ASSERT_FALSE(CfgBytesAreValid(invalid_cfg2));
+    uint8_t const invalid_cfg3[] = {0x00, 0x03, 0xFF, 0xF9};
+    TEST_ASSERT_FALSE(CfgBytesAreValid(invalid_cfg3));
 }

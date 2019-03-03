@@ -19,15 +19,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 00001238  00000000  00000000  000041fb  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00001869  00000000  00000000  00005433  2**0
+  8 .debug_line   0000186a  00000000  00000000  00005433  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000007c8  00000000  00000000  00006c9c  2**2
+  9 .debug_frame  000007c8  00000000  00000000  00006ca0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000013ba  00000000  00000000  00007464  2**0
+ 10 .debug_str    000013ba  00000000  00000000  00007468  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00001d46  00000000  00000000  0000881e  2**0
+ 11 .debug_loc    00001d46  00000000  00000000  00008822  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000004b8  00000000  00000000  0000a564  2**0
+ 12 .debug_ranges 000004b8  00000000  00000000  0000a568  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -626,7 +626,7 @@ bool UsbWriteStatusOk(void)
  4b4:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtDeactivateInterface+0x1>
  4b8:	09 95       	icall
  4ba:	89 81       	ldd	r24, Y+1	; 0x01
- 4bc:	87 30       	cpi	r24, 0x07	; 7
+ 4bc:	8f 30       	cpi	r24, 0x0F	; 15
  4be:	09 f0       	breq	.+2      	; 0x4c2 <CmdCfgLis+0xb4>
  4c0:	6a c0       	rjmp	.+212    	; 0x596 <CmdCfgLis+0x188>
  4c2:	8a 81       	ldd	r24, Y+2	; 0x02

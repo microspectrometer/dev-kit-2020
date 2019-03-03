@@ -4,10 +4,25 @@ test/test_runner.c:291:LookupCmd_example_calling_the_command:PASS
 test/test_runner.c:292:LookupCmd_example_storing_the_returned_pointer:PASS
 test/test_runner.c:293:UsbWriteStatusOk_tells_UsbHost_command_was_success:PASS
 test/test_runner.c:294:UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command:PASS
-test/test_runner.c:295:LookupCmd_sad_example_using_UsbWriteStatus_API:PASS
-test/test_runner.c:296:LookupCmd_happy_example_using_UsbWriteStatus_API:PASS
-test/test_runner.c:297:CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes:PASS
+test/test_runner.c:295:UsbWriteStatusMismatch_sends_error_byte_and_echoes_invalid_command:PASS
+test/test_runner.c:296:UsbWriteStatusTimedOut_sends_error_byte_and_echoes_invalid_command:PASS
+test/test_runner.c:297:LookupCmd_sad_example_using_UsbWriteStatus_API:PASS
+test/test_runner.c:298:LookupCmd_happy_example_using_UsbWriteStatus_API:PASS
+test/test_runner.c:299:CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes:PASS
+test/test_runner.c:300:CfgTurnsOffAllPixels_returns_true_if_cfg_turns_off_all_pixels:PASS
+test/test_runner.c:301:CfgTurnsOffAllPixels_ignores_the_3LSB_and_4MSB_of_cfg:PASS
+test/test_runner.c:302:CfgTurnsOffAllPixels_returns_false_if_any_pixels_are_on:PASS
+test/test_runner.c:303:XOR_returns_true_if_a_is_true_and_b_is_false:PASS
+test/test_runner.c:304:CfgTurnsRowPartiallyOn_returns_false_if_cfg_turns_on_all_of_row1:PASS
+test/test_runner.c:305:CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row1:PASS
+test/test_runner.c:306:CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row5:PASS
+test/test_runner.c:307:CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds:PASS
+test/test_runner.c:308:CfgBytesAreValid_checks_against_all_255_valid_configs:PASS
+
+# WIP:
+test/test_runner.c:827:CmdCfgLis_returns_StatusMismatch_if_cfg_bytes_are_invalid:FAIL: Implement test.
+test/test_runner.c:831:CmdCfgLis_sends_cfg_to_mBrd_and_reads_back_new_cfg_before_reporting_StatusOk:FAIL: Functionality not implemented yet.
 
 -----------------------
-9 Tests 0 Failures 0 Ignored 
-OK
+22 Tests 2 Failures 0 Ignored 
+FAIL
