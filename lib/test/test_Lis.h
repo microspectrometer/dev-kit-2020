@@ -24,11 +24,12 @@ void LisClkOff_idles_Clk_low(void);
 /* ----------------------------------------- */
 /* | 2019-03-01: refactoring WriteCfgToLis | */
 /* ----------------------------------------- */
-void LoadNextCfgBit_outputs_bit_0_of_cfg_on_Lis_Rst_pin(void);
 void EnterLisProgrammingMode_outputs_high_on_Lis_PixSelect_pin(void);
 void ExitLisProgrammingMode_outputs_low_on_pins_Lis_PixSelect_and_Rst(void);
-void SetUp_LisWriteCfg(void); void TearDown_LisWriteCfg(void);
-void LisWriteCfg_outputs_cfg_bits_on_Lis_Rst_pin(void);
+void OutputCfgByte_does_nothing_if_arg_nbits_is_0(void);
+void OutputCfgByte_outputs_cfg_byte_on_Lis_Rst(void);
+void OutputCfgByte_does_nothing_if_arg_nbits_is_more_than_8(void);
+void LisWriteCfg_example_usage(void);
 /* ----------------------------------------- */
 
 #endif // _TEST_LIS_H

@@ -128,7 +128,7 @@ void DemoMacroFastestRstResponseToClk(void)
     }
 }
 /* =====[ GLOBAL VARIABLES ]===== */
-uint16_t first_used_pixel = 297; // for STMicro kit shipped 2019-02-14
+uint16_t first_used_pixel = 297; // for STMicro kit shipped 2019-02-14, see AutoExpose
 /* uint16_t Lis_nticks_exposure = 3;  // fake exposure time set by host */
 uint16_t Lis_nticks_exposure = 500;  // fake exposure time set by host
 uint16_t Lis_nticks_counter = 0;   // track the exposure time

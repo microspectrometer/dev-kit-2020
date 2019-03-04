@@ -226,15 +226,15 @@ void DevelopingUartSpi(bool run_test) {if (run_test) {
     // ADC application examples
     RUN_TEST(StoreAdcReadingsInFrame_fills_an_array_with_adc_readings);
 }}
-void DevelopingWriteCfgToLis(bool run_test) {if (run_test) {
+void DevelopingLisWriteCfg(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LoadNextCfgBit_outputs_bit_0_of_cfg_on_Lis_Rst_pin);
+    RUN_TEST(LisWriteCfg_example_usage);
     RUN_TEST(EnterLisProgrammingMode_outputs_high_on_Lis_PixSelect_pin);
     RUN_TEST(ExitLisProgrammingMode_outputs_low_on_pins_Lis_PixSelect_and_Rst);
-    //
-    setUp = SetUp_LisWriteCfg; tearDown = TearDown_LisWriteCfg;
-    RUN_TEST(LisWriteCfg_outputs_cfg_bits_on_Lis_Rst_pin);
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(OutputCfgByte_does_nothing_if_arg_nbits_is_0);
+    RUN_TEST(OutputCfgByte_does_nothing_if_arg_nbits_is_more_than_8);
+    RUN_TEST(OutputCfgByte_outputs_cfg_byte_on_Lis_Rst);
+
 }}
 void DevelopingLis(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
@@ -292,8 +292,8 @@ void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
     RUN_TEST(LookupCmd_example_storing_the_returned_pointer);
     RUN_TEST(UsbWriteStatusOk_tells_UsbHost_command_was_success);
     RUN_TEST(UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command);
-    RUN_TEST(UsbWriteStatusMismatch_sends_error_byte_and_echoes_invalid_command);
-    RUN_TEST(UsbWriteStatusTimedOut_sends_error_byte_and_echoes_invalid_command);
+    RUN_TEST(UsbWriteStatusBadArgs_sends_error_byte_and_echoes_invalid_command);
+    RUN_TEST(UsbWriteStatusMissingArgs_sends_error_byte_and_echoes_invalid_command);
     RUN_TEST(LookupCmd_sad_example_using_UsbWriteStatus_API);
     RUN_TEST(LookupCmd_happy_example_using_UsbWriteStatus_API);
     RUN_TEST(CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes);
@@ -328,7 +328,7 @@ int main()
     DevelopingPwm             (Nope);
     DevelopingAuto            (Nope); // tabled -- see test
     DevelopingUsbReadOneByte  (Nope);
-    DevelopingWriteCfgToLis   (Nope);
-    UsbCmdParser_JumpTableSandbox (Yep);
+    DevelopingLisWriteCfg     (Yep);
+    UsbCmdParser_JumpTableSandbox (Nope);
     return UNITY_END();
 }

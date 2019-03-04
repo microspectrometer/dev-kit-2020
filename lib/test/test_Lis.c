@@ -32,54 +32,103 @@
 
 /* =====[ LisWriteCfg ]===== */
 /* This is an API call for the client to load a configuration into the LIS. */
-void SetUp_LisWriteCfg(void){
-    SetUpMock_LisWriteCfg();    // create the mock object to record calls
-    // other setup code
-}
-void TearDown_LisWriteCfg(void){
-    TearDownMock_LisWriteCfg();    // destroy the mock object
-    // other teardown code
-}
-void LisWriteCfg_outputs_cfg_bits_on_Lis_Rst_pin(void) // 4 bytes: 28 bits
+void LisWriteCfg_example_usage(void)
 {
-    /* =====[ Setup ]===== */
-    /* *Lis_port1 = 0x00; // fake port with Lis_Rst pin */
-    uint32_t cfg = 0xFFFFFFFF; // cfg to write to Lis
-    /* =====[ Test ]===== */
-    /* This only tests the first last bit is written correctly. */
-    /* TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_ddr1); */
-    /* Shoot, no, I can't even test that. */
-    /* I have to mock this to be sure it's working correctly. */
-    /* =====[ Set Expectations ]===== */
-    /* Expect 28 calls (one per bit of cfg) */
-    uint8_t ncfgbits = 28;
-    for (uint8_t cfgbit_i = 0; cfgbit_i < ncfgbits; cfgbit_i++)
-    {
-        _MOCK_LIS_H; Expect_LoadNextCfgBit(cfg);
-    }
-    /* =====[ Operate ]===== */
-    LisWriteCfg(cfg);
-    /* =====[ Mockist Test ]===== */
-    TEST_ASSERT_TRUE_MESSAGE(
-        RanAsHoped(mock),           // If this is false,
-        WhyDidItFail(mock)          // print this message.
-        );
-    /* I'm still not sure how to check that the right values showed up on Rst. */
-}
+    /* LisWriteCfg cannot be tested without mocks. */
+    /* This *test* is just a documentation example. */
 
-void LoadNextCfgBit_outputs_bit_0_of_cfg_on_Lis_Rst_pin(void)
+    /* Fake receiving a valid `cfg`. */
+    uint8_t const valid_cfg[] = {0x0F, 0xFF, 0xFF, 0xF9};
+    /* =====[ Operate ]===== */
+    LisWriteCfg(valid_cfg);
+}
+void OutputCfgByte_does_nothing_if_arg_nbits_is_0(void)
 {
     /* =====[ Setup ]===== */
-    *Lis_port1 = 0xFF; // fake port with Lis_Rst pin
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00; // fake Lis_Rst pin is low
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* Fake a cfg byte that makes Rst high. */
+    uint8_t const cfg_byte = 0xFF;
     /* =====[ Operate ]===== */
-    uint32_t cfg = 0xFFFFFFFF; // cfg to write to Lis
-    LoadNextCfgBit(cfg);
+    uint8_t const bad_nbits = 0;
+    OutputCfgByte(cfg_byte, bad_nbits);
     /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1] *if nbits is in bound*. */
+    /* But nbits is out of bounds, so Rst is still low from set up. */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+}
+void OutputCfgByte_does_nothing_if_arg_nbits_is_more_than_8(void)
+{
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00; // fake Lis_Rst pin is low
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* Fake a cfg byte that makes Rst high. */
+    uint8_t const cfg_byte = 0xFF;
+    /* =====[ Operate ]===== */
+    uint8_t const bad_nbits = 9;
+    OutputCfgByte(cfg_byte, bad_nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1] *if nbits is in bound*. */
+    /* But nbits is out of bounds, so Rst is still low from set up. */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+}
+void OutputCfgByte_outputs_cfg_byte_on_Lis_Rst(void)
+{
+    uint8_t nbits, cfg_byte;
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00;
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* =====[ Operate ]===== */
+    /* Fake a cfg byte that makes Rst high on bit[nbits-1]. */
+    nbits = 1; cfg_byte = 0x01; // 0b 0000 0001
+    OutputCfgByte(cfg_byte, nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1]. */
     TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_port1);
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00;
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
     /* =====[ Operate ]===== */
-    cfg = 0xFFFFFFFE; // cfg to write to Lis
-    LoadNextCfgBit(cfg);
+    /* Fake a cfg byte that makes Rst high on bit[nbits-1]. */
+    nbits = 2; cfg_byte = 0x02; // 0b 0000 0010
+    OutputCfgByte(cfg_byte, nbits);
     /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1]. */
+    TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_port1);
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00;
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* =====[ Operate ]===== */
+    /* Fake a cfg byte that makes Rst high on bit[nbits-1]. */
+    nbits = 8; cfg_byte = 0x80; // 0b 1000 0000
+    OutputCfgByte(cfg_byte, nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1]. */
+    TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_port1);
+    //
+    /* Prove the test really is looking at bit index nbits-1. */
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00;
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* =====[ Operate ]===== */
+    /* Fake a cfg byte that makes Rst high on bit[nbits-1]. */
+    nbits = 8; cfg_byte = 0x08; // 0b 0000 1000
+    OutputCfgByte(cfg_byte, nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[7]. */
+    /* But this test uses a cfg_byte with bit[3] set and bit[7] clear. */
     TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
 }
 void EnterLisProgrammingMode_outputs_high_on_Lis_PixSelect_pin(void)

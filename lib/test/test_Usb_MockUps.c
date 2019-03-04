@@ -83,7 +83,8 @@ void TearDownMock_DetailsOf_UsbRead(void)  // FUT
     Unstub_FtRead();  // DOF
 }
 
-static bool (*FtWrite_Saved)(uint8_t*);
+/* bool (*FtWrite)(uint8_t const *write_buffer) = FtWrite_Implementation; */
+static bool (*FtWrite_Saved)(uint8_t const *);
 static void Stub_FtWrite(void) {
     FtWrite_Saved = FtWrite;
     FtWrite = FtWrite_Stubbed;

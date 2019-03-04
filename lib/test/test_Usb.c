@@ -738,7 +738,7 @@ void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL(2, num_status_bytes_sent);
 }
-void UsbWriteStatusMismatch_sends_error_byte_and_echoes_invalid_command(void)
+void UsbWriteStatusBadArgs_sends_error_byte_and_echoes_invalid_command(void)
 {
     /* =====[ Setup ]===== */
     jump_index cmd = CmdCfgLis_key;
@@ -751,13 +751,13 @@ void UsbWriteStatusMismatch_sends_error_byte_and_echoes_invalid_command(void)
     /* Get a value to unit test without going mock crazy. */
     uint8_t num_status_bytes_sent = 0;
     /* =====[ Operate ]===== */
-    /* Here is how UsbWriteStatusMismatch is used in CmdCfgLis. */
-    if (!cfg_bytes_are_valid) { num_status_bytes_sent = UsbWriteStatusMismatch(cmd); }
+    /* Here is how UsbWriteStatusBadArgs is used in CmdCfgLis. */
+    if (!cfg_bytes_are_valid) { num_status_bytes_sent = UsbWriteStatusBadArgs(cmd); }
     else {; /* received valid command and parameters, go configure the Lis */ }
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL(2,num_status_bytes_sent);
 }
-void UsbWriteStatusTimedOut_sends_error_byte_and_echoes_invalid_command(void){
+void UsbWriteStatusMissingArgs_sends_error_byte_and_echoes_invalid_command(void){
     /* =====[ Setup ]===== */
     jump_index cmd = CmdCfgLis_key;
     /* TimedOut means the command is valid, but a timer expired */
@@ -772,10 +772,10 @@ void UsbWriteStatusTimedOut_sends_error_byte_and_echoes_invalid_command(void){
     /* Get a value to unit test without going mock crazy. */
     uint8_t num_status_bytes_sent = 0;
     /* =====[ Operate ]===== */
-    /* Here is how UsbWriteStatusTimedOut is used in CmdCfgLis. */
+    /* Here is how UsbWriteStatusMissingArgs is used in CmdCfgLis. */
     if (nybtes_read_is_less_than_num_cfgbytes)
     {
-        num_status_bytes_sent = UsbWriteStatusTimedOut(CmdCfgLis_key);
+        num_status_bytes_sent = UsbWriteStatusMissingArgs(CmdCfgLis_key);
     }
     else {; /* number of bytes is correct, go check the bytes are valid */ }
     TEST_ASSERT_EQUAL(2,num_status_bytes_sent);

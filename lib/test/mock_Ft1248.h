@@ -51,8 +51,8 @@ void Expect_FtRead(uint8_t* arg1);
 bool FtRead_Stubbed(uint8_t* arg1);
 
 extern bool *FtWrite_StubbedReturnValue; // pointer to list of fake return values
-void Expect_FtWrite(uint8_t* arg1);
-bool FtWrite_Stubbed(uint8_t* arg1);
+void Expect_FtWrite(uint8_t const * arg1);
+bool FtWrite_Stubbed(uint8_t const * arg1);
 
 extern bool FtHasDataToRead_StubbedReturnValue;
 void Expect_FtHasDataToRead(void);

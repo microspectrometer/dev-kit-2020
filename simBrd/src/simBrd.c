@@ -74,44 +74,6 @@ void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
         /* send UsbWriteStatusOk() before sending any other data. */
     }
 }
-/* { */
-/*         // Do the command. */
-/* /1* LEFT OFF HERE *1/ */
-/*         if (cmd == cmd_write_cfg_to_lis) */
-/*         { */
-/*           /1* TODO: change this to two bytes: *1/ */
-/*           /1* bin_on_off : 1 (on or off) *1/ */
-/*           /1* gain_select: 2 (2 bits for four values) *1/ */
-/*           /1* row_select: 5 (1 bit per row) *1/ */
-/*             // Expect three more bytes: bin on/off, gain, row select */
-/*             typedef struct { */
-/*                 uint8_t bin_on_off; */
-/*                 uint8_t gain_select; */
-/*                 uint8_t row_select; */
-/*             } CfgParams_s; */
-/*             CfgParams_s cfg; */
-
-/*             /1* Wait until each byte is available, then read it. *1/ */
-/*             // TODO: add timeout to while looping or a watchdog */
-/*             while (!UsbReadOneByte(&cfg.bin_on_off)); */
-/*             while (!UsbReadOneByte(&cfg.gain_select)); */
-/*             while (!UsbReadOneByte(&cfg.row_select)); */
-/*             // TODO: guard against invalid bytes */
-/*                 // exit if any byte is not valid */
-/*             // TODO: gain and row select are themselves structs */
-/*             /1* =====[ Quick dumb test for now ]===== *1/ */
-/*             if (cfg.bin_on_off              == cmd_cfg_summing_mode_on) { */
-/*                 MacroSpiMasterWriteAndDelay(   cmd_cfg_summing_mode_on);} */
-/*             if (cfg.gain_select             == cmd_cfg_lis_gain_1x) { */
-/*                 MacroSpiMasterWriteAndDelay(   cmd_cfg_lis_gain_1x);} */
-/*             if (cfg.row_select              == cmd_cfg_lis_rowselect_12345) { */
-/*                 MacroSpiMasterWriteAndDelay(   cmd_cfg_lis_rowselect_12345);} */
-/*         } */
-/*     } */
-/* } */
-/* TODO: the if == blah then do this command move to a jump-table */
-/* TODO: turn cmd parameters directly into global state where applicable */
-/* result: there will be *no* conditionals here */
 
 /* =====[ GOOD ]===== */
 void SetExposureTime(uint8_t *pnticks)
