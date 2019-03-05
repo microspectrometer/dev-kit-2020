@@ -1,0 +1,1468 @@
+
+build/simBrd.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000076  00800100  000009a6  00000a3a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         000009a6  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000629  00800176  00800176  00000ab0  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  00000ab0  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000ae0  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000328  00000000  00000000  00000b20  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00004156  00000000  00000000  00000e48  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 000013a1  00000000  00000000  00004f9e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00001c64  00000000  00000000  0000633f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000810  00000000  00000000  00007fa4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000014f1  00000000  00000000  000087b4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00002507  00000000  00000000  00009ca5  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000320  00000000  00000000  0000c1ac  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+   8:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+   c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  10:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  14:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  18:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  1c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  20:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  24:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  28:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  38:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  3c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  44:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  54:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  58:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  5c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  60:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  64:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+
+00000074 <__do_copy_data>:
+  74:	11 e0       	ldi	r17, 0x01	; 1
+  76:	a0 e0       	ldi	r26, 0x00	; 0
+  78:	b1 e0       	ldi	r27, 0x01	; 1
+  7a:	e6 ea       	ldi	r30, 0xA6	; 166
+  7c:	f9 e0       	ldi	r31, 0x09	; 9
+  7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
+  80:	05 90       	lpm	r0, Z+
+  82:	0d 92       	st	X+, r0
+  84:	a6 37       	cpi	r26, 0x76	; 118
+  86:	b1 07       	cpc	r27, r17
+  88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
+
+0000008a <__do_clear_bss>:
+  8a:	27 e0       	ldi	r18, 0x07	; 7
+  8c:	a6 e7       	ldi	r26, 0x76	; 118
+  8e:	b1 e0       	ldi	r27, 0x01	; 1
+  90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
+
+00000092 <.do_clear_bss_loop>:
+  92:	1d 92       	st	X+, r1
+
+00000094 <.do_clear_bss_start>:
+  94:	af 39       	cpi	r26, 0x9F	; 159
+  96:	b2 07       	cpc	r27, r18
+  98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
+  9a:	0e 94 c0 04 	call	0x980	; 0x980 <main>
+  9e:	0c 94 d1 04 	jmp	0x9a2	; 0x9a2 <_exit>
+
+000000a2 <__bad_interrupt>:
+  a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+000000a6 <DebugLedTurnOn_Implementation>:
+    DebugLedTurnGreen();
+}
+
+static void DebugLedTurnOn_Implementation(void)
+{
+    SetBit(ddr_register_, debug_led_);
+  a6:	e0 91 7b 01 	lds	r30, 0x017B	; 0x80017b <ddr_register_>
+  aa:	f0 91 7c 01 	lds	r31, 0x017C	; 0x80017c <ddr_register_+0x1>
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port |= 1<<bit;
+  ae:	20 81       	ld	r18, Z
+  b0:	81 e0       	ldi	r24, 0x01	; 1
+  b2:	90 e0       	ldi	r25, 0x00	; 0
+  b4:	00 90 76 01 	lds	r0, 0x0176	; 0x800176 <__data_end>
+  b8:	02 c0       	rjmp	.+4      	; 0xbe <DebugLedTurnOn_Implementation+0x18>
+  ba:	88 0f       	add	r24, r24
+  bc:	99 1f       	adc	r25, r25
+  be:	0a 94       	dec	r0
+  c0:	e2 f7       	brpl	.-8      	; 0xba <DebugLedTurnOn_Implementation+0x14>
+  c2:	82 2b       	or	r24, r18
+  c4:	80 83       	st	Z, r24
+  c6:	08 95       	ret
+
+000000c8 <DebugLedTurnGreen_Implementation>:
+    ClearBit(ddr_register_, debug_led_);
+}
+
+static void DebugLedTurnGreen_Implementation(void)
+{
+    ClearBit(port_register_, debug_led_);
+  c8:	e0 91 79 01 	lds	r30, 0x0179	; 0x800179 <port_register_>
+  cc:	f0 91 7a 01 	lds	r31, 0x017A	; 0x80017a <port_register_+0x1>
+}
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port &= ~(1<<bit);
+  d0:	20 81       	ld	r18, Z
+  d2:	81 e0       	ldi	r24, 0x01	; 1
+  d4:	90 e0       	ldi	r25, 0x00	; 0
+  d6:	00 90 76 01 	lds	r0, 0x0176	; 0x800176 <__data_end>
+  da:	02 c0       	rjmp	.+4      	; 0xe0 <DebugLedTurnGreen_Implementation+0x18>
+  dc:	88 0f       	add	r24, r24
+  de:	99 1f       	adc	r25, r25
+  e0:	0a 94       	dec	r0
+  e2:	e2 f7       	brpl	.-8      	; 0xdc <DebugLedTurnGreen_Implementation+0x14>
+  e4:	80 95       	com	r24
+  e6:	82 23       	and	r24, r18
+  e8:	80 83       	st	Z, r24
+  ea:	08 95       	ret
+
+000000ec <DebugLedTurnRed>:
+}
+void (*DebugLedTurnGreen)(void) = DebugLedTurnGreen_Implementation;
+
+void DebugLedTurnRed(void)
+{
+    SetBit(port_register_, debug_led_);
+  ec:	e0 91 79 01 	lds	r30, 0x0179	; 0x800179 <port_register_>
+  f0:	f0 91 7a 01 	lds	r31, 0x017A	; 0x80017a <port_register_+0x1>
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port |= 1<<bit;
+  f4:	20 81       	ld	r18, Z
+  f6:	81 e0       	ldi	r24, 0x01	; 1
+  f8:	90 e0       	ldi	r25, 0x00	; 0
+  fa:	00 90 76 01 	lds	r0, 0x0176	; 0x800176 <__data_end>
+  fe:	02 c0       	rjmp	.+4      	; 0x104 <DebugLedTurnRed+0x18>
+ 100:	88 0f       	add	r24, r24
+ 102:	99 1f       	adc	r25, r25
+ 104:	0a 94       	dec	r0
+ 106:	e2 f7       	brpl	.-8      	; 0x100 <DebugLedTurnRed+0x14>
+ 108:	82 2b       	or	r24, r18
+ 10a:	80 83       	st	Z, r24
+ 10c:	08 95       	ret
+
+0000010e <DebugLedInit>:
+    uint8_t volatile * const ddr_register,
+    uint8_t volatile * const port_register,
+    uint8_t volatile * const pin_register,
+    uint8_t const debug_led)
+{
+    ddr_register_ = ddr_register;
+ 10e:	90 93 7c 01 	sts	0x017C, r25	; 0x80017c <ddr_register_+0x1>
+ 112:	80 93 7b 01 	sts	0x017B, r24	; 0x80017b <ddr_register_>
+    port_register_ = port_register;
+ 116:	70 93 7a 01 	sts	0x017A, r23	; 0x80017a <port_register_+0x1>
+ 11a:	60 93 79 01 	sts	0x0179, r22	; 0x800179 <port_register_>
+    pin_register_ = pin_register;
+ 11e:	50 93 78 01 	sts	0x0178, r21	; 0x800178 <pin_register_+0x1>
+ 122:	40 93 77 01 	sts	0x0177, r20	; 0x800177 <pin_register_>
+    debug_led_ = debug_led;
+ 126:	20 93 76 01 	sts	0x0176, r18	; 0x800176 <__data_end>
+    DebugLedTurnOn();
+ 12a:	e0 91 04 01 	lds	r30, 0x0104	; 0x800104 <DebugLedTurnOn>
+ 12e:	f0 91 05 01 	lds	r31, 0x0105	; 0x800105 <DebugLedTurnOn+0x1>
+ 132:	09 95       	icall
+    DebugLedTurnGreen();
+ 134:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <DebugLedTurnGreen>
+ 138:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <DebugLedTurnGreen+0x1>
+ 13c:	09 94       	ijmp
+
+0000013e <FtSendCommand_Implementation>:
+bool (*FtHasDataToRead)(void) = FtIsBusOk_Implementation;
+
+static bool FtHasRoomToWrite_Implementation(void)
+{
+    return BitIsClear(FtMiosio_pin, FtMiosio0);
+}
+ 13e:	cf 93       	push	r28
+ 140:	c8 2f       	mov	r28, r24
+ 142:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtActivateInterface>
+ 146:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtActivateInterface+0x1>
+ 14a:	09 95       	icall
+ 14c:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtPushData>
+ 150:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtPushData+0x1>
+ 154:	09 95       	icall
+ 156:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <FtLetMasterDriveBus>
+ 15a:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <FtLetMasterDriveBus+0x1>
+ 15e:	09 95       	icall
+ 160:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <FtOutputByte>
+ 164:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <FtOutputByte+0x1>
+ 168:	8c 2f       	mov	r24, r28
+ 16a:	09 95       	icall
+ 16c:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtPullData>
+ 170:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtPullData+0x1>
+ 174:	cf 91       	pop	r28
+ 176:	09 94       	ijmp
+
+00000178 <FtBusTurnaround_Implementation>:
+ 178:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <FtLetSlaveDriveBus>
+ 17c:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <FtLetSlaveDriveBus+0x1>
+ 180:	09 95       	icall
+ 182:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtPushData>
+ 186:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtPushData+0x1>
+ 18a:	09 95       	icall
+ 18c:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtPullData>
+ 190:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtPullData+0x1>
+ 194:	09 95       	icall
+ 196:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <FtIsBusOk>
+ 19a:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <FtIsBusOk+0x1>
+ 19e:	09 94       	ijmp
+
+000001a0 <FtWrite_Implementation>:
+ 1a0:	cf 93       	push	r28
+ 1a2:	df 93       	push	r29
+ 1a4:	ec 01       	movw	r28, r24
+ 1a6:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <FtLetMasterDriveBus>
+ 1aa:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <FtLetMasterDriveBus+0x1>
+ 1ae:	09 95       	icall
+ 1b0:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtPushData>
+ 1b4:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtPushData+0x1>
+ 1b8:	09 95       	icall
+ 1ba:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <FtWriteData>
+ 1be:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <FtWriteData+0x1>
+ 1c2:	88 81       	ld	r24, Y
+ 1c4:	09 95       	icall
+ 1c6:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtPullData>
+ 1ca:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtPullData+0x1>
+ 1ce:	09 95       	icall
+ 1d0:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <FtIsBusOk>
+ 1d4:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <FtIsBusOk+0x1>
+ 1d8:	df 91       	pop	r29
+ 1da:	cf 91       	pop	r28
+ 1dc:	09 94       	ijmp
+
+000001de <FtActivateInterface_Implementation>:
+ 1de:	e0 91 72 01 	lds	r30, 0x0172	; 0x800172 <Ft1248_port>
+ 1e2:	f0 91 73 01 	lds	r31, 0x0173	; 0x800173 <Ft1248_port+0x1>
+ 1e6:	20 81       	ld	r18, Z
+ 1e8:	81 e0       	ldi	r24, 0x01	; 1
+ 1ea:	90 e0       	ldi	r25, 0x00	; 0
+ 1ec:	00 90 69 01 	lds	r0, 0x0169	; 0x800169 <Ft1248_Ss>
+ 1f0:	02 c0       	rjmp	.+4      	; 0x1f6 <FtActivateInterface_Implementation+0x18>
+ 1f2:	88 0f       	add	r24, r24
+ 1f4:	99 1f       	adc	r25, r25
+ 1f6:	0a 94       	dec	r0
+ 1f8:	e2 f7       	brpl	.-8      	; 0x1f2 <FtActivateInterface_Implementation+0x14>
+ 1fa:	80 95       	com	r24
+ 1fc:	82 23       	and	r24, r18
+ 1fe:	80 83       	st	Z, r24
+ 200:	08 95       	ret
+
+00000202 <FtDeactivateInterface_Implementation>:
+ 202:	e0 91 72 01 	lds	r30, 0x0172	; 0x800172 <Ft1248_port>
+ 206:	f0 91 73 01 	lds	r31, 0x0173	; 0x800173 <Ft1248_port+0x1>
+ 20a:	20 81       	ld	r18, Z
+ 20c:	81 e0       	ldi	r24, 0x01	; 1
+ 20e:	90 e0       	ldi	r25, 0x00	; 0
+ 210:	00 90 69 01 	lds	r0, 0x0169	; 0x800169 <Ft1248_Ss>
+ 214:	02 c0       	rjmp	.+4      	; 0x21a <FtDeactivateInterface_Implementation+0x18>
+ 216:	88 0f       	add	r24, r24
+ 218:	99 1f       	adc	r25, r25
+ 21a:	0a 94       	dec	r0
+ 21c:	e2 f7       	brpl	.-8      	; 0x216 <FtDeactivateInterface_Implementation+0x14>
+ 21e:	82 2b       	or	r24, r18
+ 220:	80 83       	st	Z, r24
+ 222:	08 95       	ret
+
+00000224 <FtPushData_Implementation>:
+ 224:	e0 91 72 01 	lds	r30, 0x0172	; 0x800172 <Ft1248_port>
+ 228:	f0 91 73 01 	lds	r31, 0x0173	; 0x800173 <Ft1248_port+0x1>
+ 22c:	20 81       	ld	r18, Z
+ 22e:	81 e0       	ldi	r24, 0x01	; 1
+ 230:	90 e0       	ldi	r25, 0x00	; 0
+ 232:	00 90 68 01 	lds	r0, 0x0168	; 0x800168 <Ft1248_Sck>
+ 236:	02 c0       	rjmp	.+4      	; 0x23c <FtPushData_Implementation+0x18>
+ 238:	88 0f       	add	r24, r24
+ 23a:	99 1f       	adc	r25, r25
+ 23c:	0a 94       	dec	r0
+ 23e:	e2 f7       	brpl	.-8      	; 0x238 <FtPushData_Implementation+0x14>
+ 240:	82 2b       	or	r24, r18
+ 242:	80 83       	st	Z, r24
+ 244:	08 95       	ret
+
+00000246 <FtPullData_Implementation>:
+ 246:	e0 91 72 01 	lds	r30, 0x0172	; 0x800172 <Ft1248_port>
+ 24a:	f0 91 73 01 	lds	r31, 0x0173	; 0x800173 <Ft1248_port+0x1>
+ 24e:	20 81       	ld	r18, Z
+ 250:	81 e0       	ldi	r24, 0x01	; 1
+ 252:	90 e0       	ldi	r25, 0x00	; 0
+ 254:	00 90 68 01 	lds	r0, 0x0168	; 0x800168 <Ft1248_Sck>
+ 258:	02 c0       	rjmp	.+4      	; 0x25e <FtPullData_Implementation+0x18>
+ 25a:	88 0f       	add	r24, r24
+ 25c:	99 1f       	adc	r25, r25
+ 25e:	0a 94       	dec	r0
+ 260:	e2 f7       	brpl	.-8      	; 0x25a <FtPullData_Implementation+0x14>
+ 262:	80 95       	com	r24
+ 264:	82 23       	and	r24, r18
+ 266:	80 83       	st	Z, r24
+ 268:	08 95       	ret
+
+0000026a <FtLetMasterDriveBus_Implementation>:
+ 26a:	e0 91 6e 01 	lds	r30, 0x016E	; 0x80016e <FtMiosio_ddr>
+ 26e:	f0 91 6f 01 	lds	r31, 0x016F	; 0x80016f <FtMiosio_ddr+0x1>
+ 272:	8f ef       	ldi	r24, 0xFF	; 255
+ 274:	80 83       	st	Z, r24
+ 276:	08 95       	ret
+
+00000278 <FtLetSlaveDriveBus_Implementation>:
+ 278:	e0 91 6e 01 	lds	r30, 0x016E	; 0x80016e <FtMiosio_ddr>
+ 27c:	f0 91 6f 01 	lds	r31, 0x016F	; 0x80016f <FtMiosio_ddr+0x1>
+ 280:	10 82       	st	Z, r1
+ 282:	08 95       	ret
+
+00000284 <FtIsBusOk_Implementation>:
+ 284:	e0 91 70 01 	lds	r30, 0x0170	; 0x800170 <Ft1248_pin>
+ 288:	f0 91 71 01 	lds	r31, 0x0171	; 0x800171 <Ft1248_pin+0x1>
+ 28c:	80 81       	ld	r24, Z
+ 28e:	90 e0       	ldi	r25, 0x00	; 0
+ 290:	00 90 67 01 	lds	r0, 0x0167	; 0x800167 <Ft1248_Miso>
+ 294:	02 c0       	rjmp	.+4      	; 0x29a <FtIsBusOk_Implementation+0x16>
+ 296:	95 95       	asr	r25
+ 298:	87 95       	ror	r24
+ 29a:	0a 94       	dec	r0
+ 29c:	e2 f7       	brpl	.-8      	; 0x296 <FtIsBusOk_Implementation+0x12>
+ 29e:	81 70       	andi	r24, 0x01	; 1
+ 2a0:	99 27       	eor	r25, r25
+ 2a2:	21 e0       	ldi	r18, 0x01	; 1
+ 2a4:	82 27       	eor	r24, r18
+ 2a6:	81 70       	andi	r24, 0x01	; 1
+ 2a8:	08 95       	ret
+
+000002aa <FtReadData_Implementation>:
+bool (*FtHasRoomToWrite)(void) = FtHasRoomToWrite_Implementation;
+
+static uint8_t FtReadData_Implementation(void)
+{
+    return *FtMiosio_pin;
+ 2aa:	e0 91 6a 01 	lds	r30, 0x016A	; 0x80016a <FtMiosio_pin>
+ 2ae:	f0 91 6b 01 	lds	r31, 0x016B	; 0x80016b <FtMiosio_pin+0x1>
+ 2b2:	80 81       	ld	r24, Z
+}
+ 2b4:	08 95       	ret
+
+000002b6 <FtWriteData_Implementation>:
+uint8_t (*FtReadData)(void) = FtReadData_Implementation;
+
+static void FtWriteData_Implementation(uint8_t byte_to_write)
+{
+    *FtMiosio_port = byte_to_write;
+ 2b6:	e0 91 6c 01 	lds	r30, 0x016C	; 0x80016c <FtMiosio_port>
+ 2ba:	f0 91 6d 01 	lds	r31, 0x016D	; 0x80016d <FtMiosio_port+0x1>
+ 2be:	80 83       	st	Z, r24
+ 2c0:	08 95       	ret
+
+000002c2 <FtRead_Implementation>:
+    return FtIsBusOk();
+}
+bool (*FtBusTurnaround)(void) = FtBusTurnaround_Implementation;
+
+static bool FtRead_Implementation(uint8_t *read_buffer)
+{
+ 2c2:	0f 93       	push	r16
+ 2c4:	1f 93       	push	r17
+ 2c6:	cf 93       	push	r28
+ 2c8:	8c 01       	movw	r16, r24
+    FtPushData();                   // tells everyone to output to bus
+ 2ca:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtPushData>
+ 2ce:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtPushData+0x1>
+ 2d2:	09 95       	icall
+    FtPullData();                   // tells everyone to input from bus
+ 2d4:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtPullData>
+ 2d8:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtPullData+0x1>
+ 2dc:	09 95       	icall
+    if (!FtIsBusOk()) return false; // buffer is empty
+ 2de:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <FtIsBusOk>
+ 2e2:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <FtIsBusOk+0x1>
+ 2e6:	09 95       	icall
+ 2e8:	c8 2f       	mov	r28, r24
+ 2ea:	88 23       	and	r24, r24
+ 2ec:	39 f0       	breq	.+14     	; 0x2fc <FtRead_Implementation+0x3a>
+    *read_buffer = FtReadData();   // buffer is not empty, write to mem
+ 2ee:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <FtReadData>
+ 2f2:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <FtReadData+0x1>
+ 2f6:	09 95       	icall
+ 2f8:	f8 01       	movw	r30, r16
+ 2fa:	80 83       	st	Z, r24
+    return true;
+}
+ 2fc:	8c 2f       	mov	r24, r28
+ 2fe:	cf 91       	pop	r28
+ 300:	1f 91       	pop	r17
+ 302:	0f 91       	pop	r16
+ 304:	08 95       	ret
+
+00000306 <FtOutputByte_Implementation>:
+ 306:	e0 91 6c 01 	lds	r30, 0x016C	; 0x80016c <FtMiosio_port>
+ 30a:	f0 91 6d 01 	lds	r31, 0x016D	; 0x80016d <FtMiosio_port+0x1>
+ 30e:	80 83       	st	Z, r24
+ 310:	08 95       	ret
+
+00000312 <FtSetMisoAsInput>:
+    FtSckLow();
+    FtSsHigh();
+}
+void FtSetMisoAsInput(void)
+{
+    ClearBit(Ft1248_ddr, Ft1248_Miso);
+ 312:	e0 91 74 01 	lds	r30, 0x0174	; 0x800174 <Ft1248_ddr>
+ 316:	f0 91 75 01 	lds	r31, 0x0175	; 0x800175 <Ft1248_ddr+0x1>
+}
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port &= ~(1<<bit);
+ 31a:	20 81       	ld	r18, Z
+ 31c:	81 e0       	ldi	r24, 0x01	; 1
+ 31e:	90 e0       	ldi	r25, 0x00	; 0
+ 320:	00 90 67 01 	lds	r0, 0x0167	; 0x800167 <Ft1248_Miso>
+ 324:	02 c0       	rjmp	.+4      	; 0x32a <FtSetMisoAsInput+0x18>
+ 326:	88 0f       	add	r24, r24
+ 328:	99 1f       	adc	r25, r25
+ 32a:	0a 94       	dec	r0
+ 32c:	e2 f7       	brpl	.-8      	; 0x326 <FtSetMisoAsInput+0x14>
+ 32e:	80 95       	com	r24
+ 330:	82 23       	and	r24, r18
+ 332:	80 83       	st	Z, r24
+ 334:	08 95       	ret
+
+00000336 <FtEnablePullupOnMiso>:
+}
+void FtEnablePullupOnMiso(void)
+{
+    SetBit(Ft1248_port, Ft1248_Miso);
+ 336:	e0 91 72 01 	lds	r30, 0x0172	; 0x800172 <Ft1248_port>
+ 33a:	f0 91 73 01 	lds	r31, 0x0173	; 0x800173 <Ft1248_port+0x1>
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port |= 1<<bit;
+ 33e:	20 81       	ld	r18, Z
+ 340:	81 e0       	ldi	r24, 0x01	; 1
+ 342:	90 e0       	ldi	r25, 0x00	; 0
+ 344:	00 90 67 01 	lds	r0, 0x0167	; 0x800167 <Ft1248_Miso>
+ 348:	02 c0       	rjmp	.+4      	; 0x34e <FtEnablePullupOnMiso+0x18>
+ 34a:	88 0f       	add	r24, r24
+ 34c:	99 1f       	adc	r25, r25
+ 34e:	0a 94       	dec	r0
+ 350:	e2 f7       	brpl	.-8      	; 0x34a <FtEnablePullupOnMiso+0x14>
+ 352:	82 2b       	or	r24, r18
+ 354:	80 83       	st	Z, r24
+ 356:	08 95       	ret
+
+00000358 <FtEnablePullupsOnMiosio>:
+{
+    *FtMiosio_ddr = 0x00;
+}
+void FtEnablePullupsOnMiosio(void)
+{
+    *FtMiosio_port = 0xFF;
+ 358:	e0 91 6c 01 	lds	r30, 0x016C	; 0x80016c <FtMiosio_port>
+ 35c:	f0 91 6d 01 	lds	r31, 0x016D	; 0x80016d <FtMiosio_port+0x1>
+ 360:	8f ef       	ldi	r24, 0xFF	; 255
+ 362:	80 83       	st	Z, r24
+ 364:	08 95       	ret
+
+00000366 <FtSckLow>:
+}
+void FtSckLow(void)
+{
+    ClearBit(Ft1248_port, Ft1248_Sck);  // drive low
+ 366:	e0 91 72 01 	lds	r30, 0x0172	; 0x800172 <Ft1248_port>
+ 36a:	f0 91 73 01 	lds	r31, 0x0173	; 0x800173 <Ft1248_port+0x1>
+}
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port &= ~(1<<bit);
+ 36e:	20 81       	ld	r18, Z
+ 370:	81 e0       	ldi	r24, 0x01	; 1
+ 372:	90 e0       	ldi	r25, 0x00	; 0
+ 374:	00 90 68 01 	lds	r0, 0x0168	; 0x800168 <Ft1248_Sck>
+ 378:	02 c0       	rjmp	.+4      	; 0x37e <FtSckLow+0x18>
+ 37a:	88 0f       	add	r24, r24
+ 37c:	99 1f       	adc	r25, r25
+ 37e:	0a 94       	dec	r0
+ 380:	e2 f7       	brpl	.-8      	; 0x37a <FtSckLow+0x14>
+ 382:	98 2f       	mov	r25, r24
+ 384:	90 95       	com	r25
+ 386:	92 23       	and	r25, r18
+ 388:	90 83       	st	Z, r25
+    SetBit(Ft1248_ddr, Ft1248_Sck);     // cfg as output
+ 38a:	e0 91 74 01 	lds	r30, 0x0174	; 0x800174 <Ft1248_ddr>
+ 38e:	f0 91 75 01 	lds	r31, 0x0175	; 0x800175 <Ft1248_ddr+0x1>
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port |= 1<<bit;
+ 392:	90 81       	ld	r25, Z
+ 394:	89 2b       	or	r24, r25
+ 396:	80 83       	st	Z, r24
+ 398:	08 95       	ret
+
+0000039a <FtSsHigh>:
+}
+void FtSsHigh(void)
+{
+    SetBit(Ft1248_port, Ft1248_Ss);     // drive high
+ 39a:	e0 91 72 01 	lds	r30, 0x0172	; 0x800172 <Ft1248_port>
+ 39e:	f0 91 73 01 	lds	r31, 0x0173	; 0x800173 <Ft1248_port+0x1>
+ 3a2:	20 81       	ld	r18, Z
+ 3a4:	81 e0       	ldi	r24, 0x01	; 1
+ 3a6:	90 e0       	ldi	r25, 0x00	; 0
+ 3a8:	00 90 69 01 	lds	r0, 0x0169	; 0x800169 <Ft1248_Ss>
+ 3ac:	02 c0       	rjmp	.+4      	; 0x3b2 <FtSsHigh+0x18>
+ 3ae:	88 0f       	add	r24, r24
+ 3b0:	99 1f       	adc	r25, r25
+ 3b2:	0a 94       	dec	r0
+ 3b4:	e2 f7       	brpl	.-8      	; 0x3ae <FtSsHigh+0x14>
+ 3b6:	92 2f       	mov	r25, r18
+ 3b8:	98 2b       	or	r25, r24
+ 3ba:	90 83       	st	Z, r25
+    SetBit(Ft1248_ddr, Ft1248_Ss);      // cfg as output
+ 3bc:	e0 91 74 01 	lds	r30, 0x0174	; 0x800174 <Ft1248_ddr>
+ 3c0:	f0 91 75 01 	lds	r31, 0x0175	; 0x800175 <Ft1248_ddr+0x1>
+ 3c4:	90 81       	ld	r25, Z
+ 3c6:	89 2b       	or	r24, r25
+ 3c8:	80 83       	st	Z, r24
+ 3ca:	08 95       	ret
+
+000003cc <FtInit>:
+
+//=====[ High-level API ]=====
+#include "DebugLed.h"
+void FtInit(void)
+{
+    FtSetMisoAsInput();
+ 3cc:	0e 94 89 01 	call	0x312	; 0x312 <FtSetMisoAsInput>
+    FtEnablePullupOnMiso();
+ 3d0:	0e 94 9b 01 	call	0x336	; 0x336 <FtEnablePullupOnMiso>
+    FtSetMiosioAsInputs();
+ 3d4:	0e 94 3c 01 	call	0x278	; 0x278 <FtLetSlaveDriveBus_Implementation>
+    FtEnablePullupsOnMiosio();
+ 3d8:	0e 94 ac 01 	call	0x358	; 0x358 <FtEnablePullupsOnMiosio>
+    FtSckLow();
+ 3dc:	0e 94 b3 01 	call	0x366	; 0x366 <FtSckLow>
+    FtSsHigh();
+ 3e0:	0c 94 cd 01 	jmp	0x39a	; 0x39a <FtSsHigh>
+
+000003e4 <UsbReadN.part.2>:
+        num_bytes_read++;
+    }
+
+    FtDeactivateInterface();
+    return num_bytes_read;
+}
+ 3e4:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <DebugLedTurnRedToShowError>
+ 3e8:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <DebugLedTurnRedToShowError+0x1>
+ 3ec:	09 95       	icall
+ 3ee:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtDeactivateInterface>
+ 3f2:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtDeactivateInterface+0x1>
+ 3f6:	09 95       	icall
+ 3f8:	80 e0       	ldi	r24, 0x00	; 0
+ 3fa:	90 e0       	ldi	r25, 0x00	; 0
+ 3fc:	08 95       	ret
+
+000003fe <UsbInit>:
+ 3fe:	0c 94 e6 01 	jmp	0x3cc	; 0x3cc <FtInit>
+
+00000402 <LookupCmd>:
+ 402:	83 30       	cpi	r24, 0x03	; 3
+ 404:	48 f4       	brcc	.+18     	; 0x418 <LookupCmd+0x16>
+ 406:	e8 2f       	mov	r30, r24
+ 408:	f0 e0       	ldi	r31, 0x00	; 0
+ 40a:	ee 0f       	add	r30, r30
+ 40c:	ff 1f       	adc	r31, r31
+ 40e:	e2 5b       	subi	r30, 0xB2	; 178
+ 410:	fe 4f       	sbci	r31, 0xFE	; 254
+ 412:	80 81       	ld	r24, Z
+ 414:	91 81       	ldd	r25, Z+1	; 0x01
+ 416:	08 95       	ret
+ 418:	80 e0       	ldi	r24, 0x00	; 0
+ 41a:	90 e0       	ldi	r25, 0x00	; 0
+ 41c:	08 95       	ret
+
+0000041e <CfgTurnsOffAllPixels>:
+ 41e:	cf 93       	push	r28
+ 420:	df 93       	push	r29
+ 422:	00 d0       	rcall	.+0      	; 0x424 <CfgTurnsOffAllPixels+0x6>
+ 424:	00 d0       	rcall	.+0      	; 0x426 <CfgTurnsOffAllPixels+0x8>
+ 426:	cd b7       	in	r28, 0x3d	; 61
+ 428:	de b7       	in	r29, 0x3e	; 62
+ 42a:	40 91 2a 01 	lds	r20, 0x012A	; 0x80012a <ClearPendingSpiInterrupt+0x2>
+ 42e:	50 91 2b 01 	lds	r21, 0x012B	; 0x80012b <ClearPendingSpiInterrupt+0x3>
+ 432:	60 91 2c 01 	lds	r22, 0x012C	; 0x80012c <ClearPendingSpiInterrupt+0x4>
+ 436:	70 91 2d 01 	lds	r23, 0x012D	; 0x80012d <ClearPendingSpiInterrupt+0x5>
+ 43a:	49 83       	std	Y+1, r20	; 0x01
+ 43c:	5a 83       	std	Y+2, r21	; 0x02
+ 43e:	6b 83       	std	Y+3, r22	; 0x03
+ 440:	7c 83       	std	Y+4, r23	; 0x04
+ 442:	fc 01       	movw	r30, r24
+ 444:	de 01       	movw	r26, r28
+ 446:	11 96       	adiw	r26, 0x01	; 1
+ 448:	95 e0       	ldi	r25, 0x05	; 5
+ 44a:	81 e0       	ldi	r24, 0x01	; 1
+ 44c:	91 50       	subi	r25, 0x01	; 1
+ 44e:	49 f0       	breq	.+18     	; 0x462 <CfgTurnsOffAllPixels+0x44>
+ 450:	88 23       	and	r24, r24
+ 452:	39 f0       	breq	.+14     	; 0x462 <CfgTurnsOffAllPixels+0x44>
+ 454:	81 91       	ld	r24, Z+
+ 456:	2d 91       	ld	r18, X+
+ 458:	28 23       	and	r18, r24
+ 45a:	81 e0       	ldi	r24, 0x01	; 1
+ 45c:	b9 f3       	breq	.-18     	; 0x44c <CfgTurnsOffAllPixels+0x2e>
+ 45e:	80 e0       	ldi	r24, 0x00	; 0
+ 460:	f5 cf       	rjmp	.-22     	; 0x44c <CfgTurnsOffAllPixels+0x2e>
+ 462:	0f 90       	pop	r0
+ 464:	0f 90       	pop	r0
+ 466:	0f 90       	pop	r0
+ 468:	0f 90       	pop	r0
+ 46a:	df 91       	pop	r29
+ 46c:	cf 91       	pop	r28
+ 46e:	08 95       	ret
+
+00000470 <XOR>:
+ 470:	88 23       	and	r24, r24
+ 472:	19 f0       	breq	.+6      	; 0x47a <XOR+0xa>
+ 474:	81 e0       	ldi	r24, 0x01	; 1
+ 476:	86 27       	eor	r24, r22
+ 478:	01 c0       	rjmp	.+2      	; 0x47c <XOR+0xc>
+ 47a:	86 2f       	mov	r24, r22
+ 47c:	81 70       	andi	r24, 0x01	; 1
+ 47e:	08 95       	ret
+
+00000480 <AllPixelsAreOff>:
+ 480:	dc 01       	movw	r26, r24
+ 482:	fb 01       	movw	r30, r22
+ 484:	95 e0       	ldi	r25, 0x05	; 5
+ 486:	81 e0       	ldi	r24, 0x01	; 1
+ 488:	91 50       	subi	r25, 0x01	; 1
+ 48a:	49 f0       	breq	.+18     	; 0x49e <AllPixelsAreOff+0x1e>
+ 48c:	88 23       	and	r24, r24
+ 48e:	39 f0       	breq	.+14     	; 0x49e <AllPixelsAreOff+0x1e>
+ 490:	8d 91       	ld	r24, X+
+ 492:	21 91       	ld	r18, Z+
+ 494:	28 23       	and	r18, r24
+ 496:	81 e0       	ldi	r24, 0x01	; 1
+ 498:	b9 f3       	breq	.-18     	; 0x488 <AllPixelsAreOff+0x8>
+ 49a:	80 e0       	ldi	r24, 0x00	; 0
+ 49c:	f5 cf       	rjmp	.-22     	; 0x488 <AllPixelsAreOff+0x8>
+ 49e:	08 95       	ret
+
+000004a0 <AllPixelsAreOn>:
+ 4a0:	dc 01       	movw	r26, r24
+ 4a2:	fb 01       	movw	r30, r22
+ 4a4:	95 e0       	ldi	r25, 0x05	; 5
+ 4a6:	81 e0       	ldi	r24, 0x01	; 1
+ 4a8:	91 50       	subi	r25, 0x01	; 1
+ 4aa:	79 f0       	breq	.+30     	; 0x4ca <AllPixelsAreOn+0x2a>
+ 4ac:	88 23       	and	r24, r24
+ 4ae:	69 f0       	breq	.+26     	; 0x4ca <AllPixelsAreOn+0x2a>
+ 4b0:	2d 91       	ld	r18, X+
+ 4b2:	41 91       	ld	r20, Z+
+ 4b4:	30 e0       	ldi	r19, 0x00	; 0
+ 4b6:	20 95       	com	r18
+ 4b8:	30 95       	com	r19
+ 4ba:	50 e0       	ldi	r21, 0x00	; 0
+ 4bc:	24 23       	and	r18, r20
+ 4be:	35 23       	and	r19, r21
+ 4c0:	81 e0       	ldi	r24, 0x01	; 1
+ 4c2:	23 2b       	or	r18, r19
+ 4c4:	89 f3       	breq	.-30     	; 0x4a8 <AllPixelsAreOn+0x8>
+ 4c6:	80 e0       	ldi	r24, 0x00	; 0
+ 4c8:	ef cf       	rjmp	.-34     	; 0x4a8 <AllPixelsAreOn+0x8>
+ 4ca:	08 95       	ret
+
+000004cc <CfgTurnsRowPartiallyOn.part.0>:
+ 4cc:	ff 92       	push	r15
+ 4ce:	0f 93       	push	r16
+ 4d0:	1f 93       	push	r17
+ 4d2:	cf 93       	push	r28
+ 4d4:	df 93       	push	r29
+ 4d6:	ec 01       	movw	r28, r24
+ 4d8:	e6 2f       	mov	r30, r22
+ 4da:	f0 e0       	ldi	r31, 0x00	; 0
+ 4dc:	ee 0f       	add	r30, r30
+ 4de:	ff 1f       	adc	r31, r31
+ 4e0:	ee 5b       	subi	r30, 0xBE	; 190
+ 4e2:	fe 4f       	sbci	r31, 0xFE	; 254
+ 4e4:	00 81       	ld	r16, Z
+ 4e6:	11 81       	ldd	r17, Z+1	; 0x01
+ 4e8:	b8 01       	movw	r22, r16
+ 4ea:	ce 01       	movw	r24, r28
+ 4ec:	0e 94 50 02 	call	0x4a0	; 0x4a0 <AllPixelsAreOn>
+ 4f0:	f8 2e       	mov	r15, r24
+ 4f2:	b8 01       	movw	r22, r16
+ 4f4:	ce 01       	movw	r24, r28
+ 4f6:	0e 94 40 02 	call	0x480	; 0x480 <AllPixelsAreOff>
+ 4fa:	6f 2d       	mov	r22, r15
+ 4fc:	0e 94 38 02 	call	0x470	; 0x470 <XOR>
+ 500:	91 e0       	ldi	r25, 0x01	; 1
+ 502:	89 27       	eor	r24, r25
+ 504:	df 91       	pop	r29
+ 506:	cf 91       	pop	r28
+ 508:	1f 91       	pop	r17
+ 50a:	0f 91       	pop	r16
+ 50c:	ff 90       	pop	r15
+ 50e:	08 95       	ret
+
+00000510 <CfgBytesAreValid>:
+ 510:	0f 93       	push	r16
+ 512:	1f 93       	push	r17
+ 514:	cf 93       	push	r28
+ 516:	8c 01       	movw	r16, r24
+ 518:	0e 94 0f 02 	call	0x41e	; 0x41e <CfgTurnsOffAllPixels>
+ 51c:	c8 2f       	mov	r28, r24
+ 51e:	81 11       	cpse	r24, r1
+ 520:	20 c0       	rjmp	.+64     	; 0x562 <CfgBytesAreValid+0x52>
+ 522:	61 e0       	ldi	r22, 0x01	; 1
+ 524:	c8 01       	movw	r24, r16
+ 526:	0e 94 66 02 	call	0x4cc	; 0x4cc <CfgTurnsRowPartiallyOn.part.0>
+ 52a:	81 11       	cpse	r24, r1
+ 52c:	1b c0       	rjmp	.+54     	; 0x564 <CfgBytesAreValid+0x54>
+ 52e:	62 e0       	ldi	r22, 0x02	; 2
+ 530:	c8 01       	movw	r24, r16
+ 532:	0e 94 66 02 	call	0x4cc	; 0x4cc <CfgTurnsRowPartiallyOn.part.0>
+ 536:	c8 2f       	mov	r28, r24
+ 538:	81 11       	cpse	r24, r1
+ 53a:	13 c0       	rjmp	.+38     	; 0x562 <CfgBytesAreValid+0x52>
+ 53c:	63 e0       	ldi	r22, 0x03	; 3
+ 53e:	c8 01       	movw	r24, r16
+ 540:	0e 94 66 02 	call	0x4cc	; 0x4cc <CfgTurnsRowPartiallyOn.part.0>
+ 544:	81 11       	cpse	r24, r1
+ 546:	0e c0       	rjmp	.+28     	; 0x564 <CfgBytesAreValid+0x54>
+ 548:	64 e0       	ldi	r22, 0x04	; 4
+ 54a:	c8 01       	movw	r24, r16
+ 54c:	0e 94 66 02 	call	0x4cc	; 0x4cc <CfgTurnsRowPartiallyOn.part.0>
+ 550:	81 11       	cpse	r24, r1
+ 552:	08 c0       	rjmp	.+16     	; 0x564 <CfgBytesAreValid+0x54>
+ 554:	65 e0       	ldi	r22, 0x05	; 5
+ 556:	c8 01       	movw	r24, r16
+ 558:	0e 94 66 02 	call	0x4cc	; 0x4cc <CfgTurnsRowPartiallyOn.part.0>
+ 55c:	c1 e0       	ldi	r28, 0x01	; 1
+ 55e:	c8 27       	eor	r28, r24
+ 560:	01 c0       	rjmp	.+2      	; 0x564 <CfgBytesAreValid+0x54>
+ 562:	c0 e0       	ldi	r28, 0x00	; 0
+ 564:	8c 2f       	mov	r24, r28
+ 566:	cf 91       	pop	r28
+ 568:	1f 91       	pop	r17
+ 56a:	0f 91       	pop	r16
+ 56c:	08 95       	ret
+
+0000056e <UsbReadOneByte>:
+ 56e:	cf 93       	push	r28
+ 570:	df 93       	push	r29
+ 572:	ec 01       	movw	r28, r24
+ 574:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <FtSendCommand>
+ 578:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <FtSendCommand+0x1>
+ 57c:	80 91 2f 01 	lds	r24, 0x012F	; 0x80012f <FtCmd_Read>
+ 580:	09 95       	icall
+ 582:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <FtBusTurnaround>
+ 586:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <FtBusTurnaround+0x1>
+ 58a:	09 95       	icall
+ 58c:	81 11       	cpse	r24, r1
+ 58e:	07 c0       	rjmp	.+14     	; 0x59e <UsbReadOneByte+0x30>
+ 590:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtDeactivateInterface>
+ 594:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtDeactivateInterface+0x1>
+ 598:	09 95       	icall
+ 59a:	80 e0       	ldi	r24, 0x00	; 0
+ 59c:	0c c0       	rjmp	.+24     	; 0x5b6 <UsbReadOneByte+0x48>
+ 59e:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <FtRead>
+ 5a2:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <FtRead+0x1>
+ 5a6:	ce 01       	movw	r24, r28
+ 5a8:	09 95       	icall
+ 5aa:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtDeactivateInterface>
+ 5ae:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtDeactivateInterface+0x1>
+ 5b2:	09 95       	icall
+ 5b4:	81 e0       	ldi	r24, 0x01	; 1
+ 5b6:	df 91       	pop	r29
+ 5b8:	cf 91       	pop	r28
+ 5ba:	08 95       	ret
+
+000005bc <UsbReadN>:
+ 5bc:	cf 92       	push	r12
+ 5be:	df 92       	push	r13
+ 5c0:	ef 92       	push	r14
+ 5c2:	ff 92       	push	r15
+ 5c4:	0f 93       	push	r16
+ 5c6:	1f 93       	push	r17
+ 5c8:	cf 93       	push	r28
+ 5ca:	df 93       	push	r29
+ 5cc:	8c 01       	movw	r16, r24
+ 5ce:	7b 01       	movw	r14, r22
+ 5d0:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <FtSendCommand>
+ 5d4:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <FtSendCommand+0x1>
+ 5d8:	80 91 2f 01 	lds	r24, 0x012F	; 0x80012f <FtCmd_Read>
+ 5dc:	09 95       	icall
+ 5de:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <FtBusTurnaround>
+ 5e2:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <FtBusTurnaround+0x1>
+ 5e6:	09 95       	icall
+ 5e8:	81 11       	cpse	r24, r1
+ 5ea:	0a c0       	rjmp	.+20     	; 0x600 <UsbReadN+0x44>
+ 5ec:	df 91       	pop	r29
+ 5ee:	cf 91       	pop	r28
+ 5f0:	1f 91       	pop	r17
+ 5f2:	0f 91       	pop	r16
+ 5f4:	ff 90       	pop	r15
+ 5f6:	ef 90       	pop	r14
+ 5f8:	df 90       	pop	r13
+ 5fa:	cf 90       	pop	r12
+ 5fc:	0c 94 f2 01 	jmp	0x3e4	; 0x3e4 <UsbReadN.part.2>
+ 600:	c0 e0       	ldi	r28, 0x00	; 0
+ 602:	d0 e0       	ldi	r29, 0x00	; 0
+ 604:	68 01       	movw	r12, r16
+ 606:	8f ef       	ldi	r24, 0xFF	; 255
+ 608:	c8 1a       	sub	r12, r24
+ 60a:	d8 0a       	sbc	r13, r24
+ 60c:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <FtRead>
+ 610:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <FtRead+0x1>
+ 614:	c8 01       	movw	r24, r16
+ 616:	09 95       	icall
+ 618:	88 23       	and	r24, r24
+ 61a:	29 f0       	breq	.+10     	; 0x626 <UsbReadN+0x6a>
+ 61c:	21 96       	adiw	r28, 0x01	; 1
+ 61e:	86 01       	movw	r16, r12
+ 620:	ce 15       	cp	r28, r14
+ 622:	df 05       	cpc	r29, r15
+ 624:	78 f3       	brcs	.-34     	; 0x604 <UsbReadN+0x48>
+ 626:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtDeactivateInterface>
+ 62a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtDeactivateInterface+0x1>
+ 62e:	09 95       	icall
+ 630:	ce 01       	movw	r24, r28
+ 632:	df 91       	pop	r29
+ 634:	cf 91       	pop	r28
+ 636:	1f 91       	pop	r17
+ 638:	0f 91       	pop	r16
+ 63a:	ff 90       	pop	r15
+ 63c:	ef 90       	pop	r14
+ 63e:	df 90       	pop	r13
+ 640:	cf 90       	pop	r12
+ 642:	08 95       	ret
+
+00000644 <UsbWrite>:
+    uint8_t const StatusMissingArgs[] = { 253, missing_args_cmd };
+    return UsbWrite(StatusMissingArgs,2);
+}
+
+uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes)
+{
+ 644:	cf 92       	push	r12
+ 646:	df 92       	push	r13
+ 648:	ef 92       	push	r14
+ 64a:	ff 92       	push	r15
+ 64c:	0f 93       	push	r16
+ 64e:	1f 93       	push	r17
+ 650:	cf 93       	push	r28
+ 652:	df 93       	push	r29
+ 654:	8c 01       	movw	r16, r24
+ 656:	7b 01       	movw	r14, r22
+    uint16_t num_bytes_sent = 0;
+    FtSendCommand(FtCmd_Write);
+ 658:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <FtSendCommand>
+ 65c:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <FtSendCommand+0x1>
+ 660:	80 91 2e 01 	lds	r24, 0x012E	; 0x80012e <FtCmd_Write>
+ 664:	09 95       	icall
+    if (!FtBusTurnaround())
+ 666:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <FtBusTurnaround>
+ 66a:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <FtBusTurnaround+0x1>
+ 66e:	09 95       	icall
+ 670:	81 11       	cpse	r24, r1
+ 672:	0a c0       	rjmp	.+20     	; 0x688 <UsbWrite+0x44>
+        if (byte_sent) num_bytes_sent++;
+        finished = (num_bytes_sent >= nbytes);
+    }
+    FtDeactivateInterface();
+    return num_bytes_sent;
+}
+ 674:	df 91       	pop	r29
+ 676:	cf 91       	pop	r28
+ 678:	1f 91       	pop	r17
+ 67a:	0f 91       	pop	r16
+ 67c:	ff 90       	pop	r15
+ 67e:	ef 90       	pop	r14
+ 680:	df 90       	pop	r13
+ 682:	cf 90       	pop	r12
+ 684:	0c 94 f2 01 	jmp	0x3e4	; 0x3e4 <UsbReadN.part.2>
+ 688:	c0 e0       	ldi	r28, 0x00	; 0
+ 68a:	d0 e0       	ldi	r29, 0x00	; 0
+    }
+    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
+    bool byte_sent = true; bool finished = false;
+    while (byte_sent && !finished)
+    {
+        byte_sent = FtWrite(write_buffer++);
+ 68c:	68 01       	movw	r12, r16
+ 68e:	8f ef       	ldi	r24, 0xFF	; 255
+ 690:	c8 1a       	sub	r12, r24
+ 692:	d8 0a       	sbc	r13, r24
+ 694:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtWrite>
+ 698:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtWrite+0x1>
+ 69c:	c8 01       	movw	r24, r16
+ 69e:	09 95       	icall
+        if (byte_sent) num_bytes_sent++;
+ 6a0:	88 23       	and	r24, r24
+ 6a2:	29 f0       	breq	.+10     	; 0x6ae <UsbWrite+0x6a>
+ 6a4:	21 96       	adiw	r28, 0x01	; 1
+    }
+    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
+    bool byte_sent = true; bool finished = false;
+    while (byte_sent && !finished)
+    {
+        byte_sent = FtWrite(write_buffer++);
+ 6a6:	86 01       	movw	r16, r12
+        FtDeactivateInterface();
+        return num_bytes_sent;
+    }
+    // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
+    bool byte_sent = true; bool finished = false;
+    while (byte_sent && !finished)
+ 6a8:	ce 15       	cp	r28, r14
+ 6aa:	df 05       	cpc	r29, r15
+ 6ac:	78 f3       	brcs	.-34     	; 0x68c <UsbWrite+0x48>
+    {
+        byte_sent = FtWrite(write_buffer++);
+        if (byte_sent) num_bytes_sent++;
+        finished = (num_bytes_sent >= nbytes);
+    }
+    FtDeactivateInterface();
+ 6ae:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtDeactivateInterface>
+ 6b2:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtDeactivateInterface+0x1>
+ 6b6:	09 95       	icall
+    return num_bytes_sent;
+}
+ 6b8:	ce 01       	movw	r24, r28
+ 6ba:	df 91       	pop	r29
+ 6bc:	cf 91       	pop	r28
+ 6be:	1f 91       	pop	r17
+ 6c0:	0f 91       	pop	r16
+ 6c2:	ff 90       	pop	r15
+ 6c4:	ef 90       	pop	r14
+ 6c6:	df 90       	pop	r13
+ 6c8:	cf 90       	pop	r12
+ 6ca:	08 95       	ret
+
+000006cc <UsbWriteStatusOk>:
+    FtDeactivateInterface();
+    return num_bytes_read;
+}
+/* =====[ Status ]===== */
+bool UsbWriteStatusOk(void)
+{
+ 6cc:	cf 93       	push	r28
+ 6ce:	df 93       	push	r29
+ 6d0:	1f 92       	push	r1
+ 6d2:	cd b7       	in	r28, 0x3d	; 61
+ 6d4:	de b7       	in	r29, 0x3e	; 62
+    uint8_t const StatusOk = 0;
+ 6d6:	19 82       	std	Y+1, r1	; 0x01
+    return UsbWrite(&StatusOk,1);
+ 6d8:	61 e0       	ldi	r22, 0x01	; 1
+ 6da:	70 e0       	ldi	r23, 0x00	; 0
+ 6dc:	ce 01       	movw	r24, r28
+ 6de:	01 96       	adiw	r24, 0x01	; 1
+ 6e0:	0e 94 22 03 	call	0x644	; 0x644 <UsbWrite>
+ 6e4:	21 e0       	ldi	r18, 0x01	; 1
+ 6e6:	89 2b       	or	r24, r25
+ 6e8:	09 f4       	brne	.+2      	; 0x6ec <UsbWriteStatusOk+0x20>
+ 6ea:	20 e0       	ldi	r18, 0x00	; 0
+}
+ 6ec:	82 2f       	mov	r24, r18
+ 6ee:	0f 90       	pop	r0
+ 6f0:	df 91       	pop	r29
+ 6f2:	cf 91       	pop	r28
+ 6f4:	08 95       	ret
+
+000006f6 <CmdLedRed>:
+    /* and let the UsbHost deal with the possibility */
+    /* of not getting any response to its command. */
+/* // */
+/* Define command functions in jump table */
+void CmdLedRed(void){
+    DebugLedTurnRed();
+ 6f6:	0e 94 76 00 	call	0xec	; 0xec <DebugLedTurnRed>
+    // tell mBrd to turn debug_led1 red
+    UsbWriteStatusOk();
+ 6fa:	0c 94 66 03 	jmp	0x6cc	; 0x6cc <UsbWriteStatusOk>
+
+000006fe <CmdLedGreen>:
+}
+void CmdLedGreen(void){ DebugLedTurnGreen(); UsbWriteStatusOk(); }
+ 6fe:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <DebugLedTurnGreen>
+ 702:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <DebugLedTurnGreen+0x1>
+ 706:	09 95       	icall
+ 708:	0c 94 66 03 	jmp	0x6cc	; 0x6cc <UsbWriteStatusOk>
+
+0000070c <UsbWriteStatusInvalid>:
+{
+    uint8_t const StatusOk = 0;
+    return UsbWrite(&StatusOk,1);
+}
+uint8_t UsbWriteStatusInvalid(jump_index invalid_cmd)
+{
+ 70c:	cf 93       	push	r28
+ 70e:	df 93       	push	r29
+ 710:	00 d0       	rcall	.+0      	; 0x712 <UsbWriteStatusInvalid+0x6>
+ 712:	cd b7       	in	r28, 0x3d	; 61
+ 714:	de b7       	in	r29, 0x3e	; 62
+    uint8_t const StatusInvalid[] = { 255, invalid_cmd };
+ 716:	9f ef       	ldi	r25, 0xFF	; 255
+ 718:	99 83       	std	Y+1, r25	; 0x01
+ 71a:	8a 83       	std	Y+2, r24	; 0x02
+    return UsbWrite(StatusInvalid,2);
+ 71c:	62 e0       	ldi	r22, 0x02	; 2
+ 71e:	70 e0       	ldi	r23, 0x00	; 0
+ 720:	ce 01       	movw	r24, r28
+ 722:	01 96       	adiw	r24, 0x01	; 1
+ 724:	0e 94 22 03 	call	0x644	; 0x644 <UsbWrite>
+}
+ 728:	0f 90       	pop	r0
+ 72a:	0f 90       	pop	r0
+ 72c:	df 91       	pop	r29
+ 72e:	cf 91       	pop	r28
+ 730:	08 95       	ret
+
+00000732 <UsbWriteStatusBadArgs>:
+uint8_t UsbWriteStatusBadArgs(jump_index bad_args_cmd)
+{
+ 732:	cf 93       	push	r28
+ 734:	df 93       	push	r29
+ 736:	00 d0       	rcall	.+0      	; 0x738 <UsbWriteStatusBadArgs+0x6>
+ 738:	cd b7       	in	r28, 0x3d	; 61
+ 73a:	de b7       	in	r29, 0x3e	; 62
+    uint8_t const StatusBadArgs[] = { 254, bad_args_cmd };
+ 73c:	9e ef       	ldi	r25, 0xFE	; 254
+ 73e:	99 83       	std	Y+1, r25	; 0x01
+ 740:	8a 83       	std	Y+2, r24	; 0x02
+    return UsbWrite(StatusBadArgs,2);
+ 742:	62 e0       	ldi	r22, 0x02	; 2
+ 744:	70 e0       	ldi	r23, 0x00	; 0
+ 746:	ce 01       	movw	r24, r28
+ 748:	01 96       	adiw	r24, 0x01	; 1
+ 74a:	0e 94 22 03 	call	0x644	; 0x644 <UsbWrite>
+}
+ 74e:	0f 90       	pop	r0
+ 750:	0f 90       	pop	r0
+ 752:	df 91       	pop	r29
+ 754:	cf 91       	pop	r28
+ 756:	08 95       	ret
+
+00000758 <UsbWriteStatusMissingArgs>:
+uint8_t UsbWriteStatusMissingArgs(jump_index missing_args_cmd)
+{
+ 758:	cf 93       	push	r28
+ 75a:	df 93       	push	r29
+ 75c:	00 d0       	rcall	.+0      	; 0x75e <UsbWriteStatusMissingArgs+0x6>
+ 75e:	cd b7       	in	r28, 0x3d	; 61
+ 760:	de b7       	in	r29, 0x3e	; 62
+    uint8_t const StatusMissingArgs[] = { 253, missing_args_cmd };
+ 762:	9d ef       	ldi	r25, 0xFD	; 253
+ 764:	99 83       	std	Y+1, r25	; 0x01
+ 766:	8a 83       	std	Y+2, r24	; 0x02
+    return UsbWrite(StatusMissingArgs,2);
+ 768:	62 e0       	ldi	r22, 0x02	; 2
+ 76a:	70 e0       	ldi	r23, 0x00	; 0
+ 76c:	ce 01       	movw	r24, r28
+ 76e:	01 96       	adiw	r24, 0x01	; 1
+ 770:	0e 94 22 03 	call	0x644	; 0x644 <UsbWrite>
+}
+ 774:	0f 90       	pop	r0
+ 776:	0f 90       	pop	r0
+ 778:	df 91       	pop	r29
+ 77a:	cf 91       	pop	r28
+ 77c:	08 95       	ret
+
+0000077e <CmdCfgLis>:
+    // tell mBrd to turn debug_led1 red
+    UsbWriteStatusOk();
+}
+void CmdLedGreen(void){ DebugLedTurnGreen(); UsbWriteStatusOk(); }
+void CmdCfgLis(void)
+{
+ 77e:	cf 93       	push	r28
+ 780:	df 93       	push	r29
+ 782:	00 d0       	rcall	.+0      	; 0x784 <CmdCfgLis+0x6>
+ 784:	00 d0       	rcall	.+0      	; 0x786 <CmdCfgLis+0x8>
+ 786:	cd b7       	in	r28, 0x3d	; 61
+ 788:	de b7       	in	r29, 0x3e	; 62
+    /* Spectrometer configuration is four bytes. */
+    uint8_t const num_cfgbytes = 4;
+    uint8_t read_buffer[num_cfgbytes];
+    uint16_t nbytes_read = UsbReadN(read_buffer, num_cfgbytes);
+ 78a:	64 e0       	ldi	r22, 0x04	; 4
+ 78c:	70 e0       	ldi	r23, 0x00	; 0
+ 78e:	ce 01       	movw	r24, r28
+ 790:	01 96       	adiw	r24, 0x01	; 1
+ 792:	0e 94 de 02 	call	0x5bc	; 0x5bc <UsbReadN>
+    // TODO: Error checking that we timed out.
+    // This will be next error (253). Timeout on expected num_cfgbytes.
+    // Error checking that nbytes_read != 4
+    if (nbytes_read != num_cfgbytes) { UsbWriteStatusMissingArgs(CmdCfgLis_key); }
+ 796:	04 97       	sbiw	r24, 0x04	; 4
+ 798:	19 f0       	breq	.+6      	; 0x7a0 <CmdCfgLis+0x22>
+ 79a:	82 e0       	ldi	r24, 0x02	; 2
+ 79c:	0e 94 ac 03 	call	0x758	; 0x758 <UsbWriteStatusMissingArgs>
+    // Have the right number of bytes.
+    // Error check that bytes_read are valid.
+    // This is error (254). Mimsatch between command and args.
+    if (!CfgBytesAreValid(read_buffer)) { UsbWriteStatusBadArgs(CmdCfgLis_key); }
+ 7a0:	ce 01       	movw	r24, r28
+ 7a2:	01 96       	adiw	r24, 0x01	; 1
+ 7a4:	0e 94 88 02 	call	0x510	; 0x510 <CfgBytesAreValid>
+ 7a8:	81 11       	cpse	r24, r1
+ 7aa:	04 c0       	rjmp	.+8      	; 0x7b4 <CmdCfgLis+0x36>
+ 7ac:	82 e0       	ldi	r24, 0x02	; 2
+ 7ae:	0e 94 99 03 	call	0x732	; 0x732 <UsbWriteStatusBadArgs>
+ 7b2:	08 c0       	rjmp	.+16     	; 0x7c4 <CmdCfgLis+0x46>
+        //
+        // TODO: [ ] pass to mBrd
+        // mBrd converts to uint32_t and does cfg
+        // ...
+        // at end of happy path
+        UsbWriteStatusOk();
+ 7b4:	0e 94 66 03 	call	0x6cc	; 0x6cc <UsbWriteStatusOk>
+        // echo back cfg bytes
+        UsbWrite(read_buffer,4);
+ 7b8:	64 e0       	ldi	r22, 0x04	; 4
+ 7ba:	70 e0       	ldi	r23, 0x00	; 0
+ 7bc:	ce 01       	movw	r24, r28
+ 7be:	01 96       	adiw	r24, 0x01	; 1
+ 7c0:	0e 94 22 03 	call	0x644	; 0x644 <UsbWrite>
+    }
+}
+ 7c4:	0f 90       	pop	r0
+ 7c6:	0f 90       	pop	r0
+ 7c8:	0f 90       	pop	r0
+ 7ca:	0f 90       	pop	r0
+ 7cc:	df 91       	pop	r29
+ 7ce:	cf 91       	pop	r28
+ 7d0:	08 95       	ret
+
+000007d2 <ClearPendingSpiInterrupt_Implementation>:
+void SpiClearFlagTransferIsDone(void)
+{
+    // Clear the Spi_Interrupt flag by
+    // reading Spi_InterruptFlag while it is set
+    // then reading SPDR
+    *Spi_spdr;  // this serves as a throwaway access
+ 7d2:	e0 91 26 01 	lds	r30, 0x0126	; 0x800126 <ReadSpiStatusRegister>
+ 7d6:	f0 91 27 01 	lds	r31, 0x0127	; 0x800127 <ReadSpiStatusRegister+0x1>
+ 7da:	09 95       	icall
+ 7dc:	e0 91 22 01 	lds	r30, 0x0122	; 0x800122 <ReadSpiDataRegister>
+ 7e0:	f0 91 23 01 	lds	r31, 0x0123	; 0x800123 <ReadSpiDataRegister+0x1>
+ 7e4:	09 94       	ijmp
+
+000007e6 <ReadSpiStatusRegister_Implementation>:
+ 7e6:	e0 91 5f 01 	lds	r30, 0x015F	; 0x80015f <Spi_spsr>
+ 7ea:	f0 91 60 01 	lds	r31, 0x0160	; 0x800160 <Spi_spsr+0x1>
+ 7ee:	80 81       	ld	r24, Z
+ 7f0:	08 95       	ret
+
+000007f2 <EnableSpi_Implementation>:
+ 7f2:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <Spi_spcr>
+ 7f6:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <Spi_spcr+0x1>
+ 7fa:	20 81       	ld	r18, Z
+ 7fc:	81 e0       	ldi	r24, 0x01	; 1
+ 7fe:	90 e0       	ldi	r25, 0x00	; 0
+ 800:	00 90 55 01 	lds	r0, 0x0155	; 0x800155 <Spi_Enable>
+ 804:	02 c0       	rjmp	.+4      	; 0x80a <EnableSpi_Implementation+0x18>
+ 806:	88 0f       	add	r24, r24
+ 808:	99 1f       	adc	r25, r25
+ 80a:	0a 94       	dec	r0
+ 80c:	e2 f7       	brpl	.-8      	; 0x806 <EnableSpi_Implementation+0x14>
+ 80e:	82 2b       	or	r24, r18
+ 810:	80 83       	st	Z, r24
+ 812:	08 95       	ret
+
+00000814 <SpiMasterCloseSpi_Implementation>:
+ 814:	e0 91 63 01 	lds	r30, 0x0163	; 0x800163 <Spi_port>
+ 818:	f0 91 64 01 	lds	r31, 0x0164	; 0x800164 <Spi_port+0x1>
+ 81c:	20 81       	ld	r18, Z
+ 81e:	81 e0       	ldi	r24, 0x01	; 1
+ 820:	90 e0       	ldi	r25, 0x00	; 0
+ 822:	00 90 5c 01 	lds	r0, 0x015C	; 0x80015c <Spi_Ss>
+ 826:	02 c0       	rjmp	.+4      	; 0x82c <SpiMasterCloseSpi_Implementation+0x18>
+ 828:	88 0f       	add	r24, r24
+ 82a:	99 1f       	adc	r25, r25
+ 82c:	0a 94       	dec	r0
+ 82e:	e2 f7       	brpl	.-8      	; 0x828 <SpiMasterCloseSpi_Implementation+0x14>
+ 830:	82 2b       	or	r24, r18
+ 832:	80 83       	st	Z, r24
+ 834:	08 95       	ret
+
+00000836 <ReadSpiDataRegister_Implementation>:
+ 836:	e0 91 5d 01 	lds	r30, 0x015D	; 0x80015d <Spi_spdr>
+ 83a:	f0 91 5e 01 	lds	r31, 0x015E	; 0x80015e <Spi_spdr+0x1>
+ 83e:	80 81       	ld	r24, Z
+ 840:	08 95       	ret
+
+00000842 <SpiMasterInit>:
+    ClearBit(Spi_ddr, Spi_Miso);    // make it an input
+    SetBit(Spi_port, Spi_Miso);     // enable pull-up
+}
+void SpiMasterInit(void)
+{
+    SlaveSelectIdleHigh();
+ 842:	0e 94 0a 04 	call	0x814	; 0x814 <SpiMasterCloseSpi_Implementation>
+// When the slave disables SPI to drive MISO, it needs this pin to go low.
+//
+/* TODO: rename this function to make it clear it is *only* for the SpiMaster. */
+static void SetMisoAsPullupInput(void) // For SpiMaster only!
+{
+    ClearBit(Spi_ddr, Spi_Miso);    // make it an input
+ 846:	e0 91 65 01 	lds	r30, 0x0165	; 0x800165 <Spi_ddr>
+ 84a:	f0 91 66 01 	lds	r31, 0x0166	; 0x800166 <Spi_ddr+0x1>
+}
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port &= ~(1<<bit);
+ 84e:	40 81       	ld	r20, Z
+ 850:	81 e0       	ldi	r24, 0x01	; 1
+ 852:	90 e0       	ldi	r25, 0x00	; 0
+ 854:	9c 01       	movw	r18, r24
+ 856:	00 90 5a 01 	lds	r0, 0x015A	; 0x80015a <Spi_Miso>
+ 85a:	02 c0       	rjmp	.+4      	; 0x860 <SpiMasterInit+0x1e>
+ 85c:	22 0f       	add	r18, r18
+ 85e:	33 1f       	adc	r19, r19
+ 860:	0a 94       	dec	r0
+ 862:	e2 f7       	brpl	.-8      	; 0x85c <SpiMasterInit+0x1a>
+ 864:	32 2f       	mov	r19, r18
+ 866:	30 95       	com	r19
+ 868:	34 23       	and	r19, r20
+ 86a:	30 83       	st	Z, r19
+    SetBit(Spi_port, Spi_Miso);     // enable pull-up
+ 86c:	a0 91 63 01 	lds	r26, 0x0163	; 0x800163 <Spi_port>
+ 870:	b0 91 64 01 	lds	r27, 0x0164	; 0x800164 <Spi_port+0x1>
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port |= 1<<bit;
+ 874:	3c 91       	ld	r19, X
+ 876:	23 2b       	or	r18, r19
+ 878:	2c 93       	st	X, r18
+ 87a:	40 81       	ld	r20, Z
+ 87c:	9c 01       	movw	r18, r24
+ 87e:	00 90 5c 01 	lds	r0, 0x015C	; 0x80015c <Spi_Ss>
+ 882:	02 c0       	rjmp	.+4      	; 0x888 <SpiMasterInit+0x46>
+ 884:	22 0f       	add	r18, r18
+ 886:	33 1f       	adc	r19, r19
+ 888:	0a 94       	dec	r0
+ 88a:	e2 f7       	brpl	.-8      	; 0x884 <SpiMasterInit+0x42>
+ 88c:	24 2b       	or	r18, r20
+ 88e:	20 83       	st	Z, r18
+ 890:	40 81       	ld	r20, Z
+ 892:	9c 01       	movw	r18, r24
+ 894:	00 90 5b 01 	lds	r0, 0x015B	; 0x80015b <Spi_Mosi>
+ 898:	02 c0       	rjmp	.+4      	; 0x89e <SpiMasterInit+0x5c>
+ 89a:	22 0f       	add	r18, r18
+ 89c:	33 1f       	adc	r19, r19
+ 89e:	0a 94       	dec	r0
+ 8a0:	e2 f7       	brpl	.-8      	; 0x89a <SpiMasterInit+0x58>
+ 8a2:	24 2b       	or	r18, r20
+ 8a4:	20 83       	st	Z, r18
+ 8a6:	40 81       	ld	r20, Z
+ 8a8:	9c 01       	movw	r18, r24
+ 8aa:	00 90 59 01 	lds	r0, 0x0159	; 0x800159 <Spi_Sck>
+ 8ae:	02 c0       	rjmp	.+4      	; 0x8b4 <SpiMasterInit+0x72>
+ 8b0:	22 0f       	add	r18, r18
+ 8b2:	33 1f       	adc	r19, r19
+ 8b4:	0a 94       	dec	r0
+ 8b6:	e2 f7       	brpl	.-8      	; 0x8b0 <SpiMasterInit+0x6e>
+ 8b8:	24 2b       	or	r18, r20
+ 8ba:	20 83       	st	Z, r18
+{
+    SetBit(Spi_ddr, Spi_Sck);
+}
+static void MakeMeTheMaster(void)
+{
+    SetBit(Spi_spcr, Spi_MasterSlaveSelect);
+ 8bc:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <Spi_spcr>
+ 8c0:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <Spi_spcr+0x1>
+ 8c4:	40 81       	ld	r20, Z
+ 8c6:	9c 01       	movw	r18, r24
+ 8c8:	00 90 58 01 	lds	r0, 0x0158	; 0x800158 <Spi_MasterSlaveSelect>
+ 8cc:	02 c0       	rjmp	.+4      	; 0x8d2 <SpiMasterInit+0x90>
+ 8ce:	22 0f       	add	r18, r18
+ 8d0:	33 1f       	adc	r19, r19
+ 8d2:	0a 94       	dec	r0
+ 8d4:	e2 f7       	brpl	.-8      	; 0x8ce <SpiMasterInit+0x8c>
+ 8d6:	24 2b       	or	r18, r20
+ 8d8:	20 83       	st	Z, r18
+ 8da:	40 81       	ld	r20, Z
+ 8dc:	9c 01       	movw	r18, r24
+ 8de:	00 90 57 01 	lds	r0, 0x0157	; 0x800157 <Spi_ClockRateBit0>
+ 8e2:	02 c0       	rjmp	.+4      	; 0x8e8 <SpiMasterInit+0xa6>
+ 8e4:	22 0f       	add	r18, r18
+ 8e6:	33 1f       	adc	r19, r19
+ 8e8:	0a 94       	dec	r0
+ 8ea:	e2 f7       	brpl	.-8      	; 0x8e4 <SpiMasterInit+0xa2>
+ 8ec:	24 2b       	or	r18, r20
+ 8ee:	20 83       	st	Z, r18
+}
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port &= ~(1<<bit);
+ 8f0:	30 81       	ld	r19, Z
+ 8f2:	ac 01       	movw	r20, r24
+ 8f4:	00 90 56 01 	lds	r0, 0x0156	; 0x800156 <Spi_ClockRateBit1>
+ 8f8:	02 c0       	rjmp	.+4      	; 0x8fe <SpiMasterInit+0xbc>
+ 8fa:	44 0f       	add	r20, r20
+ 8fc:	55 1f       	adc	r21, r21
+ 8fe:	0a 94       	dec	r0
+ 900:	e2 f7       	brpl	.-8      	; 0x8fa <SpiMasterInit+0xb8>
+ 902:	24 2f       	mov	r18, r20
+ 904:	20 95       	com	r18
+ 906:	23 23       	and	r18, r19
+ 908:	20 83       	st	Z, r18
+{
+    // SPI master and slave are both an ATmega328P with a 10MHz oscillator.
+    // Use SCK = fosc/8 = 1.25MHz.
+    SetBit  (Spi_spcr, Spi_ClockRateBit0);
+    ClearBit(Spi_spcr, Spi_ClockRateBit1);
+    SetBit(Spi_spsr, Spi_DoubleClockRate);
+ 90a:	e0 91 5f 01 	lds	r30, 0x015F	; 0x80015f <Spi_spsr>
+ 90e:	f0 91 60 01 	lds	r31, 0x0160	; 0x800160 <Spi_spsr+0x1>
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port |= 1<<bit;
+ 912:	20 81       	ld	r18, Z
+ 914:	00 90 54 01 	lds	r0, 0x0154	; 0x800154 <Spi_DoubleClockRate>
+ 918:	02 c0       	rjmp	.+4      	; 0x91e <__stack+0x1f>
+ 91a:	88 0f       	add	r24, r24
+ 91c:	99 1f       	adc	r25, r25
+ 91e:	0a 94       	dec	r0
+ 920:	e2 f7       	brpl	.-8      	; 0x91a <__stack+0x1b>
+ 922:	82 2b       	or	r24, r18
+ 924:	80 83       	st	Z, r24
+    SetSlaveSelectAsOutput();  // pin-direction is user-defined
+    SetMosiAsOutput();         // pin-direction is user-defined
+    SetSckAsOutput();          // pin-direction is user-defined
+    MakeMeTheMaster();
+    SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
+    EnableSpi();
+ 926:	e0 91 24 01 	lds	r30, 0x0124	; 0x800124 <EnableSpi>
+ 92a:	f0 91 25 01 	lds	r31, 0x0125	; 0x800125 <EnableSpi+0x1>
+ 92e:	09 95       	icall
+    ClearPendingSpiInterrupt();
+ 930:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ClearPendingSpiInterrupt>
+ 934:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ClearPendingSpiInterrupt+0x1>
+ 938:	09 94       	ijmp
+
+0000093a <SetupDebugLed>:
+    *(pnticks++) = *Spi_spdr;               // store msb
+    MacroSpiMasterWaitForResponse();
+    MacroSpiMasterWrite(slave_ignore);      // transfer lsb
+    *(pnticks--) = *Spi_spdr;               // store lsb
+    // Push new exposure time value to UsbHost.
+    UsbWrite(pnticks, 2);
+ 93a:	23 e0       	ldi	r18, 0x03	; 3
+ 93c:	46 e2       	ldi	r20, 0x26	; 38
+ 93e:	50 e0       	ldi	r21, 0x00	; 0
+ 940:	68 e2       	ldi	r22, 0x28	; 40
+ 942:	70 e0       	ldi	r23, 0x00	; 0
+ 944:	87 e2       	ldi	r24, 0x27	; 39
+ 946:	90 e0       	ldi	r25, 0x00	; 0
+ 948:	0c 94 87 00 	jmp	0x10e	; 0x10e <DebugLedInit>
+
+0000094c <Bridge_data_flow_between_USB_Host_and_SpiSlave>:
+ 94c:	cf 93       	push	r28
+ 94e:	df 93       	push	r29
+ 950:	1f 92       	push	r1
+ 952:	cd b7       	in	r28, 0x3d	; 61
+ 954:	de b7       	in	r29, 0x3e	; 62
+ 956:	ce 01       	movw	r24, r28
+ 958:	01 96       	adiw	r24, 0x01	; 1
+ 95a:	0e 94 b7 02 	call	0x56e	; 0x56e <UsbReadOneByte>
+ 95e:	88 23       	and	r24, r24
+ 960:	59 f0       	breq	.+22     	; 0x978 <Bridge_data_flow_between_USB_Host_and_SpiSlave+0x2c>
+ 962:	89 81       	ldd	r24, Y+1	; 0x01
+ 964:	0e 94 01 02 	call	0x402	; 0x402 <LookupCmd>
+ 968:	00 97       	sbiw	r24, 0x00	; 0
+ 96a:	21 f4       	brne	.+8      	; 0x974 <Bridge_data_flow_between_USB_Host_and_SpiSlave+0x28>
+ 96c:	89 81       	ldd	r24, Y+1	; 0x01
+ 96e:	0e 94 86 03 	call	0x70c	; 0x70c <UsbWriteStatusInvalid>
+ 972:	02 c0       	rjmp	.+4      	; 0x978 <Bridge_data_flow_between_USB_Host_and_SpiSlave+0x2c>
+ 974:	fc 01       	movw	r30, r24
+ 976:	09 95       	icall
+ 978:	0f 90       	pop	r0
+ 97a:	df 91       	pop	r29
+ 97c:	cf 91       	pop	r28
+ 97e:	08 95       	ret
+
+00000980 <main>:
+#define DebugPinHigh() SetBit(&PORTC, PC5)
+
+int main()
+{
+    /* =====[ Setup ]===== */
+    SetupDebugLed();
+ 980:	0e 94 9d 04 	call	0x93a	; 0x93a <SetupDebugLed>
+    SpiMasterInit();
+ 984:	0e 94 21 04 	call	0x842	; 0x842 <SpiMasterInit>
+    UsbInit();
+ 988:	0e 94 ff 01 	call	0x3fe	; 0x3fe <UsbInit>
+ 98c:	3d 9a       	sbi	0x07, 5	; 7
+ 98e:	45 9a       	sbi	0x08, 5	; 8
+    DebugPinInit();
+    nbytes_in_frame = sizeof_full_frame;
+ 990:	80 e2       	ldi	r24, 0x20	; 32
+ 992:	96 e0       	ldi	r25, 0x06	; 6
+ 994:	90 93 9e 07 	sts	0x079E, r25	; 0x80079e <nbytes_in_frame+0x1>
+ 998:	80 93 9d 07 	sts	0x079D, r24	; 0x80079d <nbytes_in_frame>
+    /* =====[ Loop ]===== */
+    while(1){ Bridge_data_flow_between_USB_Host_and_SpiSlave(); }
+ 99c:	0e 94 a6 04 	call	0x94c	; 0x94c <Bridge_data_flow_between_USB_Host_and_SpiSlave>
+ 9a0:	fd cf       	rjmp	.-6      	; 0x99c <main+0x1c>
+
+000009a2 <_exit>:
+ 9a2:	f8 94       	cli
+
+000009a4 <__stop_program>:
+ 9a4:	ff cf       	rjmp	.-2      	; 0x9a4 <__stop_program>

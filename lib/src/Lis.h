@@ -18,18 +18,18 @@ extern uint16_t Lis_nticks_exposure;
 #define LisExposureStart() LisRstHigh()
 #define LisExposureStop()  LisRstLow()
 #define LisWaitForSyncRiseEdge() do { \
-    while(MacroBitIsClear(Lis_pin1, Lis_Sync)); \
+    while(BitIsClear(Lis_pin1, Lis_Sync)); \
 } while(0)
 #define LisWaitForSyncFallEdge() do { \
-    while(MacroBitIsSet(Lis_pin1, Lis_Sync)); \
+    while(BitIsSet(Lis_pin1, Lis_Sync)); \
 } while(0)
 /* =====[ Lis Frame Readout low-level macros used in API macros ]===== */
 
 #define LisRstHigh() do { \
-    MacroSetBit(Lis_port1, Lis_Rst); \
+    SetBit(Lis_port1, Lis_Rst); \
 } while(0)
 #define LisRstLow() do { \
-    MacroClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port1, Lis_Rst); \
 } while(0)
 
 /* =====[ Hardware dependencies to be resolved in Lis-Hardware.h ]===== */

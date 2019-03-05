@@ -34,6 +34,7 @@
 #include "AvrAsmMacros.h"       // resolve lib dependencies on AVR asm macros
 // avr libs
 #include <avr/interrupt.h>      // defines macro ISR()
+#include <stdlib.h>  // defines NULL
 
 /* =====[ List of application example tests ]===== */
     // [x] App_version_of_Slave_RespondToRequestsForData
@@ -121,10 +122,10 @@ void DemoMacroFastestRstResponseToClk(void)
     {
         LisWaitForClkRiseEdge();
         // delay bewteen Clk high and Rst high is 0.6 to 0.8us
-        MacroSetBit(Lis_port1, Lis_Rst);
+        SetBit(Lis_port1, Lis_Rst);
         LisWaitForClkFallEdge();
         // delay bewteen Clk low and Rst low is 0.6 to 0.8us
-        MacroClearBit(Lis_port1, Lis_Rst);
+        ClearBit(Lis_port1, Lis_Rst);
     }
 }
 /* =====[ GLOBAL VARIABLES ]===== */
@@ -292,13 +293,16 @@ void LisFrameReadout(void)
     // this fix works, but I made a better fix in `PeakCounts()`
     /* ZeroOutUnusedPixels(); */
 }
+
+void Get_commands_from_SpiMaster(void);
 int main()
 {
     SetupDebugLeds(); // display red/green LEDs on PCB
     SpiSlaveInit();   // respond to Spi-master (e.g., USB host)
     UartSpiInit();    // take ADC readings
     LisInit();        // power up Lis, start 50kHz clock
-    while(1) RespondToRequestsForData();
+    while(1) Get_commands_from_SpiMaster();
+    /* while(1) RespondToRequestsForData(); // old main loop */
     /* LisDoNothingFor10Clocks(); */
     DebugLedsTurnAllRed();
 
@@ -468,8 +472,7 @@ void App_version_of_Slave_RespondToRequestsForData(void)
     SpiSlaveInit();
     UartSpiInit();
     /* =====[ Main Loop ]===== */
-    while(1) RespondToRequestsForData();
-    // Actual app does other stuff, e.g., pet the watchdog.
+    while(1) RespondToRequestsForData(); // old main loop
     /* =====[ Test ]===== */
     // Program master to send a command from `Spi-Commands.h`.
         // Visually confirm debug LEDs are green.
@@ -479,6 +482,26 @@ void App_version_of_Slave_RespondToRequestsForData(void)
         // Visually confirm debug LED 1 is red: slave hears master.
         // Visually confirm debug LED 2 is red: slave understood master.
         // Visually confirm debug LED 3 is red: success or failure, slave is done.
+}
+void Get_commands_from_SpiMaster(void)
+{
+    /* if (SpiSlaveRead_OneByte(&cmd)) */
+    /* if ( BitIsSet(Spi_spsr, Spi_InterruptFlag) ) */
+    // Read SPI data register if there is any transmission.
+    if ( SpiTransferIsDone() )
+    {
+        spi_lookup_key   cmd = *Spi_spdr;
+        /* This first byte is *always* a command from the SpiMaster. */
+        spi_Cmd* spi_CmdFn = spi_LookupCmd(cmd);
+        /* Tell SpiMaster if the command is invalid. */
+        if (spi_CmdFn == NULL) SpiSlaveWrite_StatusInvalid(cmd);
+        /* Do command if it is valid. */
+        else spi_CmdFn();
+        /* It is up to spi_CmdFn to let the SpiMaster know */
+        /* command was successfully carried out. */
+        /* If the spi_CmdFn requires sending additional data, */
+        /* send SpiSlaveWrite_StatusOk() before sending any other data. */
+    }
 }
 void RespondToRequestsForData(void)
 {
@@ -499,7 +522,7 @@ void slowestSetExposureTime(void)
     // Write the value to Lis_nticks_exposure
     Lis_nticks_exposure = byte_msb << 8;
     Lis_nticks_exposure |= byte_lsb;
-    MacroToggleBit(DebugLeds_port, debug_led3);
+    ToggleBit(DebugLeds_port, debug_led3);
     /* MacroDebugLedsTurnRed(debug_led3); */
 }
 void slowSetExposureTime(void)
@@ -513,7 +536,7 @@ void slowSetExposureTime(void)
     // Write the value to Lis_nticks_exposure
     Lis_nticks_exposure = byte_msb << 8;
     Lis_nticks_exposure |= byte_lsb;
-    MacroToggleBit(DebugLeds_port, debug_led3);
+    ToggleBit(DebugLeds_port, debug_led3);
 }
 // [ ] TODO: refactor `SendExposureTime` to use `MSB` and `LSB` macros
 #define SendExposureTime() do { \
@@ -527,38 +550,38 @@ void slowSetExposureTime(void)
     uint8_t byte_lsb = *Spi_spdr; \
     Lis_nticks_exposure = byte_msb << 8; \
     Lis_nticks_exposure |= byte_lsb; \
-    MacroToggleBit(DebugLeds_port, debug_led3); \
+    ToggleBit(DebugLeds_port, debug_led3); \
     SendExposureTime(); \
 } while (0)
 #define  LisStartProgramMode() do { \
     /* =====[ Do all setup of Lis_Rst while Lis_Clk is low ]===== */ \
     LisWaitForClkFallEdge(); \
     /* =====[ Assert Pix_Select to program the LIS ]===== */ \
-    MacroSetBit(Lis_port2, Lis_PixSelect); \
+    SetBit(Lis_port2, Lis_PixSelect); \
 } while (0)
 #define  LisStopProgramMode() do { \
     /* =====[ De-assert Pix_Select to stop programming the LIS ]===== */ \
-    MacroClearBit(Lis_port1, Lis_Rst); \
-    MacroClearBit(Lis_port2, Lis_PixSelect); \
+    ClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port2, Lis_PixSelect); \
 } while (0)
 // LisProgramSummingModeOff is not used
 #define LisProgramSummingModeOff() do { \
     /* =====[ Setup summing mode bit: 0 yields 784 pixels ]===== */ \
-    MacroClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 1 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
 } while (0)
 #define LisSummingModeOff() do { \
     /* =====[ Setup summing mode bit: 0 yields 784 pixels ]===== */ \
-    MacroClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 1 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
 } while (0)
 #define LisSummingModeOn() do { \
     /* =====[ Setup summing mode bit: 1 yields 392 pixels ]===== */ \
-    MacroSetBit(Lis_port1, Lis_Rst); \
+    SetBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 1 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
@@ -566,12 +589,12 @@ void slowSetExposureTime(void)
 #define LisProgramGain1x() do { \
     /* =====[ 1x Gain: G2 G1 = 0 0 ]===== */ \
     /* =====[ Setup gain bit G2 ]===== */ \
-    MacroClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 2 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
     /* =====[ Setup gain bit G1 ]===== */ \
-    MacroClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 3 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
@@ -579,12 +602,12 @@ void slowSetExposureTime(void)
 #define LisProgramGain2Point5x() do { \
     /* =====[ 2.5x Gain: G2 G1 = 0 1 ]===== */ \
     /* =====[ Setup gain bit G2 ]===== */ \
-    MacroClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 2 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
     /* =====[ Setup gain bit G1 ]===== */ \
-    MacroSetBit(Lis_port1, Lis_Rst); \
+    SetBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 3 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
@@ -592,45 +615,45 @@ void slowSetExposureTime(void)
 #define LisProgramGain4x() do { \
     /* =====[ 4x Gain: G2 G1 = 1 0 ]===== */ \
     /* =====[ Setup gain bit G2 ]===== */ \
-    MacroSetBit(Lis_port1, Lis_Rst); \
+    SetBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 2 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
     /* =====[ Setup gain bit G1 ]===== */ \
-    MacroClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 3 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
 } while (0)
 void CfgLisGain1x(void)
 {
-    MacroClearBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
-    MacroClearBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
+    ClearBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
+    ClearBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
 }
 void CfgLisGain2Point5x(void)
 {
-    MacroClearBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
-    MacroSetBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
+    ClearBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
+    SetBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
 }
 void CfgLisGain4x(void)
 {
-    MacroSetBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
-    MacroClearBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
+    SetBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
+    ClearBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
 }
 void CfgLisGain5x(void)
 {
-    MacroSetBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
-    MacroSetBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
+    SetBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
+    SetBit(Lis_port1, Lis_Rst); LisWaitForClkRiseEdge(); LisWaitForClkFallEdge();
 }
 #define LisProgramGain5x() do { \
     /* =====[ 5x Gain: G2 G1 = 1 1 ]===== */ \
     /* =====[ Setup gain bit G2 ]===== */ \
-    MacroSetBit(Lis_port1, Lis_Rst); \
+    SetBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 2 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
     /* =====[ Setup gain bit G1 ]===== */ \
-    MacroSetBit(Lis_port1, Lis_Rst); \
+    SetBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 3 ]===== */ \
     LisWaitForClkRiseEdge(); \
     LisWaitForClkFallEdge(); \
@@ -697,8 +720,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow1Only() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row1[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row1[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -706,8 +729,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow2Only() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row2[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row2[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -715,8 +738,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow3Only() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row3[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row3[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -724,8 +747,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow4Only() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row4[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row4[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -733,8 +756,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow5Only() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row5[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row5[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -742,8 +765,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow12() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row12[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row12[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -751,8 +774,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow123() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row123[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row123[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -760,8 +783,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow1234() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row1234[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row1234[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -769,8 +792,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectRow124() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_row124[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_row124[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -778,8 +801,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 #define LisSelectAllRows() do { \
     for (progbit_i = 0; progbit_i < nprogbits_rowselect; progbit_i++) \
     { \
-        if (1 == progbits_rowselect_all[progbit_i]) MacroSetBit(Lis_port1, Lis_Rst); \
-        else MacroClearBit(Lis_port1, Lis_Rst); \
+        if (1 == progbits_rowselect_all[progbit_i]) SetBit(Lis_port1, Lis_Rst); \
+        else ClearBit(Lis_port1, Lis_Rst); \
         LisWaitForClkRiseEdge(); \
         LisWaitForClkFallEdge(); \
     } \
@@ -788,8 +811,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 // TODO: Replace this with lib/Lis.c LisWriteCfg(uint32_t cfg)
 void WriteCfgToLis(void)
 {
-    MacroToggleBit(DebugLeds_port, debug_led3);
-    MacroToggleBit(DebugLeds_port, debug_led2);
+    ToggleBit(DebugLeds_port, debug_led3);
+    ToggleBit(DebugLeds_port, debug_led2);
     LisStartProgramMode();
     // TODO: why is LisProgramSummingModeOff called here?
     // This cannot be right! The first bit is the summing mode.
@@ -818,8 +841,8 @@ void WriteCfgToLis(void)
 /* Function pointers cannot change at runtime */
 /* void (*LisProgramGain)(void) = CfgLisGain5x; */
 /* #define UnusedWriteCfgToLis() do { \ */
-/*     MacroToggleBit(DebugLeds_port, debug_led3); \ */
-/*     MacroToggleBit(DebugLeds_port, debug_led2); \ */
+/*     ToggleBit(DebugLeds_port, debug_led3); \ */
+/*     ToggleBit(DebugLeds_port, debug_led2); \ */
 /*     LisStartProgramMode(); \ */
 /*     LisProgramSummingModeOff(); \ */
 /*     LisProgramGain(); \ */
@@ -828,8 +851,8 @@ void WriteCfgToLis(void)
 /* } while (0) */
 // Unused Macros written while developing gain setting functionality.
 #define SetGain1x() do { \
-    MacroToggleBit(DebugLeds_port, debug_led3); \
-    MacroToggleBit(DebugLeds_port, debug_led2); \
+    ToggleBit(DebugLeds_port, debug_led3); \
+    ToggleBit(DebugLeds_port, debug_led2); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain1x(); \
@@ -837,8 +860,8 @@ void WriteCfgToLis(void)
     LisStopProgramMode(); \
 } while (0)
 #define SetGain2Point5x() do { \
-    MacroToggleBit(DebugLeds_port, debug_led3); \
-    MacroToggleBit(DebugLeds_port, debug_led2); \
+    ToggleBit(DebugLeds_port, debug_led3); \
+    ToggleBit(DebugLeds_port, debug_led2); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain2Point5x(); \
@@ -846,8 +869,8 @@ void WriteCfgToLis(void)
     LisStopProgramMode(); \
 } while (0)
 #define SetGain4x() do { \
-    MacroToggleBit(DebugLeds_port, debug_led3); \
-    MacroToggleBit(DebugLeds_port, debug_led2); \
+    ToggleBit(DebugLeds_port, debug_led3); \
+    ToggleBit(DebugLeds_port, debug_led2); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain4x(); \
@@ -855,8 +878,8 @@ void WriteCfgToLis(void)
     LisStopProgramMode(); \
 } while (0)
 #define SetGain5x() do { \
-    MacroToggleBit(DebugLeds_port, debug_led3); \
-    MacroToggleBit(DebugLeds_port, debug_led2); \
+    ToggleBit(DebugLeds_port, debug_led3); \
+    ToggleBit(DebugLeds_port, debug_led2); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain5x(); \
@@ -864,26 +887,26 @@ void WriteCfgToLis(void)
     LisStopProgramMode(); \
 } while (0)
 #define unrollSetGain5x() do { \
-    MacroToggleBit(DebugLeds_port, debug_led3); \
-    MacroToggleBit(DebugLeds_port, debug_led2); \
+    ToggleBit(DebugLeds_port, debug_led3); \
+    ToggleBit(DebugLeds_port, debug_led2); \
     /* =====[ Do all setup of Lis_Rst while Lis_Clk is low ]===== */ \
     LisWaitForClkFallEdge(); \
     /* =====[ Assert Pix_Select to program the LIS ]===== */ \
-    MacroSetBit(Lis_port2, Lis_PixSelect); \
+    SetBit(Lis_port2, Lis_PixSelect); \
     /* =====[ Setup summing mode bit: 0 yields 784 pixels ]===== */ \
-    MacroClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 1 ]===== */ \
     LisWaitForClkRiseEdge(); \
     /* =====[ Do all setup of Lis_Rst while Lis_Clk is low ]===== */ \
     LisWaitForClkFallEdge(); \
     /* =====[ Setup gain bit G2: G2 G1 = 1 1 is 5x gain ]===== */ \
-    MacroSetBit(Lis_port1, Lis_Rst); \
+    SetBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 2 ]===== */ \
     LisWaitForClkRiseEdge(); \
     /* =====[ Do all setup of Lis_Rst while Lis_Clk is low ]===== */ \
     LisWaitForClkFallEdge(); \
     /* =====[ Setup gain bit G1: G2 G1 = 1 1 is 5x gain ]===== */ \
-    MacroSetBit(Lis_port1, Lis_Rst); \
+    SetBit(Lis_port1, Lis_Rst); \
     /* =====[ Clock in bit 3 ]===== */ \
     LisWaitForClkRiseEdge(); \
     /* =====[ Clock in bit 4 ]===== */ \
@@ -963,14 +986,14 @@ void WriteCfgToLis(void)
     LisWaitForClkRiseEdge(); \
     /* =====[ De-assert Pix_Select to stop programming the LIS ]===== */ \
     LisWaitForClkFallEdge(); \
-    MacroClearBit(Lis_port1, Lis_Rst); \
-    MacroClearBit(Lis_port2, Lis_PixSelect); \
+    ClearBit(Lis_port1, Lis_Rst); \
+    ClearBit(Lis_port2, Lis_PixSelect); \
 \
 } while (0)
 
 void SendDataMasterAskedFor(void)
 {
-    MacroToggleBit(DebugLeds_port, debug_led1);
+    ToggleBit(DebugLeds_port, debug_led1);
     /* uint8_t cmd = SpiSlaveRead(); */
     while ( !MacroSpiTransferIsDone() );
     uint8_t cmd = *Spi_spdr;
@@ -1661,14 +1684,14 @@ void oldDemoMacroFastestRstResponseToClk(void)
 {
     while (1) // PASS with best results: no ISR, use lowest-level code
     {
-        while(MacroBitIsClear(&TIFR0, OCF0A)); // wait for clock rising edge
-        MacroSetBit(Lis_port1, Lis_Rst);
+        while(BitIsClear(&TIFR0, OCF0A)); // wait for clock rising edge
+        SetBit(Lis_port1, Lis_Rst);
         // delay bewteen Clk high and Rst high is 0.4 to 0.6us
-        MacroSetBit(&TIFR0, OCF0A); // clear the flag
-        while(MacroBitIsClear(&TIFR0, OCF0B)); // wait for clock falling edge
-        MacroClearBit(Lis_port1, Lis_Rst);
+        SetBit(&TIFR0, OCF0A); // clear the flag
+        while(BitIsClear(&TIFR0, OCF0B)); // wait for clock falling edge
+        ClearBit(Lis_port1, Lis_Rst);
         // delay bewteen Clk low and Rst low is 0.4 to 0.6us
-        MacroSetBit(&TIFR0, OCF0B); // clear the flag
+        SetBit(&TIFR0, OCF0B); // clear the flag
     }
 }
 

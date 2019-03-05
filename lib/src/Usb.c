@@ -22,7 +22,11 @@ void UsbInit(void)
     /* of not getting any response to its command. */
 /* // */
 /* Define command functions in jump table */
-void CmdLedRed(void){ DebugLedTurnRed(); UsbWriteStatusOk(); }
+void CmdLedRed(void){
+    DebugLedTurnRed();
+    // tell mBrd to turn debug_led1 red
+    UsbWriteStatusOk();
+}
 void CmdLedGreen(void){ DebugLedTurnGreen(); UsbWriteStatusOk(); }
 void CmdCfgLis(void)
 {
@@ -311,6 +315,7 @@ uint16_t UsbRead(uint8_t *read_buffer)
     FtDeactivateInterface();
     return num_bytes_read;
 }
+/* =====[ Status ]===== */
 bool UsbWriteStatusOk(void)
 {
     uint8_t const StatusOk = 0;

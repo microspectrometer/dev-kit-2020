@@ -35,16 +35,17 @@ void DevelopingReadWriteBits(bool run_test) { if (run_test) {
     RUN_TEST(BitIsSet_is_false_if_bit_is_clear);
     RUN_TEST(BitIsClear_is_true_if_bit_is_clear);
     RUN_TEST(BitIsClear_is_false_if_bit_is_set);
-    //
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(MacroSetBit_sets_a_bit);
-    RUN_TEST(MacroSetBit_does_not_clear_any_bits);
-    RUN_TEST(MacroClearBit_clears_a_bit);
-    RUN_TEST(MacroClearBit_does_not_set_any_bits);
-    RUN_TEST(MacroBitIsSet_is_true_if_bit_is_set);
-    RUN_TEST(MacroBitIsSet_is_false_if_bit_is_clear);
-    RUN_TEST(MacroBitIsClear_is_true_if_bit_is_clear);
-    RUN_TEST(MacroBitIsClear_is_false_if_bit_is_set);
+    /* // */
+    /* Macro versions are eliminated because I learned how to `inline`. */
+    /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
+    /* RUN_TEST(MacroSetBit_sets_a_bit); */
+    /* RUN_TEST(MacroSetBit_does_not_clear_any_bits); */
+    /* RUN_TEST(MacroClearBit_clears_a_bit); */
+    /* RUN_TEST(MacroClearBit_does_not_set_any_bits); */
+    /* RUN_TEST(MacroBitIsSet_is_true_if_bit_is_set); */
+    /* RUN_TEST(MacroBitIsSet_is_false_if_bit_is_clear); */
+    /* RUN_TEST(MacroBitIsClear_is_true_if_bit_is_clear); */
+    /* RUN_TEST(MacroBitIsClear_is_false_if_bit_is_set); */
 }}
 void DevelopingDebugLed(bool run_test) { if (run_test) {
     setUp = SetUp_DebugLedInit; tearDown = TearDown_DebugLedInit;
@@ -207,6 +208,16 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     //
     setUp = SetUp_SpiSlaveSendBytes; tearDown = TearDown_SpiSlaveSendBytes;
     RUN_TEST(SpiSlaveSendBytes_waits_for_master_read_between_each_byte);
+    // These tests require mocking out the calls made by SpiSlaveSendBytes,
+    // otherwise they hang waiting for a reply from an imaginary SpiMaster!
+    RUN_TEST(spi_LookupCmd_example_calling_the_returned_command);
+    RUN_TEST(SpiSlaveWrite_StatusOk_sends_0x00_0x01_0x00);
+    RUN_TEST(SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name);
+    //
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(spi_LookupCmd_returns_Nth_fn_for_Nth_key);
+    RUN_TEST(spi_LookupCmd_returns_NULL_if_key_is_not_in_jump_table);
+
 }}
 void DevelopingUartSpi(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
@@ -309,12 +320,17 @@ void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
     printf("\n# WIP:\n");
     RUN_TEST(CmdCfgLis_returns_StatusMismatch_if_cfg_bytes_are_invalid);
     RUN_TEST(CmdCfgLis_sends_cfg_to_mBrd_and_reads_back_new_cfg_before_reporting_StatusOk);
+}}
+
+void DevelopingInlineSpiMaster(bool run_test) {if (run_test) {
+    setUp = SetUp_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
+    RUN_TEST(SpiMasterWriteN_sends_N_bytes_to_SpiSlave);
 
 }}
 int main()
 {
     UNITY_BEGIN();
-    DevelopingReadWriteBits   (Nope);
+    DevelopingReadWriteBits   (Yep);
     DevelopingDebugLed        (Nope);
     DevelopingDebugLeds       (Nope);
     DevelopingFt1248_lowlevel (Nope);
@@ -322,13 +338,14 @@ int main()
     DevelopingUsb             (Nope);
     DevelopingSpiPlumbing     (Nope);
     DevelopingSpiMaster       (Nope);
-    DevelopingSpiSlave        (Nope);
     DevelopingUartSpi         (Nope);
     DevelopingLis             (Nope);
     DevelopingPwm             (Nope);
     DevelopingAuto            (Nope); // tabled -- see test
     DevelopingUsbReadOneByte  (Nope);
-    DevelopingLisWriteCfg     (Yep);
+    DevelopingLisWriteCfg     (Nope);
     UsbCmdParser_JumpTableSandbox (Nope);
+    DevelopingSpiSlave        (Nope);
+    DevelopingInlineSpiMaster (Nope);
     return UNITY_END();
 }

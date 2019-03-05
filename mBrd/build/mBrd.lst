@@ -3,31 +3,31 @@ build/mBrd.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         0000015e  00800100  00000e96  00000f2a  2**0
+  0 .data         00000064  00800100  00000882  00000916  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000e96  00000000  00000000  00000094  2**1
+  1 .text         00000882  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000629  0080025e  0080025e  00001088  2**0
+  2 .bss          00000622  00800164  00800164  0000097a  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00001088  2**0
+  3 .comment      00000030  00000000  00000000  0000097a  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000010b8  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000009ac  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000420  00000000  00000000  000010f8  2**0
+  5 .debug_aranges 00000410  00000000  00000000  000009ec  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000421d  00000000  00000000  00001518  2**0
+  6 .debug_info   00007190  00000000  00000000  00000dfc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000013e0  00000000  00000000  00005735  2**0
+  7 .debug_abbrev 000014b9  00000000  00000000  00007f8c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00002417  00000000  00000000  00006b15  2**0
+  8 .debug_line   00002bed  00000000  00000000  00009445  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000a28  00000000  00000000  00008f2c  2**2
+  9 .debug_frame  00000b28  00000000  00000000  0000c034  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00001a1a  00000000  00000000  00009954  2**0
+ 10 .debug_str    00001ad1  00000000  00000000  0000cb5c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00001530  00000000  00000000  0000b36e  2**0
+ 11 .debug_loc    00004a00  00000000  00000000  0000e62d  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000004e0  00000000  00000000  0000c89e  2**0
+ 12 .debug_ranges 00000598  00000000  00000000  0001302d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -47,10 +47,10 @@ Disassembly of section .text:
   2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  38:	0c 94 ff 06 	jmp	0xdfe	; 0xdfe <__vector_14>
-  3c:	0c 94 0a 07 	jmp	0xe14	; 0xe14 <__vector_15>
+  38:	0c 94 29 04 	jmp	0x852	; 0x852 <__vector_14>
+  3c:	0c 94 34 04 	jmp	0x868	; 0x868 <__vector_15>
   40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  44:	0c 94 d8 06 	jmp	0xdb0	; 0xdb0 <__vector_17>
+  44:	0c 94 02 04 	jmp	0x804	; 0x804 <__vector_17>
   48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -69,1880 +69,1215 @@ Disassembly of section .text:
   72:	cd bf       	out	0x3d, r28	; 61
 
 00000074 <__do_copy_data>:
-  74:	12 e0       	ldi	r17, 0x02	; 2
+  74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e6 e9       	ldi	r30, 0x96	; 150
-  7c:	fe e0       	ldi	r31, 0x0E	; 14
+  7a:	e2 e8       	ldi	r30, 0x82	; 130
+  7c:	f8 e0       	ldi	r31, 0x08	; 8
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
-  84:	ae 35       	cpi	r26, 0x5E	; 94
+  84:	a4 36       	cpi	r26, 0x64	; 100
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
 
 0000008a <__do_clear_bss>:
-  8a:	28 e0       	ldi	r18, 0x08	; 8
-  8c:	ae e5       	ldi	r26, 0x5E	; 94
-  8e:	b2 e0       	ldi	r27, 0x02	; 2
+  8a:	27 e0       	ldi	r18, 0x07	; 7
+  8c:	a4 e6       	ldi	r26, 0x64	; 100
+  8e:	b1 e0       	ldi	r27, 0x01	; 1
   90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
 
 00000092 <.do_clear_bss_loop>:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	a7 38       	cpi	r26, 0x87	; 135
+  94:	a6 38       	cpi	r26, 0x86	; 134
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 c4 06 	call	0xd88	; 0xd88 <main>
-  9e:	0c 94 49 07 	jmp	0xe92	; 0xe92 <_exit>
+  9a:	0e 94 e4 03 	call	0x7c8	; 0x7c8 <main>
+  9e:	0c 94 3f 04 	jmp	0x87e	; 0x87e <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-000000a6 <SetBit>:
-#include "ReadWriteBits.h"
-
-inline void SetBit(uint8_t volatile * const port, uint8_t const bit) {
+000000a6 <DebugLedsTurnAllOn>:
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
     *port |= 1<<bit;
-  a6:	fc 01       	movw	r30, r24
-  a8:	40 81       	ld	r20, Z
-  aa:	21 e0       	ldi	r18, 0x01	; 1
-  ac:	30 e0       	ldi	r19, 0x00	; 0
-  ae:	01 c0       	rjmp	.+2      	; 0xb2 <SetBit+0xc>
-  b0:	22 0f       	add	r18, r18
-  b2:	6a 95       	dec	r22
-  b4:	ea f7       	brpl	.-6      	; 0xb0 <SetBit+0xa>
-  b6:	24 2b       	or	r18, r20
-  b8:	20 83       	st	Z, r18
-  ba:	08 95       	ret
+}
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
+{
+  a6:	e0 91 62 01 	lds	r30, 0x0162	; 0x800162 <DebugLeds_ddr>
+  aa:	f0 91 63 01 	lds	r31, 0x0163	; 0x800163 <DebugLeds_ddr+0x1>
+  ae:	40 81       	ld	r20, Z
+  b0:	81 e0       	ldi	r24, 0x01	; 1
+  b2:	90 e0       	ldi	r25, 0x00	; 0
+  b4:	9c 01       	movw	r18, r24
+  b6:	00 90 5f 01 	lds	r0, 0x015F	; 0x80015f <debug_led1>
+  ba:	02 c0       	rjmp	.+4      	; 0xc0 <DebugLedsTurnAllOn+0x1a>
+  bc:	22 0f       	add	r18, r18
+  be:	33 1f       	adc	r19, r19
+  c0:	0a 94       	dec	r0
+  c2:	e2 f7       	brpl	.-8      	; 0xbc <DebugLedsTurnAllOn+0x16>
+  c4:	24 2b       	or	r18, r20
+  c6:	20 83       	st	Z, r18
+  c8:	40 81       	ld	r20, Z
+  ca:	9c 01       	movw	r18, r24
+  cc:	00 90 5e 01 	lds	r0, 0x015E	; 0x80015e <debug_led2>
+  d0:	02 c0       	rjmp	.+4      	; 0xd6 <DebugLedsTurnAllOn+0x30>
+  d2:	22 0f       	add	r18, r18
+  d4:	33 1f       	adc	r19, r19
+  d6:	0a 94       	dec	r0
+  d8:	e2 f7       	brpl	.-8      	; 0xd2 <DebugLedsTurnAllOn+0x2c>
+  da:	24 2b       	or	r18, r20
+  dc:	20 83       	st	Z, r18
+  de:	40 81       	ld	r20, Z
+  e0:	9c 01       	movw	r18, r24
+  e2:	00 90 5d 01 	lds	r0, 0x015D	; 0x80015d <debug_led3>
+  e6:	02 c0       	rjmp	.+4      	; 0xec <DebugLedsTurnAllOn+0x46>
+  e8:	22 0f       	add	r18, r18
+  ea:	33 1f       	adc	r19, r19
+  ec:	0a 94       	dec	r0
+  ee:	e2 f7       	brpl	.-8      	; 0xe8 <DebugLedsTurnAllOn+0x42>
+  f0:	24 2b       	or	r18, r20
+  f2:	20 83       	st	Z, r18
+  f4:	20 81       	ld	r18, Z
+  f6:	00 90 5c 01 	lds	r0, 0x015C	; 0x80015c <debug_led4>
+  fa:	02 c0       	rjmp	.+4      	; 0x100 <DebugLedsTurnAllOn+0x5a>
+  fc:	88 0f       	add	r24, r24
+  fe:	99 1f       	adc	r25, r25
+ 100:	0a 94       	dec	r0
+ 102:	e2 f7       	brpl	.-8      	; 0xfc <DebugLedsTurnAllOn+0x56>
+ 104:	82 2b       	or	r24, r18
+ 106:	80 83       	st	Z, r24
+ 108:	08 95       	ret
 
-000000bc <ClearBit>:
+0000010a <DebugLedsTurnAllRed>:
+    ClearBit(DebugLeds_port, debug_led);
 }
 
-inline void ClearBit(uint8_t volatile * const port, uint8_t const bit) {
-  bc:	fc 01       	movw	r30, r24
-    *port &= ~(1<<bit);
-  be:	90 81       	ld	r25, Z
-  c0:	21 e0       	ldi	r18, 0x01	; 1
-  c2:	30 e0       	ldi	r19, 0x00	; 0
-  c4:	01 c0       	rjmp	.+2      	; 0xc8 <ClearBit+0xc>
-  c6:	22 0f       	add	r18, r18
-  c8:	6a 95       	dec	r22
-  ca:	ea f7       	brpl	.-6      	; 0xc6 <ClearBit+0xa>
-  cc:	20 95       	com	r18
-  ce:	29 23       	and	r18, r25
-  d0:	20 83       	st	Z, r18
-  d2:	08 95       	ret
-
-000000d4 <ToggleBit>:
-}
-
-inline void ToggleBit(uint8_t volatile * const port, uint8_t const bit) {
-    *port ^= (1<<bit);
-  d4:	fc 01       	movw	r30, r24
-  d6:	40 81       	ld	r20, Z
-  d8:	21 e0       	ldi	r18, 0x01	; 1
-  da:	30 e0       	ldi	r19, 0x00	; 0
-  dc:	01 c0       	rjmp	.+2      	; 0xe0 <ToggleBit+0xc>
-  de:	22 0f       	add	r18, r18
-  e0:	6a 95       	dec	r22
-  e2:	ea f7       	brpl	.-6      	; 0xde <ToggleBit+0xa>
-  e4:	24 27       	eor	r18, r20
-  e6:	20 83       	st	Z, r18
-  e8:	08 95       	ret
-
-000000ea <BitIsSet>:
-}
-
-inline bool BitIsSet(uint8_t volatile * const port, uint8_t const bit) {
-    return *port & (1<<bit);
-  ea:	fc 01       	movw	r30, r24
-  ec:	80 81       	ld	r24, Z
-  ee:	21 e0       	ldi	r18, 0x01	; 1
-  f0:	30 e0       	ldi	r19, 0x00	; 0
-  f2:	02 c0       	rjmp	.+4      	; 0xf8 <BitIsSet+0xe>
-  f4:	22 0f       	add	r18, r18
-  f6:	33 1f       	adc	r19, r19
-  f8:	6a 95       	dec	r22
-  fa:	e2 f7       	brpl	.-8      	; 0xf4 <BitIsSet+0xa>
-  fc:	90 e0       	ldi	r25, 0x00	; 0
-  fe:	28 23       	and	r18, r24
- 100:	39 23       	and	r19, r25
- 102:	81 e0       	ldi	r24, 0x01	; 1
- 104:	23 2b       	or	r18, r19
- 106:	09 f4       	brne	.+2      	; 0x10a <BitIsSet+0x20>
- 108:	80 e0       	ldi	r24, 0x00	; 0
-}
- 10a:	08 95       	ret
-
-0000010c <DebugLedsTurnAllOn>:
 void DebugLedsTurnAllRed(void)
 {
     SetBit(DebugLeds_port, debug_led1);
-    SetBit(DebugLeds_port, debug_led2);
-    SetBit(DebugLeds_port, debug_led3);
+ 10a:	e0 91 60 01 	lds	r30, 0x0160	; 0x800160 <DebugLeds_port>
+ 10e:	f0 91 61 01 	lds	r31, 0x0161	; 0x800161 <DebugLeds_port+0x1>
+/* --------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+ 112:	40 81       	ld	r20, Z
+ 114:	81 e0       	ldi	r24, 0x01	; 1
+ 116:	90 e0       	ldi	r25, 0x00	; 0
+ 118:	9c 01       	movw	r18, r24
+ 11a:	00 90 5f 01 	lds	r0, 0x015F	; 0x80015f <debug_led1>
+ 11e:	02 c0       	rjmp	.+4      	; 0x124 <DebugLedsTurnAllRed+0x1a>
+ 120:	22 0f       	add	r18, r18
+ 122:	33 1f       	adc	r19, r19
+ 124:	0a 94       	dec	r0
+ 126:	e2 f7       	brpl	.-8      	; 0x120 <DebugLedsTurnAllRed+0x16>
+ 128:	24 2b       	or	r18, r20
+ 12a:	20 83       	st	Z, r18
+ 12c:	40 81       	ld	r20, Z
+ 12e:	9c 01       	movw	r18, r24
+ 130:	00 90 5e 01 	lds	r0, 0x015E	; 0x80015e <debug_led2>
+ 134:	02 c0       	rjmp	.+4      	; 0x13a <DebugLedsTurnAllRed+0x30>
+ 136:	22 0f       	add	r18, r18
+ 138:	33 1f       	adc	r19, r19
+ 13a:	0a 94       	dec	r0
+ 13c:	e2 f7       	brpl	.-8      	; 0x136 <DebugLedsTurnAllRed+0x2c>
+ 13e:	24 2b       	or	r18, r20
+ 140:	20 83       	st	Z, r18
+ 142:	40 81       	ld	r20, Z
+ 144:	9c 01       	movw	r18, r24
+ 146:	00 90 5d 01 	lds	r0, 0x015D	; 0x80015d <debug_led3>
+ 14a:	02 c0       	rjmp	.+4      	; 0x150 <DebugLedsTurnAllRed+0x46>
+ 14c:	22 0f       	add	r18, r18
+ 14e:	33 1f       	adc	r19, r19
+ 150:	0a 94       	dec	r0
+ 152:	e2 f7       	brpl	.-8      	; 0x14c <DebugLedsTurnAllRed+0x42>
+ 154:	24 2b       	or	r18, r20
+ 156:	20 83       	st	Z, r18
+ 158:	20 81       	ld	r18, Z
+ 15a:	00 90 5c 01 	lds	r0, 0x015C	; 0x80015c <debug_led4>
+ 15e:	02 c0       	rjmp	.+4      	; 0x164 <DebugLedsTurnAllRed+0x5a>
+ 160:	88 0f       	add	r24, r24
+ 162:	99 1f       	adc	r25, r25
+ 164:	0a 94       	dec	r0
+ 166:	e2 f7       	brpl	.-8      	; 0x160 <DebugLedsTurnAllRed+0x56>
+ 168:	82 2b       	or	r24, r18
+ 16a:	80 83       	st	Z, r24
+ 16c:	08 95       	ret
+
+0000016e <DebugLedsTurnAllGreen>:
     SetBit(DebugLeds_port, debug_led4);
- 10c:	cf 93       	push	r28
- 10e:	df 93       	push	r29
- 110:	c0 91 5b 02 	lds	r28, 0x025B	; 0x80025b <DebugLeds_ddr>
- 114:	d0 91 5c 02 	lds	r29, 0x025C	; 0x80025c <DebugLeds_ddr+0x1>
- 118:	60 91 58 02 	lds	r22, 0x0258	; 0x800258 <debug_led1>
- 11c:	ce 01       	movw	r24, r28
- 11e:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
- 122:	60 91 57 02 	lds	r22, 0x0257	; 0x800257 <debug_led2>
- 126:	ce 01       	movw	r24, r28
- 128:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
- 12c:	60 91 56 02 	lds	r22, 0x0256	; 0x800256 <debug_led3>
- 130:	ce 01       	movw	r24, r28
- 132:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
- 136:	60 91 55 02 	lds	r22, 0x0255	; 0x800255 <debug_led4>
- 13a:	ce 01       	movw	r24, r28
- 13c:	df 91       	pop	r29
- 13e:	cf 91       	pop	r28
- 140:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
-
-00000144 <DebugLedsTurnRed>:
- 144:	68 2f       	mov	r22, r24
- 146:	80 91 59 02 	lds	r24, 0x0259	; 0x800259 <DebugLeds_port>
- 14a:	90 91 5a 02 	lds	r25, 0x025A	; 0x80025a <DebugLeds_port+0x1>
- 14e:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
-
-00000152 <DebugLedsTurnAllGreen>:
 }
 
 void DebugLedsTurnAllGreen(void)
 {
- 152:	cf 93       	push	r28
- 154:	df 93       	push	r29
     ClearBit(DebugLeds_port, debug_led1);
- 156:	c0 91 59 02 	lds	r28, 0x0259	; 0x800259 <DebugLeds_port>
- 15a:	d0 91 5a 02 	lds	r29, 0x025A	; 0x80025a <DebugLeds_port+0x1>
- 15e:	60 91 58 02 	lds	r22, 0x0258	; 0x800258 <debug_led1>
- 162:	ce 01       	movw	r24, r28
- 164:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-    ClearBit(DebugLeds_port, debug_led2);
- 168:	60 91 57 02 	lds	r22, 0x0257	; 0x800257 <debug_led2>
- 16c:	ce 01       	movw	r24, r28
- 16e:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-    ClearBit(DebugLeds_port, debug_led3);
- 172:	60 91 56 02 	lds	r22, 0x0256	; 0x800256 <debug_led3>
- 176:	ce 01       	movw	r24, r28
- 178:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-    ClearBit(DebugLeds_port, debug_led4);
- 17c:	60 91 55 02 	lds	r22, 0x0255	; 0x800255 <debug_led4>
- 180:	ce 01       	movw	r24, r28
+ 16e:	e0 91 60 01 	lds	r30, 0x0160	; 0x800160 <DebugLeds_port>
+ 172:	f0 91 61 01 	lds	r31, 0x0161	; 0x800161 <DebugLeds_port+0x1>
+    *port |= 1<<bit;
 }
- 182:	df 91       	pop	r29
- 184:	cf 91       	pop	r28
-void DebugLedsTurnAllGreen(void)
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
-    ClearBit(DebugLeds_port, debug_led1);
-    ClearBit(DebugLeds_port, debug_led2);
-    ClearBit(DebugLeds_port, debug_led3);
-    ClearBit(DebugLeds_port, debug_led4);
- 186:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
+ 176:	30 81       	ld	r19, Z
+ 178:	81 e0       	ldi	r24, 0x01	; 1
+ 17a:	90 e0       	ldi	r25, 0x00	; 0
+ 17c:	ac 01       	movw	r20, r24
+ 17e:	00 90 5f 01 	lds	r0, 0x015F	; 0x80015f <debug_led1>
+ 182:	02 c0       	rjmp	.+4      	; 0x188 <DebugLedsTurnAllGreen+0x1a>
+ 184:	44 0f       	add	r20, r20
+ 186:	55 1f       	adc	r21, r21
+ 188:	0a 94       	dec	r0
+ 18a:	e2 f7       	brpl	.-8      	; 0x184 <DebugLedsTurnAllGreen+0x16>
+ 18c:	24 2f       	mov	r18, r20
+ 18e:	20 95       	com	r18
+ 190:	23 23       	and	r18, r19
+ 192:	20 83       	st	Z, r18
+ 194:	30 81       	ld	r19, Z
+ 196:	ac 01       	movw	r20, r24
+ 198:	00 90 5e 01 	lds	r0, 0x015E	; 0x80015e <debug_led2>
+ 19c:	02 c0       	rjmp	.+4      	; 0x1a2 <DebugLedsTurnAllGreen+0x34>
+ 19e:	44 0f       	add	r20, r20
+ 1a0:	55 1f       	adc	r21, r21
+ 1a2:	0a 94       	dec	r0
+ 1a4:	e2 f7       	brpl	.-8      	; 0x19e <DebugLedsTurnAllGreen+0x30>
+ 1a6:	24 2f       	mov	r18, r20
+ 1a8:	20 95       	com	r18
+ 1aa:	23 23       	and	r18, r19
+ 1ac:	20 83       	st	Z, r18
+ 1ae:	30 81       	ld	r19, Z
+ 1b0:	ac 01       	movw	r20, r24
+ 1b2:	00 90 5d 01 	lds	r0, 0x015D	; 0x80015d <debug_led3>
+ 1b6:	02 c0       	rjmp	.+4      	; 0x1bc <DebugLedsTurnAllGreen+0x4e>
+ 1b8:	44 0f       	add	r20, r20
+ 1ba:	55 1f       	adc	r21, r21
+ 1bc:	0a 94       	dec	r0
+ 1be:	e2 f7       	brpl	.-8      	; 0x1b8 <DebugLedsTurnAllGreen+0x4a>
+ 1c0:	24 2f       	mov	r18, r20
+ 1c2:	20 95       	com	r18
+ 1c4:	23 23       	and	r18, r19
+ 1c6:	20 83       	st	Z, r18
+ 1c8:	20 81       	ld	r18, Z
+ 1ca:	00 90 5c 01 	lds	r0, 0x015C	; 0x80015c <debug_led4>
+ 1ce:	02 c0       	rjmp	.+4      	; 0x1d4 <DebugLedsTurnAllGreen+0x66>
+ 1d0:	88 0f       	add	r24, r24
+ 1d2:	99 1f       	adc	r25, r25
+ 1d4:	0a 94       	dec	r0
+ 1d6:	e2 f7       	brpl	.-8      	; 0x1d0 <DebugLedsTurnAllGreen+0x62>
+ 1d8:	80 95       	com	r24
+ 1da:	82 23       	and	r24, r18
+ 1dc:	80 83       	st	Z, r24
+ 1de:	08 95       	ret
 
-0000018a <DebugLedsToggleAll>:
-}
-
-void DebugLedsToggleAll(void)
-{
- 18a:	cf 93       	push	r28
- 18c:	df 93       	push	r29
-    ToggleBit(DebugLeds_port, debug_led1);
- 18e:	c0 91 59 02 	lds	r28, 0x0259	; 0x800259 <DebugLeds_port>
- 192:	d0 91 5a 02 	lds	r29, 0x025A	; 0x80025a <DebugLeds_port+0x1>
- 196:	60 91 58 02 	lds	r22, 0x0258	; 0x800258 <debug_led1>
- 19a:	ce 01       	movw	r24, r28
- 19c:	0e 94 6a 00 	call	0xd4	; 0xd4 <ToggleBit>
-    ToggleBit(DebugLeds_port, debug_led2);
- 1a0:	60 91 57 02 	lds	r22, 0x0257	; 0x800257 <debug_led2>
- 1a4:	ce 01       	movw	r24, r28
- 1a6:	0e 94 6a 00 	call	0xd4	; 0xd4 <ToggleBit>
-    ToggleBit(DebugLeds_port, debug_led3);
- 1aa:	60 91 56 02 	lds	r22, 0x0256	; 0x800256 <debug_led3>
- 1ae:	ce 01       	movw	r24, r28
- 1b0:	0e 94 6a 00 	call	0xd4	; 0xd4 <ToggleBit>
-    ToggleBit(DebugLeds_port, debug_led4);
- 1b4:	60 91 55 02 	lds	r22, 0x0255	; 0x800255 <debug_led4>
- 1b8:	ce 01       	movw	r24, r28
-}
- 1ba:	df 91       	pop	r29
- 1bc:	cf 91       	pop	r28
-void DebugLedsToggleAll(void)
-{
-    ToggleBit(DebugLeds_port, debug_led1);
-    ToggleBit(DebugLeds_port, debug_led2);
-    ToggleBit(DebugLeds_port, debug_led3);
-    ToggleBit(DebugLeds_port, debug_led4);
- 1be:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <ToggleBit>
-
-000001c2 <ClearPendingSpiInterrupt_Implementation>:
+000001e0 <ClearPendingSpiInterrupt_Implementation>:
 }
 bool (*SpiResponseIsReady)(void) = SpiResponseIsReady_Implementation;
 void SpiMasterWaitForResponse(void)
 {
     while( !SpiResponseIsReady() );
 }
- 1c2:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <ReadSpiStatusRegister>
- 1c6:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <ReadSpiStatusRegister+0x1>
- 1ca:	09 95       	icall
- 1cc:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <ReadSpiDataRegister>
- 1d0:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <ReadSpiDataRegister+0x1>
- 1d4:	09 94       	ijmp
+ 1e0:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <ReadSpiStatusRegister>
+ 1e4:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <ReadSpiStatusRegister+0x1>
+ 1e8:	09 95       	icall
+ 1ea:	e0 91 04 01 	lds	r30, 0x0104	; 0x800104 <ReadSpiDataRegister>
+ 1ee:	f0 91 05 01 	lds	r31, 0x0105	; 0x800105 <ReadSpiDataRegister+0x1>
+ 1f2:	09 94       	ijmp
 
-000001d6 <ReadSpiStatusRegister_Implementation>:
- 1d6:	e0 91 4f 02 	lds	r30, 0x024F	; 0x80024f <Spi_spsr>
- 1da:	f0 91 50 02 	lds	r31, 0x0250	; 0x800250 <Spi_spsr+0x1>
- 1de:	80 81       	ld	r24, Z
- 1e0:	08 95       	ret
+000001f4 <ReadSpiStatusRegister_Implementation>:
+ 1f4:	e0 91 54 01 	lds	r30, 0x0154	; 0x800154 <Spi_spsr>
+ 1f8:	f0 91 55 01 	lds	r31, 0x0155	; 0x800155 <Spi_spsr+0x1>
+ 1fc:	80 81       	ld	r24, Z
+ 1fe:	08 95       	ret
 
-000001e2 <ReadSpiDataRegister_Implementation>:
- 1e2:	e0 91 4d 02 	lds	r30, 0x024D	; 0x80024d <Spi_spdr>
- 1e6:	f0 91 4e 02 	lds	r31, 0x024E	; 0x80024e <Spi_spdr+0x1>
- 1ea:	80 81       	ld	r24, Z
- 1ec:	08 95       	ret
+00000200 <DisableSpi_Implementation>:
+ 200:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <Spi_spcr>
+ 204:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <Spi_spcr+0x1>
+ 208:	20 81       	ld	r18, Z
+ 20a:	81 e0       	ldi	r24, 0x01	; 1
+ 20c:	90 e0       	ldi	r25, 0x00	; 0
+ 20e:	00 90 50 01 	lds	r0, 0x0150	; 0x800150 <Spi_Enable>
+ 212:	02 c0       	rjmp	.+4      	; 0x218 <DisableSpi_Implementation+0x18>
+ 214:	88 0f       	add	r24, r24
+ 216:	99 1f       	adc	r25, r25
+ 218:	0a 94       	dec	r0
+ 21a:	e2 f7       	brpl	.-8      	; 0x214 <DisableSpi_Implementation+0x14>
+ 21c:	80 95       	com	r24
+ 21e:	82 23       	and	r24, r18
+ 220:	80 83       	st	Z, r24
+ 222:	08 95       	ret
 
-000001ee <EnableSpi_Implementation>:
- 1ee:	60 91 4b 02 	lds	r22, 0x024B	; 0x80024b <Spi_Enable>
- 1f2:	80 91 51 02 	lds	r24, 0x0251	; 0x800251 <Spi_spcr>
- 1f6:	90 91 52 02 	lds	r25, 0x0252	; 0x800252 <Spi_spcr+0x1>
- 1fa:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
+00000224 <EnableSpi_Implementation>:
+ 224:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <Spi_spcr>
+ 228:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <Spi_spcr+0x1>
+ 22c:	20 81       	ld	r18, Z
+ 22e:	81 e0       	ldi	r24, 0x01	; 1
+ 230:	90 e0       	ldi	r25, 0x00	; 0
+ 232:	00 90 50 01 	lds	r0, 0x0150	; 0x800150 <Spi_Enable>
+ 236:	02 c0       	rjmp	.+4      	; 0x23c <EnableSpi_Implementation+0x18>
+ 238:	88 0f       	add	r24, r24
+ 23a:	99 1f       	adc	r25, r25
+ 23c:	0a 94       	dec	r0
+ 23e:	e2 f7       	brpl	.-8      	; 0x238 <EnableSpi_Implementation+0x14>
+ 240:	82 2b       	or	r24, r18
+ 242:	80 83       	st	Z, r24
+ 244:	08 95       	ret
 
-000001fe <SpiTransferIsDone_Implementation>:
- 1fe:	60 91 4a 02 	lds	r22, 0x024A	; 0x80024a <Spi_InterruptFlag>
- 202:	80 91 4f 02 	lds	r24, 0x024F	; 0x80024f <Spi_spsr>
- 206:	90 91 50 02 	lds	r25, 0x0250	; 0x800250 <Spi_spsr+0x1>
- 20a:	0c 94 75 00 	jmp	0xea	; 0xea <BitIsSet>
+00000246 <SpiTransferIsDone_Implementation>:
+ 246:	e0 91 54 01 	lds	r30, 0x0154	; 0x800154 <Spi_spsr>
+ 24a:	f0 91 55 01 	lds	r31, 0x0155	; 0x800155 <Spi_spsr+0x1>
+ 24e:	80 81       	ld	r24, Z
+ 250:	21 e0       	ldi	r18, 0x01	; 1
+ 252:	30 e0       	ldi	r19, 0x00	; 0
+ 254:	00 90 4f 01 	lds	r0, 0x014F	; 0x80014f <Spi_InterruptFlag>
+ 258:	02 c0       	rjmp	.+4      	; 0x25e <SpiTransferIsDone_Implementation+0x18>
+ 25a:	22 0f       	add	r18, r18
+ 25c:	33 1f       	adc	r19, r19
+ 25e:	0a 94       	dec	r0
+ 260:	e2 f7       	brpl	.-8      	; 0x25a <SpiTransferIsDone_Implementation+0x14>
+ 262:	90 e0       	ldi	r25, 0x00	; 0
+ 264:	28 23       	and	r18, r24
+ 266:	39 23       	and	r19, r25
+ 268:	81 e0       	ldi	r24, 0x01	; 1
+ 26a:	23 2b       	or	r18, r19
+ 26c:	09 f4       	brne	.+2      	; 0x270 <SpiTransferIsDone_Implementation+0x2a>
+ 26e:	80 e0       	ldi	r24, 0x00	; 0
+ 270:	08 95       	ret
 
-0000020e <SpiSlaveInit>:
+00000272 <ReadSpiDataRegister_Implementation>:
+ 272:	e0 91 52 01 	lds	r30, 0x0152	; 0x800152 <Spi_spdr>
+ 276:	f0 91 53 01 	lds	r31, 0x0153	; 0x800153 <Spi_spdr+0x1>
+ 27a:	80 81       	ld	r24, Z
+ 27c:	08 95       	ret
+
+0000027e <SpiSlaveSignalDataIsReady_Implementation>:
+ 27e:	e0 91 58 01 	lds	r30, 0x0158	; 0x800158 <Spi_port>
+ 282:	f0 91 59 01 	lds	r31, 0x0159	; 0x800159 <Spi_port+0x1>
+ 286:	20 81       	ld	r18, Z
+ 288:	81 e0       	ldi	r24, 0x01	; 1
+ 28a:	90 e0       	ldi	r25, 0x00	; 0
+ 28c:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <Spi_Miso>
+ 290:	02 c0       	rjmp	.+4      	; 0x296 <SpiSlaveSignalDataIsReady_Implementation+0x18>
+ 292:	88 0f       	add	r24, r24
+ 294:	99 1f       	adc	r25, r25
+ 296:	0a 94       	dec	r0
+ 298:	e2 f7       	brpl	.-8      	; 0x292 <SpiSlaveSignalDataIsReady_Implementation+0x14>
+ 29a:	80 95       	com	r24
+ 29c:	82 23       	and	r24, r18
+ 29e:	80 83       	st	Z, r24
+ 2a0:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <DisableSpi>
+ 2a4:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <DisableSpi+0x1>
+ 2a8:	09 95       	icall
+ 2aa:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <EnableSpi>
+ 2ae:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <EnableSpi+0x1>
+ 2b2:	09 94       	ijmp
+
+000002b4 <WriteSpiDataRegister_Implementation>:
+ 2b4:	e0 91 52 01 	lds	r30, 0x0152	; 0x800152 <Spi_spdr>
+ 2b8:	f0 91 53 01 	lds	r31, 0x0153	; 0x800153 <Spi_spdr+0x1>
+ 2bc:	80 83       	st	Z, r24
+ 2be:	08 95       	ret
+
+000002c0 <spi_LedGreen>:
+ 2c0:	cf 92       	push	r12
+ 2c2:	df 92       	push	r13
+ 2c4:	ef 92       	push	r14
+ 2c6:	ff 92       	push	r15
+ 2c8:	0f 93       	push	r16
+ 2ca:	1f 93       	push	r17
+ 2cc:	cf 93       	push	r28
+ 2ce:	df 93       	push	r29
+ 2d0:	00 d0       	rcall	.+0      	; 0x2d2 <spi_LedGreen+0x12>
+ 2d2:	1f 92       	push	r1
+ 2d4:	cd b7       	in	r28, 0x3d	; 61
+ 2d6:	de b7       	in	r29, 0x3e	; 62
+ 2d8:	0e 94 b7 00 	call	0x16e	; 0x16e <DebugLedsTurnAllGreen>
+ 2dc:	19 82       	std	Y+1, r1	; 0x01
+ 2de:	81 e0       	ldi	r24, 0x01	; 1
+ 2e0:	8a 83       	std	Y+2, r24	; 0x02
+ 2e2:	1b 82       	std	Y+3, r1	; 0x03
+ 2e4:	c0 90 52 01 	lds	r12, 0x0152	; 0x800152 <Spi_spdr>
+ 2e8:	d0 90 53 01 	lds	r13, 0x0153	; 0x800153 <Spi_spdr+0x1>
+ 2ec:	8e 01       	movw	r16, r28
+ 2ee:	0f 5f       	subi	r16, 0xFF	; 255
+ 2f0:	1f 4f       	sbci	r17, 0xFF	; 255
+ 2f2:	7e 01       	movw	r14, r28
+ 2f4:	84 e0       	ldi	r24, 0x04	; 4
+ 2f6:	e8 0e       	add	r14, r24
+ 2f8:	f1 1c       	adc	r15, r1
+ 2fa:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <WriteSpiDataRegister>
+ 2fe:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <WriteSpiDataRegister+0x1>
+ 302:	d8 01       	movw	r26, r16
+ 304:	8d 91       	ld	r24, X+
+ 306:	8d 01       	movw	r16, r26
+ 308:	09 95       	icall
+ 30a:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiSlaveSignalDataIsReady>
+ 30e:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiSlaveSignalDataIsReady+0x1>
+ 312:	09 95       	icall
+ 314:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
+ 318:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
+ 31c:	09 95       	icall
+ 31e:	88 23       	and	r24, r24
+ 320:	c9 f3       	breq	.-14     	; 0x314 <spi_LedGreen+0x54>
+ 322:	f6 01       	movw	r30, r12
+ 324:	80 81       	ld	r24, Z
+ 326:	0e 15       	cp	r16, r14
+ 328:	1f 05       	cpc	r17, r15
+ 32a:	39 f7       	brne	.-50     	; 0x2fa <spi_LedGreen+0x3a>
+ 32c:	0f 90       	pop	r0
+ 32e:	0f 90       	pop	r0
+ 330:	0f 90       	pop	r0
+ 332:	df 91       	pop	r29
+ 334:	cf 91       	pop	r28
+ 336:	1f 91       	pop	r17
+ 338:	0f 91       	pop	r16
+ 33a:	ff 90       	pop	r15
+ 33c:	ef 90       	pop	r14
+ 33e:	df 90       	pop	r13
+ 340:	cf 90       	pop	r12
+ 342:	08 95       	ret
+
+00000344 <spi_LedRed>:
+ 344:	cf 92       	push	r12
+ 346:	df 92       	push	r13
+ 348:	ef 92       	push	r14
+ 34a:	ff 92       	push	r15
+ 34c:	0f 93       	push	r16
+ 34e:	1f 93       	push	r17
+ 350:	cf 93       	push	r28
+ 352:	df 93       	push	r29
+ 354:	00 d0       	rcall	.+0      	; 0x356 <spi_LedRed+0x12>
+ 356:	1f 92       	push	r1
+ 358:	cd b7       	in	r28, 0x3d	; 61
+ 35a:	de b7       	in	r29, 0x3e	; 62
+ 35c:	0e 94 85 00 	call	0x10a	; 0x10a <DebugLedsTurnAllRed>
+ 360:	19 82       	std	Y+1, r1	; 0x01
+ 362:	81 e0       	ldi	r24, 0x01	; 1
+ 364:	8a 83       	std	Y+2, r24	; 0x02
+ 366:	1b 82       	std	Y+3, r1	; 0x03
+ 368:	c0 90 52 01 	lds	r12, 0x0152	; 0x800152 <Spi_spdr>
+ 36c:	d0 90 53 01 	lds	r13, 0x0153	; 0x800153 <Spi_spdr+0x1>
+ 370:	8e 01       	movw	r16, r28
+ 372:	0f 5f       	subi	r16, 0xFF	; 255
+ 374:	1f 4f       	sbci	r17, 0xFF	; 255
+ 376:	7e 01       	movw	r14, r28
+ 378:	84 e0       	ldi	r24, 0x04	; 4
+ 37a:	e8 0e       	add	r14, r24
+ 37c:	f1 1c       	adc	r15, r1
+ 37e:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <WriteSpiDataRegister>
+ 382:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <WriteSpiDataRegister+0x1>
+ 386:	d8 01       	movw	r26, r16
+ 388:	8d 91       	ld	r24, X+
+ 38a:	8d 01       	movw	r16, r26
+ 38c:	09 95       	icall
+ 38e:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiSlaveSignalDataIsReady>
+ 392:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiSlaveSignalDataIsReady+0x1>
+ 396:	09 95       	icall
+ 398:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
+ 39c:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
+ 3a0:	09 95       	icall
+ 3a2:	88 23       	and	r24, r24
+ 3a4:	c9 f3       	breq	.-14     	; 0x398 <spi_LedRed+0x54>
+ 3a6:	f6 01       	movw	r30, r12
+ 3a8:	80 81       	ld	r24, Z
+ 3aa:	0e 15       	cp	r16, r14
+ 3ac:	1f 05       	cpc	r17, r15
+ 3ae:	39 f7       	brne	.-50     	; 0x37e <spi_LedRed+0x3a>
+ 3b0:	0f 90       	pop	r0
+ 3b2:	0f 90       	pop	r0
+ 3b4:	0f 90       	pop	r0
+ 3b6:	df 91       	pop	r29
+ 3b8:	cf 91       	pop	r28
+ 3ba:	1f 91       	pop	r17
+ 3bc:	0f 91       	pop	r16
+ 3be:	ff 90       	pop	r15
+ 3c0:	ef 90       	pop	r14
+ 3c2:	df 90       	pop	r13
+ 3c4:	cf 90       	pop	r12
+ 3c6:	08 95       	ret
+
+000003c8 <spi_LookupCmd>:
+ 3c8:	82 30       	cpi	r24, 0x02	; 2
+ 3ca:	48 f4       	brcc	.+18     	; 0x3de <spi_LookupCmd+0x16>
+ 3cc:	e8 2f       	mov	r30, r24
+ 3ce:	f0 e0       	ldi	r31, 0x00	; 0
+ 3d0:	ee 0f       	add	r30, r30
+ 3d2:	ff 1f       	adc	r31, r31
+ 3d4:	e4 5e       	subi	r30, 0xE4	; 228
+ 3d6:	fe 4f       	sbci	r31, 0xFE	; 254
+ 3d8:	80 81       	ld	r24, Z
+ 3da:	91 81       	ldd	r25, Z+1	; 0x01
+ 3dc:	08 95       	ret
+ 3de:	80 e0       	ldi	r24, 0x00	; 0
+ 3e0:	90 e0       	ldi	r25, 0x00	; 0
+ 3e2:	08 95       	ret
+
+000003e4 <SpiSlaveWrite_StatusInvalid>:
+ 3e4:	cf 92       	push	r12
+ 3e6:	df 92       	push	r13
+ 3e8:	ef 92       	push	r14
+ 3ea:	ff 92       	push	r15
+ 3ec:	0f 93       	push	r16
+ 3ee:	1f 93       	push	r17
+ 3f0:	cf 93       	push	r28
+ 3f2:	df 93       	push	r29
+ 3f4:	00 d0       	rcall	.+0      	; 0x3f6 <SpiSlaveWrite_StatusInvalid+0x12>
+ 3f6:	00 d0       	rcall	.+0      	; 0x3f8 <SpiSlaveWrite_StatusInvalid+0x14>
+ 3f8:	cd b7       	in	r28, 0x3d	; 61
+ 3fa:	de b7       	in	r29, 0x3e	; 62
+ 3fc:	19 82       	std	Y+1, r1	; 0x01
+ 3fe:	92 e0       	ldi	r25, 0x02	; 2
+ 400:	9a 83       	std	Y+2, r25	; 0x02
+ 402:	9f ef       	ldi	r25, 0xFF	; 255
+ 404:	9b 83       	std	Y+3, r25	; 0x03
+ 406:	8c 83       	std	Y+4, r24	; 0x04
+ 408:	c0 90 52 01 	lds	r12, 0x0152	; 0x800152 <Spi_spdr>
+ 40c:	d0 90 53 01 	lds	r13, 0x0153	; 0x800153 <Spi_spdr+0x1>
+ 410:	8e 01       	movw	r16, r28
+ 412:	0f 5f       	subi	r16, 0xFF	; 255
+ 414:	1f 4f       	sbci	r17, 0xFF	; 255
+ 416:	7e 01       	movw	r14, r28
+ 418:	85 e0       	ldi	r24, 0x05	; 5
+ 41a:	e8 0e       	add	r14, r24
+ 41c:	f1 1c       	adc	r15, r1
+ 41e:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <WriteSpiDataRegister>
+ 422:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <WriteSpiDataRegister+0x1>
+ 426:	d8 01       	movw	r26, r16
+ 428:	8d 91       	ld	r24, X+
+ 42a:	8d 01       	movw	r16, r26
+ 42c:	09 95       	icall
+ 42e:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiSlaveSignalDataIsReady>
+ 432:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiSlaveSignalDataIsReady+0x1>
+ 436:	09 95       	icall
+ 438:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
+ 43c:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
+ 440:	09 95       	icall
+ 442:	88 23       	and	r24, r24
+ 444:	c9 f3       	breq	.-14     	; 0x438 <__LOCK_REGION_LENGTH__+0x38>
+ 446:	f6 01       	movw	r30, r12
+ 448:	80 81       	ld	r24, Z
+ 44a:	0e 15       	cp	r16, r14
+ 44c:	1f 05       	cpc	r17, r15
+ 44e:	39 f7       	brne	.-50     	; 0x41e <__LOCK_REGION_LENGTH__+0x1e>
+ 450:	0f 90       	pop	r0
+ 452:	0f 90       	pop	r0
+ 454:	0f 90       	pop	r0
+ 456:	0f 90       	pop	r0
+ 458:	df 91       	pop	r29
+ 45a:	cf 91       	pop	r28
+ 45c:	1f 91       	pop	r17
+ 45e:	0f 91       	pop	r16
+ 460:	ff 90       	pop	r15
+ 462:	ef 90       	pop	r14
+ 464:	df 90       	pop	r13
+ 466:	cf 90       	pop	r12
+ 468:	08 95       	ret
+
+0000046a <SpiSlaveInit>:
+static void SetMisoAsOutput(void)
+{
+    SetBit(Spi_ddr, Spi_Miso);
+}
+void SpiSlaveInit(void)
+{
+ 46a:	cf 93       	push	r28
+ 46c:	df 93       	push	r29
 //
 /* =====[ Spi Slave ]===== */
 //
 static void SetMisoAsOutput(void)
 {
     SetBit(Spi_ddr, Spi_Miso);
- 20e:	60 91 4c 02 	lds	r22, 0x024C	; 0x80024c <Spi_Miso>
- 212:	80 91 53 02 	lds	r24, 0x0253	; 0x800253 <Spi_ddr>
- 216:	90 91 54 02 	lds	r25, 0x0254	; 0x800254 <Spi_ddr+0x1>
- 21a:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 46e:	e0 91 5a 01 	lds	r30, 0x015A	; 0x80015a <Spi_ddr>
+ 472:	f0 91 5b 01 	lds	r31, 0x015B	; 0x80015b <Spi_ddr+0x1>
+/* --------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+ 476:	80 81       	ld	r24, Z
+ 478:	c1 e0       	ldi	r28, 0x01	; 1
+ 47a:	d0 e0       	ldi	r29, 0x00	; 0
+ 47c:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <Spi_Miso>
+ 480:	02 c0       	rjmp	.+4      	; 0x486 <SpiSlaveInit+0x1c>
+ 482:	cc 0f       	add	r28, r28
+ 484:	dd 1f       	adc	r29, r29
+ 486:	0a 94       	dec	r0
+ 488:	e2 f7       	brpl	.-8      	; 0x482 <SpiSlaveInit+0x18>
+ 48a:	8c 2b       	or	r24, r28
+ 48c:	80 83       	st	Z, r24
     // MISO is only driven hard high or hard low when:
     // - a SPI tranfer is in progress
     // - SPI is disabled
     // When not driven hard, the SPI module makes MISO a pull-up.
     SetMisoAsOutput();         // pin-direction is user-defined
     EnableSpi();
- 21e:	e0 91 04 01 	lds	r30, 0x0104	; 0x800104 <EnableSpi>
- 222:	f0 91 05 01 	lds	r31, 0x0105	; 0x800105 <EnableSpi+0x1>
- 226:	09 95       	icall
-    ClearPendingSpiInterrupt();
- 228:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <ClearPendingSpiInterrupt>
- 22c:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <ClearPendingSpiInterrupt+0x1>
- 230:	09 94       	ijmp
-
-00000232 <StartAdcReadout>:
+ 48e:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <EnableSpi>
+ 492:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <EnableSpi+0x1>
+ 496:	09 95       	icall
+    /* ------------------------ */
+    /* | Added on 2019-03-04: | */
+    /* Drive Spi_Miso pin low when the SPI module is disabled. */
+    /* See SpiSlaveSignalDataIsReady for explanation. */
+    ClearBit(Spi_port, Spi_Miso);
+ 498:	e0 91 58 01 	lds	r30, 0x0158	; 0x800158 <Spi_port>
+ 49c:	f0 91 59 01 	lds	r31, 0x0159	; 0x800159 <Spi_port+0x1>
+    *port |= 1<<bit;
 }
-bool (*UartSpiTxBufferIsEmpty)(void) = TxBufferIsEmpty;
-static bool Received8bits(void)
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
-    // Check `data receive done` flag RXC0
-    return BitIsSet(UartSpi_csra, UartSpi_RxComplete);
- 232:	60 91 3f 02 	lds	r22, 0x023F	; 0x80023f <UartSpi_AdcConv>
- 236:	80 91 46 02 	lds	r24, 0x0246	; 0x800246 <UartSpi_port>
- 23a:	90 91 47 02 	lds	r25, 0x0247	; 0x800247 <UartSpi_port+0x1>
- 23e:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
+ 4a0:	80 81       	ld	r24, Z
+ 4a2:	c0 95       	com	r28
+ 4a4:	c8 23       	and	r28, r24
+ 4a6:	c0 83       	st	Z, r28
+    /* ------------------------ */
+    ClearPendingSpiInterrupt();
+ 4a8:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <ClearPendingSpiInterrupt>
+ 4ac:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <ClearPendingSpiInterrupt+0x1>
+}
+ 4b0:	df 91       	pop	r29
+ 4b2:	cf 91       	pop	r28
+    /* | Added on 2019-03-04: | */
+    /* Drive Spi_Miso pin low when the SPI module is disabled. */
+    /* See SpiSlaveSignalDataIsReady for explanation. */
+    ClearBit(Spi_port, Spi_Miso);
+    /* ------------------------ */
+    ClearPendingSpiInterrupt();
+ 4b4:	09 94       	ijmp
 
-00000242 <UartSpiInit>:
+000004b6 <StartAdcReadout>:
+uint8_t (*UartSpiReadDataRegister)(void) = ReadDataRegister;
+static void Transfer16bits(void)
+{
+    uint8_t byte_to_send = 0x00; // arbitrary choice -- write zeroes
+    *UartSpi_data = byte_to_send;  // load tx buffer and start SPI transmission
+    *UartSpi_data = byte_to_send;  // this makes it a 16-bit transmission ?
+ 4b6:	e0 91 4b 01 	lds	r30, 0x014B	; 0x80014b <UartSpi_port>
+ 4ba:	f0 91 4c 01 	lds	r31, 0x014C	; 0x80014c <UartSpi_port+0x1>
+ 4be:	20 81       	ld	r18, Z
+ 4c0:	81 e0       	ldi	r24, 0x01	; 1
+ 4c2:	90 e0       	ldi	r25, 0x00	; 0
+ 4c4:	00 90 44 01 	lds	r0, 0x0144	; 0x800144 <UartSpi_AdcConv>
+ 4c8:	02 c0       	rjmp	.+4      	; 0x4ce <StartAdcReadout+0x18>
+ 4ca:	88 0f       	add	r24, r24
+ 4cc:	99 1f       	adc	r25, r25
+ 4ce:	0a 94       	dec	r0
+ 4d0:	e2 f7       	brpl	.-8      	; 0x4ca <StartAdcReadout+0x14>
+ 4d2:	80 95       	com	r24
+ 4d4:	82 23       	and	r24, r18
+ 4d6:	80 83       	st	Z, r24
+ 4d8:	08 95       	ret
+
+000004da <UartSpiInit>:
     UseSpiDataModeCpol1CPha1();
     CfgSpiToTransferMsbFirst();
     GiveSpiControlOverMisoAndMosiPins();
 }
 void UartSpiInit(void)
 {
- 242:	0f 93       	push	r16
- 244:	1f 93       	push	r17
- 246:	cf 93       	push	r28
- 248:	df 93       	push	r29
+ 4da:	ef 92       	push	r14
+ 4dc:	ff 92       	push	r15
+ 4de:	0f 93       	push	r16
+ 4e0:	1f 93       	push	r17
+ 4e2:	cf 93       	push	r28
+ 4e4:	df 93       	push	r29
         // baudrate in bits per second = fosc/(2*(UBBR0+1))
         // for (baudrate = fosc/2) set UBBR0=0
         // Check:
         // UBRR0 (baud rate register)  = ( fosc/(2*baudrate) ) -1
         // yes, UBBR0 is 0 if fosc=10MHz and baudrate=5MHz
     *UartSpi_br = 0;
- 24a:	00 91 40 02 	lds	r16, 0x0240	; 0x800240 <UartSpi_br>
- 24e:	10 91 41 02 	lds	r17, 0x0241	; 0x800241 <UartSpi_br+0x1>
- 252:	f8 01       	movw	r30, r16
- 254:	11 82       	std	Z+1, r1	; 0x01
- 256:	10 82       	st	Z, r1
+ 4e6:	00 91 45 01 	lds	r16, 0x0145	; 0x800145 <UartSpi_br>
+ 4ea:	10 91 46 01 	lds	r17, 0x0146	; 0x800146 <UartSpi_br+0x1>
+ 4ee:	f8 01       	movw	r30, r16
+ 4f0:	11 82       	std	Z+1, r1	; 0x01
+ 4f2:	10 82       	st	Z, r1
 }
 static void SetSckAsOutput(void)
 {
     // Cfg XCK as an output. CPOL=1 makes the clock idle high.
     SetBit(UartSpi_ddr, UartSpi_Sck);
- 258:	c0 91 48 02 	lds	r28, 0x0248	; 0x800248 <UartSpi_ddr>
- 25c:	d0 91 49 02 	lds	r29, 0x0249	; 0x800249 <UartSpi_ddr+0x1>
- 260:	60 91 3e 02 	lds	r22, 0x023E	; 0x80023e <UartSpi_Sck>
- 264:	ce 01       	movw	r24, r28
- 266:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 4f4:	e0 90 4d 01 	lds	r14, 0x014D	; 0x80014d <UartSpi_ddr>
+ 4f8:	f0 90 4e 01 	lds	r15, 0x014E	; 0x80014e <UartSpi_ddr+0x1>
+/* --------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+ 4fc:	f7 01       	movw	r30, r14
+ 4fe:	20 81       	ld	r18, Z
+ 500:	c1 e0       	ldi	r28, 0x01	; 1
+ 502:	d0 e0       	ldi	r29, 0x00	; 0
+ 504:	ce 01       	movw	r24, r28
+ 506:	00 90 43 01 	lds	r0, 0x0143	; 0x800143 <UartSpi_Sck>
+ 50a:	02 c0       	rjmp	.+4      	; 0x510 <UartSpiInit+0x36>
+ 50c:	88 0f       	add	r24, r24
+ 50e:	99 1f       	adc	r25, r25
+ 510:	0a 94       	dec	r0
+ 512:	e2 f7       	brpl	.-8      	; 0x50c <UartSpiInit+0x32>
+ 514:	82 2b       	or	r24, r18
+ 516:	80 83       	st	Z, r24
 }
 void UartSpiInit(void)
 {
     RunSpiAt5Mhz(); // datasheet says to call this first
     SetSckAsOutput();
     AdcConvIdleLow(); SetAdcConvAsOutput();
- 26a:	0e 94 19 01 	call	0x232	; 0x232 <StartAdcReadout>
-}
-void (*UartSpiStartAdcConversion)(void) = StartAdcConversion;
-static void SetAdcConvAsOutput(void)
-{
+ 518:	0e 94 5b 02 	call	0x4b6	; 0x4b6 <StartAdcReadout>
+ 51c:	f7 01       	movw	r30, r14
+ 51e:	20 81       	ld	r18, Z
+ 520:	ce 01       	movw	r24, r28
+ 522:	00 90 44 01 	lds	r0, 0x0144	; 0x800144 <UartSpi_AdcConv>
+ 526:	02 c0       	rjmp	.+4      	; 0x52c <UartSpiInit+0x52>
+ 528:	88 0f       	add	r24, r24
+ 52a:	99 1f       	adc	r25, r25
+ 52c:	0a 94       	dec	r0
+ 52e:	e2 f7       	brpl	.-8      	; 0x528 <UartSpiInit+0x4e>
+ 530:	82 2b       	or	r24, r18
+ 532:	80 83       	st	Z, r24
     // cfg general purpose output for conversion-start and readout-start
     SetBit(UartSpi_ddr, UartSpi_AdcConv);
- 26e:	60 91 3f 02 	lds	r22, 0x023F	; 0x80023f <UartSpi_AdcConv>
- 272:	ce 01       	movw	r24, r28
- 274:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
 }
 static void EnableAtmega328UsartInSpiMasterMode(void)
 {
     SetBit(UartSpi_csrc, UartSpi_ModeSelect0);
- 278:	c0 91 42 02 	lds	r28, 0x0242	; 0x800242 <UartSpi_csrc>
- 27c:	d0 91 43 02 	lds	r29, 0x0243	; 0x800243 <UartSpi_csrc+0x1>
- 280:	60 91 3d 02 	lds	r22, 0x023D	; 0x80023d <UartSpi_ModeSelect0>
- 284:	ce 01       	movw	r24, r28
- 286:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
-    SetBit(UartSpi_csrc, UartSpi_ModeSelect1);
- 28a:	60 91 3c 02 	lds	r22, 0x023C	; 0x80023c <UartSpi_ModeSelect1>
- 28e:	ce 01       	movw	r24, r28
- 290:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
-{
-    // Use SPI data mode: CPOL=1, CPHA=1
-        // clock idles high
-        // load data on falling  clock edge
-        // sample data on rising clock edge
-    SetBit(UartSpi_csrc, UartSpi_ClockPolarity);  // clock idles high
- 294:	60 91 39 02 	lds	r22, 0x0239	; 0x800239 <UartSpi_ClockPolarity>
- 298:	ce 01       	movw	r24, r28
- 29a:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
-    SetBit(UartSpi_csrc, UartSpi_ClockPhase);     // load data then sample data
- 29e:	60 91 38 02 	lds	r22, 0x0238	; 0x800238 <UartSpi_ClockPhase>
- 2a2:	ce 01       	movw	r24, r28
- 2a4:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 534:	e0 91 47 01 	lds	r30, 0x0147	; 0x800147 <UartSpi_csrc>
+ 538:	f0 91 48 01 	lds	r31, 0x0148	; 0x800148 <UartSpi_csrc+0x1>
+ 53c:	20 81       	ld	r18, Z
+ 53e:	ce 01       	movw	r24, r28
+ 540:	00 90 42 01 	lds	r0, 0x0142	; 0x800142 <UartSpi_ModeSelect0>
+ 544:	02 c0       	rjmp	.+4      	; 0x54a <UartSpiInit+0x70>
+ 546:	88 0f       	add	r24, r24
+ 548:	99 1f       	adc	r25, r25
+ 54a:	0a 94       	dec	r0
+ 54c:	e2 f7       	brpl	.-8      	; 0x546 <UartSpiInit+0x6c>
+ 54e:	82 2b       	or	r24, r18
+ 550:	80 83       	st	Z, r24
+ 552:	20 81       	ld	r18, Z
+ 554:	ce 01       	movw	r24, r28
+ 556:	00 90 41 01 	lds	r0, 0x0141	; 0x800141 <UartSpi_ModeSelect1>
+ 55a:	02 c0       	rjmp	.+4      	; 0x560 <UartSpiInit+0x86>
+ 55c:	88 0f       	add	r24, r24
+ 55e:	99 1f       	adc	r25, r25
+ 560:	0a 94       	dec	r0
+ 562:	e2 f7       	brpl	.-8      	; 0x55c <UartSpiInit+0x82>
+ 564:	82 2b       	or	r24, r18
+ 566:	80 83       	st	Z, r24
+ 568:	20 81       	ld	r18, Z
+ 56a:	ce 01       	movw	r24, r28
+ 56c:	00 90 3e 01 	lds	r0, 0x013E	; 0x80013e <UartSpi_ClockPolarity>
+ 570:	02 c0       	rjmp	.+4      	; 0x576 <UartSpiInit+0x9c>
+ 572:	88 0f       	add	r24, r24
+ 574:	99 1f       	adc	r25, r25
+ 576:	0a 94       	dec	r0
+ 578:	e2 f7       	brpl	.-8      	; 0x572 <UartSpiInit+0x98>
+ 57a:	82 2b       	or	r24, r18
+ 57c:	80 83       	st	Z, r24
+ 57e:	20 81       	ld	r18, Z
+ 580:	ce 01       	movw	r24, r28
+ 582:	00 90 3d 01 	lds	r0, 0x013D	; 0x80013d <UartSpi_ClockPhase>
+ 586:	02 c0       	rjmp	.+4      	; 0x58c <UartSpiInit+0xb2>
+ 588:	88 0f       	add	r24, r24
+ 58a:	99 1f       	adc	r25, r25
+ 58c:	0a 94       	dec	r0
+ 58e:	e2 f7       	brpl	.-8      	; 0x588 <UartSpiInit+0xae>
+ 590:	82 2b       	or	r24, r18
+ 592:	80 83       	st	Z, r24
+    *port |= 1<<bit;
 }
-static void CfgSpiToTransferMsbFirst(void)
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
-    ClearBit(UartSpi_csrc, UartSpi_DataOrder);
- 2a8:	60 91 37 02 	lds	r22, 0x0237	; 0x800237 <UartSpi_DataOrder>
- 2ac:	ce 01       	movw	r24, r28
- 2ae:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
+ 594:	90 81       	ld	r25, Z
+ 596:	9e 01       	movw	r18, r28
+ 598:	00 90 3c 01 	lds	r0, 0x013C	; 0x80013c <UartSpi_DataOrder>
+ 59c:	02 c0       	rjmp	.+4      	; 0x5a2 <UartSpiInit+0xc8>
+ 59e:	22 0f       	add	r18, r18
+ 5a0:	33 1f       	adc	r19, r19
+ 5a2:	0a 94       	dec	r0
+ 5a4:	e2 f7       	brpl	.-8      	; 0x59e <UartSpiInit+0xc4>
+ 5a6:	82 2f       	mov	r24, r18
+ 5a8:	80 95       	com	r24
+ 5aa:	89 23       	and	r24, r25
+ 5ac:	80 83       	st	Z, r24
 }
 static void GiveSpiControlOverMisoAndMosiPins(void)
 {
     /* ---Enabling Rx and Tx overrides normal port operation--- */
     // Enable the receiver. The UART Rx pin becomes the SPI Miso.
     SetBit(UartSpi_csrb, UartSpi_RxEnable);
- 2b2:	c0 91 44 02 	lds	r28, 0x0244	; 0x800244 <UartSpi_csrb>
- 2b6:	d0 91 45 02 	lds	r29, 0x0245	; 0x800245 <UartSpi_csrb+0x1>
- 2ba:	60 91 3b 02 	lds	r22, 0x023B	; 0x80023b <UartSpi_RxEnable>
- 2be:	ce 01       	movw	r24, r28
- 2c0:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
-    // Enable the transmitter. The UART Tx pin becomes the SPI Mosi.
-    SetBit(UartSpi_csrb, UartSpi_TxEnable);
- 2c4:	60 91 3a 02 	lds	r22, 0x023A	; 0x80023a <UartSpi_TxEnable>
- 2c8:	ce 01       	movw	r24, r28
- 2ca:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 5ae:	e0 91 49 01 	lds	r30, 0x0149	; 0x800149 <UartSpi_csrb>
+ 5b2:	f0 91 4a 01 	lds	r31, 0x014A	; 0x80014a <UartSpi_csrb+0x1>
+/* --------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+ 5b6:	20 81       	ld	r18, Z
+ 5b8:	ce 01       	movw	r24, r28
+ 5ba:	00 90 40 01 	lds	r0, 0x0140	; 0x800140 <UartSpi_RxEnable>
+ 5be:	02 c0       	rjmp	.+4      	; 0x5c4 <UartSpiInit+0xea>
+ 5c0:	88 0f       	add	r24, r24
+ 5c2:	99 1f       	adc	r25, r25
+ 5c4:	0a 94       	dec	r0
+ 5c6:	e2 f7       	brpl	.-8      	; 0x5c0 <UartSpiInit+0xe6>
+ 5c8:	82 2b       	or	r24, r18
+ 5ca:	80 83       	st	Z, r24
+ 5cc:	80 81       	ld	r24, Z
+ 5ce:	00 90 3f 01 	lds	r0, 0x013F	; 0x80013f <UartSpi_TxEnable>
+ 5d2:	02 c0       	rjmp	.+4      	; 0x5d8 <UartSpiInit+0xfe>
+ 5d4:	cc 0f       	add	r28, r28
+ 5d6:	dd 1f       	adc	r29, r29
+ 5d8:	0a 94       	dec	r0
+ 5da:	e2 f7       	brpl	.-8      	; 0x5d4 <UartSpiInit+0xfa>
+ 5dc:	c8 2b       	or	r28, r24
+ 5de:	c0 83       	st	Z, r28
         // baudrate in bits per second = fosc/(2*(UBBR0+1))
         // for (baudrate = fosc/2) set UBBR0=0
         // Check:
         // UBRR0 (baud rate register)  = ( fosc/(2*baudrate) ) -1
         // yes, UBBR0 is 0 if fosc=10MHz and baudrate=5MHz
     *UartSpi_br = 0;
- 2ce:	f8 01       	movw	r30, r16
- 2d0:	11 82       	std	Z+1, r1	; 0x01
- 2d2:	10 82       	st	Z, r1
+ 5e0:	f8 01       	movw	r30, r16
+ 5e2:	11 82       	std	Z+1, r1	; 0x01
+ 5e4:	10 82       	st	Z, r1
     RunSpiAt5Mhz(); // datasheet says to call this first
     SetSckAsOutput();
     AdcConvIdleLow(); SetAdcConvAsOutput();
     SpiMasterCfg();
     RunSpiAt5Mhz(); // datasheet says to call this again after enable
 }
- 2d4:	df 91       	pop	r29
- 2d6:	cf 91       	pop	r28
- 2d8:	1f 91       	pop	r17
- 2da:	0f 91       	pop	r16
- 2dc:	08 95       	ret
+ 5e6:	df 91       	pop	r29
+ 5e8:	cf 91       	pop	r28
+ 5ea:	1f 91       	pop	r17
+ 5ec:	0f 91       	pop	r16
+ 5ee:	ff 90       	pop	r15
+ 5f0:	ef 90       	pop	r14
+ 5f2:	08 95       	ret
 
-000002de <LisRunClkAt50kHz_Implementation>:
-    LisRunClkAt50kHz();
-    LisClkOn();
+000005f4 <LisRunClkAt50kHz_Implementation>:
+    *port |= 1<<bit;
 }
-static void LisRunClkAt50kHz_Implementation(void)
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
-    PwmResetCounterAtTop();
- 2de:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <PwmResetCounterAtTop>
- 2e2:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <PwmResetCounterAtTop+0x1>
- 2e6:	09 95       	icall
-    PwmTopIsOcr0a();
- 2e8:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <PwmTopIsOcr0a>
- 2ec:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <PwmTopIsOcr0a+0x1>
- 2f0:	09 95       	icall
-    PwmClkIsCpuClk();
- 2f2:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <PwmClkIsCpuClk>
- 2f6:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <PwmClkIsCpuClk+0x1>
- 2fa:	09 95       	icall
-    *Lis_clktop = 200;           // 10MHz / 50kHz = 200 ticks
- 2fc:	e0 91 2d 02 	lds	r30, 0x022D	; 0x80022d <Lis_clktop>
- 300:	f0 91 2e 02 	lds	r31, 0x022E	; 0x80022e <Lis_clktop+0x1>
- 304:	88 ec       	ldi	r24, 0xC8	; 200
- 306:	80 83       	st	Z, r24
-    *Lis_clkth = *Lis_clktop/2;  // 50% dutcy cycle: PASS 2018-08-21
- 308:	80 91 2b 02 	lds	r24, 0x022B	; 0x80022b <Lis_clkth>
- 30c:	90 91 2c 02 	lds	r25, 0x022C	; 0x80022c <Lis_clkth+0x1>
- 310:	20 81       	ld	r18, Z
- 312:	26 95       	lsr	r18
- 314:	fc 01       	movw	r30, r24
- 316:	20 83       	st	Z, r18
- 318:	08 95       	ret
+ 5f4:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <PwmResetCounterAtTop>
+ 5f8:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <PwmResetCounterAtTop+0x1>
+ 5fc:	09 95       	icall
+ 5fe:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <PwmTopIsOcr0a>
+ 602:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <PwmTopIsOcr0a+0x1>
+ 606:	09 95       	icall
+ 608:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <PwmClkIsCpuClk>
+ 60c:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <PwmClkIsCpuClk+0x1>
+ 610:	09 95       	icall
+ 612:	e0 91 32 01 	lds	r30, 0x0132	; 0x800132 <Lis_clktop>
+ 616:	f0 91 33 01 	lds	r31, 0x0133	; 0x800133 <Lis_clktop+0x1>
+ 61a:	88 ec       	ldi	r24, 0xC8	; 200
+ 61c:	80 83       	st	Z, r24
+ 61e:	80 91 30 01 	lds	r24, 0x0130	; 0x800130 <Lis_clkth>
+ 622:	90 91 31 01 	lds	r25, 0x0131	; 0x800131 <Lis_clkth+0x1>
+ 626:	20 81       	ld	r18, Z
+ 628:	26 95       	lsr	r18
+ 62a:	fc 01       	movw	r30, r24
+ 62c:	20 83       	st	Z, r18
+ 62e:	08 95       	ret
 
-0000031a <LisClkOn_Implementation>:
+00000630 <LisClkOn_Implementation>:
+ 630:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <PwmEnableOutputSetUntilMatch>
+ 634:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <PwmEnableOutputSetUntilMatch+0x1>
+ 638:	09 94       	ijmp
+
+0000063a <LisInit>:
+    ClearBit(Lis_port2, Lis_PixSelect);
 }
-void (*LisRunClkAt50kHz)(void) = LisRunClkAt50kHz_Implementation;
-
-static void LisClkOn_Implementation(void)
-{
-    PwmEnableOutputSetUntilMatch();
- 31a:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <PwmEnableOutputSetUntilMatch>
- 31e:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <PwmEnableOutputSetUntilMatch+0x1>
- 322:	09 94       	ijmp
-
-00000324 <LisInit>:
-static void RstIdleLowAfterPowerUp(void)
-{
-    ClearBit(Lis_port1, Lis_Rst);
-}
-void LisInit(void)
-{
- 324:	1f 93       	push	r17
- 326:	cf 93       	push	r28
- 328:	df 93       	push	r29
-#include "Pwm.h"
-#include "ReadWriteBits.h"
 
 static void SetPixSelectAsOutput(void)
 {
     SetBit(Lis_ddr2, Lis_PixSelect);
- 32a:	c0 91 2a 02 	lds	r28, 0x022A	; 0x80022a <Lis_PixSelect>
- 32e:	6c 2f       	mov	r22, r28
- 330:	80 91 33 02 	lds	r24, 0x0233	; 0x800233 <Lis_ddr2>
- 334:	90 91 34 02 	lds	r25, 0x0234	; 0x800234 <Lis_ddr2+0x1>
- 338:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 63a:	e0 91 38 01 	lds	r30, 0x0138	; 0x800138 <Lis_ddr2>
+ 63e:	f0 91 39 01 	lds	r31, 0x0139	; 0x800139 <Lis_ddr2+0x1>
+/* --------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+ 642:	40 81       	ld	r20, Z
+ 644:	81 e0       	ldi	r24, 0x01	; 1
+ 646:	90 e0       	ldi	r25, 0x00	; 0
+ 648:	9c 01       	movw	r18, r24
+ 64a:	00 90 2f 01 	lds	r0, 0x012F	; 0x80012f <Lis_PixSelect>
+ 64e:	02 c0       	rjmp	.+4      	; 0x654 <LisInit+0x1a>
+ 650:	22 0f       	add	r18, r18
+ 652:	33 1f       	adc	r19, r19
+ 654:	0a 94       	dec	r0
+ 656:	e2 f7       	brpl	.-8      	; 0x650 <LisInit+0x16>
+ 658:	34 2f       	mov	r19, r20
+ 65a:	32 2b       	or	r19, r18
+ 65c:	30 83       	st	Z, r19
 {
     ClearBit(Lis_ddr1, Lis_Sync);
 }
 static void PixSelectIdleLow(void)
 {
     ClearBit(Lis_port2, Lis_PixSelect);
- 33c:	6c 2f       	mov	r22, r28
- 33e:	80 91 2f 02 	lds	r24, 0x022F	; 0x80022f <Lis_port2>
- 342:	90 91 30 02 	lds	r25, 0x0230	; 0x800230 <Lis_port2+0x1>
- 346:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
+ 65e:	e0 91 34 01 	lds	r30, 0x0134	; 0x800134 <Lis_port2>
+ 662:	f0 91 35 01 	lds	r31, 0x0135	; 0x800135 <Lis_port2+0x1>
+    *port |= 1<<bit;
+}
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
+{
+ 666:	30 81       	ld	r19, Z
+ 668:	20 95       	com	r18
+ 66a:	23 23       	and	r18, r19
+ 66c:	20 83       	st	Z, r18
 {
     SetBit(Lis_ddr2, Lis_PixSelect);
 }
 static void SetClkAsOutput(void)
 {
     SetBit(Lis_ddr1, Lis_Clk);
- 34a:	c0 91 35 02 	lds	r28, 0x0235	; 0x800235 <Lis_ddr1>
- 34e:	d0 91 36 02 	lds	r29, 0x0236	; 0x800236 <Lis_ddr1+0x1>
- 352:	60 91 29 02 	lds	r22, 0x0229	; 0x800229 <Lis_Clk>
- 356:	ce 01       	movw	r24, r28
- 358:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
-}
-static void SetRstAsOutput(void)
+ 66e:	e0 91 3a 01 	lds	r30, 0x013A	; 0x80013a <Lis_ddr1>
+ 672:	f0 91 3b 01 	lds	r31, 0x013B	; 0x80013b <Lis_ddr1+0x1>
+/* --------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
-    SetBit(Lis_ddr1, Lis_Rst);
- 35c:	10 91 28 02 	lds	r17, 0x0228	; 0x800228 <Lis_Rst>
- 360:	61 2f       	mov	r22, r17
- 362:	ce 01       	movw	r24, r28
- 364:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
+ 676:	40 81       	ld	r20, Z
+ 678:	9c 01       	movw	r18, r24
+ 67a:	00 90 2e 01 	lds	r0, 0x012E	; 0x80012e <Lis_Clk>
+ 67e:	02 c0       	rjmp	.+4      	; 0x684 <LisInit+0x4a>
+ 680:	22 0f       	add	r18, r18
+ 682:	33 1f       	adc	r19, r19
+ 684:	0a 94       	dec	r0
+ 686:	e2 f7       	brpl	.-8      	; 0x680 <LisInit+0x46>
+ 688:	24 2b       	or	r18, r20
+ 68a:	20 83       	st	Z, r18
+ 68c:	40 81       	ld	r20, Z
+ 68e:	9c 01       	movw	r18, r24
+ 690:	00 90 2d 01 	lds	r0, 0x012D	; 0x80012d <Lis_Rst>
+ 694:	02 c0       	rjmp	.+4      	; 0x69a <LisInit+0x60>
+ 696:	22 0f       	add	r18, r18
+ 698:	33 1f       	adc	r19, r19
+ 69a:	0a 94       	dec	r0
+ 69c:	e2 f7       	brpl	.-8      	; 0x696 <LisInit+0x5c>
+ 69e:	34 2f       	mov	r19, r20
+ 6a0:	32 2b       	or	r19, r18
+ 6a2:	30 83       	st	Z, r19
 {
     ClearBit(Lis_port2, Lis_PixSelect);
 }
 static void RstIdleLowAfterPowerUp(void)
 {
     ClearBit(Lis_port1, Lis_Rst);
- 368:	61 2f       	mov	r22, r17
- 36a:	80 91 31 02 	lds	r24, 0x0231	; 0x800231 <Lis_port1>
- 36e:	90 91 32 02 	lds	r25, 0x0232	; 0x800232 <Lis_port1+0x1>
- 372:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-{
-    SetBit(Lis_ddr1, Lis_Rst);
+ 6a4:	a0 91 36 01 	lds	r26, 0x0136	; 0x800136 <Lis_port1>
+ 6a8:	b0 91 37 01 	lds	r27, 0x0137	; 0x800137 <Lis_port1+0x1>
+    *port |= 1<<bit;
 }
-static void SetSyncAsInput(void)
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
-    ClearBit(Lis_ddr1, Lis_Sync);
- 376:	60 91 27 02 	lds	r22, 0x0227	; 0x800227 <Lis_Sync>
- 37a:	ce 01       	movw	r24, r28
- 37c:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
+ 6ac:	3c 91       	ld	r19, X
+ 6ae:	20 95       	com	r18
+ 6b0:	23 23       	and	r18, r19
+ 6b2:	2c 93       	st	X, r18
+ 6b4:	20 81       	ld	r18, Z
+ 6b6:	00 90 2c 01 	lds	r0, 0x012C	; 0x80012c <Lis_Sync>
+ 6ba:	02 c0       	rjmp	.+4      	; 0x6c0 <LisInit+0x86>
+ 6bc:	88 0f       	add	r24, r24
+ 6be:	99 1f       	adc	r25, r25
+ 6c0:	0a 94       	dec	r0
+ 6c2:	e2 f7       	brpl	.-8      	; 0x6bc <LisInit+0x82>
+ 6c4:	80 95       	com	r24
+ 6c6:	82 23       	and	r24, r18
+ 6c8:	80 83       	st	Z, r24
     PixSelectIdleLow();
     SetClkAsOutput();
     SetRstAsOutput();
     RstIdleLowAfterPowerUp();
     SetSyncAsInput();
     LisRunClkAt50kHz();
- 380:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <LisRunClkAt50kHz>
- 384:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <LisRunClkAt50kHz+0x1>
- 388:	09 95       	icall
+ 6ca:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <LisRunClkAt50kHz>
+ 6ce:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <LisRunClkAt50kHz+0x1>
+ 6d2:	09 95       	icall
     LisClkOn();
- 38a:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <LisClkOn>
- 38e:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <LisClkOn+0x1>
-}
- 392:	df 91       	pop	r29
- 394:	cf 91       	pop	r28
- 396:	1f 91       	pop	r17
-    SetClkAsOutput();
-    SetRstAsOutput();
-    RstIdleLowAfterPowerUp();
-    SetSyncAsInput();
-    LisRunClkAt50kHz();
-    LisClkOn();
- 398:	09 94       	ijmp
+ 6d4:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <LisClkOn>
+ 6d8:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <LisClkOn+0x1>
+ 6dc:	09 94       	ijmp
 
-0000039a <ResetCounterAtTop>:
-#include "Pwm.h"
-#include "ReadWriteBits.h"
-static void ResetCounterAtTop(void)
-{
- 39a:	cf 93       	push	r28
- 39c:	df 93       	push	r29
-    SetBit(Pwm_tccr0a, Pwm_Wgm00);
- 39e:	c0 91 25 02 	lds	r28, 0x0225	; 0x800225 <Pwm_tccr0a>
- 3a2:	d0 91 26 02 	lds	r29, 0x0226	; 0x800226 <Pwm_tccr0a+0x1>
- 3a6:	60 91 22 02 	lds	r22, 0x0222	; 0x800222 <Pwm_Wgm00>
- 3aa:	ce 01       	movw	r24, r28
- 3ac:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
-    SetBit(Pwm_tccr0a, Pwm_Wgm01);
- 3b0:	60 91 21 02 	lds	r22, 0x0221	; 0x800221 <Pwm_Wgm01>
- 3b4:	ce 01       	movw	r24, r28
-}
- 3b6:	df 91       	pop	r29
- 3b8:	cf 91       	pop	r28
+000006de <ResetCounterAtTop>:
 #include "Pwm.h"
 #include "ReadWriteBits.h"
 static void ResetCounterAtTop(void)
 {
     SetBit(Pwm_tccr0a, Pwm_Wgm00);
-    SetBit(Pwm_tccr0a, Pwm_Wgm01);
- 3ba:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
+ 6de:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <Pwm_tccr0a>
+ 6e2:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <Pwm_tccr0a+0x1>
+/* --------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
 
-000003be <TopIsOcr0a>:
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+ 6e6:	40 81       	ld	r20, Z
+ 6e8:	81 e0       	ldi	r24, 0x01	; 1
+ 6ea:	90 e0       	ldi	r25, 0x00	; 0
+ 6ec:	9c 01       	movw	r18, r24
+ 6ee:	00 90 27 01 	lds	r0, 0x0127	; 0x800127 <Pwm_Wgm00>
+ 6f2:	02 c0       	rjmp	.+4      	; 0x6f8 <ResetCounterAtTop+0x1a>
+ 6f4:	22 0f       	add	r18, r18
+ 6f6:	33 1f       	adc	r19, r19
+ 6f8:	0a 94       	dec	r0
+ 6fa:	e2 f7       	brpl	.-8      	; 0x6f4 <ResetCounterAtTop+0x16>
+ 6fc:	24 2b       	or	r18, r20
+ 6fe:	20 83       	st	Z, r18
+ 700:	20 81       	ld	r18, Z
+ 702:	00 90 26 01 	lds	r0, 0x0126	; 0x800126 <Pwm_Wgm01>
+ 706:	02 c0       	rjmp	.+4      	; 0x70c <ResetCounterAtTop+0x2e>
+ 708:	88 0f       	add	r24, r24
+ 70a:	99 1f       	adc	r25, r25
+ 70c:	0a 94       	dec	r0
+ 70e:	e2 f7       	brpl	.-8      	; 0x708 <ResetCounterAtTop+0x2a>
+ 710:	82 2b       	or	r24, r18
+ 712:	80 83       	st	Z, r24
+ 714:	08 95       	ret
+
+00000716 <TopIsOcr0a>:
 }
 void (*PwmResetCounterAtTop)(void) = ResetCounterAtTop;
 
 static void TopIsOcr0a(void)
 {
     SetBit(Pwm_tccr0b, Pwm_Wgm02);
- 3be:	60 91 20 02 	lds	r22, 0x0220	; 0x800220 <Pwm_Wgm02>
- 3c2:	80 91 23 02 	lds	r24, 0x0223	; 0x800223 <Pwm_tccr0b>
- 3c6:	90 91 24 02 	lds	r25, 0x0224	; 0x800224 <Pwm_tccr0b+0x1>
- 3ca:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
+ 716:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <Pwm_tccr0b>
+ 71a:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <Pwm_tccr0b+0x1>
+ 71e:	20 81       	ld	r18, Z
+ 720:	81 e0       	ldi	r24, 0x01	; 1
+ 722:	90 e0       	ldi	r25, 0x00	; 0
+ 724:	00 90 25 01 	lds	r0, 0x0125	; 0x800125 <Pwm_Wgm02>
+ 728:	02 c0       	rjmp	.+4      	; 0x72e <TopIsOcr0a+0x18>
+ 72a:	88 0f       	add	r24, r24
+ 72c:	99 1f       	adc	r25, r25
+ 72e:	0a 94       	dec	r0
+ 730:	e2 f7       	brpl	.-8      	; 0x72a <TopIsOcr0a+0x14>
+ 732:	82 2b       	or	r24, r18
+ 734:	80 83       	st	Z, r24
+ 736:	08 95       	ret
 
-000003ce <PwmClkIsCpuClk_Implementation>:
+00000738 <PwmClkIsCpuClk_Implementation>:
 }
 void (*PwmTopIsOcr0a)(void) = TopIsOcr0a;
 
 static void PwmClkIsCpuClk_Implementation(void)
 {
- 3ce:	cf 93       	push	r28
- 3d0:	df 93       	push	r29
     SetBit  (Pwm_tccr0b, Pwm_Cs00);
- 3d2:	c0 91 23 02 	lds	r28, 0x0223	; 0x800223 <Pwm_tccr0b>
- 3d6:	d0 91 24 02 	lds	r29, 0x0224	; 0x800224 <Pwm_tccr0b+0x1>
- 3da:	60 91 1f 02 	lds	r22, 0x021F	; 0x80021f <Pwm_Cs00>
- 3de:	ce 01       	movw	r24, r28
- 3e0:	0e 94 53 00 	call	0xa6	; 0xa6 <SetBit>
-    ClearBit(Pwm_tccr0b, Pwm_Cs01);
- 3e4:	60 91 1e 02 	lds	r22, 0x021E	; 0x80021e <Pwm_Cs01>
- 3e8:	ce 01       	movw	r24, r28
- 3ea:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-    ClearBit(Pwm_tccr0b, Pwm_Cs02);
- 3ee:	60 91 1d 02 	lds	r22, 0x021D	; 0x80021d <Pwm_Cs02>
- 3f2:	ce 01       	movw	r24, r28
+ 738:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <Pwm_tccr0b>
+ 73c:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <Pwm_tccr0b+0x1>
+ 740:	40 81       	ld	r20, Z
+ 742:	81 e0       	ldi	r24, 0x01	; 1
+ 744:	90 e0       	ldi	r25, 0x00	; 0
+ 746:	9c 01       	movw	r18, r24
+ 748:	00 90 24 01 	lds	r0, 0x0124	; 0x800124 <Pwm_Cs00>
+ 74c:	02 c0       	rjmp	.+4      	; 0x752 <PwmClkIsCpuClk_Implementation+0x1a>
+ 74e:	22 0f       	add	r18, r18
+ 750:	33 1f       	adc	r19, r19
+ 752:	0a 94       	dec	r0
+ 754:	e2 f7       	brpl	.-8      	; 0x74e <PwmClkIsCpuClk_Implementation+0x16>
+ 756:	24 2b       	or	r18, r20
+ 758:	20 83       	st	Z, r18
+    *port |= 1<<bit;
 }
- 3f4:	df 91       	pop	r29
- 3f6:	cf 91       	pop	r28
-
-static void PwmClkIsCpuClk_Implementation(void)
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
-    SetBit  (Pwm_tccr0b, Pwm_Cs00);
-    ClearBit(Pwm_tccr0b, Pwm_Cs01);
-    ClearBit(Pwm_tccr0b, Pwm_Cs02);
- 3f8:	0c 94 5e 00 	jmp	0xbc	; 0xbc <ClearBit>
+ 75a:	30 81       	ld	r19, Z
+ 75c:	ac 01       	movw	r20, r24
+ 75e:	00 90 23 01 	lds	r0, 0x0123	; 0x800123 <Pwm_Cs01>
+ 762:	02 c0       	rjmp	.+4      	; 0x768 <PwmClkIsCpuClk_Implementation+0x30>
+ 764:	44 0f       	add	r20, r20
+ 766:	55 1f       	adc	r21, r21
+ 768:	0a 94       	dec	r0
+ 76a:	e2 f7       	brpl	.-8      	; 0x764 <PwmClkIsCpuClk_Implementation+0x2c>
+ 76c:	24 2f       	mov	r18, r20
+ 76e:	20 95       	com	r18
+ 770:	23 23       	and	r18, r19
+ 772:	20 83       	st	Z, r18
+ 774:	20 81       	ld	r18, Z
+ 776:	00 90 22 01 	lds	r0, 0x0122	; 0x800122 <Pwm_Cs02>
+ 77a:	02 c0       	rjmp	.+4      	; 0x780 <PwmClkIsCpuClk_Implementation+0x48>
+ 77c:	88 0f       	add	r24, r24
+ 77e:	99 1f       	adc	r25, r25
+ 780:	0a 94       	dec	r0
+ 782:	e2 f7       	brpl	.-8      	; 0x77c <PwmClkIsCpuClk_Implementation+0x44>
+ 784:	80 95       	com	r24
+ 786:	82 23       	and	r24, r18
+ 788:	80 83       	st	Z, r24
+ 78a:	08 95       	ret
 
-000003fc <EnableOutputSetUntilMatch>:
+0000078c <EnableOutputSetUntilMatch>:
 }
 void (*PwmClkIsCpuClk)(void) = PwmClkIsCpuClk_Implementation;
 
 static void EnableOutputSetUntilMatch(void)
 {
- 3fc:	cf 93       	push	r28
- 3fe:	df 93       	push	r29
     ClearBit(Pwm_tccr0a, Pwm_Com0b0);
- 400:	c0 91 25 02 	lds	r28, 0x0225	; 0x800225 <Pwm_tccr0a>
- 404:	d0 91 26 02 	lds	r29, 0x0226	; 0x800226 <Pwm_tccr0a+0x1>
- 408:	60 91 1c 02 	lds	r22, 0x021C	; 0x80021c <Pwm_Com0b0>
- 40c:	ce 01       	movw	r24, r28
- 40e:	0e 94 5e 00 	call	0xbc	; 0xbc <ClearBit>
-    SetBit  (Pwm_tccr0a, Pwm_Com0b1);
- 412:	60 91 1b 02 	lds	r22, 0x021B	; 0x80021b <Pwm_Com0b1>
- 416:	ce 01       	movw	r24, r28
-}
- 418:	df 91       	pop	r29
- 41a:	cf 91       	pop	r28
-void (*PwmClkIsCpuClk)(void) = PwmClkIsCpuClk_Implementation;
+ 78c:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <Pwm_tccr0a>
+ 790:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <Pwm_tccr0a+0x1>
+ 794:	30 81       	ld	r19, Z
+ 796:	81 e0       	ldi	r24, 0x01	; 1
+ 798:	90 e0       	ldi	r25, 0x00	; 0
+ 79a:	ac 01       	movw	r20, r24
+ 79c:	00 90 21 01 	lds	r0, 0x0121	; 0x800121 <Pwm_Com0b0>
+ 7a0:	02 c0       	rjmp	.+4      	; 0x7a6 <EnableOutputSetUntilMatch+0x1a>
+ 7a2:	44 0f       	add	r20, r20
+ 7a4:	55 1f       	adc	r21, r21
+ 7a6:	0a 94       	dec	r0
+ 7a8:	e2 f7       	brpl	.-8      	; 0x7a2 <EnableOutputSetUntilMatch+0x16>
+ 7aa:	24 2f       	mov	r18, r20
+ 7ac:	20 95       	com	r18
+ 7ae:	23 23       	and	r18, r19
+ 7b0:	20 83       	st	Z, r18
+/* --------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
 
-static void EnableOutputSetUntilMatch(void)
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
-    ClearBit(Pwm_tccr0a, Pwm_Com0b0);
-    SetBit  (Pwm_tccr0a, Pwm_Com0b1);
- 41c:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
+ 7b2:	20 81       	ld	r18, Z
+ 7b4:	00 90 20 01 	lds	r0, 0x0120	; 0x800120 <Pwm_Com0b1>
+ 7b8:	02 c0       	rjmp	.+4      	; 0x7be <EnableOutputSetUntilMatch+0x32>
+ 7ba:	88 0f       	add	r24, r24
+ 7bc:	99 1f       	adc	r25, r25
+ 7be:	0a 94       	dec	r0
+ 7c0:	e2 f7       	brpl	.-8      	; 0x7ba <EnableOutputSetUntilMatch+0x2e>
+ 7c2:	82 2b       	or	r24, r18
+ 7c4:	80 83       	st	Z, r24
+ 7c6:	08 95       	ret
 
-00000420 <LisFrameReadout>:
+000007c8 <main>:
 }
 void Show_data_on_debug_leds(uint8_t four_bits)
 {
     // Show the lower nibble of input `four_bits`
     uint8_t *pfour_bits = &four_bits;
     if (BitIsSet(pfour_bits, 0)) DebugLedsTurnRed(debug_led1);
- 420:	cf 93       	push	r28
- 422:	df 93       	push	r29
- 424:	aa 9a       	sbi	0x15, 2	; 21
- 426:	aa 9b       	sbis	0x15, 2	; 21
- 428:	fe cf       	rjmp	.-4      	; 0x426 <LisFrameReadout+0x6>
- 42a:	aa 9a       	sbi	0x15, 2	; 21
- 42c:	5e 9a       	sbi	0x0b, 6	; 11
- 42e:	81 e0       	ldi	r24, 0x01	; 1
- 430:	90 e0       	ldi	r25, 0x00	; 0
- 432:	90 93 64 02 	sts	0x0264, r25	; 0x800264 <Lis_nticks_counter+0x1>
- 436:	80 93 63 02 	sts	0x0263, r24	; 0x800263 <Lis_nticks_counter>
- 43a:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
- 43e:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
- 442:	89 2b       	or	r24, r25
- 444:	b1 f0       	breq	.+44     	; 0x472 <LisFrameReadout+0x52>
- 446:	aa 9a       	sbi	0x15, 2	; 21
- 448:	aa 9b       	sbis	0x15, 2	; 21
- 44a:	fe cf       	rjmp	.-4      	; 0x448 <LisFrameReadout+0x28>
- 44c:	aa 9a       	sbi	0x15, 2	; 21
- 44e:	80 91 63 02 	lds	r24, 0x0263	; 0x800263 <Lis_nticks_counter>
- 452:	90 91 64 02 	lds	r25, 0x0264	; 0x800264 <Lis_nticks_counter+0x1>
- 456:	9c 01       	movw	r18, r24
- 458:	2f 5f       	subi	r18, 0xFF	; 255
- 45a:	3f 4f       	sbci	r19, 0xFF	; 255
- 45c:	30 93 64 02 	sts	0x0264, r19	; 0x800264 <Lis_nticks_counter+0x1>
- 460:	20 93 63 02 	sts	0x0263, r18	; 0x800263 <Lis_nticks_counter>
- 464:	20 91 14 02 	lds	r18, 0x0214	; 0x800214 <Lis_nticks_exposure>
- 468:	30 91 15 02 	lds	r19, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
- 46c:	82 17       	cp	r24, r18
- 46e:	93 07       	cpc	r25, r19
- 470:	50 f3       	brcs	.-44     	; 0x446 <LisFrameReadout+0x26>
- 472:	5e 98       	cbi	0x0b, 6	; 11
- 474:	87 e6       	ldi	r24, 0x67	; 103
- 476:	92 e0       	ldi	r25, 0x02	; 2
- 478:	90 93 13 02 	sts	0x0213, r25	; 0x800213 <pframe+0x1>
- 47c:	80 93 12 02 	sts	0x0212, r24	; 0x800212 <pframe>
- 480:	10 92 62 02 	sts	0x0262, r1	; 0x800262 <Lis_npixels_counter+0x1>
- 484:	10 92 61 02 	sts	0x0261, r1	; 0x800261 <Lis_npixels_counter>
- 488:	4f 9b       	sbis	0x09, 7	; 9
- 48a:	fe cf       	rjmp	.-4      	; 0x488 <LisFrameReadout+0x68>
- 48c:	4f 99       	sbic	0x09, 7	; 9
- 48e:	fe cf       	rjmp	.-4      	; 0x48c <LisFrameReadout+0x6c>
- 490:	80 91 60 02 	lds	r24, 0x0260	; 0x800260 <lis_sum_mode>
- 494:	81 30       	cpi	r24, 0x01	; 1
- 496:	09 f4       	brne	.+2      	; 0x49a <LisFrameReadout+0x7a>
- 498:	50 c0       	rjmp	.+160    	; 0x53a <LisFrameReadout+0x11a>
- 49a:	c0 e1       	ldi	r28, 0x10	; 16
- 49c:	d3 e0       	ldi	r29, 0x03	; 3
- 49e:	81 e0       	ldi	r24, 0x01	; 1
- 4a0:	90 e0       	ldi	r25, 0x00	; 0
- 4a2:	90 93 62 02 	sts	0x0262, r25	; 0x800262 <Lis_npixels_counter+0x1>
- 4a6:	80 93 61 02 	sts	0x0261, r24	; 0x800261 <Lis_npixels_counter>
- 4aa:	a9 9a       	sbi	0x15, 1	; 21
- 4ac:	a9 9b       	sbis	0x15, 1	; 21
- 4ae:	fe cf       	rjmp	.-4      	; 0x4ac <LisFrameReadout+0x8c>
- 4b0:	a9 9a       	sbi	0x15, 1	; 21
- 4b2:	5a 9a       	sbi	0x0b, 2	; 11
- 4b4:	e0 91 18 02 	lds	r30, 0x0218	; 0x800218 <Delay3CpuCyclesPerTick>
- 4b8:	f0 91 19 02 	lds	r31, 0x0219	; 0x800219 <Delay3CpuCyclesPerTick+0x1>
- 4bc:	8b e0       	ldi	r24, 0x0B	; 11
- 4be:	09 95       	icall
- 4c0:	5a 98       	cbi	0x0b, 2	; 11
- 4c2:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7e00c0>
- 4c6:	85 ff       	sbrs	r24, 5
- 4c8:	fc cf       	rjmp	.-8      	; 0x4c2 <LisFrameReadout+0xa2>
- 4ca:	10 92 c6 00 	sts	0x00C6, r1	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
- 4ce:	10 92 c6 00 	sts	0x00C6, r1	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
- 4d2:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7e00c0>
- 4d6:	87 ff       	sbrs	r24, 7
- 4d8:	fc cf       	rjmp	.-8      	; 0x4d2 <LisFrameReadout+0xb2>
- 4da:	e0 91 12 02 	lds	r30, 0x0212	; 0x800212 <pframe>
- 4de:	f0 91 13 02 	lds	r31, 0x0213	; 0x800213 <pframe+0x1>
- 4e2:	cf 01       	movw	r24, r30
- 4e4:	01 96       	adiw	r24, 0x01	; 1
- 4e6:	90 93 13 02 	sts	0x0213, r25	; 0x800213 <pframe+0x1>
- 4ea:	80 93 12 02 	sts	0x0212, r24	; 0x800212 <pframe>
- 4ee:	80 91 c6 00 	lds	r24, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
- 4f2:	80 83       	st	Z, r24
- 4f4:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7e00c0>
- 4f8:	87 ff       	sbrs	r24, 7
- 4fa:	fc cf       	rjmp	.-8      	; 0x4f4 <LisFrameReadout+0xd4>
- 4fc:	e0 91 12 02 	lds	r30, 0x0212	; 0x800212 <pframe>
- 500:	f0 91 13 02 	lds	r31, 0x0213	; 0x800213 <pframe+0x1>
- 504:	cf 01       	movw	r24, r30
- 506:	01 96       	adiw	r24, 0x01	; 1
- 508:	90 93 13 02 	sts	0x0213, r25	; 0x800213 <pframe+0x1>
- 50c:	80 93 12 02 	sts	0x0212, r24	; 0x800212 <pframe>
- 510:	80 91 c6 00 	lds	r24, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
- 514:	80 83       	st	Z, r24
- 516:	80 91 61 02 	lds	r24, 0x0261	; 0x800261 <Lis_npixels_counter>
- 51a:	90 91 62 02 	lds	r25, 0x0262	; 0x800262 <Lis_npixels_counter+0x1>
- 51e:	9c 01       	movw	r18, r24
- 520:	2f 5f       	subi	r18, 0xFF	; 255
- 522:	3f 4f       	sbci	r19, 0xFF	; 255
- 524:	30 93 62 02 	sts	0x0262, r19	; 0x800262 <Lis_npixels_counter+0x1>
- 528:	20 93 61 02 	sts	0x0261, r18	; 0x800261 <Lis_npixels_counter>
- 52c:	8c 17       	cp	r24, r28
- 52e:	9d 07       	cpc	r25, r29
- 530:	08 f4       	brcc	.+2      	; 0x534 <LisFrameReadout+0x114>
- 532:	bb cf       	rjmp	.-138    	; 0x4aa <LisFrameReadout+0x8a>
- 534:	df 91       	pop	r29
- 536:	cf 91       	pop	r28
- 538:	08 95       	ret
- 53a:	c8 e8       	ldi	r28, 0x88	; 136
- 53c:	d1 e0       	ldi	r29, 0x01	; 1
- 53e:	af cf       	rjmp	.-162    	; 0x49e <LisFrameReadout+0x7e>
+ 7c8:	0e 94 53 00 	call	0xa6	; 0xa6 <DebugLedsTurnAllOn>
+ 7cc:	0e 94 b7 00 	call	0x16e	; 0x16e <DebugLedsTurnAllGreen>
+ 7d0:	0e 94 35 02 	call	0x46a	; 0x46a <SpiSlaveInit>
+ 7d4:	0e 94 6d 02 	call	0x4da	; 0x4da <UartSpiInit>
+ 7d8:	0e 94 1d 03 	call	0x63a	; 0x63a <LisInit>
+ 7dc:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
+ 7e0:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
+ 7e4:	09 95       	icall
+ 7e6:	88 23       	and	r24, r24
+ 7e8:	c9 f3       	breq	.-14     	; 0x7dc <main+0x14>
+ 7ea:	ce b5       	in	r28, 0x2e	; 46
+ 7ec:	8c 2f       	mov	r24, r28
+ 7ee:	0e 94 e4 01 	call	0x3c8	; 0x3c8 <spi_LookupCmd>
+ 7f2:	00 97       	sbiw	r24, 0x00	; 0
+ 7f4:	19 f0       	breq	.+6      	; 0x7fc <main+0x34>
+ 7f6:	fc 01       	movw	r30, r24
+ 7f8:	09 95       	icall
+ 7fa:	f0 cf       	rjmp	.-32     	; 0x7dc <main+0x14>
+ 7fc:	8c 2f       	mov	r24, r28
+ 7fe:	0e 94 f2 01 	call	0x3e4	; 0x3e4 <SpiSlaveWrite_StatusInvalid>
+ 802:	ec cf       	rjmp	.-40     	; 0x7dc <main+0x14>
 
-00000540 <WriteCfgToLis>:
- 540:	98 b1       	in	r25, 0x08	; 8
- 542:	84 e0       	ldi	r24, 0x04	; 4
- 544:	89 27       	eor	r24, r25
- 546:	88 b9       	out	0x08, r24	; 8
- 548:	98 b1       	in	r25, 0x08	; 8
- 54a:	82 e0       	ldi	r24, 0x02	; 2
- 54c:	89 27       	eor	r24, r25
- 54e:	88 b9       	out	0x08, r24	; 8
- 550:	aa 9a       	sbi	0x15, 2	; 21
- 552:	aa 9b       	sbis	0x15, 2	; 21
- 554:	fe cf       	rjmp	.-4      	; 0x552 <WriteCfgToLis+0x12>
- 556:	aa 9a       	sbi	0x15, 2	; 21
- 558:	28 9a       	sbi	0x05, 0	; 5
- 55a:	5e 98       	cbi	0x0b, 6	; 11
- 55c:	a9 9a       	sbi	0x15, 1	; 21
- 55e:	a9 9b       	sbis	0x15, 1	; 21
- 560:	fe cf       	rjmp	.-4      	; 0x55e <WriteCfgToLis+0x1e>
- 562:	a9 9a       	sbi	0x15, 1	; 21
- 564:	aa 9a       	sbi	0x15, 2	; 21
- 566:	aa 9b       	sbis	0x15, 2	; 21
- 568:	fe cf       	rjmp	.-4      	; 0x566 <WriteCfgToLis+0x26>
- 56a:	aa 9a       	sbi	0x15, 2	; 21
- 56c:	80 91 60 02 	lds	r24, 0x0260	; 0x800260 <lis_sum_mode>
- 570:	81 30       	cpi	r24, 0x01	; 1
- 572:	09 f4       	brne	.+2      	; 0x576 <WriteCfgToLis+0x36>
- 574:	a4 c0       	rjmp	.+328    	; 0x6be <WriteCfgToLis+0x17e>
- 576:	5e 98       	cbi	0x0b, 6	; 11
- 578:	a9 9a       	sbi	0x15, 1	; 21
- 57a:	a9 9b       	sbis	0x15, 1	; 21
- 57c:	fe cf       	rjmp	.-4      	; 0x57a <WriteCfgToLis+0x3a>
- 57e:	a9 9a       	sbi	0x15, 1	; 21
- 580:	aa 9a       	sbi	0x15, 2	; 21
- 582:	aa 9b       	sbis	0x15, 2	; 21
- 584:	fe cf       	rjmp	.-4      	; 0x582 <WriteCfgToLis+0x42>
- 586:	aa 9a       	sbi	0x15, 2	; 21
- 588:	80 91 11 02 	lds	r24, 0x0211	; 0x800211 <lis_gain>
- 58c:	84 30       	cpi	r24, 0x04	; 4
- 58e:	09 f4       	brne	.+2      	; 0x592 <WriteCfgToLis+0x52>
- 590:	58 c0       	rjmp	.+176    	; 0x642 <WriteCfgToLis+0x102>
- 592:	82 30       	cpi	r24, 0x02	; 2
- 594:	09 f4       	brne	.+2      	; 0x598 <WriteCfgToLis+0x58>
- 596:	9c c0       	rjmp	.+312    	; 0x6d0 <WriteCfgToLis+0x190>
- 598:	81 30       	cpi	r24, 0x01	; 1
- 59a:	09 f4       	brne	.+2      	; 0x59e <WriteCfgToLis+0x5e>
- 59c:	d2 c0       	rjmp	.+420    	; 0x742 <WriteCfgToLis+0x202>
- 59e:	5e 9a       	sbi	0x0b, 6	; 11
- 5a0:	a9 9a       	sbi	0x15, 1	; 21
- 5a2:	a9 9b       	sbis	0x15, 1	; 21
- 5a4:	fe cf       	rjmp	.-4      	; 0x5a2 <WriteCfgToLis+0x62>
- 5a6:	a9 9a       	sbi	0x15, 1	; 21
- 5a8:	aa 9a       	sbi	0x15, 2	; 21
- 5aa:	aa 9b       	sbis	0x15, 2	; 21
- 5ac:	fe cf       	rjmp	.-4      	; 0x5aa <WriteCfgToLis+0x6a>
- 5ae:	aa 9a       	sbi	0x15, 2	; 21
- 5b0:	5e 9a       	sbi	0x0b, 6	; 11
- 5b2:	a9 9a       	sbi	0x15, 1	; 21
- 5b4:	a9 9b       	sbis	0x15, 1	; 21
- 5b6:	fe cf       	rjmp	.-4      	; 0x5b4 <WriteCfgToLis+0x74>
- 5b8:	a9 9a       	sbi	0x15, 1	; 21
- 5ba:	aa 9a       	sbi	0x15, 2	; 21
- 5bc:	aa 9b       	sbis	0x15, 2	; 21
- 5be:	fe cf       	rjmp	.-4      	; 0x5bc <WriteCfgToLis+0x7c>
- 5c0:	aa 9a       	sbi	0x15, 2	; 21
- 5c2:	80 91 5f 02 	lds	r24, 0x025F	; 0x80025f <lis_rowselect>
- 5c6:	10 92 5e 02 	sts	0x025E, r1	; 0x80025e <__data_end>
- 5ca:	81 30       	cpi	r24, 0x01	; 1
- 5cc:	09 f4       	brne	.+2      	; 0x5d0 <WriteCfgToLis+0x90>
- 5ce:	52 c0       	rjmp	.+164    	; 0x674 <WriteCfgToLis+0x134>
- 5d0:	82 30       	cpi	r24, 0x02	; 2
- 5d2:	09 f4       	brne	.+2      	; 0x5d6 <WriteCfgToLis+0x96>
- 5d4:	8f c0       	rjmp	.+286    	; 0x6f4 <WriteCfgToLis+0x1b4>
- 5d6:	83 30       	cpi	r24, 0x03	; 3
- 5d8:	09 f4       	brne	.+2      	; 0x5dc <WriteCfgToLis+0x9c>
- 5da:	ee c0       	rjmp	.+476    	; 0x7b8 <WriteCfgToLis+0x278>
- 5dc:	84 30       	cpi	r24, 0x04	; 4
- 5de:	09 f4       	brne	.+2      	; 0x5e2 <WriteCfgToLis+0xa2>
- 5e0:	12 c1       	rjmp	.+548    	; 0x806 <WriteCfgToLis+0x2c6>
- 5e2:	85 30       	cpi	r24, 0x05	; 5
- 5e4:	09 f4       	brne	.+2      	; 0x5e8 <WriteCfgToLis+0xa8>
- 5e6:	bf c0       	rjmp	.+382    	; 0x766 <WriteCfgToLis+0x226>
- 5e8:	86 30       	cpi	r24, 0x06	; 6
- 5ea:	09 f4       	brne	.+2      	; 0x5ee <WriteCfgToLis+0xae>
- 5ec:	33 c1       	rjmp	.+614    	; 0x854 <WriteCfgToLis+0x314>
- 5ee:	87 30       	cpi	r24, 0x07	; 7
- 5f0:	09 f4       	brne	.+2      	; 0x5f4 <WriteCfgToLis+0xb4>
- 5f2:	57 c1       	rjmp	.+686    	; 0x8a2 <WriteCfgToLis+0x362>
- 5f4:	88 30       	cpi	r24, 0x08	; 8
- 5f6:	09 f4       	brne	.+2      	; 0x5fa <WriteCfgToLis+0xba>
- 5f8:	7b c1       	rjmp	.+758    	; 0x8f0 <WriteCfgToLis+0x3b0>
- 5fa:	89 30       	cpi	r24, 0x09	; 9
- 5fc:	09 f4       	brne	.+2      	; 0x600 <WriteCfgToLis+0xc0>
- 5fe:	99 c1       	rjmp	.+818    	; 0x932 <__stack+0x33>
- 600:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 604:	88 23       	and	r24, r24
- 606:	d1 f0       	breq	.+52     	; 0x63c <WriteCfgToLis+0xfc>
- 608:	e0 e0       	ldi	r30, 0x00	; 0
- 60a:	f0 e0       	ldi	r31, 0x00	; 0
- 60c:	e9 50       	subi	r30, 0x09	; 9
- 60e:	fe 4f       	sbci	r31, 0xFE	; 254
- 610:	80 81       	ld	r24, Z
- 612:	81 30       	cpi	r24, 0x01	; 1
- 614:	09 f4       	brne	.+2      	; 0x618 <WriteCfgToLis+0xd8>
- 616:	ce c0       	rjmp	.+412    	; 0x7b4 <WriteCfgToLis+0x274>
- 618:	5e 98       	cbi	0x0b, 6	; 11
- 61a:	a9 9a       	sbi	0x15, 1	; 21
- 61c:	a9 9b       	sbis	0x15, 1	; 21
- 61e:	fe cf       	rjmp	.-4      	; 0x61c <WriteCfgToLis+0xdc>
- 620:	a9 9a       	sbi	0x15, 1	; 21
- 622:	aa 9a       	sbi	0x15, 2	; 21
- 624:	aa 9b       	sbis	0x15, 2	; 21
- 626:	fe cf       	rjmp	.-4      	; 0x624 <WriteCfgToLis+0xe4>
- 628:	aa 9a       	sbi	0x15, 2	; 21
- 62a:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 62e:	ef 5f       	subi	r30, 0xFF	; 255
- 630:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 634:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 638:	e8 17       	cp	r30, r24
- 63a:	38 f3       	brcs	.-50     	; 0x60a <WriteCfgToLis+0xca>
- 63c:	5e 98       	cbi	0x0b, 6	; 11
- 63e:	28 98       	cbi	0x05, 0	; 5
- 640:	08 95       	ret
- 642:	5e 9a       	sbi	0x0b, 6	; 11
- 644:	a9 9a       	sbi	0x15, 1	; 21
- 646:	a9 9b       	sbis	0x15, 1	; 21
- 648:	fe cf       	rjmp	.-4      	; 0x646 <WriteCfgToLis+0x106>
- 64a:	a9 9a       	sbi	0x15, 1	; 21
- 64c:	aa 9a       	sbi	0x15, 2	; 21
- 64e:	aa 9b       	sbis	0x15, 2	; 21
- 650:	fe cf       	rjmp	.-4      	; 0x64e <WriteCfgToLis+0x10e>
- 652:	aa 9a       	sbi	0x15, 2	; 21
- 654:	5e 98       	cbi	0x0b, 6	; 11
- 656:	a9 9a       	sbi	0x15, 1	; 21
- 658:	a9 9b       	sbis	0x15, 1	; 21
- 65a:	fe cf       	rjmp	.-4      	; 0x658 <WriteCfgToLis+0x118>
- 65c:	a9 9a       	sbi	0x15, 1	; 21
- 65e:	aa 9a       	sbi	0x15, 2	; 21
- 660:	aa 9b       	sbis	0x15, 2	; 21
- 662:	fe cf       	rjmp	.-4      	; 0x660 <WriteCfgToLis+0x120>
- 664:	aa 9a       	sbi	0x15, 2	; 21
- 666:	80 91 5f 02 	lds	r24, 0x025F	; 0x80025f <lis_rowselect>
- 66a:	10 92 5e 02 	sts	0x025E, r1	; 0x80025e <__data_end>
- 66e:	81 30       	cpi	r24, 0x01	; 1
- 670:	09 f0       	breq	.+2      	; 0x674 <WriteCfgToLis+0x134>
- 672:	ae cf       	rjmp	.-164    	; 0x5d0 <WriteCfgToLis+0x90>
- 674:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 678:	88 23       	and	r24, r24
- 67a:	01 f3       	breq	.-64     	; 0x63c <WriteCfgToLis+0xfc>
- 67c:	e0 e0       	ldi	r30, 0x00	; 0
- 67e:	f0 e0       	ldi	r31, 0x00	; 0
- 680:	ea 5e       	subi	r30, 0xEA	; 234
- 682:	fe 4f       	sbci	r31, 0xFE	; 254
- 684:	80 81       	ld	r24, Z
- 686:	81 30       	cpi	r24, 0x01	; 1
- 688:	c1 f0       	breq	.+48     	; 0x6ba <WriteCfgToLis+0x17a>
- 68a:	5e 98       	cbi	0x0b, 6	; 11
- 68c:	a9 9a       	sbi	0x15, 1	; 21
- 68e:	a9 9b       	sbis	0x15, 1	; 21
- 690:	fe cf       	rjmp	.-4      	; 0x68e <WriteCfgToLis+0x14e>
- 692:	a9 9a       	sbi	0x15, 1	; 21
- 694:	aa 9a       	sbi	0x15, 2	; 21
- 696:	aa 9b       	sbis	0x15, 2	; 21
- 698:	fe cf       	rjmp	.-4      	; 0x696 <WriteCfgToLis+0x156>
- 69a:	aa 9a       	sbi	0x15, 2	; 21
- 69c:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 6a0:	ef 5f       	subi	r30, 0xFF	; 255
- 6a2:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 6a6:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 6aa:	e8 17       	cp	r30, r24
- 6ac:	38 f6       	brcc	.-114    	; 0x63c <WriteCfgToLis+0xfc>
- 6ae:	f0 e0       	ldi	r31, 0x00	; 0
- 6b0:	ea 5e       	subi	r30, 0xEA	; 234
- 6b2:	fe 4f       	sbci	r31, 0xFE	; 254
- 6b4:	80 81       	ld	r24, Z
- 6b6:	81 30       	cpi	r24, 0x01	; 1
- 6b8:	41 f7       	brne	.-48     	; 0x68a <WriteCfgToLis+0x14a>
- 6ba:	5e 9a       	sbi	0x0b, 6	; 11
- 6bc:	e7 cf       	rjmp	.-50     	; 0x68c <WriteCfgToLis+0x14c>
- 6be:	5e 9a       	sbi	0x0b, 6	; 11
- 6c0:	a9 9a       	sbi	0x15, 1	; 21
- 6c2:	a9 9b       	sbis	0x15, 1	; 21
- 6c4:	fe cf       	rjmp	.-4      	; 0x6c2 <WriteCfgToLis+0x182>
- 6c6:	a9 9a       	sbi	0x15, 1	; 21
- 6c8:	aa 9a       	sbi	0x15, 2	; 21
- 6ca:	aa 9b       	sbis	0x15, 2	; 21
- 6cc:	fe cf       	rjmp	.-4      	; 0x6ca <WriteCfgToLis+0x18a>
- 6ce:	5b cf       	rjmp	.-330    	; 0x586 <WriteCfgToLis+0x46>
- 6d0:	5e 98       	cbi	0x0b, 6	; 11
- 6d2:	a9 9a       	sbi	0x15, 1	; 21
- 6d4:	a9 9b       	sbis	0x15, 1	; 21
- 6d6:	fe cf       	rjmp	.-4      	; 0x6d4 <WriteCfgToLis+0x194>
- 6d8:	a9 9a       	sbi	0x15, 1	; 21
- 6da:	aa 9a       	sbi	0x15, 2	; 21
- 6dc:	aa 9b       	sbis	0x15, 2	; 21
- 6de:	fe cf       	rjmp	.-4      	; 0x6dc <WriteCfgToLis+0x19c>
- 6e0:	aa 9a       	sbi	0x15, 2	; 21
- 6e2:	5e 9a       	sbi	0x0b, 6	; 11
- 6e4:	a9 9a       	sbi	0x15, 1	; 21
- 6e6:	a9 9b       	sbis	0x15, 1	; 21
- 6e8:	fe cf       	rjmp	.-4      	; 0x6e6 <WriteCfgToLis+0x1a6>
- 6ea:	a9 9a       	sbi	0x15, 1	; 21
- 6ec:	aa 9a       	sbi	0x15, 2	; 21
- 6ee:	aa 9b       	sbis	0x15, 2	; 21
- 6f0:	fe cf       	rjmp	.-4      	; 0x6ee <WriteCfgToLis+0x1ae>
- 6f2:	66 cf       	rjmp	.-308    	; 0x5c0 <WriteCfgToLis+0x80>
- 6f4:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 6f8:	88 23       	and	r24, r24
- 6fa:	09 f4       	brne	.+2      	; 0x6fe <WriteCfgToLis+0x1be>
- 6fc:	9f cf       	rjmp	.-194    	; 0x63c <WriteCfgToLis+0xfc>
- 6fe:	e0 e0       	ldi	r30, 0x00	; 0
- 700:	f0 e0       	ldi	r31, 0x00	; 0
- 702:	e1 5d       	subi	r30, 0xD1	; 209
- 704:	fe 4f       	sbci	r31, 0xFE	; 254
- 706:	80 81       	ld	r24, Z
- 708:	81 30       	cpi	r24, 0x01	; 1
- 70a:	c9 f0       	breq	.+50     	; 0x73e <WriteCfgToLis+0x1fe>
- 70c:	5e 98       	cbi	0x0b, 6	; 11
- 70e:	a9 9a       	sbi	0x15, 1	; 21
- 710:	a9 9b       	sbis	0x15, 1	; 21
- 712:	fe cf       	rjmp	.-4      	; 0x710 <WriteCfgToLis+0x1d0>
- 714:	a9 9a       	sbi	0x15, 1	; 21
- 716:	aa 9a       	sbi	0x15, 2	; 21
- 718:	aa 9b       	sbis	0x15, 2	; 21
- 71a:	fe cf       	rjmp	.-4      	; 0x718 <WriteCfgToLis+0x1d8>
- 71c:	aa 9a       	sbi	0x15, 2	; 21
- 71e:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 722:	ef 5f       	subi	r30, 0xFF	; 255
- 724:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 728:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 72c:	e8 17       	cp	r30, r24
- 72e:	08 f0       	brcs	.+2      	; 0x732 <WriteCfgToLis+0x1f2>
- 730:	85 cf       	rjmp	.-246    	; 0x63c <WriteCfgToLis+0xfc>
- 732:	f0 e0       	ldi	r31, 0x00	; 0
- 734:	e1 5d       	subi	r30, 0xD1	; 209
- 736:	fe 4f       	sbci	r31, 0xFE	; 254
- 738:	80 81       	ld	r24, Z
- 73a:	81 30       	cpi	r24, 0x01	; 1
- 73c:	39 f7       	brne	.-50     	; 0x70c <WriteCfgToLis+0x1cc>
- 73e:	5e 9a       	sbi	0x0b, 6	; 11
- 740:	e6 cf       	rjmp	.-52     	; 0x70e <WriteCfgToLis+0x1ce>
- 742:	5e 98       	cbi	0x0b, 6	; 11
- 744:	a9 9a       	sbi	0x15, 1	; 21
- 746:	a9 9b       	sbis	0x15, 1	; 21
- 748:	fe cf       	rjmp	.-4      	; 0x746 <WriteCfgToLis+0x206>
- 74a:	a9 9a       	sbi	0x15, 1	; 21
- 74c:	aa 9a       	sbi	0x15, 2	; 21
- 74e:	aa 9b       	sbis	0x15, 2	; 21
- 750:	fe cf       	rjmp	.-4      	; 0x74e <WriteCfgToLis+0x20e>
- 752:	aa 9a       	sbi	0x15, 2	; 21
- 754:	5e 98       	cbi	0x0b, 6	; 11
- 756:	a9 9a       	sbi	0x15, 1	; 21
- 758:	a9 9b       	sbis	0x15, 1	; 21
- 75a:	fe cf       	rjmp	.-4      	; 0x758 <WriteCfgToLis+0x218>
- 75c:	a9 9a       	sbi	0x15, 1	; 21
- 75e:	aa 9a       	sbi	0x15, 2	; 21
- 760:	aa 9b       	sbis	0x15, 2	; 21
- 762:	fe cf       	rjmp	.-4      	; 0x760 <WriteCfgToLis+0x220>
- 764:	2d cf       	rjmp	.-422    	; 0x5c0 <WriteCfgToLis+0x80>
- 766:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 76a:	88 23       	and	r24, r24
- 76c:	09 f4       	brne	.+2      	; 0x770 <WriteCfgToLis+0x230>
- 76e:	66 cf       	rjmp	.-308    	; 0x63c <WriteCfgToLis+0xfc>
- 770:	e0 e0       	ldi	r30, 0x00	; 0
- 772:	f0 e0       	ldi	r31, 0x00	; 0
- 774:	e6 58       	subi	r30, 0x86	; 134
- 776:	fe 4f       	sbci	r31, 0xFE	; 254
- 778:	80 81       	ld	r24, Z
- 77a:	81 30       	cpi	r24, 0x01	; 1
- 77c:	c9 f0       	breq	.+50     	; 0x7b0 <WriteCfgToLis+0x270>
- 77e:	5e 98       	cbi	0x0b, 6	; 11
- 780:	a9 9a       	sbi	0x15, 1	; 21
- 782:	a9 9b       	sbis	0x15, 1	; 21
- 784:	fe cf       	rjmp	.-4      	; 0x782 <WriteCfgToLis+0x242>
- 786:	a9 9a       	sbi	0x15, 1	; 21
- 788:	aa 9a       	sbi	0x15, 2	; 21
- 78a:	aa 9b       	sbis	0x15, 2	; 21
- 78c:	fe cf       	rjmp	.-4      	; 0x78a <WriteCfgToLis+0x24a>
- 78e:	aa 9a       	sbi	0x15, 2	; 21
- 790:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 794:	ef 5f       	subi	r30, 0xFF	; 255
- 796:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 79a:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 79e:	e8 17       	cp	r30, r24
- 7a0:	08 f0       	brcs	.+2      	; 0x7a4 <WriteCfgToLis+0x264>
- 7a2:	4c cf       	rjmp	.-360    	; 0x63c <WriteCfgToLis+0xfc>
- 7a4:	f0 e0       	ldi	r31, 0x00	; 0
- 7a6:	e6 58       	subi	r30, 0x86	; 134
- 7a8:	fe 4f       	sbci	r31, 0xFE	; 254
- 7aa:	80 81       	ld	r24, Z
- 7ac:	81 30       	cpi	r24, 0x01	; 1
- 7ae:	39 f7       	brne	.-50     	; 0x77e <WriteCfgToLis+0x23e>
- 7b0:	5e 9a       	sbi	0x0b, 6	; 11
- 7b2:	e6 cf       	rjmp	.-52     	; 0x780 <WriteCfgToLis+0x240>
- 7b4:	5e 9a       	sbi	0x0b, 6	; 11
- 7b6:	31 cf       	rjmp	.-414    	; 0x61a <WriteCfgToLis+0xda>
- 7b8:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 7bc:	88 23       	and	r24, r24
- 7be:	09 f4       	brne	.+2      	; 0x7c2 <WriteCfgToLis+0x282>
- 7c0:	3d cf       	rjmp	.-390    	; 0x63c <WriteCfgToLis+0xfc>
- 7c2:	e0 e0       	ldi	r30, 0x00	; 0
- 7c4:	f0 e0       	ldi	r31, 0x00	; 0
- 7c6:	e8 5b       	subi	r30, 0xB8	; 184
- 7c8:	fe 4f       	sbci	r31, 0xFE	; 254
- 7ca:	80 81       	ld	r24, Z
- 7cc:	81 30       	cpi	r24, 0x01	; 1
- 7ce:	c9 f0       	breq	.+50     	; 0x802 <WriteCfgToLis+0x2c2>
- 7d0:	5e 98       	cbi	0x0b, 6	; 11
- 7d2:	a9 9a       	sbi	0x15, 1	; 21
- 7d4:	a9 9b       	sbis	0x15, 1	; 21
- 7d6:	fe cf       	rjmp	.-4      	; 0x7d4 <WriteCfgToLis+0x294>
- 7d8:	a9 9a       	sbi	0x15, 1	; 21
- 7da:	aa 9a       	sbi	0x15, 2	; 21
- 7dc:	aa 9b       	sbis	0x15, 2	; 21
- 7de:	fe cf       	rjmp	.-4      	; 0x7dc <WriteCfgToLis+0x29c>
- 7e0:	aa 9a       	sbi	0x15, 2	; 21
- 7e2:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 7e6:	ef 5f       	subi	r30, 0xFF	; 255
- 7e8:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 7ec:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 7f0:	e8 17       	cp	r30, r24
- 7f2:	08 f0       	brcs	.+2      	; 0x7f6 <WriteCfgToLis+0x2b6>
- 7f4:	23 cf       	rjmp	.-442    	; 0x63c <WriteCfgToLis+0xfc>
- 7f6:	f0 e0       	ldi	r31, 0x00	; 0
- 7f8:	e8 5b       	subi	r30, 0xB8	; 184
- 7fa:	fe 4f       	sbci	r31, 0xFE	; 254
- 7fc:	80 81       	ld	r24, Z
- 7fe:	81 30       	cpi	r24, 0x01	; 1
- 800:	39 f7       	brne	.-50     	; 0x7d0 <WriteCfgToLis+0x290>
- 802:	5e 9a       	sbi	0x0b, 6	; 11
- 804:	e6 cf       	rjmp	.-52     	; 0x7d2 <WriteCfgToLis+0x292>
- 806:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 80a:	88 23       	and	r24, r24
- 80c:	09 f4       	brne	.+2      	; 0x810 <WriteCfgToLis+0x2d0>
- 80e:	16 cf       	rjmp	.-468    	; 0x63c <WriteCfgToLis+0xfc>
- 810:	e0 e0       	ldi	r30, 0x00	; 0
- 812:	f0 e0       	ldi	r31, 0x00	; 0
- 814:	ef 59       	subi	r30, 0x9F	; 159
- 816:	fe 4f       	sbci	r31, 0xFE	; 254
- 818:	80 81       	ld	r24, Z
- 81a:	81 30       	cpi	r24, 0x01	; 1
- 81c:	c9 f0       	breq	.+50     	; 0x850 <WriteCfgToLis+0x310>
- 81e:	5e 98       	cbi	0x0b, 6	; 11
- 820:	a9 9a       	sbi	0x15, 1	; 21
- 822:	a9 9b       	sbis	0x15, 1	; 21
- 824:	fe cf       	rjmp	.-4      	; 0x822 <WriteCfgToLis+0x2e2>
- 826:	a9 9a       	sbi	0x15, 1	; 21
- 828:	aa 9a       	sbi	0x15, 2	; 21
- 82a:	aa 9b       	sbis	0x15, 2	; 21
- 82c:	fe cf       	rjmp	.-4      	; 0x82a <WriteCfgToLis+0x2ea>
- 82e:	aa 9a       	sbi	0x15, 2	; 21
- 830:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 834:	ef 5f       	subi	r30, 0xFF	; 255
- 836:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 83a:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 83e:	e8 17       	cp	r30, r24
- 840:	08 f0       	brcs	.+2      	; 0x844 <WriteCfgToLis+0x304>
- 842:	fc ce       	rjmp	.-520    	; 0x63c <WriteCfgToLis+0xfc>
- 844:	f0 e0       	ldi	r31, 0x00	; 0
- 846:	ef 59       	subi	r30, 0x9F	; 159
- 848:	fe 4f       	sbci	r31, 0xFE	; 254
- 84a:	80 81       	ld	r24, Z
- 84c:	81 30       	cpi	r24, 0x01	; 1
- 84e:	39 f7       	brne	.-50     	; 0x81e <WriteCfgToLis+0x2de>
- 850:	5e 9a       	sbi	0x0b, 6	; 11
- 852:	e6 cf       	rjmp	.-52     	; 0x820 <WriteCfgToLis+0x2e0>
- 854:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 858:	88 23       	and	r24, r24
- 85a:	09 f4       	brne	.+2      	; 0x85e <WriteCfgToLis+0x31e>
- 85c:	ef ce       	rjmp	.-546    	; 0x63c <WriteCfgToLis+0xfc>
- 85e:	e0 e0       	ldi	r30, 0x00	; 0
- 860:	f0 e0       	ldi	r31, 0x00	; 0
- 862:	e2 52       	subi	r30, 0x22	; 34
- 864:	fe 4f       	sbci	r31, 0xFE	; 254
- 866:	80 81       	ld	r24, Z
- 868:	81 30       	cpi	r24, 0x01	; 1
- 86a:	c9 f0       	breq	.+50     	; 0x89e <WriteCfgToLis+0x35e>
- 86c:	5e 98       	cbi	0x0b, 6	; 11
- 86e:	a9 9a       	sbi	0x15, 1	; 21
- 870:	a9 9b       	sbis	0x15, 1	; 21
- 872:	fe cf       	rjmp	.-4      	; 0x870 <WriteCfgToLis+0x330>
- 874:	a9 9a       	sbi	0x15, 1	; 21
- 876:	aa 9a       	sbi	0x15, 2	; 21
- 878:	aa 9b       	sbis	0x15, 2	; 21
- 87a:	fe cf       	rjmp	.-4      	; 0x878 <WriteCfgToLis+0x338>
- 87c:	aa 9a       	sbi	0x15, 2	; 21
- 87e:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 882:	ef 5f       	subi	r30, 0xFF	; 255
- 884:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 888:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 88c:	e8 17       	cp	r30, r24
- 88e:	08 f0       	brcs	.+2      	; 0x892 <WriteCfgToLis+0x352>
- 890:	d5 ce       	rjmp	.-598    	; 0x63c <WriteCfgToLis+0xfc>
- 892:	f0 e0       	ldi	r31, 0x00	; 0
- 894:	e2 52       	subi	r30, 0x22	; 34
- 896:	fe 4f       	sbci	r31, 0xFE	; 254
- 898:	80 81       	ld	r24, Z
- 89a:	81 30       	cpi	r24, 0x01	; 1
- 89c:	39 f7       	brne	.-50     	; 0x86c <WriteCfgToLis+0x32c>
- 89e:	5e 9a       	sbi	0x0b, 6	; 11
- 8a0:	e6 cf       	rjmp	.-52     	; 0x86e <WriteCfgToLis+0x32e>
- 8a2:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 8a6:	88 23       	and	r24, r24
- 8a8:	09 f4       	brne	.+2      	; 0x8ac <WriteCfgToLis+0x36c>
- 8aa:	c8 ce       	rjmp	.-624    	; 0x63c <WriteCfgToLis+0xfc>
- 8ac:	e0 e0       	ldi	r30, 0x00	; 0
- 8ae:	f0 e0       	ldi	r31, 0x00	; 0
- 8b0:	eb 53       	subi	r30, 0x3B	; 59
- 8b2:	fe 4f       	sbci	r31, 0xFE	; 254
- 8b4:	80 81       	ld	r24, Z
- 8b6:	81 30       	cpi	r24, 0x01	; 1
- 8b8:	c9 f0       	breq	.+50     	; 0x8ec <WriteCfgToLis+0x3ac>
- 8ba:	5e 98       	cbi	0x0b, 6	; 11
- 8bc:	a9 9a       	sbi	0x15, 1	; 21
- 8be:	a9 9b       	sbis	0x15, 1	; 21
- 8c0:	fe cf       	rjmp	.-4      	; 0x8be <WriteCfgToLis+0x37e>
- 8c2:	a9 9a       	sbi	0x15, 1	; 21
- 8c4:	aa 9a       	sbi	0x15, 2	; 21
- 8c6:	aa 9b       	sbis	0x15, 2	; 21
- 8c8:	fe cf       	rjmp	.-4      	; 0x8c6 <WriteCfgToLis+0x386>
- 8ca:	aa 9a       	sbi	0x15, 2	; 21
- 8cc:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 8d0:	ef 5f       	subi	r30, 0xFF	; 255
- 8d2:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 8d6:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 8da:	e8 17       	cp	r30, r24
- 8dc:	08 f0       	brcs	.+2      	; 0x8e0 <WriteCfgToLis+0x3a0>
- 8de:	ae ce       	rjmp	.-676    	; 0x63c <WriteCfgToLis+0xfc>
- 8e0:	f0 e0       	ldi	r31, 0x00	; 0
- 8e2:	eb 53       	subi	r30, 0x3B	; 59
- 8e4:	fe 4f       	sbci	r31, 0xFE	; 254
- 8e6:	80 81       	ld	r24, Z
- 8e8:	81 30       	cpi	r24, 0x01	; 1
- 8ea:	39 f7       	brne	.-50     	; 0x8ba <WriteCfgToLis+0x37a>
- 8ec:	5e 9a       	sbi	0x0b, 6	; 11
- 8ee:	e6 cf       	rjmp	.-52     	; 0x8bc <WriteCfgToLis+0x37c>
- 8f0:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 8f4:	88 23       	and	r24, r24
- 8f6:	09 f4       	brne	.+2      	; 0x8fa <WriteCfgToLis+0x3ba>
- 8f8:	a1 ce       	rjmp	.-702    	; 0x63c <WriteCfgToLis+0xfc>
- 8fa:	e0 e0       	ldi	r30, 0x00	; 0
- 8fc:	f0 e0       	ldi	r31, 0x00	; 0
- 8fe:	e4 55       	subi	r30, 0x54	; 84
- 900:	fe 4f       	sbci	r31, 0xFE	; 254
- 902:	80 81       	ld	r24, Z
- 904:	81 30       	cpi	r24, 0x01	; 1
- 906:	99 f0       	breq	.+38     	; 0x92e <__stack+0x2f>
- 908:	5e 98       	cbi	0x0b, 6	; 11
- 90a:	a9 9a       	sbi	0x15, 1	; 21
- 90c:	a9 9b       	sbis	0x15, 1	; 21
- 90e:	fe cf       	rjmp	.-4      	; 0x90c <__stack+0xd>
- 910:	a9 9a       	sbi	0x15, 1	; 21
- 912:	aa 9a       	sbi	0x15, 2	; 21
- 914:	aa 9b       	sbis	0x15, 2	; 21
- 916:	fe cf       	rjmp	.-4      	; 0x914 <__stack+0x15>
- 918:	aa 9a       	sbi	0x15, 2	; 21
- 91a:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 91e:	ef 5f       	subi	r30, 0xFF	; 255
- 920:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 924:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 928:	e8 17       	cp	r30, r24
- 92a:	40 f3       	brcs	.-48     	; 0x8fc <WriteCfgToLis+0x3bc>
- 92c:	87 ce       	rjmp	.-754    	; 0x63c <WriteCfgToLis+0xfc>
- 92e:	5e 9a       	sbi	0x0b, 6	; 11
- 930:	ec cf       	rjmp	.-40     	; 0x90a <__stack+0xb>
- 932:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 936:	88 23       	and	r24, r24
- 938:	09 f4       	brne	.+2      	; 0x93c <__stack+0x3d>
- 93a:	80 ce       	rjmp	.-768    	; 0x63c <WriteCfgToLis+0xfc>
- 93c:	e0 e0       	ldi	r30, 0x00	; 0
- 93e:	f0 e0       	ldi	r31, 0x00	; 0
- 940:	ed 56       	subi	r30, 0x6D	; 109
- 942:	fe 4f       	sbci	r31, 0xFE	; 254
- 944:	80 81       	ld	r24, Z
- 946:	81 30       	cpi	r24, 0x01	; 1
- 948:	99 f0       	breq	.+38     	; 0x970 <__stack+0x71>
- 94a:	5e 98       	cbi	0x0b, 6	; 11
- 94c:	a9 9a       	sbi	0x15, 1	; 21
- 94e:	a9 9b       	sbis	0x15, 1	; 21
- 950:	fe cf       	rjmp	.-4      	; 0x94e <__stack+0x4f>
- 952:	a9 9a       	sbi	0x15, 1	; 21
- 954:	aa 9a       	sbi	0x15, 2	; 21
- 956:	aa 9b       	sbis	0x15, 2	; 21
- 958:	fe cf       	rjmp	.-4      	; 0x956 <__stack+0x57>
- 95a:	aa 9a       	sbi	0x15, 2	; 21
- 95c:	e0 91 5e 02 	lds	r30, 0x025E	; 0x80025e <__data_end>
- 960:	ef 5f       	subi	r30, 0xFF	; 255
- 962:	e0 93 5e 02 	sts	0x025E, r30	; 0x80025e <__data_end>
- 966:	80 91 10 02 	lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
- 96a:	e8 17       	cp	r30, r24
- 96c:	40 f3       	brcs	.-48     	; 0x93e <__stack+0x3f>
- 96e:	66 ce       	rjmp	.-820    	; 0x63c <WriteCfgToLis+0xfc>
- 970:	5e 9a       	sbi	0x0b, 6	; 11
- 972:	ec cf       	rjmp	.-40     	; 0x94c <__stack+0x4d>
-
-00000974 <AutoExpose>:
- 974:	ef 92       	push	r14
- 976:	ff 92       	push	r15
- 978:	0f 93       	push	r16
- 97a:	1f 93       	push	r17
- 97c:	cf 93       	push	r28
- 97e:	df 93       	push	r29
- 980:	00 d0       	rcall	.+0      	; 0x982 <AutoExpose+0xe>
- 982:	cd b7       	in	r28, 0x3d	; 61
- 984:	de b7       	in	r29, 0x3e	; 62
- 986:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- 98a:	f0 e5       	ldi	r31, 0x50	; 80
- 98c:	ef 2e       	mov	r14, r31
- 98e:	f3 ec       	ldi	r31, 0xC3	; 195
- 990:	ff 2e       	mov	r15, r31
- 992:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- 996:	40 9a       	sbi	0x08, 0	; 8
- 998:	0e 94 10 02 	call	0x420	; 0x420 <LisFrameReadout>
- 99c:	40 98       	cbi	0x08, 0	; 8
- 99e:	80 91 60 02 	lds	r24, 0x0260	; 0x800260 <lis_sum_mode>
- 9a2:	20 91 16 02 	lds	r18, 0x0216	; 0x800216 <first_used_pixel>
- 9a6:	30 91 17 02 	lds	r19, 0x0217	; 0x800217 <first_used_pixel+0x1>
- 9aa:	81 11       	cpse	r24, r1
- 9ac:	50 c0       	rjmp	.+160    	; 0xa4e <AutoExpose+0xda>
- 9ae:	22 0f       	add	r18, r18
- 9b0:	33 1f       	adc	r19, r19
- 9b2:	30 93 17 02 	sts	0x0217, r19	; 0x800217 <first_used_pixel+0x1>
- 9b6:	20 93 16 02 	sts	0x0216, r18	; 0x800216 <first_used_pixel>
- 9ba:	40 e1       	ldi	r20, 0x10	; 16
- 9bc:	53 e0       	ldi	r21, 0x03	; 3
- 9be:	f9 01       	movw	r30, r18
- 9c0:	ee 0f       	add	r30, r30
- 9c2:	ff 1f       	adc	r31, r31
- 9c4:	e9 59       	subi	r30, 0x99	; 153
- 9c6:	fd 4f       	sbci	r31, 0xFD	; 253
- 9c8:	f0 93 13 02 	sts	0x0213, r31	; 0x800213 <pframe+0x1>
- 9cc:	e0 93 12 02 	sts	0x0212, r30	; 0x800212 <pframe>
- 9d0:	c9 01       	movw	r24, r18
- 9d2:	01 96       	adiw	r24, 0x01	; 1
- 9d4:	90 93 62 02 	sts	0x0262, r25	; 0x800262 <Lis_npixels_counter+0x1>
- 9d8:	80 93 61 02 	sts	0x0261, r24	; 0x800261 <Lis_npixels_counter>
- 9dc:	24 17       	cp	r18, r20
- 9de:	35 07       	cpc	r19, r21
- 9e0:	e0 f5       	brcc	.+120    	; 0xa5a <AutoExpose+0xe6>
- 9e2:	2e 5f       	subi	r18, 0xFE	; 254
- 9e4:	3f 4f       	sbci	r19, 0xFF	; 255
- 9e6:	df 01       	movw	r26, r30
- 9e8:	11 96       	adiw	r26, 0x01	; 1
- 9ea:	4e 5f       	subi	r20, 0xFE	; 254
- 9ec:	5f 4f       	sbci	r21, 0xFF	; 255
- 9ee:	00 e0       	ldi	r16, 0x00	; 0
- 9f0:	10 e0       	ldi	r17, 0x00	; 0
- 9f2:	80 81       	ld	r24, Z
- 9f4:	90 e0       	ldi	r25, 0x00	; 0
- 9f6:	98 2f       	mov	r25, r24
- 9f8:	88 27       	eor	r24, r24
- 9fa:	32 96       	adiw	r30, 0x02	; 2
- 9fc:	f0 93 13 02 	sts	0x0213, r31	; 0x800213 <pframe+0x1>
- a00:	e0 93 12 02 	sts	0x0212, r30	; 0x800212 <pframe>
- a04:	6c 91       	ld	r22, X
- a06:	86 2b       	or	r24, r22
- a08:	08 17       	cp	r16, r24
- a0a:	19 07       	cpc	r17, r25
- a0c:	08 f4       	brcc	.+2      	; 0xa10 <AutoExpose+0x9c>
- a0e:	8c 01       	movw	r16, r24
- a10:	30 93 62 02 	sts	0x0262, r19	; 0x800262 <Lis_npixels_counter+0x1>
- a14:	20 93 61 02 	sts	0x0261, r18	; 0x800261 <Lis_npixels_counter>
- a18:	2f 5f       	subi	r18, 0xFF	; 255
- a1a:	3f 4f       	sbci	r19, 0xFF	; 255
- a1c:	12 96       	adiw	r26, 0x02	; 2
- a1e:	42 17       	cp	r20, r18
- a20:	53 07       	cpc	r21, r19
- a22:	39 f7       	brne	.-50     	; 0x9f2 <AutoExpose+0x7e>
- a24:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- a28:	01 15       	cp	r16, r1
- a2a:	11 05       	cpc	r17, r1
- a2c:	c1 f0       	breq	.+48     	; 0xa5e <AutoExpose+0xea>
- a2e:	01 33       	cpi	r16, 0x31	; 49
- a30:	85 e7       	ldi	r24, 0x75	; 117
- a32:	18 07       	cpc	r17, r24
- a34:	08 f4       	brcc	.+2      	; 0xa38 <AutoExpose+0xc4>
- a36:	5d c0       	rjmp	.+186    	; 0xaf2 <AutoExpose+0x17e>
- a38:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
- a3c:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
- a40:	96 95       	lsr	r25
- a42:	87 95       	ror	r24
- a44:	90 93 15 02 	sts	0x0215, r25	; 0x800215 <Lis_nticks_exposure+0x1>
- a48:	80 93 14 02 	sts	0x0214, r24	; 0x800214 <Lis_nticks_exposure>
- a4c:	a2 cf       	rjmp	.-188    	; 0x992 <AutoExpose+0x1e>
- a4e:	81 30       	cpi	r24, 0x01	; 1
- a50:	09 f0       	breq	.+2      	; 0xa54 <AutoExpose+0xe0>
- a52:	6f c0       	rjmp	.+222    	; 0xb32 <AutoExpose+0x1be>
- a54:	48 e8       	ldi	r20, 0x88	; 136
- a56:	51 e0       	ldi	r21, 0x01	; 1
- a58:	b2 cf       	rjmp	.-156    	; 0x9be <AutoExpose+0x4a>
- a5a:	0e 94 c5 00 	call	0x18a	; 0x18a <DebugLedsToggleAll>
- a5e:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
- a62:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
- a66:	80 35       	cpi	r24, 0x50	; 80
- a68:	23 ec       	ldi	r18, 0xC3	; 195
- a6a:	92 07       	cpc	r25, r18
- a6c:	80 f4       	brcc	.+32     	; 0xa8e <AutoExpose+0x11a>
- a6e:	9c 01       	movw	r18, r24
- a70:	22 0f       	add	r18, r18
- a72:	33 1f       	adc	r19, r19
- a74:	88 0f       	add	r24, r24
- a76:	99 1f       	adc	r25, r25
- a78:	88 0f       	add	r24, r24
- a7a:	99 1f       	adc	r25, r25
- a7c:	88 0f       	add	r24, r24
- a7e:	99 1f       	adc	r25, r25
- a80:	82 0f       	add	r24, r18
- a82:	93 1f       	adc	r25, r19
- a84:	90 93 15 02 	sts	0x0215, r25	; 0x800215 <Lis_nticks_exposure+0x1>
- a88:	80 93 14 02 	sts	0x0214, r24	; 0x800214 <Lis_nticks_exposure>
- a8c:	82 cf       	rjmp	.-252    	; 0x992 <AutoExpose+0x1e>
- a8e:	80 e5       	ldi	r24, 0x50	; 80
- a90:	93 ec       	ldi	r25, 0xC3	; 195
- a92:	90 93 15 02 	sts	0x0215, r25	; 0x800215 <Lis_nticks_exposure+0x1>
- a96:	80 93 14 02 	sts	0x0214, r24	; 0x800214 <Lis_nticks_exposure>
- a9a:	80 e5       	ldi	r24, 0x50	; 80
- a9c:	93 ec       	ldi	r25, 0xC3	; 195
- a9e:	99 83       	std	Y+1, r25	; 0x01
- aa0:	8a 83       	std	Y+2, r24	; 0x02
- aa2:	8e 01       	movw	r16, r28
- aa4:	0f 5f       	subi	r16, 0xFF	; 255
- aa6:	1f 4f       	sbci	r17, 0xFF	; 255
- aa8:	7e 01       	movw	r14, r28
- aaa:	f3 e0       	ldi	r31, 0x03	; 3
- aac:	ef 0e       	add	r14, r31
- aae:	f1 1c       	adc	r15, r1
- ab0:	f8 01       	movw	r30, r16
- ab2:	81 91       	ld	r24, Z+
- ab4:	8f 01       	movw	r16, r30
- ab6:	8e bd       	out	0x2e, r24	; 46
- ab8:	2c 98       	cbi	0x05, 4	; 5
- aba:	8c b5       	in	r24, 0x2c	; 44
- abc:	8f 7b       	andi	r24, 0xBF	; 191
- abe:	8c bd       	out	0x2c, r24	; 44
- ac0:	e0 91 18 02 	lds	r30, 0x0218	; 0x800218 <Delay3CpuCyclesPerTick>
- ac4:	f0 91 19 02 	lds	r31, 0x0219	; 0x800219 <Delay3CpuCyclesPerTick+0x1>
- ac8:	8a e0       	ldi	r24, 0x0A	; 10
- aca:	09 95       	icall
- acc:	8c b5       	in	r24, 0x2c	; 44
- ace:	80 64       	ori	r24, 0x40	; 64
- ad0:	8c bd       	out	0x2c, r24	; 44
- ad2:	0d b4       	in	r0, 0x2d	; 45
- ad4:	07 fe       	sbrs	r0, 7
- ad6:	fd cf       	rjmp	.-6      	; 0xad2 <AutoExpose+0x15e>
- ad8:	8e b5       	in	r24, 0x2e	; 46
- ada:	e0 16       	cp	r14, r16
- adc:	f1 06       	cpc	r15, r17
- ade:	41 f7       	brne	.-48     	; 0xab0 <AutoExpose+0x13c>
- ae0:	0f 90       	pop	r0
- ae2:	0f 90       	pop	r0
- ae4:	df 91       	pop	r29
- ae6:	cf 91       	pop	r28
- ae8:	1f 91       	pop	r17
- aea:	0f 91       	pop	r16
- aec:	ff 90       	pop	r15
- aee:	ef 90       	pop	r14
- af0:	08 95       	ret
- af2:	00 32       	cpi	r16, 0x20	; 32
- af4:	ee e4       	ldi	r30, 0x4E	; 78
- af6:	1e 07       	cpc	r17, r30
- af8:	f8 f4       	brcc	.+62     	; 0xb38 <AutoExpose+0x1c4>
- afa:	20 91 14 02 	lds	r18, 0x0214	; 0x800214 <Lis_nticks_exposure>
- afe:	30 91 15 02 	lds	r19, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
- b02:	20 35       	cpi	r18, 0x50	; 80
- b04:	f3 ec       	ldi	r31, 0xC3	; 195
- b06:	3f 07       	cpc	r19, r31
- b08:	10 f6       	brcc	.-124    	; 0xa8e <AutoExpose+0x11a>
- b0a:	a0 e2       	ldi	r26, 0x20	; 32
- b0c:	be e4       	ldi	r27, 0x4E	; 78
- b0e:	0e 94 3a 07 	call	0xe74	; 0xe74 <__umulhisi3>
- b12:	98 01       	movw	r18, r16
- b14:	40 e0       	ldi	r20, 0x00	; 0
- b16:	50 e0       	ldi	r21, 0x00	; 0
- b18:	0e 94 18 07 	call	0xe30	; 0xe30 <__udivmodsi4>
- b1c:	21 35       	cpi	r18, 0x51	; 81
- b1e:	83 ec       	ldi	r24, 0xC3	; 195
- b20:	38 07       	cpc	r19, r24
- b22:	41 05       	cpc	r20, r1
- b24:	51 05       	cpc	r21, r1
- b26:	68 f0       	brcs	.+26     	; 0xb42 <AutoExpose+0x1ce>
- b28:	f0 92 15 02 	sts	0x0215, r15	; 0x800215 <Lis_nticks_exposure+0x1>
- b2c:	e0 92 14 02 	sts	0x0214, r14	; 0x800214 <Lis_nticks_exposure>
- b30:	30 cf       	rjmp	.-416    	; 0x992 <AutoExpose+0x1e>
- b32:	40 e1       	ldi	r20, 0x10	; 16
- b34:	53 e0       	ldi	r21, 0x03	; 3
- b36:	43 cf       	rjmp	.-378    	; 0x9be <AutoExpose+0x4a>
- b38:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
- b3c:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
- b40:	ae cf       	rjmp	.-164    	; 0xa9e <AutoExpose+0x12a>
- b42:	30 93 15 02 	sts	0x0215, r19	; 0x800215 <Lis_nticks_exposure+0x1>
- b46:	20 93 14 02 	sts	0x0214, r18	; 0x800214 <Lis_nticks_exposure>
- b4a:	23 cf       	rjmp	.-442    	; 0x992 <AutoExpose+0x1e>
-
-00000b4c <SendDataMasterAskedFor>:
- b4c:	ef 92       	push	r14
- b4e:	ff 92       	push	r15
- b50:	0f 93       	push	r16
- b52:	1f 93       	push	r17
- b54:	cf 93       	push	r28
- b56:	df 93       	push	r29
- b58:	00 d0       	rcall	.+0      	; 0xb5a <SendDataMasterAskedFor+0xe>
- b5a:	cd b7       	in	r28, 0x3d	; 61
- b5c:	de b7       	in	r29, 0x3e	; 62
- b5e:	98 b1       	in	r25, 0x08	; 8
- b60:	81 e0       	ldi	r24, 0x01	; 1
- b62:	89 27       	eor	r24, r25
- b64:	88 b9       	out	0x08, r24	; 8
- b66:	0d b4       	in	r0, 0x2d	; 45
- b68:	07 fe       	sbrs	r0, 7
- b6a:	fd cf       	rjmp	.-6      	; 0xb66 <SendDataMasterAskedFor+0x1a>
- b6c:	8e b5       	in	r24, 0x2e	; 46
- b6e:	81 30       	cpi	r24, 0x01	; 1
- b70:	09 f4       	brne	.+2      	; 0xb74 <SendDataMasterAskedFor+0x28>
- b72:	90 c0       	rjmp	.+288    	; 0xc94 <SendDataMasterAskedFor+0x148>
- b74:	82 30       	cpi	r24, 0x02	; 2
- b76:	09 f4       	brne	.+2      	; 0xb7a <SendDataMasterAskedFor+0x2e>
- b78:	46 c0       	rjmp	.+140    	; 0xc06 <SendDataMasterAskedFor+0xba>
- b7a:	85 31       	cpi	r24, 0x15	; 21
- b7c:	09 f4       	brne	.+2      	; 0xb80 <SendDataMasterAskedFor+0x34>
- b7e:	be c0       	rjmp	.+380    	; 0xcfc <SendDataMasterAskedFor+0x1b0>
- b80:	86 30       	cpi	r24, 0x06	; 6
- b82:	09 f4       	brne	.+2      	; 0xb86 <SendDataMasterAskedFor+0x3a>
- b84:	80 c0       	rjmp	.+256    	; 0xc86 <SendDataMasterAskedFor+0x13a>
- b86:	85 30       	cpi	r24, 0x05	; 5
- b88:	09 f4       	brne	.+2      	; 0xb8c <SendDataMasterAskedFor+0x40>
- b8a:	81 c0       	rjmp	.+258    	; 0xc8e <SendDataMasterAskedFor+0x142>
- b8c:	88 30       	cpi	r24, 0x08	; 8
- b8e:	09 f4       	brne	.+2      	; 0xb92 <SendDataMasterAskedFor+0x46>
- b90:	ad c0       	rjmp	.+346    	; 0xcec <SendDataMasterAskedFor+0x1a0>
- b92:	89 30       	cpi	r24, 0x09	; 9
- b94:	09 f4       	brne	.+2      	; 0xb98 <SendDataMasterAskedFor+0x4c>
- b96:	ae c0       	rjmp	.+348    	; 0xcf4 <SendDataMasterAskedFor+0x1a8>
- b98:	8a 30       	cpi	r24, 0x0A	; 10
- b9a:	09 f4       	brne	.+2      	; 0xb9e <SendDataMasterAskedFor+0x52>
- b9c:	b9 c0       	rjmp	.+370    	; 0xd10 <SendDataMasterAskedFor+0x1c4>
- b9e:	8b 30       	cpi	r24, 0x0B	; 11
- ba0:	09 f4       	brne	.+2      	; 0xba4 <SendDataMasterAskedFor+0x58>
- ba2:	be c0       	rjmp	.+380    	; 0xd20 <SendDataMasterAskedFor+0x1d4>
- ba4:	8c 30       	cpi	r24, 0x0C	; 12
- ba6:	09 f4       	brne	.+2      	; 0xbaa <SendDataMasterAskedFor+0x5e>
- ba8:	bf c0       	rjmp	.+382    	; 0xd28 <SendDataMasterAskedFor+0x1dc>
- baa:	8d 30       	cpi	r24, 0x0D	; 13
- bac:	09 f4       	brne	.+2      	; 0xbb0 <SendDataMasterAskedFor+0x64>
- bae:	c2 c0       	rjmp	.+388    	; 0xd34 <SendDataMasterAskedFor+0x1e8>
- bb0:	8e 30       	cpi	r24, 0x0E	; 14
- bb2:	09 f4       	brne	.+2      	; 0xbb6 <SendDataMasterAskedFor+0x6a>
- bb4:	c3 c0       	rjmp	.+390    	; 0xd3c <SendDataMasterAskedFor+0x1f0>
- bb6:	8f 30       	cpi	r24, 0x0F	; 15
- bb8:	09 f4       	brne	.+2      	; 0xbbc <SendDataMasterAskedFor+0x70>
- bba:	c4 c0       	rjmp	.+392    	; 0xd44 <SendDataMasterAskedFor+0x1f8>
- bbc:	80 31       	cpi	r24, 0x10	; 16
- bbe:	09 f4       	brne	.+2      	; 0xbc2 <SendDataMasterAskedFor+0x76>
- bc0:	c5 c0       	rjmp	.+394    	; 0xd4c <SendDataMasterAskedFor+0x200>
- bc2:	81 31       	cpi	r24, 0x11	; 17
- bc4:	09 f4       	brne	.+2      	; 0xbc8 <SendDataMasterAskedFor+0x7c>
- bc6:	a8 c0       	rjmp	.+336    	; 0xd18 <SendDataMasterAskedFor+0x1cc>
- bc8:	82 31       	cpi	r24, 0x12	; 18
- bca:	09 f4       	brne	.+2      	; 0xbce <SendDataMasterAskedFor+0x82>
- bcc:	c3 c0       	rjmp	.+390    	; 0xd54 <SendDataMasterAskedFor+0x208>
- bce:	83 31       	cpi	r24, 0x13	; 19
- bd0:	09 f4       	brne	.+2      	; 0xbd4 <SendDataMasterAskedFor+0x88>
- bd2:	c4 c0       	rjmp	.+392    	; 0xd5c <SendDataMasterAskedFor+0x210>
- bd4:	84 31       	cpi	r24, 0x14	; 20
- bd6:	09 f4       	brne	.+2      	; 0xbda <SendDataMasterAskedFor+0x8e>
- bd8:	c5 c0       	rjmp	.+394    	; 0xd64 <SendDataMasterAskedFor+0x218>
- bda:	86 31       	cpi	r24, 0x16	; 22
- bdc:	09 f4       	brne	.+2      	; 0xbe0 <SendDataMasterAskedFor+0x94>
- bde:	c6 c0       	rjmp	.+396    	; 0xd6c <SendDataMasterAskedFor+0x220>
- be0:	87 30       	cpi	r24, 0x07	; 7
- be2:	09 f4       	brne	.+2      	; 0xbe6 <SendDataMasterAskedFor+0x9a>
- be4:	c7 c0       	rjmp	.+398    	; 0xd74 <SendDataMasterAskedFor+0x228>
- be6:	90 91 1a 02 	lds	r25, 0x021A	; 0x80021a <slave_ignore>
- bea:	89 17       	cp	r24, r25
- bec:	09 f4       	brne	.+2      	; 0xbf0 <SendDataMasterAskedFor+0xa4>
- bee:	42 c0       	rjmp	.+132    	; 0xc74 <SendDataMasterAskedFor+0x128>
- bf0:	83 e0       	ldi	r24, 0x03	; 3
- bf2:	0f 90       	pop	r0
- bf4:	0f 90       	pop	r0
- bf6:	df 91       	pop	r29
- bf8:	cf 91       	pop	r28
- bfa:	1f 91       	pop	r17
- bfc:	0f 91       	pop	r16
- bfe:	ff 90       	pop	r15
- c00:	ef 90       	pop	r14
- c02:	0c 94 a2 00 	jmp	0x144	; 0x144 <DebugLedsTurnRed>
- c06:	0d b4       	in	r0, 0x2d	; 45
- c08:	07 fe       	sbrs	r0, 7
- c0a:	fd cf       	rjmp	.-6      	; 0xc06 <SendDataMasterAskedFor+0xba>
- c0c:	2e b5       	in	r18, 0x2e	; 46
- c0e:	0d b4       	in	r0, 0x2d	; 45
- c10:	07 fe       	sbrs	r0, 7
- c12:	fd cf       	rjmp	.-6      	; 0xc0e <SendDataMasterAskedFor+0xc2>
- c14:	8e b5       	in	r24, 0x2e	; 46
- c16:	90 e0       	ldi	r25, 0x00	; 0
- c18:	92 2b       	or	r25, r18
- c1a:	90 93 15 02 	sts	0x0215, r25	; 0x800215 <Lis_nticks_exposure+0x1>
- c1e:	80 93 14 02 	sts	0x0214, r24	; 0x800214 <Lis_nticks_exposure>
- c22:	98 b1       	in	r25, 0x08	; 8
- c24:	84 e0       	ldi	r24, 0x04	; 4
- c26:	89 27       	eor	r24, r25
- c28:	88 b9       	out	0x08, r24	; 8
- c2a:	80 91 14 02 	lds	r24, 0x0214	; 0x800214 <Lis_nticks_exposure>
- c2e:	90 91 15 02 	lds	r25, 0x0215	; 0x800215 <Lis_nticks_exposure+0x1>
- c32:	99 83       	std	Y+1, r25	; 0x01
- c34:	8a 83       	std	Y+2, r24	; 0x02
- c36:	8e 01       	movw	r16, r28
- c38:	0f 5f       	subi	r16, 0xFF	; 255
- c3a:	1f 4f       	sbci	r17, 0xFF	; 255
- c3c:	7e 01       	movw	r14, r28
- c3e:	f3 e0       	ldi	r31, 0x03	; 3
- c40:	ef 0e       	add	r14, r31
- c42:	f1 1c       	adc	r15, r1
- c44:	f8 01       	movw	r30, r16
- c46:	81 91       	ld	r24, Z+
- c48:	8f 01       	movw	r16, r30
- c4a:	8e bd       	out	0x2e, r24	; 46
- c4c:	2c 98       	cbi	0x05, 4	; 5
- c4e:	8c b5       	in	r24, 0x2c	; 44
- c50:	8f 7b       	andi	r24, 0xBF	; 191
- c52:	8c bd       	out	0x2c, r24	; 44
- c54:	e0 91 18 02 	lds	r30, 0x0218	; 0x800218 <Delay3CpuCyclesPerTick>
- c58:	f0 91 19 02 	lds	r31, 0x0219	; 0x800219 <Delay3CpuCyclesPerTick+0x1>
- c5c:	8a e0       	ldi	r24, 0x0A	; 10
- c5e:	09 95       	icall
- c60:	8c b5       	in	r24, 0x2c	; 44
- c62:	80 64       	ori	r24, 0x40	; 64
- c64:	8c bd       	out	0x2c, r24	; 44
- c66:	0d b4       	in	r0, 0x2d	; 45
- c68:	07 fe       	sbrs	r0, 7
- c6a:	fd cf       	rjmp	.-6      	; 0xc66 <SendDataMasterAskedFor+0x11a>
- c6c:	8e b5       	in	r24, 0x2e	; 46
- c6e:	0e 15       	cp	r16, r14
- c70:	1f 05       	cpc	r17, r15
- c72:	41 f7       	brne	.-48     	; 0xc44 <SendDataMasterAskedFor+0xf8>
- c74:	0f 90       	pop	r0
- c76:	0f 90       	pop	r0
- c78:	df 91       	pop	r29
- c7a:	cf 91       	pop	r28
- c7c:	1f 91       	pop	r17
- c7e:	0f 91       	pop	r16
- c80:	ff 90       	pop	r15
- c82:	ef 90       	pop	r14
- c84:	08 95       	ret
- c86:	81 e0       	ldi	r24, 0x01	; 1
- c88:	80 93 60 02 	sts	0x0260, r24	; 0x800260 <lis_sum_mode>
- c8c:	f3 cf       	rjmp	.-26     	; 0xc74 <SendDataMasterAskedFor+0x128>
- c8e:	10 92 60 02 	sts	0x0260, r1	; 0x800260 <lis_sum_mode>
- c92:	f0 cf       	rjmp	.-32     	; 0xc74 <SendDataMasterAskedFor+0x128>
- c94:	40 9a       	sbi	0x08, 0	; 8
- c96:	0e 94 10 02 	call	0x420	; 0x420 <LisFrameReadout>
- c9a:	40 98       	cbi	0x08, 0	; 8
- c9c:	41 9a       	sbi	0x08, 1	; 8
- c9e:	80 91 60 02 	lds	r24, 0x0260	; 0x800260 <lis_sum_mode>
- ca2:	81 30       	cpi	r24, 0x01	; 1
- ca4:	09 f4       	brne	.+2      	; 0xca8 <SendDataMasterAskedFor+0x15c>
- ca6:	43 c0       	rjmp	.+134    	; 0xd2e <SendDataMasterAskedFor+0x1e2>
- ca8:	80 e2       	ldi	r24, 0x20	; 32
- caa:	96 e0       	ldi	r25, 0x06	; 6
- cac:	07 e6       	ldi	r16, 0x67	; 103
- cae:	12 e0       	ldi	r17, 0x02	; 2
- cb0:	9c 01       	movw	r18, r24
- cb2:	29 59       	subi	r18, 0x99	; 153
- cb4:	3d 4f       	sbci	r19, 0xFD	; 253
- cb6:	79 01       	movw	r14, r18
- cb8:	f8 01       	movw	r30, r16
- cba:	81 91       	ld	r24, Z+
- cbc:	8f 01       	movw	r16, r30
- cbe:	8e bd       	out	0x2e, r24	; 46
- cc0:	2c 98       	cbi	0x05, 4	; 5
- cc2:	8c b5       	in	r24, 0x2c	; 44
- cc4:	8f 7b       	andi	r24, 0xBF	; 191
- cc6:	8c bd       	out	0x2c, r24	; 44
- cc8:	e0 91 18 02 	lds	r30, 0x0218	; 0x800218 <Delay3CpuCyclesPerTick>
- ccc:	f0 91 19 02 	lds	r31, 0x0219	; 0x800219 <Delay3CpuCyclesPerTick+0x1>
- cd0:	8a e0       	ldi	r24, 0x0A	; 10
- cd2:	09 95       	icall
- cd4:	8c b5       	in	r24, 0x2c	; 44
- cd6:	80 64       	ori	r24, 0x40	; 64
- cd8:	8c bd       	out	0x2c, r24	; 44
- cda:	0d b4       	in	r0, 0x2d	; 45
- cdc:	07 fe       	sbrs	r0, 7
- cde:	fd cf       	rjmp	.-6      	; 0xcda <SendDataMasterAskedFor+0x18e>
- ce0:	8e b5       	in	r24, 0x2e	; 46
- ce2:	e0 16       	cp	r14, r16
- ce4:	f1 06       	cpc	r15, r17
- ce6:	41 f7       	brne	.-48     	; 0xcb8 <SendDataMasterAskedFor+0x16c>
- ce8:	41 98       	cbi	0x08, 1	; 8
- cea:	c4 cf       	rjmp	.-120    	; 0xc74 <SendDataMasterAskedFor+0x128>
- cec:	85 e0       	ldi	r24, 0x05	; 5
- cee:	80 93 11 02 	sts	0x0211, r24	; 0x800211 <lis_gain>
- cf2:	c0 cf       	rjmp	.-128    	; 0xc74 <SendDataMasterAskedFor+0x128>
- cf4:	84 e0       	ldi	r24, 0x04	; 4
- cf6:	80 93 11 02 	sts	0x0211, r24	; 0x800211 <lis_gain>
- cfa:	bc cf       	rjmp	.-136    	; 0xc74 <SendDataMasterAskedFor+0x128>
- cfc:	0f 90       	pop	r0
- cfe:	0f 90       	pop	r0
- d00:	df 91       	pop	r29
- d02:	cf 91       	pop	r28
- d04:	1f 91       	pop	r17
- d06:	0f 91       	pop	r16
- d08:	ff 90       	pop	r15
- d0a:	ef 90       	pop	r14
- d0c:	0c 94 ba 04 	jmp	0x974	; 0x974 <AutoExpose>
- d10:	82 e0       	ldi	r24, 0x02	; 2
- d12:	80 93 11 02 	sts	0x0211, r24	; 0x800211 <lis_gain>
- d16:	ae cf       	rjmp	.-164    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d18:	85 e0       	ldi	r24, 0x05	; 5
- d1a:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d1e:	aa cf       	rjmp	.-172    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d20:	81 e0       	ldi	r24, 0x01	; 1
- d22:	80 93 11 02 	sts	0x0211, r24	; 0x800211 <lis_gain>
- d26:	a6 cf       	rjmp	.-180    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d28:	10 92 5f 02 	sts	0x025F, r1	; 0x80025f <lis_rowselect>
- d2c:	a3 cf       	rjmp	.-186    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d2e:	80 e1       	ldi	r24, 0x10	; 16
- d30:	93 e0       	ldi	r25, 0x03	; 3
- d32:	bc cf       	rjmp	.-136    	; 0xcac <SendDataMasterAskedFor+0x160>
- d34:	81 e0       	ldi	r24, 0x01	; 1
- d36:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d3a:	9c cf       	rjmp	.-200    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d3c:	82 e0       	ldi	r24, 0x02	; 2
- d3e:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d42:	98 cf       	rjmp	.-208    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d44:	83 e0       	ldi	r24, 0x03	; 3
- d46:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d4a:	94 cf       	rjmp	.-216    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d4c:	84 e0       	ldi	r24, 0x04	; 4
- d4e:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d52:	90 cf       	rjmp	.-224    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d54:	86 e0       	ldi	r24, 0x06	; 6
- d56:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d5a:	8c cf       	rjmp	.-232    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d5c:	87 e0       	ldi	r24, 0x07	; 7
- d5e:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d62:	88 cf       	rjmp	.-240    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d64:	88 e0       	ldi	r24, 0x08	; 8
- d66:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d6a:	84 cf       	rjmp	.-248    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d6c:	89 e0       	ldi	r24, 0x09	; 9
- d6e:	80 93 5f 02 	sts	0x025F, r24	; 0x80025f <lis_rowselect>
- d72:	80 cf       	rjmp	.-256    	; 0xc74 <SendDataMasterAskedFor+0x128>
- d74:	0f 90       	pop	r0
- d76:	0f 90       	pop	r0
- d78:	df 91       	pop	r29
- d7a:	cf 91       	pop	r28
- d7c:	1f 91       	pop	r17
- d7e:	0f 91       	pop	r16
- d80:	ff 90       	pop	r15
- d82:	ef 90       	pop	r14
- d84:	0c 94 a0 02 	jmp	0x540	; 0x540 <WriteCfgToLis>
-
-00000d88 <main>:
- d88:	0e 94 86 00 	call	0x10c	; 0x10c <DebugLedsTurnAllOn>
- d8c:	0e 94 a9 00 	call	0x152	; 0x152 <DebugLedsTurnAllGreen>
- d90:	0e 94 07 01 	call	0x20e	; 0x20e <SpiSlaveInit>
- d94:	0e 94 21 01 	call	0x242	; 0x242 <UartSpiInit>
- d98:	0e 94 92 01 	call	0x324	; 0x324 <LisInit>
- d9c:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiTransferIsDone>
- da0:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiTransferIsDone+0x1>
- da4:	09 95       	icall
- da6:	88 23       	and	r24, r24
- da8:	c9 f3       	breq	.-14     	; 0xd9c <main+0x14>
- daa:	0e 94 a6 05 	call	0xb4c	; 0xb4c <SendDataMasterAskedFor>
- dae:	f6 cf       	rjmp	.-20     	; 0xd9c <main+0x14>
-
-00000db0 <__vector_17>:
+00000804 <__vector_17>:
 void SPI_read_in_ISR_and_show_data_on_debug_leds(void);
 /* =====[ Move control over the SPI ISR into the test code ]===== */
 typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
 //
 ISR(SPI_STC_vect)
 {
- db0:	1f 92       	push	r1
- db2:	0f 92       	push	r0
- db4:	0f b6       	in	r0, 0x3f	; 63
- db6:	0f 92       	push	r0
- db8:	11 24       	eor	r1, r1
- dba:	2f 93       	push	r18
- dbc:	3f 93       	push	r19
- dbe:	4f 93       	push	r20
- dc0:	5f 93       	push	r21
- dc2:	6f 93       	push	r22
- dc4:	7f 93       	push	r23
- dc6:	8f 93       	push	r24
- dc8:	9f 93       	push	r25
- dca:	af 93       	push	r26
- dcc:	bf 93       	push	r27
- dce:	ef 93       	push	r30
- dd0:	ff 93       	push	r31
+ 804:	1f 92       	push	r1
+ 806:	0f 92       	push	r0
+ 808:	0f b6       	in	r0, 0x3f	; 63
+ 80a:	0f 92       	push	r0
+ 80c:	11 24       	eor	r1, r1
+ 80e:	2f 93       	push	r18
+ 810:	3f 93       	push	r19
+ 812:	4f 93       	push	r20
+ 814:	5f 93       	push	r21
+ 816:	6f 93       	push	r22
+ 818:	7f 93       	push	r23
+ 81a:	8f 93       	push	r24
+ 81c:	9f 93       	push	r25
+ 81e:	af 93       	push	r26
+ 820:	bf 93       	push	r27
+ 822:	ef 93       	push	r30
+ 824:	ff 93       	push	r31
     DoTaskForThisTest(); // fptr assigned in test code
- dd2:	e0 91 65 02 	lds	r30, 0x0265	; 0x800265 <DoTaskForThisTest>
- dd6:	f0 91 66 02 	lds	r31, 0x0266	; 0x800266 <DoTaskForThisTest+0x1>
- dda:	09 95       	icall
+ 826:	e0 91 64 01 	lds	r30, 0x0164	; 0x800164 <__data_end>
+ 82a:	f0 91 65 01 	lds	r31, 0x0165	; 0x800165 <__data_end+0x1>
+ 82e:	09 95       	icall
 }
- ddc:	ff 91       	pop	r31
- dde:	ef 91       	pop	r30
- de0:	bf 91       	pop	r27
- de2:	af 91       	pop	r26
- de4:	9f 91       	pop	r25
- de6:	8f 91       	pop	r24
- de8:	7f 91       	pop	r23
- dea:	6f 91       	pop	r22
- dec:	5f 91       	pop	r21
- dee:	4f 91       	pop	r20
- df0:	3f 91       	pop	r19
- df2:	2f 91       	pop	r18
- df4:	0f 90       	pop	r0
- df6:	0f be       	out	0x3f, r0	; 63
- df8:	0f 90       	pop	r0
- dfa:	1f 90       	pop	r1
- dfc:	18 95       	reti
+ 830:	ff 91       	pop	r31
+ 832:	ef 91       	pop	r30
+ 834:	bf 91       	pop	r27
+ 836:	af 91       	pop	r26
+ 838:	9f 91       	pop	r25
+ 83a:	8f 91       	pop	r24
+ 83c:	7f 91       	pop	r23
+ 83e:	6f 91       	pop	r22
+ 840:	5f 91       	pop	r21
+ 842:	4f 91       	pop	r20
+ 844:	3f 91       	pop	r19
+ 846:	2f 91       	pop	r18
+ 848:	0f 90       	pop	r0
+ 84a:	0f be       	out	0x3f, r0	; 63
+ 84c:	0f 90       	pop	r0
+ 84e:	1f 90       	pop	r1
+ 850:	18 95       	reti
 
-00000dfe <__vector_14>:
+00000852 <__vector_14>:
 ISR(TIMER0_COMPA_vect)
 {
- dfe:	1f 92       	push	r1
- e00:	0f 92       	push	r0
- e02:	0f b6       	in	r0, 0x3f	; 63
- e04:	0f 92       	push	r0
- e06:	11 24       	eor	r1, r1
+ 852:	1f 92       	push	r1
+ 854:	0f 92       	push	r0
+ 856:	0f b6       	in	r0, 0x3f	; 63
+ 858:	0f 92       	push	r0
+ 85a:	11 24       	eor	r1, r1
     // high-level delay:
     /* SetBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD |= 1<<PD6;    // set bit: Rst High
- e08:	5e 9a       	sbi	0x0b, 6	; 11
+ 85c:	5e 9a       	sbi	0x0b, 6	; 11
     // delay is 1.8us-2us from redge to Rst High
 }
- e0a:	0f 90       	pop	r0
- e0c:	0f be       	out	0x3f, r0	; 63
- e0e:	0f 90       	pop	r0
- e10:	1f 90       	pop	r1
- e12:	18 95       	reti
+ 85e:	0f 90       	pop	r0
+ 860:	0f be       	out	0x3f, r0	; 63
+ 862:	0f 90       	pop	r0
+ 864:	1f 90       	pop	r1
+ 866:	18 95       	reti
 
-00000e14 <__vector_15>:
+00000868 <__vector_15>:
 ISR(TIMER0_COMPB_vect)
 {
- e14:	1f 92       	push	r1
- e16:	0f 92       	push	r0
- e18:	0f b6       	in	r0, 0x3f	; 63
- e1a:	0f 92       	push	r0
- e1c:	11 24       	eor	r1, r1
+ 868:	1f 92       	push	r1
+ 86a:	0f 92       	push	r0
+ 86c:	0f b6       	in	r0, 0x3f	; 63
+ 86e:	0f 92       	push	r0
+ 870:	11 24       	eor	r1, r1
     // high-level delay:
     /* ClearBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD &= ~(1<<PD6); // clear bit: Rst Low
- e1e:	5e 98       	cbi	0x0b, 6	; 11
+ 872:	5e 98       	cbi	0x0b, 6	; 11
     // delay is 1.8us-2us from fedge to Rst low
 } 
- e20:	0f 90       	pop	r0
- e22:	0f be       	out	0x3f, r0	; 63
- e24:	0f 90       	pop	r0
- e26:	1f 90       	pop	r1
- e28:	18 95       	reti
+ 874:	0f 90       	pop	r0
+ 876:	0f be       	out	0x3f, r0	; 63
+ 878:	0f 90       	pop	r0
+ 87a:	1f 90       	pop	r1
+ 87c:	18 95       	reti
 
-00000e2a <Delay3CpuCyclesPerTick_Implementation>:
-    can be achieved.
-*/
-void
-_delay_loop_1(uint8_t __count)
-{
-	__asm__ volatile (
- e2a:	8a 95       	dec	r24
- e2c:	f1 f7       	brne	.-4      	; 0xe2a <Delay3CpuCyclesPerTick_Implementation>
- e2e:	08 95       	ret
+0000087e <_exit>:
+ 87e:	f8 94       	cli
 
-00000e30 <__udivmodsi4>:
- e30:	a1 e2       	ldi	r26, 0x21	; 33
- e32:	1a 2e       	mov	r1, r26
- e34:	aa 1b       	sub	r26, r26
- e36:	bb 1b       	sub	r27, r27
- e38:	fd 01       	movw	r30, r26
- e3a:	0d c0       	rjmp	.+26     	; 0xe56 <__udivmodsi4_ep>
-
-00000e3c <__udivmodsi4_loop>:
- e3c:	aa 1f       	adc	r26, r26
- e3e:	bb 1f       	adc	r27, r27
- e40:	ee 1f       	adc	r30, r30
- e42:	ff 1f       	adc	r31, r31
- e44:	a2 17       	cp	r26, r18
- e46:	b3 07       	cpc	r27, r19
- e48:	e4 07       	cpc	r30, r20
- e4a:	f5 07       	cpc	r31, r21
- e4c:	20 f0       	brcs	.+8      	; 0xe56 <__udivmodsi4_ep>
- e4e:	a2 1b       	sub	r26, r18
- e50:	b3 0b       	sbc	r27, r19
- e52:	e4 0b       	sbc	r30, r20
- e54:	f5 0b       	sbc	r31, r21
-
-00000e56 <__udivmodsi4_ep>:
- e56:	66 1f       	adc	r22, r22
- e58:	77 1f       	adc	r23, r23
- e5a:	88 1f       	adc	r24, r24
- e5c:	99 1f       	adc	r25, r25
- e5e:	1a 94       	dec	r1
- e60:	69 f7       	brne	.-38     	; 0xe3c <__udivmodsi4_loop>
- e62:	60 95       	com	r22
- e64:	70 95       	com	r23
- e66:	80 95       	com	r24
- e68:	90 95       	com	r25
- e6a:	9b 01       	movw	r18, r22
- e6c:	ac 01       	movw	r20, r24
- e6e:	bd 01       	movw	r22, r26
- e70:	cf 01       	movw	r24, r30
- e72:	08 95       	ret
-
-00000e74 <__umulhisi3>:
- e74:	a2 9f       	mul	r26, r18
- e76:	b0 01       	movw	r22, r0
- e78:	b3 9f       	mul	r27, r19
- e7a:	c0 01       	movw	r24, r0
- e7c:	a3 9f       	mul	r26, r19
- e7e:	70 0d       	add	r23, r0
- e80:	81 1d       	adc	r24, r1
- e82:	11 24       	eor	r1, r1
- e84:	91 1d       	adc	r25, r1
- e86:	b2 9f       	mul	r27, r18
- e88:	70 0d       	add	r23, r0
- e8a:	81 1d       	adc	r24, r1
- e8c:	11 24       	eor	r1, r1
- e8e:	91 1d       	adc	r25, r1
- e90:	08 95       	ret
-
-00000e92 <_exit>:
- e92:	f8 94       	cli
-
-00000e94 <__stop_program>:
- e94:	ff cf       	rjmp	.-2      	; 0xe94 <__stop_program>
+00000880 <__stop_program>:
+ 880:	ff cf       	rjmp	.-2      	; 0x880 <__stop_program>

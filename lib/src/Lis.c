@@ -16,8 +16,8 @@ inline void OutputCfgByte(uint8_t const cfg_byte, uint8_t const nbits)
     // For each bit in cfg_byte[0:nbits], output masked bit to Lis_Rst.
     for (uint8_t bit_index = 0; bit_index < nbits; bit_index++)
     {
-        if ( cfg_byte & (1<<bit_index)) { MacroSetBit(Lis_port1, Lis_Rst); }
-        else { MacroClearBit(Lis_port1, Lis_Rst); }
+        if ( cfg_byte & (1<<bit_index)) { SetBit(Lis_port1, Lis_Rst); }
+        else { ClearBit(Lis_port1, Lis_Rst); }
         // Wait for Lis_Rst value to clock in before loading the next bit.
         LisWaitForClkRiseEdge(); // bit is read on rising edge
         LisWaitForClkFallEdge(); // hold bit until falling edge
@@ -78,14 +78,14 @@ inline void EnterLisProgrammingMode(void)
     /* Do all setup of Lis_Rst while Lis_Clk is low */
     LisWaitForClkFallEdge();
     /* Assert Pix_Select to program the LIS */
-    MacroSetBit(Lis_port2, Lis_PixSelect);
+    SetBit(Lis_port2, Lis_PixSelect);
 }
 inline void ExitLisProgrammingMode(void)
 {
     /* Reset is low during normal (not programming mode) operation. */
-    MacroClearBit(Lis_port1, Lis_Rst);
+    ClearBit(Lis_port1, Lis_Rst);
     /* De-assert Pix_Select to stop programming the LIS. */
-    MacroClearBit(Lis_port2, Lis_PixSelect);
+    ClearBit(Lis_port2, Lis_PixSelect);
 }
 
 static void SetPixSelectAsOutput(void)

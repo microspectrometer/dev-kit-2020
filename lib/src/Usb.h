@@ -10,8 +10,6 @@ uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes);
 bool UsbHasDataToRead(void);
 bool UsbHasRoomToWrite(void);
 
-/* =====[ WIP: robust UsbRead functionality started 2019-03-01 ]===== */
-uint8_t UsbReadOneByte(uint8_t *read_buffer);
 /* =====[ WIP: Clean Command Parsing with jump tables started 2019-03-01 ]===== */
 /* Functions of type `UsbCmd` take nothing and return nothing. */
 /* The *key* acts as the command since it is the command lookup. */
@@ -38,8 +36,11 @@ bool UsbWriteStatusOk(void); // command was successfully carried out
 uint8_t UsbWriteStatusInvalid(jump_index invalid_cmd); // command not recognized
 uint8_t UsbWriteStatusBadArgs(jump_index bad_args_cmd); // args are wrong val
 uint8_t UsbWriteStatusMissingArgs(jump_index missing_args_cmd); // not enough args
+/* =====[ WIP: robust UsbRead functionality started 2019-03-01 ]===== */
+uint8_t UsbReadOneByte(uint8_t *read_buffer);
 // TODO: rename UsbRead to UsbReadAll then UsbReadN to UsbRead
 uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes);
+/* =====[ Helpers for UsbCmd functions ]===== */
 bool CfgBytesAreValid(uint8_t const *cfg_bytes);
 bool CfgTurnsOffAllPixels(uint8_t const *cfg_bytes);
 bool CfgTurnsRowPartiallyOn(uint8_t const *cfg_bytes, uint8_t row_number);

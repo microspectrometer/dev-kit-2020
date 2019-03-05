@@ -37,6 +37,6 @@ void (*PwmDisableOutput)(void) = PwmDisableOutput_Implementation;
 
 void WaitForPwmOutputRisingEdge(void)
 {
-    while(MacroBitIsClear(Pwm_tifr0, Pwm_Ocf0a)); // wait until flag is set
-    MacroSetBit(Pwm_tifr0, Pwm_Ocf0a); // set the bit to clear the flag
+    while(BitIsClear(Pwm_tifr0, Pwm_Ocf0a)); // wait until flag is set
+    SetBit(Pwm_tifr0, Pwm_Ocf0a); // set the bit to clear the flag
 }

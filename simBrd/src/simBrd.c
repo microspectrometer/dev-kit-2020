@@ -57,7 +57,6 @@ void AutoExpose(void)
 /* =====[ WIP ]===== */
 void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
 {
-    /* uint8_t cmd; */
     jump_index cmd;
     // Read USB buffer if there is any data to read.
     if (UsbReadOneByte(&cmd))
@@ -95,62 +94,62 @@ void SetExposureTime(uint8_t *pnticks)
     UsbWrite(pnticks, 2);
 }
 
-#define MacroDebugLedRed()          MacroSetBit(DebugLed_port, debug_led)
-#define MacroDebugLedGreen()        MacroClearBit(DebugLed_port, debug_led)
+#define MacroDebugLedRed()          SetBit(DebugLed_port, debug_led)
+#define MacroDebugLedGreen()        ClearBit(DebugLed_port, debug_led)
 #define MacroDebugLedToggleColor()  MacroToggleBit(DebugLed_port, debug_led)
 
 #define UsbWriteDelayTicks 1
 #define MacroUsbWriteByte(pbyte) do { \
     /* =====[ FtSendCommand(FtCmd_Write); \ ]===== */ \
     /* FtActivateInterface(); \ */ \
-    MacroClearBit(Ft1248_port, Ft1248_Ss); \
+    ClearBit(Ft1248_port, Ft1248_Ss); \
     Delay3CpuCyclesPerTick(UsbWriteDelayTicks); \
     /* FtPushData(); \ */ \
-    MacroSetBit(Ft1248_port, Ft1248_Sck); \
+    SetBit(Ft1248_port, Ft1248_Sck); \
     /* FtLetMasterDriveBus(); \ */ \
     *FtMiosio_ddr = 0xFF; \
     /* FtOutputByte(FtCmd); \ */ \
     *FtMiosio_port = FtCmd_Write; \
     /* FtPullData(); \ */ \
-    MacroClearBit(Ft1248_port, Ft1248_Sck); \
+    ClearBit(Ft1248_port, Ft1248_Sck); \
     /* if (!FtBusTurnaround()) DebugLedTurnRedToShowError(); \ */ \
     /* FtLetSlaveDriveBus(); */ \
     *FtMiosio_ddr = 0x00; \
     /* FtPushData(); \ */ \
-    MacroSetBit(Ft1248_port, Ft1248_Sck); \
+    SetBit(Ft1248_port, Ft1248_Sck); \
     /* FtPullData(); \ */ \
-    MacroClearBit(Ft1248_port, Ft1248_Sck); \
+    ClearBit(Ft1248_port, Ft1248_Sck); \
     /* return FtIsBusOk(); */ \
     /* =====[ If bus is not OK, turn LED red and do nothing ]===== */ \
-    if (!MacroBitIsClear(Ft1248_pin, Ft1248_Miso)) MacroDebugLedRed(); \
+    if (!BitIsClear(Ft1248_pin, Ft1248_Miso)) MacroDebugLedRed(); \
     else \
     { \
     /* =====[ FtWrite(pbyte); ]===== */ \
     /* FtLetMasterDriveBus(); \ */ \
     *FtMiosio_ddr = 0xFF; \
     /* FtPushData(); \ */ \
-    MacroSetBit(Ft1248_port, Ft1248_Sck); \
+    SetBit(Ft1248_port, Ft1248_Sck); \
     /* FtWriteData(*write_buffer); */ \
     *FtMiosio_port = *pbyte; \
     /* FtPullData(); \ */ \
-    MacroClearBit(Ft1248_port, Ft1248_Sck); \
+    ClearBit(Ft1248_port, Ft1248_Sck); \
     /* if (!FtIsBusOk()) return false; */ \
     /* =====[ If write failed, turn LED red ]===== */ \
-    if (!MacroBitIsClear(Ft1248_pin, Ft1248_Miso)) MacroDebugLedRed(); \
+    if (!BitIsClear(Ft1248_pin, Ft1248_Miso)) MacroDebugLedRed(); \
     } \
     /* =====[ No matter what happened, deactivate the interface. ]===== */ \
     /* FtDeactivateInterface(); \ */ \
-    MacroSetBit(Ft1248_port, Ft1248_Ss); \
+    SetBit(Ft1248_port, Ft1248_Ss); \
 } while (0)
 
 #define DebugPinInit() do { \
     /* =====[ Make SCL an output for debug on the oscilloscope ]===== */ \
-    MacroSetBit(&DDRC,  PC5); \
+    SetBit(&DDRC,  PC5); \
     /* =====[ Init SCL high ]===== */ \
-    MacroSetBit(&PORTC, PC5); \
+    SetBit(&PORTC, PC5); \
 } while (0)
-#define DebugPinLow()  MacroClearBit(&PORTC, PC5)
-#define DebugPinHigh() MacroSetBit(&PORTC, PC5)
+#define DebugPinLow()  ClearBit(&PORTC, PC5)
+#define DebugPinHigh() SetBit(&PORTC, PC5)
 
 int main()
 {

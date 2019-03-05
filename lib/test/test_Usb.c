@@ -684,7 +684,7 @@ void LookupCmd_example_storing_the_returned_pointer(void){
     /* =====[ Test ]===== */
     TEST_ASSERT_NULL(CmdFn);
 }
-/* TODO: write API for a caller of LookupCmd to respond to all command keys with: */
+/* API for a caller of LookupCmd to respond to all command keys with: */
 /* 0 (OK) */
 /* or non-0 (error code) */
     /* If command was understood and everything followed a happy path, then first */

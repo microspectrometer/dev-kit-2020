@@ -11,16 +11,16 @@ extern void (*PwmClkIsCpuClk)(void);
 extern void (*PwmEnableOutputSetUntilMatch)(void);
 /* =====[ Pwm low-level macros used in Pwm API macros ]===== */
 #define MacroBlockUntilFlagPwmRisingEdgeIsSet() do { \
-    while(MacroBitIsClear(Pwm_tifr0, Pwm_Ocf0a)); \
+    while(BitIsClear(Pwm_tifr0, Pwm_Ocf0a)); \
 } while(0)
 #define MacroBlockUntilFlagPwmFallingEdgeIsSet() do { \
-    while(MacroBitIsClear(Pwm_tifr0, Pwm_Ocf0b)); \
+    while(BitIsClear(Pwm_tifr0, Pwm_Ocf0b)); \
 } while(0)
 #define MacroClearFlagPwmRisingEdge() do { \
-    MacroSetBit(Pwm_tifr0, Pwm_Ocf0a); \
+    SetBit(Pwm_tifr0, Pwm_Ocf0a); \
 } while (0)
 #define MacroClearFlagPwmFallingEdge() do { \
-    MacroSetBit(Pwm_tifr0, Pwm_Ocf0b); \
+    SetBit(Pwm_tifr0, Pwm_Ocf0b); \
 } while (0)
 /* =====[ Pwm API macros ]===== */
 #define MacroWaitForPwmRisingEdge() do { \

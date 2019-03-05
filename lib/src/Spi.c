@@ -1,5 +1,57 @@
+/** \file */
 #include "Spi.h"
 #include "ReadWriteBits.h"
+#include "DebugLeds.h"          // controls the 4 debug LEDs
+#include "stdlib.h" // defines NULL
+
+/* ---------------------------------------------------- */
+/* | 2019-03-04 WIP: inline version of SpiMasterWrite | */
+/* ---------------------------------------------------- */
+void SpiMasterWriteN(uint8_t const * bytes, uint8_t const nbytes);
+/* ---------------------------------------------------- */
+
+/* --------------------------------------------------------------------------------------- */
+/* | 2019-03-03 WIP: New SpiSlave API functionality for robust multi-byte communication. | */
+/* --------------------------------------------------------------------------------------- */
+/* bool SpiSlaveRead_OneByte(uint8_t *read_buffer) */
+/* { */
+/*     bool have_byte = SpiTransferIsDone(); */
+/*     return have_byte; */
+/* } */
+
+/* Define command functions in jump table */
+void spi_LedRed(void) { DebugLedsTurnAllRed(); SpiSlaveWrite_StatusOk(); }
+void spi_LedGreen(void) { DebugLedsTurnAllGreen(); SpiSlaveWrite_StatusOk(); }
+/* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
+spi_lookup_key const spi_LedRed_key = 0;
+spi_lookup_key const spi_LedGreen_key = 1;
+spi_Cmd* spi_LookupCmd(spi_lookup_key const key) {
+    /* pf is an array of pointers to spi_Cmd functions */
+    /* pf lives in static memory, not on the `spi_LookupCmd` stack frame */
+    static spi_Cmd* const pf[] = {
+        spi_LedRed,
+        spi_LedGreen
+        };
+    /* Return func ptr. Prevent attempts at out-of-bounds access. */
+    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
+    /* Out of bounds keys return a NULL pointer. */
+    else return NULL;
+    /* Up to caller to check for NULL and take appropriate action. */
+    /* Recommended action: tell SpiMaster the command was not recognized. */
+}
+/* SpiSlaveSendBytes has been unit-tested. No need to unit test this. */
+void SpiSlaveWrite_StatusOk(void)
+{
+                             // | nbytes  | data |
+    uint8_t const StatusOk[] = {0x00, 0x01, 0x00};
+    SpiSlaveSendBytes(StatusOk,3);
+}
+void SpiSlaveWrite_StatusInvalid(spi_lookup_key invalid_cmd)
+{                                  // | nbytes  |   data          |
+    uint8_t const StatusInvalid[] = { 0x00, 0x02, 255, invalid_cmd };
+    SpiSlaveSendBytes(StatusInvalid,4);
+}
+/* --------------------------------------------------------------------------------------- */
 
 static void ClearPendingSpiInterrupt_Implementation(void)
 {
@@ -89,13 +141,13 @@ static void SetClockRateToFoscDividedBy8(void)
     ClearBit(Spi_spcr, Spi_ClockRateBit1);
     SetBit(Spi_spsr, Spi_DoubleClockRate);
 }
+
+// Enable MISO pull-up on the SpiMaster only!
+// The pull-up is achieved by setting the port bit that matches the MISO pin.
+// When the slave disables SPI to drive MISO, it needs this pin to go low.
 //
-// I cannot do this.
-// I expected it to just enable the pull-up.
-// Instead, it prevents the SPI master from ever receiving `DataIsReady`.
-// It behaves like MISO is always high, but I have not measured it.
-//
-static void SetMisoAsPullupInput(void)
+/* TODO: rename this function to make it clear it is *only* for the SpiMaster. */
+static void SetMisoAsPullupInput(void) // For SpiMaster only!
 {
     ClearBit(Spi_ddr, Spi_Miso);    // make it an input
     SetBit(Spi_port, Spi_Miso);     // enable pull-up
@@ -181,6 +233,12 @@ void SpiSlaveInit(void)
     // When not driven hard, the SPI module makes MISO a pull-up.
     SetMisoAsOutput();         // pin-direction is user-defined
     EnableSpi();
+    /* ------------------------ */
+    /* | Added on 2019-03-04: | */
+    /* Drive Spi_Miso pin low when the SPI module is disabled. */
+    /* See SpiSlaveSignalDataIsReady for explanation. */
+    ClearBit(Spi_port, Spi_Miso);
+    /* ------------------------ */
     ClearPendingSpiInterrupt();
 }
 static void EnableTransferCompleteInterrupt(void)
@@ -196,17 +254,45 @@ void SpiEnableInterrupt(void)
 }
 static void SpiSlaveSignalDataIsReady_Implementation(void)
 {
+
+    /* Prepare to output a low. */
     ClearBit(Spi_port, Spi_Miso);
+
+    /* Make Spi_Miso a general purpose I/O pin. MISO goes low. */
     DisableSpi();
+
+    /* Should I drive the pin high before re-enabling SPI? */
+    /* ? SetBit(Spi_port, Spi_Miso); */
+    /* If I do this, I think the SPI master must add a small delay */
+    /* after seeing MISO go high to be sure the SPI slave is ready. */
+
+    /* Make Spi_Miso the SPI Slave Output pin. MISO slowly rises up. */
     EnableSpi();
 }
+    /** `SpiSlave` signals *Data Ready* by driving pin `Spi_Miso` low.
+     *  Attention: this is not the usual step waveform. Instead, pin `Spi_Miso`
+     *  idles high, spikes low, then slowly rises back.
+     *
+     *  Here is how the *Data Ready* signal is implemented:
+     *
+     * 1. Disable the SPI module to restore general purpose I/O functionality.
+     *
+     * 2. Pin `Spi_Miso` is driven low because the PORT register has a 0 in this
+     * bit. This is a sudden voltage step from high to low.
+     *
+     * 3. Enable the SPI module in preparation to receive a transmission from
+     * the SPI master. This is a slow voltage rise from low to high because the
+     * the capacitance on the SPI bus is charged by the small current available
+     * from the power supply via the pull-up resistor.
+     */
 void (*SpiSlaveSignalDataIsReady)(void) = SpiSlaveSignalDataIsReady_Implementation;
+
 uint8_t SpiSlaveRead(void)
 {
     while( !SpiTransferIsDone() );
     return ReadSpiDataRegister();
 }
-void SpiSlaveSendBytes(uint8_t *bytes, uint16_t nbytes)
+void SpiSlaveSendBytes(uint8_t const *bytes, uint16_t const nbytes)
 {
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes; byte_index++)

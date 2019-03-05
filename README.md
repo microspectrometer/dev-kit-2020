@@ -1642,6 +1642,234 @@ ${obj_libs-tested-with-mocks} ${obj_libs-mocked} ${obj_shared-lib_mock-c}
 
 # Weird embedded stuff
 ## C to assembly
+### Be careful when doing |= vs =
+<https://www.avrfreaks.net/forum/resetting-just-one-interrupt-flag-tifr?skey=best%20way%20to%20write%20to%20tifr0>
+
+interrupt flag registers are cleared by writing a one to them
+
+use reg = value
+
+where value is 1 for the flags to clear
+
+do not use reg |= value because that will clear all of the flags!
+
+### `cbi` and `sbi` only happen if you name the registers directly.
+
+Here I am first looking to see that code was inlined as intended.
+
+Next I am horrified at the size of the code that is being inlined, so I get to
+the bottom of why `cbi` and `sbi` are not being used.
+
+TLDR: the io reg are *not* memory addresses. Don't treat them like memory
+addresses. Directly set the address equal to a value. Treating them like a
+memory address still works, but it adds a lot of extra assembly.
+
+#### inline is happening
+example:
+looking in the `.map` files, we can see the functions using the inlined rw bits
+are taking up more space in `.text` memory. Note the address of all *before*
+inlining is 0x10.
+```map
+// before inlining
+ .text.DebugLedToggleColor
+                0x00000000       0x10 build/DebugLed.o
+ .text.DebugLedIsRed
+                0x00000000       0x10 build/DebugLed.o
+ .text.DebugLedIsGreen
+                0x00000000       0x10 build/DebugLed.o
+```
+```map
+// after inlining
+
+ .text.DebugLedToggleColor
+                0x00000000       0x22 build/DebugLed.o
+ .text.DebugLedIsRed
+                0x00000000       0x2c build/DebugLed.o
+ .text.DebugLedIsGreen
+                0x00000000       0x26 build/DebugLed.o
+```
+
+Now notice the address of `DebugLedTurnRed` in the `asm`. And notice that it
+just loads its args on the stack frame and then does a `jmp` to `SetBit`.
+```asm
+// DebugLedTurnRed assembly code in simbrd.lst *before* inlining SetBit
+00000100 <DebugLedTurnRed>:
+void DebugLedTurnRed(void)
+{
+    SetBit(port_register_, debug_led_);
+ 100:	60 91 54 01 	lds	r22, 0x0154	; 0x800154 <__data_end>
+ 104:	80 91 57 01 	lds	r24, 0x0157	; 0x800157 <port_register_>
+ 108:	90 91 58 01 	lds	r25, 0x0158	; 0x800158 <port_register_+0x1>
+ 10c:	0c 94 53 00 	jmp	0xa6	; 0xa6 <SetBit>
+```
+Here is `SetBit`:
+```asm
+// SetBit assembly code in simbrd.lst *before* inlining SetBit
+000000a6 <SetBit>:
+    *port ^= (1<<bit);
+}
+  a6:	fc 01       	movw	r30, r24
+  a8:	40 81       	ld	r20, Z
+  aa:	21 e0       	ldi	r18, 0x01	; 1
+  ac:	30 e0       	ldi	r19, 0x00	; 0
+  ae:	01 c0       	rjmp	.+2      	; 0xb2 <SetBit+0xc>
+  b0:	22 0f       	add	r18, r18
+  b2:	6a 95       	dec	r22
+  b4:	ea f7       	brpl	.-6      	; 0xb0 <SetBit+0xa>
+  b6:	24 2b       	or	r18, r20
+  b8:	20 83       	st	Z, r18
+  ba:	08 95       	ret
+```
+Every function that calls `SetBit` is doing the `jmp`. Of course the functions
+that use the macro version have the macro gobbled by the preprocessor, so I
+don't get to see those. But there are enough versions around without the macro
+that I can see the old `inline` in the C file did nothing, as expected based on
+my new knowledge, and as suspected based on oscilloscope measurements.
+
+Here is the code after inlining correctly:
+```asm
+// DebugLedTurnRed assembly code in simbrd.lst *after* inlining SetBit
+
+void DebugLedTurnRed(void)
+{
+    SetBit(port_register_, debug_led_);
+  ec:	e0 91 57 01 	lds	r30, 0x0157	; 0x800157 <port_register_>
+  f0:	f0 91 58 01 	lds	r31, 0x0158	; 0x800158 <port_register_+0x1>
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port |= 1<<bit;
+  f4:	20 81       	ld	r18, Z
+  f6:	81 e0       	ldi	r24, 0x01	; 1
+  f8:	90 e0       	ldi	r25, 0x00	; 0
+  fa:	00 90 54 01 	lds	r0, 0x0154	; 0x800154 <__data_end>
+  fe:	02 c0       	rjmp	.+4      	; 0x104 <DebugLedTurnRed+0x18>
+ 100:	88 0f       	add	r24, r24
+ 102:	99 1f       	adc	r25, r25
+ 104:	0a 94       	dec	r0
+ 106:	e2 f7       	brpl	.-8      	; 0x100 <DebugLedTurnRed+0x14>
+ 108:	82 2b       	or	r24, r18
+ 10a:	80 83       	st	Z, r24
+ 10c:	08 95       	ret
+```
+
+#### why the `SetBit` is so long
+The actual 10 lines or so that do the `SetBit` operation are almost identical
+apart from the different working registers used. Knowing the operation is a
+simple sbi or cbi on an i/o register makes it painful to see the disassembly in
+this way.
+
+But this makes the code readable.
+
+If needed, go and manually modify the code for speed by directly setting the
+register names equal to the desired value.
+```asm
+inline void DebugLedTurnRed2(void)
+{
+    PORTC |= (1<<PINC3);
+ 9a0:	43 9a       	sbi	0x08, 3	; 8
+```
+This shows how to write the inline call to get the single `sbi`. The same
+happens whether the optimization level is `-Os` (size) or `-O3` (speed).
+
+```c
+SetBit(Ft1248_port, Ft1248_Sck);
+```
+Results in `sbi`:
+```asm
+ 97a:	41 9a       	sbi	0x08, 1	; 8
+```
+The trouble with DebugLedTurnRed was just my dumbass original attempt at
+hardware abstraction. I added one layer too many. DebugLed gets *initialized*
+with registers and a pin. Stupid.
+And I can continue putting functions in functions, as I'd wanted to.
+
+```c
+inline void ClockHigh(void)
+{
+    SetBit(Ft1248_port, Ft1248_Sck);
+}
+```
+I still get:
+```asm
+ 97a:	41 9a       	sbi	0x08, 1	; 8
+```
+
+What about a function pointer?
+
+This is absolutely not what you want to do:
+```c
+static void ClockHigh_(void)
+{
+    SetBit(Ft1248_port, Ft1248_Sck);
+}
+inline void (*ClockHigh)(void) = ClockHigh_;
+```
+The compiler warns you too:
+```
+src/simBrd.c|171 col 15| warning: variable 'ClockHigh' declared 'inline'
+||  inline void (*ClockHigh)(void) = ClockHigh_;
+```
+And the assembly:
+```asm
+    ClockHigh();
+ 97e:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <ClockHigh>
+ 982:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <ClockHigh+0x1>
+ 986:	09 95       	icall
+```
+Let's inline the function instead of the variable.
+```c
+inline void ClockHigh_(void)
+{
+    SetBit(Ft1248_port, Ft1248_Sck);
+}
+void ClockHigh_(void);
+void (*ClockHigh)(void) = ClockHigh_;
+```
+The assembly is the same.
+```asm
+    ClockHigh();
+ 97e:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <ClockHigh>
+ 982:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <ClockHigh+0x1>
+ 986:	09 95       	icall
+ ```
+The actual assembler of `CLockHigh_` is good:
+```asm
+0000093a <ClockHigh_>:
+ 93a:	39 9a       	sbi	0x07, 1	; 7
+ 93c:	08 95       	ret
+```
+But it is inescapably a jump of some sort once the function pointer is
+introduced.
+
+The takeaways are:
+
+1. Fix DebugLed.h to match the styles in the other libs. This is a good style
+   that results in `sbi` and `cbi` calls.
+2. Watchout for special registers with flags. These need to be *set equal* to a
+   bit mask that clears the flag.
+3. If you use a function pointer to create a test seam or some other code
+   abstraction purpose, be aware you pay the price with speed because you cannot
+   `inline` away the jump. Go through your code and eliminate this function
+   pointer madness on functions that are low-level and called often in the loops
+   of higher-level functions. Do this as you introduce the `inline` versions of
+   things.
+
+Here is another function style that does result in `sbi`:
+```c
+DebugLedTurnRed4(&PORTC, PINC3);
+```
+
+
+```c
+inline void DebugLedTurnRed4(uint8_t volatile * port, uint8_t pin)
+{
+    *port |= (1<<pin);
+ 976:	43 9a       	sbi	0x08, 3	; 8
+```
+
 ### `cbi` and `sbi` are only for registers `0x00` to `0x1F`
 - `MacroDisableSpi()` is defined as `MacroClearBit(Spi_spcr, Spi_Enable)`
     - `0x2c` is the address of register `SPCR`
@@ -1659,6 +1887,7 @@ out     0x2c, r24
 ```
 - Why is this turned into so many instructions in this instance but not other
   instances?
+
 ### What happens
 - `MacroClearBit` is defined as:
 ```c
@@ -1666,6 +1895,7 @@ out     0x2c, r24
 ```
 - so the definition does a logical `AND` with the negation of the bit mask
 - and the `asm` literally does the `AND` with `1011 1111`
+
 ### Why it happens
 - the compiler is unable to use `cbi` and `sbi` on these registers
 - datasheet page 426 states:
