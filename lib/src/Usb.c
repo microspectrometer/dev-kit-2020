@@ -1,6 +1,6 @@
 #include "Usb.h"
 #include "Ft1248.h"
-#include "DebugLed.h"
+#include "BiColorLed.h"
 #include "stdlib.h" // defines NULL
 
 void UsbInit(void)
@@ -21,13 +21,16 @@ void UsbInit(void)
     /* and let the UsbHost deal with the possibility */
     /* of not getting any response to its command. */
 /* // */
+// =====[status_led Pin Connection On SpiMaster hardware ]=====
+/* The led_name is defined in the hardware header. */
+extern uint8_t const status_led;
 /* Define command functions in jump table */
 void CmdLedRed(void){
-    DebugLedTurnRed();
-    // tell mBrd to turn debug_led1 red
+    BiColorLedRed(status_led);
+    ; // placeholder: tell mBrd to turn led1 red: BiColorLedRed(status_led_1);
     UsbWriteStatusOk();
 }
-void CmdLedGreen(void){ DebugLedTurnGreen(); UsbWriteStatusOk(); }
+void CmdLedGreen(void){ BiColorLedGreen(status_led); UsbWriteStatusOk(); }
 void CmdCfgLis(void)
 {
     /* Spectrometer configuration is four bytes. */
@@ -262,7 +265,7 @@ uint8_t UsbReadOneByte(uint8_t *read_buffer)
         // sad path
         // No, not an error. Not a sad path.
         // Use this in place of checking if Ft_Miso is low in app.
-        /* DebugLedTurnRedToShowError(); */
+        /* BiColorLedRed(status_led); */
         FtDeactivateInterface();
         return num_bytes_read;
     }
@@ -279,7 +282,7 @@ uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes)
     if (!has_data_to_read)
     {
         // sad path
-        DebugLedTurnRedToShowError();
+        BiColorLedRed(status_led);
         FtDeactivateInterface();
         return num_bytes_read;
     }
@@ -303,7 +306,7 @@ uint16_t UsbRead(uint8_t *read_buffer)
     if (!has_data_to_read)
     {
         // sad path
-        DebugLedTurnRedToShowError();
+        BiColorLedRed(status_led);
         FtDeactivateInterface();
         return num_bytes_read;
     }
@@ -343,7 +346,7 @@ uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes)
     FtSendCommand(FtCmd_Write);
     if (!FtBusTurnaround())
     {
-        DebugLedTurnRedToShowError();
+        BiColorLedRed(status_led);
         FtDeactivateInterface();
         return num_bytes_sent;
     }

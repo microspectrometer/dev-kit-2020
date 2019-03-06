@@ -9,7 +9,7 @@
 //static uint8_t const FT1248Cmd_8BitWide_Write = 0x86;
 
 //=====[ High-level API ]=====
-#include "DebugLed.h"
+#include "BiColorLed.h"
 void FtInit(void)
 {
     FtSetMisoAsInput();

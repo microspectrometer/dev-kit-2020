@@ -1,0 +1,24 @@
+#ifndef _BICOLOR_LED_HARDWARE_H
+#define _BICOLOR_LED_HARDWARE_H
+
+#include <stdint.h>    // uint8_t
+//#include <avr/io.h>  // This is the file being faked.
+
+// =====[ Use This File With "lib/src/BiColorLed.h" ]=====
+// Hardware dependencies are `extern` variables in the lib header.
+
+/* =====[ Fake registers for unit tests. ]===== */
+static uint8_t volatile value_in_fake_BiColorLed_ddr;
+static uint8_t volatile value_in_fake_BiColorLed_port;
+static uint8_t volatile value_in_fake_BiColorLed_pin;
+
+// Defines symbols for the `extern` variables in the lib header.
+uint8_t volatile * const BiColorLed_ddr       = &value_in_fake_BiColorLed_ddr;
+uint8_t volatile * const BiColorLed_port      = &value_in_fake_BiColorLed_port;
+uint8_t volatile * const BiColorLed_pin       = &value_in_fake_BiColorLed_pin;
+
+// Define LED names with their bit index in the I/O port.
+uint8_t const status_led = 1; // fake bit with any number from 0 to 7
+
+#endif // _BICOLOR_LED_HARDWARE_H 
+

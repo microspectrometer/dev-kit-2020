@@ -1,7 +1,7 @@
 // This PCB is the bridge from the USB host to the Chromation spectrometer.
 //
-#include <DebugLed.h>               // controls the debug LED
-#include "DebugLed-Hardware.h"      // map debug LED to actual hardware
+#include <BiColorLed.h>               // controls the debug LED
+#include "BiColorLed-Hardware.h"      // map debug LED to actual hardware
 #include <Ft1248.h>                 // supports Usb -- TODO: does app need this?
 #include "Ft1248-Hardware.h"        // map FT1248 (USB) I/O to actual hardware
 #include <Usb.h>                    // USB host communication
@@ -28,15 +28,6 @@ uint16_t SpiMasterPassLisFrame(void);        // get the real Lis frame
 uint16_t nbytes_in_frame;
 
 /* =====[ Helper function for main setup ]===== */
-void SetupDebugLed(void)
-{
-    DebugLedInit(
-        DebugLed_ddr,
-        DebugLed_port,
-        DebugLed_pin,
-        debug_led
-        );
-}
 
 void AutoExpose(void)
 {
@@ -94,10 +85,6 @@ void SetExposureTime(uint8_t *pnticks)
     UsbWrite(pnticks, 2);
 }
 
-#define MacroDebugLedRed()          SetBit(DebugLed_port, debug_led)
-#define MacroDebugLedGreen()        ClearBit(DebugLed_port, debug_led)
-#define MacroDebugLedToggleColor()  MacroToggleBit(DebugLed_port, debug_led)
-
 #define UsbWriteDelayTicks 1
 #define MacroUsbWriteByte(pbyte) do { \
     /* =====[ FtSendCommand(FtCmd_Write); \ ]===== */ \
@@ -112,7 +99,7 @@ void SetExposureTime(uint8_t *pnticks)
     *FtMiosio_port = FtCmd_Write; \
     /* FtPullData(); \ */ \
     ClearBit(Ft1248_port, Ft1248_Sck); \
-    /* if (!FtBusTurnaround()) DebugLedTurnRedToShowError(); \ */ \
+    /* if (!FtBusTurnaround()) BiColorLedRed(status_led); \ */ \
     /* FtLetSlaveDriveBus(); */ \
     *FtMiosio_ddr = 0x00; \
     /* FtPushData(); \ */ \
@@ -121,7 +108,7 @@ void SetExposureTime(uint8_t *pnticks)
     ClearBit(Ft1248_port, Ft1248_Sck); \
     /* return FtIsBusOk(); */ \
     /* =====[ If bus is not OK, turn LED red and do nothing ]===== */ \
-    if (!BitIsClear(Ft1248_pin, Ft1248_Miso)) MacroDebugLedRed(); \
+    if (!BitIsClear(Ft1248_pin, Ft1248_Miso)) BiColorLedRed(status_led); \
     else \
     { \
     /* =====[ FtWrite(pbyte); ]===== */ \
@@ -135,7 +122,7 @@ void SetExposureTime(uint8_t *pnticks)
     ClearBit(Ft1248_port, Ft1248_Sck); \
     /* if (!FtIsBusOk()) return false; */ \
     /* =====[ If write failed, turn LED red ]===== */ \
-    if (!BitIsClear(Ft1248_pin, Ft1248_Miso)) MacroDebugLedRed(); \
+    if (!BitIsClear(Ft1248_pin, Ft1248_Miso)) BiColorLedRed(status_led); \
     } \
     /* =====[ No matter what happened, deactivate the interface. ]===== */ \
     /* FtDeactivateInterface(); \ */ \
@@ -154,7 +141,8 @@ void SetExposureTime(uint8_t *pnticks)
 int main()
 {
     /* =====[ Setup ]===== */
-    SetupDebugLed();
+    /* SetupDebugLed(); */
+    BiColorLedOn(status_led);
     SpiMasterInit();
     UsbInit();
     DebugPinInit();
@@ -206,7 +194,7 @@ void DoCmdSendFourDummyBytes(void)
         *(pfake_data++) = SpiMasterRead();
     }
     UsbWrite(fake_data, nbytes);
-    DebugLedTurnRed();
+    BiColorLedRed(status_led);
 }
 void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave_old(void)
 {
@@ -214,17 +202,17 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave_old(void)
     {
         if (UsbHasDataToRead())
         {
-            /* MacroDebugLedToggleColor(); */
-            /* MacroDebugLedRed(); */
+            /* BiColorLedToggleColor(); */
+            /* BiColorLedRed(status_led); */
             uint8_t read_buffer[4];
             uint8_t nbytes_in_cmd = UsbRead(read_buffer);
             uint8_t cmd = read_buffer[0];
             if (1 == nbytes_in_cmd)
             {
-                if      (cmd == cmd_send_lis_frame) { MacroDebugLedRed(); SpiMasterPassLisFrame(); MacroDebugLedGreen(); }
+                if      (cmd == cmd_send_lis_frame) { BiColorLedRed(status_led); SpiMasterPassLisFrame(); BiColorLedGreen(status_led); }
                 // for using Arduino as the SPI master via the ISP header:
-                else if (cmd == cmd_disable_spi_master) { SpiMasterDisable(); MacroDebugLedRed(); }
-                else if (cmd == cmd_enable_spi_master)  { SpiMasterInit(); MacroDebugLedGreen(); }
+                else if (cmd == cmd_disable_spi_master) { SpiMasterDisable(); BiColorLedRed(status_led); }
+                else if (cmd == cmd_enable_spi_master)  { SpiMasterInit(); BiColorLedGreen(status_led); }
                 // test commands
                 else if (cmd == cmd_send_four_dummy_bytes) DoCmdSendFourDummyBytes();
                 else if (cmd == cmd_auto_expose) AutoExpose();
@@ -268,7 +256,7 @@ void SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave_old(void)
                 else                                                MacroSpiMasterWriteAndDelay(cmd_cfg_lis_rowselect_12345);
                 if (cmd == cmd_write_cfg_to_lis) MacroSpiMasterWriteAndDelay(cmd_write_cfg_to_lis);
             }
-            /* MacroDebugLedGreen(); */
+            /* BiColorLedGreen(); */
         }
     }
 }
