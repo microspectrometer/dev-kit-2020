@@ -5,7 +5,8 @@
 #include <RecordedCall.h>   // used by *DOF* `mock_lib.c`
 #include <RecordedArg.h>    // used by *DOF* `mock_lib.c`
 #include "test_ReadWriteBits.h"  // low-level bit manipulations
-#include "test_DebugLed.h"  // debug LED  on simBrd
+#include "test_BiColorLed.h"  // debug LED  on simBrd
+#include "fake/BiColorLed-Hardware.h"
 #include "test_DebugLeds.h" // debug LEDs on mBrd
 #include "test_Ft1248.h"    // lib-level API for FT1248 master on simBrd
 #include "test_Usb.h"       // app-level API for FT1248 master on simBrd
@@ -35,22 +36,16 @@ void DevelopingReadWriteBits(bool run_test) { if (run_test) {
     RUN_TEST(BitIsSet_is_false_if_bit_is_clear);
     RUN_TEST(BitIsClear_is_true_if_bit_is_clear);
     RUN_TEST(BitIsClear_is_false_if_bit_is_set);
-    /* // */
-    /* Macro versions are eliminated because I learned how to `inline`. */
-    /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
-    /* RUN_TEST(MacroSetBit_sets_a_bit); */
-    /* RUN_TEST(MacroSetBit_does_not_clear_any_bits); */
-    /* RUN_TEST(MacroClearBit_clears_a_bit); */
-    /* RUN_TEST(MacroClearBit_does_not_set_any_bits); */
-    /* RUN_TEST(MacroBitIsSet_is_true_if_bit_is_set); */
-    /* RUN_TEST(MacroBitIsSet_is_false_if_bit_is_clear); */
-    /* RUN_TEST(MacroBitIsClear_is_true_if_bit_is_clear); */
-    /* RUN_TEST(MacroBitIsClear_is_false_if_bit_is_set); */
 }}
-void DevelopingDebugLed(bool run_test) { if (run_test) {
-    setUp = SetUp_DebugLedInit; tearDown = TearDown_DebugLedInit;
-    RUN_TEST(DebugLedInit_turns_debug_led_on_and_green);
-    RUN_TEST(DebugLedTurnRedToShowError_turns_debug_led_red);
+void DevelopingBiColorLed(bool run_test) { if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(BiColorLedRed_is_a_high_on_led_pin);
+    RUN_TEST(BiColorLedGreen_is_a_low_on_led_pin);
+    RUN_TEST(BiColorLedToggleColor_changes_green_to_red);
+    RUN_TEST(BiColorLedToggleColor_changes_red_to_green);
+    RUN_TEST(BiColorLedOff_is_a_low_on_led_pin_and_data_direction);
+    RUN_TEST(BiColorLedOn_is_low_on_led_pin_but_high_on_led_pin_data_direction);
+
 }}
 void DevelopingDebugLeds(bool run_test) { if (run_test) {
     setUp = SetUp_DebugLeds; tearDown = TearDown_DebugLeds;
@@ -330,8 +325,8 @@ void DevelopingInlineSpiMaster(bool run_test) {if (run_test) {
 int main()
 {
     UNITY_BEGIN();
-    DevelopingReadWriteBits   (Yep);
-    DevelopingDebugLed        (Nope);
+    DevelopingReadWriteBits   (Nope);
+    DevelopingBiColorLed      (Yep);
     DevelopingDebugLeds       (Nope);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);

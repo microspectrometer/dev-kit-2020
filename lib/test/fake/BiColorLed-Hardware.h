@@ -15,7 +15,6 @@ static uint8_t volatile value_in_fake_BiColorLed_pin;
 // Defines symbols for the `extern` variables in the lib header.
 uint8_t volatile * const BiColorLed_ddr       = &value_in_fake_BiColorLed_ddr;
 uint8_t volatile * const BiColorLed_port      = &value_in_fake_BiColorLed_port;
-uint8_t volatile * const BiColorLed_pin       = &value_in_fake_BiColorLed_pin;
 
 // Define LED names with their bit index in the I/O port.
 uint8_t const status_led = 1; // fake bit with any number from 0 to 7

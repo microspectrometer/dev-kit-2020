@@ -23,7 +23,7 @@ CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
 
 # List the libs under dev:
-names-of-dev-libs := ReadWriteBits DebugLed DebugLeds Ft1248 Usb Spi UartSpi Lis Pwm Auto
+names-of-dev-libs := ReadWriteBits BiColorLed DebugLeds Ft1248 Usb Spi UartSpi Lis Pwm Auto
 # All libs under dev will be tested!
 # All libs under test need a `test_dev-lib.c` for the tests to build.
 #
@@ -33,7 +33,7 @@ names-of-libs-tested-with-mocks := Ft1248 Usb Spi UartSpi Lis
 
 # And only some libs require mocking.
 # List the dev libs that have mocked versions to remove dependencies:
-mocked-dev-libs := DebugLed Ft1248 Spi UartSpi Lis Pwm
+mocked-dev-libs := Ft1248 Spi UartSpi Lis Pwm
 
 # list of object prerequisites for      dev libs
 obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})

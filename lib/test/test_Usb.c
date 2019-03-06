@@ -1,12 +1,12 @@
-#include "DebugLed.h"
+#include "BiColorLed.h"
 #include "Ft1248.h"                 // DOF lib includes FtCmd constants
 #include "mock_Ft1248.h"            // mocked version of DOF lib
-#include "mock_DebugLed.h"          // mocked version of DOF lib
 #include "test_Usb_MockUps.h"       // mock setups for LUT
 #include <Mock.h>                   // RanAsHoped, WhyDidItFail
 #include "test_Usb.h"               // LUT test code
 #include "Usb.h"                    // LUT source code
 #include "unity.h"                  // all the TEST_blah macros
+
 //=====[ List of tests to write ]=====
 // UsbHasDataToRead behavioral tests
     // [x] UsbHasDataToRead returns true if the rx buffer has data
@@ -263,7 +263,7 @@ void UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full(void)
     //
     //=====[ Set expectations ]=====
     Expect_FtBusTurnaround();
-    Expect_DebugLedTurnRedToShowError();
+    /* Expect_DebugLedTurnRedToShowError(); */
     //
     //=====[ Operate ]=====
     uint8_t write_buffer[1];
@@ -363,7 +363,7 @@ void UsbWrite_sad_path_is_implemented_like_this(void) // happy path
     //=====[ Set expectations ]=====
     Expect_FtSendCommand(FtCmd_Write);
     Expect_FtBusTurnaround();
-    Expect_DebugLedTurnRedToShowError();
+    /* Expect_DebugLedTurnRedToShowError(); */
     Expect_FtDeactivateInterface();
     //
     //=====[ Test ]=====
@@ -465,7 +465,7 @@ void UsbRead_turns_LED_red_if_there_was_no_data_to_read(void)
     //
     //=====[ Set expectations ]=====
     Expect_FtBusTurnaround();
-    Expect_DebugLedTurnRedToShowError();
+    /* Expect_DebugLedTurnRedToShowError(); */
     //
     //=====[ Operate ]=====
     uint8_t read_buffer[1];
@@ -519,7 +519,7 @@ void UsbRead_sad_path_is_implemented_like_this(void)
     //=====[ Set expectations ]=====
     Expect_FtSendCommand(FtCmd_Read);
     Expect_FtBusTurnaround(); // false := error: nothing to read
-    Expect_DebugLedTurnRedToShowError();  _MOCK_DEBUGLED_H;
+    /* Expect_DebugLedTurnRedToShowError();  _MOCK_DEBUGLED_H; */
     // exit before attempting to read any bytes from the buffer
     Expect_FtDeactivateInterface();
     //
@@ -657,18 +657,19 @@ void LookupCmd_example_calling_the_command(void){
     //TODO: erase this when I fix the DebugLed.h hardware interface.
     //=====[ Stupid Setup ]=====
     /* DebugLed.h does not follow the simple extern everything format. */
-    uint8_t fake_ddr, fake_port, fake_pin; // compiler picks safe fake addresses
-    uint8_t *DebugLed_port = &fake_port; uint8_t debug_led = 3; // test only needs these two
-    DebugLedInit( &fake_ddr, DebugLed_port, &fake_pin, debug_led); // pass fakes to init
+    /* uint8_t fake_ddr, fake_port, fake_pin; // compiler picks safe fake addresses */
+    /* uint8_t *DebugLed_port = &fake_port; uint8_t debug_led = 3; // test only needs these two */
+    /* DebugLedInit( &fake_ddr, DebugLed_port, &fake_pin, debug_led); // pass fakes to init */
     //=====[ Setup ]=====
-    *DebugLed_port = 0x00; // fake port with DebugLed pin green
+    BiColorLedGreen(status_led);
+    /* *BiColorLed_port = 0x00; // fake port with status_led pin green */
     /* ------------------------------- */
     /* =====[ Operate ]===== */
     /* Note the parentheses to make it a function call */
     LookupCmd(CmdLedRed_key)(); // call the function returned by lookup
     /* ------------------------------- */
     //=====[ Test ]=====
-    TEST_ASSERT_BIT_HIGH(debug_led, *DebugLed_port);
+    TEST_ASSERT_BIT_HIGH(status_led, *BiColorLed_port);
 }
 void LookupCmd_example_storing_the_returned_pointer(void){
     /* =====[ Setup ]===== */

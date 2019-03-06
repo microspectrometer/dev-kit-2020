@@ -1,6 +1,14 @@
 #ifndef _TEST_USB_H
 #define _TEST_USB_H
 
+/** `status_led` is defined in `fake/BiColorLed-Hardware.h`. */
+/* I cannot simply include that header because the test suite */
+/* has multiple test translation units. */
+/* If the Usb and Bicolor tests both include the */
+/* BiColorLed-Hardware header, then `status_led` is defined */
+/* multiple times: once in `test_Usb.o` and once in `test_BiColor.o`. */
+extern uint8_t const status_led;
+
 /* void SetUp_NothingForUsb(void); void TearDown_NothingForUsb(void); */
 
 void SetUp_UsbRead(void); void TearDown_UsbRead(void);

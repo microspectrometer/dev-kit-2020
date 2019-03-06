@@ -1,7 +1,5 @@
 #include "Ft1248.h"
 #include "mock_Ft1248.h"
-#include "DebugLed.h"
-#include "mock_DebugLed.h"
 #include <Mock.h>
 #include "test_Usb_MockUps.h"
 
@@ -29,14 +27,6 @@ static void Stub_FtDeactivateInterface(void) {
 static void Unstub_FtDeactivateInterface(void) {
     FtDeactivateInterface = FtDeactivateInterface_Saved;
 }
-static void (*DebugLedTurnRedToShowError_Saved)(void);
-static void Stub_DebugLedTurnRedToShowError(void) {
-    DebugLedTurnRedToShowError_Saved = DebugLedTurnRedToShowError;
-    DebugLedTurnRedToShowError = DebugLedTurnRedToShowError_Stubbed;
-}
-static void Unstub_DebugLedTurnRedToShowError(void) {
-    DebugLedTurnRedToShowError = DebugLedTurnRedToShowError_Saved;
-}
 
 static bool (*FtRead_Saved)(uint8_t *);
 static void Stub_FtRead(void) {
@@ -51,7 +41,6 @@ void SetUpMock_UsbRead(void)  // FUT
     mock = Mock_new();
     //
     Stub_FtBusTurnaround();  // DOF
-    Stub_DebugLedTurnRedToShowError();  // DOF
     Stub_FtRead();  // DOF
 }
 void TearDownMock_UsbRead(void)  // FUT
@@ -59,7 +48,6 @@ void TearDownMock_UsbRead(void)  // FUT
     Mock_destroy(mock); mock = NULL;
     //
     Unstub_FtBusTurnaround();  // DOF
-    Unstub_DebugLedTurnRedToShowError();  // DOF
     Unstub_FtRead();  // DOF
 }
 void SetUpMock_DetailsOf_UsbRead(void)  // FUT
@@ -69,7 +57,6 @@ void SetUpMock_DetailsOf_UsbRead(void)  // FUT
     Stub_FtSendCommand();  // DOF
     Stub_FtBusTurnaround();  // DOF
     Stub_FtDeactivateInterface();  // DOF
-    Stub_DebugLedTurnRedToShowError();  // DOF
     Stub_FtRead();  // DOF
 }
 void TearDownMock_DetailsOf_UsbRead(void)  // FUT
@@ -79,7 +66,6 @@ void TearDownMock_DetailsOf_UsbRead(void)  // FUT
     Unstub_FtSendCommand();  // DOF
     Unstub_FtBusTurnaround();  // DOF
     Unstub_FtDeactivateInterface();  // DOF
-    Unstub_DebugLedTurnRedToShowError();  // DOF
     Unstub_FtRead();  // DOF
 }
 
@@ -98,7 +84,6 @@ void SetUpMock_UsbWrite(void)  // FUT
     //
     Stub_FtBusTurnaround();  // DOF
     Stub_FtWrite();  // DOF
-    Stub_DebugLedTurnRedToShowError();  // DOF
 }
 void TearDownMock_UsbWrite(void)  // FUT
 {
@@ -106,7 +91,6 @@ void TearDownMock_UsbWrite(void)  // FUT
     //
     Unstub_FtBusTurnaround();  // DOF
     Unstub_FtWrite();  // DOF
-    Unstub_DebugLedTurnRedToShowError();  // DOF
 }
 
 void SetUpMock_DetailsOf_UsbWrite(void)  // FUT
@@ -116,7 +100,6 @@ void SetUpMock_DetailsOf_UsbWrite(void)  // FUT
     Stub_FtSendCommand();  // DOF
     Stub_FtBusTurnaround();  // DOF
     Stub_FtDeactivateInterface();  // DOF
-    Stub_DebugLedTurnRedToShowError();  // DOF
     Stub_FtWrite();  // DOF
 }
 void TearDownMock_DetailsOf_UsbWrite(void)  // FUT
@@ -126,7 +109,6 @@ void TearDownMock_DetailsOf_UsbWrite(void)  // FUT
     Unstub_FtSendCommand();  // DOF
     Unstub_FtBusTurnaround();  // DOF
     Unstub_FtDeactivateInterface();  // DOF
-    Unstub_DebugLedTurnRedToShowError();  // DOF
     Unstub_FtWrite();  // DOF
 }
 

@@ -16,7 +16,6 @@
  * */
 extern uint8_t volatile * const BiColorLed_ddr;
 extern uint8_t volatile * const BiColorLed_port;
-extern uint8_t volatile * const BiColorLed_pin;
 
 /* The header that defines symbols for the `extern` registers */
 /* also defines the LED names with their bit index in the I/O port. */
