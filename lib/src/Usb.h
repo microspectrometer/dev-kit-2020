@@ -26,6 +26,12 @@ BridgeCmd BridgeLedGreen;
 BridgeCmd BridgeCfgLis;
 BridgeCmd SendSensorLed1Red;
 BridgeCmd SendSensorLed1Green;
+BridgeCmd SendSensorLed2Red;
+BridgeCmd SendSensorLed2Green;
+BridgeCmd SendSensorLed3Red;
+BridgeCmd SendSensorLed3Green;
+BridgeCmd SendSensorLed4Red;
+BridgeCmd SendSensorLed4Green;
 /* This is the datatype to use when calling LookupBridgeCmd: */
 typedef uint8_t bridge_cmd_key;  // jump-table dictionary uses 8-bit keys
 /* Declare keys for callers of LookupBridgeCmd (values hidden in .c file) */
@@ -34,6 +40,12 @@ bridge_cmd_key const BridgeLedGreen_key;
 bridge_cmd_key const BridgeCfgLis_key;
 bridge_cmd_key const SendSensorLed1Red_key;
 bridge_cmd_key const SendSensorLed1Green_key;
+bridge_cmd_key const SendSensorLed2Red_key;
+bridge_cmd_key const SendSensorLed2Green_key;
+bridge_cmd_key const SendSensorLed3Red_key;
+bridge_cmd_key const SendSensorLed3Green_key;
+bridge_cmd_key const SendSensorLed4Red_key;
+bridge_cmd_key const SendSensorLed4Green_key;
 /* =====[ API: ]===== */
  /* LookUpCmd takes key from UsbHost and returns the function pointer to call. */
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key);

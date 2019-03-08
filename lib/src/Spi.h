@@ -301,6 +301,12 @@ typedef void (SensorCmd)(void);
 /* jump table to compare pointer values. */
 SensorCmd SensorLed1Red;
 SensorCmd SensorLed1Green;
+SensorCmd SensorLed2Red;
+SensorCmd SensorLed2Green;
+SensorCmd SensorLed3Red;
+SensorCmd SensorLed3Green;
+SensorCmd SensorLed4Red;
+SensorCmd SensorLed4Green;
 /* SensorCmd spi_CfgLis; */
 /* This is the datatype to use when calling LookupSpiCmd: */
 typedef uint8_t sensor_cmd_key;  // SpiSlave jump-table dictionary uses 8-bit keys
@@ -308,6 +314,12 @@ typedef uint8_t sensor_cmd_key;  // SpiSlave jump-table dictionary uses 8-bit ke
 /* extern sensor_cmd_key const spi_LedRed_key; */
 extern sensor_cmd_key const SensorLed1Red_key;
 extern sensor_cmd_key const SensorLed1Green_key;
+extern sensor_cmd_key const SensorLed2Red_key;
+extern sensor_cmd_key const SensorLed2Green_key;
+extern sensor_cmd_key const SensorLed3Red_key;
+extern sensor_cmd_key const SensorLed3Green_key;
+extern sensor_cmd_key const SensorLed4Red_key;
+extern sensor_cmd_key const SensorLed4Green_key;
 /* extern sensor_cmd_key const spi_CfgLis_key; */
 /* LookupSensorCmd takes key from SpiMaster and returns the function pointer to call. */
 SensorCmd* LookupSensorCmd(sensor_cmd_key const key);

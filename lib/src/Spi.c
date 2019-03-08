@@ -37,27 +37,81 @@ extern uint8_t const status_led3;
 extern uint8_t const status_led4;
 void SensorLed1Red(void)
 {
-/* TODO: change this to only the first LED. Switch mBrd to lib `BiColorLed` first. */
-    /* DebugLedsTurnAllRed(); */
     BiColorLedRed(status_led1);
     SpiSlaveWrite_StatusOk(SensorLed1Red_key);
 }
+void SensorLed2Red(void)
+{
+    BiColorLedRed(status_led2);
+    SpiSlaveWrite_StatusOk(SensorLed2Red_key);
+}
+void SensorLed3Red(void)
+{
+    BiColorLedRed(status_led3);
+    SpiSlaveWrite_StatusOk(SensorLed3Red_key);
+}
+void SensorLed4Red(void)
+{
+    BiColorLedRed(status_led4);
+    SpiSlaveWrite_StatusOk(SensorLed4Red_key);
+}
+
 void SensorLed1Green(void)
 {
-/* TODO: change this to only the first LED. Switch mBrd to lib `BiColorLed` first. */
-    /* DebugLedsTurnAllGreen(); */
     BiColorLedGreen(status_led1);
     SpiSlaveWrite_StatusOk(SensorLed1Green_key);
 }
+void SensorLed2Green(void)
+{
+    BiColorLedGreen(status_led2);
+    SpiSlaveWrite_StatusOk(SensorLed2Green_key);
+}
+void SensorLed3Green(void)
+{
+    BiColorLedGreen(status_led3);
+    SpiSlaveWrite_StatusOk(SensorLed3Green_key);
+}
+void SensorLed4Green(void)
+{
+    BiColorLedGreen(status_led4);
+    SpiSlaveWrite_StatusOk(SensorLed4Green_key);
+}
+
+void SensorCfgLis(void)
+{
+    /* TODO: left off here */
+    ;// get 4-byte arg from bridge
+    /* Fake receiving a valid `cfg`. */
+    uint8_t const valid_cfg[] = {0x0F, 0xFF, 0xFF, 0xF9};
+    LisWriteCfg(valid_cfg);
+    // LisWriteCfg must handle the StatusOk since it follow that with
+    // the updated cfg.
+}
+
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
 sensor_cmd_key const SensorLed1Green_key = 0;
 sensor_cmd_key const SensorLed1Red_key = 1;
+sensor_cmd_key const SensorLed2Green_key = 2;
+sensor_cmd_key const SensorLed2Red_key = 3;
+sensor_cmd_key const SensorLed3Green_key = 4;
+sensor_cmd_key const SensorLed3Red_key = 5;
+sensor_cmd_key const SensorLed4Green_key = 6;
+sensor_cmd_key const SensorLed4Red_key = 7;
+/* TODO: left off here */
+sensor_cmd_key const SensorCfgLis_key = 8;
 SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
     /* pf is an array of pointers to SensorCmd functions */
     /* pf lives in static memory, not on the `LookupSensorCmd` stack frame */
     static SensorCmd* const pf[] = {
         SensorLed1Green,
-        SensorLed1Red
+        SensorLed1Red,
+        SensorLed2Green,
+        SensorLed2Red,
+        SensorLed3Green,
+        SensorLed3Red,
+        SensorLed4Green,
+        SensorLed4Red,
+        SensorCfgLis
         };
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];

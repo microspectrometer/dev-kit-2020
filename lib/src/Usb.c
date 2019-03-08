@@ -73,8 +73,8 @@ void SendSensorCommand(
     uint8_t nbytes_of_data[] = {response_size.msb, response_size.lsb};
     UsbWrite(nbytes_of_data, 2);
     UsbWrite(rx,nbytes_expected);
-
 }
+
 void SendSensorLed1Green(void)
 {
     SendSensorCommand(
@@ -86,6 +86,42 @@ void SendSensorLed1Red(void)
     SendSensorCommand(
             SensorLed1Red_key,   // send this command key to the sensor
         SendSensorLed1Red_key);  // and report status on this command key 
+}
+void SendSensorLed2Green(void)
+{
+    SendSensorCommand(
+            SensorLed2Green_key,   // send this command key to the sensor
+        SendSensorLed2Green_key);  // and report status on this command key
+}
+void SendSensorLed2Red(void)
+{
+    SendSensorCommand(
+            SensorLed2Red_key,   // send this command key to the sensor
+        SendSensorLed2Red_key);  // and report status on this command key 
+}
+void SendSensorLed3Green(void)
+{
+    SendSensorCommand(
+            SensorLed3Green_key,   // send this command key to the sensor
+        SendSensorLed3Green_key);  // and report status on this command key
+}
+void SendSensorLed3Red(void)
+{
+    SendSensorCommand(
+            SensorLed3Red_key,   // send this command key to the sensor
+        SendSensorLed3Red_key);  // and report status on this command key 
+}
+void SendSensorLed4Green(void)
+{
+    SendSensorCommand(
+            SensorLed4Green_key,   // send this command key to the sensor
+        SendSensorLed4Green_key);  // and report status on this command key
+}
+void SendSensorLed4Red(void)
+{
+    SendSensorCommand(
+            SensorLed4Red_key,   // send this command key to the sensor
+        SendSensorLed4Red_key);  // and report status on this command key 
 }
 void BridgeLedGreen(void)
 {
@@ -111,6 +147,9 @@ void BridgeCfgLis(void)
         // [x] Do system tests with
         // /cygdrive/c/chromation-dropbox/Dropbox/sales/spect-py3-examples/main.py
         //
+        // TODO: Left off here
+        // Need something like SendSensorCommand but with the ability to follow
+        // the command with an arg for the four bytes of cfg.
         // TODO: [ ] pass to mBrd
         // mBrd converts to uint32_t and does cfg
         // ...
@@ -126,6 +165,12 @@ bridge_cmd_key const BridgeLedGreen_key = 1;
 bridge_cmd_key const BridgeCfgLis_key = 2;
 bridge_cmd_key const SendSensorLed1Red_key = 3;
 bridge_cmd_key const SendSensorLed1Green_key = 4;
+bridge_cmd_key const SendSensorLed2Red_key = 5;
+bridge_cmd_key const SendSensorLed2Green_key = 6;
+bridge_cmd_key const SendSensorLed3Red_key = 7;
+bridge_cmd_key const SendSensorLed3Green_key = 8;
+bridge_cmd_key const SendSensorLed4Red_key = 9;
+bridge_cmd_key const SendSensorLed4Green_key = 10;
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key) {
     /* pf is an array of pointers to BridgeCmd functions */
     /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
@@ -134,7 +179,13 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key) {
         BridgeLedGreen,
         BridgeCfgLis,
         SendSensorLed1Red,
-        SendSensorLed1Green
+        SendSensorLed1Green,
+        SendSensorLed2Red,
+        SendSensorLed2Green,
+        SendSensorLed3Red,
+        SendSensorLed3Green,
+        SendSensorLed4Red,
+        SendSensorLed4Green
         };
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
