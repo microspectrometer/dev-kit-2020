@@ -16,7 +16,7 @@ CFLAGS = -I../lib/src -Isrc \
 
 #=====[ Project Libs ]=====
 # List the project libs:
-names-of-dev-libs := ReadWriteBits DebugLeds Spi UartSpi Lis Pwm
+names-of-dev-libs := ReadWriteBits BiColorLed Spi UartSpi Lis Pwm
 # list of object prerequisites for dev libs
 obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
 obj_dev-libs := $(addprefix build/,${obj_dev-libs})

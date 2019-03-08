@@ -1,13 +1,21 @@
 /** \file */
 #include "Spi.h"
 #include "ReadWriteBits.h"
-#include "DebugLeds.h"          // controls the 4 debug LEDs
+/* #include "DebugLeds.h"          // controls the 4 debug LEDs */
+#include "BiColorLed.h"
 #include "stdlib.h" // defines NULL
 
 /* ---------------------------------------------------- */
 /* | 2019-03-04 WIP: inline version of SpiMasterWrite | */
 /* ---------------------------------------------------- */
-void SpiMasterWriteN(uint8_t const * bytes, uint8_t const nbytes);
+void SpiMasterWriteN_NoInlineHelpers(uint8_t const * bytes, uint8_t const nbytes);
+uint8_t SpiMasterReadByte(void); void SpiMasterWriteByte(uint8_t const byte);
+/* =====[ Helpers for ReadByte and WriteByte ]===== */
+void WaitUntilSpiWriteIsDone(void);
+void OpenSpiSlave(void);
+void CloseSpiSlave(void);
+void SpiLaunchByte(uint8_t const byte);
+uint16_t BytesComing(spi_BytesComing_s response_size);
 /* ---------------------------------------------------- */
 
 /* --------------------------------------------------------------------------------------- */
@@ -18,19 +26,38 @@ void SpiMasterWriteN(uint8_t const * bytes, uint8_t const nbytes);
 /*     bool have_byte = SpiTransferIsDone(); */
 /*     return have_byte; */
 /* } */
-
+void SpiMasterWaitForSlaveReady(void);
+/* =====[ Helpers to `SpiMasterWaitForSlaveReady` ]===== */
+bool SpiSlaveShowsDataReady(void);
+bool IsSpiSlaveReadyToSend(void);
 /* Define command functions in jump table */
-void spi_LedRed(void) { DebugLedsTurnAllRed(); SpiSlaveWrite_StatusOk(); }
-void spi_LedGreen(void) { DebugLedsTurnAllGreen(); SpiSlaveWrite_StatusOk(); }
+extern uint8_t const status_led1;
+extern uint8_t const status_led2;
+extern uint8_t const status_led3;
+extern uint8_t const status_led4;
+void SensorLed1Red(void)
+{
+/* TODO: change this to only the first LED. Switch mBrd to lib `BiColorLed` first. */
+    /* DebugLedsTurnAllRed(); */
+    BiColorLedRed(status_led1);
+    SpiSlaveWrite_StatusOk(SensorLed1Red_key);
+}
+void SensorLed1Green(void)
+{
+/* TODO: change this to only the first LED. Switch mBrd to lib `BiColorLed` first. */
+    /* DebugLedsTurnAllGreen(); */
+    BiColorLedRed(status_led1);
+    SpiSlaveWrite_StatusOk(SensorLed1Green_key);
+}
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
-spi_lookup_key const spi_LedRed_key = 0;
-spi_lookup_key const spi_LedGreen_key = 1;
-spi_Cmd* spi_LookupCmd(spi_lookup_key const key) {
-    /* pf is an array of pointers to spi_Cmd functions */
-    /* pf lives in static memory, not on the `spi_LookupCmd` stack frame */
-    static spi_Cmd* const pf[] = {
-        spi_LedRed,
-        spi_LedGreen
+sensor_cmd_key const SensorLed1Green_key = 0;
+sensor_cmd_key const SensorLed1Red_key = 1;
+SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
+    /* pf is an array of pointers to SensorCmd functions */
+    /* pf lives in static memory, not on the `LookupSensorCmd` stack frame */
+    static SensorCmd* const pf[] = {
+        SensorLed1Green,
+        SensorLed1Red
         };
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
@@ -40,15 +67,15 @@ spi_Cmd* spi_LookupCmd(spi_lookup_key const key) {
     /* Recommended action: tell SpiMaster the command was not recognized. */
 }
 /* SpiSlaveSendBytes has been unit-tested. No need to unit test this. */
-void SpiSlaveWrite_StatusOk(void)
+void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd)
 {
-                             // | nbytes  | data |
-    uint8_t const StatusOk[] = {0x00, 0x01, 0x00};
-    SpiSlaveSendBytes(StatusOk,3);
+                             // | nbytes  | data           |
+    uint8_t const StatusOk[] = {0x00, 0x02, 0x00, valid_cmd };
+    SpiSlaveSendBytes(StatusOk,4);
 }
-void SpiSlaveWrite_StatusInvalid(spi_lookup_key invalid_cmd)
+void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd)
 {                                  // | nbytes  |   data          |
-    uint8_t const StatusInvalid[] = { 0x00, 0x02, 255, invalid_cmd };
+    uint8_t const StatusInvalid[] = { 0x00, 0x02, 0xFF, invalid_cmd };
     SpiSlaveSendBytes(StatusInvalid,4);
 }
 /* --------------------------------------------------------------------------------------- */

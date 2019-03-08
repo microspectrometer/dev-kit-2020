@@ -27,8 +27,6 @@
 uint16_t SpiMasterPassLisFrame(void);        // get the real Lis frame
 uint16_t nbytes_in_frame;
 
-/* =====[ Helper function for main setup ]===== */
-
 void AutoExpose(void)
 {
     // Tell SpiSlave to AutoExpose.
@@ -48,12 +46,12 @@ void AutoExpose(void)
 /* =====[ WIP ]===== */
 void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
 {
-    jump_index cmd;
+    bridge_cmd_key cmd;
     // Read USB buffer if there is any data to read.
     if (UsbReadOneByte(&cmd))
     {
         /* This first byte is *always* a command from the USB host. */
-        UsbCmd* CmdFn = LookupCmd(cmd);
+        BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
         /* Tell UsbHost if the command is invalid. */
         if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
         /* Do command if it is valid. */

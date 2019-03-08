@@ -34,8 +34,19 @@
 /* This is an API call for the client to load a configuration into the LIS. */
 void LisWriteCfg_example_usage(void)
 {
-    /* LisWriteCfg cannot be tested without mocks. */
-    /* This *test* is just a documentation example. */
+    /** `LisWriteCfg` handles entering and exiting the LIS programming mode.
+     *  For each byte in the `cfg` byte stream,
+     *  `LisWriteCfg` calls `OutputCfgByte`.
+     * */
+    /** LisWriteCfg cannot be tested because I do not mock its helpers:
+     *  EnterLisProgrammingMode()
+     *  OutputCfgByte()
+     *  ExitLisProgrammingMode()
+     *  I do not mock its helpers because I do not want function pointer seams.
+     *  Function pointer seams prevent inlining. Calls compile with `jump` and
+     *  `return`.
+     * . */
+    /* Therefore, this *test* is just a documentation example. */
 
     /* Fake receiving a valid `cfg`. */
     uint8_t const valid_cfg[] = {0x0F, 0xFF, 0xFF, 0xF9};

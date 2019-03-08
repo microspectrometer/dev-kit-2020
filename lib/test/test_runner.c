@@ -205,13 +205,13 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     RUN_TEST(SpiSlaveSendBytes_waits_for_master_read_between_each_byte);
     // These tests require mocking out the calls made by SpiSlaveSendBytes,
     // otherwise they hang waiting for a reply from an imaginary SpiMaster!
-    RUN_TEST(spi_LookupCmd_example_calling_the_returned_command);
-    RUN_TEST(SpiSlaveWrite_StatusOk_sends_0x00_0x01_0x00);
+    RUN_TEST(LookupSensorCmd_example_calling_the_returned_command);
+    RUN_TEST(SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd);
     RUN_TEST(SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name);
     //
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(spi_LookupCmd_returns_Nth_fn_for_Nth_key);
-    RUN_TEST(spi_LookupCmd_returns_NULL_if_key_is_not_in_jump_table);
+    RUN_TEST(LookupSensorCmd_returns_Nth_fn_for_Nth_key);
+    RUN_TEST(LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table);
 
 }}
 void DevelopingUartSpi(bool run_test) {if (run_test) {
@@ -288,20 +288,22 @@ void DevelopingUsbReadOneByte(bool run_test) {if (run_test) {
     RUN_TEST(UsbReadOneByte_copies_the_next_available_byte_to_the_input_read_buffer);
     RUN_TEST(UsbReadOneByte_returns_0_if_there_are_no_bytes_to_read);
     RUN_TEST(UsbReadOneByte_returns_1_if_there_is_at_least_one_byte_to_read);
-    RUN_TEST(UsbReadOneByte_example_readings_several_bytes);
+    RUN_TEST(UsbReadOneByte_example_reading_several_bytes);
 }}
 void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LookupCmd_returns_Nth_fn_for_Nth_key);
-    RUN_TEST(LookupCmd_returns_NULL_if_key_is_not_in_jump_table);
-    RUN_TEST(LookupCmd_example_calling_the_command);
-    RUN_TEST(LookupCmd_example_storing_the_returned_pointer);
+    RUN_TEST(LookupBridgeCmd_returns_Nth_fn_for_Nth_key);
+    RUN_TEST(LookupBridgeCmd_returns_NULL_if_key_is_not_in_jump_table);
+    RUN_TEST(LookupBridgeCmd_example_calling_the_command);
+    RUN_TEST(LookupBridgeCmd_example_storing_the_returned_pointer);
     RUN_TEST(UsbWriteStatusOk_tells_UsbHost_command_was_success);
     RUN_TEST(UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command);
     RUN_TEST(UsbWriteStatusBadArgs_sends_error_byte_and_echoes_invalid_command);
     RUN_TEST(UsbWriteStatusMissingArgs_sends_error_byte_and_echoes_invalid_command);
-    RUN_TEST(LookupCmd_sad_example_using_UsbWriteStatus_API);
-    RUN_TEST(LookupCmd_happy_example_using_UsbWriteStatus_API);
+    RUN_TEST(UsbWriteStatusSpiBusError_sends_error_byte_and_slave_cmd);
+
+    RUN_TEST(LookupBridgeCmd_sad_example_using_UsbWriteStatus_API);
+    RUN_TEST(LookupBridgeCmd_happy_example_using_UsbWriteStatus_API);
     RUN_TEST(CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes);
     RUN_TEST(CfgTurnsOffAllPixels_returns_true_if_cfg_turns_off_all_pixels);
     RUN_TEST(CfgTurnsOffAllPixels_ignores_the_3LSB_and_4MSB_of_cfg);
@@ -313,20 +315,25 @@ void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
     RUN_TEST(CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds);
     RUN_TEST(CfgBytesAreValid_checks_against_all_255_valid_configs); 
     printf("\n# WIP:\n");
-    RUN_TEST(CmdCfgLis_returns_StatusMismatch_if_cfg_bytes_are_invalid);
-    RUN_TEST(CmdCfgLis_sends_cfg_to_mBrd_and_reads_back_new_cfg_before_reporting_StatusOk);
+    RUN_TEST(BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect);
+    RUN_TEST(CmdCfgLis_returns_StatusBadArgs_if_cfg_bytes_are_invalid);
+    RUN_TEST(CmdCfgLis_1pushes_cfg_to_SpiSlave_2pulls_updated_cfg_3reports_StatusOk_updated_cfg);
 }}
 
 void DevelopingInlineSpiMaster(bool run_test) {if (run_test) {
     setUp = SetUp_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
-    RUN_TEST(SpiMasterWriteN_sends_N_bytes_to_SpiSlave);
+    RUN_TEST(SpiMasterWriteN_NoInlineHelpers_sends_N_bytes_to_SpiSlave);
+    RUN_TEST(SpiMasterWriteByte_sends_one_byte_to_SpiSlave);
 
 }}
 int main()
 {
     UNITY_BEGIN();
+    /* TODO: move this test to a test file */
+    /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
+    /* RUN_TEST(BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect); */
     DevelopingReadWriteBits   (Nope);
-    DevelopingBiColorLed      (Yep);
+    DevelopingBiColorLed      (Nope);
     DevelopingDebugLeds       (Nope);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
@@ -339,7 +346,7 @@ int main()
     DevelopingAuto            (Nope); // tabled -- see test
     DevelopingUsbReadOneByte  (Nope);
     DevelopingLisWriteCfg     (Nope);
-    UsbCmdParser_JumpTableSandbox (Nope);
+    UsbCmdParser_JumpTableSandbox (Yep);
     DevelopingSpiSlave        (Nope);
     DevelopingInlineSpiMaster (Nope);
     return UNITY_END();

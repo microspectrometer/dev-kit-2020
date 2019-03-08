@@ -198,14 +198,14 @@ bytes. Instead, the SpiSlave sends [0x00, 0x02] indicating that only two
 bytes are coming back: [StatusInvalid, `invalid_cmd`].
 
 Note that even knowing how many bytes to expect, the SpiSlave sends the
-*Data-Ready* signal between every byte. This is because the SPI data
-register is not double-buffered in the transmit direction. The SpiSlave
-cannot, therefore, load the next byte until the transmission is
-finished. The SpiMaster must wait to clock the SpiSlave for the start of
-the next byte until it receives the *Data-Ready* signal.
+*Data-Ready* signal between every byte. This is because the SPI data register is
+not double-buffered in the transmit direction. The SpiSlave cannot, therefore,
+load the next byte until the transmission is finished. The SpiMaster must wait
+to clock the SpiSlave for the start of the next byte until it receives the
+*Data-Ready* signal.
 
-The SpiMaster stops checking for *Data-Ready* after it receives the
-number of bytes the SpiSlave said it was sending.
+The SpiMaster stops checking for *Data-Ready* after it receives all of the bytes
+the SpiSlave said it was sending.
 
 After the SpiMaster sends a message, it must wait until the SpiSlave
 signals that a response is ready. The SpiMaster polls MISO

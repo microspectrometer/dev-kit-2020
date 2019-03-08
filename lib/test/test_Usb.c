@@ -603,7 +603,7 @@ void UsbReadOneByte_returns_1_if_there_is_at_least_one_byte_to_read(void)
     uint8_t cmd;
     TEST_ASSERT_TRUE(UsbReadOneByte(&cmd));
 }
-void UsbReadOneByte_example_readings_several_bytes(void)
+void UsbReadOneByte_example_reading_several_bytes(void)
 {
     // FtBusTurnaround returns a bool
     FtBusTurnaround_StubbedReturnValue = true;  // bus is OK
@@ -614,16 +614,21 @@ void UsbReadOneByte_example_readings_several_bytes(void)
     //=====[ Check test code for desired scenario ]=====
     uint16_t num_bytes_in_buffer = sizeof(ack_nak_sequence)-1;
     TEST_ASSERT_EQUAL_UINT16(4, num_bytes_in_buffer);
-    //
-    // FtRead copies data from rx buffer to address of buffer passed in.
+    /** Simulate `UsbHost` receiving the `CfgCmd` and its
+     * three arguments for the spectrometer configuration. */
     uint8_t const cfg_cmd = 0x07;
     uint8_t const bin_on = 0x06;
     uint8_t const gain_1x = 0x0B;
     uint8_t const all_rows = 0x0C;
+    /* Fake Ft1248 receiving the four bytes in this order. */
     uint8_t fake_rx_buffer[] = {cfg_cmd, bin_on, gain_1x, all_rows};
     TEST_ASSERT_EQUAL_UINT16(num_bytes_in_buffer, sizeof(fake_rx_buffer));
+    /* Output the fake byte stream from the mocked-out `FtRead`. */
     FtRead_StubbedDataBusPtr = fake_rx_buffer;
-    //
+    /* FtRead copies data from its rx buffer to the */
+    /* byte address passed in by `UsbReadOneByte`. */
+    /* So each time `UsbReadOneByte` calls `FtRead`, */
+    /* it gets the next fake byte. */
     //=====[ Operate and Test ]=====
     uint8_t cmd;
     UsbReadOneByte(&cmd);
@@ -642,50 +647,44 @@ void UsbReadOneByte_example_readings_several_bytes(void)
     TEST_ASSERT_EQUAL_HEX8(all_rows, cfg.row_select);
 }
 /* =====[ Jump Table Sandbox ]===== */
-/* Functions of type `UsbCmd` take nothing and return nothing. */
-void LookupCmd_returns_Nth_fn_for_Nth_key(void){
+/* Functions of type `BridgeCmd` take nothing and return nothing. */
+void LookupBridgeCmd_returns_Nth_fn_for_Nth_key(void){
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL(CmdLedRed, LookupCmd(CmdLedRed_key));
-    TEST_ASSERT_EQUAL(CmdLedGreen, LookupCmd(CmdLedGreen_key));
+    TEST_ASSERT_EQUAL(BridgeLedRed, LookupBridgeCmd(BridgeLedRed_key));
+    TEST_ASSERT_EQUAL(BridgeLedGreen, LookupBridgeCmd(BridgeLedGreen_key));
 }
-static jump_index const CmdBlackHat_key = 255; // out-of-bounds: return NULL ptr
-void LookupCmd_returns_NULL_if_key_is_not_in_jump_table(void){
+static bridge_cmd_key const CmdBlackHat_key = 255; // out-of-bounds: return NULL ptr
+void LookupBridgeCmd_returns_NULL_if_key_is_not_in_jump_table(void){
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_NULL(LookupCmd(CmdBlackHat_key));
+    TEST_ASSERT_NULL(LookupBridgeCmd(CmdBlackHat_key));
 }
-void LookupCmd_example_calling_the_command(void){
-    //TODO: erase this when I fix the DebugLed.h hardware interface.
-    //=====[ Stupid Setup ]=====
-    /* DebugLed.h does not follow the simple extern everything format. */
-    /* uint8_t fake_ddr, fake_port, fake_pin; // compiler picks safe fake addresses */
-    /* uint8_t *DebugLed_port = &fake_port; uint8_t debug_led = 3; // test only needs these two */
-    /* DebugLedInit( &fake_ddr, DebugLed_port, &fake_pin, debug_led); // pass fakes to init */
+void LookupBridgeCmd_example_calling_the_command(void){
     //=====[ Setup ]=====
     BiColorLedGreen(status_led);
     /* *BiColorLed_port = 0x00; // fake port with status_led pin green */
     /* ------------------------------- */
     /* =====[ Operate ]===== */
     /* Note the parentheses to make it a function call */
-    LookupCmd(CmdLedRed_key)(); // call the function returned by lookup
+    LookupBridgeCmd(BridgeLedRed_key)(); // call the function returned by lookup
     /* ------------------------------- */
     //=====[ Test ]=====
     TEST_ASSERT_BIT_HIGH(status_led, *BiColorLed_port);
 }
-void LookupCmd_example_storing_the_returned_pointer(void){
+void LookupBridgeCmd_example_storing_the_returned_pointer(void){
     /* =====[ Setup ]===== */
-    jump_index cmd;
+    bridge_cmd_key cmd;
     /* =====[ Operate ]===== */
-    cmd = CmdLedRed_key;
-    UsbCmd* CmdFn = LookupCmd(cmd);
+    cmd = BridgeLedRed_key;
+    BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
     /* =====[ Test ]===== */
-    TEST_ASSERT_EQUAL(CmdLedRed, CmdFn);
+    TEST_ASSERT_EQUAL(BridgeLedRed, CmdFn);
     /* =====[ Operate ]===== */
     cmd = CmdBlackHat_key;
-    CmdFn = LookupCmd(cmd);
+    CmdFn = LookupBridgeCmd(cmd);
     /* =====[ Test ]===== */
     TEST_ASSERT_NULL(CmdFn);
 }
-/* API for a caller of LookupCmd to respond to all command keys with: */
+/* API for a caller of LookupBridgeCmd to respond to all command keys with: */
 /* 0 (OK) */
 /* or non-0 (error code) */
     /* If command was understood and everything followed a happy path, then first */
@@ -699,11 +698,11 @@ void LookupCmd_example_storing_the_returned_pointer(void){
 void UsbWriteStatusOk_tells_UsbHost_command_was_success(void)
 {
     /* =====[ Setup ]===== */
-    jump_index cmd = CmdCfgLis_key;
+    bridge_cmd_key cmd = BridgeCfgLis_key;
     /* =====[ Operate ]===== */
     /* StatusOk means the command is valid and was successfully carried out. */
-    /* So LookupCmd returns a non-NULL function pointer. */
-    TEST_ASSERT_NOT_NULL(LookupCmd(cmd));
+    /* So LookupBridgeCmd returns a non-NULL function pointer. */
+    TEST_ASSERT_NOT_NULL(LookupBridgeCmd(cmd));
     /* simBrd calls CmdFn() and execution enters CmdCfgLis() */
     /* Fake that CmdCfgLis() runs without any errors. */
     bool success = true;
@@ -724,11 +723,11 @@ void UsbWriteStatusOk_tells_UsbHost_command_was_success(void)
 void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void)
 {
     /* =====[ Setup ]===== */
-    jump_index cmd = CmdBlackHat_key;
+    bridge_cmd_key cmd = CmdBlackHat_key;
     /* =====[ Operate ]===== */
     /* StatusInvalid means the command is not valid. */
-    /* So LookupCmd returns a NULL function pointer. */
-    UsbCmd* CmdFn = LookupCmd(cmd);
+    /* So LookupBridgeCmd returns a NULL function pointer. */
+    BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
     TEST_ASSERT_NULL(CmdFn);
     /* Get a value to unit test without going mock crazy. */
     uint8_t num_status_bytes_sent = 0;
@@ -742,10 +741,10 @@ void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void)
 void UsbWriteStatusBadArgs_sends_error_byte_and_echoes_invalid_command(void)
 {
     /* =====[ Setup ]===== */
-    jump_index cmd = CmdCfgLis_key;
-    /* A mismatch status means the command is valid, but not its parameters. */
-    /* So LookupCmd returns a non-NULL function pointer. */
-    TEST_ASSERT_NOT_NULL(LookupCmd(cmd));
+    bridge_cmd_key cmd = BridgeCfgLis_key;
+    /* A bad args status means the command is valid, but not its parameters. */
+    /* So LookupBridgeCmd returns a non-NULL function pointer. */
+    TEST_ASSERT_NOT_NULL(LookupBridgeCmd(cmd));
     /* simBrd calls CmdFn() and execution enters CmdCfgLis() */
     /* Fake that CmdCfgLis() has an error: CfgByesAreValid() returns false. */
     bool cfg_bytes_are_valid = false;
@@ -760,11 +759,11 @@ void UsbWriteStatusBadArgs_sends_error_byte_and_echoes_invalid_command(void)
 }
 void UsbWriteStatusMissingArgs_sends_error_byte_and_echoes_invalid_command(void){
     /* =====[ Setup ]===== */
-    jump_index cmd = CmdCfgLis_key;
+    bridge_cmd_key cmd = BridgeCfgLis_key;
     /* TimedOut means the command is valid, but a timer expired */
     /* before receiving the expected number of bytes. */
-    /* So LookupCmd returns a non-NULL function pointer. */
-    TEST_ASSERT_NOT_NULL(LookupCmd(cmd));
+    /* So LookupBridgeCmd returns a non-NULL function pointer. */
+    TEST_ASSERT_NOT_NULL(LookupBridgeCmd(cmd));
     /* simBrd calls CmdFn() and execution enters CmdCfgLis() */
     /* CmdCfgLis() calls UsbRead to read the four cfg bytes. */
     /* Execution enters UsbRead, but UsbRead timeouts and reads < 4 bytes. */
@@ -776,16 +775,54 @@ void UsbWriteStatusMissingArgs_sends_error_byte_and_echoes_invalid_command(void)
     /* Here is how UsbWriteStatusMissingArgs is used in CmdCfgLis. */
     if (nybtes_read_is_less_than_num_cfgbytes)
     {
-        num_status_bytes_sent = UsbWriteStatusMissingArgs(CmdCfgLis_key);
+        num_status_bytes_sent = UsbWriteStatusMissingArgs(BridgeCfgLis_key);
     }
     else {; /* number of bytes is correct, go check the bytes are valid */ }
     TEST_ASSERT_EQUAL(2,num_status_bytes_sent);
 }
-void LookupCmd_sad_example_using_UsbWriteStatus_API(void){
+void UsbWriteStatusSpiBusError_sends_error_byte_and_slave_cmd(void)
+{
+    /* This just tests that two bytes are sent. */
+    /* I cannot check the value of those two bytes. */
+    /* =====[ Operate ]===== */
+    uint8_t num_status_bytes_sent = 0;
+    num_status_bytes_sent = UsbWriteStatusSpiBusError(SensorLed1Red_key);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_MESSAGE( 2, num_status_bytes_sent,
+        "Expect `UsbWriteStatusSpiBusError` to send two bytes.");
+}
+void BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect(void)
+{
     /* =====[ Setup ]===== */
-    jump_index cmd = CmdBlackHat_key; // receive an invalid command
+    spi_BytesComing_s response_size;
+    response_size.msb = 0x03;
+    response_size.lsb = 0x10;
+    /* =====[ Operate and Test ]===== */
+    uint16_t expect = 0x0310;
+    TEST_ASSERT_EQUAL_UINT16(expect, BytesComing(response_size));
+}
+void BytesComing_example_usage_to_catch_a_slave_error(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+    /* /1* =====[ Setup ]===== *1/ */
+    /* spi_BytesComing_s response_size; */
+    /* response_size.msb = 0x00; */
+    /* response_size.lsb = 0x01; */
+    /* /1* =====[ Operate and Test ]===== *1/ */
+    /* uint16_t expect = 0x0310; */
+    /* if ( BytesComing(response_size) != 1 ) */
+    /* { */
+    /*     UsbWriteStatusSpiBusError(spi_Led1_Red_key); */
+    /*     return; */
+    /* } */
+
+}
+
+void LookupBridgeCmd_sad_example_using_UsbWriteStatus_API(void){
+    /* =====[ Setup ]===== */
+    bridge_cmd_key cmd = CmdBlackHat_key; // receive an invalid command
     /* =====[ Operate Example of Invalid Command (no test here) ]===== */
-    UsbCmd* CmdFn = LookupCmd(cmd);
+    BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
     if (CmdFn == NULL) // sad
     {
         /* Send two bytes: error-code and cmd */
@@ -793,11 +830,11 @@ void LookupCmd_sad_example_using_UsbWriteStatus_API(void){
     }
     else CmdFn();
 }
-void LookupCmd_happy_example_using_UsbWriteStatus_API(void){
+void LookupBridgeCmd_happy_example_using_UsbWriteStatus_API(void){
     /* =====[ Setup ]===== */
-    jump_index cmd = CmdLedRed_key;
+    bridge_cmd_key cmd = BridgeLedRed_key;
     /* =====[ Operate Example of Valid Command (no test here) ]===== */
-    UsbCmd* CmdFn = LookupCmd(cmd);
+    BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
     if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
     else CmdFn();
     /* It is the CmdFn() responsibility to send UsbWriteStatusOk() at the end of a */
@@ -807,9 +844,9 @@ void LookupCmd_happy_example_using_UsbWriteStatus_API(void){
 }
 void CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes(void){
     /* =====[ Setup ]===== */
-    jump_index cmd = CmdCfgLis_key;
+    bridge_cmd_key cmd = BridgeCfgLis_key;
     /* =====[ Operate ]===== */
-    UsbCmd* CmdFn = LookupCmd(cmd);
+    BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
      // Make sure the command is in the jump table.
     TEST_ASSERT_NOT_NULL(CmdFn);
     if (CmdFn == NULL) UsbWriteStatusInvalid(cmd); // just showing the test as example
@@ -823,11 +860,11 @@ void CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes(void){
     /*     I can check how many times UsbWrite is called if I mock it out. */
     /* Nah, do systems-level tests for this using Python script. */
 }
-void CmdCfgLis_returns_StatusMismatch_if_cfg_bytes_are_invalid(void)
+void CmdCfgLis_returns_StatusBadArgs_if_cfg_bytes_are_invalid(void)
 {
     TEST_FAIL_MESSAGE("Implement test.");
 }
-void CmdCfgLis_sends_cfg_to_mBrd_and_reads_back_new_cfg_before_reporting_StatusOk(void)
+void CmdCfgLis_1pushes_cfg_to_SpiSlave_2pulls_updated_cfg_3reports_StatusOk_updated_cfg(void)
 {
     TEST_FAIL_MESSAGE("Functionality not implemented yet.");
 }

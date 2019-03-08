@@ -20,8 +20,10 @@
 //
 // my libs and the headers that resolve their hardware dependencies
 #include <ReadWriteBits.h>      // SetBit, ClearBit, etc.
-#include <DebugLeds.h>          // controls the 4 debug LEDs
-#include "DebugLeds-Hardware.h" // map debug LEDs to actual hardware
+/* #include <DebugLeds.h>          // controls the 4 debug LEDs */
+/* #include "DebugLeds-Hardware.h" // map debug LEDs to actual hardware */
+#include <BiColorLed.h>               // controls the debug LED
+#include "BiColorLed-Hardware.h"      // map debug LEDs to actual hardware
 #include <Spi.h>                // Chromation spectrometer is a SPI slave
 #include "Spi-Hardware.h"       // map SPI I/O to actual hardware
 #include "Spi-Commands.h"       // commands understood by the SPI slave
@@ -81,7 +83,6 @@
 // LabVIEW consumer state SpectAutoExpose sends the command
 
 /* =====[ Spi-slave application-level API ]===== */
-void SetupDebugLeds(void);
 void App_version_of_Slave_RespondToRequestsForData(void);
 void RespondToRequestsForData(void);
 // ...uses:
@@ -102,18 +103,13 @@ void AutoExpose(void);   // run auto-expose and send the final exposure time
 // ---END 2018-10-31 new stuff---
 
 // helpers for command parsing
-void IndicateUnknownCommand(void) { DebugLedsTurnRed(debug_led4); }
+void IndicateUnknownCommand(void) { BiColorLedRed(status_led4); }
 
 void DoNothing(void){}
 
 /* =====[ Test groups ]===== */
-void test_DebugLeds(void);
 void test_SpiSlave(void);
 
-/* =====[ DebugLeds application-level API ]===== */
-void All_debug_leds_turn_on_and_turn_green(void);
-void All_debug_leds_turn_on_and_turn_red(void);
-void Turn_led1_red_and_the_rest_green(void);
 void Show_data_on_debug_leds(uint8_t four_bits);
 
 void DemoMacroFastestRstResponseToClk(void)
@@ -297,14 +293,18 @@ void LisFrameReadout(void)
 void Get_commands_from_SpiMaster(void);
 int main()
 {
-    SetupDebugLeds(); // display red/green LEDs on PCB
+    BiColorLedOn(status_led1);
+    BiColorLedOn(status_led2);
+    BiColorLedOn(status_led3);
+    BiColorLedOn(status_led4);
+
     SpiSlaveInit();   // respond to Spi-master (e.g., USB host)
     UartSpiInit();    // take ADC readings
     LisInit();        // power up Lis, start 50kHz clock
     while(1) Get_commands_from_SpiMaster();
     /* while(1) RespondToRequestsForData(); // old main loop */
     /* LisDoNothingFor10Clocks(); */
-    DebugLedsTurnAllRed();
+    BiColorLedRed(status_led1);
 
 }
 void testing_main()  // all of my measurement notes are here
@@ -314,12 +314,10 @@ void testing_main()  // all of my measurement notes are here
         // Uncomment that test group.
         // Leave the other test groups commented out.
     // Test groups
-        /* test_DebugLeds(); // All tests pass 2018-07-30 */
         /* test_SpiSlave();  // All tests pass 2018-08-08 */
         /* App_version_of_Slave_RespondToRequestsForData(); // PASS 2018-08-08 */
     //
     // Begin application code here.
-    SetupDebugLeds();
     UartSpiInit();  // for ADC readings
     /* =====[ Test ]===== */
     LisInit();  // Visually confirm clock is 50kHz: PASS 2018-08-21
@@ -462,7 +460,7 @@ void testing_main()  // all of my measurement notes are here
     /*     pframe++; pframe++; byte_count++; byte_count++; */
     /* } */
 
-    DebugLedsTurnAllRed();
+    BiColorLedRed(status_led1);
 
 }
 /* =====[ SpiSlave application-level API details ]===== */
@@ -490,16 +488,16 @@ void Get_commands_from_SpiMaster(void)
     // Read SPI data register if there is any transmission.
     if ( SpiTransferIsDone() )
     {
-        spi_lookup_key   cmd = *Spi_spdr;
+        sensor_cmd_key   cmd = *Spi_spdr;
         /* This first byte is *always* a command from the SpiMaster. */
-        spi_Cmd* spi_CmdFn = spi_LookupCmd(cmd);
+        SensorCmd* SensorCmdFn = LookupSensorCmd(cmd);
         /* Tell SpiMaster if the command is invalid. */
-        if (spi_CmdFn == NULL) SpiSlaveWrite_StatusInvalid(cmd);
+        if (SensorCmdFn == NULL) SpiSlaveWrite_StatusInvalid(cmd);
         /* Do command if it is valid. */
-        else spi_CmdFn();
-        /* It is up to spi_CmdFn to let the SpiMaster know */
+        else SensorCmdFn();
+        /* It is up to SensorCmdFn to let the SpiMaster know */
         /* command was successfully carried out. */
-        /* If the spi_CmdFn requires sending additional data, */
+        /* If the SensorCmdFn requires sending additional data, */
         /* send SpiSlaveWrite_StatusOk() before sending any other data. */
     }
 }
@@ -512,8 +510,6 @@ void RespondToRequestsForData(void)
         /* SpiClearFlagTransferIsDone();  // TODO: add unit tests for this */
         SendDataMasterAskedFor();
     }
-    /* DebugLedsTurnAllGreen(); // go green if idle */
-    /* MacroDebugLedsAllGreen(); */
 }
 void slowestSetExposureTime(void)
 {
@@ -522,8 +518,7 @@ void slowestSetExposureTime(void)
     // Write the value to Lis_nticks_exposure
     Lis_nticks_exposure = byte_msb << 8;
     Lis_nticks_exposure |= byte_lsb;
-    ToggleBit(DebugLeds_port, debug_led3);
-    /* MacroDebugLedsTurnRed(debug_led3); */
+    BiColorLedToggleColor(status_led3);
 }
 void slowSetExposureTime(void)
 {
@@ -536,7 +531,7 @@ void slowSetExposureTime(void)
     // Write the value to Lis_nticks_exposure
     Lis_nticks_exposure = byte_msb << 8;
     Lis_nticks_exposure |= byte_lsb;
-    ToggleBit(DebugLeds_port, debug_led3);
+    BiColorLedToggleColor(status_led3);
 }
 // [ ] TODO: refactor `SendExposureTime` to use `MSB` and `LSB` macros
 #define SendExposureTime() do { \
@@ -550,7 +545,7 @@ void slowSetExposureTime(void)
     uint8_t byte_lsb = *Spi_spdr; \
     Lis_nticks_exposure = byte_msb << 8; \
     Lis_nticks_exposure |= byte_lsb; \
-    ToggleBit(DebugLeds_port, debug_led3); \
+    BiColorLedToggleColor(status_led3); \
     SendExposureTime(); \
 } while (0)
 #define  LisStartProgramMode() do { \
@@ -811,8 +806,8 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 // TODO: Replace this with lib/Lis.c LisWriteCfg(uint32_t cfg)
 void WriteCfgToLis(void)
 {
-    ToggleBit(DebugLeds_port, debug_led3);
-    ToggleBit(DebugLeds_port, debug_led2);
+    BiColorLedToggleColor(status_led3);
+    BiColorLedToggleColor(status_led2);
     LisStartProgramMode();
     // TODO: why is LisProgramSummingModeOff called here?
     // This cannot be right! The first bit is the summing mode.
@@ -841,8 +836,6 @@ void WriteCfgToLis(void)
 /* Function pointers cannot change at runtime */
 /* void (*LisProgramGain)(void) = CfgLisGain5x; */
 /* #define UnusedWriteCfgToLis() do { \ */
-/*     ToggleBit(DebugLeds_port, debug_led3); \ */
-/*     ToggleBit(DebugLeds_port, debug_led2); \ */
 /*     LisStartProgramMode(); \ */
 /*     LisProgramSummingModeOff(); \ */
 /*     LisProgramGain(); \ */
@@ -851,8 +844,8 @@ void WriteCfgToLis(void)
 /* } while (0) */
 // Unused Macros written while developing gain setting functionality.
 #define SetGain1x() do { \
-    ToggleBit(DebugLeds_port, debug_led3); \
-    ToggleBit(DebugLeds_port, debug_led2); \
+    BiColorLedToggleColor(status_led3); \
+    BiColorLedToggleColor(status_led2); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain1x(); \
@@ -860,8 +853,8 @@ void WriteCfgToLis(void)
     LisStopProgramMode(); \
 } while (0)
 #define SetGain2Point5x() do { \
-    ToggleBit(DebugLeds_port, debug_led3); \
-    ToggleBit(DebugLeds_port, debug_led2); \
+    BiColorLedToggleColor(status_led3); \
+    BiColorLedToggleColor(status_led2); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain2Point5x(); \
@@ -869,8 +862,8 @@ void WriteCfgToLis(void)
     LisStopProgramMode(); \
 } while (0)
 #define SetGain4x() do { \
-    ToggleBit(DebugLeds_port, debug_led3); \
-    ToggleBit(DebugLeds_port, debug_led2); \
+    BiColorLedToggleColor(status_led3); \
+    BiColorLedToggleColor(status_led2); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain4x(); \
@@ -878,8 +871,8 @@ void WriteCfgToLis(void)
     LisStopProgramMode(); \
 } while (0)
 #define SetGain5x() do { \
-    ToggleBit(DebugLeds_port, debug_led3); \
-    ToggleBit(DebugLeds_port, debug_led2); \
+    BiColorLedToggleColor(status_led3); \
+    BiColorLedToggleColor(status_led2); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain5x(); \
@@ -887,8 +880,8 @@ void WriteCfgToLis(void)
     LisStopProgramMode(); \
 } while (0)
 #define unrollSetGain5x() do { \
-    ToggleBit(DebugLeds_port, debug_led3); \
-    ToggleBit(DebugLeds_port, debug_led2); \
+    BiColorLedToggleColor(status_led3); \
+    BiColorLedToggleColor(status_led2); \
     /* =====[ Do all setup of Lis_Rst while Lis_Clk is low ]===== */ \
     LisWaitForClkFallEdge(); \
     /* =====[ Assert Pix_Select to program the LIS ]===== */ \
@@ -993,7 +986,7 @@ void WriteCfgToLis(void)
 
 void SendDataMasterAskedFor(void)
 {
-    ToggleBit(DebugLeds_port, debug_led1);
+    BiColorLedToggleColor(status_led1);
     /* uint8_t cmd = SpiSlaveRead(); */
     while ( !MacroSpiTransferIsDone() );
     uint8_t cmd = *Spi_spdr;
@@ -1044,7 +1037,7 @@ void SendDataMasterAskedFor(void)
     // `slave_ignore` is available through spi lib
     // for master to send when slave does read
     else IndicateUnknownCommand();              // PASS 2018-08-03
-    /* DebugLedsTurnRed(debug_led4);  // for manual testing */
+    BiColorLedRed(status_led4);
 }
 // ---BEGIN 2018-10-31 new stuff---
 /* =====[ AutoExpose ]===== */
@@ -1080,10 +1073,10 @@ uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCo
     /* uint16_t tried_Lis_nticks_exposure_half = 0 */
     while (!done)
     {
-        DebugLedsToggleAll();
+        BiColorLedToggleColor(status_led1);
         /* uint16_t ntics = Lis_nticks_exposure;  // default value: no change */
         uint16_t peak = PeakCounts(); // peak will be between 0 and 65535
-        DebugLedsToggleAll();
+        BiColorLedToggleColor(status_led1);
 
         if (peak == peak_min)
         {
@@ -1180,9 +1173,9 @@ static uint16_t PeakCounts_Implementation(void)
     // TODO: Restrict peak finding to the usable pixel range.
 
     /* =====[ get a frame ]===== */
-    MacroDebugLedsTurnRed(debug_led1);
+    BiColorLedRed(status_led1);
     LisFrameReadout();  // store pixel readout in SRAM
-    MacroDebugLedsTurnGreen(debug_led1);
+    BiColorLedGreen(status_led1);
     /* =====[ get the peak ]===== */
     // determine the first used pixel
     // usable range is 292-to-end binned, 292*2-to-end not binned
@@ -1212,7 +1205,7 @@ static uint16_t PeakCounts_Implementation(void)
 void AutoExpose(void)
 {
     // TODO: [ ] make target_peak_counts an input
-    DebugLedsToggleAll();
+    BiColorLedToggleColor(status_led1);
     // hard-coded for now, but will come from host eventually:
     /* uint16_t target_peak_counts = 50000; // for 2.048V Vref */
     // Tested 2018-12-13:
@@ -1237,23 +1230,16 @@ void AutoExpose(void)
     MacroSpiSlaveSendBytes(echo_back, 2);
 }
 // ---END 2018-10-31 new stuff---
-void SetupDebugLeds(void)
-{
-    DebugLedsTurnAllOn();
-    DebugLedsTurnAllGreen();
-}
 
 /* =====[ Helper functions ]===== */
 /* ---Spi-slave application-level API details--- */
 void SendDummyByte(void)
 {
-    DebugLedsTurnRed(debug_led2);  // for manual testing
     *Spi_spdr = cmd_send_dummy_byte;
     SpiSlaveSignalDataIsReady();
 }
 void SendFourDummyBytes(void)
 {
-    DebugLedsTurnRed(debug_led2);  // for manual testing
     uint8_t fake_data[] = {0x01, 0x02, 0x03, 0x04};
     uint16_t nbytes = sizeof(fake_data);
     SpiSlaveSendBytes(fake_data, nbytes);
@@ -1279,7 +1265,6 @@ void FillDummyFrameWithAdcReadings(void)
 }
 void SendDummyFrame(void)
 {
-    DebugLedsTurnRed(debug_led2);  // for manual testing
     FillDummyFrameWithAlphabet();  // SpiSlaveRunMeasurement();
     uint8_t *pdummy_frame = full_frame;
     // Send measurement data to master.
@@ -1287,7 +1272,6 @@ void SendDummyFrame(void)
 }
 void SendAdcReading(void)
 {
-    DebugLedsTurnRed(debug_led2);  // for manual testing
     uint8_t adc_reading[] = {0,0};
     UartSpiRead(adc_reading);
     uint16_t nbytes = sizeof(adc_reading);
@@ -1296,7 +1280,6 @@ void SendAdcReading(void)
 
 void SendFakeAdcReading(void)
 {
-    DebugLedsTurnRed(debug_led2);  // for manual testing
     uint8_t adc[] = {0,0};
     adc[0] = fake_adc_reading >> 8;   // MSByte
     adc[1] = fake_adc_reading & 0xFF; // LSByte
@@ -1306,7 +1289,6 @@ void SendFakeAdcReading(void)
 }
 void SendAdcFrame(void)
 {
-    DebugLedsTurnRed(debug_led2);   // for manual testing
     FillDummyFrameWithAdcReadings();  // SpiSlaveRunMeasurement();
     uint8_t *pdummy_frame = full_frame;
     // Send measurement data to master.
@@ -1314,16 +1296,13 @@ void SendAdcFrame(void)
 }
 void SendLisFrame(void)
 {
-    /* DebugLedsTurnRed(debug_led2);   // for manual testing */
-    /* DebugLedsTurnRed(debug_led4);   // for manual testing */
-
     /* Indicate frame exposure and readout */
-    MacroDebugLedsTurnRed(debug_led1);
+    BiColorLedRed(status_led1);
     LisFrameReadout();  // store pixel readout in SRAM
-    MacroDebugLedsTurnGreen(debug_led1);
+    BiColorLedGreen(status_led1);
     // Send measurement data to master.
     /* Indicate measurement transmitting */
-    MacroDebugLedsTurnRed(debug_led2);
+    BiColorLedRed(status_led2);
     uint8_t *plisframe = full_frame;
     /* SpiSlaveSendBytes(plisframe, sizeof_full_frame); */
     // oscilloscope measurement with function call overhead:
@@ -1350,37 +1329,20 @@ void SendLisFrame(void)
     if (lis_sum_mode == lis_summing_on) nbytes_in_frame = sizeof_half_frame;
     else                                nbytes_in_frame = sizeof_full_frame;
     MacroSpiSlaveSendBytes(plisframe, nbytes_in_frame);
-    MacroDebugLedsTurnGreen(debug_led2);
+    BiColorLedGreen(status_led2);
     // oscilloscope measurement without function call overhead:
         // SpiSs is low for 7.5us.
         // UsbWrite takes 62us.
 }
 
-/* ---DebugLeds--- */
-void All_debug_leds_turn_on_and_turn_green(void)
-{
-    DebugLedsTurnAllOn();
-    DebugLedsTurnAllGreen();
-}
-void All_debug_leds_turn_on_and_turn_red(void)
-{
-    DebugLedsTurnAllOn();
-    DebugLedsTurnAllRed();
-}
-void Turn_led1_red_and_the_rest_green(void)
-{
-    DebugLedsTurnAllOn();
-    DebugLedsTurnAllGreen();
-    DebugLedsTurnRed(debug_led1);
-}
 void Show_data_on_debug_leds(uint8_t four_bits)
 {
     // Show the lower nibble of input `four_bits`
     uint8_t *pfour_bits = &four_bits;
-    if (BitIsSet(pfour_bits, 0)) DebugLedsTurnRed(debug_led1);
-    if (BitIsSet(pfour_bits, 1)) DebugLedsTurnRed(debug_led2);
-    if (BitIsSet(pfour_bits, 2)) DebugLedsTurnRed(debug_led3);
-    if (BitIsSet(pfour_bits, 3)) DebugLedsTurnRed(debug_led4);
+    if (BitIsSet(pfour_bits, 0)) BiColorLedRed(status_led1);
+    if (BitIsSet(pfour_bits, 1)) BiColorLedRed(status_led2);
+    if (BitIsSet(pfour_bits, 2)) BiColorLedRed(status_led3);
+    if (BitIsSet(pfour_bits, 3)) BiColorLedRed(status_led4);
 }
 
 /* =====[ SpiSlave ISR ]===== */
@@ -1414,12 +1376,11 @@ void SPI_interrupt_routine_turns_debug_led1_red(void)
 {
     /* =====[ Setup ]===== */
     SpiSlaveInit();
-    DoTaskForThisTest = Turn_led1_red_and_the_rest_green;
+    /* DoTaskForThisTest = Turn_led1_red_and_the_rest_green; */
     /* =====[ Operate ]===== */
     SpiEnableInterrupt();
     /* while(0); // exit loop immediately */
     while(1); // loop forever
-    DebugLedsTurnAllRed();  // This should *never* be called.
     /* =====[ Test ]===== */
     // Program the SPI Master to send any byte on reset.
     // Visually confirm the debug LEDs are all green.
@@ -1442,7 +1403,7 @@ void SPI_read_in_ISR_and_show_data_on_debug_leds(void)
     // You must loop forever.
     // Interrupts do not execute if the program is allowed to finish.
     while(1);
-    DebugLedsTurnAllRed();  // This should *never* be called.
+    /* DebugLedsTurnAllRed();  // This should *never* be called. */
     /* =====[ Test ]===== */
     // Program the SPI Master to send `0x0B` on reset.
     // Visually confirm the debug LEDs are all green.
@@ -1469,7 +1430,7 @@ void Slave_receives_request_and_sends_response_when_ready(void)
 {
     /* =====[ Setup ]===== */
     SpiSlaveInit();
-    DebugLedsTurnRed(debug_led1);
+    BiColorLedRed(status_led1);
     // Visually confirm debug LED 1 is red.
     // The slave is waiting to receive the command.
     //
@@ -1497,7 +1458,7 @@ void Slave_receives_request_and_sends_response_when_ready(void)
         // every routine follows the form: do something, load data, signal ready
     if (cmd == cmd_slave_respond_0xBA)
     {
-        DebugLedsTurnRed(debug_led2);
+        BiColorLedRed(status_led2);
         /* =====[ Do something to get data ]===== */
         uint8_t const response = 0xBA;
         /* =====[ Load data ]===== */
@@ -1511,12 +1472,6 @@ void Slave_receives_request_and_sends_response_when_ready(void)
 }
 
 /* =====[ Test groups ]===== */
-void test_DebugLeds(void)
-{
-    /* All_debug_leds_turn_on_and_turn_green(); // PASS 2018-07-30 */
-    /* All_debug_leds_turn_on_and_turn_red(); // PASS 2018-07-30 */
-    /* Turn_led1_green_and_the_rest_red(); // PASS 2018-07-30 */
-}
 void test_SpiSlave(void)
 {
     /* SPI_interrupt_routine_turns_debug_led1_red(); // PASS 2018-08-01 */
@@ -1611,7 +1566,7 @@ void test_Atmel_ice_quirk_requires_flipping_SW2_to_SPI(void)
     //
     // This test does not pass if the SPI master is enabled.
     /* SpiSlaveSignalDataIsReady_outputs_a_hard_low(); // FAIL 2018-08-03 */
-    DebugLedsTurnRed(debug_led4);
+    BiColorLedRed(status_led4);
     while (1);
 }
 

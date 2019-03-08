@@ -62,13 +62,14 @@ void SpiMasterRead_returns_the_SPI_data_register(void);
 void SpiMasterRead_waits_for_transmission_to_complete(void);
 void SpiMasterRead_loads_SPI_tx_buffer_with_slave_ignore(void);
 //
-void spi_LookupCmd_returns_Nth_fn_for_Nth_key(void);
-void spi_LookupCmd_returns_NULL_if_key_is_not_in_jump_table(void);
-void spi_LookupCmd_example_calling_the_returned_command(void);
-void SpiSlaveWrite_StatusOk_sends_0x00_0x01_0x00(void);
+void LookupSensorCmd_returns_Nth_fn_for_Nth_key(void);
+void LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table(void);
+void LookupSensorCmd_example_calling_the_returned_command(void);
+void SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd(void);
 void SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name(void);
 
 /* 2019-03-04 WIP: inline version of SpiMasterWrite */
-void SpiMasterWriteN_sends_N_bytes_to_SpiSlave(void);
+void SpiMasterWriteN_NoInlineHelpers_sends_N_bytes_to_SpiSlave(void);
+void SpiMasterWriteByte_sends_one_byte_to_SpiSlave(void);
 
 #endif // _TEST_SPI_H

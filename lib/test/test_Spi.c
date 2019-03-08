@@ -658,18 +658,18 @@ void SpiMasterWaitForResponse_waits_until_slave_signals_ready(void)
 
 /* =====[ Jump Table Sandbox ]===== */
 /* Functions of type `spi_Cmd` take nothing and return nothing. */
-void spi_LookupCmd_returns_Nth_fn_for_Nth_key(void){
+void LookupSensorCmd_returns_Nth_fn_for_Nth_key(void){
 
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL(spi_LedRed, spi_LookupCmd(spi_LedRed_key));
-    TEST_ASSERT_EQUAL(spi_LedGreen, spi_LookupCmd(spi_LedGreen_key));
+    TEST_ASSERT_EQUAL(SensorLed1Red, LookupSensorCmd(SensorLed1Red_key));
+    TEST_ASSERT_EQUAL(SensorLed1Green, LookupSensorCmd(SensorLed1Green_key));
 }
-static spi_lookup_key const spi_BlackHat_key = 255; // out-of-bounds: return NULL ptr
-void spi_LookupCmd_returns_NULL_if_key_is_not_in_jump_table(void){
+static sensor_cmd_key const spi_BlackHat_key = 255; // out-of-bounds: return NULL ptr
+void LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table(void){
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_NULL(spi_LookupCmd(spi_BlackHat_key));
+    TEST_ASSERT_NULL(LookupSensorCmd(spi_BlackHat_key));
 }
-void spi_LookupCmd_example_calling_the_returned_command(void)
+void LookupSensorCmd_example_calling_the_returned_command(void)
 {
     /* See mocking in SpiSlaveSendBytes_waits_for_master_read_between_each_byte */
     /* Three callers in SpiSlaveSendBytes are mocked up in the test setup. */
@@ -715,7 +715,7 @@ void spi_LookupCmd_example_calling_the_returned_command(void)
     *DebugLeds_port = 0x00; // debug_led1, debug_led2, debug_led3, debug_led4
     /* =====[ Operate ]===== */
     /* Note the parentheses to make it a function call */
-    spi_LookupCmd(spi_LedRed_key)(); // call the function returned by lookup
+    LookupSensorCmd(SensorLed1Red_key)(); // call the function returned by lookup
     /* ------------------------------- */
     //=====[ Test ]=====
     TEST_ASSERT_BIT_HIGH(debug_led1, *DebugLeds_port);
@@ -728,7 +728,7 @@ void spi_LookupCmd_example_calling_the_returned_command(void)
         WhyDidItFail(mock)          // print this message.
         );
 }
-void SpiSlaveWrite_StatusOk_sends_0x00_0x01_0x00(void)
+void SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd(void)
 {
     /* Use SetUp_SpiSlaveSendBytes */
     /* Three functions in SpiSlaveSendBytes are mocked out in SetUp. */
@@ -750,11 +750,12 @@ void SpiSlaveWrite_StatusOk_sends_0x00_0x01_0x00(void)
     /* Context: */
     /*     ---SpiSlave sends StatusOk byte after turning the LEDs red.--- */
     /* SpiSlaveWrite_StatusOK calls SpiSlaveSendBytes to send three bytes. */
+    sensor_cmd_key valid_cmd = 0x00;
     uint8_t const StatusOk[] = {
-        0x00, 0x01, // nybtes [msb lsb]
-        0x00        // data (0x00 means StatusOk)
+        0x00, 0x02, // nybtes [msb lsb]
+        0x00, valid_cmd  // data (0x00 means StatusOk)
     };
-    uint8_t const * bytes = StatusOk; uint8_t nbytes = 3;
+    uint8_t const * bytes = StatusOk; uint8_t nbytes = 4;
     /* Make sure the test fakes one SPIF value for each byte sent. */
     TEST_ASSERT_EQUAL(sizeof(SPIFs), nbytes);
 
@@ -770,7 +771,7 @@ void SpiSlaveWrite_StatusOk_sends_0x00_0x01_0x00(void)
     }
 
     /* =====[ Operate ]===== */
-    SpiSlaveWrite_StatusOk();
+    SpiSlaveWrite_StatusOk(valid_cmd);
 
     /* =====[ Test ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
@@ -833,7 +834,7 @@ void SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name(void)
         );
 }
 
-void SpiMasterWriteN_sends_N_bytes_to_SpiSlave(void)
+void SpiMasterWriteN_NoInlineHelpers_sends_N_bytes_to_SpiSlave(void)
 {
     /* =====[ Setup ]===== */
     /* Stub_SpiTransferIsDone: check if SPI interrupt flag is set. */
@@ -850,12 +851,12 @@ void SpiMasterWriteN_sends_N_bytes_to_SpiSlave(void)
     /* =====[ Fake the registers. ]===== */
     /* Fake the `Spi_port`. */
     /* Slave Select starts low to test */
-    /* that `Spi_Ss` is high when `SpiMasterWriteN` is done. */
+    /* that `Spi_Ss` is high when `SpiMasterWriteN_NoInlineHelpers` is done. */
     *Spi_port = 0x00;
 
     /* 3. Fake the `Spi_spdr`. */
     /* Start with `Spi_spdr` != `cmd` to test that */
-    /* `SpiMasterWriteN` loads `Spi_spdr` with `cmd`. */
+    /* `SpiMasterWriteN_NoInlineHelpers` loads `Spi_spdr` with `cmd`. */
     *Spi_spdr = 0xFF;
 
     /* =====[ Operate ]===== */
@@ -866,7 +867,7 @@ void SpiMasterWriteN_sends_N_bytes_to_SpiSlave(void)
     TEST_ASSERT_EQUAL_MESSAGE( sizeof(SPIFs)-nfalse, nbytes,
         "Make sure there is one true SPIF value for each byte sent."
         );
-    SpiMasterWriteN(cmd_led1_red, nbytes);
+    SpiMasterWriteN_NoInlineHelpers(cmd_led1_red, nbytes);
 
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH_MESSAGE( Spi_Ss, *Spi_port,
@@ -880,4 +881,39 @@ void SpiMasterWriteN_sends_N_bytes_to_SpiSlave(void)
     RanAsHoped(mock),           // If this is false,
     WhyDidItFail(mock)          // print this message.
     );
+}
+
+void SpiMasterWriteByte_sends_one_byte_to_SpiSlave(void)
+{
+    /* =====[ Setup ]===== */
+    /* Fake the SPI interrupt flag in the SPI status register. */
+    /* Start test with SPIF set so that `SpiMasterWriteN` sees */
+    /* the transmission is done when it checks this flag. */
+    SetBit(Spi_spsr, Spi_InterruptFlag);
+
+    /* =====[ Fake the registers. ]===== */
+    /* Fake the `Spi_port`. */
+    /* Start test with Slave Select low to test that */
+    /* `Spi_Ss` is high when `SpiMasterWriteByte` is done. */
+    *Spi_port = 0x00;
+
+    /* 3. Fake the `Spi_spdr`. */
+    /* Start test with `Spi_spdr` != `cmd` to test that */
+    /* `SpiMasterWriteByte` loads `Spi_spdr` with `cmd`. */
+    uint8_t const black_hat_cmd = 0xFF;
+    *Spi_spdr = black_hat_cmd;
+
+    /* =====[ Operate ]===== */
+    /* Simulate that the UsbHost sent CmdLedRed. */
+    /* Write the command to turn led1 red on the SPI slave. */
+    uint8_t const cmd_led1_red = 0x00;
+    SpiMasterWriteByte(cmd_led1_red);
+
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE( Spi_Ss, *Spi_port,
+        "Expect *Slave Select* is high when done."
+        );
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE( *Spi_spdr, cmd_led1_red,
+        "Expect `cmd_led1_red` was written to the *SPI data register*."
+        );
 }

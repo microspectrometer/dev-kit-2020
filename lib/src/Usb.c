@@ -24,14 +24,53 @@ void UsbInit(void)
 // =====[status_led Pin Connection On SpiMaster hardware ]=====
 /* The led_name is defined in the hardware header. */
 extern uint8_t const status_led;
-/* Define command functions in jump table */
-void CmdLedRed(void){
-    BiColorLedRed(status_led);
-    ; // placeholder: tell mBrd to turn led1 red: BiColorLedRed(status_led_1);
+void BridgeLedRed(void){ BiColorLedRed(status_led); UsbWriteStatusOk(); }
+/* SpiSlave command lookup keys are defined in `lib/src/Spi.c` */
+extern sensor_cmd_key const SensorLed1Red_key;
+extern sensor_cmd_key const SensorLed1Green_key;
+/* Define command functions in jump table for looking up USB commands. */
+void SendSensorCommand(sensor_cmd_key cmd_to_sensor)
+{
+    /* Send the command. */
+    SpiMasterWriteByte(cmd_to_sensor);
+
+    /* TODO: add timer to timeout in case SpiSlave is never ready. */
+    /* The first two bytes from the SpiSlave are the remaining number of bytes
+     * in the response. */
+    spi_BytesComing_s   response_size;
+    SpiMasterWaitForSlaveReady(); response_size.msb = SpiMasterReadByte();
+    SpiMasterWaitForSlaveReady(); response_size.lsb = SpiMasterReadByte();
+    /* The response should be two bytes. */
+    uint16_t const nbytes_expected = 2; // 16-bit is the general case
+
+    /* There is an unknown SPI communication error if there are not exactly 2
+     * bytes coming. */
+    /* It could be the SpiSlave or the SpiMaster. */
+    /* Treat this like other BridgeCmd errors. Send back two bytes. */
+    /* byte 1: error code
+     * byte 2: command sent to SpiSlave */
+    if ( BytesComing(response_size) != nbytes_expected )
+    { UsbWriteStatusSpiBusError(cmd_to_sensor); return; }
+
+    /* Read all of the bytes from the SpiSlave. */
+    uint8_t rx[nbytes_expected];
+    for (uint8_t index=0; index < nbytes_expected; index++)
+    { SpiMasterWaitForSlaveReady(); rx[index]= SpiMasterReadByte(); }
+    /* There is an error if the SpiSlave is still signaling *Data Ready*. */
+    if ( SpiSlaveShowsDataReady() )
+    { UsbWriteStatusSpiBusError(cmd_to_sensor); return; }
+
+    /* The SpiMaster has succeeded at this point, */
+    /* even if the SpiSlave sent an error code. */
     UsbWriteStatusOk();
+    /* Whatever the SpiSlave sent, pass it up to the UsbHost. */
+    UsbWrite(rx,nbytes_expected);
+
 }
-void CmdLedGreen(void){ BiColorLedGreen(status_led); UsbWriteStatusOk(); }
-void CmdCfgLis(void)
+void SendSensorLed1Green(void) { SendSensorCommand(SensorLed1Green_key); }
+void SendSensorLed1Red(void){ SendSensorCommand(SensorLed1Red_key); }
+void BridgeLedGreen(void){ BiColorLedGreen(status_led); UsbWriteStatusOk(); }
+void BridgeCfgLis(void)
 {
     /* Spectrometer configuration is four bytes. */
     uint8_t const num_cfgbytes = 4;
@@ -40,11 +79,11 @@ void CmdCfgLis(void)
     // TODO: Error checking that we timed out.
     // This will be next error (253). Timeout on expected num_cfgbytes.
     // Error checking that nbytes_read != 4
-    if (nbytes_read != num_cfgbytes) { UsbWriteStatusMissingArgs(CmdCfgLis_key); }
+    if (nbytes_read != num_cfgbytes) { UsbWriteStatusMissingArgs(BridgeCfgLis_key); }
     // Have the right number of bytes.
     // Error check that bytes_read are valid.
-    // This is error (254). Mimsatch between command and args.
-    if (!CfgBytesAreValid(read_buffer)) { UsbWriteStatusBadArgs(CmdCfgLis_key); }
+    // This is error (254). Valid command with bad args.
+    if (!CfgBytesAreValid(read_buffer)) { UsbWriteStatusBadArgs(BridgeCfgLis_key); }
     else
     {
         // [x] Do system tests with
@@ -60,16 +99,20 @@ void CmdCfgLis(void)
     }
 }
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
-jump_index const CmdLedRed_key = 0;
-jump_index const CmdLedGreen_key = 1;
-jump_index const CmdCfgLis_key = 2;
-UsbCmd* LookupCmd(jump_index const key) {
-    /* pf is an array of pointers to UsbCmd functions */
-    /* pf lives in static memory, not on the `LookupCmd` stack frame */
-    static UsbCmd* const pf[] = {
-        CmdLedRed,
-        CmdLedGreen,
-        CmdCfgLis
+bridge_cmd_key const BridgeLedRed_key = 0;
+bridge_cmd_key const BridgeLedGreen_key = 1;
+bridge_cmd_key const BridgeCfgLis_key = 2;
+bridge_cmd_key const SendSensorLed1Red_key = 3;
+bridge_cmd_key const SendSensorLed1Green_key = 4;
+BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key) {
+    /* pf is an array of pointers to BridgeCmd functions */
+    /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
+    static BridgeCmd* const pf[] = {
+        BridgeLedRed,
+        BridgeLedGreen,
+        BridgeCfgLis,
+        SendSensorLed1Red,
+        SendSensorLed1Green
         };
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
@@ -79,7 +122,7 @@ UsbCmd* LookupCmd(jump_index const key) {
     /* Recommended action: tell UsbHost the command was not recognized. */
 }
 
-/* =====[ Helper for CmdFn: CmdCfgLis ]===== */
+/* =====[ Helper for CmdFn: BridgeCfgLis ]===== */
 bool CfgBytesAreValid(uint8_t const *cfg_bytes)
 {
     /* 4 bytes follow the cfg_spectrometer command */
@@ -319,25 +362,34 @@ uint16_t UsbRead(uint8_t *read_buffer)
     return num_bytes_read;
 }
 /* =====[ Status ]===== */
+
 bool UsbWriteStatusOk(void)
 {
-    uint8_t const StatusOk = 0;
+    uint8_t const StatusOk = 0x00;
     return UsbWrite(&StatusOk,1);
 }
-uint8_t UsbWriteStatusInvalid(jump_index invalid_cmd)
+uint8_t UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
 {
-    uint8_t const StatusInvalid[] = { 255, invalid_cmd };
+    uint8_t const StatusInvalid[] = { 0xFF, invalid_cmd };
     return UsbWrite(StatusInvalid,2);
 }
-uint8_t UsbWriteStatusBadArgs(jump_index bad_args_cmd)
+uint8_t UsbWriteStatusBadArgs(bridge_cmd_key bad_args_cmd)
 {
-    uint8_t const StatusBadArgs[] = { 254, bad_args_cmd };
+    uint8_t const StatusBadArgs[] = { 0xFE, bad_args_cmd };
     return UsbWrite(StatusBadArgs,2);
 }
-uint8_t UsbWriteStatusMissingArgs(jump_index missing_args_cmd)
+uint8_t UsbWriteStatusMissingArgs(bridge_cmd_key missing_args_cmd)
 {
-    uint8_t const StatusMissingArgs[] = { 253, missing_args_cmd };
+    uint8_t const StatusMissingArgs[] = { 0xFD, missing_args_cmd };
     return UsbWrite(StatusMissingArgs,2);
+}
+uint8_t UsbWriteStatusSpiBusError(sensor_cmd_key spi_slave_cmd)
+{
+    /** An unknown error occurred on the SPI bus. */
+    /* The SpiMaster thinks the SpiSlave is not sending the expected number of
+     * bytes. The UsbHost should reset the system and resend the command. */
+    uint8_t const StatusSpiBusError[] = { 0xFC, spi_slave_cmd };
+    return UsbWrite(StatusSpiBusError, 2);
 }
 
 uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes)
@@ -346,7 +398,7 @@ uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes)
     FtSendCommand(FtCmd_Write);
     if (!FtBusTurnaround())
     {
-        BiColorLedRed(status_led);
+        /* BiColorLedRed(status_led); */
         FtDeactivateInterface();
         return num_bytes_sent;
     }

@@ -152,9 +152,90 @@ extern void (*EnableSpi)(void);
 /* ---------------------------------------------------- */
 /* | 2019-03-04 WIP: inline version of SpiMasterWrite | */
 /* ---------------------------------------------------- */
-inline void SpiMasterWriteN(uint8_t const * bytes, uint8_t const nbytes)
+inline void WaitUntilSpiWriteIsDone(void)
 {
-    /** Write nbytes to the `SpiSlave`.
+    /** Wait until the SPI transmission is done.
+     *  Throwaway the received byte.
+     */
+    /*
+     * Expect this is inlined. Expect this compiles as:
+     * loop:
+     * `in reg,SPSR`
+     * `sbrs reg,SPIF`
+     * `rjmp loop`
+     * `ret` */
+    while (BitIsClear(Spi_spsr, Spi_InterruptFlag));
+    /* Do a throw-away read of the SPI data register to
+     * clear the SPI interrupt flag. */
+    *Spi_spdr;
+}
+/* TODO: pass port and pin as arguments for future multi-slave system. */
+inline void OpenSpiSlave(void)
+{
+    /** Open communication with SPI slave. */
+    /* Expect `ClearBit` is compiled inline as a single `cbi` instruction. */
+    ClearBit(Spi_port, Spi_Ss);
+}
+inline void CloseSpiSlave(void)
+{
+    /** Close communication with SPI slave. */
+    /* Expect `SetBit` is compiled inline as a single `sbi` instruction. */
+    SetBit(Spi_port, Spi_Ss);
+}
+inline void SpiLaunchByte(uint8_t const byte)
+{
+    /** Write the SPI data register with the byte to send.
+     *  Writing to the SPI data register starts the SPI transmission. */
+    *Spi_spdr = byte;
+}
+inline uint8_t SpiMasterReadByte(void)
+{
+    /** Read one byte from the `SpiSlave`. */
+    OpenSpiSlave();
+    SpiLaunchByte(slave_ignore);
+    WaitUntilSpiWriteIsDone();
+    CloseSpiSlave();
+    /* TODO: inline this */
+    /* ReadSpiDataRegister */
+    return *Spi_spdr;
+}
+/* Every SpiSlave response starts with two bytes indicating how many more bytes are coming. */
+typedef struct {
+    uint8_t msb;
+    uint8_t lsb;
+} spi_BytesComing_s;
+inline uint16_t BytesComing(spi_BytesComing_s response_size)
+{
+    return response_size.msb<<8 | response_size.lsb;
+}
+inline void SpiMasterWriteByte(uint8_t const byte)
+{
+    /** Write one byte to the `SpiSlave`. */
+    OpenSpiSlave();
+    SpiLaunchByte(byte);
+    WaitUntilSpiWriteIsDone();
+    CloseSpiSlave();
+
+    /* TODO: try sending many bytes to figure out if this is necessary! */
+    /* ? Delay3CpuCyclesPerTick(50); */
+    /* If I do need a delay here, then why don't I check for SPI slave is ready */
+    /* signal instead of an open loop delay? */
+    /* And let the caller handle where that is a delay or a `slave_ready` check. */
+
+    /* Protocol has two scenarios: */
+    /* 1. SpiMaster sends a cmd without args and expects a response. */
+    /* 2. SpiMaster sends a cmd with args and expects a response. */
+    /* SpiMaster releases SpiSlave and watches `data_ready` for the response. */
+    /* When sending data *to* the slave, the master should watch for a `ready` */
+    /* signal *after every byte sent*. This is the simplest solution. So there */
+    /* is no *write N bytes*, only a *write byte*, and it is up to the caller */
+    /* to perform a sequence of these *write byte* commands to achieve the */
+    /* desired data flow. */
+}
+inline void SpiMasterWriteN_NoInlineHelpers(uint8_t const * bytes, uint8_t const nbytes)
+{
+    /** This version calls helpers via function pointer seams.
+     *  Write nbytes to the `SpiSlave`.
      *  
      *  For each byte in bytes:
      *
@@ -183,34 +264,56 @@ inline void SpiMasterWriteN(uint8_t const * bytes, uint8_t const nbytes)
         /* ? Delay3CpuCyclesPerTick(50); */
     }
 }
+inline bool SpiSlaveShowsDataReady(void)
+{
+    /** SpiSlave drives `Spi_Miso` low to signal to the SpiMaster
+     * when it is ready for the next SPI transmission.
+     */
+    return BitIsClear(Spi_pin, Spi_Miso);
+}
+inline bool IsSpiSlaveReadyToSend(void)
+{
+    /** SpiSlave releases `Spi_Miso` and it slowly rises high via its pull-up. */
+    return BitIsSet(Spi_pin, Spi_Miso);
+}
+inline void SpiMasterWaitForSlaveReady(void)
+{
+    /** Wait for the *Data Ready* signal from the SpiSlave. */
+    /* Watch for SpiSlave to spike `Spi_Miso` low. */
+    while( !SpiSlaveShowsDataReady() );
+    /* Watch for SpiSlave to release `Spi_Miso` to the pull-up. */
+    while( !IsSpiSlaveReadyToSend() );
+}
+
 /* ---------------------------------------------------- */
 
 /* --------------------------------------------------------------------------------------- */
 /* | 2019-03-03 WIP: New SpiSlave API functionality for robust multi-byte communication. | */
 /* --------------------------------------------------------------------------------------- */
 /* =====[ SPI Slave API ]===== */
-/* Functions of type `spi_Cmd` take nothing and return nothing. */
+/* Functions of type `SensorCmd` take nothing and return nothing. */
 /* The *key* acts as the command since it is the command lookup. */
 /* If the commands need additional parameters, they will read additional bytes. */
 /* All functions in the lookup table must have the same signature, so commands that */
 /* take return functions other than void-void need to go in a different jump table. */
-typedef void (spi_Cmd)(void);
-/* Give tests of spi_LookupCmd access to names of functions in */
+typedef void (SensorCmd)(void);
+/* Give tests of LookupSensorCmd access to names of functions in */
 /* jump table to compare pointer values. */
-spi_Cmd spi_LedRed;
-spi_Cmd spi_LedGreen;
-/* spi_Cmd spi_CfgLis; */
+SensorCmd SensorLed1Red;
+SensorCmd SensorLed1Green;
+/* SensorCmd spi_CfgLis; */
 /* This is the datatype to use when calling LookupSpiCmd: */
-typedef uint8_t spi_lookup_key;  // SpiSlave jump-table dictionary uses 8-bit keys
+typedef uint8_t sensor_cmd_key;  // SpiSlave jump-table dictionary uses 8-bit keys
 /* Declare keys for callers of LookupCmd (values hidden in .c file) */
-extern spi_lookup_key const spi_LedRed_key;
-extern spi_lookup_key const spi_LedGreen_key;
-/* extern spi_lookup_key const spi_CfgLis_key; */
-/* spi_LookupCmd takes key from SpiMaster and returns the function pointer to call. */
-spi_Cmd* spi_LookupCmd(spi_lookup_key const key);
+/* extern sensor_cmd_key const spi_LedRed_key; */
+extern sensor_cmd_key const SensorLed1Red_key;
+extern sensor_cmd_key const SensorLed1Green_key;
+/* extern sensor_cmd_key const spi_CfgLis_key; */
+/* LookupSensorCmd takes key from SpiMaster and returns the function pointer to call. */
+SensorCmd* LookupSensorCmd(sensor_cmd_key const key);
 /* report status to SpiMaster */
-void SpiSlaveWrite_StatusOk(void);
-void SpiSlaveWrite_StatusInvalid(spi_lookup_key invalid_cmd);
+void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd);
+void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd);
 // SpiSlaveWrite_StatusError
 /* =====[ API to communicate ]===== */
 // SpiSlaveRead_OneByte
