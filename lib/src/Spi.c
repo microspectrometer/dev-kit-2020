@@ -46,7 +46,7 @@ void SensorLed1Green(void)
 {
 /* TODO: change this to only the first LED. Switch mBrd to lib `BiColorLed` first. */
     /* DebugLedsTurnAllGreen(); */
-    BiColorLedRed(status_led1);
+    BiColorLedGreen(status_led1);
     SpiSlaveWrite_StatusOk(SensorLed1Green_key);
 }
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */

@@ -24,12 +24,18 @@ void UsbInit(void)
 // =====[status_led Pin Connection On SpiMaster hardware ]=====
 /* The led_name is defined in the hardware header. */
 extern uint8_t const status_led;
-void BridgeLedRed(void){ BiColorLedRed(status_led); UsbWriteStatusOk(); }
+void BridgeLedRed(void)
+{
+    BiColorLedRed(status_led);
+    UsbWriteStatusOk(BridgeLedRed_key);
+}
 /* SpiSlave command lookup keys are defined in `lib/src/Spi.c` */
 extern sensor_cmd_key const SensorLed1Red_key;
 extern sensor_cmd_key const SensorLed1Green_key;
 /* Define command functions in jump table for looking up USB commands. */
-void SendSensorCommand(sensor_cmd_key cmd_to_sensor)
+void SendSensorCommand(
+    sensor_cmd_key cmd_to_sensor,       // send this command key to the sensor
+    bridge_cmd_key cmd_done_by_bridge)  // and report status on this command key
 {
     /* Send the command. */
     SpiMasterWriteByte(cmd_to_sensor);
@@ -62,14 +68,30 @@ void SendSensorCommand(sensor_cmd_key cmd_to_sensor)
 
     /* The SpiMaster has succeeded at this point, */
     /* even if the SpiSlave sent an error code. */
-    UsbWriteStatusOk();
+    UsbWriteStatusOk(cmd_done_by_bridge);
     /* Whatever the SpiSlave sent, pass it up to the UsbHost. */
+    uint8_t nbytes_of_data[] = {response_size.msb, response_size.lsb};
+    UsbWrite(nbytes_of_data, 2);
     UsbWrite(rx,nbytes_expected);
 
 }
-void SendSensorLed1Green(void) { SendSensorCommand(SensorLed1Green_key); }
-void SendSensorLed1Red(void){ SendSensorCommand(SensorLed1Red_key); }
-void BridgeLedGreen(void){ BiColorLedGreen(status_led); UsbWriteStatusOk(); }
+void SendSensorLed1Green(void)
+{
+    SendSensorCommand(
+            SensorLed1Green_key,   // send this command key to the sensor
+        SendSensorLed1Green_key);  // and report status on this command key
+}
+void SendSensorLed1Red(void)
+{
+    SendSensorCommand(
+            SensorLed1Red_key,   // send this command key to the sensor
+        SendSensorLed1Red_key);  // and report status on this command key 
+}
+void BridgeLedGreen(void)
+{
+    BiColorLedGreen(status_led);
+    UsbWriteStatusOk(BridgeLedGreen_key);
+}
 void BridgeCfgLis(void)
 {
     /* Spectrometer configuration is four bytes. */
@@ -93,7 +115,7 @@ void BridgeCfgLis(void)
         // mBrd converts to uint32_t and does cfg
         // ...
         // at end of happy path
-        UsbWriteStatusOk();
+        UsbWriteStatusOk(BridgeCfgLis_key);
         // echo back cfg bytes
         UsbWrite(read_buffer,4);
     }
@@ -363,10 +385,10 @@ uint16_t UsbRead(uint8_t *read_buffer)
 }
 /* =====[ Status ]===== */
 
-bool UsbWriteStatusOk(void)
+uint8_t UsbWriteStatusOk(bridge_cmd_key   cmd_done_by_bridge)
 {
-    uint8_t const StatusOk = 0x00;
-    return UsbWrite(&StatusOk,1);
+    uint8_t const StatusOk[] = { 0x00, cmd_done_by_bridge};
+    return UsbWrite(StatusOk,2);
 }
 uint8_t UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
 {

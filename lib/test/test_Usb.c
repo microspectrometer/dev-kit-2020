@@ -707,18 +707,18 @@ void UsbWriteStatusOk_tells_UsbHost_command_was_success(void)
     /* Fake that CmdCfgLis() runs without any errors. */
     bool success = true;
     /* Get a value to unit test without going mock crazy. */
-    bool status_sent = false;
+    uint8_t nbytes_sent = 0;
     /* =====[ Operate ]===== */
     /* The conditional check shows how UsbWriteStatusOk is used in CmdCfgLis. */
     if (!success) { ; /* Placeholder for code to send error code to UsbHost.*/ }
     else // received valid command and parameters
     {
         ; // Placeholder for code that does the command.
-        status_sent = UsbWriteStatusOk();
+        nbytes_sent = UsbWriteStatusOk(cmd);
         ; // Placeholder for code that sends updated Lis cfg value to UsbHost.
     };
     /* =====[ Test ]===== */
-    TEST_ASSERT_TRUE(status_sent);
+    TEST_ASSERT_EQUAL(2, nbytes_sent);
 }
 void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void)
 {

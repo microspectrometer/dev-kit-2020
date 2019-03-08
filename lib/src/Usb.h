@@ -38,11 +38,11 @@ bridge_cmd_key const SendSensorLed1Green_key;
  /* LookUpCmd takes key from UsbHost and returns the function pointer to call. */
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key);
 /* report status to UsbHost */
-bool UsbWriteStatusOk(void); // command was successfully carried out
-uint8_t UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd); // command not recognized
-uint8_t UsbWriteStatusBadArgs(bridge_cmd_key bad_args_cmd); // args are wrong val
-uint8_t UsbWriteStatusMissingArgs(bridge_cmd_key missing_args_cmd); // not enough args
-uint8_t UsbWriteStatusSpiBusError(sensor_cmd_key spi_slave_cmd);
+uint8_t UsbWriteStatusOk(bridge_cmd_key   cmd_done_by_bridge);
+uint8_t UsbWriteStatusInvalid(bridge_cmd_key   invalid_cmd); // command not recognized
+uint8_t UsbWriteStatusBadArgs(bridge_cmd_key   bad_args_cmd); // args are wrong val
+uint8_t UsbWriteStatusMissingArgs(bridge_cmd_key   missing_args_cmd); // not enough args
+uint8_t UsbWriteStatusSpiBusError(sensor_cmd_key   spi_slave_cmd);
 
 /* =====[ WIP: robust UsbRead functionality started 2019-03-01 ]===== */
 uint8_t UsbReadOneByte(uint8_t *read_buffer);
