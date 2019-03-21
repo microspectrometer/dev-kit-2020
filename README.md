@@ -4410,6 +4410,82 @@ stay in sync. Adding a breakpoint places a `b+` next to the line number for both
 the source and assembly windows.
 
 # USB Host Application
+## New Python application
+Moving forward, the USB Host is a Python 3 application.
+
+See work here:
+`/cygdrive/c/chromation-dropbox/Dropbox/sales/spect-py3-examples/`
+
+Clean these notes:
+    - Python 3 `pyserial` works
+    - my error in the past was because I did not know how byte arrays worked in
+      Python 3, nothing to do with `pyserial`
+        - see short snippets here:
+        <https://www.mkyong.com/python/python-3-convert-string-to-bytes/>
+    - D2XX calls still work with `Load VCP` enabled
+    - that means people have a choice
+    - and the right choice on Python is `Load VCP` because:
+        - `pyserial` does not have a d2xx api
+        - the serial commands work just as well
+            - whatever you need to do in D2XX you can do treating the device as
+              a generic COM Port
+    - I can leave my LabVIEW code using the D2XX API and use VCP when
+      programming in Python with `pyserial`
+    - `Load VCP` cannot access all the USB Description Strings that D2XX can
+      access
+        - `Product Description` is not visible
+        - `Manufacturer` is not visible
+        - but `Serial Number` is visible
+    - There is a COM port variable named `manufacturer` but this actually comes
+      from the `.inf` file installed with the USB driver
+        - FTDI wants you to change this
+        - this doc shows where the fields are in `FT_Prog`:
+            <https://www.ftdichip.com/Support/Documents/AppNotes/AN_124_User_Guide_For_FT_PROG.pdf>
+        - this doc explains what you're supposed to change:
+            <https://www.ftdichip.com/Support/Documents/TechnicalNotes/TN_102_OEM_Technical_Support_Requirements_for_FTDI_Products.pdf>
+        - but this would void the security certificate:
+
+        > It is important to note that the device drivers in this example are
+        > shown in Figures 2 and 3 as “Not digitally signed”. Any time there are
+        > edits performed on any of the device driver files, it will invalidate
+        > the WHQL signature. Re-certification by the OEM is possible. Refer to
+        > the AN_101_WHQL_Certified_Driver_Process(FT_000063).
+
+        - and that would sketch out customers
+        - and since no one gives a fuck anyway, just leave it as is
+        - `manufacturer` shows up as FTDI, not a big deal
+        - this is just `eval kit hardware` -- if it *were* a consumer product,
+          then we'd want to change this and do it right, paying for the security
+          certificate mojo:
+            <https://www.ftdichip.com/Support/Documents/AppNotes/AN_101_Submitting_Modified_FTDI_Drivers_for_Windows_Hardware_Certification.pdf>
+    - I leave the `Product Description` as-is so that my LabVIEW code does not
+      have to change: it still gets `ChromationSpect-0643-01`
+    - but now I put CHROMATION123456 in FTDI `serial_number`
+    - when `pyserial` scans the USB ports, it can `grep` (awesome!) for the
+      serial number and return a `port` object
+    - I can tell that `port` object to open up without ever having to use the
+      `COM` string explicitly
+    - this *should* make the find-and-open code cross-platform
+    - other change in `FT_Prog` is the manufacturer
+    - change manufacturer from `FTDI` to `CH`
+        - does not impact `Load VCP` users, e.g., what you can see from
+          `pyserial`
+        - does not impact my LabVIEW code since I never look at the manufacturer
+          field
+        - but it helps with the 44 character limit:
+        - Product Description + manufacturer + serial number cannot exceed 44
+          characters
+        - serial number is supposed to be 16 characters
+CHROMATION123456
+- very happy with script examples
+
+    - serial commands are encapsulated in functions
+    - functions are all very short thanks to generators and list comprehensions
+    - even the final plotting code is relatively short, as plotting code goes
+- up until 3AM figuring out a snappy live updating matplotlib
+    - snag here with globals to revisit later
+
+
 ## LisSweep
 - send this command to get a frame of data:
 - `cmd_send_lis_frame`
