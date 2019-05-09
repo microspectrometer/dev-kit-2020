@@ -29,6 +29,21 @@ general purpose I/O pin on the SPI slave that drives an additional
 general purpose I/O pin on the SPI master. Thus the four-wire SPI bus
 becomes a five-wire SPI bus: MOSI, MISO, SCK, SS, DR (data ready).
 
+Be lazy. Do it this way if you can.
+
+Example: I have `seven` required signals.
+
+- 4-wire SPI
+- 2-wire power
+- `RST` for programming the microcontroller
+
+Seven is a weird number for a connector. For example, the *3M D2500 Series*
+only come in even numbers of pins. Use an eight-pin connector. Then there is an
+extra pin anyway. Also, both microcontrollers have a spare I/O pin `PORTB` pin
+`B1`, which is the same port shared by `MISO`. There is no reason to stick with
+a 4-wire bus.
+
+### When this is not an option
 But an additional I/O pin is not an option if the SPI master and SPI
 slave do not have enough general purpose I/O pins. Even if pin count is
 not a problem, using additional I/O pins is undesirable if the SPI
@@ -74,7 +89,7 @@ pin.
 In multi-master systems, the data direction of the SPI master is configured as
 an input. This avoids contention on the slave select pin.  As an input, it is
 normally high via an external pull-up. Either SPI master can temporarily
-configure its slave select as an output and driver the slave select line low.
+configure its slave select as an output and drive the slave select line low.
 
 When one master switches direction to output and drives the pin low, the other
 master is automatically changed to a SPI slave. After communication is over, the
@@ -86,6 +101,10 @@ being a SPI slave.
 Multi-master SPI systems are neat. They can be used to implement a
 fault-tolerant distributed network of concurrent processes by sharing a common
 SPI bus.
+
+- [ ] Rethink multi-master as the solution for sending a frame of data from the
+  `sensor` to the `bridge`: let the `sensor` become the `SpiMaster` when sending
+  lots of data back
 
 ## Repurposing the automatic switch from Master-to-Slave
 
@@ -119,7 +138,7 @@ master drives the pin high, then makes it an input and watches for a low on this
 pin, either by polling the pin or using an interrupt.
 
 The general purpose I/O on the SPI Master that connects to the Slave Select on
-he SPI slave is the dedicated *Data Ready* pin for this particular SPI slave.
+the SPI slave is the dedicated *Data Ready* pin for this particular SPI slave.
 The SPI slave pulls the pin low when it is ready to send data.
 
 Since the SPI hardware forces the data direction of Slave Select to be an input,
