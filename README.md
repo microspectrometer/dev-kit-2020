@@ -436,8 +436,10 @@ uint8_t const cmd_send_lis_frame        = 0x01;
 - For reading data from the *ADC* on the `mBrd`
 - see PDF sketch `mcu-usart-in-spi-mode-for-adc-spi.pdf`
     - explains USART configuration for MSPIM
+
 ##### ADC
 - LTC1864L
+
 ##### analog overview
 - 16-bit SAR ADC with a differential input and a unipolar transfer function
     - Differential input means the analog voltage is the difference between
@@ -446,7 +448,10 @@ uint8_t const cmd_send_lis_frame        = 0x01;
         - the difference between IN+ and IN- is the dark-corrected pixel voltage
     - Unipolar transfer function means the allowed analog voltages range from 0V
       to 2.5V.
-- uses a 2.5V external reference
+- ~use a 2.5V external reference~
+    - original build uses 2.5V, then switched to 2.048V
+- new design: use a 1.8V external reference
+
 ##### digital interface
 - communicate with ADC over SPI to read the pixel voltages as 16-bit values:
     - ADC is the SPI slave
@@ -3735,14 +3740,17 @@ uint8_t const Spi_Sck    =   PB5;    // SPI clock
 - lib `UartSpi`
 - the `mBrd` MCU is the SPI master
 - the `mBrd` ADC is the SPI slave
+
 ## SPI communication with LTC1864LADC
 Tx a byte:
 - Wait until bit UDREn in reg UCSRnA is high.
 - Write two bytes to UDRn for a 16-bit transfer.
 - Wait for an interrupt that is triggered when the UART transmission completes.
   Or, wait until bit RXCn in reg UCSRnA is high.
+
 # LIS
 - lib `Lis`
+
 ## one frame of data
 - the ADC converts every pixel to a 16-bit value
 - there are 784 pixels
@@ -3755,12 +3763,14 @@ Tx a byte:
     - that makes it 1540 bytes
 - there are probably more pixels we can ignore too
     - revisit the optical design to see which pixels are actually used
+
 ## power down
 - see `Power Standby Mode`
 - `Lis_Rst` is high
 - `Lis_Clk` stops and idles low
 - remains in power down mode until `Lis_Rst` is pulled low and `Lis_Clk`
   is restarted
+
 ## power up
 - see `Power Up sequence`
 - `Lis_Rst` is pulled low
@@ -3770,6 +3780,7 @@ Tx a byte:
     - select entire active pixel array
     - set output amplifier gain to 2.5x
     - turn off the summing mode
+
 ## programmable setup
 - see `Programmable Setup Register`
 - power up
@@ -3797,6 +3808,7 @@ Tx a byte:
         - each sub-array is one segment tall
         - each sub-array spans 154 pixels
     - just keep reset high, this selects every segment of every pixel
+
 ## frame readout
 - `Lis_Clk` is running
     - [x] `LisInit()` pulls `Lis_Rst` low
@@ -4485,7 +4497,6 @@ CHROMATION123456
 - up until 3AM figuring out a snappy live updating matplotlib
     - snag here with globals to revisit later
 
-
 ## LisSweep
 - send this command to get a frame of data:
 - `cmd_send_lis_frame`
@@ -4558,6 +4569,7 @@ s.open()
 ```python
 s.write('\x00')
 ```
+
 #### Earhart command sequence to get a frame
 ```python
 s.write('\x00\x04')
@@ -4570,6 +4582,9 @@ s.inWaiting()
   buffer
 
 ## Dev kit redesign
+- *2019-05-10: revisiting this now: everything below is addressed*
+- TODO: update this with redesign
+- old 2018-08-16 notes start here:
 - PCBs for dev kit will change
 - spi-master-simulant and spi-slave will be simpler
 - spectrometer breakout board will have optimized form factor for
