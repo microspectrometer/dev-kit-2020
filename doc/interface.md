@@ -115,11 +115,32 @@ The following describes how to interface the Chromation spectrometer, to:
     - **`SPI-out`**: remove the top circuit board and use the jumper wires to
       connect to the `SPI` header pins
 
-The pixel array in the spectrometer is Dynamax# `LIS-770i`. Interfacing the
-pixel array is greatly simplified by the dev-kit digital interface:
+## Open-source repository of design files
+The **dev-kit** is open-source. Design files are available from our online
+repository:
+
+- EAGLE circuit schematics
+- EAGLE circuit board files
+- firmware
+- Python libraries and applications
+
+After reading this documentation, we encourage you to clone the repository and
+use/modify our design files for your project. These are our latest stable design
+files we use internally for dev kit production and for our own characterization
+and R&D.
+
+We welcome feedback and fixes/improvements. We are not liable for any damages
+caused by using our design files.
+
+## Linear pixel array
+The linear pixel array in the spectrometer is Dynamax# `LIS-770i`. Interfacing
+the pixel array is greatly simplified by the dev-kit digital interface:
 
 - pixel configuration details are excluded because the `SPI-out` interface
   defaults to the optimal settings
+    - active pixels: all
+    - pixel size: largest
+    - pixel voltage gain: 1x
 - data acquisition details are encapsulated in higher-level functions provided
   by the `SPI-out` interface:
     - set exposure time (a.k.a integration time)

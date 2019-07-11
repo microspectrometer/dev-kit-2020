@@ -23,6 +23,26 @@
 <p class="author">Mike Gazes</p>
 <p class="date">December 3rd, 2018</p>
 </header>
+<nav id="TOC">
+<ul>
+<li><a href="#spectrometer-sequencing-diagrams">Spectrometer Sequencing Diagrams</a></li>
+<li><a href="#recommended-operating-conditions">Recommended Operating Conditions</a></li>
+<li><a href="#electrical-characteristics">Electrical Characteristics</a></li>
+<li><a href="#recommended-adc-values">Recommended ADC values</a></li>
+<li><a href="#recommended-clock-filter">Recommended Clock Filter</a></li>
+<li><a href="#spectrometer-configuration-during-wavelength-calibration">Spectrometer Configuration During Wavelength Calibration</a></li>
+<li><a href="#spectrometer-interface">Spectrometer Interface</a><ul>
+<li><a href="#spectrometer-interface-block-diagram">Spectrometer Interface Block Diagram</a></li>
+<li><a href="#initialize-the-spectrometer-after-power-up">Initialize the spectrometer after power-up</a></li>
+<li><a href="#configure-the-spectrometer">Configure the spectrometer</a></li>
+<li><a href="#acquire-a-spectrum">Acquire a spectrum</a><ul>
+<li><a href="#expose-the-spectrometer-pixels">Expose the spectrometer pixels</a></li>
+<li><a href="#immediately-readout-the-pixel-voltages">Immediately readout the pixel voltages</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#reference-design">Reference Design</a></li>
+</ul>
+</nav>
 <h1 id="spectrometer-sequencing-diagrams">Spectrometer Sequencing Diagrams</h1>
 <figure>
 <img src="img/initialize-spectrometer-sequence.png" alt="Spectrometer Initialization Sequence" /><figcaption>Spectrometer Initialization Sequence</figcaption>
@@ -229,7 +249,7 @@
 </tbody>
 </table>
 <h1 id="recommended-clock-filter">Recommended Clock Filter</h1>
-<p>The rising edge of the clock signal couples into the V<sub>OUT</sub> signal. Filter this transient with a simple passive RC filter with f<sub>3dB</sub> ≥ <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D" alt="\frac{1}{2}" title="\frac{1}{2}" />f<sub>CLK</sub>. This filter is not essential so it is safe to eliminate on ultra-low component-count designs. The table below shows recommended values.</p>
+<p>The rising edge of the clock signal couples into the V<sub>OUT</sub> signal. Filter this transient with a simple passive RC filter with f<sub>3dB</sub> ≥ <span class="math inline">$\frac{1}{2}$</span>f<sub>CLK</sub>. This filter is not essential so it is safe to eliminate on ultra-low component-count designs. The table below shows recommended values.</p>
 <table>
 <caption>Recommended spectrometer V<sub>OUT</sub> passive RC clock filter</caption>
 <thead>
@@ -248,7 +268,7 @@
 <td style="text-align: center;">f<sub>3dB</sub></td>
 <td style="text-align: left;">Clock filter cutoff frequency</td>
 <td style="text-align: left;">–</td>
-<td style="text-align: center;"><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D" alt="\frac{1}{2}" title="\frac{1}{2}" />f<sub>CLK</sub></td>
+<td style="text-align: center;"><span class="math inline">$\frac{1}{2}$</span>f<sub>CLK</sub></td>
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">–</td>
 <td style="text-align: center;">kHz</td>
@@ -317,8 +337,26 @@
 </tbody>
 </table>
 <h1 id="spectrometer-interface">Spectrometer Interface</h1>
-<p>The following describes how to interface the Chromation spectrometer. Since the Chromation spectrometer is simply optical components mounted around the <code>LIS-770i</code>, <em>the spectrometer interface is the <code>LIS-770i</code> interface</em>. The interface description here is sufficient to operate the spectrometer but for simplicity some information about the <code>LIS-770i</code> is excluded. See the <code>LIS-770i</code> datasheet for additional operating conditions, waveforms, and details about other functionality not covered here, in particular the <code>power-down</code> mode.</p>
-<p>External hardware is required to drive the spectrometer to achieve its higher-level function: <em>acquire a spectrum</em>. Chromation refers to this external hardware as the <strong>spectrometer digital interface</strong>.</p>
+<p>The following describes how to interface the Chromation spectrometer, to:</p>
+<ul>
+<li>work <strong>directly with the pixel array</strong> in the spectrometer</li>
+<li>or to use the <strong>dev-kit</strong> readout circuit as a digital interface:
+<ul>
+<li><strong><code>USB-out</code></strong>: both circuit boards, as shipped</li>
+<li><strong><code>SPI-out</code></strong>: remove the top circuit board and use the jumper wires to connect to the <code>SPI</code> header pins</li>
+</ul></li>
+</ul>
+<p>The pixel array in the spectrometer is Dynamax# <code>LIS-770i</code>. Interfacing the pixel array is greatly simplified by the dev-kit digital interface:</p>
+<ul>
+<li>pixel configuration details are excluded because the <code>SPI-out</code> interface defaults to the optimal settings</li>
+<li>data acquisition details are encapsulated in higher-level functions provided by the <code>SPI-out</code> interface:
+<ul>
+<li>set exposure time (a.k.a integration time)</li>
+<li>acquire a spectrum</li>
+<li>auto-expose</li>
+</ul></li>
+</ul>
+<p>See the <code>LIS-770i</code> datasheet for additional operating conditions, waveforms, and details about other functionality not covered here, in particular the <code>power-down</code> mode.</p>
 <h2 id="spectrometer-interface-block-diagram">Spectrometer Interface Block Diagram</h2>
 <p>The block diagram below shows the spectrometer signals referred to in the following sequences to initialize, configure, and acquire a spectrum. The block diagram also shows how the <strong>spectrometer digital interface</strong> converts the spectrometer to a <em>SPI slave</em> device.</p>
 <figure>
