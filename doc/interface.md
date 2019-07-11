@@ -107,17 +107,28 @@ Table: Spectrometer configuration used during wavelength calibration
 
 
 # Spectrometer Interface
-The following describes how to interface the Chromation spectrometer. Since the
-Chromation spectrometer is simply optical components mounted around the
-`LIS-770i`, *the spectrometer interface is the `LIS-770i` interface*. The
-interface description here is sufficient to operate the spectrometer but for
-simplicity some information about the `LIS-770i` is excluded. See the `LIS-770i`
-datasheet for additional operating conditions, waveforms, and details about
-other functionality not covered here, in particular the `power-down` mode.
+The following describes how to interface the Chromation spectrometer, to:
 
-External hardware is required to drive the spectrometer to achieve its
-higher-level function: *acquire a spectrum*. Chromation refers to this external
-hardware as the **spectrometer digital interface**.
+- work **directly with the pixel array** in the spectrometer
+- or to use the **dev-kit** readout circuit as a digital interface:
+    - **`USB-out`**: both circuit boards, as shipped
+    - **`SPI-out`**: remove the top circuit board and use the jumper wires to
+      connect to the `SPI` header pins
+
+The pixel array in the spectrometer is Dynamax# `LIS-770i`. Interfacing the
+pixel array is greatly simplified by the dev-kit digital interface:
+
+- pixel configuration details are excluded because the `SPI-out` interface
+  defaults to the optimal settings
+- data acquisition details are encapsulated in higher-level functions provided
+  by the `SPI-out` interface:
+    - set exposure time (a.k.a integration time)
+    - acquire a spectrum
+    - auto-expose
+
+See the `LIS-770i` datasheet for additional operating conditions, waveforms, and
+details about other functionality not covered here, in particular the
+`power-down` mode.
 
 ## Spectrometer Interface Block Diagram
 The block diagram below shows the spectrometer signals referred to in the
