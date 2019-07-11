@@ -137,10 +137,11 @@ The linear pixel array in the spectrometer is Dynamax# `LIS-770i`. Interfacing
 the pixel array is greatly simplified by the dev-kit digital interface:
 
 - pixel configuration details are excluded because the `SPI-out` interface
-  defaults to the optimal settings
+  defaults to the optimal settings for our spectrometer:
     - active pixels: all
-    - pixel size: largest
-    - pixel voltage gain: 1x
+    - pixel height: largest
+    - pixel pitch: largest
+    - pixel voltage gain: smallest (1x)
 - data acquisition details are encapsulated in higher-level functions provided
   by the `SPI-out` interface:
     - set exposure time (a.k.a integration time)

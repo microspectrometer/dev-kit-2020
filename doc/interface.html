@@ -32,6 +32,8 @@
 <li><a href="#recommended-clock-filter">Recommended Clock Filter</a></li>
 <li><a href="#spectrometer-configuration-during-wavelength-calibration">Spectrometer Configuration During Wavelength Calibration</a></li>
 <li><a href="#spectrometer-interface">Spectrometer Interface</a><ul>
+<li><a href="#open-source-repository-of-design-files">Open-source repository of design files</a></li>
+<li><a href="#linear-pixel-array">Linear pixel array</a></li>
 <li><a href="#spectrometer-interface-block-diagram">Spectrometer Interface Block Diagram</a></li>
 <li><a href="#initialize-the-spectrometer-after-power-up">Initialize the spectrometer after power-up</a></li>
 <li><a href="#configure-the-spectrometer">Configure the spectrometer</a></li>
@@ -346,9 +348,26 @@
 <li><strong><code>SPI-out</code></strong>: remove the top circuit board and use the jumper wires to connect to the <code>SPI</code> header pins</li>
 </ul></li>
 </ul>
-<p>The pixel array in the spectrometer is Dynamax# <code>LIS-770i</code>. Interfacing the pixel array is greatly simplified by the dev-kit digital interface:</p>
+<h2 id="open-source-repository-of-design-files">Open-source repository of design files</h2>
+<p>The <strong>dev-kit</strong> is open-source. Design files are available from our online repository:</p>
 <ul>
-<li>pixel configuration details are excluded because the <code>SPI-out</code> interface defaults to the optimal settings</li>
+<li>EAGLE circuit schematics</li>
+<li>EAGLE circuit board files</li>
+<li>firmware</li>
+<li>Python libraries and applications</li>
+</ul>
+<p>After reading this documentation, we encourage you to clone the repository and use/modify our design files for your project. These are our latest stable design files we use internally for dev kit production and for our own characterization and R&amp;D.</p>
+<p>We welcome feedback and fixes/improvements. We are not liable for any damages caused by using our design files.</p>
+<h2 id="linear-pixel-array">Linear pixel array</h2>
+<p>The linear pixel array in the spectrometer is Dynamax# <code>LIS-770i</code>. Interfacing the pixel array is greatly simplified by the dev-kit digital interface:</p>
+<ul>
+<li>pixel configuration details are excluded because the <code>SPI-out</code> interface defaults to the optimal settings for our spectrometer:
+<ul>
+<li>active pixels: all</li>
+<li>pixel height: largest</li>
+<li>pixel pitch: largest</li>
+<li>pixel voltage gain: smallest (1x)</li>
+</ul></li>
 <li>data acquisition details are encapsulated in higher-level functions provided by the <code>SPI-out</code> interface:
 <ul>
 <li>set exposure time (a.k.a integration time)</li>
