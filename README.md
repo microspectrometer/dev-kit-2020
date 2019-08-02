@@ -1,39 +1,3 @@
-# Table of Contents
-- [Repo links](#markdown-header-repo-links)
-- [Status](#markdown-header-status)
-    - [lib organization](#markdown-header-lib-organization)
-    - [estimate progress](#markdown-header-estimate-progress)
-    - [track progress by lib](#markdown-header-track-progress-by-lib)
-- [Internal deadline](#markdown-header-internal-deadline)
-    - [Deliverables for August](#markdown-header-deliverables-for-august)
-    - [Deadline](#markdown-header-deadline)
-- [LIS-770i project code organization](#markdown-header-lis-770i-project-code-organization)
-- [Abstract memory-mapped-io for tests](#markdown-header-abstract-memory-mapped-io-for-tests)
-- [TDD](#markdown-header-tdd)
-- [Mockist TDD](#markdown-header-mockist-tdd)
-    - [Hardware connections are faked not mocked](#markdown-header-hardware-connections-are-faked-not-mocked)
-    - [Hardware behavior is mocked](#markdown-header-hardware-behavior-is-mocked)
-- [FT1248](#markdown-header-ft1248)
-    - [How FT1248 relates to USB](#markdown-header-how-ft1248-relates-to-usb)
-    - [FT1248 overview](#markdown-header-ft1248-overview)
-    - [FT1248 protocol and Ft1248 C library](#markdown-header-ft1248-protocol-and-ft1248-c-library)
-    - [FT1248 setup](#markdown-header-ft1248-setup)
-    - [FT1248 starts communication with a combined command and bus-width byte](#markdown-header-ft1248-starts-communication-with-a-combined-command-and-bus-width-byte)
-    - [How the MCU manages USB communication using FT1248 ](#markdown-header-how-the-mcu-manages-usb-communication-using-ft1248-)
-        - [Check if there is any unread data from the USB host](#markdown-header-check-if-there-is-any-unread-data-from-the-usb-host)
-        - [Read the data from the USB host](#markdown-header-read-the-data-from-the-usb-host)
-    - FT1248 reference
-        - [FT1248 format of combined command and bus-width byte](#markdown-header-ft1248-format-of-combined-command-and-bus-width-byte)
-        - [FT1248 combined command and bus-width byte for an 8-bit bus](#markdown-header-ft1248-combined-command-and-bus-width-byte-for-an-8-bit-bus)
-- [SPI](#markdown-header-spi)
-- [UART SPI](#markdown-header-uart-spi)
-- [Program Flash](#markdown-header-program-flash)
-    - [Cable connections and switch settings](#markdown-header-cable-connections-and-switch-settings)
-    - [Verify programming communication link](#markdown-header-verify-programming-communication-link)
-    - [Programming flash with `make`](#markdown-header-programming-flash-with-`make`)
-
----e-n-d---
-
 # Status
 
 ## Old `external user notes` I wrote in initial Osram repo

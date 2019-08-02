@@ -27,7 +27,9 @@
 <ul>
 <li><a href="#pain-point">Pain Point</a></li>
 <li><a href="#solutions">Solutions</a><ul>
-<li><a href="#the-5-wire-spi-bus-solution">The 5-wire SPI Bus solution</a></li>
+<li><a href="#the-5-wire-spi-bus-solution">The 5-wire SPI Bus solution</a><ul>
+<li><a href="#when-this-is-not-an-option">When this is not an option</a></li>
+</ul></li>
 <li><a href="#four-wire-solution-if-slave-select-pins-are-tied-together-use-miso.">Four-wire solution: if Slave Select pins are tied together, use MISO.</a></li>
 <li><a href="#the-slave-select-pin-in-multi-master-spi-systems.">The Slave Select pin in multi-master SPI systems.</a></li>
 <li><a href="#repurposing-the-automatic-switch-from-master-to-slave">Repurposing the automatic switch from Master-to-Slave</a></li>
@@ -51,7 +53,17 @@
 <h1 id="solutions">Solutions</h1>
 <h2 id="the-5-wire-spi-bus-solution">The 5-wire SPI Bus solution</h2>
 <p>The usual solution in a single-master SPI system is to use an additional general purpose I/O pin on the SPI slave that drives an additional general purpose I/O pin on the SPI master. Thus the four-wire SPI bus becomes a five-wire SPI bus: MOSI, MISO, SCK, SS, DR (data ready).</p>
+<p>Be lazy. Do it this way if you can. The readout PCBs in the <code>20190429-dev-kit</code> project do it this way. (The previous PCBs do not, hence I had to come up with a 4-wire solution.)</p>
+<p>Example: I have <code>seven</code> required signals.</p>
+<ul>
+<li>4-wire SPI</li>
+<li>2-wire power</li>
+<li><code>RST</code> for programming the microcontroller</li>
+</ul>
+<p>Seven is a weird number for a connector. For example, the <em>3M D2500 Series</em> only come in even numbers of pins. Use an eight-pin connector. Then there is an extra pin anyway. Also, both microcontrollers have a spare I/O pin <code>PORTB</code> pin <code>B1</code>, which is the same port shared by <code>MISO</code>. There is no reason to stick with a 4-wire bus.</p>
+<h3 id="when-this-is-not-an-option">When this is not an option</h3>
 <p>But an additional I/O pin is not an option if the SPI master and SPI slave do not have enough general purpose I/O pins. Even if pin count is not a problem, using additional I/O pins is undesirable if the SPI master and SPI slave are on different circuit boards because this requires an extra dedicated signal wire between the two boards.</p>
+<p>Again, this is a <em>weird</em> problem to have. I had the problem because past me goofed. So I came up with a solution. I share it here because it works. But I will probably never do it this way again.</p>
 <h2 id="four-wire-solution-if-slave-select-pins-are-tied-together-use-miso.">Four-wire solution: if Slave Select pins are tied together, use MISO.</h2>
 <p>The eval kit hardware <em>does</em> tie the Slave select of the SPI slave to the slave select of the SPI master. Therefore, I cannot use the Slave Select pin on the SPI slave as my <em>Data Ready</em> signal. The SPI master drives this pin. If the SPI master reconfigures it as an input inbetween transmissions, then when the SPI slave drives the pin low, it will automatically switch the SPI master to a SPI slave. This is undesirable because it prevents me from adding other SPI slaves to the eval kit hardware, such as an LED driver.</p>
 <p>Instead, use the MISO pin as the <em>Data Ready</em> signal. The SPI hardware module forces MISO to be an input on the SPI master. But MISO can be an input or an output on the SPI slave. Be aware that even as an output, MISO is tri-stated on the SPI slave unless there is a tranmission.</p>
@@ -60,9 +72,12 @@
 <p>The SPI master sees MISO go low and knows the data is ready. The SPI master then watches for MISO to go high again to know for sure that the SPI slave has re-enabled its SPI module and is ready for a transmission.</p>
 <h2 id="the-slave-select-pin-in-multi-master-spi-systems.">The Slave Select pin in multi-master SPI systems.</h2>
 <p>Usually the Slave Select pin on the SPI master is configured as an output. It is disconnected from the SPI hardware module and behaves like a general purpose I/O pin.</p>
-<p>In multi-master systems, the data direction of the SPI master is configured as an input. This avoids contention on the slave select pin. As an input, it is normally high via an external pull-up. Either SPI master can temporarily configure its slave select as an output and driver the slave select line low.</p>
+<p>In multi-master systems, the data direction of the SPI master is configured as an input. This avoids contention on the slave select pin. As an input, it is normally high via an external pull-up. Either SPI master can temporarily configure its slave select as an output and drive the slave select line low.</p>
 <p>When one master switches direction to output and drives the pin low, the other master is automatically changed to a SPI slave. After communication is over, the SPI slave manually changes itself back to a SPI master. If the other master wasn’t finished communicating, Slave Select is still low (or a synchronizing pulse pulls it low again) and the SPI master is automatically knocked back into being a SPI slave.</p>
 <p>Multi-master SPI systems are neat. They can be used to implement a fault-tolerant distributed network of concurrent processes by sharing a common SPI bus.</p>
+<ul>
+<li>[ ] Rethink multi-master as the solution for sending a frame of data from the <code>sensor</code> to the <code>bridge</code>: let the <code>sensor</code> become the <code>SpiMaster</code> when sending lots of data back</li>
+</ul>
 <h2 id="repurposing-the-automatic-switch-from-master-to-slave">Repurposing the automatic switch from Master-to-Slave</h2>
 <p>Repurpose the functionality that enables multi-master SPI to give a single-master SPI network a super power: a way for the SPI slave to signal to the SPI master that it is ready to send data.</p>
 <h2 id="four-wire-solution-do-not-connect-to-slave-select-pin-on-spi-master.">Four-wire solution: do not connect to Slave Select pin on SPI master.</h2>
@@ -71,7 +86,7 @@
 <p>Do not connect the SPI Slave Select pins of the SPI master and SPI slave. I have always connected these pins because they have the same name, so connecting them <em>seemed</em> like the intent. It is the intent for a multi-master system. It is not the intent for a single-master system.</p>
 <p>Instead, connect the Slave Select pin on the SPI Slave to a general purpose I/O pin on the SPI master. Place an external pull-up resistor on this pin so that it is normally high, independent of what the SPI master does. The SPI master makes this general purpose pin I/O pin an output and drives it low to transmit to the SPI slave.</p>
 <p>To recap: use Slave Select on the SPI slave but do not use Slave Select on the SPI Master pin. Or use it as an output pin for some other purpose. But do not use it as an input (or else a low on this pin causes the SPI module switches from master to slave). When waiting for a response from the SPI slave, the SPI master drives the pin high, then makes it an input and watches for a low on this pin, either by polling the pin or using an interrupt.</p>
-<p>The general purpose I/O on the SPI Master that connects to the Slave Select on he SPI slave is the dedicated <em>Data Ready</em> pin for this particular SPI slave. The SPI slave pulls the pin low when it is ready to send data.</p>
+<p>The general purpose I/O on the SPI Master that connects to the Slave Select on the SPI slave is the dedicated <em>Data Ready</em> pin for this particular SPI slave. The SPI slave pulls the pin low when it is ready to send data.</p>
 <p>Since the SPI hardware forces the data direction of Slave Select to be an input, the SPI slave must first change itself into a SPI master, then change the data direction of this pin. The idea is the same as using MISO to signal <em>Data Ready</em>.</p>
 <p>The SPI slave (now temporarily a SPI master) spikes the pin low by changing its data direction to output, and then back to input.</p>
 <p>The SPI slave should hold the pin low for at least a few clock cycles of the SPI master’s CPU clock to make sure the SPI master <em>hears</em> it. There is no danger in holding the pin low for longer.</p>

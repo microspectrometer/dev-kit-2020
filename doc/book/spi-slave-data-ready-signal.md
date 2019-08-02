@@ -29,7 +29,9 @@ general purpose I/O pin on the SPI slave that drives an additional
 general purpose I/O pin on the SPI master. Thus the four-wire SPI bus
 becomes a five-wire SPI bus: MOSI, MISO, SCK, SS, DR (data ready).
 
-Be lazy. Do it this way if you can.
+Be lazy. Do it this way if you can. The readout PCBs in the `20190429-dev-kit`
+project do it this way. (The previous PCBs do not, hence I had to come up with
+a 4-wire solution.)
 
 Example: I have `seven` required signals.
 
@@ -49,6 +51,10 @@ slave do not have enough general purpose I/O pins. Even if pin count is
 not a problem, using additional I/O pins is undesirable if the SPI
 master and SPI slave are on different circuit boards because this
 requires an extra dedicated signal wire between the two boards.
+
+Again, this is a *weird* problem to have. I had the problem because past me
+goofed. So I came up with a solution. I share it here because it works. But I
+will probably never do it this way again.
 
 ## Four-wire solution: if Slave Select pins are tied together, use MISO.
 
