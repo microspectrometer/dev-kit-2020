@@ -1,5 +1,6 @@
 /** \file */
 #include "Spi.h"
+#include "Lis.h" // because SensorCfgLis() calls LisWriteCfg()
 #include "ReadWriteBits.h"
 /* #include "DebugLeds.h"          // controls the 4 debug LEDs */
 #include "BiColorLed.h"
