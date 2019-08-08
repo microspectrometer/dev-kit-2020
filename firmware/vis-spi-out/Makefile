@@ -1,4 +1,4 @@
-board-name := mBrd
+board-name := vis-spi-out
 
 #=====[ Compiler and Linker flags ]=====
 CFLAGS = -I../lib/src -Isrc \

@@ -6,8 +6,8 @@
 #include "Ft1248-Hardware.h"        // map FT1248 (USB) I/O to actual hardware
 #include <Usb.h>                    // USB host communication
 #include <Spi.h>                    // Chromation spectrometer is a SPI slave
-#include "../../mBrd/src/Spi-Hardware.h" // map SPI I/O to actual hardware
-#include "../../mBrd/src/Spi-Commands.h" // commands understood by the SPI slave
+#include "../../vis-spi-out/src/Spi-Hardware.h" // map SPI I/O to actual hardware
+#include "../../vis-spi-out/src/Spi-Commands.h" // commands understood by the SPI slave
 #include <ReadWriteBits.h>
 #include <stdio.h>  // snprintf()
 #include <string.h> // strlen()
