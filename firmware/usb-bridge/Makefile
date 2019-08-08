@@ -1,4 +1,4 @@
-board-name := simBrd
+board-name := usb-bridge
 
 # variable for my test output name that is stupidly coupled to my .vimrc
 test-output := build/TestSuite-results.md
@@ -44,7 +44,7 @@ build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
 	avr-size $@
-#	# avr-size $@ > build/avr-size_simBrd.log
+#	# avr-size $@ > build/avr-size_usb-bridge.log
 #	# 	-I../lib/src \
 
 # Convert .elf to .lst for disassembly.
