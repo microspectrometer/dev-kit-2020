@@ -1,0 +1,30 @@
+2019-08-09 16:15:24,589 INFO: Tx.. TEST_ASSERT_PASS: send cmd "led_green" with args None
+2019-08-09 16:15:24,603 INFO: ..Rx BRIDGE_PASS: to "led_green" bridge says "status_ok" for "led_green"
+2019-08-09 16:15:24,604 INFO: Tx.. TEST_ASSERT_PASS: send cmd "led_red" with args None
+2019-08-09 16:15:24,619 INFO: ..Rx BRIDGE_PASS: to "led_red" bridge says "status_ok" for "led_red"
+2019-08-09 16:15:24,619 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led1_green)" with args None
+2019-08-09 16:15:24,635 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led1_green)" bridge says "status_ok" for "send_led1_green"
+2019-08-09 16:15:24,635 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led1_green)" sensor says "status_ok" for "led1_green"
+2019-08-09 16:15:24,636 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led1_red)" with args None
+2019-08-09 16:15:24,651 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led1_red)" bridge says "status_ok" for "send_led1_red"
+2019-08-09 16:15:24,651 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led1_red)" sensor says "status_ok" for "led1_red"
+2019-08-09 16:15:24,651 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led2_green)" with args None
+2019-08-09 16:15:24,667 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led2_green)" bridge says "status_ok" for "send_led2_green"
+2019-08-09 16:15:24,667 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led2_green)" sensor says "status_ok" for "led2_green"
+2019-08-09 16:15:24,668 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led2_red)" with args None
+2019-08-09 16:15:24,683 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led2_red)" bridge says "status_ok" for "send_led2_red"
+2019-08-09 16:15:24,683 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led2_red)" sensor says "status_ok" for "led2_red"
+2019-08-09 16:15:24,683 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led3_green)" with args None
+2019-08-09 16:15:24,699 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led3_green)" bridge says "status_ok" for "send_led3_green"
+2019-08-09 16:15:24,699 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led3_green)" sensor says "status_ok" for "led3_green"
+2019-08-09 16:15:24,699 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led3_red)" with args None
+2019-08-09 16:15:24,715 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led3_red)" bridge says "status_ok" for "send_led3_red"
+2019-08-09 16:15:24,715 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led3_red)" sensor says "status_ok" for "led3_red"
+2019-08-09 16:15:24,715 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led4_green)" with args None
+2019-08-09 16:15:24,731 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led4_green)" bridge says "status_ok" for "send_led4_green"
+2019-08-09 16:15:24,731 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led4_green)" sensor says "status_ok" for "led4_green"
+2019-08-09 16:15:24,732 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led4_red)" with args None
+2019-08-09 16:15:24,747 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led4_red)" bridge says "status_ok" for "send_led4_red"
+2019-08-09 16:15:24,747 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led4_red)" sensor says "status_ok" for "led4_red"
+2019-08-09 16:15:24,748 INFO: Tx.. TEST_ASSERT_FAIL: send cmd "black_hat" with args None
+2019-08-09 16:15:24,763 INFO: ..Rx BRIDGE_FAIL: to "black_hat" bridge says "status_invalid_cmd" for "0xAB"
