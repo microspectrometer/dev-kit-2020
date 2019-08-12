@@ -4,6 +4,55 @@
 
 # USB communication as a COM port in Windows
 
+## Windows and POSIX
+On Windows, I can see the `pyserial` `port.hwid`:
+
+```powershell
+> python -m serial.tools.list_ports -v
+COM3
+    desc: Intel(R) Active Management Technology - SOL (COM3)
+    hwid: PCI\VEN_8086&DEV_9C3D&SUBSYS_221817AA&REV_04\3&21436425&0&B3
+COM7
+    desc: USB Serial Port (COM7)
+    hwid: USB VID:PID=0403:6015 SER=CHROMATION091113
+2 ports found
+```
+
+But not on Cygwin:
+```bash
+$ python3 -m serial.tools.list_ports -v
+/dev/ttyS2          
+    desc: n/a
+    hwid: n/a
+/dev/ttyS6          
+    desc: n/a
+    hwid: n/a
+2 ports found
+```
+
+I need an OSX box and a Linux box to test if `hwid` is a robust solution. I'd
+imagine OSX and Linux are similar to the Cygwin POSIX environment, but I don't
+want to solve this problem if it's just Cygwin, because I doubt any of our
+customers are using Cygwin.
+
+The issue with using the COM number is that it's a kludge. In my example above,
+COM3 is S2 and COM7 is S6. It's not obvious if S2 or S6 is the kit. I have to
+detach it, scan the ports again, then look at which port is missing. Also, a new
+kit will get a new COM number. Say a new kit is COM12, then the POSIX port is
+S11. If I leave the identifier as a COM port, I'm making the customer identify
+their COM port. That sucks.
+
+So if this problem is true for all POSIX and OSX environments, then I need to
+use the `D2XX` library. The solution is just like making the `reset()` function
+to manipulate the `CBUS` pin, but now it's to handle port scanning to get the
+serial numbers.
+
+- [ ] provide this function in a Chromation `pyspect.py` package
+    - goal: customer's writing a USB Host application can `import pyspect` and
+      call `pyspect.ports()` without ever consulting the *FTDI D2XX Programmer's
+      Guide*. The function will do what `serial.tools.list_ports.grep()` does,
+      but it uses d2xx.
+
 ## Context
 The FTDI device on our `usb-bridge` is accessible from the USB Host in two ways:
 
@@ -76,7 +125,7 @@ Doing it right requires paying for the security certificate mojo:
 
 <https://www.ftdichip.com/Support/Documents/AppNotes/AN_101_Submitting_Modified_FTDI_Drivers_for_Windows_Hardware_Certification.pdf>
 
-## Set the serial number
+## Set the serial number in `FT_Prog`
 - I leave the `Product Description` as-is so that my LabVIEW code does not
   have to change: it still gets `ChromationSpect-0643-01`
 - but now I put `CHROMATION123456` in FTDI `serial_number`
@@ -123,7 +172,6 @@ has no API for manipulating the `CBUS` pin.
     - goal: customer's writing a USB Host application can `import pyspect` and
       call `pyspect.reset()` without ever consulting the *FTDI D2XX Programmer's
       Guide*
-
 
 # Install dependencies
 ## Install `pip` if it is not already installed
@@ -267,6 +315,20 @@ Required-by:
 This method uses the `list_ports` utility provided with `pyserial`.
 
 ```bash
+$ python3 -m serial.tools.list_ports
+```
+
+- `list_ports.py` is a command-line utility in the `pyserial` lib
+- `python -m` searches `sys.path` for a module to execute as a script
+- `python -m serial` searches for module `pyserial`
+- `python -m serial.tools.list_ports` searches specifically for `list_ports.py`
+  and executes its contents as the `__main__` module
+- see <https://docs.python.org/3.6/using/cmdline.html#cmdoption-m>
+
+An alternative way to run `list_ports` is to navigate to the `pyserial` folder
+and run it like any other Python script.
+
+```bash
 $ cd /usr/lib/python3.6/site-packages/serial/tools/
 $ python3 ./list_ports.py
 /dev/ttyS2
@@ -321,22 +383,32 @@ is because I cannot see the `hwid` in Cygwin. Why?
 /dev/ttyS6 - n/a
 ```
 
+`include_links` defaults to `False`, but making it `True` does not help:
+```python
+>>> ports = usb_ports.grep('tty', include_links=True)
+>>> print('\n'.join([port.hwid for port in ports]))
+n/a
+```
+
+So I can *see* the kit. It is `ttyS6`. But I cannot find it by serial number.
+
 ### PowerShell
 ```powershell
 > python
 ```
 
 ```python
-# Import the `list_ports` utility to use its functions at the REPL.
+
+#### Import the `list_ports` utility to use its functions at the REPL.
 >>> import serial.tools.list_ports as usb_ports
 
-# Show the COM ports
+#### Show the COM ports
 >>> ports = usb_ports.grep('')
 >>> print('\n'.join([str(port) for port in ports]))
 COM3 - Intel(R) Active Management Technology - SOL (COM3)
 COM7 - USB Serial Port (COM7)
 
-# Show the hwid
+#### Show the hwid
 >>> ports = usb_ports.grep('')
 >>> print('\n'.join([str(port.hwid) for port in ports]))
 PCI\VEN_8086&DEV_9C3D&SUBSYS_221817AA&REV_04\3&21436425&0&B3
@@ -348,17 +420,17 @@ because the subsequent list comprehension walks the generator until it has
 nothing more to generate.
 
 ```python
-# Only show for Chromation
+#### Only show for Chromation
 >>> ports = usb_ports.grep('CHROMATION')
 >>> print('\n'.join([port.hwid for port in ports]))
 USB VID:PID=0403:6015 SER=CHROMATION091113
 
-# Only show the Chromation spectrometer serial number
+#### Only show the Chromation spectrometer serial number
 >>> ports = usb_ports.grep('CHROMATION')
 >>> print('\n'.join([port.serial_number for port in ports]))
 CHROMATION091113
 
-# Only show the number part of the Chromation spectrometer serial number
+#### Only show the number part of the Chromation spectrometer serial number
 >>> ports = usb_ports.grep('CHROMATION')
 >>> print('\n'.join([port.serial_number.strip('CHROMATION') for port in ports]))
 091113
@@ -366,16 +438,29 @@ CHROMATION091113
 
 # Python application examples
 - see `old-python-readme.md`
-- right now each script I write has its own low-level serial wrappers on
-  pyserial
+- right now I have two scripts:
+    - `main.py` is based on the *new* firmware
+        - send commands
+        - log responses
+        - output a log file that reads like a system-level test suite
+    - `live-plot-using-old-fragile-protocol.py` is based on the *old* firmware
+        - the code in here has to be entered at the REPL
+        - but it does get a live plot running using `matplotlib`
+        - it's just proof that this method is possible
+            - but it is not code to build on
+            - it's something I did in one shot late one night (12-3AM)
+            - the good: it is very short
+            - the bad: it relies on global state
+- these scripts are *way* bigger than they should be because nothing is broken
+  out to libs yet
+- each script I write has its own low-level serial wrappers on `pyserial`
+    - [ ] move wrappers to their own module
 - serial commands are encapsulated in functions
+    - [ ] move serial commands to their own module
 - functions are all very short thanks to generators and list comprehensions
-- serial commands are used in the logging functions
-- actual *main* script calls logging functions
-- even the final plotting code (using the old buggy firmware) is relatively
-  short, as plotting code goes
+    - [ ] write up a reference on generators and list comprehensions
+    - assume customers are *not* familiar with these language features
     - up until 3AM figuring out a snappy live updating matplotlib
-    - snag here with globals to revisit later
 
 # Run the logging script
 
