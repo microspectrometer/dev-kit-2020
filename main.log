@@ -1,0 +1,19 @@
+2019-09-05 16:17:28,994 INFO: Tx.. TEST_ASSERT_PASS: send cmd "led_green" with args None
+2019-09-05 16:17:29,012 INFO: ..Rx BRIDGE_PASS: to "led_green" bridge says "status_ok" for "led_green"
+2019-09-05 16:17:29,013 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led1_green)" with args None
+2019-09-05 16:17:29,028 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led1_green)" bridge says "status_ok" for "send_led1_green"
+2019-09-05 16:17:29,034 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led1_green)" sensor says "status_ok" for "led1_green"
+2019-09-05 16:17:29,035 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led1_red)" with args None
+2019-09-05 16:17:29,044 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led1_red)" bridge says "status_ok" for "send_led1_red"
+2019-09-05 16:17:29,050 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led1_red)" sensor says "status_ok" for "led1_red"
+2019-09-05 16:17:29,051 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led2_green)" with args None
+2019-09-05 16:17:29,060 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led2_green)" bridge says "status_ok" for "send_led2_green"
+2019-09-05 16:17:29,066 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led2_green)" sensor says "status_ok" for "led2_green"
+2019-09-05 16:17:29,067 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led3_green)" with args None
+2019-09-05 16:17:29,076 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led3_green)" bridge says "status_ok" for "send_led3_green"
+2019-09-05 16:17:29,082 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led3_green)" sensor says "status_ok" for "led3_green"
+2019-09-05 16:17:29,083 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led4_green)" with args None
+2019-09-05 16:17:29,092 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led4_green)" bridge says "status_ok" for "send_led4_green"
+2019-09-05 16:17:29,098 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led4_green)" sensor says "status_ok" for "led4_green"
+2019-09-05 16:17:29,099 INFO: Tx.. TEST_ASSERT_FAIL: send cmd "black_hat" with args None
+2019-09-05 16:17:29,108 INFO: ..Rx BRIDGE_FAIL: to "black_hat" bridge says "status_invalid_cmd" for "0xAB"

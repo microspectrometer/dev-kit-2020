@@ -1,40 +1,121 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Examples of low-level serial communication calls.
+
+USAGE
+    Run this as a system-level test suite.
+
+    Windows
+    > cd C:\chromation-dropbox\Dropbox\c\dev-kit\python
+    > python .\main.py
+
+    Cygwin
+    $ cd /cygdrive/c/chromation-dropbox/Dropbox/c/dev-kit/python
+    $ ./main.py
+
+    Then open `main.log` to see the test results.
+
+MATPLOTLIB BACKEND
+
+    Move this part of the documentation to whatever application example I write
+    for using `matplotlib` as the Python GUI.
+
+    On Cygwin, start an XWindow Server before attempting to run `main.py`.
+    $ startx /usr/bin/openbox &
+
+    A windowing system is necessary because the script imports `matplotlib` and
+    my custom Cygwin matplotlibrc file `~/.matplotlib/matplotlibrc` sets
+    `Gtk3Agg` as the backend. This is a GUI backend, so matplotlib needs to
+    connect to a window to display the GUI. Most operating systems provide a
+    windowing system by default. Cygwin does not.
+
+    The default matplotlibrc file is in
+    `site-packages/matplotlib/mpl-data/matplotlibrc`.
+
+    My Windows matplotlibrc file is in
+    `C:\Python37\Lib\site-packages\matplotlib\mpl-data`
+    and it sets `TkAgg` as the backend.
+
+DOC
+    Windows:
+    > python -m pydoc .\main.py
+
+    Cygwin:
+    $ pydoc3 ./main.py
+"""
 
 import serial
 import serial.tools.list_ports as usb_ports
 import contextlib
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+# import matplotlib.pyplot as plt
+# import matplotlib.animation as animation
 import logging
 import codes    # eval hardware dictionary of communication status codes
 import commands as cmd # eval hardware dictionary of commands
 
-# =====[ Open communication with the spectometer ]=====
+# =====[ Open communication with the spectrometer ]=====
 
-def com_port(serial_number):
+def dev_name(serial_number):
+    """Return the device name of the USB device matching grep(serial_number).
+
+        The device name is the id string for passing to Serial.open(), e.g.,
+        `COM7` on Windows, or `/dev/ttyS6` on Cygwin.
+        If there are multiple matches, only return the first match.
+
+        Arg `serial_number` is a string.
+        The intent is that `serial_number` is the *serial number* or a
+        sub-string in the serial number.
+
+        Examples on Windows:
+        >>> dev_name('CHROMATION091234')
+        'COM7'
+        >>> dev_name('CHROMATION')
+        'COM7'
+        >>> dev_name('091234')
+        'COM7'
+
+        The serial number string shows up in
+        `serial.tools.list_ports_common.ListPortInfo.hwid`
+
+        The serial number is visible to `pyserial` on Windows, but not on
+        Cygwin. On Cygwin, use the port name instead.
+
+        Examples on Cygwin:
+        >>> dev_name('/dev/ttyS6')
+        '/dev/ttyS6'
+        >>> dev_name('ttyS6')
+        '/dev/ttyS6'
+
+        This is equivalent to calling `dev_name('COM7')` on Windows.
+
+        Calling dev_name(device_name) is silly since the point of the function
+        is to find the port name but you have to pass in the port name (or part
+        of it).
+
+        In the data structures of `pyserial`, the device name is stored in
+        `ListPortInfo.device`. See:
+        /usr/lib/python3.6/site-packages/serial/tools/list_ports_common.py
+
+    """
     with contextlib.suppress(StopIteration):
-        return next(usb_ports.grep('CHROMATION'+serial_number)).device
-
-def open_spectrometer(serial_number='012301'):
+        return next(usb_ports.grep(serial_number)).device
+def open_spectrometer(serial_number='CHROMATION012301'):
+    """Open USB communication. Search by serial number of device name."""
     usb=serial.Serial()
-    usb.baudrate = 115200
-    usb.port = com_port(serial_number)
+    usb.baudrate = 115200 # max baudrate in serialwin32.py
+    usb.port = dev_name(serial_number)
     if usb.port is None:
         print(
-            "Cannot `open_spectrometer('{}')`. Make sure it is connected."
-            .format(serial_number),
+            f"Cannot `open_spectrometer('{serial_number}')`. "
+            "Make sure it is connected.",
             file=sys.stderr
             )
         return
     usb.open()
     while not usb.is_open: pass
     return usb
-
-
-
 
 def log_tx(fname, args_sent=None, expect='PASS'):
     logging.info(
@@ -341,24 +422,24 @@ if __name__ == '__main__':
         format='%(asctime)s %(levelname)s: %(message)s',
         level=logging.DEBUG
         )
-    # serial_number = '064301'
-    # serial_number = '075801'
-    serial_number = '091113'
-    usb = open_spectrometer(serial_number)
+    # =====[ Windows ]=====
+    # usb = open_spectrometer('CHROMATION091113')
+    # =====[ Cygwin ]=====
+    usb = open_spectrometer('ttyS7')
     led_green(usb)
-    led_red(usb)
+    # led_red(usb)
     # cfg_spectrometer(usb) # default to all-rows
     # cfg_spectrometer(usb, cfg=cfgs['rows-1-2-3'])
     # cfg_spectrometer_bad_args(usb, bad_cfg=bad_cfgs['bad-cfg-1'])
     # led1_green(usb)
     sensor_led(usb, cmd.send_led1_green_key)
-    sensor_led(usb, cmd.send_led1_red_key)
+    # sensor_led(usb, cmd.send_led1_red_key)
     sensor_led(usb, cmd.send_led2_green_key)
-    sensor_led(usb, cmd.send_led2_red_key)
+    # sensor_led(usb, cmd.send_led2_red_key)
     sensor_led(usb, cmd.send_led3_green_key)
-    sensor_led(usb, cmd.send_led3_red_key)
+    # sensor_led(usb, cmd.send_led3_red_key)
     sensor_led(usb, cmd.send_led4_green_key)
-    sensor_led(usb, cmd.send_led4_red_key)
+    # sensor_led(usb, cmd.send_led4_red_key)
     black_hat(usb)
     usb.close()
     # cfg_spectrometer(usb, cfg=cfgs['row-1'])

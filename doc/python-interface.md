@@ -2,6 +2,145 @@
 % Mike Gazes
 % August 2, 2019
 
+# Tools for Chromation development
+These are the tools for someone at Chromation to work on the firmware and Python
+libraries.
+
+## Ctags and Cscope
+Create your own `tags` and `cscope.out` database files using `ctags` and
+`cscope`. These files are excluded from the repository because they are just
+noise for the version control and they are easy to generate. If someone cannot
+generate them, then they do not need them in the first place because it means
+their IDE is not set up to take advantage of them.
+
+Ctags and Cscope are separate utilities that address the same problem. I like
+them both. Ctags is the simpler tool I reach for first.
+
+### Python ctags
+Create your own `tags` file for the `dev-kit` project. The Python code is in
+`dev-kit/python`, so put the `tags` file there.
+
+```bash
+$ cd python/
+$ ctags -R --languages=python --exclude="tests"
+```
+
+This creates a `tags` file in the `dev-kit/python` folder. `-R` recursively
+dives into sub-folders in `dev-kit/python` and generates tags for all `.py`
+files. `--exclude` ignores Python scripts in the `dev-kit/python/tests` folder.
+
+Update the `tags` file with the same one-liner. Simply create a new `tags` file
+to overwrite the original.
+
+### Python cscope
+Create your own `cscope.out` file for the `dev-kit` project.
+
+Put it in the same place as the `tags` file. The `tags` and `cscope.out` files
+do not depend on each other, but they serve the same purpose.
+
+```bash
+$ cd python/
+```
+
+#### Make `cscope.files`
+
+Create `cscope.files`. This file lists all local `python` files in the project.
+Creating a list of files is not required on a C project. It is usually used as a
+way to limit which files are in the database. This is my way to get Cscope to
+generate the database for Python files.
+```bash
+$ find . -name '*.py' > cscope.files
+```
+My Vim shortcut `;cfpy` makes `cscope.files`.
+
+#### Setup up the cscope database and connect
+Kill any existing cscope database connections.
+```bash
+$ cscope kill -1
+```
+
+Create the `cscope.out` database.
+```bash
+$ cscope -R -b
+```
+`-b` creates a new `cscope.out`
+`-R` recursively look inside sub-folders while making database
+
+```bash
+$ cscope add cscope.out
+```
+
+My Vim shortcut ;cs does all of the above.
+
+#### Update the cscope database and reconnect
+Update the `cscope.out` file by simply creating a new `cscope.out` file to
+overwrite the original. Then `reset` to *reconnect* the project with the new
+`cscope.out`:
+
+```bash
+$ cscope -R -b
+$ cscope reset
+```
+
+## Download firmware to flash memory
+
+### Programmer and utilities
+Install AtmelStudio7. This provides a utility called `atprogram.exe` and puts
+this utility on the Windows PATH. The utility is installed here:
+
+`C:\Program Files (x86)\Atmel\Studio\7.0\atbackend\atprogram.exe`
+
+Invoke this utility to load flash *without* using the AtmelStudio GUI.
+
+A physical programmer is required. Connect it to the shrouded 6-pin ISP
+(in-system programming) header. Any Atmel programmer is OK. I have an
+`atmelice`. The `avrismpk2` works just as well and is much cheaper.
+
+Check the programmer is connected.
+```bash
+atprogram.exe --tool atmelice --interface isp --device atmega328p info
+atprogram.exe --tool avrispmk2 --interface isp --device atmega328p info
+```
+
+Download the flash.
+```bash
+atprogram.exe --tool atmelice --interface isp \
+--device atmega328p program --chiperase --verify --file build/usb-bridge.elf
+```
+
+Installing AtmelStudio also provides the utility `avr-size.exe`.
+
+`C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-size.exe`
+
+Invoke this utility to see how much memory is used by the flash file.
+```bash
+avr-size build/usb-bridge.elf
+```
+
+I use the AtmelStudio GUI interface to write the MCU fuses, though my intent is
+to move this step into the Makefile, again using `atprogram.exe`.
+
+### Makefiles
+Each sub-project within `dev-kit` has its own Makefile. `cd` into the
+sub-project and run the `make` command. For example, to download the flash to
+the two MCUs:
+
+```bash
+$ cd firmware/usb-bridge/
+$ make download_flash
+```
+
+My Vim shortcut is ;fa.
+
+### Flash programming documentation
+Programming the MCU on both the `usb-bridge` PCB and the `vis-spi-out` PCB is
+done by connecting the Atmel programmer to the `usb-bridge`. There is a switch
+on the `usb-bridge` PCB to put it into `ISP` mode, and another switch to select
+*which* PCB (`usb-bridge` or `vis-spi-out`) is being programmed.
+
+See `doc/readme-flash.md` for the switch positions and for the MCU fuse
+settings to program in AtmelStudio.
+
 # USB communication as a COM port in Windows
 
 ## Windows and POSIX
@@ -372,15 +511,16 @@ COM7
 I cannot see the Chromation serial number running `pyserial` under Cygwin. This
 is because I cannot see the `hwid` in Cygwin. Why?
 
+# Examples at the REPL
 ## Use `pyserial` to *see* the dev-kit from the Python REPL
 
-### Cygwin
+### Cygwin: USB at the REPL
 ```python
 >>> import serial.tools.list_ports as usb_ports
 >>> ports = usb_ports.grep('')
->>> print('\n'.join([str(port) for port in ports]))
-/dev/ttyS2 - n/a
-/dev/ttyS6 - n/a
+>>> print('\n'.join([port.device for port in ports]))
+/dev/ttyS2
+/dev/ttyS6
 ```
 
 `include_links` defaults to `False`, but making it `True` does not help:
@@ -392,7 +532,9 @@ n/a
 
 So I can *see* the kit. It is `ttyS6`. But I cannot find it by serial number.
 
-### PowerShell
+I modified the `main.py` logging example to open using `/dev/ttyS6`.
+
+### PowerShell: USB at the REPL
 ```powershell
 > python
 ```
