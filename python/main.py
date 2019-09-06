@@ -422,7 +422,7 @@ if __name__ == '__main__':
         format='%(asctime)s %(levelname)s: %(message)s',
         level=logging.DEBUG
         )
-    # =====[ Windows ]=====
+    # =====[ Windows and macOS ]=====
     usb = open_spectrometer('CHROMATION09310')
     # =====[ Cygwin ]=====
     # usb = open_spectrometer('ttyS7')

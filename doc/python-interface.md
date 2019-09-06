@@ -169,10 +169,15 @@ $ python3 -m serial.tools.list_ports -v
 2 ports found
 ```
 
-I need an OSX box and a Linux box to test if `hwid` is a robust solution. I'd
-imagine OSX and Linux are similar to the Cygwin POSIX environment, but I don't
-want to solve this problem if it's just Cygwin, because I doubt any of our
-customers are using Cygwin.
+Sean verified that the Chromation serial number is visible on macOS. So this works
+on Windows and macOS:
+```python
+usb = open_spectrometer('CHROMATION09310')
+```
+
+I need a Linux box to test `hwid`. I'd imagine Linux is similar to the Cygwin
+POSIX environment, but I don't want to solve this problem if it's just Cygwin,
+because I doubt any of our customers are using Cygwin.
 
 The issue with using the COM number is that it's a kludge. In my example above,
 COM3 is S2 and COM7 is S6. It's not obvious if S2 or S6 is the kit. I have to
@@ -181,9 +186,9 @@ kit will get a new COM number. Say a new kit is COM12, then the POSIX port is
 S11. If I leave the identifier as a COM port, I'm making the customer identify
 their COM port. That sucks.
 
-So if this problem is true for all POSIX and OSX environments, then I need to
-use the `D2XX` library. The solution is just like making the `reset()` function
-to manipulate the `CBUS` pin, but now it's to handle port scanning to get the
+So if this problem is true for all POSIX environments, then I need to use the
+`D2XX` library. The solution is just like making the `reset()` function to
+manipulate the `CBUS` pin, but now it's to handle port scanning to get the
 serial numbers.
 
 - [ ] provide this function in a Chromation `pyspect.py` package
@@ -396,6 +401,38 @@ Successfully installed pip-19.2.1
 ```
 
 ## Check if `pyserial` is installed
+
+Check with pip:
+
+```powershell
+> pip show pyserial
+Name: pyserial
+Version: 3.4
+Summary: Python Serial Port Extension
+Home-page: https://github.com/pyserial/pyserial
+Author: Chris Liechti
+Author-email: cliechti@gmx.net
+License: BSD
+Location: c:\python37\lib\site-packages
+Requires:
+Required-by:
+```
+
+```bash
+$pip3 show pyserial
+Name: pyserial
+Version: 3.4
+Summary: Python Serial Port Extension
+Home-page: https://github.com/pyserial/pyserial
+Author: Chris Liechti
+Author-email: cliechti@gmx.net
+License: BSD
+Location: /usr/lib/python3.6/site-packages
+Requires: 
+Required-by: 
+```
+
+Or just try importing it at the Python REPL:
 ```bash
 $ python3
 Python 3.6.8 (default, Feb 14 2019, 22:09:48)
@@ -421,34 +458,6 @@ Installing collected packages: pyserial
 Successfully installed pyserial-3.4
 ```
 
-## See where `pyserial` installed
-```bash
-$ pip3 show pyserial
-Name: pyserial
-Version: 3.4
-Summary: Python Serial Port Extension
-Home-page: https://github.com/pyserial/pyserial
-Author: Chris Liechti
-Author-email: cliechti@gmx.net
-License: BSD
-Location: /usr/lib/python3.6/site-packages
-Requires: 
-Required-by: 
-```
-
-```powershell
-$ pip show pyserial
-Name: pyserial
-Version: 3.4
-Summary: Python Serial Port Extension
-Home-page: https://github.com/pyserial/pyserial
-Author: Chris Liechti
-Author-email: cliechti@gmx.net
-License: BSD
-Location: c:\python37\lib\site-packages
-Requires: 
-Required-by: 
-```
 
 ## Use `pyserial` to *see* the dev-kit from bash
 This method uses the `list_ports` utility provided with `pyserial`.
