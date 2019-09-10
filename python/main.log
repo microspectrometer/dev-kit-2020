@@ -108,3 +108,36 @@
 2019-09-05 16:39:29,021 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led4_red)" sensor says "status_ok" for "led4_red"
 2019-09-05 16:39:29,021 INFO: Tx.. TEST_ASSERT_FAIL: send cmd "black_hat" with args None
 2019-09-05 16:39:29,037 INFO: ..Rx BRIDGE_FAIL: to "black_hat" bridge says "status_invalid_cmd" for "0xAB"
+2019-09-06 16:52:27,309 INFO: Tx.. TEST_ASSERT_PASS: send cmd "led_green" with args None
+2019-09-06 16:52:27,322 INFO: ..Rx BRIDGE_PASS: to "led_green" bridge says "status_ok" for "led_green"
+2019-09-06 16:52:27,323 INFO: Tx.. TEST_ASSERT_PASS: send cmd "led_red" with args None
+2019-09-06 16:52:27,338 INFO: ..Rx BRIDGE_PASS: to "led_red" bridge says "status_ok" for "led_red"
+2019-09-06 16:52:27,338 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led1_green)" with args None
+2019-09-06 16:52:27,354 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led1_green)" bridge says "status_ok" for "send_led1_green"
+2019-09-06 16:52:27,354 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led1_green)" sensor says "status_ok" for "led1_green"
+2019-09-06 16:52:27,355 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led1_red)" with args None
+2019-09-06 16:52:27,370 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led1_red)" bridge says "status_ok" for "send_led1_red"
+2019-09-06 16:52:27,370 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led1_red)" sensor says "status_ok" for "led1_red"
+2019-09-06 16:52:27,371 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led2_green)" with args None
+2019-09-06 16:52:27,386 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led2_green)" bridge says "status_ok" for "send_led2_green"
+2019-09-06 16:52:27,386 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led2_green)" sensor says "status_ok" for "led2_green"
+2019-09-06 16:52:27,387 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led2_red)" with args None
+2019-09-06 16:52:27,402 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led2_red)" bridge says "status_ok" for "send_led2_red"
+2019-09-06 16:52:27,402 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led2_red)" sensor says "status_ok" for "led2_red"
+2019-09-06 16:52:27,403 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led3_green)" with args None
+2019-09-06 16:52:27,418 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led3_green)" bridge says "status_ok" for "send_led3_green"
+2019-09-06 16:52:27,418 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led3_green)" sensor says "status_ok" for "led3_green"
+2019-09-06 16:52:27,418 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led3_red)" with args None
+2019-09-06 16:52:27,434 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led3_red)" bridge says "status_ok" for "send_led3_red"
+2019-09-06 16:52:27,434 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led3_red)" sensor says "status_ok" for "led3_red"
+2019-09-06 16:52:27,434 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led4_green)" with args None
+2019-09-06 16:52:27,450 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led4_green)" bridge says "status_ok" for "send_led4_green"
+2019-09-06 16:52:27,450 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led4_green)" sensor says "status_ok" for "led4_green"
+2019-09-06 16:52:27,451 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led4_red)" with args None
+2019-09-06 16:52:27,466 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led4_red)" bridge says "status_ok" for "send_led4_red"
+2019-09-06 16:52:27,466 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led4_red)" sensor says "status_ok" for "led4_red"
+2019-09-06 16:52:27,466 INFO: Tx.. TEST_ASSERT_FAIL: send cmd "black_hat" with args None
+2019-09-06 16:52:27,482 INFO: ..Rx BRIDGE_FAIL: to "black_hat" bridge says "status_invalid_cmd" for "0xAB"
+2019-09-09 11:53:44,745 INFO: Tx.. TEST_ASSERT_PASS: send cmd "sensor_led(send_led1_red)" with args None
+2019-09-09 11:53:44,758 INFO: ..Rx BRIDGE_PASS: to "sensor_led(send_led1_red)" bridge says "status_ok" for "send_led1_red"
+2019-09-09 11:53:44,759 INFO: ..Rx SENSOR_PASS: to "sensor_led(send_led1_red)" sensor says "status_ok" for "led1_red"

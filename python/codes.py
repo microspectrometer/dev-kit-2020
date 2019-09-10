@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 """Dictionary of Status Codes
 
 The USB-SPI bridge is the SPI master. This module, `codes.py`, calls

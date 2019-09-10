@@ -423,7 +423,7 @@ if __name__ == '__main__':
         level=logging.DEBUG
         )
     # =====[ Windows and macOS ]=====
-    usb = open_spectrometer('CHROMATION09310')
+    usb = open_spectrometer('CHROMATION091113')
     # =====[ Cygwin ]=====
     # usb = open_spectrometer('ttyS7')
     led_green(usb)
@@ -436,10 +436,6 @@ if __name__ == '__main__':
     sensor_led(usb, cmd.send_led1_red_key)
     sensor_led(usb, cmd.send_led2_green_key)
     sensor_led(usb, cmd.send_led2_red_key)
-    sensor_led(usb, cmd.send_led3_green_key)
-    sensor_led(usb, cmd.send_led3_red_key)
-    sensor_led(usb, cmd.send_led4_green_key)
-    sensor_led(usb, cmd.send_led4_red_key)
     black_hat(usb)
     usb.close()
     # cfg_spectrometer(usb, cfg=cfgs['row-1'])
