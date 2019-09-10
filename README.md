@@ -13,7 +13,7 @@ I made a simple Python script called `led-simple-serial-example.py`:
 import usb
 import commands
 
-# Turn commands into byte arrays ready to write over serial.
+ # Turn commands into byte arrays ready to write over serial.
 led1_red   = commands.send_led1_red_key.to_bytes(1,byteorder='big')
 
 kit = usb.open_spectrometer('091113')
@@ -21,8 +21,30 @@ kit.write(led1_red)
 kit.close()
 ```
 
-- [ ] Add logging to this to print the flow of bytes from host PC, through the
+- [x] Add logging to this to print the flow of bytes from host PC, through the
   PCBs, and back.
+    - [x] record bytes tx
+    - [x] record bytes rx
+- [x] open and close using Python `with` context manager syntax
+    - `pyserial` has a context manager
+    - see `serialutil.py` line 559
+    - /usr/lib/python3.7/site-packages/serial/serialutil.py
+    - snippet:
+```python
+#  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+# context manager
+
+def __enter__(self):
+    if not self.is_open:
+        self.open()
+    return self
+
+def __exit__(self, *args, **kwargs):
+    self.close()
+
+#  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+```
+
 - [ ] document how messages flow
 - [ ] follow this protocol to finish adding new messages
 
