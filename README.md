@@ -1,5 +1,32 @@
 # Status
+- [ ] move commands off `bridge`
+    - `bridge` should be a transparent dummy, agnostic to the spectrometer type
+- [ ] write a list of host PC API calls
+- [ ] figure out where I left off last time I was working on firmware
+    - March 8th, 2019
+    - run through code to understand what I was in the middle of
+- [x] run Python logging application, pick a command
 
+I made a simple Python script called `led-simple-serial-example.py`:
+
+```python
+import usb
+import commands
+
+# Turn commands into byte arrays ready to write over serial.
+led1_red   = commands.send_led1_red_key.to_bytes(1,byteorder='big')
+
+kit = usb.open_spectrometer('091113')
+kit.write(led1_red)
+kit.close()
+```
+
+- [ ] Add logging to this to print the flow of bytes from host PC, through the
+  PCBs, and back.
+- [ ] document how messages flow
+- [ ] follow this protocol to finish adding new messages
+
+# Old
 ## Old `external user notes` I wrote in initial Osram repo
 
 ### Context
