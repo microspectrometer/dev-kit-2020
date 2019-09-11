@@ -75,8 +75,8 @@ kit.close()
         - [ ] put `bridge_cmd_key` and `LookupBridgeCmd` in `usb-bridge`
         - [ ] eliminate use of the `bridge_cmd_key` datatype in `Usb` function
           signatures
-        - first steps:
-        - [ ] build and download to flash and validate with
+    - first steps:
+        - [x] build and download to flash and validate with
           `led-simple-serial-example.py` for a sane starting point
 - [ ] follow this protocol to finish adding new messages
 
