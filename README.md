@@ -25,27 +25,47 @@ kit.close()
   PCBs, and back.
     - [x] record bytes tx
     - [x] record bytes rx
-- [x] open and close using Python `with` context manager syntax
-    - `pyserial` has a context manager
-    - see `serialutil.py` line 559
-    - /usr/lib/python3.7/site-packages/serial/serialutil.py
-    - snippet:
-```python
-#  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-# context manager
+- [x] refactor the script:
+    - [x] open and close using Python `with`
+        - `pyserial` defines `__enter__()` and `__exit__()` context manager
+          methods
 
-def __enter__(self):
-    if not self.is_open:
-        self.open()
-    return self
+    ```python
+    # /usr/lib/python3.7/site-packages/serial/serialutil.py
+    # serialutil.py: 559
+    #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    # context manager
 
-def __exit__(self, *args, **kwargs):
-    self.close()
+    def __enter__(self):
+        if not self.is_open:
+            self.open()
+        return self
 
-#  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-```
+    def __exit__(self, *args, **kwargs):
+        self.close()
+    #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    ```
+
+    ```python
+    # led-simple-serial-example.py
+    # using `with` for serial open/close
+    import usb
+    import commands
+
+    if __name__ == '__main__':
+
+        # Find the spectrometer by its serial number.
+        sernum='091113'
+
+        # USB open/close handled by `pyserial` context manager
+        with usb.open_spectrometer(sernum) as kit:
+            # `kit` is an instance of `pyserial` class serial.Serial()
+            kit.write(led1_red)
+    ```
 
 - [ ] document how messages flow
+    - `led1_red` is `0x03`
+    - it is defined in `commands.send_led1_red_key`
 - [ ] follow this protocol to finish adding new messages
 
 # Old
