@@ -66,6 +66,18 @@ kit.close()
 - [ ] document how messages flow
     - `led1_red` is `0x03`
     - it is defined in `commands.send_led1_red_key`
+    - `usb-bridge.c` starts by reading in a value of type `bridge_cmd_key`
+    - this type is defined in `Usb.h`
+    - that makes no sense, it should be local to `usb-bridge.c`, or I can move
+      it off into its own `usb-bridge.h` header
+    - and removing this code from `Usb.h` removes its dependency on `Spi.h`
+    - [ ] refactor lib `Usb`:
+        - [ ] put `bridge_cmd_key` and `LookupBridgeCmd` in `usb-bridge`
+        - [ ] eliminate use of the `bridge_cmd_key` datatype in `Usb` function
+          signatures
+        - first steps:
+        - [ ] build and download to flash and validate with
+          `led-simple-serial-example.py` for a sane starting point
 - [ ] follow this protocol to finish adding new messages
 
 # Old
