@@ -12,6 +12,7 @@
 #include <stdio.h>  // snprintf()
 #include <string.h> // strlen()
 #include "AvrAsmMacros.h"       // resolve lib dependencies on AVR asm macros
+#include "bridge.h" // bridge cmd stuff
 
 /* =====[ Required Hardware Settings in FT_Prog ]===== */
 /* - Hardware Specific -> Ft1248 Settings */
