@@ -72,6 +72,8 @@ kit.close()
       it off into its own `usb-bridge.h` header
     - and removing this code from `Usb.h` removes its dependency on `Spi.h`
     - [ ] refactor lib `Usb`:
+        - **resume work on this with:**
+            - `git checkout move-bridge-out-of-usb-lib`
         - [ ] put `bridge_cmd_key` and `LookupBridgeCmd` in `usb-bridge`
         - [ ] eliminate use of the `bridge_cmd_key` datatype in `Usb` function
           signatures
