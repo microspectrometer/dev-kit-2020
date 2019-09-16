@@ -32,10 +32,6 @@ bridge_cmd_key const SendSensorLed1Red_key;
 bridge_cmd_key const SendSensorLed1Green_key;
 bridge_cmd_key const SendSensorLed2Red_key;
 bridge_cmd_key const SendSensorLed2Green_key;
-bridge_cmd_key const SendSensorLed3Red_key;
-bridge_cmd_key const SendSensorLed3Green_key;
-bridge_cmd_key const SendSensorLed4Red_key;
-bridge_cmd_key const SendSensorLed4Green_key;
 /* =====[ API: ]===== */
  /* LookUpCmd takes key from UsbHost and returns the function pointer to call. */
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key);

@@ -167,10 +167,6 @@ bridge_cmd_key const SendSensorLed1Red_key = 3;
 bridge_cmd_key const SendSensorLed1Green_key = 4;
 bridge_cmd_key const SendSensorLed2Red_key = 5;
 bridge_cmd_key const SendSensorLed2Green_key = 6;
-bridge_cmd_key const SendSensorLed3Red_key = 7;
-bridge_cmd_key const SendSensorLed3Green_key = 8;
-bridge_cmd_key const SendSensorLed4Red_key = 9;
-bridge_cmd_key const SendSensorLed4Green_key = 10;
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key) {
     /* pf is an array of pointers to BridgeCmd functions */
     /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
