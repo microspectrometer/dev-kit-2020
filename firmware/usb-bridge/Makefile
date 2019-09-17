@@ -4,10 +4,16 @@ board-name := usb-bridge
 test-output := build/TestSuite-results.md
 
 #=====[ Targets (the first target is the default target) ]=====
-#TODO: define a build for unit-tests -- add this when the need arises.
+# Build unit-test targets using Vim shortcuts starting with ;mkt
 unit-test: ${test-output}
+# Build avr targets using Vim shortcut ;mka
+# Create executable for uploading to the microcontroller. Eliminate unused code.
+# .elf is the executable to download to flash
+# .lst is the disassembly for analysis
+avr-target: build/${board-name}.elf build/${board-name}.lst
 
-#=====[ Compiler and Linker flags ]=====
+
+#=====[ AVR Compiler and Linker flags ]=====
 CFLAGS = -I../lib/src -Isrc \
 	-g -Wall -Wextra -pedantic -Wno-pointer-sign\
 	-O3 -ffunction-sections -fdata-sections -fshort-enums \
@@ -16,27 +22,54 @@ CFLAGS = -I../lib/src -Isrc \
 #The avr ld.exe does not recognize any of these
 #LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
 
-#=====[ Project Libs ]=====
+#=====[ Unit Test Compiler and Linker flags ]=====
+path_shared-lib_mock-c := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/
+CFLAGS_TEST = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
+	-I${path_shared-lib_mock-c}include -I${path_shared-lib_mock-c}test/unity \
+	-Iinclude -Isrc \
+	-g -Wall -Wextra -pedantic -Winline
+LFLAGS_TEST = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+
+#=====[ Project Libs: objects built for AVR ]=====
 # List the project libs:
 names-of-dev-libs := ReadWriteBits BiColorLed Ft1248 Usb Spi
 # list of object prerequisites for dev libs
 obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
 obj_dev-libs := $(addprefix build/,${obj_dev-libs})
 
-#=====[ Explicit rule for obj_dev-libs ]=====
+#=====[ Explicit rule for objects for AVR ]=====
 # avr-gcc has to build the lib code into its own object files
 # the `ld` linker does not recognize the file format.
 ${obj_dev-libs}: build/%.o: ../lib/src/%.c
 	avr-gcc -c $^ -o $@ $(CFLAGS)
 
+#=====[ Project Libs: objects built for Unit Tests ]=====
+# Find the `build` files in the project's `lib/build` folder.
+# Do not touch the `build` files in the application's `build` folder.
+test-obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
+test-obj_dev-libs := $(addprefix ../lib/build/,${test-obj_dev-libs})
+
+#=====[ Explicit rule for objects for Unit Tests ]=====
+# Find the `src` and `build` files in the project's `lib/build` folder.
+${test-obj_dev-libs}: ../lib/build/%.o: ../lib/src/%.c
+	${compiler} $(CFLAGS_TEST) -c $^ -o $@ $(LFLAGS_TEST)
+
+
+#=====[ Test Suite ]=====
+${test-output}: build/TestSuite.exe
+	$^ > $@
+
+# Does this recipe work? Avoid the objects built for avr-gcc!
+# TODO: [ ] build the project lib object files.
+# TODO: [ ] build the application lib object files.
+# Target unit-test ends up here:
+build/TestSuite.exe: test/test_runner.c \
+../lib/test/fake/AvrAsmMacros.c ${test-obj_dev-libs}
+	${compiler} $(CFLAGS_TEST) -Itest $^ -o $@ $(LFLAGS_TEST)
+
 #=====[ AVR ]=====
 # atmega328_lib has the .o and .a lib files and the spec file.
 atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
-
-# Executable for uploading to the microcontroller. Eliminate unused code.
-# .elf is the executable to download to flash
-# .lst is the disassembly for analysis
-avr-target: build/${board-name}.elf build/${board-name}.lst
 
 avr-asm-macros := src/AvrAsmMacros.c
 build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
