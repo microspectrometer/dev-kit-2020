@@ -14,25 +14,40 @@ avr-target: build/${board-name}.elf build/${board-name}.lst
 
 
 #=====[ AVR Compiler and Linker flags ]=====
-CFLAGS = -I../lib/src -Isrc \
+CFLAGS_for_avr = -I../lib/src -Isrc \
 	-g -Wall -Wextra -pedantic -Wno-pointer-sign\
 	-O3 -ffunction-sections -fdata-sections -fshort-enums \
 		-mmcu=atmega328p -B ${atmega328_lib}
 #Used to be -O1, not sure why.
 #The avr ld.exe does not recognize any of these
 #LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+LFLAGS_for_avr := 
 
 #=====[ Unit Test Compiler and Linker flags ]=====
 path_shared-lib_mock-c := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/
-CFLAGS_TEST = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
+CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 	-I${path_shared-lib_mock-c}include -I${path_shared-lib_mock-c}test/unity \
-	-Iinclude -Isrc \
+	-Iinclude -I../lib/src -Isrc \
 	-g -Wall -Wextra -pedantic -Winline
-LFLAGS_TEST = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+LFLAGS_for_cygwin = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+
+# =====[ Use compiler to pick which flags to use ]=====
+ifeq ($(compiler),avr-gcc)
+	CFLAGS := $(CFLAGS_for_avr)
+	LFLAGS := $(LFLAGS_for_avr)
+else
+	CFLAGS := $(CFLAGS_for_cygwin)
+	LFLAGS := $(LFLAGS_for_cygwin)
+endif
+ifeq ($(compiler),fake)
+	CFLAGS := 
+	LFLAGS := 
+endif
+
 
 #=====[ Project Libs: objects built for AVR ]=====
 # List the project libs:
-names-of-dev-libs := ReadWriteBits BiColorLed Ft1248 Usb Spi
+names-of-dev-libs := ReadWriteBits BiColorLed Ft1248 Usb Spi Lis
 # list of object prerequisites for dev libs
 obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
 obj_dev-libs := $(addprefix build/,${obj_dev-libs})
@@ -44,6 +59,18 @@ ${obj_dev-libs}: build/%.o: ../lib/src/%.c
 	avr-gcc -c $^ -o $@ $(CFLAGS)
 
 #=====[ Project Libs: objects built for Unit Tests ]=====
+#
+# ---Unity (unit test framework) object file.---
+# Behold my static library hack:
+# list of objects for unit testing with shared lib mock-c.
+mock-c-libs    := Mock RecordedCall RecordedArg ReturnValues
+mock-c-objects := $(addsuffix .o,${mock-c-libs})
+mock-c-objects := $(addprefix ${path_shared-lib_mock-c}build/,${mock-c-objects})
+obj_unity := ${path_shared-lib_mock-c}build/unity.o
+obj_shared-lib_mock-c := ${mock-c-objects} ${obj_unity}
+# TODO: add target to rebuild test framework to match compiler
+#
+# ---Libs under test?---
 # Find the `build` files in the project's `lib/build` folder.
 # Do not touch the `build` files in the application's `build` folder.
 test-obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
@@ -52,7 +79,7 @@ test-obj_dev-libs := $(addprefix ../lib/build/,${test-obj_dev-libs})
 #=====[ Explicit rule for objects for Unit Tests ]=====
 # Find the `src` and `build` files in the project's `lib/build` folder.
 ${test-obj_dev-libs}: ../lib/build/%.o: ../lib/src/%.c
-	${compiler} $(CFLAGS_TEST) -c $^ -o $@ $(LFLAGS_TEST)
+	${compiler} $(CFLAGS) -c $^ -o $@ $(LFLAGS)
 
 
 #=====[ Test Suite ]=====
@@ -64,8 +91,8 @@ ${test-output}: build/TestSuite.exe
 # TODO: [ ] build the application lib object files.
 # Target unit-test ends up here:
 build/TestSuite.exe: test/test_runner.c \
-../lib/test/fake/AvrAsmMacros.c ${test-obj_dev-libs}
-	${compiler} $(CFLAGS_TEST) -Itest $^ -o $@ $(LFLAGS_TEST)
+../lib/test/fake/AvrAsmMacros.c ${test-obj_dev-libs} ${obj_shared-lib_mock-c}
+	${compiler} $(CFLAGS) -Itest $^ -o $@ $(LFLAGS)
 
 #=====[ AVR ]=====
 # atmega328_lib has the .o and .a lib files and the spec file.

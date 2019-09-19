@@ -12,12 +12,6 @@ uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes);
 bool UsbHasDataToRead(void);
 bool UsbHasRoomToWrite(void);
 
-/* report status to UsbHost */
-uint8_t UsbWriteStatusOk(uint8_t   cmd_done_by_bridge);
-uint8_t UsbWriteStatusInvalid(uint8_t   invalid_cmd); // command not recognized
-uint8_t UsbWriteStatusBadArgs(uint8_t   bad_args_cmd); // args are wrong val
-uint8_t UsbWriteStatusMissingArgs(uint8_t   missing_args_cmd); // not enough args
-uint8_t UsbWriteStatusSpiBusError(sensor_cmd_key   spi_slave_cmd);
 
 /* =====[ WIP: robust UsbRead functionality started 2019-03-01 ]===== */
 uint8_t UsbReadOneByte(uint8_t *read_buffer);

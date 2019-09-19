@@ -16,11 +16,19 @@ file-in-current-window: build/${file-stem}.md
 
 #=====[ Compiler and Linker flags ]=====
 path_shared-lib_mock-c := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/
-CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
+CFLAGS_for_cygwin := -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 	-I${path_shared-lib_mock-c}include -I${path_shared-lib_mock-c}test/unity \
 	-Iinclude -Isrc \
 	-g -Wall -Wextra -pedantic -Winline
-LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+LFLAGS_for_cygwin := -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+
+ifeq ($(compiler),fake)
+	CFLAGS := 
+	LFLAGS := 
+else
+	CFLAGS := $(CFLAGS_for_cygwin)
+	LFLAGS := $(LFLAGS_for_cygwin)
+endif
 
 # List the libs under dev:
 names-of-dev-libs := ReadWriteBits BiColorLed DebugLeds Ft1248 Usb Spi UartSpi Lis Pwm Auto

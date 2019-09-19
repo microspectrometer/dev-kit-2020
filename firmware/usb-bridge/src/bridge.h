@@ -36,4 +36,12 @@ bridge_cmd_key const SendSensorLed2Green_key;
  /* LookUpCmd takes key from UsbHost and returns the function pointer to call. */
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key);
 
+/* report status to UsbHost */
+/* TODO: rename these from `Usb` to `Bridge` */
+uint8_t UsbWriteStatusOk(uint8_t   cmd_done_by_bridge);
+uint8_t UsbWriteStatusInvalid(uint8_t   invalid_cmd); // command not recognized
+uint8_t UsbWriteStatusBadArgs(uint8_t   bad_args_cmd); // args are wrong val
+uint8_t UsbWriteStatusMissingArgs(uint8_t   missing_args_cmd); // not enough args
+uint8_t UsbWriteStatusSpiBusError(sensor_cmd_key   spi_slave_cmd);
+
 #endif // _USB_H
