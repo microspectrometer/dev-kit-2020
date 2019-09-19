@@ -77,10 +77,12 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
 int main(void)
 {
     UNITY_BEGIN();
+    /* ---Plumbing Works For Testing Lib `Bridge`--- */
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(test_Makefile_finds_lib_Bridge);
-    UsbCmdParser_JumpTableSandbox (Nope);
-    DevelopingInlineSpiMaster (Nope);
-    DevelopingSpiSlave (Yep);
+    RUN_TEST(test_Makefile_finds_lib_Bridge); // [x] plumbing works!
+    /* ---Test Suites--- */
+    UsbCmdParser_JumpTableSandbox (Nope); // [ ] more functionality to implement
+    DevelopingInlineSpiMaster (Nope); // [x] pass
+    DevelopingSpiSlave (Nope); // [ ] failing tests
     return UNITY_END();
 }
