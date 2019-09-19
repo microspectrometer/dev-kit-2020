@@ -203,15 +203,6 @@ void DevelopingSpiSlave(bool run_test) {if (run_test) {
     //
     setUp = SetUp_SpiSlaveSendBytes; tearDown = TearDown_SpiSlaveSendBytes;
     RUN_TEST(SpiSlaveSendBytes_waits_for_master_read_between_each_byte);
-    // These tests require mocking out the calls made by SpiSlaveSendBytes,
-    // otherwise they hang waiting for a reply from an imaginary SpiMaster!
-    RUN_TEST(LookupSensorCmd_example_calling_the_returned_command);
-    RUN_TEST(SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd);
-    RUN_TEST(SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name);
-    //
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LookupSensorCmd_returns_Nth_fn_for_Nth_key);
-    RUN_TEST(LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table);
 
 }}
 void DevelopingUartSpi(bool run_test) {if (run_test) {
@@ -291,12 +282,6 @@ void DevelopingUsbReadOneByte(bool run_test) {if (run_test) {
     RUN_TEST(UsbReadOneByte_example_reading_several_bytes);
 }}
 
-void DevelopingInlineSpiMaster(bool run_test) {if (run_test) {
-    setUp = SetUp_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
-    RUN_TEST(SpiMasterWriteN_NoInlineHelpers_sends_N_bytes_to_SpiSlave);
-    RUN_TEST(SpiMasterWriteByte_sends_one_byte_to_SpiSlave);
-
-}}
 int main()
 {
     UNITY_BEGIN();
@@ -318,6 +303,5 @@ int main()
     DevelopingUsbReadOneByte  (Nope);
     DevelopingLisWriteCfg     (Nope);
     DevelopingSpiSlave        (Yep);
-    DevelopingInlineSpiMaster (Nope);
     return UNITY_END();
 }

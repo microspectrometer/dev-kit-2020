@@ -1,4 +1,92 @@
-#include "bridge.h"
+#include "Bridge.h"
+#include "BiColorLed.h"
+#include "Spi.h"
+#include "Usb.h"
+#include "Lis.h" // because SensorCfgLis() calls LisWriteCfg()
+#include "stdlib.h" // defines NULL
+
+/* --------------------------------------------------------------------------------------- */
+/* TODO: this SpiSlave stuff goes in a Sensor.c */
+uint16_t BytesComing(spi_BytesComing_s response_size); // inline defined in .h
+/* --------------------------------------------------------------------------------------- */
+/* | 2019-03-03 WIP: New SpiSlave API functionality for robust multi-byte communication. | */
+/* --------------------------------------------------------------------------------------- */
+/* Define command functions in jump table */
+extern uint8_t const status_led1;
+extern uint8_t const status_led2;
+extern uint8_t const status_led3;
+extern uint8_t const status_led4;
+void SensorLed1Red(void)
+{
+    BiColorLedRed(status_led1);
+    SpiSlaveWrite_StatusOk(SensorLed1Red_key);
+}
+void SensorLed2Red(void)
+{
+    BiColorLedRed(status_led2);
+    SpiSlaveWrite_StatusOk(SensorLed2Red_key);
+}
+
+void SensorLed1Green(void)
+{
+    BiColorLedGreen(status_led1);
+    SpiSlaveWrite_StatusOk(SensorLed1Green_key);
+}
+void SensorLed2Green(void)
+{
+    BiColorLedGreen(status_led2);
+    SpiSlaveWrite_StatusOk(SensorLed2Green_key);
+}
+
+void SensorCfgLis(void)
+{
+    /* TODO: left off here */
+    ;// get 4-byte arg from bridge
+    /* Fake receiving a valid `cfg`. */
+    uint8_t const valid_cfg[] = {0x0F, 0xFF, 0xFF, 0xF9};
+    LisWriteCfg(valid_cfg);
+    // LisWriteCfg must handle the StatusOk since it follow that with
+    // the updated cfg.
+}
+
+/* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
+sensor_cmd_key const SensorLed1Green_key = 0;
+sensor_cmd_key const SensorLed1Red_key = 1;
+sensor_cmd_key const SensorLed2Green_key = 2;
+sensor_cmd_key const SensorLed2Red_key = 3;
+/* TODO: left off here */
+sensor_cmd_key const SensorCfgLis_key = 8;
+SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
+    /* pf is an array of pointers to SensorCmd functions */
+    /* pf lives in static memory, not on the `LookupSensorCmd` stack frame */
+    static SensorCmd* const pf[] = {
+        SensorLed1Green,
+        SensorLed1Red,
+        SensorLed2Green,
+        SensorLed2Red,
+        SensorCfgLis
+        };
+    /* Return func ptr. Prevent attempts at out-of-bounds access. */
+    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
+    /* Out of bounds keys return a NULL pointer. */
+    else return NULL;
+    /* Up to caller to check for NULL and take appropriate action. */
+    /* Recommended action: tell SpiMaster the command was not recognized. */
+}
+/* SpiSlaveSendBytes has been unit-tested. No need to unit test this. */
+void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd)
+{
+                             // | nbytes  | data           |
+    uint8_t const StatusOk[] = {0x00, 0x02, 0x00, valid_cmd };
+    SpiSlaveSendBytes(StatusOk,4);
+}
+void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd)
+{                                  // | nbytes  |   data          |
+    uint8_t const StatusInvalid[] = { 0x00, 0x02, 0xFF, invalid_cmd };
+    SpiSlaveSendBytes(StatusInvalid,4);
+}
+/* --------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------- */
 
 /* =====[ WIP: Clean Command Parsing with jump tables started 2019-03-01 ]===== */
 /* TODO: implement a top-level error handler */
@@ -90,30 +178,6 @@ void SendSensorLed2Red(void)
             SensorLed2Red_key,   // send this command key to the sensor
         SendSensorLed2Red_key);  // and report status on this command key 
 }
-void SendSensorLed3Green(void)
-{
-    SendSensorCommand(
-            SensorLed3Green_key,   // send this command key to the sensor
-        SendSensorLed3Green_key);  // and report status on this command key
-}
-void SendSensorLed3Red(void)
-{
-    SendSensorCommand(
-            SensorLed3Red_key,   // send this command key to the sensor
-        SendSensorLed3Red_key);  // and report status on this command key 
-}
-void SendSensorLed4Green(void)
-{
-    SendSensorCommand(
-            SensorLed4Green_key,   // send this command key to the sensor
-        SendSensorLed4Green_key);  // and report status on this command key
-}
-void SendSensorLed4Red(void)
-{
-    SendSensorCommand(
-            SensorLed4Red_key,   // send this command key to the sensor
-        SendSensorLed4Red_key);  // and report status on this command key 
-}
 void BridgeLedGreen(void)
 {
     BiColorLedGreen(status_led);
@@ -169,10 +233,6 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key) {
         SendSensorLed1Green,
         SendSensorLed2Red,
         SendSensorLed2Green,
-        SendSensorLed3Red,
-        SendSensorLed3Green,
-        SendSensorLed4Red,
-        SendSensorLed4Green
         };
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];

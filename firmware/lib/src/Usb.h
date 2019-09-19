@@ -17,10 +17,5 @@ bool UsbHasRoomToWrite(void);
 uint8_t UsbReadOneByte(uint8_t *read_buffer);
 // TODO: rename UsbRead to UsbReadAll then UsbReadN to UsbRead
 uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes);
-/* =====[ Helpers for BridgeCmd functions ]===== */
-bool CfgBytesAreValid(uint8_t const *cfg_bytes);
-bool CfgTurnsOffAllPixels(uint8_t const *cfg_bytes);
-bool CfgTurnsRowPartiallyOn(uint8_t const *cfg_bytes, uint8_t row_number);
-bool XOR(bool a, bool b);
 
 #endif // _USB_H

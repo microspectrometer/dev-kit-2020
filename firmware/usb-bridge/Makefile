@@ -28,8 +28,12 @@ path_shared-lib_mock-c := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 	-I${path_shared-lib_mock-c}include -I${path_shared-lib_mock-c}test/unity \
 	-Iinclude -I../lib/src -Isrc \
+	-Itest -I../lib/test \
 	-g -Wall -Wextra -pedantic -Winline
 LFLAGS_for_cygwin = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+# -Itest is "include folder `test`". This finds `test_runner.h` from `#include "test_runner.h"`
+# -I../lib/test includes the project libs `test` folder.
+#    This picks up the headers for project lib mocks and the hardware-dependency fakes.
 
 # =====[ Use compiler to pick which flags to use ]=====
 ifeq ($(compiler),avr-gcc)
@@ -45,61 +49,120 @@ ifeq ($(compiler),fake)
 endif
 
 
-#=====[ Project Libs: objects built for AVR ]=====
-# List the project libs:
-names-of-dev-libs := ReadWriteBits BiColorLed Ft1248 Usb Spi Lis
-# list of object prerequisites for dev libs
-obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
-obj_dev-libs := $(addprefix build/,${obj_dev-libs})
+# =====[ AVR and Unit Tests use the same *lib* object files ]=====
+# Targets `avr-target` and `unit-test` find these in the same location!
+# *clean* the builds out, therefore, when you switch between targets, or you get
+# a linker error.
 
-#=====[ Explicit rule for objects for AVR ]=====
-# avr-gcc has to build the lib code into its own object files
-# the `ld` linker does not recognize the file format.
-${obj_dev-libs}: build/%.o: ../lib/src/%.c
-	avr-gcc -c $^ -o $@ $(CFLAGS)
+# TODO: why does lib DebugLeds exist?
+#   It's an LED lib for the vis-spi-out. But that board should just use lib
+#   BiColorLed. For now I have vis-spi-out functionality mixed into lib `Bridge`.
+#   When I fix this, DebugLeds will disappear from this Makefile. Or if I
+#   integrate DebugLeds with BiColorLed, it will disappear. Whichever comes first.
+#   For now, I need to build and link test_DebugLeds.c.
+#   Same trouble with test_Spi.c for mocking SpiSlave hardware calls.
+# List the project libs (for dependencies, not for testing):
+names-of-prj-libs := ReadWriteBits BiColorLed DebugLeds Ft1248 Usb Spi Lis Pwm
+# List the application libs (for unit testing and for dependencies):
+names-of-app-libs := Bridge
+# name convention for application lib tests
+name_app-libs-tested   := $(addprefix test_,${names-of-app-libs})
+# List project/application libs that are mocked out in application lib tests.
+mocked-prj-libs := Ft1248 Spi UartSpi Lis Pwm
+# name convention for mocked lib source files and object files
+name_prj-libs-mocked := $(addprefix mock_,${mocked-prj-libs})
+# List project libs that use mocks in their test.
+# names-of-libs-tested-with-mocks := Ft1248 Usb Spi UartSpi Lis
+names-of-libs-tested-with-mocks := Spi
+# name convention for project libs that use mocks in their tests
+name_libs-tested-with-mocks := $(addsuffix _MockUps,${names-of-libs-tested-with-mocks})
+name_libs-tested-with-mocks := $(addprefix test_,${name_libs-tested-with-mocks})
 
-#=====[ Project Libs: objects built for Unit Tests ]=====
-#
-# ---Unity (unit test framework) object file.---
+# ---List object file prerequisites---
+# prerequisite *project libs*:
+obj_prj-libs := $(addsuffix .o,${names-of-prj-libs})
+obj_prj-libs := $(addprefix build/,${obj_prj-libs})
+# prerequisite *application libs*:
+obj_app-libs := $(addsuffix .o,${names-of-app-libs})
+obj_app-libs := $(addprefix build/,${obj_app-libs})
+# prerequisite application lib *tests*
+obj_app-libs-tested := $(addsuffix .o,${name_app-libs-tested})
+obj_app-libs-tested := $(addprefix build/,${obj_app-libs-tested})
+# prerequisite *mocked* project libs
+obj_prj-libs-mocked := $(addsuffix .o,${name_prj-libs-mocked})
+obj_prj-libs-mocked := $(addprefix build/,${obj_prj-libs-mocked})
+# prerequisite project libs that use mocks in their tests
+obj_libs-tested-with-mocks := $(addsuffix .o,${name_libs-tested-with-mocks})
+obj_libs-tested-with-mocks := $(addprefix build/,${obj_libs-tested-with-mocks})
+
+
+# ---Explicit rule for project lib *object files*---
+${obj_prj-libs}: build/%.o: ../lib/src/%.c
+	${compiler} $(CFLAGS) -c $^ -o $@
+# ---Explicit rule for application lib *object files*---
+${obj_app-libs}: build/%.o: src/%.c
+	${compiler} $(CFLAGS) -c $^ -o $@
+# ---Explicit rule application lib test *object files*---
+${obj_app-libs-tested}: build/%.o: test/%.c
+	${compiler} $(CFLAGS) -c $^ -o $@
+# ---Explicit rule for DebugLeds because test_DebugLeds.c contains the hardware fake---
+../lib/build/test_DebugLeds.o: ../lib/test/test_DebugLeds.c
+	${compiler} $(CFLAGS) -c $^ -o $@
+# ---Explicit rule for Spi because test_Spi.c contains the hardware fake---
+../lib/build/test_Spi.o: ../lib/test/test_Spi.c
+	${compiler} $(CFLAGS) -c $^ -o $@
+# ---Explicit rule for obj_prj-libs-mocked---
+${obj_prj-libs-mocked}: build/%.o: ../lib/test/%.c
+	${compiler} $(CFLAGS) -c $^ -o $@
+# ---Explicit rule for object files for testing project libs with mocks---
+${obj_libs-tested-with-mocks}: build/%.o: ../lib/test/%.c
+	${compiler} $(CFLAGS) -c $^ -o $@
+
+#=====[ Unit Tests also have Test Framework Object Files ]=====
 # Behold my static library hack:
-# list of objects for unit testing with shared lib mock-c.
+# list object files for unit testing with shared lib `mock-c`
 mock-c-libs    := Mock RecordedCall RecordedArg ReturnValues
 mock-c-objects := $(addsuffix .o,${mock-c-libs})
 mock-c-objects := $(addprefix ${path_shared-lib_mock-c}build/,${mock-c-objects})
 obj_unity := ${path_shared-lib_mock-c}build/unity.o
 obj_shared-lib_mock-c := ${mock-c-objects} ${obj_unity}
-# TODO: add target to rebuild test framework to match compiler
-#
-# ---Libs under test?---
-# Find the `build` files in the project's `lib/build` folder.
-# Do not touch the `build` files in the application's `build` folder.
-test-obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
-test-obj_dev-libs := $(addprefix ../lib/build/,${test-obj_dev-libs})
-
-#=====[ Explicit rule for objects for Unit Tests ]=====
-# Find the `src` and `build` files in the project's `lib/build` folder.
-${test-obj_dev-libs}: ../lib/build/%.o: ../lib/src/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@ $(LFLAGS)
-
+# TODO: add target to rebuild test framework to match the Cygwin compiler
+# For now, rebuild for the desired compiler with:
+#     ;nb mock-c
+#         open the test framework project
+#     ;mca
+#         clean all builds
+# Then, either:
+#     ;mkgc (build with gcc)
+#     or
+#     ;mkcl (build with clang)
 
 #=====[ Test Suite ]=====
 ${test-output}: build/TestSuite.exe
 	$^ > $@
 
-# Does this recipe work? Avoid the objects built for avr-gcc!
-# TODO: [ ] build the project lib object files.
-# TODO: [ ] build the application lib object files.
-# Target unit-test ends up here:
-build/TestSuite.exe: test/test_runner.c \
-../lib/test/fake/AvrAsmMacros.c ${test-obj_dev-libs} ${obj_shared-lib_mock-c}
-	${compiler} $(CFLAGS) -Itest $^ -o $@ $(LFLAGS)
+# [x] build the application lib object files.
+# [x] build the project lib object files.
+# TODO: [ ] *clean up* test_Spi and test_DebugLeds so they don't need special
+# treatment here. Right now, there is no object file group they neatly slot
+# into.
+#
+# Target `unit-test` ends up here:
+test-runner := test/test_runner.c
+fake-avr-asm-macros := ../lib/test/fake/AvrAsmMacros.c
+build/TestSuite.exe: ${test-runner} ${fake-avr-asm-macros} \
+${obj_prj-libs} ${obj_app-libs} ${obj_app-libs-tested} ${obj_prj-libs-mocked} \
+../lib/build/test_DebugLeds.o ../lib/build/test_Spi.o ${obj_libs-tested-with-mocks} \
+${obj_shared-lib_mock-c}
+	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 
 #=====[ AVR ]=====
 # atmega328_lib has the .o and .a lib files and the spec file.
 atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
 
 avr-asm-macros := src/AvrAsmMacros.c
-build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
+# Target avr-target ends up here:
+build/%.elf: ${obj_prj-libs} ${obj_app-libs} src/%.c ${avr-asm-macros}
 	avr-gcc $^ -o $@ $(CFLAGS)  \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
@@ -152,6 +215,9 @@ clean-all-builds:
 	rm -f build/${board-name}.elf
 	rm -f build/${board-name}.lst
 	rm -f build/${board-name}.map
-	rm -f ${obj_dev-libs}
+	rm -f ${obj_prj-libs}
+	rm -f ${obj_app-libs}
+	rm -f ${obj_prj-libs-mocked}
+	rm -f ${obj_libs-tested-with-mocks}
 	rm -f build/atprogram-download*.log
 	rm -f build/avr-size_*.log

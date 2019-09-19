@@ -199,15 +199,6 @@ inline uint8_t SpiMasterReadByte(void)
     /* ReadSpiDataRegister */
     return *Spi_spdr;
 }
-/* Every SpiSlave response starts with two bytes indicating how many more bytes are coming. */
-typedef struct {
-    uint8_t msb;
-    uint8_t lsb;
-} spi_BytesComing_s;
-inline uint16_t BytesComing(spi_BytesComing_s response_size)
-{
-    return response_size.msb<<8 | response_size.lsb;
-}
 inline void SpiMasterWriteByte(uint8_t const byte)
 {
     /** Write one byte to the `SpiSlave`. */
@@ -287,49 +278,6 @@ inline void SpiMasterWaitForSlaveReady(void)
 
 /* ---------------------------------------------------- */
 
-/* --------------------------------------------------------------------------------------- */
-/* | 2019-03-03 WIP: New SpiSlave API functionality for robust multi-byte communication. | */
-/* --------------------------------------------------------------------------------------- */
-/* =====[ SPI Slave API ]===== */
-/* Functions of type `SensorCmd` take nothing and return nothing. */
-/* The *key* acts as the command since it is the command lookup. */
-/* If the commands need additional parameters, they will read additional bytes. */
-/* All functions in the lookup table must have the same signature, so commands that */
-/* take return functions other than void-void need to go in a different jump table. */
-typedef void (SensorCmd)(void);
-/* Give tests of LookupSensorCmd access to names of functions in */
-/* jump table to compare pointer values. */
-SensorCmd SensorLed1Red;
-SensorCmd SensorLed1Green;
-SensorCmd SensorLed2Red;
-SensorCmd SensorLed2Green;
-SensorCmd SensorLed3Red;
-SensorCmd SensorLed3Green;
-SensorCmd SensorLed4Red;
-SensorCmd SensorLed4Green;
-/* SensorCmd spi_CfgLis; */
-/* This is the datatype to use when calling LookupSpiCmd: */
-typedef uint8_t sensor_cmd_key;  // SpiSlave jump-table dictionary uses 8-bit keys
-/* Declare keys for callers of LookupCmd (values hidden in .c file) */
-/* extern sensor_cmd_key const spi_LedRed_key; */
-extern sensor_cmd_key const SensorLed1Red_key;
-extern sensor_cmd_key const SensorLed1Green_key;
-extern sensor_cmd_key const SensorLed2Red_key;
-extern sensor_cmd_key const SensorLed2Green_key;
-extern sensor_cmd_key const SensorLed3Red_key;
-extern sensor_cmd_key const SensorLed3Green_key;
-extern sensor_cmd_key const SensorLed4Red_key;
-extern sensor_cmd_key const SensorLed4Green_key;
-/* extern sensor_cmd_key const spi_CfgLis_key; */
-/* LookupSensorCmd takes key from SpiMaster and returns the function pointer to call. */
-SensorCmd* LookupSensorCmd(sensor_cmd_key const key);
-/* report status to SpiMaster */
-void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd);
-void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd);
-// SpiSlaveWrite_StatusError
-/* =====[ API to communicate ]===== */
-// SpiSlaveRead_OneByte
-/* --------------------------------------------------------------------------------------- */
 
 
 #endif // _SPI_H

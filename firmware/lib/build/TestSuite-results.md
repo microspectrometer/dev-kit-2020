@@ -7,12 +7,7 @@ test/test_runner.c:198:SpiSlaveSignalDataIsReady_pulls_Miso_low:PASS
 test/test_runner.c:201:SpiSlaveRead_waits_until_transfer_is_done:PASS
 test/test_runner.c:202:SpiSlaveRead_returns_the_SPI_data_register_byte:PASS
 test/test_runner.c:205:SpiSlaveSendBytes_waits_for_master_read_between_each_byte:PASS
-test/test_runner.c:721:LookupSensorCmd_example_calling_the_returned_command:FAIL: Expected XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1 Was XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0
-test/test_runner.c:760:SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:FAIL: Expected 3 Was 4
-test/test_runner.c:210:SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name:PASS
-test/test_runner.c:213:LookupSensorCmd_returns_Nth_fn_for_Nth_key:PASS
-test/test_runner.c:214:LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table:PASS
 
 -----------------------
-14 Tests 2 Failures 0 Ignored 
-FAIL
+9 Tests 0 Failures 0 Ignored 
+OK
