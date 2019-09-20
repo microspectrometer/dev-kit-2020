@@ -8,7 +8,7 @@
 USAGE
 
     ---Windows---
-    > cd $dev-kit\python
+    > cd $dev_kit\python
     > python .\led-simple-serial-example.py
     Output is printed to screen.
 
