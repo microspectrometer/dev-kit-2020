@@ -13,15 +13,19 @@ unit-test: ${test-output}
 avr-target: build/${board-name}.elf build/${board-name}.lst
 
 
+#=====[ AVR ]=====
+# atmega328_lib has the .o and .a lib files and the spec file.
+atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
+
 #=====[ AVR Compiler and Linker flags ]=====
 CFLAGS_for_avr = -I../lib/src -Isrc \
-	-g -Wall -Wextra -pedantic -Wno-pointer-sign\
-	-O3 -ffunction-sections -fdata-sections -fshort-enums \
-		-mmcu=atmega328p -B ${atmega328_lib}
+-g -Wall -Wextra -pedantic -Wno-pointer-sign\
+-O3 -ffunction-sections -fdata-sections -fshort-enums \
+-mmcu=atmega328p
 #Used to be -O1, not sure why.
 #The avr ld.exe does not recognize any of these
 #LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
-LFLAGS_for_avr := 
+LFLAGS_for_avr := -B ${atmega328_lib}
 
 #=====[ Unit Test Compiler and Linker flags ]=====
 path_shared-lib_mock-c := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/
@@ -97,11 +101,15 @@ obj_libs-tested-with-mocks := $(addprefix build/,${obj_libs-tested-with-mocks})
 
 
 # ---Explicit rule for project lib *object files*---
+#  Needs LFLAGS to link against atmega328_lib when building object files with
+#  avr-gcc.
+#  obj_prj-libs used to be called obj_dev-libs
 ${obj_prj-libs}: build/%.o: ../lib/src/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@
+	${compiler} -c $^ -o $@ $(CFLAGS) $(LFLAGS)
 # ---Explicit rule for application lib *object files*---
+#  Needs LFLAGS to link against atmega328_lib
 ${obj_app-libs}: build/%.o: src/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@
+	${compiler} $(CFLAGS) -c $^ -o $@ $(LFLAGS)
 # ---Explicit rule application lib test *object files*---
 ${obj_app-libs-tested}: build/%.o: test/%.c
 	${compiler} $(CFLAGS) -c $^ -o $@
@@ -156,14 +164,10 @@ ${obj_prj-libs} ${obj_app-libs} ${obj_app-libs-tested} ${obj_prj-libs-mocked} \
 ${obj_shared-lib_mock-c}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 
-#=====[ AVR ]=====
-# atmega328_lib has the .o and .a lib files and the spec file.
-atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
-
 avr-asm-macros := src/AvrAsmMacros.c
-# Target avr-target ends up here:
+# Target `avr-target` ends up here:
 build/%.elf: ${obj_prj-libs} ${obj_app-libs} src/%.c ${avr-asm-macros}
-	avr-gcc $^ -o $@ $(CFLAGS)  \
+	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
 	avr-size $@

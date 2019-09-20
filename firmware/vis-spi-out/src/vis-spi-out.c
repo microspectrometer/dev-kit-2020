@@ -37,6 +37,7 @@
 // avr libs
 #include <avr/interrupt.h>      // defines macro ISR()
 #include <stdlib.h>  // defines NULL
+#include "../../usb-bridge/src/Bridge.h" // kludge until sensor_cmd_key is moved out of lib Bridge into lib Sensor
 
 /* =====[ List of application example tests ]===== */
     // [x] App_version_of_Slave_RespondToRequestsForData

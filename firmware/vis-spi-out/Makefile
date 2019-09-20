@@ -20,6 +20,15 @@ names-of-dev-libs := ReadWriteBits BiColorLed Spi UartSpi Lis Pwm
 # list of object prerequisites for dev libs
 obj_dev-libs := $(addsuffix .o,${names-of-dev-libs})
 obj_dev-libs := $(addprefix build/,${obj_dev-libs})
+# List the application libs (for unit testing and for dependencies):
+names-of-app-libs := Bridge
+# Bridge is here temporarily until I separate it into Bridge and SensorVis, then
+# the app lib will just be SensorVis
+# Similarly, for now, grab `Bridge` from usb-bridge folder
+# Prerequisite *application libs*.
+# Lib `Bridge` must be built by the usb-bridge Makefile
+obj_app-libs := $(addsuffix .o,${names-of-app-libs})
+obj_app-libs := $(addprefix ../usb-bridge/build/,${obj_app-libs})
 
 #=====[ Explicit rule for obj_dev-libs ]=====
 # avr-gcc has to build the lib code into its own object files
@@ -37,7 +46,7 @@ atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/AT
 avr-target: build/${board-name}.elf build/${board-name}.lst
 
 avr-asm-macros := src/AvrAsmMacros.c
-build/%.elf: ${obj_dev-libs} src/%.c ${avr-asm-macros}
+build/%.elf: ${obj_dev-libs} ${obj_app-libs} src/%.c ${avr-asm-macros}
 	avr-gcc $^ -o $@ $(CFLAGS)  \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
