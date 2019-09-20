@@ -3,7 +3,7 @@
 # See Sean's UsbProtocolTable
 - created as an OpenOffice spreadsheet
 - PDF is the pretty-print version
-- [ ] get text version (csv or tsv) and generate table in Vim
+- get csv from Sean and convert to table for viewing in a Vim window with ;xcsv
 
 The rest of this doc are notes I was taking while we generated the table
 together. The table is the complete protocol, these notes are just to jog my
