@@ -1,7 +1,9 @@
 # Status
-- [ ] move commands off `bridge`
+- see `wip.md`
+- the rest of this is old
+- [-] move commands off `bridge`
     - `bridge` should be a transparent dummy, agnostic to the spectrometer type
-- [ ] write a list of host PC API calls
+- [-] write a list of host PC API calls
 - [ ] figure out where I left off last time I was working on firmware
     - March 8th, 2019
     - run through code to understand what I was in the middle of
