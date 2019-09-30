@@ -79,10 +79,11 @@ int main(void)
     UNITY_BEGIN();
     /* ---Plumbing Works For Testing Lib `Bridge`--- */
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(test_Makefile_finds_lib_Bridge); // [x] plumbing works!
+    // Put single tests here (move single tests to test suite later).
+    //
     /* ---Test Suites--- */
-    UsbCmdParser_JumpTableSandbox (Nope); // [ ] more functionality to implement
+    UsbCmdParser_JumpTableSandbox (Yep); // [ ] more functionality to implement
     DevelopingInlineSpiMaster (Nope); // [x] pass
-    DevelopingSpiSlave (Nope); // [ ] failing tests
+    DevelopingSpiSlave (Nope); // [-] ignoring two tests until lib `Sensor` exists
     return UNITY_END();
 }

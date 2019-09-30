@@ -1,10 +1,31 @@
-test/test_runner.c:15:test_Makefile_finds_lib_Bridge:FAIL: Implement test.
-test/test_runner.c:435:LookupSensorCmd_example_calling_the_returned_command:FAIL: Expected XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1 Was XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0
-test/test_runner.c:474:SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:FAIL: Expected 3 Was 4
-test/test_runner.c:70:SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name:PASS
-test/test_runner.c:73:LookupSensorCmd_returns_Nth_fn_for_Nth_key:PASS
-test/test_runner.c:74:LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table:PASS
+test/test_runner.c:82:test_Makefile_finds_lib_Bridge:PASS
+test/test_runner.c:29:LookupBridgeCmd_returns_Nth_fn_for_Nth_key:PASS
+test/test_runner.c:30:LookupBridgeCmd_returns_NULL_if_key_is_not_in_jump_table:PASS
+test/test_runner.c:31:LookupBridgeCmd_example_calling_the_command:PASS
+test/test_runner.c:32:LookupBridgeCmd_example_storing_the_returned_pointer:PASS
+test/test_runner.c:33:UsbWriteStatusOk_tells_UsbHost_command_was_success:PASS
+test/test_runner.c:34:UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command:PASS
+test/test_runner.c:35:UsbWriteStatusBadArgs_sends_error_byte_and_echoes_invalid_command:PASS
+test/test_runner.c:36:UsbWriteStatusMissingArgs_sends_error_byte_and_echoes_invalid_command:PASS
+test/test_runner.c:37:UsbWriteStatusSpiBusError_sends_error_byte_and_slave_cmd:PASS
+test/test_runner.c:39:LookupBridgeCmd_sad_example_using_UsbWriteStatus_API:PASS
+test/test_runner.c:40:LookupBridgeCmd_happy_example_using_UsbWriteStatus_API:PASS
+test/test_runner.c:41:CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes:PASS
+test/test_runner.c:42:CfgTurnsOffAllPixels_returns_true_if_cfg_turns_off_all_pixels:PASS
+test/test_runner.c:43:CfgTurnsOffAllPixels_ignores_the_3LSB_and_4MSB_of_cfg:PASS
+test/test_runner.c:44:CfgTurnsOffAllPixels_returns_false_if_any_pixels_are_on:PASS
+test/test_runner.c:45:XOR_returns_true_if_a_is_true_and_b_is_false:PASS
+test/test_runner.c:46:CfgTurnsRowPartiallyOn_returns_false_if_cfg_turns_on_all_of_row1:PASS
+test/test_runner.c:47:CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row1:PASS
+test/test_runner.c:48:CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row5:PASS
+test/test_runner.c:49:CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds:PASS
+test/test_runner.c:50:CfgBytesAreValid_checks_against_all_255_valid_configs:PASS
+
+# WIP:
+test/test_runner.c:52:BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect:PASS
+test/test_runner.c:243:CmdCfgLis_returns_StatusBadArgs_if_cfg_bytes_are_invalid:FAIL: Implement test.
+test/test_runner.c:247:CmdCfgLis_1pushes_cfg_to_SpiSlave_2pulls_updated_cfg_3reports_StatusOk_updated_cfg:FAIL: Functionality not implemented yet.
 
 -----------------------
-6 Tests 3 Failures 0 Ignored 
+25 Tests 2 Failures 0 Ignored 
 FAIL

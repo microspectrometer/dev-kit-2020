@@ -1,8 +1,6 @@
 #ifndef _TEST_BRIDGE_H
 #define _TEST_BRIDGE_H
 
-void test_Makefile_finds_lib_Bridge(void);
-
 /* =====[ WIP: Clean Command Parsing with jump tables started 2019-03-01 ]===== */
 void LookupBridgeCmd_returns_Nth_fn_for_Nth_key(void);
 void LookupBridgeCmd_returns_NULL_if_key_is_not_in_jump_table(void);
