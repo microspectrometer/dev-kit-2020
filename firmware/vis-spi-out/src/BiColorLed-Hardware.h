@@ -19,8 +19,6 @@ uint8_t volatile * const BiColorLed_port = &PORTC; // controls output high/low
 // =====[ Status LED Pin Connection On simBrd ]=====
 uint8_t const status_led1 = PINC0;
 uint8_t const status_led2 = PINC1;
-uint8_t const status_led3 = PINC2; // not connected in 20190429-dev-kit
-uint8_t const status_led4 = PINC3; // not connected in 20190429-dev-kit
 
 #endif // _BICOLOR_LED_HARDWARE_H
 
