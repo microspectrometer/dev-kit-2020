@@ -8,9 +8,6 @@
 /* #include "fake/Spi-Hardware.h" */
 #include "fake/Pwm-Hardware.h"
 #include "fake/Lis-Hardware.h"
-/* ---TODO: test_DebugLeds fakes pins, so make it follow the same pattern as above--- */
-/* ---TODO: fix Makefile kludge that supports this broken pattern--- */
-#include "test_DebugLeds.h" // debug LEDs on vis-spi-out
 /* ---Make Tests Visible To `test_runner.c`--- */
 #include "test_Bridge.h" // 
 #include "test_Spi.h" // setup and teardown functions
@@ -84,6 +81,11 @@ int main(void)
     /* ---Test Suites--- */
     UsbCmdParser_JumpTableSandbox (Yep); // [ ] more functionality to implement
     DevelopingInlineSpiMaster (Nope); // [x] pass
-    DevelopingSpiSlave (Nope); // [-] ignoring two tests until lib `Sensor` exists
+    DevelopingSpiSlave (Yep); // [ ] ignoring tests until lib `Sensor` exists
+    /* LookupSensorCmd_example_calling_the_returned_command() */
+    /* Make this pass by adding code to turn usb-bridge status_led green if
+     * status is OK. */
+    /* SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:IGNORE: Move test
+     * to lib `Sensor`. */
     return UNITY_END();
 }

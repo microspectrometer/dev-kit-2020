@@ -58,15 +58,10 @@ endif
 # *clean* the builds out, therefore, when you switch between targets, or you get
 # a linker error.
 
-# TODO: why does lib DebugLeds exist?
-#   It's an LED lib for the vis-spi-out. But that board should just use lib
-#   BiColorLed. For now I have vis-spi-out functionality mixed into lib `Bridge`.
-#   When I fix this, DebugLeds will disappear from this Makefile. Or if I
-#   integrate DebugLeds with BiColorLed, it will disappear. Whichever comes first.
-#   For now, I need to build and link test_DebugLeds.c.
-#   Same trouble with test_Spi.c for mocking SpiSlave hardware calls.
+# TODO: fix special treatment of test_Spi.c
+#   For now, build and link test_Spi.c for mocking SpiSlave hardware calls.
 # List the project libs (for dependencies, not for testing):
-names-of-prj-libs := ReadWriteBits BiColorLed DebugLeds Ft1248 Usb Spi Lis Pwm
+names-of-prj-libs := ReadWriteBits BiColorLed Ft1248 Usb Spi Lis Pwm
 # List the application libs (for unit testing and for dependencies):
 names-of-app-libs := Bridge
 # name convention for application lib tests
@@ -113,9 +108,6 @@ ${obj_app-libs}: build/%.o: src/%.c
 # ---Explicit rule application lib test *object files*---
 ${obj_app-libs-tested}: build/%.o: test/%.c
 	${compiler} $(CFLAGS) -c $^ -o $@
-# ---Explicit rule for DebugLeds because test_DebugLeds.c contains the hardware fake---
-../lib/build/test_DebugLeds.o: ../lib/test/test_DebugLeds.c
-	${compiler} $(CFLAGS) -c $^ -o $@
 # ---Explicit rule for Spi because test_Spi.c contains the hardware fake---
 ../lib/build/test_Spi.o: ../lib/test/test_Spi.c
 	${compiler} $(CFLAGS) -c $^ -o $@
@@ -151,16 +143,15 @@ ${test-output}: build/TestSuite.exe
 
 # [x] build the application lib object files.
 # [x] build the project lib object files.
-# TODO: [ ] *clean up* test_Spi and test_DebugLeds so they don't need special
-# treatment here. Right now, there is no object file group they neatly slot
-# into.
+# TODO: [ ] *clean up* test_Spi and so it does not need special treatment here.
+# Right now, there is no object file group it neatly slots into.
 #
 # Target `unit-test` ends up here:
 test-runner := test/test_runner.c
 fake-avr-asm-macros := ../lib/test/fake/AvrAsmMacros.c
 build/TestSuite.exe: ${test-runner} ${fake-avr-asm-macros} \
 ${obj_prj-libs} ${obj_app-libs} ${obj_app-libs-tested} ${obj_prj-libs-mocked} \
-../lib/build/test_DebugLeds.o ../lib/build/test_Spi.o ${obj_libs-tested-with-mocks} \
+../lib/build/test_Spi.o ${obj_libs-tested-with-mocks} \
 ${obj_shared-lib_mock-c}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 

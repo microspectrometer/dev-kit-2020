@@ -7,7 +7,6 @@
 #include "test_ReadWriteBits.h"  // low-level bit manipulations
 #include "test_BiColorLed.h"  // debug LED  on simBrd
 #include "fake/BiColorLed-Hardware.h"
-#include "test_DebugLeds.h" // debug LEDs on mBrd
 #include "test_Ft1248.h"    // lib-level API for FT1248 master on simBrd
 #include "test_Usb.h"       // app-level API for FT1248 master on simBrd
 #include "test_Spi.h"       // SPI master on simBrd and SPI slave on mBrd
@@ -46,16 +45,6 @@ void DevelopingBiColorLed(bool run_test) { if (run_test) {
     RUN_TEST(BiColorLedOff_is_a_low_on_led_pin_and_data_direction);
     RUN_TEST(BiColorLedOn_is_low_on_led_pin_but_high_on_led_pin_data_direction);
 
-}}
-void DevelopingDebugLeds(bool run_test) { if (run_test) {
-    setUp = SetUp_DebugLeds; tearDown = TearDown_DebugLeds;
-    RUN_TEST(DebugLedsTurnOn_led_N_turns_on_led_N);
-    RUN_TEST(DebugLedsTurnRed_led_N_turns_led_N_red);
-    RUN_TEST(DebugLedsTurnGreen_led_N_turns_led_N_green);
-    RUN_TEST(DebugLedsTurnAllRed_turns_all_4_leds_red);
-    RUN_TEST(DebugLedsTurnAllGreen_turns_all_4_leds_green);
-    RUN_TEST(DebugLedsTurnAllOn_turns_on_all_4_leds);
-    RUN_TEST(DebugLedsToggleAll_toggles_all_the_leds);
 }}
 void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
@@ -290,7 +279,6 @@ int main()
     /* RUN_TEST(BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect); */
     DevelopingReadWriteBits   (Nope);
     DevelopingBiColorLed      (Nope);
-    DevelopingDebugLeds       (Nope);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);

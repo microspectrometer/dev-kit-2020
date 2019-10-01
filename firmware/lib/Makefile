@@ -31,7 +31,7 @@ else
 endif
 
 # List the libs under dev:
-names-of-dev-libs := ReadWriteBits BiColorLed DebugLeds Ft1248 Usb Spi UartSpi Lis Pwm Auto
+names-of-dev-libs := ReadWriteBits BiColorLed Ft1248 Usb Spi UartSpi Lis Pwm Auto
 # All libs under dev will be tested!
 # All libs under test need a `test_dev-lib.c` for the tests to build.
 #

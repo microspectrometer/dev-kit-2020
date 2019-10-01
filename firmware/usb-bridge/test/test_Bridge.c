@@ -5,7 +5,6 @@
 #include <Mock.h>           // RanAsHoped, WhyDidItFail (mocks record calls/args)
 /* ---Project Lib Dependencies--- */
 #include "BiColorLed.h"
-#include "DebugLeds.h"      // why does this lib exist?
 #include "Spi.h"
 /* ---Mock Out Libs That Read Hardware Registers--- */
 #include "mock_Spi.h"
@@ -380,7 +379,7 @@ void LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table(void){
 }
 void LookupSensorCmd_example_calling_the_returned_command(void)
 {
-    TEST_IGNORE_MESSAGE("I do not understand this test.");
+    /* TEST_IGNORE_MESSAGE("I do not understand this test."); */
     /* See mocking in SpiSlaveSendBytes_waits_for_master_read_between_each_byte */
     /* Three callers in SpiSlaveSendBytes are mocked up in the test setup. */
     /* 1. Stub_SpiTransferIsDone: check if SPI interrupt flag is set. */
@@ -421,16 +420,15 @@ void LookupSensorCmd_example_calling_the_returned_command(void)
     }
 
     /* =====[ Setup ]===== */
-    /* Fake that DebugLed pins are low (LEDs are green). */
-    *DebugLeds_port = 0x00; // debug_led1, debug_led2
+    /* Fake that status_led pin is red. */
+    *BiColorLed_port = 0xFF; // HIGH is red
     /* =====[ Operate ]===== */
     /* Note the parentheses to make it a function call */
     LookupSensorCmd(SensorLed1Red_key)(); // call the function returned by lookup
     /* ------------------------------- */
     //=====[ Test ]=====
-    // --- 2019-09-30: testing the DebugLeds is impossible. Comment this out.
-    /* TEST_ASSERT_BIT_HIGH(debug_led1, *DebugLeds_port); // HIGH is red */
-    /* TEST_ASSERT_BIT_LOW(debug_led2, *DebugLeds_port); // LOW is green */
+    // --- 2019-09-30: What am I trying to test here? Does the LED change?
+    TEST_ASSERT_BIT_LOW(status_led, *BiColorLed_port); // LOW is green
     // ---
     /* =====[ Spy on values sent from SpiSlave to SpiMaster ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
