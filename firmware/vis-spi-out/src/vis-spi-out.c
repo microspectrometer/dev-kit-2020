@@ -296,8 +296,6 @@ int main()
 {
     BiColorLedOn(status_led1);
     BiColorLedOn(status_led2);
-    BiColorLedOn(status_led3);
-    BiColorLedOn(status_led4);
 
     SpiSlaveInit();   // respond to Spi-master (e.g., USB host)
     UartSpiInit();    // take ADC readings
