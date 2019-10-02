@@ -5,6 +5,23 @@
 - PDF is the pretty-print version
 - get csv from Sean and convert to table for viewing in a Vim window with ;xcsv
 
+## JSON library for C
+I have two Cygwin package installed for JSON:
+- `libjson-c`
+    - <https://openwrt.org/packages/pkgdata_lede17_1/libjson-c>
+    - in version 0.12-1 as of this writing
+- `libjson-c2`
+    - seems to be part of `libjson-c`, version number is the same
+
+- `libjson-glib 1.0_0`
+    - This is *JSON-GLib*
+    - <https://developer.gnome.org/json-glib/stable/json-base.html>
+
+> JSON-GLib is a library aimed at providing an API for efficient parsing and
+> writing of JSON (JavaScript Object Notation) streams, using GLib's data
+> types and API.
+
+# These notes
 The rest of this doc are notes I was taking while we generated the table
 together. The table is the complete protocol, these notes are just to jog my
 memory. Use the table as the bible while writing the firmware.
