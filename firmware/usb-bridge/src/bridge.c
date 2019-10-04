@@ -214,7 +214,44 @@ void BridgeCfgLis(void)
         UsbWrite(read_buffer,4);
     }
 }
+/* =====[ API started 2019-10-02 ]===== */
+void GetBridgeLED(void){
+    // Read one byte of payload: which LED to query.
+    uint8_t const num_bytes_payload = 1;
+    uint8_t read_buffer[num_bytes_payload];
+    UsbReadN(read_buffer, num_bytes_payload);
+    // TODO: Add error checking for time out.
+    // CASE: host does not send expected number of bytes.
+    uint8_t led_number = read_buffer[0];
+    // Reply to USB Host with state of Bridge LED.
+    // TODO: finish this:
+    // Send status byte (0x00 means OK).
+    // Send LED status bytes (0x00: off, 0x01: green, 0x02: red);
+}
+/* void SetBridgeLED(void){} */
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
+bridge_cmd_key const GetBridgeLED_key = 0;
+bridge_cmd_key const SetBridgeLED_key = 1;
+bridge_cmd_key const GetSensorLED_key = 2;
+bridge_cmd_key const SetSensorLED_key = 3;
+BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key) {
+    /* pf is an array of pointers to BridgeCmd functions */
+    /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
+    static BridgeCmd* const pf[] = {
+        GetBridgeLED,   // 0
+        /* SetBridgeLED,   // 1 */
+        /* GetSensorLED,   // 2 */
+        /* SetSensorLED,   // 3 */
+        };
+
+    /* Return func ptr. Prevent attempts at out-of-bounds access. */
+    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
+    /* Out of bounds keys return a NULL pointer. */
+    else return NULL;
+    /* Up to caller to check for NULL and take appropriate action. */
+    /* Recommended action: tell UsbHost the command was not recognized. */
+}
+/* ---DEPRECATED--- */
 bridge_cmd_key const BridgeLedRed_key = 0;
 bridge_cmd_key const BridgeLedGreen_key = 1;
 bridge_cmd_key const BridgeCfgLis_key = 2;
@@ -222,7 +259,7 @@ bridge_cmd_key const SendSensorLed1Red_key = 3;
 bridge_cmd_key const SendSensorLed1Green_key = 4;
 bridge_cmd_key const SendSensorLed2Red_key = 5;
 bridge_cmd_key const SendSensorLed2Green_key = 6;
-BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key) {
+BridgeCmd* oldLookupBridgeCmd(bridge_cmd_key const key) {
     /* pf is an array of pointers to BridgeCmd functions */
     /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
     static BridgeCmd* const pf[] = {

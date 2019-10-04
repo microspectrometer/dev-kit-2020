@@ -320,10 +320,7 @@ void SpiSlaveRead_waits_until_transfer_is_done(void)
         Expect_SpiTransferIsDone();
     }
     /* =====[ Test ]===== */
-    TEST_ASSERT_TRUE_MESSAGE(
-        RanAsHoped(mock),           // If this is false,
-        WhyDidItFail(mock)          // print this message.
-        );
+    TEST_ASSERT_CALL_LISTS_MATCH_MESSAGE(mock);
 }
 void SpiSlaveRead_returns_the_SPI_data_register_byte(void)
 {

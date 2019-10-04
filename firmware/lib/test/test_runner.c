@@ -281,7 +281,7 @@ int main()
     DevelopingBiColorLed      (Nope);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
-    DevelopingUsb             (Nope);
+    DevelopingUsb             (Yep);
     DevelopingSpiPlumbing     (Nope);
     DevelopingSpiMaster       (Nope);
     DevelopingUartSpi         (Nope);
@@ -290,6 +290,6 @@ int main()
     DevelopingAuto            (Nope); // tabled -- see test
     DevelopingUsbReadOneByte  (Nope);
     DevelopingLisWriteCfg     (Nope);
-    DevelopingSpiSlave        (Yep);
+    DevelopingSpiSlave        (Nope);
     return UNITY_END();
 }

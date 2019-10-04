@@ -67,6 +67,7 @@ bool XOR(bool a, bool b);
 typedef void (BridgeCmd)(void);
 /* Give tests of LookupBridgeCmd access to names of functions in */
 /* jump table to compare pointer values. */
+/* =====[ DEPRECATED ]===== */
 BridgeCmd BridgeLedRed;
 BridgeCmd BridgeLedGreen;
 BridgeCmd BridgeCfgLis;
@@ -74,9 +75,13 @@ BridgeCmd SendSensorLed1Red;
 BridgeCmd SendSensorLed1Green;
 BridgeCmd SendSensorLed2Red;
 BridgeCmd SendSensorLed2Green;
+/* =====[ API started 2019-10-02 ]===== */
+BridgeCmd GetBridgeLED;
+
 /* This is the datatype to use when calling LookupBridgeCmd: */
 typedef uint8_t bridge_cmd_key;  // jump-table dictionary uses 8-bit keys
 /* Declare keys for callers of LookupBridgeCmd (values hidden in .c file) */
+/* =====[ DEPRECATED ]===== */
 bridge_cmd_key const BridgeLedRed_key;
 bridge_cmd_key const BridgeLedGreen_key;
 bridge_cmd_key const BridgeCfgLis_key;
@@ -84,6 +89,9 @@ bridge_cmd_key const SendSensorLed1Red_key;
 bridge_cmd_key const SendSensorLed1Green_key;
 bridge_cmd_key const SendSensorLed2Red_key;
 bridge_cmd_key const SendSensorLed2Green_key;
+/* =====[ API started 2019-10-02 ]===== */
+bridge_cmd_key const GetBridgeLED_key;
+
 /* =====[ API: ]===== */
  /* LookUpCmd takes key from UsbHost and returns the function pointer to call. */
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key);

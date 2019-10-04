@@ -8,6 +8,8 @@
 #include "Spi.h"
 /* ---Mock Out Libs That Read Hardware Registers--- */
 #include "mock_Spi.h"
+/* ---Include Libs with functions faked in tests--- */
+#include "Usb.h"
 
 /** `status_led` is defined in `fake/BiColorLed-Hardware.h`. */
 /* I cannot simply include that header because the test suite */
@@ -17,18 +19,100 @@
 /* multiple times: once in `test_Usb.o` and once in `test_BiColor.o`. */
 extern uint8_t const status_led;
 
-/* =====[ Jump Table Sandbox ]===== */
+/* =====[ BridgeJumpTable - started 2019-10-02]===== */
 /* Functions of type `BridgeCmd` take nothing and return nothing. */
-void LookupBridgeCmd_returns_Nth_fn_for_Nth_key(void){
+/* Command arguments are handled by the command's function definition. */
+    /* Example: */
+    /* command `GetBridgeLED` is followed by a one-byte argument, */
+    /* so `GetBridgeLED()` reads one more byte. */
+void LookupBridgeCmd_takes_key_and_returns_fn_ptr(void){
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL(BridgeLedRed, LookupBridgeCmd(BridgeLedRed_key));
-    TEST_ASSERT_EQUAL(BridgeLedGreen, LookupBridgeCmd(BridgeLedGreen_key));
+    TEST_ASSERT_EQUAL(GetBridgeLED, LookupBridgeCmd(GetBridgeLED_key));
 }
 static bridge_cmd_key const CmdBlackHat_key = 255; // out-of-bounds: return NULL ptr
-void LookupBridgeCmd_returns_NULL_if_key_is_not_in_jump_table(void){
+void LookupBridgeCmd_returns_NULL_if_key_is_not_found(void){
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_NULL(LookupBridgeCmd(CmdBlackHat_key));
+    TEST_ASSERT_EQUAL(NULL, LookupBridgeCmd(CmdBlackHat_key));
 }
+/* =====[ Mock UsbReadN() for unit-testing GetBridgeLED() ]===== */
+// Define what is recorded when the function under test calls fake
+// UsbReadN().
+static RecordedCall * Mock_UsbReadN(uint8_t *arg1, uint16_t arg2)
+{
+    char const *call_name = "UsbReadN";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t **)record_of_arg1->pArg) = arg1;
+    // Crazy pointer syntax for arg1:
+        // `pArg` is a pointer to the argument value to store, arg1.
+        // Dereference `pArg` with `*` to assign arg1.
+        // arg1 is a byte array (a pointer to a byte): uint8_t *.
+        // Therefore cast `pArg` as a pointer to a byte array: uint8_t **.
+    RecordedArg *record_of_arg2 = RecordedArg_new(SetupRecord_uint16_t);
+    *((uint16_t *)record_of_arg2->pArg) = arg2;
+    // Crazy pointer syntax for arg2:
+        // arg2 is a 16-bit word.
+        // So cast `pArg` as a pointer to a 16-bit word.
+        // Dereference `pArg` with `*` to assign arg2.
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    RecordArg(record_of_this_call, record_of_arg2);
+    return record_of_this_call;
+}
+// Unit test fakes the UsbReadN return value by writing to this global.
+static uint16_t UsbReadN_StubbedReturnValue;
+// Define how to fake UsbReadN() during the unit test.
+static uint16_t UsbReadN_Stubbed(uint8_t *read_buffer, uint16_t nbytes) {
+    // Record call `Mock_UsbReadN(read_buffer, nbytes)` in `mock`.
+    RecordActualCall(mock, Mock_UsbReadN(read_buffer, nbytes));
+    // Return the stubbed value defined by the unit test.
+    return UsbReadN_StubbedReturnValue;
+}
+/* // Define how to set an expectation for UsbReadN() in the unit test. */
+/* static void Expect_UsbReadN(uint8_t *read_buffer, uint16_t nbytes) { */
+/*     // Record call `Mock_UsbReadN(read_buffer, nbytes)` in `mock`. */
+/*     RecordExpectedCall(mock, Mock_UsbReadN(read_buffer, nbytes)); */
+/* } */
+// Define how to replace UsbReadN() with its fake.
+static uint16_t (*UsbReadN_Saved)(uint8_t *read_buffer, uint16_t nbytes);
+static void Stub_UsbReadN(void) {
+    UsbReadN_Saved = UsbReadN; UsbReadN = UsbReadN_Stubbed;
+}
+// Define how to restore UsbReadN().
+static void Unstub_UsbReadN(void) {
+    UsbReadN = UsbReadN_Saved;
+}
+// Define setUp/tearDown functions to assign for `GetBridgeLED` tests.
+void SetUp_GetBridgeLED(void)
+{
+    // Unit test is for GetBridgeLED
+    mock = Mock_new();
+    // Mock calls to UsbReadN
+    Stub_UsbReadN();  // DOF
+    UsbReadN_StubbedReturnValue = 0;
+}
+void TearDown_GetBridgeLED(void)
+{
+    Mock_destroy(mock); mock = NULL;
+    Unstub_UsbReadN();  // DOF
+}
+
+void GetBridgeLED_reads_one_byte_of_payload(void){
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test: assert UsbReadN called to read 1 byte ]===== */
+    // view entire call history in test results:
+    /* PrintAllCalls(mock); */
+    // call signature of faked call:
+        // uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes)
+    uint8_t call_n = 1; uint16_t arg_n = 2; uint16_t nbytes = 1;
+    // test call 1 is UsbReadN
+    TEST_ASSERT_TRUE(AssertCall(mock,call_n,"UsbReadN"));
+    // test UsbReadN is called with nbytes=1
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &nbytes));
+}
+
+/* =====[ Jump Table Sandbox ]===== */
 void LookupBridgeCmd_example_calling_the_command(void){
     //=====[ Setup ]=====
     BiColorLedGreen(status_led);

@@ -1,35 +1,7 @@
-test/test_runner.c:26:LookupBridgeCmd_returns_Nth_fn_for_Nth_key:PASS
-test/test_runner.c:27:LookupBridgeCmd_returns_NULL_if_key_is_not_in_jump_table:PASS
-test/test_runner.c:28:LookupBridgeCmd_example_calling_the_command:PASS
-test/test_runner.c:29:LookupBridgeCmd_example_storing_the_returned_pointer:PASS
-test/test_runner.c:30:UsbWriteStatusOk_tells_UsbHost_command_was_success:PASS
-test/test_runner.c:31:UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command:PASS
-test/test_runner.c:32:UsbWriteStatusBadArgs_sends_error_byte_and_echoes_invalid_command:PASS
-test/test_runner.c:33:UsbWriteStatusMissingArgs_sends_error_byte_and_echoes_invalid_command:PASS
-test/test_runner.c:34:UsbWriteStatusSpiBusError_sends_error_byte_and_slave_cmd:PASS
-test/test_runner.c:36:LookupBridgeCmd_sad_example_using_UsbWriteStatus_API:PASS
-test/test_runner.c:37:LookupBridgeCmd_happy_example_using_UsbWriteStatus_API:PASS
-test/test_runner.c:38:CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes:PASS
-test/test_runner.c:39:CfgTurnsOffAllPixels_returns_true_if_cfg_turns_off_all_pixels:PASS
-test/test_runner.c:40:CfgTurnsOffAllPixels_ignores_the_3LSB_and_4MSB_of_cfg:PASS
-test/test_runner.c:41:CfgTurnsOffAllPixels_returns_false_if_any_pixels_are_on:PASS
-test/test_runner.c:42:XOR_returns_true_if_a_is_true_and_b_is_false:PASS
-test/test_runner.c:43:CfgTurnsRowPartiallyOn_returns_false_if_cfg_turns_on_all_of_row1:PASS
-test/test_runner.c:44:CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row1:PASS
-test/test_runner.c:45:CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row5:PASS
-test/test_runner.c:46:CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds:PASS
-test/test_runner.c:47:CfgBytesAreValid_checks_against_all_255_valid_configs:PASS
-
-# WIP:
-test/test_runner.c:49:BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect:PASS
-test/test_runner.c:236:CmdCfgLis_returns_StatusBadArgs_if_cfg_bytes_are_invalid:FAIL: Implement test.
-test/test_runner.c:240:CmdCfgLis_1pushes_cfg_to_SpiSlave_2pulls_updated_cfg_3reports_StatusOk_updated_cfg:FAIL: Functionality not implemented yet.
-test/test_runner.c:431:LookupSensorCmd_example_calling_the_returned_command:FAIL: Expected XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0 Was XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1
-test/test_runner.c:441:SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:IGNORE: Move test to lib `Sensor`.
-test/test_runner.c:67:SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name:PASS
-test/test_runner.c:70:LookupSensorCmd_returns_Nth_fn_for_Nth_key:PASS
-test/test_runner.c:71:LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table:PASS
+Call 1 is named UsbReadN? Call 1 is UsbReadN.
+Value passed to call 1, arg 2? 0x0001.
+test/test_runner.c:98:GetBridgeLED_reads_one_byte_of_payload:PASS
 
 -----------------------
-29 Tests 3 Failures 1 Ignored 
-FAIL
+1 Tests 0 Failures 0 Ignored 
+OK

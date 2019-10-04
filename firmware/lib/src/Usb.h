@@ -16,6 +16,8 @@ bool UsbHasRoomToWrite(void);
 /* =====[ WIP: robust UsbRead functionality started 2019-03-01 ]===== */
 uint8_t UsbReadOneByte(uint8_t *read_buffer);
 // TODO: rename UsbRead to UsbReadAll then UsbReadN to UsbRead
-uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes);
+// TODO: make UsbReadN a function pointer for faking.
+/* uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes); */
+extern uint16_t (*UsbReadN)(uint8_t *read_buffer, uint16_t nbytes);
 
 #endif // _USB_H

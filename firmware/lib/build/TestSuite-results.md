@@ -1,13 +1,22 @@
-test/test_runner.c:177:SpiEnableInterrupt_enables_the_transfer_is_done_interrupt:PASS
-test/test_runner.c:180:SpiSlaveInit_configures_pin_Miso_as_an_output:PASS
-test/test_runner.c:181:SpiSlaveInit_makes_Miso_a_pullup_input_when_no_transfer_is_in_progress:PASS
-test/test_runner.c:182:SpiSlaveInit_enables_the_SPI_hardware_module:PASS
-test/test_runner.c:183:SpiSlaveInit_clears_pending_SPI_interrupt:PASS
-test/test_runner.c:187:SpiSlaveSignalDataIsReady_pulls_Miso_low:PASS
-test/test_runner.c:190:SpiSlaveRead_waits_until_transfer_is_done:PASS
-test/test_runner.c:191:SpiSlaveRead_returns_the_SPI_data_register_byte:PASS
-test/test_runner.c:194:SpiSlaveSendBytes_waits_for_master_read_between_each_byte:PASS
+test/test_runner.c:105:UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data:PASS
+test/test_runner.c:106:UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty:PASS
+test/test_runner.c:109:UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full:PASS
+test/test_runner.c:110:UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full:PASS
+test/test_runner.c:114:UsbRead_returns_0_if_there_was_no_data_to_read:PASS
+test/test_runner.c:115:UsbRead_returns_N_if_there_were_N_bytes_to_read:PASS
+test/test_runner.c:116:UsbReadN_reads_N_bytes_and_returns_num_bytes_read:PASS
+test/test_runner.c:117:UsbRead_turns_LED_red_if_there_was_no_data_to_read:PASS
+test/test_runner.c:118:UsbRead_copies_bytes_to_the_input_read_buffer:PASS
+test/test_runner.c:122:UsbRead_sad_path_is_implemented_like_this:PASS
+test/test_runner.c:123:UsbRead_happy_path_is_implemented_like_this:PASS
+test/test_runner.c:127:UsbWrite_returns_the_number_of_bytes_sent:PASS
+test/test_runner.c:128:UsbWrite_calls_FtWrite_for_each_byte_to_send:PASS
+test/test_runner.c:129:UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full:PASS
+test/test_runner.c:130:UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full:PASS
+test/test_runner.c:131:UsbWrite_returns_0_if_the_tx_buffer_was_already_full:PASS
+test/test_runner.c:135:UsbWrite_happy_path_is_implemented_like_this:PASS
+test/test_runner.c:136:UsbWrite_sad_path_is_implemented_like_this:PASS
 
 -----------------------
-9 Tests 0 Failures 0 Ignored 
+18 Tests 0 Failures 0 Ignored 
 OK

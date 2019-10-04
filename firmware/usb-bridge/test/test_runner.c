@@ -21,10 +21,14 @@ void NothingToTearDown(void){}
 /* ---Turn tests on and off--- */
 bool Yep=true, Nope=false;
 
+void BridgeJumpTable(bool run_test) {if (run_test) {
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(LookupBridgeCmd_takes_key_and_returns_fn_ptr);
+    RUN_TEST(LookupBridgeCmd_returns_NULL_if_key_is_not_found);
+}}
+
 void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LookupBridgeCmd_returns_Nth_fn_for_Nth_key);
-    RUN_TEST(LookupBridgeCmd_returns_NULL_if_key_is_not_in_jump_table);
     RUN_TEST(LookupBridgeCmd_example_calling_the_command);
     RUN_TEST(LookupBridgeCmd_example_storing_the_returned_pointer);
     RUN_TEST(UsbWriteStatusOk_tells_UsbHost_command_was_success);
@@ -79,13 +83,18 @@ int main(void)
     // Put single tests here (move single tests to test suite later).
     //
     /* ---Test Suites--- */
-    UsbCmdParser_JumpTableSandbox (Yep); // [ ] more functionality to implement
+    /* ---DEPRECATED--- */
+    UsbCmdParser_JumpTableSandbox (Nope); // [ ] more functionality to implement
     DevelopingInlineSpiMaster (Nope); // [x] pass
-    DevelopingSpiSlave (Yep); // [ ] ignoring tests until lib `Sensor` exists
+    DevelopingSpiSlave (Nope); // [ ] ignoring tests until lib `Sensor` exists
     /* LookupSensorCmd_example_calling_the_returned_command() */
     /* Make this pass by adding code to turn usb-bridge status_led green if
      * status is OK. */
     /* SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:IGNORE: Move test
      * to lib `Sensor`. */
+    /* ---ACTIVE--- */
+    BridgeJumpTable (Nope);
+    setUp = SetUp_GetBridgeLED; tearDown = TearDown_GetBridgeLED;
+    RUN_TEST(GetBridgeLED_reads_one_byte_of_payload);
     return UNITY_END();
 }

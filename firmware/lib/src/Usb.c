@@ -30,7 +30,8 @@ uint8_t UsbReadOneByte(uint8_t *read_buffer)
     return num_bytes_read;
 }
 // TODO: unit test UsbReadN
-uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes)
+// TODO: set up UsbReadN for faking.
+static uint16_t UsbReadN_Implementation(uint8_t *read_buffer, uint16_t nbytes)
 {
     uint16_t num_bytes_read = 0;
     FtSendCommand(FtCmd_Read);
@@ -54,6 +55,8 @@ uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes)
     FtDeactivateInterface();
     return num_bytes_read;
 }
+uint16_t (*UsbReadN)(uint8_t *, uint16_t) = UsbReadN_Implementation;
+
 uint16_t UsbRead(uint8_t *read_buffer)
 {
     uint16_t num_bytes_read = 0;
