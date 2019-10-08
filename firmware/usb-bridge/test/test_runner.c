@@ -39,9 +39,17 @@ void API_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
     RUN_TEST(GetBridgeLED_replies_led_red_if_status_led_is_red);
     }
 }
-void API_SetBridgeLed(bool run_test) // [ ] unit test SetBridgeLED
+void API_SetBridgeLed(bool run_test) // [x] unit test SetBridgeLED
 {if (run_test)
     {
+    setUp = SetUp_SetBridgeLED; tearDown = TearDown_SetBridgeLED;
+    RUN_TEST(SetBridgeLED_reads_two_bytes_of_payload);
+    RUN_TEST(SetBridgeLED_replies_with_one_byte);
+    RUN_TEST(SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led);
+    RUN_TEST(SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized);
+    RUN_TEST(SetBridgeLED_turns_off_led_if_payload_is_led_off);
+    RUN_TEST(SetBridgeLED_turns_led_on_and_green_if_payload_is_led_green);
+    RUN_TEST(SetBridgeLED_turns_led_on_and_red_if_payload_is_led_red);
     }
 }
 void ApiSupport(bool run_test)
@@ -136,11 +144,5 @@ int main(void)
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
 
-    setUp = SetUp_SetBridgeLED; tearDown = TearDown_SetBridgeLED;
-    RUN_TEST(SetBridgeLED_reads_two_bytes_of_payload);
-    RUN_TEST(SetBridgeLED_replies_with_one_byte);
-    RUN_TEST(SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led);
-    RUN_TEST(SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized);
-    RUN_TEST(SetBridgeLED_turns_off_led_if_payload_is_led_off);
     return UNITY_END();
 }

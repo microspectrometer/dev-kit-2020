@@ -82,6 +82,9 @@ status_byte error;
 status_byte led_off; 
 status_byte led_green; 
 status_byte led_red; 
+typedef uint8_t const led_name;  // TODO: move this to a shared lib
+led_name led_0;
+
 extern void (*SendStatus)(status_byte);
 /* =====[ API started 2019-10-02 ]===== */
 BridgeCmd GetBridgeLED;

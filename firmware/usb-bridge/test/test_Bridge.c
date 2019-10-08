@@ -122,6 +122,18 @@ static uint16_t UsbReadN_Mocked(uint8_t *read_buffer, uint16_t nbytes) {
     *read_buffer = *FtMiosio_pin; // Fake a read by copying register value to read_buffer.
     return nbytes; // Fake: nbytes is whatever the test says it is.
 }
+uint8_t * FakeByteArray_ForUsbReadN;
+static uint16_t UsbReadN_ByteArray_Mocked(uint8_t *read_buffer, uint16_t nbytes) {
+    // Fake reading an array of bytes into the read_buffer.
+    // The test is responsible to populate FakeByteArray_ForUsbReadN.
+    RecordActualCall(mock, Record_UsbReadN(read_buffer, nbytes));
+    uint16_t byte_counter = 0;
+    while ( byte_counter++ < nbytes )
+    {
+        *(read_buffer++)  = *(FakeByteArray_ForUsbReadN++);
+    }
+    return nbytes;
+}
 // Define how to swap function definitions
 static uint16_t (*UsbReadN_Saved)(uint8_t *, uint16_t);
 // how to restore real UsbReadN()
@@ -130,6 +142,11 @@ static void Restore_UsbReadN(void) {UsbReadN=UsbReadN_Saved;}
 static void Stub_UsbReadN(void) {UsbReadN_Saved=UsbReadN;UsbReadN=UsbReadN_Stubbed;}
 // how to swap real UsbReadN() with mocked version
 static void Mock_UsbReadN(void) {UsbReadN_Saved=UsbReadN;UsbReadN=UsbReadN_Mocked;}
+static void Mock_UsbReadN_ByteArray(void)
+{
+    UsbReadN_Saved=UsbReadN;
+    UsbReadN=UsbReadN_ByteArray_Mocked;
+}
 
 /* =====[ Mock SendStatus() for unit-testing GetBridgeLED() ]===== */
 // Define call recorded when func-under-test calls mocked function.
@@ -190,7 +207,7 @@ void GetBridgeLED_reads_one_byte_of_payload(void)
 void GetBridgeLED_replies_with_two_bytes_if_led_number_is_recognized(void)
 {
     /* Inject query for status_led so that led number is recognized. */
-    uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
+    uint8_t const led_number = led_0; *FtMiosio_pin = led_number;
     /* =====[ Operate ]===== */
     GetBridgeLED();
     /* PrintAllCalls(mock); */
@@ -209,7 +226,7 @@ void GetBridgeLED_replies_with_two_bytes_if_led_number_is_recognized(void)
 void GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized(void)
 {
     /* Inject query for status_led so that led number is not recognized. */
-    uint8_t const led_number = status_led+1; *FtMiosio_pin = led_number;
+    uint8_t const led_number = led_0+100; *FtMiosio_pin = led_number;
     /* =====[ Operate ]===== */
     GetBridgeLED();
     /* PrintAllCalls(mock); */
@@ -226,7 +243,7 @@ void GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized(void)
 void GetBridgeLED_replies_msg_status_ok_if_host_queries_status_led(void)
 {
     /* Inject query for status_led */
-    uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
+    uint8_t const led_number = led_0; *FtMiosio_pin = led_number;
     /* Test case: msg_status is ok */
     status_byte msg_status = ok;
     /* =====[ Operate ]===== */
@@ -240,7 +257,7 @@ void GetBridgeLED_replies_msg_status_ok_if_host_queries_status_led(void)
 void GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led(void)
 {
     /* Inject query for nonexistent led */
-    uint8_t const led_number = 0x01; *FtMiosio_pin = led_number;
+    uint8_t const led_number = led_0+100; *FtMiosio_pin = led_number;
     /* Test case: msg_status is error because led number is not recognized. */
     status_byte msg_status = error;
     /* =====[ Operate ]===== */
@@ -263,7 +280,7 @@ void GetBridgeLED_replies_with_msg_status_byte_and_led_status_byte(void)
     /* Inject value in fake hardware for UsbRead to place in read_buffer[0]: */
      /* - inject 0x00 to indicate payload from host queries status_led */
      /* - any other value is an error because status_led is the only Bridge LED */
-    uint8_t const led_number = 0x00; *FtMiosio_pin = led_number;
+    uint8_t const led_number = led_0; *FtMiosio_pin = led_number;
     /* =====[ Operate ]===== */
     GetBridgeLED();
     /* =====[ Test ]===== */
@@ -319,7 +336,7 @@ void GetBridgeLED_replies_led_red_if_status_led_is_red(void)
 void SetUp_SetBridgeLED(void)
 {
     SetUp_Mock();
-    Mock_UsbReadN();
+    Mock_UsbReadN_ByteArray();
     Mock_SendStatus();
 }
 void TearDown_SetBridgeLED(void)
@@ -330,6 +347,9 @@ void TearDown_SetBridgeLED(void)
 }
 void SetBridgeLED_reads_two_bytes_of_payload(void)
 {
+    /* Inject two bytes of payload for fake UsbReadN. */
+    uint8_t payload[] = {led_0, led_off};
+    FakeByteArray_ForUsbReadN = payload;
     /* =====[ Operate ]===== */
     SetBridgeLED();
     /* =====[ Test: assert UsbReadN called to read 1 byte ]===== */
@@ -344,7 +364,11 @@ void SetBridgeLED_reads_two_bytes_of_payload(void)
 void SetBridgeLED_replies_with_one_byte(void)
 {
     /* Inject status_led number as payload from host */
-    uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
+    /* uint8_t const led_number = status_led; *FtMiosio_pin = led_number; */
+    /* Inject two bytes of payload for fake UsbReadN. */
+    uint8_t payload[] = {led_0, led_off};
+    FakeByteArray_ForUsbReadN = payload;
+
     /* =====[ Operate ]===== */
     SetBridgeLED();
     /* =====[ Test: assert only two calls are made ]===== */
@@ -359,7 +383,10 @@ void SetBridgeLED_replies_with_one_byte(void)
 void SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led(void)
 {
     /* Inject status_led number as payload from host */
-    uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
+    /* uint8_t const led_number = status_led; *FtMiosio_pin = led_number; */
+    /* Inject two bytes of payload for fake UsbReadN. */
+    uint8_t payload[] = {led_0, led_off};
+    FakeByteArray_ForUsbReadN = payload;
     /* =====[ Operate ]===== */
     SetBridgeLED();
     /* =====[ Test: assert Bridge sends msg_status ok ]===== */
@@ -372,8 +399,11 @@ void SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led(void)
 }
 void SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized(void)
 {
-    /* Inject nonexistent led number as payload from host */
-    uint8_t const led_number = status_led+1; *FtMiosio_pin = led_number;
+    /* Test case: host sends a nonexistent led number. */
+    uint8_t const led_number = led_0+100;
+    /* Inject two bytes of payload for fake UsbReadN. */
+    uint8_t payload[] = {led_number, led_off};
+    FakeByteArray_ForUsbReadN = payload;
     /* =====[ Operate ]===== */
     SetBridgeLED();
     /* =====[ Test: assert Bridge sends msg_status error ]===== */
@@ -386,7 +416,70 @@ void SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized(void)
 }
 void SetBridgeLED_turns_off_led_if_payload_is_led_off(void)
 {
-    TEST_FAIL_MESSAGE("Implement test. Need a way to load multiple bytes into read_buffer.");
+    /* =====[ Test case: status_led is on before command is sent ]===== */
+    BiColorLedOn(status_led);
+    TEST_ASSERT_TRUE_MESSAGE(
+        BiColorLedIsOn(status_led),
+        "status_led must be on before test begins."
+        );
+    /* Inject two bytes of payload for fake UsbReadN. */
+    uint8_t payload[] = {led_0, led_off};
+    FakeByteArray_ForUsbReadN = payload;
+    /* =====[ Operate ]===== */
+    SetBridgeLED();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        !BiColorLedIsOn(status_led),
+        "Expect SetBridgeLED turns off status_led."
+        )
+}
+void SetBridgeLED_turns_led_on_and_green_if_payload_is_led_green(void)
+{
+    /* =====[ Test case: status_led is off before command is sent ]===== */
+    BiColorLedRed(status_led);
+    BiColorLedOff(status_led);
+    TEST_ASSERT_TRUE_MESSAGE(
+        !BiColorLedIsOn(status_led),
+        "status_led must be off and primed for red before test begins."
+        );
+    /* Inject two bytes of payload for fake UsbReadN. */
+    uint8_t payload[] = {led_0, led_green};
+    FakeByteArray_ForUsbReadN = payload;
+    /* =====[ Operate ]===== */
+    SetBridgeLED();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        BiColorLedIsOn(status_led),
+        "Expect SetBridgeLED turns on status_led."
+        )
+    TEST_ASSERT_TRUE_MESSAGE(
+        !BiColorLedIsRed(status_led),
+        "Expect SetBridgeLED turns status_led green."
+        )
+}
+void SetBridgeLED_turns_led_on_and_red_if_payload_is_led_red(void)
+{
+    /* =====[ Test case: status_led is off before command is sent ]===== */
+    BiColorLedGreen(status_led);
+    BiColorLedOff(status_led);
+    TEST_ASSERT_TRUE_MESSAGE(
+        !BiColorLedIsOn(status_led),
+        "status_led must be off and primed for green before test begins."
+        );
+    /* Inject two bytes of payload for fake UsbReadN. */
+    uint8_t payload[] = {led_0, led_red};
+    FakeByteArray_ForUsbReadN = payload;
+    /* =====[ Operate ]===== */
+    SetBridgeLED();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        BiColorLedIsOn(status_led),
+        "Expect SetBridgeLED turns on status_led."
+        )
+    TEST_ASSERT_TRUE_MESSAGE(
+        BiColorLedIsRed(status_led),
+        "Expect SetBridgeLED turns status_led red."
+        )
 }
 
 void SetUp_SendStatus_writes_one_byte_over_USB(void)
@@ -427,7 +520,7 @@ void Stub_UsbReadN_with_value_in_read_buffer(void)
     /* =====[ Inject a fake value into the read_buffer ]===== */
     // Write the fake value to the low-level hardware register
     // accessed during the UsbRead: register `FtMiosio_pin`.
-    uint8_t const led_number = 0xAB; *FtMiosio_pin = led_number;
+    uint8_t const led_number = led_0+100; *FtMiosio_pin = led_number;
     /* =====[ Operate: Read one byte, store result in read_buffer. ]===== */
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];

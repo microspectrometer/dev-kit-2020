@@ -101,7 +101,7 @@ void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd)
     /* and let the UsbHost deal with the possibility */
     /* of not getting any response to its command. */
 /* // */
-// =====[status_led defined in BiColorLed-Hardware header]=====
+// =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const status_led;
 void BridgeLedRed(void)
 {
@@ -219,7 +219,7 @@ void BridgeCfgLis(void)
 static void SendStatus_Implementation(status_byte status) {UsbWrite(&status,1);}
 void (*SendStatus)(status_byte) = SendStatus_Implementation;
 
-void GetBridgeLED(void)
+void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
@@ -231,7 +231,7 @@ void GetBridgeLED(void)
 
     // Reply to USB Host with message status byte.
     uint8_t led_number = read_buffer[0];
-    if (led_number != status_led)
+    if (led_number != led_0)
     {
         SendStatus(error); // host is asking about nonexistent LED
         return;
@@ -242,7 +242,7 @@ void GetBridgeLED(void)
     else if (BiColorLedIsRed(status_led)) SendStatus(led_red);
     else SendStatus(led_green);
 }
-void SetBridgeLED(void)
+void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
     // Read which LED to set (one byte of payload).
     uint8_t const num_bytes_payload = 2;
@@ -251,12 +251,30 @@ void SetBridgeLED(void)
 
     // Reply to USB Host with message status byte.
     uint8_t led_number = read_buffer[0];
-    if (led_number != status_led)
+    if (led_number != led_0)
     {
         SendStatus(error); // host is asking about nonexistent LED
         return;
     }
     SendStatus(ok); // led_number is recognized, send msg_status: ok
+    uint8_t desired_led_state = read_buffer[1];
+    if (desired_led_state == led_off)
+    {
+        BiColorLedOff(status_led);
+        return;
+    }
+    else if (desired_led_state == led_green)
+    {
+        BiColorLedGreen(status_led);
+        BiColorLedOn(status_led);
+        return;
+    }
+    else if (desired_led_state == led_red)
+    {
+        BiColorLedRed(status_led);
+        BiColorLedOn(status_led);
+        return;
+    }
 }
 
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
