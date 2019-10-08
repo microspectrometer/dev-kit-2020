@@ -191,7 +191,6 @@ void GetBridgeLED_replies_with_two_bytes_if_led_number_is_recognized(void)
 {
     /* Inject query for status_led so that led number is recognized. */
     uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
-
     /* =====[ Operate ]===== */
     GetBridgeLED();
     /* PrintAllCalls(mock); */
@@ -211,7 +210,6 @@ void GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized(void)
 {
     /* Inject query for status_led so that led number is not recognized. */
     uint8_t const led_number = status_led+1; *FtMiosio_pin = led_number;
-
     /* =====[ Operate ]===== */
     GetBridgeLED();
     /* PrintAllCalls(mock); */
@@ -316,6 +314,79 @@ void GetBridgeLED_replies_led_red_if_status_led_is_red(void)
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
     status_byte led_status = led_red;
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t*)&led_status));
+}
+
+void SetUp_SetBridgeLED(void)
+{
+    SetUp_Mock();
+    Mock_UsbReadN();
+    Mock_SendStatus();
+}
+void TearDown_SetBridgeLED(void)
+{
+    TearDown_Mock();
+    Restore_UsbReadN();
+    Restore_SendStatus();
+}
+void SetBridgeLED_reads_two_bytes_of_payload(void)
+{
+    /* =====[ Operate ]===== */
+    SetBridgeLED();
+    /* =====[ Test: assert UsbReadN called to read 1 byte ]===== */
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadN"));
+    uint8_t arg_n = 2; uint16_t nbytes = 2;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &nbytes),
+        "Expect UsbReadN reads two bytes."
+        );
+}
+void SetBridgeLED_replies_with_one_byte(void)
+{
+    /* Inject status_led number as payload from host */
+    uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
+    /* =====[ Operate ]===== */
+    SetBridgeLED();
+    /* =====[ Test: assert only two calls are made ]===== */
+    TEST_ASSERT_EQUAL_UINT8(2,NumberOfActualCalls(mock));
+    /* =====[ Test: assert only last call sends a byte ]===== */
+    uint8_t call_n;
+    call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadN"));
+    call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+}
+void SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led(void)
+{
+    /* Inject status_led number as payload from host */
+    uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
+    /* =====[ Operate ]===== */
+    SetBridgeLED();
+    /* =====[ Test: assert Bridge sends msg_status ok ]===== */
+    status_byte msg_status = ok;
+    uint8_t call_n; uint8_t arg_n;
+    call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+    arg_n = 1;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t *)&msg_status));
+}
+void SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized(void)
+{
+    /* Inject nonexistent led number as payload from host */
+    uint8_t const led_number = status_led+1; *FtMiosio_pin = led_number;
+    /* =====[ Operate ]===== */
+    SetBridgeLED();
+    /* =====[ Test: assert Bridge sends msg_status error ]===== */
+    status_byte msg_status = error;
+    uint8_t call_n; uint8_t arg_n;
+    call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+    arg_n = 1;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t *)&msg_status));
+}
+void SetBridgeLED_turns_off_led_if_payload_is_led_off(void)
+{
+    TEST_FAIL_MESSAGE("Implement test. Need a way to load multiple bytes into read_buffer.");
 }
 
 void SetUp_SendStatus_writes_one_byte_over_USB(void)

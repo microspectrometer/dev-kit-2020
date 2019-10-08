@@ -85,6 +85,7 @@ status_byte led_red;
 extern void (*SendStatus)(status_byte);
 /* =====[ API started 2019-10-02 ]===== */
 BridgeCmd GetBridgeLED;
+BridgeCmd SetBridgeLED;
 
 /* This is the datatype to use when calling LookupBridgeCmd: */
 typedef uint8_t bridge_cmd_key;  // jump-table dictionary uses 8-bit keys

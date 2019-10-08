@@ -39,7 +39,7 @@ void API_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
     RUN_TEST(GetBridgeLED_replies_led_red_if_status_led_is_red);
     }
 }
-void API(bool run_test)
+void API_SetBridgeLed(bool run_test) // [ ] unit test SetBridgeLED
 {if (run_test)
     {
     }
@@ -131,8 +131,16 @@ int main(void)
      * to lib `Sensor`. */
     /* ---ACTIVE--- */
     API_GetBridgeLED (Nope);
-    API (Yep);
+    API_SetBridgeLed (Yep);
+    /* API (Yep); */
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
+
+    setUp = SetUp_SetBridgeLED; tearDown = TearDown_SetBridgeLED;
+    RUN_TEST(SetBridgeLED_reads_two_bytes_of_payload);
+    RUN_TEST(SetBridgeLED_replies_with_one_byte);
+    RUN_TEST(SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led);
+    RUN_TEST(SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized);
+    RUN_TEST(SetBridgeLED_turns_off_led_if_payload_is_led_off);
     return UNITY_END();
 }

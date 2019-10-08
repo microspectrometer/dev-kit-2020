@@ -242,7 +242,23 @@ void GetBridgeLED(void)
     else if (BiColorLedIsRed(status_led)) SendStatus(led_red);
     else SendStatus(led_green);
 }
-/* void SetBridgeLED(void){} */
+void SetBridgeLED(void)
+{
+    // Read which LED to set (one byte of payload).
+    uint8_t const num_bytes_payload = 2;
+    uint8_t read_buffer[num_bytes_payload];
+    UsbReadN(read_buffer, num_bytes_payload);
+
+    // Reply to USB Host with message status byte.
+    uint8_t led_number = read_buffer[0];
+    if (led_number != status_led)
+    {
+        SendStatus(error); // host is asking about nonexistent LED
+        return;
+    }
+    SendStatus(ok); // led_number is recognized, send msg_status: ok
+}
+
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
 bridge_cmd_key const GetBridgeLED_key = 0;
 bridge_cmd_key const SetBridgeLED_key = 1;
