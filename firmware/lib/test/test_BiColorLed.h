@@ -16,5 +16,10 @@ void BiColorLedToggleColor_changes_green_to_red(void);
 void BiColorLedToggleColor_changes_red_to_green(void);
 void BiColorLedOff_is_a_low_on_led_pin_and_data_direction(void);
 void BiColorLedOn_is_low_on_led_pin_but_high_on_led_pin_data_direction(void);
+void BiColorLedIsRed_returns_true_if_led_is_on_and_is_red(void);
+void BiColorLedIsRed_returns_false_if_led_is_on_but_is_green(void);
+void BiColorLedIsRed_returns_false_if_led_is_off(void);
+void BiColorLedIsOn_returns_true_if_led_is_on(void);
+void BiColorLedIsOn_returns_false_if_led_is_off(void);
 
 #endif // _TEST_BICOLORLED_H

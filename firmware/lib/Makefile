@@ -109,7 +109,9 @@ ${obj_libs-mocked}: build/%.o: test/%.c
 # rm -f build/${file-stem}.exe
 # ;mct to clean out test only
 # ;mca to clean all
-.PHONY: clean-TestSuite clean-all-builds
+.PHONY: clean-BiColorLed clean-TestSuite clean-all-builds
+clean-BiColorLed:
+	rm -f build/BiColorLed.o
 clean-TestSuite:
 	rm -f build/TestSuite.exe
 clean-all-builds:

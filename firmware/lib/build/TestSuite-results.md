@@ -1,22 +1,15 @@
-test/test_runner.c:105:UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data:PASS
-test/test_runner.c:106:UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty:PASS
-test/test_runner.c:109:UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full:PASS
-test/test_runner.c:110:UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full:PASS
-test/test_runner.c:114:UsbRead_returns_0_if_there_was_no_data_to_read:PASS
-test/test_runner.c:115:UsbRead_returns_N_if_there_were_N_bytes_to_read:PASS
-test/test_runner.c:116:UsbReadN_reads_N_bytes_and_returns_num_bytes_read:PASS
-test/test_runner.c:117:UsbRead_turns_LED_red_if_there_was_no_data_to_read:PASS
-test/test_runner.c:118:UsbRead_copies_bytes_to_the_input_read_buffer:PASS
-test/test_runner.c:122:UsbRead_sad_path_is_implemented_like_this:PASS
-test/test_runner.c:123:UsbRead_happy_path_is_implemented_like_this:PASS
-test/test_runner.c:127:UsbWrite_returns_the_number_of_bytes_sent:PASS
-test/test_runner.c:128:UsbWrite_calls_FtWrite_for_each_byte_to_send:PASS
-test/test_runner.c:129:UsbWrite_stops_sending_bytes_if_the_tx_buffer_is_full:PASS
-test/test_runner.c:130:UsbWrite_turns_LED_red_if_the_tx_buffer_was_already_full:PASS
-test/test_runner.c:131:UsbWrite_returns_0_if_the_tx_buffer_was_already_full:PASS
-test/test_runner.c:135:UsbWrite_happy_path_is_implemented_like_this:PASS
-test/test_runner.c:136:UsbWrite_sad_path_is_implemented_like_this:PASS
+test/test_runner.c:43:BiColorLedRed_is_a_high_on_led_pin:PASS
+test/test_runner.c:44:BiColorLedGreen_is_a_low_on_led_pin:PASS
+test/test_runner.c:45:BiColorLedToggleColor_changes_green_to_red:PASS
+test/test_runner.c:46:BiColorLedToggleColor_changes_red_to_green:PASS
+test/test_runner.c:47:BiColorLedOff_is_a_low_on_led_pin_and_data_direction:PASS
+test/test_runner.c:48:BiColorLedOn_is_low_on_led_pin_but_high_on_led_pin_data_direction:PASS
+test/test_runner.c:49:BiColorLedIsRed_returns_true_if_led_is_on_and_is_red:PASS
+test/test_runner.c:50:BiColorLedIsRed_returns_false_if_led_is_on_but_is_green:PASS
+test/test_runner.c:51:BiColorLedIsRed_returns_false_if_led_is_off:PASS
+test/test_runner.c:52:BiColorLedIsOn_returns_true_if_led_is_on:PASS
+test/test_runner.c:53:BiColorLedIsOn_returns_false_if_led_is_off:PASS
 
 -----------------------
-18 Tests 0 Failures 0 Ignored 
+11 Tests 0 Failures 0 Ignored 
 OK

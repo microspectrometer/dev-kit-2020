@@ -6,4 +6,5 @@ void BiColorLedRed(uint8_t led_name);
 void BiColorLedToggleColor(uint8_t led_name);
 void BiColorLedOff(uint8_t led_name);
 void BiColorLedOn(uint8_t led_name);
-
+bool BiColorLedIsOn(uint8_t led_name);
+bool BiColorLedIsRed(uint8_t led_name);

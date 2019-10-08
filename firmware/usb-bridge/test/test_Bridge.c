@@ -3,6 +3,13 @@
 /* ---Unit Test Framework--- */
 #include "unity.h"          // unity macros: TEST_BLAH
 #include <Mock.h>           // RanAsHoped, WhyDidItFail (mocks record calls/args)
+#include <ReadWriteBits.h>  // set/clear bits in fake hardware registers
+
+/* ---Define a setup/teardown for writing call history--- */
+static void SetUp_Mock(void) { mock = Mock_new(); }
+static void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
+
+/* Hardware fakes are included by test_runner.c. */
 /* ---Project Lib Dependencies--- */
 #include "BiColorLed.h"
 #include "Spi.h"
@@ -10,6 +17,8 @@
 #include "mock_Spi.h"
 /* ---Include Libs with functions faked in tests--- */
 #include "Usb.h"
+/* ---Hardware registers for faking UsbRead values--- */
+#include "Ft1248.h"
 
 /** `status_led` is defined in `fake/BiColorLed-Hardware.h`. */
 /* I cannot simply include that header because the test suite */
@@ -34,10 +43,52 @@ void LookupBridgeCmd_returns_NULL_if_key_is_not_found(void){
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_EQUAL(NULL, LookupBridgeCmd(CmdBlackHat_key));
 }
+/* =====[ Mock UsbWrite() for unit-testing SendStatus() ]===== */
+// Define what is recorded when the function under test calls fake.
+static RecordedCall * Record_UsbWrite(uint8_t const *arg1, uint16_t arg2)
+{
+    char const *call_name = "UsbWrite";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t const **)record_of_arg1->pArg) = arg1;
+    RecordedArg *record_of_arg2 = RecordedArg_new(SetupRecord_uint16_t);
+    *((uint16_t *)record_of_arg2->pArg) = arg2;
+    RecordArg(record_of_this_call, record_of_arg1);
+    RecordArg(record_of_this_call, record_of_arg2);
+    return record_of_this_call;
+}
+/* =====[ Define the fake UsbWrite() ]===== */
+static uint16_t UsbWrite_Mocked(uint8_t const *write_buffer, uint16_t nbytes) {
+    RecordActualCall(mock, Record_UsbWrite(write_buffer, nbytes));
+    return nbytes; // Test fakes return value by choosing value passed as nybtes.
+}
+// Define how to swap function definitions
+static uint16_t (*UsbWrite_Saved)(uint8_t const *, uint16_t);
+// how to restore real UsbWrite()
+static void Restore_UsbWrite(void) {UsbWrite = UsbWrite_Saved;}
+// how to swap real UsbWrite() with mocked version
+static void Mock_UsbWrite(void) {UsbWrite_Saved=UsbWrite;UsbWrite=UsbWrite_Mocked;}
+
+/* =====[ Fake/Mock/Stub terminology ]===== */
+// Fake:
+    // anything that is not from the real function definition
+    // examples:
+    // fake return value
+    // stubbed version of function
+    // mocked version of function
+// MyFunc_Stubbed:
+    // placeholder for MyFunc, has no side effects
+    // Stub_MyFunc(): MyFunc does not show up in the call history
+// MyFunc_Mocked:
+    // like a stub, but also writes to the unit test's call history
+    // Mock_MyFunc(): MyFunc shows up in the call history
+// To swap real and fake definitions, **func must be a func-ptr**!!
+    // if func is not a func-ptr, compiler throws `lvalue` error when
+    // you try to do {func-ptr}={func-name}
+
 /* =====[ Mock UsbReadN() for unit-testing GetBridgeLED() ]===== */
-// Define what is recorded when the function under test calls fake
-// UsbReadN().
-static RecordedCall * Mock_UsbReadN(uint8_t *arg1, uint16_t arg2)
+// Define call recorded when func-under-test calls mocked function.
+static RecordedCall * Record_UsbReadN(uint8_t *arg1, uint16_t arg2)
 {
     char const *call_name = "UsbReadN";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
@@ -59,57 +110,259 @@ static RecordedCall * Mock_UsbReadN(uint8_t *arg1, uint16_t arg2)
     RecordArg(record_of_this_call, record_of_arg2);
     return record_of_this_call;
 }
-// Unit test fakes the UsbReadN return value by writing to this global.
-static uint16_t UsbReadN_StubbedReturnValue;
-// Define how to fake UsbReadN() during the unit test.
+// Define behavior of stubbed UsbReadN().
 static uint16_t UsbReadN_Stubbed(uint8_t *read_buffer, uint16_t nbytes) {
-    // Record call `Mock_UsbReadN(read_buffer, nbytes)` in `mock`.
-    RecordActualCall(mock, Mock_UsbReadN(read_buffer, nbytes));
-    // Return the stubbed value defined by the unit test.
-    return UsbReadN_StubbedReturnValue;
+    /* (void)read_buffer; (void)nbytes; // trick to avoid unused args warning */
+    *read_buffer = *FtMiosio_pin; // Fake a read by copying register value to read_buffer.
+    return nbytes; // Fake: nbytes is whatever the test says it is.
 }
-/* // Define how to set an expectation for UsbReadN() in the unit test. */
-/* static void Expect_UsbReadN(uint8_t *read_buffer, uint16_t nbytes) { */
-/*     // Record call `Mock_UsbReadN(read_buffer, nbytes)` in `mock`. */
-/*     RecordExpectedCall(mock, Mock_UsbReadN(read_buffer, nbytes)); */
+// Define behavior of mocked UsbReadN(). Mock is like stub, but also records itself.
+static uint16_t UsbReadN_Mocked(uint8_t *read_buffer, uint16_t nbytes) {
+    RecordActualCall(mock, Record_UsbReadN(read_buffer, nbytes));
+    *read_buffer = *FtMiosio_pin; // Fake a read by copying register value to read_buffer.
+    return nbytes; // Fake: nbytes is whatever the test says it is.
+}
+// Define how to swap function definitions
+static uint16_t (*UsbReadN_Saved)(uint8_t *, uint16_t);
+// how to restore real UsbReadN()
+static void Restore_UsbReadN(void) {UsbReadN=UsbReadN_Saved;}
+// how to swap real UsbReadN() with stubbed version
+static void Stub_UsbReadN(void) {UsbReadN_Saved=UsbReadN;UsbReadN=UsbReadN_Stubbed;}
+// how to swap real UsbReadN() with mocked version
+static void Mock_UsbReadN(void) {UsbReadN_Saved=UsbReadN;UsbReadN=UsbReadN_Mocked;}
+
+/* =====[ Mock SendStatus() for unit-testing GetBridgeLED() ]===== */
+// Define call recorded when func-under-test calls mocked function.
+static RecordedCall * Record_SendStatus(uint8_t arg1)
+{
+    char const *call_name = "SendStatus";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
+    *((uint8_t *)record_of_arg1->pArg) = arg1;
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+// Define behavior of stubbed SendStatus().
+/* static void SendStatus_Stubbed(status_byte status) { (void)status;} */
+// Define behavior of mocked SendStatus().
+static void SendStatus_Mocked(status_byte status) {
+    RecordActualCall(mock, Record_SendStatus(status));
+}
+// Define how unit test sets an expectation for SendStatus.
+/* static void Expect_SendStatus(status_byte status) { */
+/*     RecordExpectedCall(mock, Record_SendStatus(status)); */
 /* } */
-// Define how to replace UsbReadN() with its fake.
-static uint16_t (*UsbReadN_Saved)(uint8_t *read_buffer, uint16_t nbytes);
-static void Stub_UsbReadN(void) {
-    UsbReadN_Saved = UsbReadN; UsbReadN = UsbReadN_Stubbed;
-}
-// Define how to restore UsbReadN().
-static void Unstub_UsbReadN(void) {
-    UsbReadN = UsbReadN_Saved;
-}
-// Define setUp/tearDown functions to assign for `GetBridgeLED` tests.
+// Define how to swap function definitions
+static void (*SendStatus_Saved)(status_byte);
+// how to restore real definition
+static void Restore_SendStatus(void) { SendStatus=SendStatus_Saved; }
+// how to swap real definition with stubbed version
+/* static void Stub_SendStatus(void) { SendStatus_Saved=SendStatus; SendStatus=SendStatus_Stubbed;} */
+// how to swap real definition with mocked version
+static void Mock_SendStatus(void) { SendStatus_Saved=SendStatus; SendStatus=SendStatus_Mocked;}
+
+
 void SetUp_GetBridgeLED(void)
 {
-    // Unit test is for GetBridgeLED
-    mock = Mock_new();
-    // Mock calls to UsbReadN
-    Stub_UsbReadN();  // DOF
-    UsbReadN_StubbedReturnValue = 0;
+    SetUp_Mock();
+    Mock_UsbReadN();
+    Mock_SendStatus();
 }
 void TearDown_GetBridgeLED(void)
 {
-    Mock_destroy(mock); mock = NULL;
-    Unstub_UsbReadN();  // DOF
+    TearDown_Mock();
+    Restore_UsbReadN();
+    Restore_SendStatus();
 }
-
-void GetBridgeLED_reads_one_byte_of_payload(void){
+void GetBridgeLED_reads_one_byte_of_payload(void)
+{
     /* =====[ Operate ]===== */
     GetBridgeLED();
     /* =====[ Test: assert UsbReadN called to read 1 byte ]===== */
-    // view entire call history in test results:
-    /* PrintAllCalls(mock); */
-    // call signature of faked call:
-        // uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes)
+    /* PrintAllCalls(mock); // view entire call history */
+    // call sig of mocked call: uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes)
     uint8_t call_n = 1; uint16_t arg_n = 2; uint16_t nbytes = 1;
     // test call 1 is UsbReadN
-    TEST_ASSERT_TRUE(AssertCall(mock,call_n,"UsbReadN"));
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadN"));
     // test UsbReadN is called with nbytes=1
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &nbytes));
+}
+void GetBridgeLED_replies_with_two_bytes_if_led_number_is_recognized(void)
+{
+    /* Inject query for status_led so that led number is recognized. */
+    uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
+
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* PrintAllCalls(mock); */
+    /* =====[ Test ]===== */
+    // Assert there are only three calls total.
+    TEST_ASSERT_EQUAL_UINT8(3, NumberOfActualCalls(mock));
+    // And assert that only the last two calls send bytes.
+    uint8_t call_n;
+    call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadN"));
+    call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+    call_n = 3;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+}
+void GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized(void)
+{
+    /* Inject query for status_led so that led number is not recognized. */
+    uint8_t const led_number = status_led+1; *FtMiosio_pin = led_number;
+
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* PrintAllCalls(mock); */
+    /* =====[ Test ]===== */
+    // Assert there are only two calls total.
+    TEST_ASSERT_EQUAL_UINT8(2, NumberOfActualCalls(mock));
+    // And assert that only the last call sends a byte.
+    uint8_t call_n;
+    call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadN"));
+    call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+}
+void GetBridgeLED_replies_msg_status_ok_if_host_queries_status_led(void)
+{
+    /* Inject query for status_led */
+    uint8_t const led_number = status_led; *FtMiosio_pin = led_number;
+    /* Test case: msg_status is ok */
+    status_byte msg_status = ok;
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+    uint8_t arg_n = 1;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t *)&msg_status));
+}
+void GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led(void)
+{
+    /* Inject query for nonexistent led */
+    uint8_t const led_number = 0x01; *FtMiosio_pin = led_number;
+    /* Test case: msg_status is error because led number is not recognized. */
+    status_byte msg_status = error;
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+    uint8_t arg_n = 1;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t *)&msg_status));
+}
+void GetBridgeLED_replies_with_msg_status_byte_and_led_status_byte(void)
+{
+    /* =====[ Test Case: BridgeLED is green ]===== */
+    status_byte msg_status = ok; status_byte led_status = led_green;
+    /* Inject value in fake hardware registers to set led state for test: */
+    /*  - (BiColorLed_ddr,status_led) set: on, clear: off */
+    /*  - (BiColorLed_port,status_led) set: red, clear: green */
+    SetBit(BiColorLed_ddr,status_led); // led is on
+    ClearBit(BiColorLed_port,status_led); // led is green
+    /* Inject value in fake hardware for UsbRead to place in read_buffer[0]: */
+     /* - inject 0x00 to indicate payload from host queries status_led */
+     /* - any other value is an error because status_led is the only Bridge LED */
+    uint8_t const led_number = 0x00; *FtMiosio_pin = led_number;
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test ]===== */
+    /* PrintAllCalls(mock); */
+    uint8_t call_n; uint8_t arg_n;
+    call_n = 2; arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock,call_n,"SendStatus"));
+    TEST_ASSERT_TRUE(AssertArg(mock,call_n,arg_n,(uint8_t*)&msg_status));
+    call_n = 3; arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock,call_n,"SendStatus"));
+    TEST_ASSERT_TRUE(AssertArg(mock,call_n,arg_n,(uint8_t*)&led_status));
+}
+void GetBridgeLED_replies_led_off_if_status_led_is_off(void)
+{
+    /* =====[ Inject led_state ]===== */
+    BiColorLedOff(status_led);
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test ]===== */
+    uint8_t call_n; uint8_t arg_n;
+    call_n = 3; arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+    status_byte led_status = led_off;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t*)&led_status));
+}
+void GetBridgeLED_replies_led_green_if_status_led_is_green(void)
+{
+    /* =====[ Inject led_state ]===== */
+    BiColorLedOn(status_led); BiColorLedGreen(status_led);
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test ]===== */
+    uint8_t call_n; uint8_t arg_n;
+    call_n = 3; arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+    status_byte led_status = led_green;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t*)&led_status));
+}
+void GetBridgeLED_replies_led_red_if_status_led_is_red(void)
+{
+    /* =====[ Inject led_state ]===== */
+    BiColorLedOn(status_led); BiColorLedRed(status_led);
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test ]===== */
+    uint8_t call_n; uint8_t arg_n;
+    call_n = 3; arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SendStatus"));
+    status_byte led_status = led_red;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t*)&led_status));
+}
+
+void SetUp_SendStatus_writes_one_byte_over_USB(void)
+{
+    SetUp_Mock();
+    Mock_UsbWrite();
+}
+void TearDown_SendStatus_writes_one_byte_over_USB(void)
+{
+    TearDown_Mock();
+    Restore_UsbWrite();
+}
+void SendStatus_writes_one_byte_over_USB(void)
+{
+    /* =====[ Operate ]===== */
+    SendStatus(ok);
+    /* =====[ Test: assert UsbWrite ]===== */
+    uint8_t call_n = 1;
+    /* PrintAllCalls(mock); */
+    TEST_ASSERT_TRUE(AssertCall(mock,call_n,"UsbWrite"));
+    /* =====[ Test: assert one byte is written ]===== */
+    uint8_t arg_n = 2; // arg2 is nbytes to write
+    uint16_t nbytes = 1; // assert nbytes is 1
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &nbytes));
+}
+void SetUp_Stub_UsbReadN_with_value_in_read_buffer(void)
+{
+    SetUp_Mock();
+    Stub_UsbReadN();
+}
+void TearDown_Stub_UsbReadN_with_value_in_read_buffer(void)
+{
+    TearDown_Mock();
+    Restore_UsbReadN();
+}
+void Stub_UsbReadN_with_value_in_read_buffer(void)
+{ // This test demonstrates how to fake the value read over USB.
+    /* =====[ Inject a fake value into the read_buffer ]===== */
+    // Write the fake value to the low-level hardware register
+    // accessed during the UsbRead: register `FtMiosio_pin`.
+    uint8_t const led_number = 0xAB; *FtMiosio_pin = led_number;
+    /* =====[ Operate: Read one byte, store result in read_buffer. ]===== */
+    uint8_t const num_bytes_payload = 1;
+    uint8_t read_buffer[num_bytes_payload];
+    UsbReadN(read_buffer, num_bytes_payload); // stub reads fake pin values
+    /* =====[ Test: this unit test injects its fake value in read_buffer[0] ]===== */
+    TEST_ASSERT_EQUAL_UINT8(led_number, read_buffer[0]);
 }
 
 /* =====[ Jump Table Sandbox ]===== */

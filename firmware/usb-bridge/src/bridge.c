@@ -215,18 +215,32 @@ void BridgeCfgLis(void)
     }
 }
 /* =====[ API started 2019-10-02 ]===== */
-void GetBridgeLED(void){
-    // Read one byte of payload: which LED to query.
+/* void SendStatus(status_byte status) {UsbWrite(&status,1);} */
+static void SendStatus_Implementation(status_byte status) {UsbWrite(&status,1);}
+void (*SendStatus)(status_byte) = SendStatus_Implementation;
+
+void GetBridgeLED(void)
+{
+    // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];
     UsbReadN(read_buffer, num_bytes_payload);
+
     // TODO: Add error checking for time out.
-    // CASE: host does not send expected number of bytes.
+        // CASE: host does not send expected number of bytes.
+
+    // Reply to USB Host with message status byte.
     uint8_t led_number = read_buffer[0];
-    // Reply to USB Host with state of Bridge LED.
-    // TODO: finish this:
-    // Send status byte (0x00 means OK).
-    // Send LED status bytes (0x00: off, 0x01: green, 0x02: red);
+    if (led_number != status_led)
+    {
+        SendStatus(error); // host is asking about nonexistent LED
+        return;
+    }
+    SendStatus(ok); // led_number is recognized, send msg_status: ok
+    // Reply to USB Host with led status byte.
+    if (!BiColorLedIsOn(status_led)) SendStatus(led_off);
+    else if (BiColorLedIsRed(status_led)) SendStatus(led_red);
+    else SendStatus(led_green);
 }
 /* void SetBridgeLED(void){} */
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
@@ -259,6 +273,13 @@ bridge_cmd_key const SendSensorLed1Red_key = 3;
 bridge_cmd_key const SendSensorLed1Green_key = 4;
 bridge_cmd_key const SendSensorLed2Red_key = 5;
 bridge_cmd_key const SendSensorLed2Green_key = 6;
+/* =====[ API started 2019-10-02 ]===== */
+status_byte ok = 0; 
+status_byte error = 1; 
+status_byte led_off = 0; 
+status_byte led_green = 1; 
+status_byte led_red = 2; 
+
 BridgeCmd* oldLookupBridgeCmd(bridge_cmd_key const key) {
     /* pf is an array of pointers to BridgeCmd functions */
     /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */

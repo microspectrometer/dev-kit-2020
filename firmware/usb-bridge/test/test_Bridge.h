@@ -25,11 +25,27 @@ void CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row5(void);
 void CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds(void);
 void BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect(void);
 
+/* =====[ API - started 2019-10-03 ]===== */
+void SetUp_GetBridgeLED(void); void TearDown_GetBridgeLED(void);
+void GetBridgeLED_reads_one_byte_of_payload(void);
+void GetBridgeLED_replies_msg_status_ok_if_host_queries_status_led(void);
+void GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led(void);
+void GetBridgeLED_replies_with_msg_status_byte_and_led_status_byte(void);
+void GetBridgeLED_replies_led_off_if_status_led_is_off(void);
+void GetBridgeLED_replies_led_green_if_status_led_is_green(void);
+/* =====[ ApiSupport - started 2019-10-04 ]===== */
+void SetUp_SendStatus_writes_one_byte_over_USB(void);
+void TearDown_SendStatus_writes_one_byte_over_USB(void);
+void SendStatus_writes_one_byte_over_USB(void);
+
+void SetUp_Stub_UsbReadN_with_value_in_read_buffer(void);
+void TearDown_Stub_UsbReadN_with_value_in_read_buffer(void);
+void Stub_UsbReadN_with_value_in_read_buffer(void);
 /* =====[ BridgeJumpTable - started 2019-10-02]===== */
 void LookupBridgeCmd_takes_key_and_returns_fn_ptr(void);
 void LookupBridgeCmd_returns_NULL_if_key_is_not_found(void);
-//
-void SetUp_GetBridgeLED(void); void TearDown_GetBridgeLED(void);
-void GetBridgeLED_reads_one_byte_of_payload(void);
+void GetBridgeLED_replies_led_red_if_status_led_is_red(void);
+void GetBridgeLED_replies_with_two_bytes_if_led_number_is_recognized(void);
+void GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized(void);
 
 #endif // _TEST_BRIDGE_H

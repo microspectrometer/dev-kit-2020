@@ -60,3 +60,38 @@ void BiColorLedOn_is_low_on_led_pin_but_high_on_led_pin_data_direction(void)
     TEST_ASSERT_BIT_LOW(status_led, *BiColorLed_port);
     TEST_ASSERT_BIT_HIGH(status_led, *BiColorLed_ddr);
 }
+void BiColorLedIsRed_returns_true_if_led_is_on_and_is_red(void)
+{
+    /* =====[ Inject led_state ]===== */
+    BiColorLedOn(status_led); BiColorLedRed(status_led);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE(BiColorLedIsRed(status_led));
+}
+void BiColorLedIsRed_returns_false_if_led_is_on_but_is_green(void)
+{
+    /* =====[ Inject led_state ]===== */
+    BiColorLedOn(status_led); BiColorLedGreen(status_led);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_FALSE(BiColorLedIsRed(status_led));
+}
+void BiColorLedIsRed_returns_false_if_led_is_off(void)
+{
+    /* =====[ Inject led_state ]===== */
+    BiColorLedOff(status_led);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_FALSE(BiColorLedIsRed(status_led));
+}
+void BiColorLedIsOn_returns_true_if_led_is_on(void)
+{
+    /* =====[ Inject led_state ]===== */
+    BiColorLedOn(status_led);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE(BiColorLedIsOn(status_led));
+}
+void BiColorLedIsOn_returns_false_if_led_is_off(void)
+{
+    /* =====[ Inject led_state ]===== */
+    BiColorLedOff(status_led);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_FALSE(BiColorLedIsOn(status_led));
+}

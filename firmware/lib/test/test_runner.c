@@ -36,7 +36,9 @@ void DevelopingReadWriteBits(bool run_test) { if (run_test) {
     RUN_TEST(BitIsClear_is_true_if_bit_is_clear);
     RUN_TEST(BitIsClear_is_false_if_bit_is_set);
 }}
-void DevelopingBiColorLed(bool run_test) { if (run_test) {
+void DevelopingBiColorLed(bool run_test)
+{ if (run_test)
+    {
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     RUN_TEST(BiColorLedRed_is_a_high_on_led_pin);
     RUN_TEST(BiColorLedGreen_is_a_low_on_led_pin);
@@ -44,8 +46,13 @@ void DevelopingBiColorLed(bool run_test) { if (run_test) {
     RUN_TEST(BiColorLedToggleColor_changes_red_to_green);
     RUN_TEST(BiColorLedOff_is_a_low_on_led_pin_and_data_direction);
     RUN_TEST(BiColorLedOn_is_low_on_led_pin_but_high_on_led_pin_data_direction);
-
-}}
+    RUN_TEST(BiColorLedIsRed_returns_true_if_led_is_on_and_is_red);
+    RUN_TEST(BiColorLedIsRed_returns_false_if_led_is_on_but_is_green);
+    RUN_TEST(BiColorLedIsRed_returns_false_if_led_is_off);
+    RUN_TEST(BiColorLedIsOn_returns_true_if_led_is_on);
+    RUN_TEST(BiColorLedIsOn_returns_false_if_led_is_off);
+    }
+}
 void DevelopingFt1248_lowlevel(bool run_test) { if (run_test) {
     setUp = SetUp_FtPorts; tearDown = TearDown_FtPorts;
     RUN_TEST(FtSetMisoAsInput_configures_MISO_as_an_input_pin);
@@ -278,10 +285,10 @@ int main()
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     /* RUN_TEST(BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect); */
     DevelopingReadWriteBits   (Nope);
-    DevelopingBiColorLed      (Nope);
+    DevelopingBiColorLed      (Yep);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
-    DevelopingUsb             (Yep);
+    DevelopingUsb             (Nope);
     DevelopingSpiPlumbing     (Nope);
     DevelopingSpiMaster       (Nope);
     DevelopingUartSpi         (Nope);

@@ -56,6 +56,22 @@ inline void BiColorLedOn(uint8_t led_name)
      * red *each time* it is turned on. */
     SetBit(BiColorLed_ddr, led_name);
 }
+/** These are all queries.
+ * */
+inline bool BiColorLedIsOn(uint8_t led_name)
+{
+    if (BitIsClear(BiColorLed_ddr,led_name)) return false; // led is off
+    // led is on
+    return true;
+}
+inline bool BiColorLedIsRed(uint8_t led_name)
+{
+    if (!BiColorLedIsOn(led_name)) return false; // led is off
+    // led is on
+    if (BitIsClear(BiColorLed_port,led_name)) return false; // led is green
+    // led is red
+    else return true;
+}
 
 #endif // _BICOLOR_LED_H
 

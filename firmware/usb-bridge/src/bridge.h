@@ -75,6 +75,14 @@ BridgeCmd SendSensorLed1Red;
 BridgeCmd SendSensorLed1Green;
 BridgeCmd SendSensorLed2Red;
 BridgeCmd SendSensorLed2Green;
+/* =====[ API support started 2019-10-04 ]===== */
+typedef uint8_t const status_byte;  // TODO: move this to a shared lib
+status_byte ok;
+status_byte error;
+status_byte led_off; 
+status_byte led_green; 
+status_byte led_red; 
+extern void (*SendStatus)(status_byte);
 /* =====[ API started 2019-10-02 ]===== */
 BridgeCmd GetBridgeLED;
 

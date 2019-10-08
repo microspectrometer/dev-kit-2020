@@ -8,7 +8,6 @@
 
 void UsbInit(void);
 uint16_t UsbRead(uint8_t *read_buffer);
-uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes);
 bool UsbHasDataToRead(void);
 bool UsbHasRoomToWrite(void);
 
@@ -19,5 +18,7 @@ uint8_t UsbReadOneByte(uint8_t *read_buffer);
 // TODO: make UsbReadN a function pointer for faking.
 /* uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes); */
 extern uint16_t (*UsbReadN)(uint8_t *read_buffer, uint16_t nbytes);
+/* uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes); */
+extern uint16_t (*UsbWrite)(uint8_t const *write_buffer, uint16_t nbytes);
 
 #endif // _USB_H
