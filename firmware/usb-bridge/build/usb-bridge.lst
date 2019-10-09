@@ -3,31 +3,31 @@ build/usb-bridge.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000058  00800100  000008c4  00000958  2**0
+  0 .data         00000058  00800100  00000808  0000089c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000008c4  00000000  00000000  00000094  2**1
+  1 .text         00000808  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000623  00800158  00800158  000009b0  2**0
+  2 .bss          00000623  00800158  00800158  000008f4  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000009b0  2**0
+  3 .comment      00000030  00000000  00000000  000008f4  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000009e0  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000924  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000390  00000000  00000000  00000a20  2**0
+  5 .debug_aranges 00000390  00000000  00000000  00000964  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000619a  00000000  00000000  00000db0  2**0
+  6 .debug_info   000061a7  00000000  00000000  00000cf4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00001585  00000000  00000000  00006f4a  2**0
+  7 .debug_abbrev 00001572  00000000  00000000  00006e9b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000245c  00000000  00000000  000084cf  2**0
+  8 .debug_line   00002438  00000000  00000000  0000840d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000a5c  00000000  00000000  0000a92c  2**2
+  9 .debug_frame  00000a5c  00000000  00000000  0000a848  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00001755  00000000  00000000  0000b388  2**0
+ 10 .debug_str    00001771  00000000  00000000  0000b2a4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00003ecf  00000000  00000000  0000cadd  2**0
+ 11 .debug_loc    00003e65  00000000  00000000  0000ca15  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000628  00000000  00000000  000109ac  2**0
+ 12 .debug_ranges 00000610  00000000  00000000  0001087a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -72,7 +72,7 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e4 ec       	ldi	r30, 0xC4	; 196
+  7a:	e8 e0       	ldi	r30, 0x08	; 8
   7c:	f8 e0       	ldi	r31, 0x08	; 8
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
@@ -94,8 +94,8 @@ Disassembly of section .text:
   94:	ab 37       	cpi	r26, 0x7B	; 123
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 3c 04 	call	0x878	; 0x878 <main>
-  9e:	0c 94 60 04 	jmp	0x8c0	; 0x8c0 <_exit>
+  9a:	0e 94 de 03 	call	0x7bc	; 0x7bc <main>
+  9e:	0c 94 02 04 	jmp	0x804	; 0x804 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -445,923 +445,759 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
  306:	cf 91       	pop	r28
  308:	08 95       	ret
 
-0000030a <UsbReadN_Implementation>:
+0000030a <UsbReadBytes_Implementation>:
+        if (read_ok) num_bytes_read++;
+        finished = (num_bytes_read >= nbytes);
     }
+    FtDeactivateInterface();
     return num_bytes_read;
 }
-// TODO: unit test UsbReadN
-static uint16_t UsbReadN_Implementation(uint8_t *read_buffer, uint16_t nbytes)
-{
  30a:	ef 92       	push	r14
  30c:	ff 92       	push	r15
  30e:	0f 93       	push	r16
  310:	1f 93       	push	r17
  312:	cf 93       	push	r28
  314:	df 93       	push	r29
- 316:	8c 01       	movw	r16, r24
+ 316:	ec 01       	movw	r28, r24
  318:	7b 01       	movw	r14, r22
-    uint16_t num_bytes_read = 0;
-    FtSendCommand(FtCmd_Read);
- 31a:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtSendCommand>
- 31e:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtSendCommand+0x1>
- 322:	80 91 2b 01 	lds	r24, 0x012B	; 0x80012b <FtCmd_Read>
- 326:	09 95       	icall
-    bool has_data_to_read = FtBusTurnaround();
- 328:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtBusTurnaround>
- 32c:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtBusTurnaround+0x1>
+ 31a:	61 15       	cp	r22, r1
+ 31c:	71 05       	cpc	r23, r1
+ 31e:	79 f0       	breq	.+30     	; 0x33e <UsbReadBytes_Implementation+0x34>
+ 320:	8c 01       	movw	r16, r24
+ 322:	06 0f       	add	r16, r22
+ 324:	17 1f       	adc	r17, r23
+ 326:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtRead>
+ 32a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtRead+0x1>
+ 32e:	ce 01       	movw	r24, r28
  330:	09 95       	icall
-    if (!has_data_to_read)
  332:	88 23       	and	r24, r24
- 334:	f1 f0       	breq	.+60     	; 0x372 <UsbReadN_Implementation+0x68>
- 336:	c0 e0       	ldi	r28, 0x00	; 0
- 338:	d0 e0       	ldi	r29, 0x00	; 0
-    bool read_ok = true; bool finished = false;
-    /* TODO: add a timer to prevent this while loop from hanging */
-    /* // This will be next error (254). Timeout on expected nbytes. */
-    while (read_ok && !finished)
-    {
-        read_ok = FtRead(read_buffer++);
- 33a:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtRead>
- 33e:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtRead+0x1>
- 342:	c8 01       	movw	r24, r16
- 344:	8c 0f       	add	r24, r28
- 346:	9d 1f       	adc	r25, r29
- 348:	09 95       	icall
-        if (read_ok) num_bytes_read++;
- 34a:	81 11       	cpse	r24, r1
- 34c:	0d c0       	rjmp	.+26     	; 0x368 <UsbReadN_Implementation+0x5e>
-        finished = (num_bytes_read >= nbytes);
-    }
-    FtDeactivateInterface();
- 34e:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
- 352:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
- 356:	09 95       	icall
-    return num_bytes_read;
-}
- 358:	ce 01       	movw	r24, r28
- 35a:	df 91       	pop	r29
- 35c:	cf 91       	pop	r28
- 35e:	1f 91       	pop	r17
- 360:	0f 91       	pop	r16
- 362:	ff 90       	pop	r15
- 364:	ef 90       	pop	r14
- 366:	08 95       	ret
-    /* TODO: add a timer to prevent this while loop from hanging */
-    /* // This will be next error (254). Timeout on expected nbytes. */
-    while (read_ok && !finished)
-    {
-        read_ok = FtRead(read_buffer++);
-        if (read_ok) num_bytes_read++;
- 368:	21 96       	adiw	r28, 0x01	; 1
-        return num_bytes_read;
-    }
-    bool read_ok = true; bool finished = false;
-    /* TODO: add a timer to prevent this while loop from hanging */
-    /* // This will be next error (254). Timeout on expected nbytes. */
-    while (read_ok && !finished)
- 36a:	ce 15       	cp	r28, r14
- 36c:	df 05       	cpc	r29, r15
- 36e:	28 f3       	brcs	.-54     	; 0x33a <UsbReadN_Implementation+0x30>
- 370:	ee cf       	rjmp	.-36     	; 0x34e <UsbReadN_Implementation+0x44>
-{
-    ClearBit(BiColorLed_port, led_name);
-}
-inline void BiColorLedRed(uint8_t led_name)
-{
-    SetBit(BiColorLed_port, led_name);
- 372:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
- 376:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
- 37a:	20 81       	ld	r18, Z
- 37c:	81 e0       	ldi	r24, 0x01	; 1
- 37e:	90 e0       	ldi	r25, 0x00	; 0
- 380:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <status_led>
- 384:	02 c0       	rjmp	.+4      	; 0x38a <UsbReadN_Implementation+0x80>
- 386:	88 0f       	add	r24, r24
- 388:	99 1f       	adc	r25, r25
- 38a:	0a 94       	dec	r0
- 38c:	e2 f7       	brpl	.-8      	; 0x386 <UsbReadN_Implementation+0x7c>
- 38e:	82 2b       	or	r24, r18
- 390:	80 83       	st	Z, r24
-    bool has_data_to_read = FtBusTurnaround();
-    if (!has_data_to_read)
-    {
-        // sad path
-        BiColorLedRed(status_led);
-        FtDeactivateInterface();
- 392:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
- 396:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
- 39a:	09 95       	icall
- 39c:	c0 e0       	ldi	r28, 0x00	; 0
- 39e:	d0 e0       	ldi	r29, 0x00	; 0
-        if (read_ok) num_bytes_read++;
-        finished = (num_bytes_read >= nbytes);
-    }
-    FtDeactivateInterface();
-    return num_bytes_read;
-}
- 3a0:	ce 01       	movw	r24, r28
- 3a2:	df 91       	pop	r29
- 3a4:	cf 91       	pop	r28
- 3a6:	1f 91       	pop	r17
- 3a8:	0f 91       	pop	r16
- 3aa:	ff 90       	pop	r15
- 3ac:	ef 90       	pop	r14
- 3ae:	08 95       	ret
+ 334:	c1 f3       	breq	.-16     	; 0x326 <UsbReadBytes_Implementation+0x1c>
+ 336:	21 96       	adiw	r28, 0x01	; 1
+ 338:	0c 17       	cp	r16, r28
+ 33a:	1d 07       	cpc	r17, r29
+ 33c:	a1 f7       	brne	.-24     	; 0x326 <UsbReadBytes_Implementation+0x1c>
+ 33e:	c7 01       	movw	r24, r14
+ 340:	df 91       	pop	r29
+ 342:	cf 91       	pop	r28
+ 344:	1f 91       	pop	r17
+ 346:	0f 91       	pop	r16
+ 348:	ff 90       	pop	r15
+ 34a:	ef 90       	pop	r14
+ 34c:	08 95       	ret
 
-000003b0 <UsbWrite_Implementation>:
+0000034e <UsbWrite_Implementation>:
     FtDeactivateInterface();
     return num_bytes_read;
 }
 
 static uint16_t UsbWrite_Implementation(uint8_t const *write_buffer, uint16_t nbytes)
 {
- 3b0:	ef 92       	push	r14
- 3b2:	ff 92       	push	r15
- 3b4:	0f 93       	push	r16
- 3b6:	1f 93       	push	r17
- 3b8:	cf 93       	push	r28
- 3ba:	df 93       	push	r29
- 3bc:	8c 01       	movw	r16, r24
- 3be:	7b 01       	movw	r14, r22
+ 34e:	ef 92       	push	r14
+ 350:	ff 92       	push	r15
+ 352:	0f 93       	push	r16
+ 354:	1f 93       	push	r17
+ 356:	cf 93       	push	r28
+ 358:	df 93       	push	r29
+ 35a:	8c 01       	movw	r16, r24
+ 35c:	7b 01       	movw	r14, r22
     uint16_t num_bytes_sent = 0;
     FtSendCommand(FtCmd_Write);
- 3c0:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtSendCommand>
- 3c4:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtSendCommand+0x1>
- 3c8:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <FtCmd_Write>
- 3cc:	09 95       	icall
+ 35e:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtSendCommand>
+ 362:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtSendCommand+0x1>
+ 366:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <FtCmd_Write>
+ 36a:	09 95       	icall
     if (!FtBusTurnaround())
- 3ce:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtBusTurnaround>
- 3d2:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtBusTurnaround+0x1>
- 3d6:	09 95       	icall
- 3d8:	88 23       	and	r24, r24
- 3da:	f1 f0       	breq	.+60     	; 0x418 <__LOCK_REGION_LENGTH__+0x18>
- 3dc:	c0 e0       	ldi	r28, 0x00	; 0
- 3de:	d0 e0       	ldi	r29, 0x00	; 0
+ 36c:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtBusTurnaround>
+ 370:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtBusTurnaround+0x1>
+ 374:	09 95       	icall
+ 376:	88 23       	and	r24, r24
+ 378:	f1 f0       	breq	.+60     	; 0x3b6 <UsbWrite_Implementation+0x68>
+ 37a:	c0 e0       	ldi	r28, 0x00	; 0
+ 37c:	d0 e0       	ldi	r29, 0x00	; 0
     }
     // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
     bool byte_sent = true; bool finished = false;
     while (byte_sent && !finished)
     {
         byte_sent = FtWrite(write_buffer++);
- 3e0:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtWrite>
- 3e4:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtWrite+0x1>
- 3e8:	c8 01       	movw	r24, r16
- 3ea:	8c 0f       	add	r24, r28
- 3ec:	9d 1f       	adc	r25, r29
- 3ee:	09 95       	icall
+ 37e:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <FtWrite>
+ 382:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <FtWrite+0x1>
+ 386:	c8 01       	movw	r24, r16
+ 388:	8c 0f       	add	r24, r28
+ 38a:	9d 1f       	adc	r25, r29
+ 38c:	09 95       	icall
         if (byte_sent) num_bytes_sent++;
- 3f0:	81 11       	cpse	r24, r1
- 3f2:	0d c0       	rjmp	.+26     	; 0x40e <__LOCK_REGION_LENGTH__+0xe>
+ 38e:	81 11       	cpse	r24, r1
+ 390:	0d c0       	rjmp	.+26     	; 0x3ac <UsbWrite_Implementation+0x5e>
         finished = (num_bytes_sent >= nbytes);
     }
     FtDeactivateInterface();
- 3f4:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
- 3f8:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
- 3fc:	09 95       	icall
+ 392:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
+ 396:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
+ 39a:	09 95       	icall
     return num_bytes_sent;
 }
- 3fe:	ce 01       	movw	r24, r28
- 400:	df 91       	pop	r29
- 402:	cf 91       	pop	r28
- 404:	1f 91       	pop	r17
- 406:	0f 91       	pop	r16
- 408:	ff 90       	pop	r15
- 40a:	ef 90       	pop	r14
- 40c:	08 95       	ret
+ 39c:	ce 01       	movw	r24, r28
+ 39e:	df 91       	pop	r29
+ 3a0:	cf 91       	pop	r28
+ 3a2:	1f 91       	pop	r17
+ 3a4:	0f 91       	pop	r16
+ 3a6:	ff 90       	pop	r15
+ 3a8:	ef 90       	pop	r14
+ 3aa:	08 95       	ret
     // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
     bool byte_sent = true; bool finished = false;
     while (byte_sent && !finished)
     {
         byte_sent = FtWrite(write_buffer++);
         if (byte_sent) num_bytes_sent++;
- 40e:	21 96       	adiw	r28, 0x01	; 1
+ 3ac:	21 96       	adiw	r28, 0x01	; 1
         FtDeactivateInterface();
         return num_bytes_sent;
     }
     // TODO: rename `byte_sent` as `byte_sent_OK` or `byte_was_sent`
     bool byte_sent = true; bool finished = false;
     while (byte_sent && !finished)
- 410:	ce 15       	cp	r28, r14
- 412:	df 05       	cpc	r29, r15
- 414:	28 f3       	brcs	.-54     	; 0x3e0 <UsbWrite_Implementation+0x30>
- 416:	ee cf       	rjmp	.-36     	; 0x3f4 <UsbWrite_Implementation+0x44>
+ 3ae:	ce 15       	cp	r28, r14
+ 3b0:	df 05       	cpc	r29, r15
+ 3b2:	28 f3       	brcs	.-54     	; 0x37e <UsbWrite_Implementation+0x30>
+ 3b4:	ee cf       	rjmp	.-36     	; 0x392 <UsbWrite_Implementation+0x44>
     uint16_t num_bytes_sent = 0;
     FtSendCommand(FtCmd_Write);
     if (!FtBusTurnaround())
     {
         /* BiColorLedRed(status_led); */
         FtDeactivateInterface();
- 418:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
- 41c:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
- 420:	09 95       	icall
- 422:	c0 e0       	ldi	r28, 0x00	; 0
- 424:	d0 e0       	ldi	r29, 0x00	; 0
+ 3b6:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
+ 3ba:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
+ 3be:	09 95       	icall
+ 3c0:	c0 e0       	ldi	r28, 0x00	; 0
+ 3c2:	d0 e0       	ldi	r29, 0x00	; 0
         if (byte_sent) num_bytes_sent++;
         finished = (num_bytes_sent >= nbytes);
     }
     FtDeactivateInterface();
     return num_bytes_sent;
 }
- 426:	ce 01       	movw	r24, r28
- 428:	df 91       	pop	r29
- 42a:	cf 91       	pop	r28
- 42c:	1f 91       	pop	r17
- 42e:	0f 91       	pop	r16
- 430:	ff 90       	pop	r15
- 432:	ef 90       	pop	r14
- 434:	08 95       	ret
+ 3c4:	ce 01       	movw	r24, r28
+ 3c6:	df 91       	pop	r29
+ 3c8:	cf 91       	pop	r28
+ 3ca:	1f 91       	pop	r17
+ 3cc:	0f 91       	pop	r16
+ 3ce:	ff 90       	pop	r15
+ 3d0:	ef 90       	pop	r14
+ 3d2:	08 95       	ret
 
-00000436 <UsbInit>:
+000003d4 <UsbInit>:
 // =====[status_led defined in BiColorLed-Hardware header]=====
 extern uint8_t const status_led;
 
 void UsbInit(void)
 {
     FtInit();
- 436:	0c 94 3d 01 	jmp	0x27a	; 0x27a <FtInit>
+ 3d4:	0c 94 3d 01 	jmp	0x27a	; 0x27a <FtInit>
 
-0000043a <UsbReadOneByte>:
+000003d8 <UsbReadOneByte>:
 }
 
 uint8_t UsbReadOneByte(uint8_t *read_buffer)
 {
- 43a:	cf 93       	push	r28
- 43c:	df 93       	push	r29
- 43e:	ec 01       	movw	r28, r24
+ 3d8:	cf 93       	push	r28
+ 3da:	df 93       	push	r29
+ 3dc:	ec 01       	movw	r28, r24
     uint8_t num_bytes_read = 0;
     FtSendCommand(FtCmd_Read);
- 440:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtSendCommand>
- 444:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtSendCommand+0x1>
- 448:	80 91 2b 01 	lds	r24, 0x012B	; 0x80012b <FtCmd_Read>
- 44c:	09 95       	icall
+ 3de:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <FtSendCommand>
+ 3e2:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <FtSendCommand+0x1>
+ 3e6:	80 91 2b 01 	lds	r24, 0x012B	; 0x80012b <FtCmd_Read>
+ 3ea:	09 95       	icall
     bool has_data_to_read = FtBusTurnaround();
- 44e:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtBusTurnaround>
- 452:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtBusTurnaround+0x1>
- 456:	09 95       	icall
+ 3ec:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <FtBusTurnaround>
+ 3f0:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <FtBusTurnaround+0x1>
+ 3f4:	09 95       	icall
     if (!has_data_to_read)
- 458:	88 23       	and	r24, r24
- 45a:	79 f0       	breq	.+30     	; 0x47a <UsbReadOneByte+0x40>
+ 3f6:	88 23       	and	r24, r24
+ 3f8:	79 f0       	breq	.+30     	; 0x418 <__LOCK_REGION_LENGTH__+0x18>
         // Use this in place of checking if Ft_Miso is low in app.
         /* BiColorLedRed(status_led); */
         FtDeactivateInterface();
         return num_bytes_read;
     }
     FtRead(read_buffer); num_bytes_read++;
- 45c:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtRead>
- 460:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtRead+0x1>
- 464:	ce 01       	movw	r24, r28
- 466:	09 95       	icall
+ 3fa:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtRead>
+ 3fe:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtRead+0x1>
+ 402:	ce 01       	movw	r24, r28
+ 404:	09 95       	icall
     FtDeactivateInterface();
- 468:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
- 46c:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
- 470:	09 95       	icall
+ 406:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
+ 40a:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
+ 40e:	09 95       	icall
     return num_bytes_read;
- 472:	81 e0       	ldi	r24, 0x01	; 1
+ 410:	81 e0       	ldi	r24, 0x01	; 1
 }
- 474:	df 91       	pop	r29
- 476:	cf 91       	pop	r28
- 478:	08 95       	ret
+ 412:	df 91       	pop	r29
+ 414:	cf 91       	pop	r28
+ 416:	08 95       	ret
     {
         // sad path
         // No, not an error. Not a sad path.
         // Use this in place of checking if Ft_Miso is low in app.
         /* BiColorLedRed(status_led); */
         FtDeactivateInterface();
- 47a:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
- 47e:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
- 482:	09 95       	icall
+ 418:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <FtDeactivateInterface>
+ 41c:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <FtDeactivateInterface+0x1>
+ 420:	09 95       	icall
         return num_bytes_read;
- 484:	80 e0       	ldi	r24, 0x00	; 0
+ 422:	80 e0       	ldi	r24, 0x00	; 0
     }
     FtRead(read_buffer); num_bytes_read++;
     FtDeactivateInterface();
     return num_bytes_read;
 }
- 486:	df 91       	pop	r29
- 488:	cf 91       	pop	r28
- 48a:	08 95       	ret
+ 424:	df 91       	pop	r29
+ 426:	cf 91       	pop	r28
+ 428:	08 95       	ret
 
-0000048c <UsbReadBytes>:
-uint16_t UsbReadBytes(uint8_t *read_buffer, uint16_t nbytes)
-{
- 48c:	ef 92       	push	r14
- 48e:	ff 92       	push	r15
- 490:	0f 93       	push	r16
- 492:	1f 93       	push	r17
- 494:	cf 93       	push	r28
- 496:	df 93       	push	r29
- 498:	ec 01       	movw	r28, r24
- 49a:	7b 01       	movw	r14, r22
-    uint16_t num_bytes_read = 0;
-    while (num_bytes_read++ < nbytes)
- 49c:	67 2b       	or	r22, r23
- 49e:	e1 f0       	breq	.+56     	; 0x4d8 <UsbReadBytes+0x4c>
- 4a0:	00 e0       	ldi	r16, 0x00	; 0
- 4a2:	10 e0       	ldi	r17, 0x00	; 0
-    {
-        while (!FtRead(read_buffer)); // wait for a byte to read
- 4a4:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <FtRead>
- 4a8:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <FtRead+0x1>
- 4ac:	ce 01       	movw	r24, r28
- 4ae:	09 95       	icall
- 4b0:	88 23       	and	r24, r24
- 4b2:	c1 f3       	breq	.-16     	; 0x4a4 <UsbReadBytes+0x18>
-        // One byte was finally available and was store in buffer.
-        // Increment byte counter.
-        num_bytes_read++;
- 4b4:	98 01       	movw	r18, r16
- 4b6:	2e 5f       	subi	r18, 0xFE	; 254
- 4b8:	3f 4f       	sbci	r19, 0xFF	; 255
-        // Point to next mem slot in read buffer.
-        read_buffer++;
- 4ba:	21 96       	adiw	r28, 0x01	; 1
-    return num_bytes_read;
-}
-uint16_t UsbReadBytes(uint8_t *read_buffer, uint16_t nbytes)
-{
-    uint16_t num_bytes_read = 0;
-    while (num_bytes_read++ < nbytes)
- 4bc:	2e 15       	cp	r18, r14
- 4be:	3f 05       	cpc	r19, r15
- 4c0:	10 f4       	brcc	.+4      	; 0x4c6 <UsbReadBytes+0x3a>
- 4c2:	89 01       	movw	r16, r18
- 4c4:	ef cf       	rjmp	.-34     	; 0x4a4 <UsbReadBytes+0x18>
- 4c6:	c8 01       	movw	r24, r16
- 4c8:	03 96       	adiw	r24, 0x03	; 3
-        num_bytes_read++;
-        // Point to next mem slot in read buffer.
-        read_buffer++;
-    }
-    return num_bytes_read;
-}
- 4ca:	df 91       	pop	r29
- 4cc:	cf 91       	pop	r28
- 4ce:	1f 91       	pop	r17
- 4d0:	0f 91       	pop	r16
- 4d2:	ff 90       	pop	r15
- 4d4:	ef 90       	pop	r14
- 4d6:	08 95       	ret
-    return num_bytes_read;
-}
-uint16_t UsbReadBytes(uint8_t *read_buffer, uint16_t nbytes)
-{
-    uint16_t num_bytes_read = 0;
-    while (num_bytes_read++ < nbytes)
- 4d8:	81 e0       	ldi	r24, 0x01	; 1
- 4da:	90 e0       	ldi	r25, 0x00	; 0
-        num_bytes_read++;
-        // Point to next mem slot in read buffer.
-        read_buffer++;
-    }
-    return num_bytes_read;
-}
- 4dc:	df 91       	pop	r29
- 4de:	cf 91       	pop	r28
- 4e0:	1f 91       	pop	r17
- 4e2:	0f 91       	pop	r16
- 4e4:	ff 90       	pop	r15
- 4e6:	ef 90       	pop	r14
- 4e8:	08 95       	ret
-
-000004ea <ClearPendingSpiInterrupt_Implementation>:
+0000042a <ClearPendingSpiInterrupt_Implementation>:
 void SpiClearFlagTransferIsDone(void)
 {
     // Clear the Spi_Interrupt flag by
     // reading Spi_InterruptFlag while it is set
     // then reading SPDR
     *Spi_spdr;  // this serves as a throwaway access
- 4ea:	e0 91 24 01 	lds	r30, 0x0124	; 0x800124 <ReadSpiStatusRegister>
- 4ee:	f0 91 25 01 	lds	r31, 0x0125	; 0x800125 <ReadSpiStatusRegister+0x1>
- 4f2:	09 95       	icall
- 4f4:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <ReadSpiDataRegister>
- 4f8:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <ReadSpiDataRegister+0x1>
- 4fc:	09 94       	ijmp
+ 42a:	e0 91 24 01 	lds	r30, 0x0124	; 0x800124 <ReadSpiStatusRegister>
+ 42e:	f0 91 25 01 	lds	r31, 0x0125	; 0x800125 <ReadSpiStatusRegister+0x1>
+ 432:	09 95       	icall
+ 434:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <ReadSpiDataRegister>
+ 438:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <ReadSpiDataRegister+0x1>
+ 43c:	09 94       	ijmp
 
-000004fe <ReadSpiStatusRegister_Implementation>:
- 4fe:	e0 91 3b 01 	lds	r30, 0x013B	; 0x80013b <Spi_spsr>
- 502:	f0 91 3c 01 	lds	r31, 0x013C	; 0x80013c <Spi_spsr+0x1>
- 506:	80 81       	ld	r24, Z
- 508:	08 95       	ret
+0000043e <ReadSpiStatusRegister_Implementation>:
+ 43e:	e0 91 3b 01 	lds	r30, 0x013B	; 0x80013b <Spi_spsr>
+ 442:	f0 91 3c 01 	lds	r31, 0x013C	; 0x80013c <Spi_spsr+0x1>
+ 446:	80 81       	ld	r24, Z
+ 448:	08 95       	ret
 
-0000050a <EnableSpi_Implementation>:
- 50a:	e0 91 3d 01 	lds	r30, 0x013D	; 0x80013d <Spi_spcr>
- 50e:	f0 91 3e 01 	lds	r31, 0x013E	; 0x80013e <Spi_spcr+0x1>
- 512:	20 81       	ld	r18, Z
- 514:	81 e0       	ldi	r24, 0x01	; 1
- 516:	90 e0       	ldi	r25, 0x00	; 0
- 518:	00 90 31 01 	lds	r0, 0x0131	; 0x800131 <Spi_Enable>
- 51c:	02 c0       	rjmp	.+4      	; 0x522 <EnableSpi_Implementation+0x18>
- 51e:	88 0f       	add	r24, r24
- 520:	99 1f       	adc	r25, r25
- 522:	0a 94       	dec	r0
- 524:	e2 f7       	brpl	.-8      	; 0x51e <EnableSpi_Implementation+0x14>
- 526:	82 2b       	or	r24, r18
- 528:	80 83       	st	Z, r24
- 52a:	08 95       	ret
+0000044a <EnableSpi_Implementation>:
+ 44a:	e0 91 3d 01 	lds	r30, 0x013D	; 0x80013d <Spi_spcr>
+ 44e:	f0 91 3e 01 	lds	r31, 0x013E	; 0x80013e <Spi_spcr+0x1>
+ 452:	20 81       	ld	r18, Z
+ 454:	81 e0       	ldi	r24, 0x01	; 1
+ 456:	90 e0       	ldi	r25, 0x00	; 0
+ 458:	00 90 31 01 	lds	r0, 0x0131	; 0x800131 <Spi_Enable>
+ 45c:	02 c0       	rjmp	.+4      	; 0x462 <EnableSpi_Implementation+0x18>
+ 45e:	88 0f       	add	r24, r24
+ 460:	99 1f       	adc	r25, r25
+ 462:	0a 94       	dec	r0
+ 464:	e2 f7       	brpl	.-8      	; 0x45e <EnableSpi_Implementation+0x14>
+ 466:	82 2b       	or	r24, r18
+ 468:	80 83       	st	Z, r24
+ 46a:	08 95       	ret
 
-0000052c <SpiMasterCloseSpi_Implementation>:
- 52c:	e0 91 3f 01 	lds	r30, 0x013F	; 0x80013f <Spi_port>
- 530:	f0 91 40 01 	lds	r31, 0x0140	; 0x800140 <Spi_port+0x1>
- 534:	20 81       	ld	r18, Z
- 536:	81 e0       	ldi	r24, 0x01	; 1
- 538:	90 e0       	ldi	r25, 0x00	; 0
- 53a:	00 90 38 01 	lds	r0, 0x0138	; 0x800138 <Spi_Ss>
- 53e:	02 c0       	rjmp	.+4      	; 0x544 <SpiMasterCloseSpi_Implementation+0x18>
- 540:	88 0f       	add	r24, r24
- 542:	99 1f       	adc	r25, r25
- 544:	0a 94       	dec	r0
- 546:	e2 f7       	brpl	.-8      	; 0x540 <SpiMasterCloseSpi_Implementation+0x14>
- 548:	82 2b       	or	r24, r18
- 54a:	80 83       	st	Z, r24
- 54c:	08 95       	ret
+0000046c <SpiMasterCloseSpi_Implementation>:
+ 46c:	e0 91 3f 01 	lds	r30, 0x013F	; 0x80013f <Spi_port>
+ 470:	f0 91 40 01 	lds	r31, 0x0140	; 0x800140 <Spi_port+0x1>
+ 474:	20 81       	ld	r18, Z
+ 476:	81 e0       	ldi	r24, 0x01	; 1
+ 478:	90 e0       	ldi	r25, 0x00	; 0
+ 47a:	00 90 38 01 	lds	r0, 0x0138	; 0x800138 <Spi_Ss>
+ 47e:	02 c0       	rjmp	.+4      	; 0x484 <SpiMasterCloseSpi_Implementation+0x18>
+ 480:	88 0f       	add	r24, r24
+ 482:	99 1f       	adc	r25, r25
+ 484:	0a 94       	dec	r0
+ 486:	e2 f7       	brpl	.-8      	; 0x480 <SpiMasterCloseSpi_Implementation+0x14>
+ 488:	82 2b       	or	r24, r18
+ 48a:	80 83       	st	Z, r24
+ 48c:	08 95       	ret
 
-0000054e <ReadSpiDataRegister_Implementation>:
- 54e:	e0 91 39 01 	lds	r30, 0x0139	; 0x800139 <Spi_spdr>
- 552:	f0 91 3a 01 	lds	r31, 0x013A	; 0x80013a <Spi_spdr+0x1>
- 556:	80 81       	ld	r24, Z
- 558:	08 95       	ret
+0000048e <ReadSpiDataRegister_Implementation>:
+ 48e:	e0 91 39 01 	lds	r30, 0x0139	; 0x800139 <Spi_spdr>
+ 492:	f0 91 3a 01 	lds	r31, 0x013A	; 0x80013a <Spi_spdr+0x1>
+ 496:	80 81       	ld	r24, Z
+ 498:	08 95       	ret
 
-0000055a <SpiMasterInit>:
+0000049a <SpiMasterInit>:
     ClearBit(Spi_ddr, Spi_Miso);    // make it an input
     SetBit(Spi_port, Spi_Miso);     // enable pull-up
 }
 void SpiMasterInit(void)
 {
     SlaveSelectIdleHigh();
- 55a:	0e 94 96 02 	call	0x52c	; 0x52c <SpiMasterCloseSpi_Implementation>
+ 49a:	0e 94 36 02 	call	0x46c	; 0x46c <SpiMasterCloseSpi_Implementation>
 // When the slave disables SPI to drive MISO, it needs this pin to go low.
 //
 /* TODO: rename this function to make it clear it is *only* for the SpiMaster. */
 static void SetMisoAsPullupInput(void) // For SpiMaster only!
 {
     ClearBit(Spi_ddr, Spi_Miso);    // make it an input
- 55e:	e0 91 41 01 	lds	r30, 0x0141	; 0x800141 <Spi_ddr>
- 562:	f0 91 42 01 	lds	r31, 0x0142	; 0x800142 <Spi_ddr+0x1>
+ 49e:	e0 91 41 01 	lds	r30, 0x0141	; 0x800141 <Spi_ddr>
+ 4a2:	f0 91 42 01 	lds	r31, 0x0142	; 0x800142 <Spi_ddr+0x1>
 }
 inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port &= ~(1<<bit);
- 566:	40 81       	ld	r20, Z
- 568:	81 e0       	ldi	r24, 0x01	; 1
- 56a:	90 e0       	ldi	r25, 0x00	; 0
- 56c:	9c 01       	movw	r18, r24
- 56e:	00 90 36 01 	lds	r0, 0x0136	; 0x800136 <Spi_Miso>
- 572:	02 c0       	rjmp	.+4      	; 0x578 <SpiMasterInit+0x1e>
- 574:	22 0f       	add	r18, r18
- 576:	33 1f       	adc	r19, r19
- 578:	0a 94       	dec	r0
- 57a:	e2 f7       	brpl	.-8      	; 0x574 <SpiMasterInit+0x1a>
- 57c:	32 2f       	mov	r19, r18
- 57e:	30 95       	com	r19
- 580:	34 23       	and	r19, r20
- 582:	30 83       	st	Z, r19
+ 4a6:	40 81       	ld	r20, Z
+ 4a8:	81 e0       	ldi	r24, 0x01	; 1
+ 4aa:	90 e0       	ldi	r25, 0x00	; 0
+ 4ac:	9c 01       	movw	r18, r24
+ 4ae:	00 90 36 01 	lds	r0, 0x0136	; 0x800136 <Spi_Miso>
+ 4b2:	02 c0       	rjmp	.+4      	; 0x4b8 <SpiMasterInit+0x1e>
+ 4b4:	22 0f       	add	r18, r18
+ 4b6:	33 1f       	adc	r19, r19
+ 4b8:	0a 94       	dec	r0
+ 4ba:	e2 f7       	brpl	.-8      	; 0x4b4 <SpiMasterInit+0x1a>
+ 4bc:	32 2f       	mov	r19, r18
+ 4be:	30 95       	com	r19
+ 4c0:	34 23       	and	r19, r20
+ 4c2:	30 83       	st	Z, r19
     SetBit(Spi_port, Spi_Miso);     // enable pull-up
- 584:	a0 91 3f 01 	lds	r26, 0x013F	; 0x80013f <Spi_port>
- 588:	b0 91 40 01 	lds	r27, 0x0140	; 0x800140 <Spi_port+0x1>
+ 4c4:	a0 91 3f 01 	lds	r26, 0x013F	; 0x80013f <Spi_port>
+ 4c8:	b0 91 40 01 	lds	r27, 0x0140	; 0x800140 <Spi_port+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
 inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
- 58c:	3c 91       	ld	r19, X
- 58e:	23 2b       	or	r18, r19
- 590:	2c 93       	st	X, r18
- 592:	40 81       	ld	r20, Z
- 594:	9c 01       	movw	r18, r24
- 596:	00 90 38 01 	lds	r0, 0x0138	; 0x800138 <Spi_Ss>
- 59a:	02 c0       	rjmp	.+4      	; 0x5a0 <SpiMasterInit+0x46>
- 59c:	22 0f       	add	r18, r18
- 59e:	33 1f       	adc	r19, r19
- 5a0:	0a 94       	dec	r0
- 5a2:	e2 f7       	brpl	.-8      	; 0x59c <SpiMasterInit+0x42>
- 5a4:	24 2b       	or	r18, r20
- 5a6:	20 83       	st	Z, r18
- 5a8:	40 81       	ld	r20, Z
- 5aa:	9c 01       	movw	r18, r24
- 5ac:	00 90 37 01 	lds	r0, 0x0137	; 0x800137 <Spi_Mosi>
- 5b0:	02 c0       	rjmp	.+4      	; 0x5b6 <SpiMasterInit+0x5c>
- 5b2:	22 0f       	add	r18, r18
- 5b4:	33 1f       	adc	r19, r19
- 5b6:	0a 94       	dec	r0
- 5b8:	e2 f7       	brpl	.-8      	; 0x5b2 <SpiMasterInit+0x58>
- 5ba:	24 2b       	or	r18, r20
- 5bc:	20 83       	st	Z, r18
- 5be:	40 81       	ld	r20, Z
- 5c0:	9c 01       	movw	r18, r24
- 5c2:	00 90 35 01 	lds	r0, 0x0135	; 0x800135 <Spi_Sck>
- 5c6:	02 c0       	rjmp	.+4      	; 0x5cc <SpiMasterInit+0x72>
- 5c8:	22 0f       	add	r18, r18
- 5ca:	33 1f       	adc	r19, r19
- 5cc:	0a 94       	dec	r0
- 5ce:	e2 f7       	brpl	.-8      	; 0x5c8 <SpiMasterInit+0x6e>
- 5d0:	24 2b       	or	r18, r20
- 5d2:	20 83       	st	Z, r18
+ 4cc:	3c 91       	ld	r19, X
+ 4ce:	23 2b       	or	r18, r19
+ 4d0:	2c 93       	st	X, r18
+ 4d2:	40 81       	ld	r20, Z
+ 4d4:	9c 01       	movw	r18, r24
+ 4d6:	00 90 38 01 	lds	r0, 0x0138	; 0x800138 <Spi_Ss>
+ 4da:	02 c0       	rjmp	.+4      	; 0x4e0 <SpiMasterInit+0x46>
+ 4dc:	22 0f       	add	r18, r18
+ 4de:	33 1f       	adc	r19, r19
+ 4e0:	0a 94       	dec	r0
+ 4e2:	e2 f7       	brpl	.-8      	; 0x4dc <SpiMasterInit+0x42>
+ 4e4:	24 2b       	or	r18, r20
+ 4e6:	20 83       	st	Z, r18
+ 4e8:	40 81       	ld	r20, Z
+ 4ea:	9c 01       	movw	r18, r24
+ 4ec:	00 90 37 01 	lds	r0, 0x0137	; 0x800137 <Spi_Mosi>
+ 4f0:	02 c0       	rjmp	.+4      	; 0x4f6 <SpiMasterInit+0x5c>
+ 4f2:	22 0f       	add	r18, r18
+ 4f4:	33 1f       	adc	r19, r19
+ 4f6:	0a 94       	dec	r0
+ 4f8:	e2 f7       	brpl	.-8      	; 0x4f2 <SpiMasterInit+0x58>
+ 4fa:	24 2b       	or	r18, r20
+ 4fc:	20 83       	st	Z, r18
+ 4fe:	40 81       	ld	r20, Z
+ 500:	9c 01       	movw	r18, r24
+ 502:	00 90 35 01 	lds	r0, 0x0135	; 0x800135 <Spi_Sck>
+ 506:	02 c0       	rjmp	.+4      	; 0x50c <SpiMasterInit+0x72>
+ 508:	22 0f       	add	r18, r18
+ 50a:	33 1f       	adc	r19, r19
+ 50c:	0a 94       	dec	r0
+ 50e:	e2 f7       	brpl	.-8      	; 0x508 <SpiMasterInit+0x6e>
+ 510:	24 2b       	or	r18, r20
+ 512:	20 83       	st	Z, r18
 {
     SetBit(Spi_ddr, Spi_Sck);
 }
 static void MakeMeTheMaster(void)
 {
     SetBit(Spi_spcr, Spi_MasterSlaveSelect);
- 5d4:	e0 91 3d 01 	lds	r30, 0x013D	; 0x80013d <Spi_spcr>
- 5d8:	f0 91 3e 01 	lds	r31, 0x013E	; 0x80013e <Spi_spcr+0x1>
- 5dc:	40 81       	ld	r20, Z
- 5de:	9c 01       	movw	r18, r24
- 5e0:	00 90 34 01 	lds	r0, 0x0134	; 0x800134 <Spi_MasterSlaveSelect>
- 5e4:	02 c0       	rjmp	.+4      	; 0x5ea <SpiMasterInit+0x90>
- 5e6:	22 0f       	add	r18, r18
- 5e8:	33 1f       	adc	r19, r19
- 5ea:	0a 94       	dec	r0
- 5ec:	e2 f7       	brpl	.-8      	; 0x5e6 <SpiMasterInit+0x8c>
- 5ee:	24 2b       	or	r18, r20
- 5f0:	20 83       	st	Z, r18
- 5f2:	40 81       	ld	r20, Z
- 5f4:	9c 01       	movw	r18, r24
- 5f6:	00 90 33 01 	lds	r0, 0x0133	; 0x800133 <Spi_ClockRateBit0>
- 5fa:	02 c0       	rjmp	.+4      	; 0x600 <SpiMasterInit+0xa6>
- 5fc:	22 0f       	add	r18, r18
- 5fe:	33 1f       	adc	r19, r19
- 600:	0a 94       	dec	r0
- 602:	e2 f7       	brpl	.-8      	; 0x5fc <SpiMasterInit+0xa2>
- 604:	24 2b       	or	r18, r20
- 606:	20 83       	st	Z, r18
+ 514:	e0 91 3d 01 	lds	r30, 0x013D	; 0x80013d <Spi_spcr>
+ 518:	f0 91 3e 01 	lds	r31, 0x013E	; 0x80013e <Spi_spcr+0x1>
+ 51c:	40 81       	ld	r20, Z
+ 51e:	9c 01       	movw	r18, r24
+ 520:	00 90 34 01 	lds	r0, 0x0134	; 0x800134 <Spi_MasterSlaveSelect>
+ 524:	02 c0       	rjmp	.+4      	; 0x52a <SpiMasterInit+0x90>
+ 526:	22 0f       	add	r18, r18
+ 528:	33 1f       	adc	r19, r19
+ 52a:	0a 94       	dec	r0
+ 52c:	e2 f7       	brpl	.-8      	; 0x526 <SpiMasterInit+0x8c>
+ 52e:	24 2b       	or	r18, r20
+ 530:	20 83       	st	Z, r18
+ 532:	40 81       	ld	r20, Z
+ 534:	9c 01       	movw	r18, r24
+ 536:	00 90 33 01 	lds	r0, 0x0133	; 0x800133 <Spi_ClockRateBit0>
+ 53a:	02 c0       	rjmp	.+4      	; 0x540 <SpiMasterInit+0xa6>
+ 53c:	22 0f       	add	r18, r18
+ 53e:	33 1f       	adc	r19, r19
+ 540:	0a 94       	dec	r0
+ 542:	e2 f7       	brpl	.-8      	; 0x53c <SpiMasterInit+0xa2>
+ 544:	24 2b       	or	r18, r20
+ 546:	20 83       	st	Z, r18
 }
 inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port &= ~(1<<bit);
- 608:	30 81       	ld	r19, Z
- 60a:	ac 01       	movw	r20, r24
- 60c:	00 90 32 01 	lds	r0, 0x0132	; 0x800132 <Spi_ClockRateBit1>
- 610:	02 c0       	rjmp	.+4      	; 0x616 <SpiMasterInit+0xbc>
- 612:	44 0f       	add	r20, r20
- 614:	55 1f       	adc	r21, r21
- 616:	0a 94       	dec	r0
- 618:	e2 f7       	brpl	.-8      	; 0x612 <SpiMasterInit+0xb8>
- 61a:	24 2f       	mov	r18, r20
- 61c:	20 95       	com	r18
- 61e:	23 23       	and	r18, r19
- 620:	20 83       	st	Z, r18
+ 548:	30 81       	ld	r19, Z
+ 54a:	ac 01       	movw	r20, r24
+ 54c:	00 90 32 01 	lds	r0, 0x0132	; 0x800132 <Spi_ClockRateBit1>
+ 550:	02 c0       	rjmp	.+4      	; 0x556 <SpiMasterInit+0xbc>
+ 552:	44 0f       	add	r20, r20
+ 554:	55 1f       	adc	r21, r21
+ 556:	0a 94       	dec	r0
+ 558:	e2 f7       	brpl	.-8      	; 0x552 <SpiMasterInit+0xb8>
+ 55a:	24 2f       	mov	r18, r20
+ 55c:	20 95       	com	r18
+ 55e:	23 23       	and	r18, r19
+ 560:	20 83       	st	Z, r18
 {
     // SPI master and slave are both an ATmega328P with a 10MHz oscillator.
     // Use SCK = fosc/8 = 1.25MHz.
     SetBit  (Spi_spcr, Spi_ClockRateBit0);
     ClearBit(Spi_spcr, Spi_ClockRateBit1);
     SetBit(Spi_spsr, Spi_DoubleClockRate);
- 622:	e0 91 3b 01 	lds	r30, 0x013B	; 0x80013b <Spi_spsr>
- 626:	f0 91 3c 01 	lds	r31, 0x013C	; 0x80013c <Spi_spsr+0x1>
+ 562:	e0 91 3b 01 	lds	r30, 0x013B	; 0x80013b <Spi_spsr>
+ 566:	f0 91 3c 01 	lds	r31, 0x013C	; 0x80013c <Spi_spsr+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
 inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
- 62a:	20 81       	ld	r18, Z
- 62c:	00 90 30 01 	lds	r0, 0x0130	; 0x800130 <Spi_DoubleClockRate>
- 630:	02 c0       	rjmp	.+4      	; 0x636 <SpiMasterInit+0xdc>
- 632:	88 0f       	add	r24, r24
- 634:	99 1f       	adc	r25, r25
- 636:	0a 94       	dec	r0
- 638:	e2 f7       	brpl	.-8      	; 0x632 <SpiMasterInit+0xd8>
- 63a:	82 2b       	or	r24, r18
- 63c:	80 83       	st	Z, r24
+ 56a:	20 81       	ld	r18, Z
+ 56c:	00 90 30 01 	lds	r0, 0x0130	; 0x800130 <Spi_DoubleClockRate>
+ 570:	02 c0       	rjmp	.+4      	; 0x576 <SpiMasterInit+0xdc>
+ 572:	88 0f       	add	r24, r24
+ 574:	99 1f       	adc	r25, r25
+ 576:	0a 94       	dec	r0
+ 578:	e2 f7       	brpl	.-8      	; 0x572 <SpiMasterInit+0xd8>
+ 57a:	82 2b       	or	r24, r18
+ 57c:	80 83       	st	Z, r24
     SetSlaveSelectAsOutput();  // pin-direction is user-defined
     SetMosiAsOutput();         // pin-direction is user-defined
     SetSckAsOutput();          // pin-direction is user-defined
     MakeMeTheMaster();
     SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
     EnableSpi();
- 63e:	e0 91 22 01 	lds	r30, 0x0122	; 0x800122 <EnableSpi>
- 642:	f0 91 23 01 	lds	r31, 0x0123	; 0x800123 <EnableSpi+0x1>
- 646:	09 95       	icall
+ 57e:	e0 91 22 01 	lds	r30, 0x0122	; 0x800122 <EnableSpi>
+ 582:	f0 91 23 01 	lds	r31, 0x0123	; 0x800123 <EnableSpi+0x1>
+ 586:	09 95       	icall
     ClearPendingSpiInterrupt();
- 648:	e0 91 26 01 	lds	r30, 0x0126	; 0x800126 <ClearPendingSpiInterrupt>
- 64c:	f0 91 27 01 	lds	r31, 0x0127	; 0x800127 <ClearPendingSpiInterrupt+0x1>
- 650:	09 94       	ijmp
+ 588:	e0 91 26 01 	lds	r30, 0x0126	; 0x800126 <ClearPendingSpiInterrupt>
+ 58c:	f0 91 27 01 	lds	r31, 0x0127	; 0x800127 <ClearPendingSpiInterrupt+0x1>
+ 590:	09 94       	ijmp
 
-00000652 <SendStatus_Implementation>:
+00000592 <SendStatus_Implementation>:
 
 uint8_t UsbWriteStatusOk(bridge_cmd_key   cmd_done_by_bridge)
 {
     uint8_t const StatusOk[] = { 0x00, cmd_done_by_bridge};
     return UsbWrite(StatusOk,2);
 }
- 652:	cf 93       	push	r28
- 654:	df 93       	push	r29
- 656:	1f 92       	push	r1
- 658:	cd b7       	in	r28, 0x3d	; 61
- 65a:	de b7       	in	r29, 0x3e	; 62
- 65c:	89 83       	std	Y+1, r24	; 0x01
- 65e:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
- 662:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
- 666:	61 e0       	ldi	r22, 0x01	; 1
- 668:	70 e0       	ldi	r23, 0x00	; 0
- 66a:	ce 01       	movw	r24, r28
- 66c:	01 96       	adiw	r24, 0x01	; 1
- 66e:	09 95       	icall
- 670:	0f 90       	pop	r0
- 672:	df 91       	pop	r29
- 674:	cf 91       	pop	r28
- 676:	08 95       	ret
+ 592:	cf 93       	push	r28
+ 594:	df 93       	push	r29
+ 596:	1f 92       	push	r1
+ 598:	cd b7       	in	r28, 0x3d	; 61
+ 59a:	de b7       	in	r29, 0x3e	; 62
+ 59c:	89 83       	std	Y+1, r24	; 0x01
+ 59e:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
+ 5a2:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
+ 5a6:	61 e0       	ldi	r22, 0x01	; 1
+ 5a8:	70 e0       	ldi	r23, 0x00	; 0
+ 5aa:	ce 01       	movw	r24, r28
+ 5ac:	01 96       	adiw	r24, 0x01	; 1
+ 5ae:	09 95       	icall
+ 5b0:	0f 90       	pop	r0
+ 5b2:	df 91       	pop	r29
+ 5b4:	cf 91       	pop	r28
+ 5b6:	08 95       	ret
 
-00000678 <SetBridgeLED>:
- 678:	0f 93       	push	r16
- 67a:	1f 93       	push	r17
- 67c:	cf 93       	push	r28
- 67e:	df 93       	push	r29
- 680:	00 d0       	rcall	.+0      	; 0x682 <SetBridgeLED+0xa>
- 682:	cd b7       	in	r28, 0x3d	; 61
- 684:	de b7       	in	r29, 0x3e	; 62
- 686:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadN>
- 68a:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadN+0x1>
- 68e:	62 e0       	ldi	r22, 0x02	; 2
- 690:	70 e0       	ldi	r23, 0x00	; 0
- 692:	ce 01       	movw	r24, r28
- 694:	01 96       	adiw	r24, 0x01	; 1
- 696:	09 95       	icall
- 698:	99 81       	ldd	r25, Y+1	; 0x01
- 69a:	80 91 58 01 	lds	r24, 0x0158	; 0x800158 <__data_end>
- 69e:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
- 6a2:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
- 6a6:	98 17       	cp	r25, r24
- 6a8:	71 f0       	breq	.+28     	; 0x6c6 <SetBridgeLED+0x4e>
- 6aa:	81 e0       	ldi	r24, 0x01	; 1
- 6ac:	09 95       	icall
- 6ae:	0f b6       	in	r0, 0x3f	; 63
- 6b0:	f8 94       	cli
- 6b2:	de bf       	out	0x3e, r29	; 62
- 6b4:	0f be       	out	0x3f, r0	; 63
- 6b6:	cd bf       	out	0x3d, r28	; 61
- 6b8:	0f 90       	pop	r0
- 6ba:	0f 90       	pop	r0
- 6bc:	df 91       	pop	r29
- 6be:	cf 91       	pop	r28
- 6c0:	1f 91       	pop	r17
- 6c2:	0f 91       	pop	r16
- 6c4:	08 95       	ret
- 6c6:	80 e0       	ldi	r24, 0x00	; 0
- 6c8:	09 95       	icall
- 6ca:	8a 81       	ldd	r24, Y+2	; 0x02
- 6cc:	88 23       	and	r24, r24
- 6ce:	e9 f0       	breq	.+58     	; 0x70a <SetBridgeLED+0x92>
- 6d0:	81 30       	cpi	r24, 0x01	; 1
- 6d2:	a9 f1       	breq	.+106    	; 0x73e <SetBridgeLED+0xc6>
- 6d4:	82 30       	cpi	r24, 0x02	; 2
- 6d6:	81 f7       	brne	.-32     	; 0x6b8 <SetBridgeLED+0x40>
- 6d8:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
- 6dc:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
- 6e0:	20 81       	ld	r18, Z
- 6e2:	81 e0       	ldi	r24, 0x01	; 1
- 6e4:	90 e0       	ldi	r25, 0x00	; 0
- 6e6:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <status_led>
- 6ea:	02 c0       	rjmp	.+4      	; 0x6f0 <SetBridgeLED+0x78>
- 6ec:	88 0f       	add	r24, r24
- 6ee:	99 1f       	adc	r25, r25
- 6f0:	0a 94       	dec	r0
- 6f2:	e2 f7       	brpl	.-8      	; 0x6ec <SetBridgeLED+0x74>
- 6f4:	92 2f       	mov	r25, r18
- 6f6:	98 2b       	or	r25, r24
- 6f8:	90 83       	st	Z, r25
- 6fa:	e0 91 55 01 	lds	r30, 0x0155	; 0x800155 <BiColorLed_ddr>
- 6fe:	f0 91 56 01 	lds	r31, 0x0156	; 0x800156 <BiColorLed_ddr+0x1>
- 702:	90 81       	ld	r25, Z
- 704:	89 2b       	or	r24, r25
- 706:	80 83       	st	Z, r24
- 708:	d2 cf       	rjmp	.-92     	; 0x6ae <SetBridgeLED+0x36>
- 70a:	e0 91 55 01 	lds	r30, 0x0155	; 0x800155 <BiColorLed_ddr>
- 70e:	f0 91 56 01 	lds	r31, 0x0156	; 0x800156 <BiColorLed_ddr+0x1>
- 712:	20 81       	ld	r18, Z
- 714:	81 e0       	ldi	r24, 0x01	; 1
- 716:	90 e0       	ldi	r25, 0x00	; 0
- 718:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <status_led>
- 71c:	02 c0       	rjmp	.+4      	; 0x722 <SetBridgeLED+0xaa>
- 71e:	88 0f       	add	r24, r24
- 720:	99 1f       	adc	r25, r25
- 722:	0a 94       	dec	r0
- 724:	e2 f7       	brpl	.-8      	; 0x71e <SetBridgeLED+0xa6>
- 726:	80 95       	com	r24
- 728:	92 2f       	mov	r25, r18
- 72a:	98 23       	and	r25, r24
- 72c:	90 83       	st	Z, r25
- 72e:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
- 732:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
- 736:	90 81       	ld	r25, Z
- 738:	89 23       	and	r24, r25
- 73a:	80 83       	st	Z, r24
- 73c:	b8 cf       	rjmp	.-144    	; 0x6ae <SetBridgeLED+0x36>
- 73e:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
- 742:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
- 746:	20 81       	ld	r18, Z
- 748:	81 e0       	ldi	r24, 0x01	; 1
- 74a:	90 e0       	ldi	r25, 0x00	; 0
- 74c:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <status_led>
- 750:	02 c0       	rjmp	.+4      	; 0x756 <SetBridgeLED+0xde>
- 752:	88 0f       	add	r24, r24
- 754:	99 1f       	adc	r25, r25
- 756:	0a 94       	dec	r0
- 758:	e2 f7       	brpl	.-8      	; 0x752 <SetBridgeLED+0xda>
- 75a:	98 2f       	mov	r25, r24
- 75c:	90 95       	com	r25
- 75e:	92 23       	and	r25, r18
- 760:	cb cf       	rjmp	.-106    	; 0x6f8 <SetBridgeLED+0x80>
+000005b8 <GetBridgeLED>:
+ 5b8:	0f 93       	push	r16
+ 5ba:	1f 93       	push	r17
+ 5bc:	cf 93       	push	r28
+ 5be:	df 93       	push	r29
+ 5c0:	1f 92       	push	r1
+ 5c2:	cd b7       	in	r28, 0x3d	; 61
+ 5c4:	de b7       	in	r29, 0x3e	; 62
+ 5c6:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
+ 5ca:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
+ 5ce:	61 e0       	ldi	r22, 0x01	; 1
+ 5d0:	70 e0       	ldi	r23, 0x00	; 0
+ 5d2:	ce 01       	movw	r24, r28
+ 5d4:	01 96       	adiw	r24, 0x01	; 1
+ 5d6:	09 95       	icall
+ 5d8:	99 81       	ldd	r25, Y+1	; 0x01
+ 5da:	80 91 58 01 	lds	r24, 0x0158	; 0x800158 <__data_end>
+ 5de:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
+ 5e2:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
+ 5e6:	98 17       	cp	r25, r24
+ 5e8:	41 f0       	breq	.+16     	; 0x5fa <GetBridgeLED+0x42>
+ 5ea:	81 e0       	ldi	r24, 0x01	; 1
+ 5ec:	09 95       	icall
+ 5ee:	0f 90       	pop	r0
+ 5f0:	df 91       	pop	r29
+ 5f2:	cf 91       	pop	r28
+ 5f4:	1f 91       	pop	r17
+ 5f6:	0f 91       	pop	r16
+ 5f8:	08 95       	ret
+ 5fa:	80 e0       	ldi	r24, 0x00	; 0
+ 5fc:	09 95       	icall
+ 5fe:	e0 91 55 01 	lds	r30, 0x0155	; 0x800155 <BiColorLed_ddr>
+ 602:	f0 91 56 01 	lds	r31, 0x0156	; 0x800156 <BiColorLed_ddr+0x1>
+ 606:	80 81       	ld	r24, Z
+ 608:	20 91 52 01 	lds	r18, 0x0152	; 0x800152 <status_led>
+ 60c:	90 e0       	ldi	r25, 0x00	; 0
+ 60e:	02 2e       	mov	r0, r18
+ 610:	02 c0       	rjmp	.+4      	; 0x616 <GetBridgeLED+0x5e>
+ 612:	95 95       	asr	r25
+ 614:	87 95       	ror	r24
+ 616:	0a 94       	dec	r0
+ 618:	e2 f7       	brpl	.-8      	; 0x612 <GetBridgeLED+0x5a>
+ 61a:	80 fd       	sbrc	r24, 0
+ 61c:	11 c0       	rjmp	.+34     	; 0x640 <GetBridgeLED+0x88>
+ 61e:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
+ 622:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
+ 626:	80 e0       	ldi	r24, 0x00	; 0
+ 628:	09 95       	icall
+ 62a:	0f b6       	in	r0, 0x3f	; 63
+ 62c:	f8 94       	cli
+ 62e:	de bf       	out	0x3e, r29	; 62
+ 630:	0f be       	out	0x3f, r0	; 63
+ 632:	cd bf       	out	0x3d, r28	; 61
+ 634:	0f 90       	pop	r0
+ 636:	df 91       	pop	r29
+ 638:	cf 91       	pop	r28
+ 63a:	1f 91       	pop	r17
+ 63c:	0f 91       	pop	r16
+ 63e:	08 95       	ret
+ 640:	80 81       	ld	r24, Z
+ 642:	90 e0       	ldi	r25, 0x00	; 0
+ 644:	02 2e       	mov	r0, r18
+ 646:	02 c0       	rjmp	.+4      	; 0x64c <GetBridgeLED+0x94>
+ 648:	95 95       	asr	r25
+ 64a:	87 95       	ror	r24
+ 64c:	0a 94       	dec	r0
+ 64e:	e2 f7       	brpl	.-8      	; 0x648 <GetBridgeLED+0x90>
+ 650:	80 ff       	sbrs	r24, 0
+ 652:	0d c0       	rjmp	.+26     	; 0x66e <GetBridgeLED+0xb6>
+ 654:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
+ 658:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
+ 65c:	80 81       	ld	r24, Z
+ 65e:	90 e0       	ldi	r25, 0x00	; 0
+ 660:	02 c0       	rjmp	.+4      	; 0x666 <GetBridgeLED+0xae>
+ 662:	95 95       	asr	r25
+ 664:	87 95       	ror	r24
+ 666:	2a 95       	dec	r18
+ 668:	e2 f7       	brpl	.-8      	; 0x662 <GetBridgeLED+0xaa>
+ 66a:	80 fd       	sbrc	r24, 0
+ 66c:	07 c0       	rjmp	.+14     	; 0x67c <GetBridgeLED+0xc4>
+ 66e:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
+ 672:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
+ 676:	81 e0       	ldi	r24, 0x01	; 1
+ 678:	09 95       	icall
+ 67a:	d7 cf       	rjmp	.-82     	; 0x62a <GetBridgeLED+0x72>
+ 67c:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
+ 680:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
+ 684:	82 e0       	ldi	r24, 0x02	; 2
+ 686:	09 95       	icall
+ 688:	d0 cf       	rjmp	.-96     	; 0x62a <GetBridgeLED+0x72>
 
-00000762 <GetBridgeLED>:
- 762:	0f 93       	push	r16
- 764:	1f 93       	push	r17
- 766:	cf 93       	push	r28
- 768:	df 93       	push	r29
- 76a:	1f 92       	push	r1
- 76c:	cd b7       	in	r28, 0x3d	; 61
- 76e:	de b7       	in	r29, 0x3e	; 62
- 770:	61 e0       	ldi	r22, 0x01	; 1
- 772:	70 e0       	ldi	r23, 0x00	; 0
- 774:	ce 01       	movw	r24, r28
- 776:	01 96       	adiw	r24, 0x01	; 1
- 778:	0e 94 46 02 	call	0x48c	; 0x48c <UsbReadBytes>
- 77c:	99 81       	ldd	r25, Y+1	; 0x01
- 77e:	80 91 58 01 	lds	r24, 0x0158	; 0x800158 <__data_end>
- 782:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
- 786:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
- 78a:	98 17       	cp	r25, r24
- 78c:	09 f4       	brne	.+2      	; 0x790 <GetBridgeLED+0x2e>
- 78e:	48 c0       	rjmp	.+144    	; 0x820 <GetBridgeLED+0xbe>
- 790:	80 e0       	ldi	r24, 0x00	; 0
- 792:	09 95       	icall
- 794:	e0 91 55 01 	lds	r30, 0x0155	; 0x800155 <BiColorLed_ddr>
- 798:	f0 91 56 01 	lds	r31, 0x0156	; 0x800156 <BiColorLed_ddr+0x1>
- 79c:	80 81       	ld	r24, Z
- 79e:	20 91 52 01 	lds	r18, 0x0152	; 0x800152 <status_led>
- 7a2:	90 e0       	ldi	r25, 0x00	; 0
- 7a4:	02 2e       	mov	r0, r18
- 7a6:	02 c0       	rjmp	.+4      	; 0x7ac <GetBridgeLED+0x4a>
- 7a8:	95 95       	asr	r25
- 7aa:	87 95       	ror	r24
- 7ac:	0a 94       	dec	r0
- 7ae:	e2 f7       	brpl	.-8      	; 0x7a8 <GetBridgeLED+0x46>
- 7b0:	80 fd       	sbrc	r24, 0
- 7b2:	11 c0       	rjmp	.+34     	; 0x7d6 <GetBridgeLED+0x74>
- 7b4:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
- 7b8:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
- 7bc:	80 e0       	ldi	r24, 0x00	; 0
- 7be:	09 95       	icall
- 7c0:	0f b6       	in	r0, 0x3f	; 63
- 7c2:	f8 94       	cli
- 7c4:	de bf       	out	0x3e, r29	; 62
- 7c6:	0f be       	out	0x3f, r0	; 63
- 7c8:	cd bf       	out	0x3d, r28	; 61
- 7ca:	0f 90       	pop	r0
- 7cc:	df 91       	pop	r29
- 7ce:	cf 91       	pop	r28
- 7d0:	1f 91       	pop	r17
- 7d2:	0f 91       	pop	r16
- 7d4:	08 95       	ret
- 7d6:	80 81       	ld	r24, Z
- 7d8:	90 e0       	ldi	r25, 0x00	; 0
- 7da:	02 2e       	mov	r0, r18
- 7dc:	02 c0       	rjmp	.+4      	; 0x7e2 <GetBridgeLED+0x80>
- 7de:	95 95       	asr	r25
- 7e0:	87 95       	ror	r24
- 7e2:	0a 94       	dec	r0
- 7e4:	e2 f7       	brpl	.-8      	; 0x7de <GetBridgeLED+0x7c>
- 7e6:	80 fd       	sbrc	r24, 0
- 7e8:	07 c0       	rjmp	.+14     	; 0x7f8 <GetBridgeLED+0x96>
- 7ea:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
- 7ee:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
- 7f2:	81 e0       	ldi	r24, 0x01	; 1
- 7f4:	09 95       	icall
- 7f6:	e4 cf       	rjmp	.-56     	; 0x7c0 <GetBridgeLED+0x5e>
- 7f8:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
- 7fc:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
- 800:	80 81       	ld	r24, Z
- 802:	90 e0       	ldi	r25, 0x00	; 0
- 804:	02 c0       	rjmp	.+4      	; 0x80a <GetBridgeLED+0xa8>
- 806:	95 95       	asr	r25
- 808:	87 95       	ror	r24
- 80a:	2a 95       	dec	r18
- 80c:	e2 f7       	brpl	.-8      	; 0x806 <GetBridgeLED+0xa4>
- 80e:	80 ff       	sbrs	r24, 0
- 810:	ec cf       	rjmp	.-40     	; 0x7ea <GetBridgeLED+0x88>
- 812:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
- 816:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
- 81a:	82 e0       	ldi	r24, 0x02	; 2
- 81c:	09 95       	icall
- 81e:	d0 cf       	rjmp	.-96     	; 0x7c0 <GetBridgeLED+0x5e>
- 820:	81 e0       	ldi	r24, 0x01	; 1
- 822:	09 95       	icall
- 824:	0f 90       	pop	r0
- 826:	df 91       	pop	r29
- 828:	cf 91       	pop	r28
- 82a:	1f 91       	pop	r17
- 82c:	0f 91       	pop	r16
- 82e:	08 95       	ret
+0000068a <SetBridgeLED>:
+ 68a:	0f 93       	push	r16
+ 68c:	1f 93       	push	r17
+ 68e:	cf 93       	push	r28
+ 690:	df 93       	push	r29
+ 692:	00 d0       	rcall	.+0      	; 0x694 <SetBridgeLED+0xa>
+ 694:	cd b7       	in	r28, 0x3d	; 61
+ 696:	de b7       	in	r29, 0x3e	; 62
+ 698:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
+ 69c:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
+ 6a0:	62 e0       	ldi	r22, 0x02	; 2
+ 6a2:	70 e0       	ldi	r23, 0x00	; 0
+ 6a4:	ce 01       	movw	r24, r28
+ 6a6:	01 96       	adiw	r24, 0x01	; 1
+ 6a8:	09 95       	icall
+ 6aa:	99 81       	ldd	r25, Y+1	; 0x01
+ 6ac:	80 91 58 01 	lds	r24, 0x0158	; 0x800158 <__data_end>
+ 6b0:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <SendStatus>
+ 6b4:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <SendStatus+0x1>
+ 6b8:	98 17       	cp	r25, r24
+ 6ba:	71 f0       	breq	.+28     	; 0x6d8 <SetBridgeLED+0x4e>
+ 6bc:	81 e0       	ldi	r24, 0x01	; 1
+ 6be:	09 95       	icall
+ 6c0:	0f b6       	in	r0, 0x3f	; 63
+ 6c2:	f8 94       	cli
+ 6c4:	de bf       	out	0x3e, r29	; 62
+ 6c6:	0f be       	out	0x3f, r0	; 63
+ 6c8:	cd bf       	out	0x3d, r28	; 61
+ 6ca:	0f 90       	pop	r0
+ 6cc:	0f 90       	pop	r0
+ 6ce:	df 91       	pop	r29
+ 6d0:	cf 91       	pop	r28
+ 6d2:	1f 91       	pop	r17
+ 6d4:	0f 91       	pop	r16
+ 6d6:	08 95       	ret
+ 6d8:	80 e0       	ldi	r24, 0x00	; 0
+ 6da:	09 95       	icall
+ 6dc:	8a 81       	ldd	r24, Y+2	; 0x02
+ 6de:	88 23       	and	r24, r24
+ 6e0:	e9 f0       	breq	.+58     	; 0x71c <SetBridgeLED+0x92>
+ 6e2:	81 30       	cpi	r24, 0x01	; 1
+ 6e4:	a9 f1       	breq	.+106    	; 0x750 <SetBridgeLED+0xc6>
+ 6e6:	82 30       	cpi	r24, 0x02	; 2
+ 6e8:	81 f7       	brne	.-32     	; 0x6ca <SetBridgeLED+0x40>
+ 6ea:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
+ 6ee:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
+ 6f2:	20 81       	ld	r18, Z
+ 6f4:	81 e0       	ldi	r24, 0x01	; 1
+ 6f6:	90 e0       	ldi	r25, 0x00	; 0
+ 6f8:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <status_led>
+ 6fc:	02 c0       	rjmp	.+4      	; 0x702 <SetBridgeLED+0x78>
+ 6fe:	88 0f       	add	r24, r24
+ 700:	99 1f       	adc	r25, r25
+ 702:	0a 94       	dec	r0
+ 704:	e2 f7       	brpl	.-8      	; 0x6fe <SetBridgeLED+0x74>
+ 706:	92 2f       	mov	r25, r18
+ 708:	98 2b       	or	r25, r24
+ 70a:	90 83       	st	Z, r25
+ 70c:	e0 91 55 01 	lds	r30, 0x0155	; 0x800155 <BiColorLed_ddr>
+ 710:	f0 91 56 01 	lds	r31, 0x0156	; 0x800156 <BiColorLed_ddr+0x1>
+ 714:	90 81       	ld	r25, Z
+ 716:	89 2b       	or	r24, r25
+ 718:	80 83       	st	Z, r24
+ 71a:	d2 cf       	rjmp	.-92     	; 0x6c0 <SetBridgeLED+0x36>
+ 71c:	e0 91 55 01 	lds	r30, 0x0155	; 0x800155 <BiColorLed_ddr>
+ 720:	f0 91 56 01 	lds	r31, 0x0156	; 0x800156 <BiColorLed_ddr+0x1>
+ 724:	20 81       	ld	r18, Z
+ 726:	81 e0       	ldi	r24, 0x01	; 1
+ 728:	90 e0       	ldi	r25, 0x00	; 0
+ 72a:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <status_led>
+ 72e:	02 c0       	rjmp	.+4      	; 0x734 <SetBridgeLED+0xaa>
+ 730:	88 0f       	add	r24, r24
+ 732:	99 1f       	adc	r25, r25
+ 734:	0a 94       	dec	r0
+ 736:	e2 f7       	brpl	.-8      	; 0x730 <SetBridgeLED+0xa6>
+ 738:	80 95       	com	r24
+ 73a:	92 2f       	mov	r25, r18
+ 73c:	98 23       	and	r25, r24
+ 73e:	90 83       	st	Z, r25
+ 740:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
+ 744:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
+ 748:	90 81       	ld	r25, Z
+ 74a:	89 23       	and	r24, r25
+ 74c:	80 83       	st	Z, r24
+ 74e:	b8 cf       	rjmp	.-144    	; 0x6c0 <SetBridgeLED+0x36>
+ 750:	e0 91 53 01 	lds	r30, 0x0153	; 0x800153 <BiColorLed_port>
+ 754:	f0 91 54 01 	lds	r31, 0x0154	; 0x800154 <BiColorLed_port+0x1>
+ 758:	20 81       	ld	r18, Z
+ 75a:	81 e0       	ldi	r24, 0x01	; 1
+ 75c:	90 e0       	ldi	r25, 0x00	; 0
+ 75e:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <status_led>
+ 762:	02 c0       	rjmp	.+4      	; 0x768 <SetBridgeLED+0xde>
+ 764:	88 0f       	add	r24, r24
+ 766:	99 1f       	adc	r25, r25
+ 768:	0a 94       	dec	r0
+ 76a:	e2 f7       	brpl	.-8      	; 0x764 <SetBridgeLED+0xda>
+ 76c:	98 2f       	mov	r25, r24
+ 76e:	90 95       	com	r25
+ 770:	92 23       	and	r25, r18
+ 772:	cb cf       	rjmp	.-106    	; 0x70a <SetBridgeLED+0x80>
 
-00000830 <LookupBridgeCmd>:
- 830:	82 30       	cpi	r24, 0x02	; 2
- 832:	48 f4       	brcc	.+18     	; 0x846 <LookupBridgeCmd+0x16>
- 834:	e8 2f       	mov	r30, r24
- 836:	f0 e0       	ldi	r31, 0x00	; 0
- 838:	ee 0f       	add	r30, r30
- 83a:	ff 1f       	adc	r31, r31
- 83c:	e4 5d       	subi	r30, 0xD4	; 212
- 83e:	fe 4f       	sbci	r31, 0xFE	; 254
- 840:	80 81       	ld	r24, Z
- 842:	91 81       	ldd	r25, Z+1	; 0x01
- 844:	08 95       	ret
- 846:	80 e0       	ldi	r24, 0x00	; 0
- 848:	90 e0       	ldi	r25, 0x00	; 0
- 84a:	08 95       	ret
+00000774 <LookupBridgeCmd>:
+ 774:	82 30       	cpi	r24, 0x02	; 2
+ 776:	48 f4       	brcc	.+18     	; 0x78a <LookupBridgeCmd+0x16>
+ 778:	e8 2f       	mov	r30, r24
+ 77a:	f0 e0       	ldi	r31, 0x00	; 0
+ 77c:	ee 0f       	add	r30, r30
+ 77e:	ff 1f       	adc	r31, r31
+ 780:	e4 5d       	subi	r30, 0xD4	; 212
+ 782:	fe 4f       	sbci	r31, 0xFE	; 254
+ 784:	80 81       	ld	r24, Z
+ 786:	91 81       	ldd	r25, Z+1	; 0x01
+ 788:	08 95       	ret
+ 78a:	80 e0       	ldi	r24, 0x00	; 0
+ 78c:	90 e0       	ldi	r25, 0x00	; 0
+ 78e:	08 95       	ret
 
-0000084c <UsbWriteStatusInvalid>:
+00000790 <UsbWriteStatusInvalid>:
 uint8_t UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
 {
- 84c:	cf 93       	push	r28
- 84e:	df 93       	push	r29
- 850:	00 d0       	rcall	.+0      	; 0x852 <UsbWriteStatusInvalid+0x6>
- 852:	cd b7       	in	r28, 0x3d	; 61
- 854:	de b7       	in	r29, 0x3e	; 62
+ 790:	cf 93       	push	r28
+ 792:	df 93       	push	r29
+ 794:	00 d0       	rcall	.+0      	; 0x796 <UsbWriteStatusInvalid+0x6>
+ 796:	cd b7       	in	r28, 0x3d	; 61
+ 798:	de b7       	in	r29, 0x3e	; 62
     uint8_t const StatusInvalid[] = { 0xFF, invalid_cmd };
- 856:	9f ef       	ldi	r25, 0xFF	; 255
- 858:	99 83       	std	Y+1, r25	; 0x01
- 85a:	8a 83       	std	Y+2, r24	; 0x02
+ 79a:	9f ef       	ldi	r25, 0xFF	; 255
+ 79c:	99 83       	std	Y+1, r25	; 0x01
+ 79e:	8a 83       	std	Y+2, r24	; 0x02
     return UsbWrite(StatusInvalid,2);
- 85c:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
- 860:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
- 864:	62 e0       	ldi	r22, 0x02	; 2
- 866:	70 e0       	ldi	r23, 0x00	; 0
- 868:	ce 01       	movw	r24, r28
- 86a:	01 96       	adiw	r24, 0x01	; 1
- 86c:	09 95       	icall
+ 7a0:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
+ 7a4:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
+ 7a8:	62 e0       	ldi	r22, 0x02	; 2
+ 7aa:	70 e0       	ldi	r23, 0x00	; 0
+ 7ac:	ce 01       	movw	r24, r28
+ 7ae:	01 96       	adiw	r24, 0x01	; 1
+ 7b0:	09 95       	icall
 }
- 86e:	0f 90       	pop	r0
- 870:	0f 90       	pop	r0
- 872:	df 91       	pop	r29
- 874:	cf 91       	pop	r28
- 876:	08 95       	ret
+ 7b2:	0f 90       	pop	r0
+ 7b4:	0f 90       	pop	r0
+ 7b6:	df 91       	pop	r29
+ 7b8:	cf 91       	pop	r28
+ 7ba:	08 95       	ret
 
-00000878 <main>:
+000007bc <main>:
 } while (0)
 #define DebugPinLow()  ClearBit(&PORTC, PC5)
 #define DebugPinHigh() SetBit(&PORTC, PC5)
 
 int main()
 {
- 878:	cf 93       	push	r28
- 87a:	df 93       	push	r29
- 87c:	1f 92       	push	r1
- 87e:	cd b7       	in	r28, 0x3d	; 61
- 880:	de b7       	in	r29, 0x3e	; 62
- 882:	3b 9a       	sbi	0x07, 3	; 7
+ 7bc:	cf 93       	push	r28
+ 7be:	df 93       	push	r29
+ 7c0:	1f 92       	push	r1
+ 7c2:	cd b7       	in	r28, 0x3d	; 61
+ 7c4:	de b7       	in	r29, 0x3e	; 62
+ 7c6:	3b 9a       	sbi	0x07, 3	; 7
     /* =====[ Setup ]===== */
     /* SetupDebugLed(); */
     BiColorLedOn(status_led);
     SpiMasterInit();
- 884:	0e 94 ad 02 	call	0x55a	; 0x55a <SpiMasterInit>
+ 7c8:	0e 94 4d 02 	call	0x49a	; 0x49a <SpiMasterInit>
     UsbInit();
- 888:	0e 94 1b 02 	call	0x436	; 0x436 <UsbInit>
- 88c:	3d 9a       	sbi	0x07, 5	; 7
- 88e:	45 9a       	sbi	0x08, 5	; 8
+ 7cc:	0e 94 ea 01 	call	0x3d4	; 0x3d4 <UsbInit>
+ 7d0:	3d 9a       	sbi	0x07, 5	; 7
+ 7d2:	45 9a       	sbi	0x08, 5	; 8
     DebugPinInit();
     nbytes_in_frame = sizeof_full_frame;
- 890:	80 e2       	ldi	r24, 0x20	; 32
- 892:	96 e0       	ldi	r25, 0x06	; 6
- 894:	90 93 7a 07 	sts	0x077A, r25	; 0x80077a <nbytes_in_frame+0x1>
- 898:	80 93 79 07 	sts	0x0779, r24	; 0x800779 <nbytes_in_frame>
+ 7d4:	80 e2       	ldi	r24, 0x20	; 32
+ 7d6:	96 e0       	ldi	r25, 0x06	; 6
+ 7d8:	90 93 7a 07 	sts	0x077A, r25	; 0x80077a <nbytes_in_frame+0x1>
+ 7dc:	80 93 79 07 	sts	0x0779, r24	; 0x800779 <nbytes_in_frame>
 /* =====[ WIP ]===== */
 void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
 {
     bridge_cmd_key cmd;
     // Read USB buffer if there is any data to read.
     if (UsbReadOneByte(&cmd))
- 89c:	ce 01       	movw	r24, r28
- 89e:	01 96       	adiw	r24, 0x01	; 1
- 8a0:	0e 94 1d 02 	call	0x43a	; 0x43a <UsbReadOneByte>
- 8a4:	88 23       	and	r24, r24
- 8a6:	d1 f3       	breq	.-12     	; 0x89c <main+0x24>
+ 7e0:	ce 01       	movw	r24, r28
+ 7e2:	01 96       	adiw	r24, 0x01	; 1
+ 7e4:	0e 94 ec 01 	call	0x3d8	; 0x3d8 <UsbReadOneByte>
+ 7e8:	88 23       	and	r24, r24
+ 7ea:	d1 f3       	breq	.-12     	; 0x7e0 <main+0x24>
     {
         /* This first byte is *always* a command from the USB host. */
         BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
- 8a8:	89 81       	ldd	r24, Y+1	; 0x01
- 8aa:	0e 94 18 04 	call	0x830	; 0x830 <LookupBridgeCmd>
+ 7ec:	89 81       	ldd	r24, Y+1	; 0x01
+ 7ee:	0e 94 ba 03 	call	0x774	; 0x774 <LookupBridgeCmd>
         /* Tell UsbHost if the command is invalid. */
         if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
- 8ae:	00 97       	sbiw	r24, 0x00	; 0
- 8b0:	19 f0       	breq	.+6      	; 0x8b8 <main+0x40>
+ 7f2:	00 97       	sbiw	r24, 0x00	; 0
+ 7f4:	19 f0       	breq	.+6      	; 0x7fc <main+0x40>
         /* Do command if it is valid. */
         else CmdFn();
- 8b2:	fc 01       	movw	r30, r24
- 8b4:	09 95       	icall
- 8b6:	f2 cf       	rjmp	.-28     	; 0x89c <main+0x24>
+ 7f6:	fc 01       	movw	r30, r24
+ 7f8:	09 95       	icall
+ 7fa:	f2 cf       	rjmp	.-28     	; 0x7e0 <main+0x24>
     if (UsbReadOneByte(&cmd))
     {
         /* This first byte is *always* a command from the USB host. */
         BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
         /* Tell UsbHost if the command is invalid. */
         if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
- 8b8:	89 81       	ldd	r24, Y+1	; 0x01
- 8ba:	0e 94 26 04 	call	0x84c	; 0x84c <UsbWriteStatusInvalid>
- 8be:	ee cf       	rjmp	.-36     	; 0x89c <main+0x24>
+ 7fc:	89 81       	ldd	r24, Y+1	; 0x01
+ 7fe:	0e 94 c8 03 	call	0x790	; 0x790 <UsbWriteStatusInvalid>
+ 802:	ee cf       	rjmp	.-36     	; 0x7e0 <main+0x24>
 
-000008c0 <_exit>:
- 8c0:	f8 94       	cli
+00000804 <_exit>:
+ 804:	f8 94       	cli
 
-000008c2 <__stop_program>:
- 8c2:	ff cf       	rjmp	.-2      	; 0x8c2 <__stop_program>
+00000806 <__stop_program>:
+ 806:	ff cf       	rjmp	.-2      	; 0x806 <__stop_program>

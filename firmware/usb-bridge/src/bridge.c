@@ -221,8 +221,6 @@ void (*SendStatus)(status_byte) = SendStatus_Implementation;
 
 void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
-    // TODO: wait for a byte to read before attempting to read.
-
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];
@@ -233,7 +231,7 @@ void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 
     // Reply to USB Host with message status byte.
     uint8_t led_number = read_buffer[0];
-    if (led_number == led_0)
+    if (led_number != led_0)
     {
         SendStatus(error); // host is asking about nonexistent LED
         return;
@@ -249,7 +247,8 @@ void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
     // Read which LED to set (one byte of payload).
     uint8_t const num_bytes_payload = 2;
     uint8_t read_buffer[num_bytes_payload];
-    UsbReadN(read_buffer, num_bytes_payload);
+    /* UsbReadN(read_buffer, num_bytes_payload); */
+    UsbReadBytes(read_buffer, num_bytes_payload);
 
     // Reply to USB Host with message status byte.
     uint8_t led_number = read_buffer[0];

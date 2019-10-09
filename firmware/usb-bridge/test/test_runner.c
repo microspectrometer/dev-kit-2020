@@ -138,7 +138,7 @@ int main(void)
     /* SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:IGNORE: Move test
      * to lib `Sensor`. */
     /* ---ACTIVE--- */
-    API_GetBridgeLED (Nope);
+    API_GetBridgeLED (Yep);
     API_SetBridgeLed (Yep);
     /* API (Yep); */
     ApiSupport (Nope);
