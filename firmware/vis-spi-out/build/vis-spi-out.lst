@@ -3,31 +3,31 @@ build/vis-spi-out.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         0000006a  00800100  0000097e  00000a12  2**0
+  0 .data         0000006a  00800100  0000097a  00000a0e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         0000097e  00000000  00000000  00000094  2**1
+  1 .text         0000097a  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000622  0080016a  0080016a  00000a7c  2**0
+  2 .bss          00000622  0080016a  0080016a  00000a78  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000a7c  2**0
+  3 .comment      00000030  00000000  00000000  00000a78  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000aac  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000aa8  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000004c8  00000000  00000000  00000aec  2**0
+  5 .debug_aranges 000004e0  00000000  00000000  00000ae8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000095c0  00000000  00000000  00000fb4  2**0
+  6 .debug_info   000094ad  00000000  00000000  00000fc8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000017b9  00000000  00000000  0000a574  2**0
+  7 .debug_abbrev 0000186a  00000000  00000000  0000a475  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000032f0  00000000  00000000  0000bd2d  2**0
+  8 .debug_line   00003331  00000000  00000000  0000bcdf  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000d60  00000000  00000000  0000f020  2**2
+  9 .debug_frame  00000dd8  00000000  00000000  0000f010  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00001e62  00000000  00000000  0000fd80  2**0
+ 10 .debug_str    00001f4e  00000000  00000000  0000fde8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000062e6  00000000  00000000  00011be2  2**0
+ 11 .debug_loc    00006156  00000000  00000000  00011d36  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000007f8  00000000  00000000  00017ec8  2**0
+ 12 .debug_ranges 00000810  00000000  00000000  00017e8c  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -47,10 +47,10 @@ Disassembly of section .text:
   2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  38:	0c 94 a7 04 	jmp	0x94e	; 0x94e <__vector_14>
-  3c:	0c 94 b2 04 	jmp	0x964	; 0x964 <__vector_15>
+  38:	0c 94 a5 04 	jmp	0x94a	; 0x94a <__vector_14>
+  3c:	0c 94 b0 04 	jmp	0x960	; 0x960 <__vector_15>
   40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  44:	0c 94 80 04 	jmp	0x900	; 0x900 <__vector_17>
+  44:	0c 94 7e 04 	jmp	0x8fc	; 0x8fc <__vector_17>
   48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -72,7 +72,7 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	ee e7       	ldi	r30, 0x7E	; 126
+  7a:	ea e7       	ldi	r30, 0x7A	; 122
   7c:	f9 e0       	ldi	r31, 0x09	; 9
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
@@ -95,7 +95,7 @@ Disassembly of section .text:
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
   9a:	0e 94 62 04 	call	0x8c4	; 0x8c4 <main>
-  9e:	0c 94 bd 04 	jmp	0x97a	; 0x97a <_exit>
+  9e:	0c 94 bb 04 	jmp	0x976	; 0x976 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -1269,124 +1269,122 @@ void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd)
     uint8_t *pfour_bits = &four_bits;
     if (BitIsSet(pfour_bits, 0)) BiColorLedRed(status_led1);
     if (BitIsSet(pfour_bits, 1)) BiColorLedRed(status_led2);
-    if (BitIsSet(pfour_bits, 2)) BiColorLedRed(status_led3);
-    if (BitIsSet(pfour_bits, 3)) BiColorLedRed(status_led4);
+    /* if (BitIsSet(pfour_bits, 2)) BiColorLedRed(status_led3); */
+    /* if (BitIsSet(pfour_bits, 3)) BiColorLedRed(status_led4); */
 }
  8c4:	38 9a       	sbi	0x07, 0	; 7
  8c6:	39 9a       	sbi	0x07, 1	; 7
- 8c8:	3a 9a       	sbi	0x07, 2	; 7
- 8ca:	3b 9a       	sbi	0x07, 3	; 7
- 8cc:	0e 94 c3 00 	call	0x186	; 0x186 <SpiSlaveInit>
- 8d0:	0e 94 2a 01 	call	0x254	; 0x254 <UartSpiInit>
- 8d4:	0e 94 b8 02 	call	0x570	; 0x570 <LisInit>
- 8d8:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
- 8dc:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
- 8e0:	09 95       	icall
- 8e2:	88 23       	and	r24, r24
- 8e4:	c9 f3       	breq	.-14     	; 0x8d8 <main+0x14>
- 8e6:	ce b5       	in	r28, 0x2e	; 46
- 8e8:	8c 2f       	mov	r24, r28
- 8ea:	0e 94 3b 04 	call	0x876	; 0x876 <LookupSensorCmd>
- 8ee:	00 97       	sbiw	r24, 0x00	; 0
- 8f0:	19 f0       	breq	.+6      	; 0x8f8 <main+0x34>
- 8f2:	fc 01       	movw	r30, r24
- 8f4:	09 95       	icall
- 8f6:	f0 cf       	rjmp	.-32     	; 0x8d8 <main+0x14>
- 8f8:	8c 2f       	mov	r24, r28
- 8fa:	0e 94 49 04 	call	0x892	; 0x892 <SpiSlaveWrite_StatusInvalid>
- 8fe:	ec cf       	rjmp	.-40     	; 0x8d8 <main+0x14>
+ 8c8:	0e 94 c3 00 	call	0x186	; 0x186 <SpiSlaveInit>
+ 8cc:	0e 94 2a 01 	call	0x254	; 0x254 <UartSpiInit>
+ 8d0:	0e 94 b8 02 	call	0x570	; 0x570 <LisInit>
+ 8d4:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
+ 8d8:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
+ 8dc:	09 95       	icall
+ 8de:	88 23       	and	r24, r24
+ 8e0:	c9 f3       	breq	.-14     	; 0x8d4 <main+0x10>
+ 8e2:	ce b5       	in	r28, 0x2e	; 46
+ 8e4:	8c 2f       	mov	r24, r28
+ 8e6:	0e 94 3b 04 	call	0x876	; 0x876 <LookupSensorCmd>
+ 8ea:	00 97       	sbiw	r24, 0x00	; 0
+ 8ec:	19 f0       	breq	.+6      	; 0x8f4 <main+0x30>
+ 8ee:	fc 01       	movw	r30, r24
+ 8f0:	09 95       	icall
+ 8f2:	f0 cf       	rjmp	.-32     	; 0x8d4 <main+0x10>
+ 8f4:	8c 2f       	mov	r24, r28
+ 8f6:	0e 94 49 04 	call	0x892	; 0x892 <SpiSlaveWrite_StatusInvalid>
+ 8fa:	ec cf       	rjmp	.-40     	; 0x8d4 <main+0x10>
 
-00000900 <__vector_17>:
+000008fc <__vector_17>:
 void SPI_read_in_ISR_and_show_data_on_debug_leds(void);
 /* =====[ Move control over the SPI ISR into the test code ]===== */
 typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
 //
 ISR(SPI_STC_vect)
 {
- 900:	1f 92       	push	r1
+ 8fc:	1f 92       	push	r1
+ 8fe:	0f 92       	push	r0
+ 900:	0f b6       	in	r0, 0x3f	; 63
  902:	0f 92       	push	r0
- 904:	0f b6       	in	r0, 0x3f	; 63
- 906:	0f 92       	push	r0
- 908:	11 24       	eor	r1, r1
- 90a:	2f 93       	push	r18
- 90c:	3f 93       	push	r19
- 90e:	4f 93       	push	r20
- 910:	5f 93       	push	r21
- 912:	6f 93       	push	r22
- 914:	7f 93       	push	r23
- 916:	8f 93       	push	r24
- 918:	9f 93       	push	r25
- 91a:	af 93       	push	r26
- 91c:	bf 93       	push	r27
- 91e:	ef 93       	push	r30
- 920:	ff 93       	push	r31
+ 904:	11 24       	eor	r1, r1
+ 906:	2f 93       	push	r18
+ 908:	3f 93       	push	r19
+ 90a:	4f 93       	push	r20
+ 90c:	5f 93       	push	r21
+ 90e:	6f 93       	push	r22
+ 910:	7f 93       	push	r23
+ 912:	8f 93       	push	r24
+ 914:	9f 93       	push	r25
+ 916:	af 93       	push	r26
+ 918:	bf 93       	push	r27
+ 91a:	ef 93       	push	r30
+ 91c:	ff 93       	push	r31
     DoTaskForThisTest(); // fptr assigned in test code
- 922:	e0 91 6a 01 	lds	r30, 0x016A	; 0x80016a <__data_end>
- 926:	f0 91 6b 01 	lds	r31, 0x016B	; 0x80016b <__data_end+0x1>
- 92a:	09 95       	icall
+ 91e:	e0 91 6a 01 	lds	r30, 0x016A	; 0x80016a <__data_end>
+ 922:	f0 91 6b 01 	lds	r31, 0x016B	; 0x80016b <__data_end+0x1>
+ 926:	09 95       	icall
 }
- 92c:	ff 91       	pop	r31
- 92e:	ef 91       	pop	r30
- 930:	bf 91       	pop	r27
- 932:	af 91       	pop	r26
- 934:	9f 91       	pop	r25
- 936:	8f 91       	pop	r24
- 938:	7f 91       	pop	r23
- 93a:	6f 91       	pop	r22
- 93c:	5f 91       	pop	r21
- 93e:	4f 91       	pop	r20
- 940:	3f 91       	pop	r19
- 942:	2f 91       	pop	r18
+ 928:	ff 91       	pop	r31
+ 92a:	ef 91       	pop	r30
+ 92c:	bf 91       	pop	r27
+ 92e:	af 91       	pop	r26
+ 930:	9f 91       	pop	r25
+ 932:	8f 91       	pop	r24
+ 934:	7f 91       	pop	r23
+ 936:	6f 91       	pop	r22
+ 938:	5f 91       	pop	r21
+ 93a:	4f 91       	pop	r20
+ 93c:	3f 91       	pop	r19
+ 93e:	2f 91       	pop	r18
+ 940:	0f 90       	pop	r0
+ 942:	0f be       	out	0x3f, r0	; 63
  944:	0f 90       	pop	r0
- 946:	0f be       	out	0x3f, r0	; 63
- 948:	0f 90       	pop	r0
- 94a:	1f 90       	pop	r1
- 94c:	18 95       	reti
+ 946:	1f 90       	pop	r1
+ 948:	18 95       	reti
 
-0000094e <__vector_14>:
+0000094a <__vector_14>:
 ISR(TIMER0_COMPA_vect)
 {
- 94e:	1f 92       	push	r1
+ 94a:	1f 92       	push	r1
+ 94c:	0f 92       	push	r0
+ 94e:	0f b6       	in	r0, 0x3f	; 63
  950:	0f 92       	push	r0
- 952:	0f b6       	in	r0, 0x3f	; 63
- 954:	0f 92       	push	r0
- 956:	11 24       	eor	r1, r1
+ 952:	11 24       	eor	r1, r1
     // high-level delay:
     /* SetBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD |= 1<<PD6;    // set bit: Rst High
- 958:	5e 9a       	sbi	0x0b, 6	; 11
+ 954:	5e 9a       	sbi	0x0b, 6	; 11
     // delay is 1.8us-2us from redge to Rst High
 }
+ 956:	0f 90       	pop	r0
+ 958:	0f be       	out	0x3f, r0	; 63
  95a:	0f 90       	pop	r0
- 95c:	0f be       	out	0x3f, r0	; 63
- 95e:	0f 90       	pop	r0
- 960:	1f 90       	pop	r1
- 962:	18 95       	reti
+ 95c:	1f 90       	pop	r1
+ 95e:	18 95       	reti
 
-00000964 <__vector_15>:
+00000960 <__vector_15>:
 ISR(TIMER0_COMPB_vect)
 {
- 964:	1f 92       	push	r1
+ 960:	1f 92       	push	r1
+ 962:	0f 92       	push	r0
+ 964:	0f b6       	in	r0, 0x3f	; 63
  966:	0f 92       	push	r0
- 968:	0f b6       	in	r0, 0x3f	; 63
- 96a:	0f 92       	push	r0
- 96c:	11 24       	eor	r1, r1
+ 968:	11 24       	eor	r1, r1
     // high-level delay:
     /* ClearBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD &= ~(1<<PD6); // clear bit: Rst Low
- 96e:	5e 98       	cbi	0x0b, 6	; 11
+ 96a:	5e 98       	cbi	0x0b, 6	; 11
     // delay is 1.8us-2us from fedge to Rst low
 } 
+ 96c:	0f 90       	pop	r0
+ 96e:	0f be       	out	0x3f, r0	; 63
  970:	0f 90       	pop	r0
- 972:	0f be       	out	0x3f, r0	; 63
- 974:	0f 90       	pop	r0
- 976:	1f 90       	pop	r1
- 978:	18 95       	reti
+ 972:	1f 90       	pop	r1
+ 974:	18 95       	reti
 
-0000097a <_exit>:
- 97a:	f8 94       	cli
+00000976 <_exit>:
+ 976:	f8 94       	cli
 
-0000097c <__stop_program>:
- 97c:	ff cf       	rjmp	.-2      	; 0x97c <__stop_program>
+00000978 <__stop_program>:
+ 978:	ff cf       	rjmp	.-2      	; 0x978 <__stop_program>

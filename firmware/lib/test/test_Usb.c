@@ -646,3 +646,56 @@ void UsbReadOneByte_example_reading_several_bytes(void)
     UsbReadOneByte(&cfg.row_select);
     TEST_ASSERT_EQUAL_HEX8(all_rows, cfg.row_select);
 }
+
+/* =====[ Work started 2019-10-08 ]===== */
+void UsbReadBytes_reads_nbytes(void)
+{
+    /* =====[ Test case: UsbReadBytes reads 2 bytes ]===== */
+    uint16_t const nbytes = 2;
+    /* =====[ Operate ]===== */
+    uint8_t read_buffer[nbytes];
+    uint16_t num_bytes_read = UsbReadBytes(read_buffer, nbytes);
+    TEST_ASSERT_EQUAL_UINT16(nbytes, num_bytes_read);
+}
+static uint8_t FakeByteArray[1];
+uint8_t *FakeByteArray_ForFtReadData = FakeByteArray;
+static uint8_t FtReadData_FakeReturnValue(void)
+{
+    return *(FakeByteArray_ForFtReadData++);
+}
+// Define how to swap function definitions
+static uint8_t (*FtReadData_Saved)(void);
+// how to restore real function
+static void Restore_FtReadData(void) {FtReadData=FtReadData_Saved;}
+// how to swap real with stubbed
+static void Stub_FtReadData(void)
+{
+    FtReadData_Saved=FtReadData;
+    FtReadData=FtReadData_FakeReturnValue;
+}
+void SetUp_UsbReadBytes(void)
+{
+    /* SetUp_Mock(); */
+    Stub_FtReadData();
+}
+void TearDown_UsbReadBytes(void)
+{
+    /* TearDown_Mock(); */
+    Restore_FtReadData();
+}
+void UsbReadBytes_reads_expected_payload(void)
+{
+    /* Test case: UsbReadBytes reads SetBridgeLED payload {led_0,led_green} */
+    uint8_t const led_0 = 0x00; uint8_t const led_green = 0x01;
+    uint8_t payload[] = {led_0, led_green};
+    FakeByteArray_ForFtReadData = payload;
+    /* =====[ Operate ]===== */
+    uint16_t const nbytes = sizeof(payload);
+    /* printf("sizeof(payload): %d\n",nbytes); */
+    uint8_t read_buffer[nbytes];
+    UsbReadBytes(read_buffer, nbytes);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT8(led_0, read_buffer[0]);
+    TEST_ASSERT_EQUAL_UINT8(led_green, read_buffer[1]);
+}
+

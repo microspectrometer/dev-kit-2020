@@ -104,7 +104,7 @@ void AutoExpose(void);   // run auto-expose and send the final exposure time
 // ---END 2018-10-31 new stuff---
 
 // helpers for command parsing
-void IndicateUnknownCommand(void) { BiColorLedRed(status_led4); }
+/* void IndicateUnknownCommand(void) { BiColorLedRed(status_led4); } */
 
 void DoNothing(void){}
 
@@ -517,7 +517,7 @@ void slowestSetExposureTime(void)
     // Write the value to Lis_nticks_exposure
     Lis_nticks_exposure = byte_msb << 8;
     Lis_nticks_exposure |= byte_lsb;
-    BiColorLedToggleColor(status_led3);
+    /* BiColorLedToggleColor(status_led3); */
 }
 void slowSetExposureTime(void)
 {
@@ -530,7 +530,7 @@ void slowSetExposureTime(void)
     // Write the value to Lis_nticks_exposure
     Lis_nticks_exposure = byte_msb << 8;
     Lis_nticks_exposure |= byte_lsb;
-    BiColorLedToggleColor(status_led3);
+    /* BiColorLedToggleColor(status_led3); */
 }
 // [ ] TODO: refactor `SendExposureTime` to use `MSB` and `LSB` macros
 #define SendExposureTime() do { \
@@ -544,7 +544,7 @@ void slowSetExposureTime(void)
     uint8_t byte_lsb = *Spi_spdr; \
     Lis_nticks_exposure = byte_msb << 8; \
     Lis_nticks_exposure |= byte_lsb; \
-    BiColorLedToggleColor(status_led3); \
+    /* BiColorLedToggleColor(status_led3); */ \
     SendExposureTime(); \
 } while (0)
 #define  LisStartProgramMode() do { \
@@ -805,7 +805,7 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 // TODO: Replace this with lib/Lis.c LisWriteCfg(uint32_t cfg)
 void WriteCfgToLis(void)
 {
-    BiColorLedToggleColor(status_led3);
+    /* BiColorLedToggleColor(status_led3); */
     BiColorLedToggleColor(status_led2);
     LisStartProgramMode();
     // TODO: why is LisProgramSummingModeOff called here?
@@ -1035,8 +1035,8 @@ void SendDataMasterAskedFor(void)
     else if (cmd == slave_ignore) DoNothing();  // PASS 2018-08-03
     // `slave_ignore` is available through spi lib
     // for master to send when slave does read
-    else IndicateUnknownCommand();              // PASS 2018-08-03
-    BiColorLedRed(status_led4);
+    /* else IndicateUnknownCommand();              // PASS 2018-08-03 */
+    /* BiColorLedRed(status_led4); */
 }
 // ---BEGIN 2018-10-31 new stuff---
 /* =====[ AutoExpose ]===== */
@@ -1340,8 +1340,8 @@ void Show_data_on_debug_leds(uint8_t four_bits)
     uint8_t *pfour_bits = &four_bits;
     if (BitIsSet(pfour_bits, 0)) BiColorLedRed(status_led1);
     if (BitIsSet(pfour_bits, 1)) BiColorLedRed(status_led2);
-    if (BitIsSet(pfour_bits, 2)) BiColorLedRed(status_led3);
-    if (BitIsSet(pfour_bits, 3)) BiColorLedRed(status_led4);
+    /* if (BitIsSet(pfour_bits, 2)) BiColorLedRed(status_led3); */
+    /* if (BitIsSet(pfour_bits, 3)) BiColorLedRed(status_led4); */
 }
 
 /* =====[ SpiSlave ISR ]===== */
@@ -1565,7 +1565,7 @@ void test_Atmel_ice_quirk_requires_flipping_SW2_to_SPI(void)
     //
     // This test does not pass if the SPI master is enabled.
     /* SpiSlaveSignalDataIsReady_outputs_a_hard_low(); // FAIL 2018-08-03 */
-    BiColorLedRed(status_led4);
+    /* BiColorLedRed(status_led4); */
     while (1);
 }
 

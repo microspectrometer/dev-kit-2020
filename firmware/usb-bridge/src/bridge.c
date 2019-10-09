@@ -221,17 +221,19 @@ void (*SendStatus)(status_byte) = SendStatus_Implementation;
 
 void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
+    // TODO: wait for a byte to read before attempting to read.
+
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];
-    UsbReadN(read_buffer, num_bytes_payload);
-
+    /* UsbReadN(read_buffer, num_bytes_payload); */
+    UsbReadBytes(read_buffer, num_bytes_payload);
     // TODO: Add error checking for time out.
         // CASE: host does not send expected number of bytes.
 
     // Reply to USB Host with message status byte.
     uint8_t led_number = read_buffer[0];
-    if (led_number != led_0)
+    if (led_number == led_0)
     {
         SendStatus(error); // host is asking about nonexistent LED
         return;
@@ -282,15 +284,17 @@ bridge_cmd_key const GetBridgeLED_key = 0;
 bridge_cmd_key const SetBridgeLED_key = 1;
 bridge_cmd_key const GetSensorLED_key = 2;
 bridge_cmd_key const SetSensorLED_key = 3;
-BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key) {
+BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
+{
     /* pf is an array of pointers to BridgeCmd functions */
     /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
-    static BridgeCmd* const pf[] = {
+    static BridgeCmd* const pf[] =
+    {
         GetBridgeLED,   // 0
-        /* SetBridgeLED,   // 1 */
+        SetBridgeLED,   // 1
         /* GetSensorLED,   // 2 */
         /* SetSensorLED,   // 3 */
-        };
+    };
 
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];

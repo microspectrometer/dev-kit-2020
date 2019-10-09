@@ -103,6 +103,7 @@ bridge_cmd_key const SendSensorLed2Red_key;
 bridge_cmd_key const SendSensorLed2Green_key;
 /* =====[ API started 2019-10-02 ]===== */
 bridge_cmd_key const GetBridgeLED_key;
+bridge_cmd_key const SetBridgeLED_key;
 
 /* =====[ API: ]===== */
  /* LookUpCmd takes key from UsbHost and returns the function pointer to call. */

@@ -45,5 +45,8 @@ void UsbHasDataToRead_returns_false_if_the_rx_buffer_is_empty(void);
 void SetUp_UsbHasRoomToWrite(void); void TearDown_UsbHasRoomToWrite(void);
 void UsbHasRoomToWrite_returns_true_if_the_tx_buffer_is_not_full(void);
 void UsbHasRoomToWrite_returns_false_if_the_tx_buffer_is_full(void);
+void UsbReadBytes_reads_nbytes(void);
+void SetUp_UsbReadBytes(void); void TearDown_UsbReadBytes(void);
+void UsbReadBytes_reads_expected_payload(void);
 
 #endif // _TEST_USB_H

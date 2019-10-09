@@ -29,6 +29,17 @@ uint8_t UsbReadOneByte(uint8_t *read_buffer)
     FtDeactivateInterface();
     return num_bytes_read;
 }
+uint16_t UsbReadBytes(uint8_t *read_buffer, uint16_t nbytes)
+{
+    uint16_t num_bytes_read = 0;
+    while (num_bytes_read < nbytes)
+    {
+        while (!FtRead(read_buffer)); // Wait for a byte to read.
+        num_bytes_read++;
+        read_buffer++; // Point to next mem slot in read buffer.
+    }
+    return num_bytes_read;
+}
 // TODO: unit test UsbReadN
 static uint16_t UsbReadN_Implementation(uint8_t *read_buffer, uint16_t nbytes)
 {

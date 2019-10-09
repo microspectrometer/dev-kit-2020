@@ -107,6 +107,17 @@ void DevelopingFt1248_highlevel(bool run_test) { if (run_test) {
     setUp = SetUp_DetailsOf_FtWrite; tearDown = TearDown_DetailsOf_FtWrite;
     RUN_TEST(FtWrite_implements_the_happy_path_like_this);
 }}
+void test_UsbReadBytes(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(UsbReadBytes_reads_nbytes);
+        setUp = SetUp_UsbReadBytes; tearDown = TearDown_UsbReadBytes;
+        RUN_TEST(UsbReadBytes_reads_expected_payload);
+    }
+}
+
 void DevelopingUsb(bool run_test) {if (run_test) {
     setUp = SetUp_UsbHasDataToRead; tearDown = TearDown_UsbHasDataToRead;
     RUN_TEST(UsbHasDataToRead_returns_true_if_the_rx_buffer_has_data);
@@ -285,7 +296,7 @@ int main()
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     /* RUN_TEST(BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect); */
     DevelopingReadWriteBits   (Nope);
-    DevelopingBiColorLed      (Yep);
+    DevelopingBiColorLed      (Nope);
     DevelopingFt1248_lowlevel (Nope);
     DevelopingFt1248_highlevel(Nope);
     DevelopingUsb             (Nope);
@@ -298,5 +309,6 @@ int main()
     DevelopingUsbReadOneByte  (Nope);
     DevelopingLisWriteCfg     (Nope);
     DevelopingSpiSlave        (Nope);
+    test_UsbReadBytes         (Yep);
     return UNITY_END();
 }

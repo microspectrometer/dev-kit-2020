@@ -21,4 +21,8 @@ extern uint16_t (*UsbReadN)(uint8_t *read_buffer, uint16_t nbytes);
 /* uint16_t UsbWrite(uint8_t const *write_buffer, uint16_t nbytes); */
 extern uint16_t (*UsbWrite)(uint8_t const *write_buffer, uint16_t nbytes);
 
+// TODO: work on this to replace UsbReadN. UsbReadN does not wait for bytes
+// ready.
+uint16_t UsbReadBytes(uint8_t *read_buffer, uint16_t nbytes);
+
 #endif // _USB_H
