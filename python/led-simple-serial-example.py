@@ -23,8 +23,8 @@ import commands
 import logging
 
 # Turn commands into byte arrays ready to write over serial.
-led1_red   = commands.send_led1_red_key.to_bytes(1,byteorder='big')
-led1_green = commands.send_led1_green_key.to_bytes(1,byteorder='big')
+# led1_red   = commands.send_led1_red_key.to_bytes(1,byteorder='big')
+# led1_green = commands.send_led1_green_key.to_bytes(1,byteorder='big')
 
 def _print_and_log(msg):
     """Print the message to stdout and log the message to file."""
@@ -115,7 +115,26 @@ if __name__ == '__main__':
     with usb.open_spectrometer(sernum) as kit:
         # `kit` is an instance of `pyserial` class serial.Serial()
         _print_and_log(f"Opened CHROMATION{sernum} on {usb.dev_name(sernum)}")
-        cmd = led1_red
+        # cmd = led1_red
+        # kit.write(cmd)
+        cmd = commands.GetBridgeLED.to_bytes(1,byteorder='big')
         kit.write(cmd)
-        _print_and_log_serial(cmd)
+        _print_and_log(f"Tx.. send 0x{cmd.hex()}")
+        cmd = commands.led_0.to_bytes(1,byteorder='big')
+        kit.write(cmd)
+        _print_and_log(f"Tx.. send 0x{cmd.hex()}")
+        # _print_and_log_serial(cmd)
+        while (kit.inWaiting() < 2): pass
+        rx_msg_status = int.from_bytes(
+            kit.read(1),
+            byteorder='big', signed=False
+            )
+        rx_led_status = int.from_bytes(
+            kit.read(1),
+            byteorder='big', signed=False
+            )
+        _print_and_log(f"Rx.. BRIDGE: "
+            f"msg_status 0x{rx_msg_status:02X}, "
+            f"led_status 0x{rx_led_status:02X}"
+            )
     _print_and_log(f"Closed CHROMATION{sernum}")

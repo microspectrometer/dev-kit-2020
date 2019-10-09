@@ -210,31 +210,36 @@ spectrometer configuration and integration time. This whole process is
 very fast.
 """
 
+led_0 = 0
 # =====[ Dictionary of Bridge Command Keys ]=====
 # For the USB Host both to *send* to the bridge and to *parse* its reports.
-led_red_key = 0
-led_green_key = 1
-cfg_spectrometer_key = 2
-send_led1_red_key = 3
-send_led1_green_key = 4
-send_led2_red_key = 5
-send_led2_green_key = 6
-send_led3_red_key = 7
-send_led3_green_key = 8
-send_led4_red_key = 9
-send_led4_green_key = 10
+GetBridgeLED = 0
+SetBridgeLED = 1
+# led_red_key = 0
+# led_green_key = 1
+# cfg_spectrometer_key = 2
+# send_led1_red_key = 3
+# send_led1_green_key = 4
+# send_led2_red_key = 5
+# send_led2_green_key = 6
+# send_led3_red_key = 7
+# send_led3_green_key = 8
+# send_led4_red_key = 9
+# send_led4_green_key = 10
 bridge = {}
-bridge[led_green_key] = 'led_green'
-bridge[led_red_key] = 'led_red'
-bridge[cfg_spectrometer_key] = 'cfg_spectrometer'
-bridge[send_led1_green_key] = 'send_led1_green'
-bridge[send_led1_red_key] = 'send_led1_red'
-bridge[send_led2_green_key] = 'send_led2_green'
-bridge[send_led2_red_key] = 'send_led2_red'
-bridge[send_led3_green_key] = 'send_led3_green'
-bridge[send_led3_red_key] = 'send_led3_red'
-bridge[send_led4_green_key] = 'send_led4_green'
-bridge[send_led4_red_key] = 'send_led4_red'
+bridge[GetBridgeLED] = 'GetBridgeLed'
+bridge[SetBridgeLED] = 'SetBridgeLed'
+# bridge[led_green_key] = 'led_green'
+# bridge[led_red_key] = 'led_red'
+# bridge[cfg_spectrometer_key] = 'cfg_spectrometer'
+# bridge[send_led1_green_key] = 'send_led1_green'
+# bridge[send_led1_red_key] = 'send_led1_red'
+# bridge[send_led2_green_key] = 'send_led2_green'
+# bridge[send_led2_red_key] = 'send_led2_red'
+# bridge[send_led3_green_key] = 'send_led3_green'
+# bridge[send_led3_red_key] = 'send_led3_red'
+# bridge[send_led4_green_key] = 'send_led4_green'
+# bridge[send_led4_red_key] = 'send_led4_red'
 
 # =====[ Dictionary of Sensor Command Keys ]=====
 # Only for USB Host to parse the sensor status report.
