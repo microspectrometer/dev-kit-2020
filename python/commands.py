@@ -211,7 +211,11 @@ very fast.
 """
 
 led_0 = 0
-# =====[ Dictionary of Bridge Command Keys ]=====
+led_1 = 1
+led_2 = 2
+led_off = 0
+led_green = 1
+led_red = 2
 # For the USB Host both to *send* to the bridge and to *parse* its reports.
 GetBridgeLED = 0
 SetBridgeLED = 1

@@ -114,27 +114,54 @@ if __name__ == '__main__':
     # USB open/close is handled by `pyserial` context manager in serialutil.py
     with usb.open_spectrometer(sernum) as kit:
         # `kit` is an instance of `pyserial` class serial.Serial()
+        # `kit.write` is defined in site-packages/serial/serialwin32.py:301
         _print_and_log(f"Opened CHROMATION{sernum} on {usb.dev_name(sernum)}")
-        # cmd = led1_red
-        # kit.write(cmd)
-        cmd = commands.GetBridgeLED.to_bytes(1,byteorder='big')
-        kit.write(cmd)
+        # TODO: setup kit.write to take GetBridgeLED with its argument
+        # TODO: add cmd pre-formatted as bytes to package `commands`
+        # =====[ SetBridgeLED ]=====
+        cmd = commands.SetBridgeLED.to_bytes(1,byteorder='big')
         _print_and_log(f"Tx.. send 0x{cmd.hex()}")
+        kit.write(cmd)
         cmd = commands.led_0.to_bytes(1,byteorder='big')
-        kit.write(cmd)
         _print_and_log(f"Tx.. send 0x{cmd.hex()}")
-        # _print_and_log_serial(cmd)
-        while (kit.inWaiting() < 2): pass
+        kit.write(cmd)
+        cmd = commands.led_green.to_bytes(1,byteorder='big')
+        _print_and_log(f"Tx.. send 0x{cmd.hex()}")
+        kit.write(cmd)
+        while (kit.inWaiting() < 1): pass
         rx_msg_status = int.from_bytes(
             kit.read(1),
             byteorder='big', signed=False
             )
-        rx_led_status = int.from_bytes(
+        _print_and_log(f"Rx.. BRIDGE: "
+            f"msg_status 0x{rx_msg_status:02X}"
+            )
+        # =====[ GetBridgeLED ]=====
+        cmd = commands.GetBridgeLED.to_bytes(1,byteorder='big')
+        kit.write(cmd)
+        # TODO: add cmd pre-formatted as printable hex to package `commands`
+        _print_and_log(f"Tx.. send 0x{cmd.hex()}")
+        cmd = commands.led_0.to_bytes(1,byteorder='big')
+        # cmd = commands.led_2.to_bytes(1,byteorder='big')
+        kit.write(cmd)
+        _print_and_log(f"Tx.. send 0x{cmd.hex()}")
+        # TODO: read first byte, if it is not error, read second byte
+        # TODO: read first byte, decide what to do if it is an error
+        while (kit.inWaiting() < 1): pass
+        rx_msg_status = int.from_bytes(
             kit.read(1),
             byteorder='big', signed=False
             )
         _print_and_log(f"Rx.. BRIDGE: "
-            f"msg_status 0x{rx_msg_status:02X}, "
-            f"led_status 0x{rx_led_status:02X}"
+            f"msg_status 0x{rx_msg_status:02X}"
             )
+        if rx_msg_status == 0x00:
+            while (kit.inWaiting() < 1): pass
+            rx_led_status = int.from_bytes(
+                kit.read(1),
+                byteorder='big', signed=False
+                )
+            _print_and_log(f"Rx.. BRIDGE: "
+                f"led_status 0x{rx_led_status:02X}"
+                )
     _print_and_log(f"Closed CHROMATION{sernum}")
