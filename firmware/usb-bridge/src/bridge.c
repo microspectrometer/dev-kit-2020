@@ -311,6 +311,17 @@ uint16_t (*ReadSensor)(uint8_t *, uint16_t) = ReadSensor_Implementation;
 
 void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
+    /** GetBridgeLED behavior:\n
+     * - reads one byte of payload.\n 
+     * - replies msg status error if host queries nonexistent led.\n 
+     * - replies with one byte if led number is not recognized.\n 
+     * - replies msg status ok if host queries status led.\n 
+     * - replies with two bytes if led number is recognized.\n 
+     * - replies with msg status byte and led status byte.\n 
+     * - replies led off if status led is off.\n 
+     * - replies led green if status led is green.\n 
+     * - replies led red if status led is red.\n 
+     * */
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];
@@ -333,6 +344,15 @@ void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 }
 void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
+    /** SetBridgeLED behavior:\n
+     * - reads two bytes of payload.\n 
+     * - replies with one byte.\n 
+     * - replies msg status ok if led number is status led.\n 
+     * - replies msg status error if led number is not recognized.\n 
+     * - turns off led if payload is led off.\n 
+     * - turns led on and green if payload is led green.\n 
+     * - turns led on and red if payload is led red.\n 
+     * */
     // Read which LED to set (one byte of payload).
     uint8_t const num_bytes_payload = 2;
     uint8_t read_buffer[num_bytes_payload];
@@ -368,6 +388,11 @@ void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
 }
 void GetSensorLED(void) // Sensor has `led_0` and `led_1`.
 {
+    /** GetSensorLED behavior:\n
+     * - reads one byte of payload.\n 
+     * - passes cmd and led number to Sensor.\n 
+     * - reads msg status and led status from Sensor.\n 
+     * */
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];

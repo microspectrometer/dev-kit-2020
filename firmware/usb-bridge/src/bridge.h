@@ -1,3 +1,4 @@
+/** \file */
 #ifndef _BRIDGE_H
 #define _BRIDGE_H
 
@@ -92,9 +93,14 @@ extern uint16_t (*ReadSensor)(uint8_t *read_buffer, uint16_t nbytes);
 
 
 /* =====[ API started 2019-10-02 ]===== */
-BridgeCmd GetBridgeLED;
-BridgeCmd SetBridgeLED;
-BridgeCmd GetSensorLED;
+/* Do not use the `BridgeCmd` typedef */
+/* Doxygen does not see functions defined with a typedef. */
+/* BridgeCmd GetBridgeLED; */
+/* BridgeCmd SetBridgeLED; */
+/* BridgeCmd GetSensorLED; */
+void GetBridgeLED(void);
+void SetBridgeLED(void);
+void GetSensorLED(void);
 
 /* This is the datatype to use when calling LookupBridgeCmd: */
 typedef uint8_t bridge_cmd_key;  // jump-table dictionary uses 8-bit keys
