@@ -25,6 +25,10 @@ void CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row5(void);
 void CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds(void);
 void BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect(void);
 
+void SetUp_Stub_UsbReadN_with_value_in_read_buffer(void);
+void TearDown_Stub_UsbReadN_with_value_in_read_buffer(void);
+void Stub_UsbReadN_with_value_in_read_buffer(void);
+
 /* =====[ API - started 2019-10-03 ]===== */
 void SetUp_GetBridgeLED(void); void TearDown_GetBridgeLED(void);
 void GetBridgeLED_reads_one_byte_of_payload(void);
@@ -37,17 +41,6 @@ void GetBridgeLED_replies_led_off_if_status_led_is_off(void);
 void GetBridgeLED_replies_led_green_if_status_led_is_green(void);
 void GetBridgeLED_replies_led_red_if_status_led_is_red(void);
 void SetUp_SetBridgeLED(void); void TearDown_SetBridgeLED(void);
-/* =====[ ApiSupport - started 2019-10-04 ]===== */
-void SetUp_SendStatus_writes_one_byte_over_USB(void);
-void TearDown_SendStatus_writes_one_byte_over_USB(void);
-void SendStatus_writes_one_byte_over_USB(void);
-
-void SetUp_Stub_UsbReadN_with_value_in_read_buffer(void);
-void TearDown_Stub_UsbReadN_with_value_in_read_buffer(void);
-void Stub_UsbReadN_with_value_in_read_buffer(void);
-/* =====[ BridgeJumpTable - started 2019-10-02]===== */
-void LookupBridgeCmd_takes_key_and_returns_fn_ptr(void);
-void LookupBridgeCmd_returns_NULL_if_key_is_not_found(void);
 void SetBridgeLED_reads_two_bytes_of_payload(void);
 void SetBridgeLED_replies_with_one_byte(void);
 void SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led(void);
@@ -55,5 +48,18 @@ void SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized(void)
 void SetBridgeLED_turns_off_led_if_payload_is_led_off(void);
 void SetBridgeLED_turns_led_on_and_green_if_payload_is_led_green(void);
 void SetBridgeLED_turns_led_on_and_red_if_payload_is_led_red(void);
+void SetUp_GetSensorLED(void); void TearDown_GetSensorLED(void);
+
+/* =====[ ApiSupport - started 2019-10-04 ]===== */
+void SetUp_SendStatus_writes_one_byte_over_USB(void);
+void TearDown_SendStatus_writes_one_byte_over_USB(void);
+void SendStatus_writes_one_byte_over_USB(void);
+
+/* =====[ BridgeJumpTable - started 2019-10-02]===== */
+void LookupBridgeCmd_takes_key_and_returns_fn_ptr(void);
+void LookupBridgeCmd_returns_NULL_if_key_is_not_found(void);
+void GetSensorLED_reads_one_byte_of_payload(void);
+void GetSensorLED_passes_cmd_and_led_number_to_Sensor(void);
+void GetSensorLED_reads_msg_status_and_led_status_from_Sensor(void);
 
 #endif // _TEST_BRIDGE_H

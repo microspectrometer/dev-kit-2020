@@ -79,16 +79,22 @@ BridgeCmd SendSensorLed2Green;
 typedef uint8_t const status_byte;  // TODO: move this to a shared lib
 status_byte ok;
 status_byte error;
-status_byte led_off; 
-status_byte led_green; 
-status_byte led_red; 
+status_byte led_off;
+status_byte led_green;
+status_byte led_red;
 typedef uint8_t const led_name;  // TODO: move this to a shared lib
 led_name led_0;
+led_name led_1;
 
 extern void (*SendStatus)(status_byte);
+extern uint16_t (*WriteSensor)(uint8_t const *write_buffer, uint16_t nbytes);
+extern uint16_t (*ReadSensor)(uint8_t *read_buffer, uint16_t nbytes);
+
+
 /* =====[ API started 2019-10-02 ]===== */
 BridgeCmd GetBridgeLED;
 BridgeCmd SetBridgeLED;
+BridgeCmd GetSensorLED;
 
 /* This is the datatype to use when calling LookupBridgeCmd: */
 typedef uint8_t bridge_cmd_key;  // jump-table dictionary uses 8-bit keys

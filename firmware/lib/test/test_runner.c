@@ -111,9 +111,8 @@ void test_UsbReadBytes(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(UsbReadBytes_reads_nbytes);
         setUp = SetUp_UsbReadBytes; tearDown = TearDown_UsbReadBytes;
+        RUN_TEST(UsbReadBytes_reads_nbytes);
         RUN_TEST(UsbReadBytes_reads_expected_payload);
     }
 }

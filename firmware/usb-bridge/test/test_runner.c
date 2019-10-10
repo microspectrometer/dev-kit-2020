@@ -39,7 +39,7 @@ void API_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
     RUN_TEST(GetBridgeLED_replies_led_red_if_status_led_is_red);
     }
 }
-void API_SetBridgeLed(bool run_test) // [x] unit test SetBridgeLED
+void API_SetBridgeLED(bool run_test) // [x] unit test SetBridgeLED
 {if (run_test)
     {
     setUp = SetUp_SetBridgeLED; tearDown = TearDown_SetBridgeLED;
@@ -50,6 +50,11 @@ void API_SetBridgeLed(bool run_test) // [x] unit test SetBridgeLED
     RUN_TEST(SetBridgeLED_turns_off_led_if_payload_is_led_off);
     RUN_TEST(SetBridgeLED_turns_led_on_and_green_if_payload_is_led_green);
     RUN_TEST(SetBridgeLED_turns_led_on_and_red_if_payload_is_led_red);
+    }
+}
+void API_GetSensorLED(bool run_test) // [ ] unit test GetSensorLED
+{if (run_test)
+    {
     }
 }
 void ApiSupport(bool run_test)
@@ -138,11 +143,15 @@ int main(void)
     /* SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:IGNORE: Move test
      * to lib `Sensor`. */
     /* ---ACTIVE--- */
-    API_GetBridgeLED (Yep);
-    API_SetBridgeLed (Yep);
+    API_GetBridgeLED (Nope);
+    API_SetBridgeLED (Nope);
+    API_GetSensorLED (Yep);
     /* API (Yep); */
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
-
+    setUp = SetUp_GetSensorLED; tearDown = TearDown_GetSensorLED;
+    RUN_TEST(GetSensorLED_reads_one_byte_of_payload);
+    RUN_TEST(GetSensorLED_passes_cmd_and_led_number_to_Sensor);
+    RUN_TEST(GetSensorLED_reads_msg_status_and_led_status_from_Sensor);
     return UNITY_END();
 }

@@ -178,7 +178,7 @@ uint8_t * FakeByteArray_ForUsbReadBytes;
 static uint16_t UsbReadBytes_Stubbed(uint8_t *read_buffer, uint16_t nbytes)
 {
     // Fake reading an array of bytes into the read_buffer.
-    // The test is responsible to populate FakeByteArray_ForUsbReadN.
+    // The test is responsible to populate FakeByteArray_ForUsbReadBytes.
     uint16_t byte_counter = 0;
     while ( byte_counter++ < nbytes )
     {
@@ -218,7 +218,8 @@ static RecordedCall * Record_SendStatus(uint8_t arg1)
 // Define behavior of stubbed SendStatus().
 /* static void SendStatus_Stubbed(status_byte status) { (void)status;} */
 // Define behavior of mocked SendStatus().
-static void SendStatus_Mocked(status_byte status) {
+static void SendStatus_Mocked(status_byte status)
+{
     RecordActualCall(mock, Record_SendStatus(status));
 }
 // Define how unit test sets an expectation for SendStatus.
@@ -232,20 +233,22 @@ static void Restore_SendStatus(void) { SendStatus=SendStatus_Saved; }
 // how to swap real definition with stubbed version
 /* static void Stub_SendStatus(void) { SendStatus_Saved=SendStatus; SendStatus=SendStatus_Stubbed;} */
 // how to swap real definition with mocked version
-static void Mock_SendStatus(void) { SendStatus_Saved=SendStatus; SendStatus=SendStatus_Mocked;}
+static void Mock_SendStatus(void)
+{
+    SendStatus_Saved = SendStatus;
+    SendStatus = SendStatus_Mocked;
+}
 
 
 void SetUp_GetBridgeLED(void)
 {
     SetUp_Mock();
-    /* Mock_UsbReadN(); */
     Mock_UsbReadBytes();
     Mock_SendStatus();
 }
 void TearDown_GetBridgeLED(void)
 {
     TearDown_Mock();
-    /* Restore_UsbReadN(); */
     Restore_UsbReadBytes();
     Restore_SendStatus();
 }
@@ -256,13 +259,12 @@ void GetBridgeLED_reads_one_byte_of_payload(void)
     FakeByteArray_ForUsbReadBytes = payload;
     /* =====[ Operate ]===== */
     GetBridgeLED();
-    /* =====[ Test: assert UsbReadN called to read 1 byte ]===== */
+    /* =====[ Test: assert UsbReadBytes called to read 1 byte ]===== */
     /* PrintAllCalls(mock); // view entire call history */
-    // call sig of mocked call: uint16_t UsbReadN(uint8_t *read_buffer, uint16_t nbytes)
     uint8_t call_n = 1; uint16_t arg_n = 2; uint16_t nbytes = 1;
-    // test call 1 is UsbReadN
+    // test call 1 is UsbReadBytes
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadBytes"));
-    // test UsbReadN is called with nbytes=1
+    // test UsbReadBytes is called with nbytes=1
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &nbytes));
 }
 void GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led(void)
@@ -441,7 +443,6 @@ void SetBridgeLED_replies_with_one_byte(void)
     /* Inject two bytes of payload for fake UsbReadBytes. */
     uint8_t payload[] = {led_0, led_off};
     FakeByteArray_ForUsbReadBytes = payload;
-
     /* =====[ Operate ]===== */
     SetBridgeLED();
     /* =====[ Test: assert only two calls are made ]===== */
@@ -551,6 +552,201 @@ void SetBridgeLED_turns_led_on_and_red_if_payload_is_led_red(void)
         BiColorLedIsRed(status_led),
         "Expect SetBridgeLED turns status_led red."
         )
+}
+/* =====[ Mock WriteSensor() for unit-testing GetSensorLED() ]===== */
+// Define call recorded when func-under-test calls mocked function.
+static RecordedCall * Record_WriteSensor(uint8_t const *arg1, uint16_t arg2)
+{
+    char const *call_name = "WriteSensor";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t const **)record_of_arg1->pArg) = arg1;
+    RecordedArg *record_of_arg2 = RecordedArg_new(SetupRecord_uint16_t);
+    *((uint16_t *)record_of_arg2->pArg) = arg2;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    RecordArg(record_of_this_call, record_of_arg2);
+    return record_of_this_call;
+}
+// Define behavior of mocked function: WriteSensor().
+// Global for test to spy on array input arg to WriteSensor.
+#define max_sizeof_write_buffer 10
+uint8_t SpyOn_WriteSensor_arg1[max_sizeof_write_buffer];
+static uint16_t WriteSensor_Mocked(uint8_t const *write_buffer, uint16_t nbytes)
+{
+    RecordActualCall(mock, Record_WriteSensor(write_buffer, nbytes));
+    /* Spy on values passed to write_buffer by storing them in a global */
+    uint8_t *spy_writer = SpyOn_WriteSensor_arg1;
+    uint16_t num_bytes_sent = 0;
+    while(num_bytes_sent < nbytes)
+    {
+        *(spy_writer++) = *(write_buffer++);
+        num_bytes_sent++;
+    }
+    return num_bytes_sent;
+}
+
+// Define how to swap function definitions
+static uint16_t (*WriteSensor_Saved)(uint8_t const *, uint16_t);
+// how to restore real definition
+static void Restore_WriteSensor(void) { WriteSensor = WriteSensor_Saved; }
+// how to swap real definition with mocked version
+static void Mock_WriteSensor(void)
+{
+    WriteSensor_Saved = WriteSensor;
+    WriteSensor = WriteSensor_Mocked;
+}
+/* =====[ Mock ReadSensor() for unit-testing GetSensorLED() ]===== */
+// Define call recorded when func-under-test calls mocked function.
+static RecordedCall * Record_ReadSensor(uint8_t *arg1, uint16_t arg2)
+{
+    char const *call_name = "ReadSensor";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t **)record_of_arg1->pArg) = arg1;
+    RecordedArg *record_of_arg2 = RecordedArg_new(SetupRecord_uint16_t);
+    *((uint16_t *)record_of_arg2->pArg) = arg2;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    RecordArg(record_of_this_call, record_of_arg2);
+    return record_of_this_call;
+}
+// Define behavior of mocked function: ReadSensor().
+uint8_t *FakeByteArray_ForReadSensor;
+static uint16_t ReadSensor_Mocked(uint8_t *read_buffer, uint16_t nbytes)
+{
+    RecordActualCall(mock, Record_ReadSensor(read_buffer, nbytes));
+    // Fake reading an array of bytes into the read_buffer.
+    // The test is responsible to populate FakeByteArray_ForReadSensor.
+    uint16_t num_bytes_read = 0;
+    while ( num_bytes_read++ < nbytes )
+    {
+        *(read_buffer++)  = *(FakeByteArray_ForReadSensor++);
+    }
+    return nbytes;
+}
+// Define how to swap function definitions
+static uint16_t (*ReadSensor_Saved)(uint8_t *, uint16_t);
+// how to restore real definition
+static void Restore_ReadSensor(void) { ReadSensor = ReadSensor_Saved; }
+// how to swap real definition with mocked version
+static void Mock_ReadSensor(void)
+{
+    ReadSensor_Saved = ReadSensor;
+    ReadSensor = ReadSensor_Mocked;
+}
+
+
+void SetUp_GetSensorLED(void)
+{
+    SetUp_Mock();
+    Mock_UsbReadBytes();
+    Mock_SendStatus();
+    Mock_WriteSensor();
+    Mock_ReadSensor();
+}
+void TearDown_GetSensorLED(void)
+{
+    TearDown_Mock();
+    Restore_UsbReadBytes();
+    Restore_SendStatus();
+    Restore_WriteSensor();
+    Restore_ReadSensor();
+}
+void GetSensorLED_reads_one_byte_of_payload(void)
+{
+    /* Inject one byte of payload for fake UsbReadBytes. */
+    uint8_t payload[] = {led_0};
+    FakeByteArray_ForUsbReadBytes = payload;
+    /* Inject Sensor responses. */
+    uint8_t sensor_responses[] = {error, led_red};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    GetSensorLED();
+    /* =====[ Test: assert UsbReadBytes called to read 1 byte ]===== */
+    /* PrintAllCalls(mock); // view entire call history */
+    uint8_t call_n = 1; uint16_t arg_n = 2; uint16_t nbytes = 1;
+    // test call 1 is UsbReadBytes
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadBytes"));
+    // test UsbReadBytes is called with nbytes=1
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &nbytes));
+}
+void GetSensorLED_passes_cmd_and_led_number_to_Sensor(void)
+{
+    /* GetSensorLED calls WriteSensor to pass information to the Sensor. */
+    /* The first argument is an array of bytes to send. */
+    /* This test spies on the array via `SpyOn_WriteSensor_arg1`. */
+    /* `cmd` is first byte in array. */
+    /*     This byte is hardcoded in GetSensorLed as `GetSensorLED_key`. */
+    /* `led_number` is second byte in array. */
+    /*     The LED number is injected by this test. */
+    /* Inject led_number as one byte of payload for fake UsbReadBytes. */
+    uint8_t led_number = led_0;
+    uint8_t payload[] = {led_number};
+    FakeByteArray_ForUsbReadBytes = payload;
+    /* Inject Sensor responses. */
+    uint8_t sensor_responses[] = {error, led_red};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    GetSensorLED();
+    /* =====[ Test ]===== */
+    uint8_t call_n; uint16_t arg_n;
+    call_n = 2;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSensor"),
+        "Expect call number 2 is WriteSensor."
+        );
+    arg_n = 2; uint16_t nbytes = 2;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &nbytes),
+        "Expect WriteSensor writes two bytes."
+        );
+    /* WriteSensor_Mocked spies on values in input arg `write_buffer` */
+    uint8_t GetSensorLED_key = 2; // expected value of byte 0
+    printf("WriteSensor called with write_buffer[0] == %d\n", SpyOn_WriteSensor_arg1[0]);
+    printf("WriteSensor called with write_buffer[1] == %d\n", SpyOn_WriteSensor_arg1[1]);
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(
+        GetSensorLED_key, SpyOn_WriteSensor_arg1[0],
+        "Expect `msg_to_sensor[0]` == 2 (GetSensorLED_key)."
+        );
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(
+        led_number, SpyOn_WriteSensor_arg1[1],
+        "Expect `msg_to_sensor[1]` == 0 (led_0)."
+        );
+}
+void GetSensorLED_reads_msg_status_and_led_status_from_Sensor(void)
+{
+    /* Inject led_number as one byte of payload for fake UsbReadBytes. */
+    uint8_t led_number = led_0;
+    uint8_t payload[] = {led_number};
+    FakeByteArray_ForUsbReadBytes = payload;
+    /* Inject Sensor responses. */
+    uint8_t sensor_responses[] = {error, led_red};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    GetSensorLED();
+    /* =====[ Test ]===== */
+    uint8_t call_n; uint8_t arg_n;
+    call_n = 5;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "SendStatus"),
+        "Expect call 5 is SendStatus."
+        );
+    arg_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &sensor_responses[0]),
+        "Expect Sensor msg status is sensor_responses[0] (error)."
+        );
+    call_n++;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "SendStatus"),
+        "Expect call 6 is SendStatus."
+        );
+    arg_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &sensor_responses[1]),
+        "Expect Sensor msg status is sensor_responses[1] (led_red)."
+        );
 }
 
 void SetUp_SendStatus_writes_one_byte_over_USB(void)

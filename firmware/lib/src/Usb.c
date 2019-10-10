@@ -18,10 +18,10 @@ uint8_t UsbReadOneByte(uint8_t *read_buffer)
     bool has_data_to_read = FtBusTurnaround();
     if (!has_data_to_read)
     {
-        // sad path
-        // No, not an error. Not a sad path.
-        // Use this in place of checking if Ft_Miso is low in app.
-        /* BiColorLedRed(status_led); */
+        // This path lets `UsbReadOneByte` work as a looping check to
+        // see when a first byte is ready.
+        // This is preferable to using a low-level Ft1248 call to
+        // check Ft_Miso LOW in the application.
         FtDeactivateInterface();
         return num_bytes_read;
     }
@@ -34,9 +34,9 @@ static uint16_t UsbReadBytes_Implementation(uint8_t *read_buffer, uint16_t nbyte
     uint16_t num_bytes_read = 0;
     while (num_bytes_read < nbytes)
     {
-        while (!FtRead(read_buffer)); // Wait for a byte to read.
+        while (!UsbReadOneByte(read_buffer)); // Loops until FtBus has data.
         num_bytes_read++;
-        read_buffer++; // Point to next mem slot in read buffer.
+        read_buffer++;
     }
     return num_bytes_read;
 }

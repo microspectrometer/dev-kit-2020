@@ -648,15 +648,7 @@ void UsbReadOneByte_example_reading_several_bytes(void)
 }
 
 /* =====[ Work started 2019-10-08 ]===== */
-void UsbReadBytes_reads_nbytes(void)
-{
-    /* =====[ Test case: UsbReadBytes reads 2 bytes ]===== */
-    uint16_t const nbytes = 2;
-    /* =====[ Operate ]===== */
-    uint8_t read_buffer[nbytes];
-    uint16_t num_bytes_read = UsbReadBytes(read_buffer, nbytes);
-    TEST_ASSERT_EQUAL_UINT16(nbytes, num_bytes_read);
-}
+/* =====[ UsbReadBytes calls FtRead, FtRead calls FtReadData ]===== */
 static uint8_t FakeByteArray[1];
 uint8_t *FakeByteArray_ForFtReadData = FakeByteArray;
 static uint8_t FtReadData_FakeReturnValue(void)
@@ -676,13 +668,25 @@ static void Stub_FtReadData(void)
 void SetUp_UsbReadBytes(void)
 {
     /* SetUp_Mock(); */
+    ClearBit(Ft1248_pin, Ft1248_Miso); // signal FtBus has data to read
     Stub_FtReadData();
 }
 void TearDown_UsbReadBytes(void)
 {
     /* TearDown_Mock(); */
     Restore_FtReadData();
+    SetBit(Ft1248_pin, Ft1248_Miso); // signal FtBus has no data to read
 }
+void UsbReadBytes_reads_nbytes(void)
+{
+    /* =====[ Test case: UsbReadBytes reads 2 bytes ]===== */
+    uint16_t const nbytes = 2;
+    /* =====[ Operate ]===== */
+    uint8_t read_buffer[nbytes];
+    uint16_t num_bytes_read = UsbReadBytes(read_buffer, nbytes);
+    TEST_ASSERT_EQUAL_UINT16(nbytes, num_bytes_read);
+}
+
 void UsbReadBytes_reads_expected_payload(void)
 {
     /* Test case: UsbReadBytes reads SetBridgeLED payload {led_0,led_green} */

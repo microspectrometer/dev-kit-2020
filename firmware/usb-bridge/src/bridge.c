@@ -215,16 +215,105 @@ void BridgeCfgLis(void)
     }
 }
 /* =====[ API started 2019-10-02 ]===== */
+/* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
+bridge_cmd_key const GetBridgeLED_key = 0;
+bridge_cmd_key const SetBridgeLED_key = 1;
+bridge_cmd_key const GetSensorLED_key = 2;
+bridge_cmd_key const SetSensorLED_key = 3;
+BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
+{
+    /* pf is an array of pointers to BridgeCmd functions */
+    /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
+    static BridgeCmd* const pf[] =
+    {
+        GetBridgeLED,   // 0
+        SetBridgeLED,   // 1
+        GetSensorLED,   // 2
+        /* SetSensorLED,   // 3 */
+    };
+
+    /* Return func ptr. Prevent attempts at out-of-bounds access. */
+    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
+    /* Out of bounds keys return a NULL pointer. */
+    else return NULL;
+    /* Up to caller to check for NULL and take appropriate action. */
+    /* Recommended action: tell UsbHost the command was not recognized. */
+}
+/* ---DEPRECATED--- */
+bridge_cmd_key const BridgeLedRed_key = 0;
+bridge_cmd_key const BridgeLedGreen_key = 1;
+bridge_cmd_key const BridgeCfgLis_key = 2;
+bridge_cmd_key const SendSensorLed1Red_key = 3;
+bridge_cmd_key const SendSensorLed1Green_key = 4;
+bridge_cmd_key const SendSensorLed2Red_key = 5;
+bridge_cmd_key const SendSensorLed2Green_key = 6;
+/* =====[ API started 2019-10-02 ]===== */
+status_byte ok = 0; 
+status_byte error = 1; 
+status_byte led_off = 0; 
+status_byte led_green = 1; 
+status_byte led_red = 2; 
+led_name led_0 = 0;
+led_name led_1 = 1;
+
+BridgeCmd* oldLookupBridgeCmd(bridge_cmd_key const key) {
+    /* pf is an array of pointers to BridgeCmd functions */
+    /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
+    static BridgeCmd* const pf[] = {
+        BridgeLedRed,
+        BridgeLedGreen,
+        BridgeCfgLis,
+        SendSensorLed1Red,
+        SendSensorLed1Green,
+        SendSensorLed2Red,
+        SendSensorLed2Green,
+        };
+    /* Return func ptr. Prevent attempts at out-of-bounds access. */
+    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
+    /* Out of bounds keys return a NULL pointer. */
+    else return NULL;
+    /* Up to caller to check for NULL and take appropriate action. */
+    /* Recommended action: tell UsbHost the command was not recognized. */
+}
+
 /* void SendStatus(status_byte status) {UsbWrite(&status,1);} */
-static void SendStatus_Implementation(status_byte status) {UsbWrite(&status,1);}
+static void SendStatus_Implementation(status_byte status)
+{
+    UsbWrite(&status,1);
+}
 void (*SendStatus)(status_byte) = SendStatus_Implementation;
+/* TODO: unit test WriteSensor */
+static uint16_t WriteSensor_Implementation(uint8_t const *write_buffer, uint16_t nbytes)
+{
+    uint16_t num_bytes_sent = 0;
+    while (num_bytes_sent < nbytes)
+    {
+        MacroSpiMasterWrite(*(write_buffer++));
+        MacroSpiMasterWaitForResponse();
+        num_bytes_sent++;
+    }
+    return num_bytes_sent;
+}
+uint16_t (*WriteSensor)(uint8_t const *, uint16_t) = WriteSensor_Implementation;
+
+static uint16_t ReadSensor_Implementation(uint8_t *read_buffer, uint16_t nbytes)
+{
+    uint16_t num_bytes_read = 0;
+    while (num_bytes_read < nbytes)
+    {
+        MacroSpiMasterWrite(slave_ignore);      // transfer byte
+        *(read_buffer++) = *Spi_spdr;  // store byte
+        num_bytes_read++;
+    }
+    return num_bytes_read;
+}
+uint16_t (*ReadSensor)(uint8_t *, uint16_t) = ReadSensor_Implementation;
 
 void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];
-    /* UsbReadN(read_buffer, num_bytes_payload); */
     UsbReadBytes(read_buffer, num_bytes_payload);
     // TODO: Add error checking for time out.
         // CASE: host does not send expected number of bytes.
@@ -277,64 +366,39 @@ void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
         return;
     }
 }
-
-/* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
-bridge_cmd_key const GetBridgeLED_key = 0;
-bridge_cmd_key const SetBridgeLED_key = 1;
-bridge_cmd_key const GetSensorLED_key = 2;
-bridge_cmd_key const SetSensorLED_key = 3;
-BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
+void GetSensorLED(void) // Sensor has `led_0` and `led_1`.
 {
-    /* pf is an array of pointers to BridgeCmd functions */
-    /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
-    static BridgeCmd* const pf[] =
+    // Read which LED to query (one byte of payload).
+    uint8_t const num_bytes_payload = 1;
+    uint8_t read_buffer[num_bytes_payload];
+    UsbReadBytes(read_buffer, num_bytes_payload);
+    // TODO: Add error checking for time out.
+        // CASE: host does not send expected number of bytes.
+
+    /* =====[ Move this to the Sensor: ]===== */
+    /* if ((led_number != led_0) && (led_number != led_1)) */
+    /* { */
+    /*     SendStatus(error); // host is asking about nonexistent LED */
+    /*     return; */
+    /* } */
+    // Pass command and led_number along to Sensor.
+    uint8_t led_number = read_buffer[0];
+    uint8_t msg_to_sensor[] = {GetSensorLED_key, led_number};
+    uint8_t const nbytes_to_sensor = 2;
+    WriteSensor(msg_to_sensor, nbytes_to_sensor);
+    // Get Sensor msg status byte and led status byte.
+    uint8_t const nbytes_from_sensor = 2;
+    uint8_t msg_from_sensor[nbytes_from_sensor];
+    ReadSensor(msg_from_sensor, nbytes_from_sensor);
+    // Reply to USB Host with Bridge msg status byte.
+    SendStatus(ok); // means Bridge received command and obtained a response
+    // Pass Sensor messages to host.
+    uint8_t byte_count = 0;
+    while (byte_count < nbytes_from_sensor)
     {
-        GetBridgeLED,   // 0
-        SetBridgeLED,   // 1
-        /* GetSensorLED,   // 2 */
-        /* SetSensorLED,   // 3 */
-    };
-
-    /* Return func ptr. Prevent attempts at out-of-bounds access. */
-    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
-    /* Out of bounds keys return a NULL pointer. */
-    else return NULL;
-    /* Up to caller to check for NULL and take appropriate action. */
-    /* Recommended action: tell UsbHost the command was not recognized. */
-}
-/* ---DEPRECATED--- */
-bridge_cmd_key const BridgeLedRed_key = 0;
-bridge_cmd_key const BridgeLedGreen_key = 1;
-bridge_cmd_key const BridgeCfgLis_key = 2;
-bridge_cmd_key const SendSensorLed1Red_key = 3;
-bridge_cmd_key const SendSensorLed1Green_key = 4;
-bridge_cmd_key const SendSensorLed2Red_key = 5;
-bridge_cmd_key const SendSensorLed2Green_key = 6;
-/* =====[ API started 2019-10-02 ]===== */
-status_byte ok = 0; 
-status_byte error = 1; 
-status_byte led_off = 0; 
-status_byte led_green = 1; 
-status_byte led_red = 2; 
-
-BridgeCmd* oldLookupBridgeCmd(bridge_cmd_key const key) {
-    /* pf is an array of pointers to BridgeCmd functions */
-    /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
-    static BridgeCmd* const pf[] = {
-        BridgeLedRed,
-        BridgeLedGreen,
-        BridgeCfgLis,
-        SendSensorLed1Red,
-        SendSensorLed1Green,
-        SendSensorLed2Red,
-        SendSensorLed2Green,
-        };
-    /* Return func ptr. Prevent attempts at out-of-bounds access. */
-    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
-    /* Out of bounds keys return a NULL pointer. */
-    else return NULL;
-    /* Up to caller to check for NULL and take appropriate action. */
-    /* Recommended action: tell UsbHost the command was not recognized. */
+        SendStatus(msg_from_sensor[byte_count]);
+        byte_count++;
+    }
 }
 
 /* =====[ Helper for CmdFn: BridgeCfgLis ]===== */
