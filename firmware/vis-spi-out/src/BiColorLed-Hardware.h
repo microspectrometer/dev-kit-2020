@@ -16,9 +16,9 @@
 uint8_t volatile * const BiColorLed_ddr  = &DDRC;  // controls if input or output
 uint8_t volatile * const BiColorLed_port = &PORTC; // controls output high/low
 
-// =====[ Status LED Pin Connection On simBrd ]=====
-uint8_t const status_led1 = PINC0;
-uint8_t const status_led2 = PINC1;
+// =====[ BiColor LED Pin Connection on Sensor board ]=====
+uint8_t const led_TxRx = PINC0;
+uint8_t const led_Done = PINC1;
 
 #endif // _BICOLOR_LED_HARDWARE_H
 

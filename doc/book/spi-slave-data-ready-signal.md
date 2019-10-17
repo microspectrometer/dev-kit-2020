@@ -5,20 +5,39 @@
 # Pain Point
 
 Signaling when the slave is ready to send data is the pain point of SPI
-communication in the general case where the SPI slave does *not* collect
-data synchronized to the SPI clock.
+communication. On the ATmega328, data is not double-buffered in the transmit
+direction, so the SPI module contains no hardware for the SPI slave to queue up
+a next byte for transmission. This has to be done in software, which means the
+overhead in getting the next byte in place is dependent on the number of
+instructions in program memory.
 
-An example where the SPI slave *is* synchronized is a SPI-interface SAR
-ADC. The ADC uses the SPI clock as the SAR clock. The SPI master knows
-*exactly* when the data is ready because the SPI master controls the
-generation of the data. Instead of the usual *eight clocks is a byte of
-data* protocol, the SPI master clocks the ADC as much as the ADC
-requires to do a conversion, ignoring the data that is coming out, and
-then it clocks another 16 times to read out the converted value.
+Similarly, receiving multiple consecutive bytes on a SPI slave requires some
+sort of handshake if there is no guarantee that the number of instructions
+executed between each byte received is not less than the time it takes to
+transmit a single byte. In this case, sending consecutive bytes runs the risk of
+overwriting the SPI data register before the SPI slave stores its value
+elsewhere. In fact, I have had the bug where the timing is just right that
+sometimes the SPI data register is accessed in time, and sometimes it isn't, so
+successfully reading consecutive bytes only fails occassionally.
 
-But in the general case, when the SPI master asks for data it has no
-control over when the data is ready. So how does the SPI master know
-when to start readout?
+Not all SPI devices have this problem. For example, the SAR ADC on the `Sensor`
+interface. The ADC is a SPI slave, but it only sends data; it does not implement
+general SPI. When the SPI master wants an ADC reading, it uses the SPI clock to
+step the ADC through acquisition and readout. This follows a predetermined
+number of clock cycles without requiring the SPI master to send any data or any
+other signal. The ADC acquires the reading, then outputs the data over SPI.
+
+The ADC uses the SPI clock as its SAR clock. The SPI master knows *exactly* when
+the data is ready because the SPI master controls the generation of the data.
+Instead of the usual *eight clocks is a byte of data* protocol, the SPI master
+clocks the ADC as much as the ADC requires to do a conversion, ignoring the data
+that is coming out, and then it clocks another 16 times to read out the
+converted value.
+
+In the general SPI case, when the SPI master asks for data it has no control
+over when the data is ready. Or when the SPI master sends multiple bytes, it
+does not know when the SPI slave is ready to receive the next byte. So how does
+the SPI master know when to start the next SPI transmission?
 
 # Solutions
 

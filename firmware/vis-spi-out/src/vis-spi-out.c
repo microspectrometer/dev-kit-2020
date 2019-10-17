@@ -37,7 +37,8 @@
 // avr libs
 #include <avr/interrupt.h>      // defines macro ISR()
 #include <stdlib.h>  // defines NULL
-#include "../../usb-bridge/src/Bridge.h" // kludge until sensor_cmd_key is moved out of lib Bridge into lib Sensor
+/* #include "../../usb-bridge/src/Bridge.h" // kludge until sensor_cmd_key is moved out of lib Bridge into lib Sensor */
+#include "SensorVis.h" // bridge cmd stuff
 
 /* =====[ List of application example tests ]===== */
     // [x] App_version_of_Slave_RespondToRequestsForData
@@ -294,8 +295,8 @@ void LisFrameReadout(void)
 void Get_commands_from_SpiMaster(void);
 int main()
 {
-    BiColorLedOn(status_led1);
-    BiColorLedOn(status_led2);
+    BiColorLedOn(led_0);
+    BiColorLedOn(led_1);
 
     SpiSlaveInit();   // respond to Spi-master (e.g., USB host)
     UartSpiInit();    // take ADC readings
@@ -303,7 +304,7 @@ int main()
     while(1) Get_commands_from_SpiMaster();
     /* while(1) RespondToRequestsForData(); // old main loop */
     /* LisDoNothingFor10Clocks(); */
-    BiColorLedRed(status_led1);
+    BiColorLedRed(led_0);
 
 }
 void testing_main()  // all of my measurement notes are here
@@ -459,7 +460,7 @@ void testing_main()  // all of my measurement notes are here
     /*     pframe++; pframe++; byte_count++; byte_count++; */
     /* } */
 
-    BiColorLedRed(status_led1);
+    BiColorLedRed(led_0);
 
 }
 /* =====[ SpiSlave application-level API details ]===== */
@@ -491,13 +492,14 @@ void Get_commands_from_SpiMaster(void)
         /* This first byte is *always* a command from the SpiMaster. */
         SensorCmd* SensorCmdFn = LookupSensorCmd(cmd);
         /* Tell SpiMaster if the command is invalid. */
-        if (SensorCmdFn == NULL) SpiSlaveWrite_StatusInvalid(cmd);
+        /* if (SensorCmdFn == NULL) SpiSlaveWrite_StatusInvalid(cmd); */
+        if (SensorCmdFn == NULL)
+        {
+            ReplyCommandInvalid();
+            LedsShowError();
+        }
         /* Do command if it is valid. */
         else SensorCmdFn();
-        /* It is up to SensorCmdFn to let the SpiMaster know */
-        /* command was successfully carried out. */
-        /* If the SensorCmdFn requires sending additional data, */
-        /* send SpiSlaveWrite_StatusOk() before sending any other data. */
     }
 }
 void RespondToRequestsForData(void)
@@ -806,7 +808,7 @@ uint8_t progbits_rowselect_row1[] ={0,0,0,0,1, // row 5 of columns 631-784
 void WriteCfgToLis(void)
 {
     /* BiColorLedToggleColor(status_led3); */
-    BiColorLedToggleColor(status_led2);
+    BiColorLedToggleColor(led_1);
     LisStartProgramMode();
     // TODO: why is LisProgramSummingModeOff called here?
     // This cannot be right! The first bit is the summing mode.
@@ -844,7 +846,7 @@ void WriteCfgToLis(void)
 // Unused Macros written while developing gain setting functionality.
 #define SetGain1x() do { \
     BiColorLedToggleColor(status_led3); \
-    BiColorLedToggleColor(status_led2); \
+    BiColorLedToggleColor(led_1); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain1x(); \
@@ -853,7 +855,7 @@ void WriteCfgToLis(void)
 } while (0)
 #define SetGain2Point5x() do { \
     BiColorLedToggleColor(status_led3); \
-    BiColorLedToggleColor(status_led2); \
+    BiColorLedToggleColor(led_1); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain2Point5x(); \
@@ -862,7 +864,7 @@ void WriteCfgToLis(void)
 } while (0)
 #define SetGain4x() do { \
     BiColorLedToggleColor(status_led3); \
-    BiColorLedToggleColor(status_led2); \
+    BiColorLedToggleColor(led_1); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain4x(); \
@@ -871,7 +873,7 @@ void WriteCfgToLis(void)
 } while (0)
 #define SetGain5x() do { \
     BiColorLedToggleColor(status_led3); \
-    BiColorLedToggleColor(status_led2); \
+    BiColorLedToggleColor(led_1); \
     LisStartProgramMode(); \
     LisProgramSummingModeOff(); \
     LisProgramGain5x(); \
@@ -880,7 +882,7 @@ void WriteCfgToLis(void)
 } while (0)
 #define unrollSetGain5x() do { \
     BiColorLedToggleColor(status_led3); \
-    BiColorLedToggleColor(status_led2); \
+    BiColorLedToggleColor(led_1); \
     /* =====[ Do all setup of Lis_Rst while Lis_Clk is low ]===== */ \
     LisWaitForClkFallEdge(); \
     /* =====[ Assert Pix_Select to program the LIS ]===== */ \
@@ -985,7 +987,7 @@ void WriteCfgToLis(void)
 
 void SendDataMasterAskedFor(void)
 {
-    BiColorLedToggleColor(status_led1);
+    BiColorLedToggleColor(led_0);
     /* uint8_t cmd = SpiSlaveRead(); */
     while ( !MacroSpiTransferIsDone() );
     uint8_t cmd = *Spi_spdr;
@@ -1072,10 +1074,10 @@ uint16_t NticsExposureToHitTarget(uint16_t target_peak_counts, uint16_t (*PeakCo
     /* uint16_t tried_Lis_nticks_exposure_half = 0 */
     while (!done)
     {
-        BiColorLedToggleColor(status_led1);
+        BiColorLedToggleColor(led_0);
         /* uint16_t ntics = Lis_nticks_exposure;  // default value: no change */
         uint16_t peak = PeakCounts(); // peak will be between 0 and 65535
-        BiColorLedToggleColor(status_led1);
+        BiColorLedToggleColor(led_0);
 
         if (peak == peak_min)
         {
@@ -1172,9 +1174,9 @@ static uint16_t PeakCounts_Implementation(void)
     // TODO: Restrict peak finding to the usable pixel range.
 
     /* =====[ get a frame ]===== */
-    BiColorLedRed(status_led1);
+    BiColorLedRed(led_0);
     LisFrameReadout();  // store pixel readout in SRAM
-    BiColorLedGreen(status_led1);
+    BiColorLedGreen(led_0);
     /* =====[ get the peak ]===== */
     // determine the first used pixel
     // usable range is 292-to-end binned, 292*2-to-end not binned
@@ -1204,7 +1206,7 @@ static uint16_t PeakCounts_Implementation(void)
 void AutoExpose(void)
 {
     // TODO: [ ] make target_peak_counts an input
-    BiColorLedToggleColor(status_led1);
+    BiColorLedToggleColor(led_0);
     // hard-coded for now, but will come from host eventually:
     /* uint16_t target_peak_counts = 50000; // for 2.048V Vref */
     // Tested 2018-12-13:
@@ -1296,12 +1298,12 @@ void SendAdcFrame(void)
 void SendLisFrame(void)
 {
     /* Indicate frame exposure and readout */
-    BiColorLedRed(status_led1);
+    BiColorLedRed(led_0);
     LisFrameReadout();  // store pixel readout in SRAM
-    BiColorLedGreen(status_led1);
+    BiColorLedGreen(led_0);
     // Send measurement data to master.
     /* Indicate measurement transmitting */
-    BiColorLedRed(status_led2);
+    BiColorLedRed(led_1);
     uint8_t *plisframe = full_frame;
     /* SpiSlaveSendBytes(plisframe, sizeof_full_frame); */
     // oscilloscope measurement with function call overhead:
@@ -1328,7 +1330,7 @@ void SendLisFrame(void)
     if (lis_sum_mode == lis_summing_on) nbytes_in_frame = sizeof_half_frame;
     else                                nbytes_in_frame = sizeof_full_frame;
     MacroSpiSlaveSendBytes(plisframe, nbytes_in_frame);
-    BiColorLedGreen(status_led2);
+    BiColorLedGreen(led_1);
     // oscilloscope measurement without function call overhead:
         // SpiSs is low for 7.5us.
         // UsbWrite takes 62us.
@@ -1338,8 +1340,8 @@ void Show_data_on_debug_leds(uint8_t four_bits)
 {
     // Show the lower nibble of input `four_bits`
     uint8_t *pfour_bits = &four_bits;
-    if (BitIsSet(pfour_bits, 0)) BiColorLedRed(status_led1);
-    if (BitIsSet(pfour_bits, 1)) BiColorLedRed(status_led2);
+    if (BitIsSet(pfour_bits, 0)) BiColorLedRed(led_0);
+    if (BitIsSet(pfour_bits, 1)) BiColorLedRed(led_1);
     /* if (BitIsSet(pfour_bits, 2)) BiColorLedRed(status_led3); */
     /* if (BitIsSet(pfour_bits, 3)) BiColorLedRed(status_led4); */
 }
@@ -1429,7 +1431,7 @@ void Slave_receives_request_and_sends_response_when_ready(void)
 {
     /* =====[ Setup ]===== */
     SpiSlaveInit();
-    BiColorLedRed(status_led1);
+    BiColorLedRed(led_0);
     // Visually confirm debug LED 1 is red.
     // The slave is waiting to receive the command.
     //
@@ -1457,7 +1459,7 @@ void Slave_receives_request_and_sends_response_when_ready(void)
         // every routine follows the form: do something, load data, signal ready
     if (cmd == cmd_slave_respond_0xBA)
     {
-        BiColorLedRed(status_led2);
+        BiColorLedRed(led_1);
         /* =====[ Do something to get data ]===== */
         uint8_t const response = 0xBA;
         /* =====[ Load data ]===== */

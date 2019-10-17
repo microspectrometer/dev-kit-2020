@@ -1,0 +1,16 @@
+#ifndef _TEST_SENSORVIS_H
+#define _TEST_SENSORVIS_H
+
+void SetUp_GetSensorLED(void); void TearDown_GetSensorLED(void);
+void GetSensorLED_reads_one_byte_of_payload(void);
+void GetSensorLED_replies_with_three_bytes_if_led_is_non_existent(void);
+void GetSensorLED_replies_msg_status_error_if_led_is_non_existent(void);
+void GetSensorLED_replies_with_four_bytes_if_led_number_is_recognized(void);
+void GetSensorLED_replies_msg_status_ok_if_led_number_is_recognized(void);
+void GetSensorLED_replies_led_off_if_led_is_off(void);
+void GetSensorLED_replies_led_green_if_led_is_green(void);
+void GetSensorLED_replies_led_red_if_led_is_red(void);
+
+void GetSensorLED_sends_OK_to_Bridge_to_signal_ready_for_payload(void);
+
+#endif // _TEST_SENSORVIS_H

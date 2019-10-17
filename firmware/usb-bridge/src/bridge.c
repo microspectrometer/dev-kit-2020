@@ -2,91 +2,7 @@
 #include "BiColorLed.h"
 #include "Spi.h"
 #include "Usb.h"
-#include "Lis.h" // because SensorCfgLis() calls LisWriteCfg()
 #include "stdlib.h" // defines NULL
-
-/* --------------------------------------------------------------------------------------- */
-/* TODO: this SpiSlave stuff goes in a Sensor.c */
-uint16_t BytesComing(spi_BytesComing_s response_size); // inline defined in .h
-/* --------------------------------------------------------------------------------------- */
-/* | 2019-03-03 WIP: New SpiSlave API functionality for robust multi-byte communication. | */
-/* --------------------------------------------------------------------------------------- */
-/* Define command functions in jump table */
-extern uint8_t const status_led1;
-extern uint8_t const status_led2;
-extern uint8_t const status_led3;
-extern uint8_t const status_led4;
-void SensorLed1Red(void)
-{
-    BiColorLedRed(status_led1);
-    SpiSlaveWrite_StatusOk(SensorLed1Red_key);
-}
-void SensorLed2Red(void)
-{
-    BiColorLedRed(status_led2);
-    SpiSlaveWrite_StatusOk(SensorLed2Red_key);
-}
-
-void SensorLed1Green(void)
-{
-    BiColorLedGreen(status_led1);
-    SpiSlaveWrite_StatusOk(SensorLed1Green_key);
-}
-void SensorLed2Green(void)
-{
-    BiColorLedGreen(status_led2);
-    SpiSlaveWrite_StatusOk(SensorLed2Green_key);
-}
-
-void SensorCfgLis(void)
-{
-    /* TODO: left off here */
-    ;// get 4-byte arg from bridge
-    /* Fake receiving a valid `cfg`. */
-    uint8_t const valid_cfg[] = {0x0F, 0xFF, 0xFF, 0xF9};
-    LisWriteCfg(valid_cfg);
-    // LisWriteCfg must handle the StatusOk since it follow that with
-    // the updated cfg.
-}
-
-/* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
-sensor_cmd_key const SensorLed1Green_key = 0;
-sensor_cmd_key const SensorLed1Red_key = 1;
-sensor_cmd_key const SensorLed2Green_key = 2;
-sensor_cmd_key const SensorLed2Red_key = 3;
-/* TODO: left off here */
-sensor_cmd_key const SensorCfgLis_key = 8;
-SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
-    /* pf is an array of pointers to SensorCmd functions */
-    /* pf lives in static memory, not on the `LookupSensorCmd` stack frame */
-    static SensorCmd* const pf[] = {
-        SensorLed1Green,
-        SensorLed1Red,
-        SensorLed2Green,
-        SensorLed2Red,
-        SensorCfgLis
-        };
-    /* Return func ptr. Prevent attempts at out-of-bounds access. */
-    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
-    /* Out of bounds keys return a NULL pointer. */
-    else return NULL;
-    /* Up to caller to check for NULL and take appropriate action. */
-    /* Recommended action: tell SpiMaster the command was not recognized. */
-}
-/* SpiSlaveSendBytes has been unit-tested. No need to unit test this. */
-void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd)
-{
-                             // | nbytes  | data           |
-    uint8_t const StatusOk[] = {0x00, 0x02, 0x00, valid_cmd };
-    SpiSlaveSendBytes(StatusOk,4);
-}
-void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd)
-{                                  // | nbytes  |   data          |
-    uint8_t const StatusInvalid[] = { 0x00, 0x02, 0xFF, invalid_cmd };
-    SpiSlaveSendBytes(StatusInvalid,4);
-}
-/* --------------------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------------------- */
 
 /* =====[ WIP: Clean Command Parsing with jump tables started 2019-03-01 ]===== */
 /* TODO: implement a top-level error handler */
@@ -103,86 +19,91 @@ void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd)
 /* // */
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const status_led;
-void BridgeLedRed(void)
-{
-    BiColorLedRed(status_led);
-    UsbWriteStatusOk(BridgeLedRed_key);
-}
-/* SpiSlave command lookup keys are defined in `lib/src/Spi.c` */
-extern sensor_cmd_key const SensorLed1Red_key;
-extern sensor_cmd_key const SensorLed1Green_key;
-/* Define command functions in jump table for looking up USB commands. */
-void SendSensorCommand(
-    sensor_cmd_key cmd_to_sensor,       // send this command key to the sensor
-    bridge_cmd_key cmd_done_by_bridge)  // and report status on this command key
-{
-    /* Send the command. */
-    SpiMasterWriteByte(cmd_to_sensor);
 
-    /* TODO: add timer to timeout in case SpiSlave is never ready. */
-    /* The first two bytes from the SpiSlave are the remaining number of bytes
-     * in the response. */
-    spi_BytesComing_s   response_size;
-    SpiMasterWaitForSlaveReady(); response_size.msb = SpiMasterReadByte();
-    SpiMasterWaitForSlaveReady(); response_size.lsb = SpiMasterReadByte();
-    /* The response should be two bytes. */
-    uint16_t const nbytes_expected = 2; // 16-bit is the general case
+/* I'm not using this struct's method, it's extra work for no reason. */
+uint16_t BytesComing(BytesComing_s reply_size); // inline defined in .h
+/* =====[ TODO: Pull useful things from here, then get rid of this function. ]===== */
+// Define command functions in jump table for looking up USB commands.
+/* static void SendSensorCommand( */
+/*     sensor_cmd_key cmd_to_sensor,       // send this command key to the sensor */
+/*     bridge_cmd_key cmd_done_by_bridge)  // and report status on this command key */
+/* { */
+/*     /1* Send the command. *1/ */
+/*     SpiMasterWriteByte(cmd_to_sensor); */
 
-    /* There is an unknown SPI communication error if there are not exactly 2
-     * bytes coming. */
-    /* It could be the SpiSlave or the SpiMaster. */
-    /* Treat this like other BridgeCmd errors. Send back two bytes. */
-    /* byte 1: error code
-     * byte 2: command sent to SpiSlave */
-    if ( BytesComing(response_size) != nbytes_expected )
-    { UsbWriteStatusSpiBusError(cmd_to_sensor); return; }
+/*     /1* TODO: add timer to timeout in case SpiSlave is never ready. *1/ */
+/*     /1* The first two bytes from the SpiSlave are the remaining number of bytes */
+/*      * in the response. *1/ */
+/*     BytesComing_s   response_size; */
+/*     SpiMasterWaitForSlaveReady(); response_size.msb = SpiMasterReadByte(); */
+/*     SpiMasterWaitForSlaveReady(); response_size.lsb = SpiMasterReadByte(); */
+/*     /1* The response should be two bytes. *1/ */
+/*     uint16_t const nbytes_expected = 2; // 16-bit is the general case */
 
-    /* Read all of the bytes from the SpiSlave. */
-    uint8_t rx[nbytes_expected];
-    for (uint8_t index=0; index < nbytes_expected; index++)
-    { SpiMasterWaitForSlaveReady(); rx[index]= SpiMasterReadByte(); }
-    /* There is an error if the SpiSlave is still signaling *Data Ready*. */
-    if ( SpiSlaveShowsDataReady() )
-    { UsbWriteStatusSpiBusError(cmd_to_sensor); return; }
+/*     /1* There is an unknown SPI communication error if there are not exactly 2 */
+/*      * bytes coming. *1/ */
+/*     /1* It could be the SpiSlave or the SpiMaster. *1/ */
+/*     /1* Treat this like other BridgeCmd errors. Send back two bytes. *1/ */
+/*     /1* byte 1: error code */
+/*      * byte 2: command sent to SpiSlave *1/ */
+/*     if ( BytesComing(response_size) != nbytes_expected ) */
+/*     { UsbWriteStatusSpiBusError(cmd_to_sensor); return; } */
 
-    /* The SpiMaster has succeeded at this point, */
-    /* even if the SpiSlave sent an error code. */
-    UsbWriteStatusOk(cmd_done_by_bridge);
-    /* Whatever the SpiSlave sent, pass it up to the UsbHost. */
-    uint8_t nbytes_of_data[] = {response_size.msb, response_size.lsb};
-    UsbWrite(nbytes_of_data, 2);
-    UsbWrite(rx,nbytes_expected);
-}
+/*     /1* Read all of the bytes from the SpiSlave. *1/ */
+/*     uint8_t rx[nbytes_expected]; */
+/*     for (uint8_t index=0; index < nbytes_expected; index++) */
+/*     { SpiMasterWaitForSlaveReady(); rx[index]= SpiMasterReadByte(); } */
+/*     /1* There is an error if the SpiSlave is still signaling *Data Ready*. *1/ */
+/*     if ( SpiSlaveShowsDataReady() ) */
+/*     { UsbWriteStatusSpiBusError(cmd_to_sensor); return; } */
 
-void SendSensorLed1Green(void)
-{
-    SendSensorCommand(
-            SensorLed1Green_key,   // send this command key to the sensor
-        SendSensorLed1Green_key);  // and report status on this command key
-}
-void SendSensorLed1Red(void)
-{
-    SendSensorCommand(
-            SensorLed1Red_key,   // send this command key to the sensor
-        SendSensorLed1Red_key);  // and report status on this command key 
-}
-void SendSensorLed2Green(void)
-{
-    SendSensorCommand(
-            SensorLed2Green_key,   // send this command key to the sensor
-        SendSensorLed2Green_key);  // and report status on this command key
-}
-void SendSensorLed2Red(void)
-{
-    SendSensorCommand(
-            SensorLed2Red_key,   // send this command key to the sensor
-        SendSensorLed2Red_key);  // and report status on this command key 
-}
-void BridgeLedGreen(void)
-{
-    BiColorLedGreen(status_led);
-    UsbWriteStatusOk(BridgeLedGreen_key);
-}
+/*     /1* The SpiMaster has succeeded at this point, *1/ */
+/*     /1* even if the SpiSlave sent an error code. *1/ */
+/*     UsbWriteStatusOk(cmd_done_by_bridge); */
+/*     /1* Whatever the SpiSlave sent, pass it up to the UsbHost. *1/ */
+/*     uint8_t nbytes_of_data[] = {response_size.msb, response_size.lsb}; */
+/*     UsbWrite(nbytes_of_data, 2); */
+/*     UsbWrite(rx,nbytes_expected); */
+/* } */
+
+/* =====[ DEPRECATED ]===== */
+/* void BridgeLedRed(void) */
+/* { */
+/*     BiColorLedRed(status_led); */
+/*     UsbWriteStatusOk(BridgeLedRed_key); */
+/* } */
+// SpiSlave command lookup keys are defined in `lib/src/Spi.c`
+/* extern sensor_cmd_key const SensorLed1Red_key; */
+/* extern sensor_cmd_key const SensorLed1Green_key; */
+/* void SendSensorLed1Green(void) */
+/* { */
+/*     SendSensorCommand( */
+/*             SensorLed1Green_key,   // send this command key to the sensor */
+/*         SendSensorLed1Green_key);  // and report status on this command key */
+/* } */
+/* void SendSensorLed1Red(void) */
+/* { */
+/*     SendSensorCommand( */
+/*             SensorLed1Red_key,   // send this command key to the sensor */
+/*         SendSensorLed1Red_key);  // and report status on this command key */ 
+/* } */
+/* void SendSensorLed2Green(void) */
+/* { */
+/*     SendSensorCommand( */
+/*             SensorLed2Green_key,   // send this command key to the sensor */
+/*         SendSensorLed2Green_key);  // and report status on this command key */
+/* } */
+/* void SendSensorLed2Red(void) */
+/* { */
+/*     SendSensorCommand( */
+/*             SensorLed2Red_key,   // send this command key to the sensor */
+/*         SendSensorLed2Red_key);  // and report status on this command key */ 
+/* } */
+/* void BridgeLedGreen(void) */
+/* { */
+/*     BiColorLedGreen(status_led); */
+/*     UsbWriteStatusOk(BridgeLedGreen_key); */
+/* } */
 void BridgeCfgLis(void)
 {
     /* Spectrometer configuration is four bytes. */
@@ -220,6 +141,7 @@ bridge_cmd_key const GetBridgeLED_key = 0;
 bridge_cmd_key const SetBridgeLED_key = 1;
 bridge_cmd_key const GetSensorLED_key = 2;
 bridge_cmd_key const SetSensorLED_key = 3;
+bridge_cmd_key const TestInvalidSensorCmd_key = 3;
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
 {
     /* pf is an array of pointers to BridgeCmd functions */
@@ -228,7 +150,8 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
     {
         GetBridgeLED,   // 0
         SetBridgeLED,   // 1
-        GetSensorLED,   // 2
+        BridgeGetSensorLED,   // 2
+        TestInvalidSensorCmd, // 3
         /* SetSensorLED,   // 3 */
     };
 
@@ -240,13 +163,13 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
     /* Recommended action: tell UsbHost the command was not recognized. */
 }
 /* ---DEPRECATED--- */
-bridge_cmd_key const BridgeLedRed_key = 0;
-bridge_cmd_key const BridgeLedGreen_key = 1;
-bridge_cmd_key const BridgeCfgLis_key = 2;
-bridge_cmd_key const SendSensorLed1Red_key = 3;
-bridge_cmd_key const SendSensorLed1Green_key = 4;
-bridge_cmd_key const SendSensorLed2Red_key = 5;
-bridge_cmd_key const SendSensorLed2Green_key = 6;
+/* bridge_cmd_key const BridgeLedRed_key = 0; */
+/* bridge_cmd_key const BridgeLedGreen_key = 1; */
+bridge_cmd_key const BridgeCfgLis_key = 0;
+/* bridge_cmd_key const SendSensorLed1Red_key = 3; */
+/* bridge_cmd_key const SendSensorLed1Green_key = 4; */
+/* bridge_cmd_key const SendSensorLed2Red_key = 5; */
+/* bridge_cmd_key const SendSensorLed2Green_key = 6; */
 /* =====[ API started 2019-10-02 ]===== */
 status_byte ok = 0; 
 status_byte error = 1; 
@@ -260,13 +183,13 @@ BridgeCmd* oldLookupBridgeCmd(bridge_cmd_key const key) {
     /* pf is an array of pointers to BridgeCmd functions */
     /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
     static BridgeCmd* const pf[] = {
-        BridgeLedRed,
-        BridgeLedGreen,
+        /* BridgeLedRed, */
+        /* BridgeLedGreen, */
         BridgeCfgLis,
-        SendSensorLed1Red,
-        SendSensorLed1Green,
-        SendSensorLed2Red,
-        SendSensorLed2Green,
+        /* SendSensorLed1Red, */
+        /* SendSensorLed1Green, */
+        /* SendSensorLed2Red, */
+        /* SendSensorLed2Green, */
         };
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
@@ -276,20 +199,26 @@ BridgeCmd* oldLookupBridgeCmd(bridge_cmd_key const key) {
     /* Recommended action: tell UsbHost the command was not recognized. */
 }
 
-/* void SendStatus(status_byte status) {UsbWrite(&status,1);} */
-static void SendStatus_Implementation(status_byte status)
+/* void SerialWriteByte(status_byte status) {UsbWrite(&status,1);} */
+static void SerialWriteByte_Implementation(status_byte status)
 {
     UsbWrite(&status,1);
 }
-void (*SendStatus)(status_byte) = SendStatus_Implementation;
+void (*SerialWriteByte)(status_byte) = SerialWriteByte_Implementation;
+static void SpiWriteByte_Implementation(uint8_t byte)
+{
+    MacroSpiMasterWrite(byte);
+}
+void (*SpiWriteByte)(uint8_t) = SpiWriteByte_Implementation;
 /* TODO: unit test WriteSensor */
+/* WriteSensor is *not used* yet!! I've only needed to send one byte at a time. */
 static uint16_t WriteSensor_Implementation(uint8_t const *write_buffer, uint16_t nbytes)
 {
     uint16_t num_bytes_sent = 0;
     while (num_bytes_sent < nbytes)
     {
         MacroSpiMasterWrite(*(write_buffer++));
-        MacroSpiMasterWaitForResponse();
+        /* MacroSpiMasterWaitForResponse(); // Why? Wait for what? */
         num_bytes_sent++;
     }
     return num_bytes_sent;
@@ -298,9 +227,12 @@ uint16_t (*WriteSensor)(uint8_t const *, uint16_t) = WriteSensor_Implementation;
 
 static uint16_t ReadSensor_Implementation(uint8_t *read_buffer, uint16_t nbytes)
 {
+    /* TODO: test that this correctly waits for Sensor to be ready to send data. */
+    /* TODO: get error-checking from deprecated SendSensorCommand */
     uint16_t num_bytes_read = 0;
     while (num_bytes_read < nbytes)
     {
+        SpiMasterWaitForSlaveReady();
         MacroSpiMasterWrite(slave_ignore);      // transfer byte
         *(read_buffer++) = *Spi_spdr;  // store byte
         num_bytes_read++;
@@ -311,6 +243,7 @@ uint16_t (*ReadSensor)(uint8_t *, uint16_t) = ReadSensor_Implementation;
 
 void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
+    /** Check the state of the LED on the Bridge board. */
     /** GetBridgeLED behavior:\n
      * - reads one byte of payload.\n 
      * - replies msg status error if host queries nonexistent led.\n 
@@ -333,17 +266,18 @@ void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
     uint8_t led_number = read_buffer[0];
     if (led_number != led_0)
     {
-        SendStatus(error); // host is asking about nonexistent LED
+        SerialWriteByte(error); // host is asking about nonexistent LED
         return;
     }
-    SendStatus(ok); // led_number is recognized, send msg_status: ok
+    SerialWriteByte(ok); // led_number is recognized, send msg_status: ok
     // Reply to USB Host with led status byte.
-    if (!BiColorLedIsOn(status_led)) SendStatus(led_off);
-    else if (BiColorLedIsRed(status_led)) SendStatus(led_red);
-    else SendStatus(led_green);
+    if (!BiColorLedIsOn(status_led)) SerialWriteByte(led_off);
+    else if (BiColorLedIsRed(status_led)) SerialWriteByte(led_red);
+    else SerialWriteByte(led_green);
 }
 void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
+    /** Turn LED off, green, or red on the Bridge board. */
     /** SetBridgeLED behavior:\n
      * - reads two bytes of payload.\n 
      * - replies with one byte.\n 
@@ -363,10 +297,10 @@ void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
     uint8_t led_number = read_buffer[0];
     if (led_number != led_0)
     {
-        SendStatus(error); // host is asking about nonexistent LED
+        SerialWriteByte(error); // host is asking about nonexistent LED
         return;
     }
-    SendStatus(ok); // led_number is recognized, send msg_status: ok
+    SerialWriteByte(ok); // led_number is recognized, send msg_status: ok
     uint8_t desired_led_state = read_buffer[1];
     if (desired_led_state == led_off)
     {
@@ -386,44 +320,86 @@ void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
         return;
     }
 }
-void GetSensorLED(void) // Sensor has `led_0` and `led_1`.
+void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
 {
-    /** GetSensorLED behavior:\n
-     * - reads one byte of payload.\n 
-     * - passes cmd and led number to Sensor.\n 
-     * - reads msg status and led status from Sensor.\n 
-     * */
+    /** Check the state of an LED on the Sensor board. */
+    /** BridgeGetSensorLED behavior: \n
+      * - reads one byte of payload\n 
+      * - responds ok after reading host payload\n 
+      * - passes cmd to Sensor and waits for response\n 
+      * - passes Sensor command response back to host\n 
+      * - exits if Sensor responds error to command\n 
+      * - if Sensor responds OK to command:\n 
+      * - sends Sensor led number (command parameter)\n 
+      * - reads two bytes of reply size and nbytes of reply from Sensor\n 
+      * - passes reply size and reply to host\n 
+      * */
+
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];
     UsbReadBytes(read_buffer, num_bytes_payload);
+    /* 2019-10-14: UsbReadBytes finishes and correctly returns led_number. */
     // TODO: Add error checking for time out.
         // CASE: host does not send expected number of bytes.
 
-    /* =====[ Move this to the Sensor: ]===== */
-    /* if ((led_number != led_0) && (led_number != led_1)) */
-    /* { */
-    /*     SendStatus(error); // host is asking about nonexistent LED */
-    /*     return; */
-    /* } */
-    // Pass command and led_number along to Sensor.
+    SerialWriteByte(ok); // Bridge finished reading its expected payload.
+
+    // Set up message: pass command and led_number along to Sensor.
     uint8_t led_number = read_buffer[0];
     uint8_t msg_to_sensor[] = {GetSensorLED_key, led_number};
-    uint8_t const nbytes_to_sensor = 2;
-    WriteSensor(msg_to_sensor, nbytes_to_sensor);
-    // Get Sensor msg status byte and led status byte.
-    uint8_t const nbytes_from_sensor = 2;
-    uint8_t msg_from_sensor[nbytes_from_sensor];
-    ReadSensor(msg_from_sensor, nbytes_from_sensor);
-    // Reply to USB Host with Bridge msg status byte.
-    SendStatus(ok); // means Bridge received command and obtained a response
-    // Pass Sensor messages to host.
-    uint8_t byte_count = 0;
-    while (byte_count < nbytes_from_sensor)
+    // The Sensor needs time to look up the command.
+    // Send the command only, not the command parameter.
+    uint8_t *p_msg_byte = msg_to_sensor;
+    SpiWriteByte(*(p_msg_byte++));
+    /* MacroSpiMasterWrite(*(p_msg_byte++)); */
+    // Read status from Sensor about the requested command.
+    // TODO: move this constant out to somewhere accessible by all Bridge functions.
+    uint16_t const max_reply_size = 1569; // 1 msg status byte + 2*num_pixels
+    uint8_t sensor_reply[max_reply_size];
+    ReadSensor(sensor_reply, 1);
+    uint8_t sensor_status_msg = sensor_reply[0];
+
+    // Pass Sensor OK back up to host.
+    SerialWriteByte(sensor_status_msg); // Bridge passes Sensor status to host
+
+    // Error handler: exit if sensor status is not OK. Host will handle this.
+    if (sensor_status_msg != ok) return;
+
+    // Send command parameter LED number.
+    SpiWriteByte(*(p_msg_byte++));
+    /* MacroSpiMasterWrite(*(p_msg_byte++)); */
+
+    /* Read response from SPI slave. */
+    // Get reply_size and reply from Sensor.
+    uint8_t sensor_reply_size[2]; // sensor_reply_size is always two bytes
+    ReadSensor(sensor_reply_size, 2);
+    // Get reply from Sensor (expect msg status byte and led status byte).
+    uint16_t nbytes_reply = sensor_reply_size[0]<<8 | sensor_reply_size[1];
+    ReadSensor(sensor_reply, nbytes_reply);
+
+    // Pass reply_size and reply to host.
+    uint16_t byte_count = 0;
+    while (byte_count < (2))
     {
-        SendStatus(msg_from_sensor[byte_count]);
+        SerialWriteByte(sensor_reply_size[byte_count]);
         byte_count++;
     }
+    byte_count = 0;
+    while (byte_count < (nbytes_reply))
+    {
+        SerialWriteByte(sensor_reply[byte_count]);
+        byte_count++;
+    }
+}
+void TestInvalidSensorCmd(void) // Test how Sensor responds to invalid cmd.
+{
+    SerialWriteByte(ok); // Bridge recognized this command.
+    // Send invalid command to the slave.
+    MacroSpiMasterWrite(0xFF); // Guaranteed 0xFF will never be a valid cmd key.
+    uint8_t sensor_reply[1]; ReadSensor(sensor_reply, 1);
+    // Pass Sensor response back up to the host.
+    SerialWriteByte(sensor_reply[0]); // Bridge passes Sensor status to host
 }
 
 /* =====[ Helper for CmdFn: BridgeCfgLis ]===== */

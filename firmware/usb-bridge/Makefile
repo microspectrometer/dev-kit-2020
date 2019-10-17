@@ -13,7 +13,7 @@ unit-test: ${test-output}
 avr-target: build/${board-name}.elf build/${board-name}.lst
 
 
-#=====[ AVR ]=====
+#=====[ AVR library from AtmelStudio installation ]=====
 # atmega328_lib has the .o and .a lib files and the spec file.
 atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
 

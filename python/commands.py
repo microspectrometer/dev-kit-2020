@@ -219,6 +219,8 @@ led_red = 2
 # For the USB Host both to *send* to the bridge and to *parse* its reports.
 GetBridgeLED = 0
 SetBridgeLED = 1
+GetSensorLED = 2
+test_invalid_sensor_cmd = 3
 # led_red_key = 0
 # led_green_key = 1
 # cfg_spectrometer_key = 2

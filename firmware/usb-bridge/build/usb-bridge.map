@@ -1,0 +1,1162 @@
+Archive member included to satisfy reference by file (symbol)
+
+c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                              c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o (exit)
+c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+                              build/Ft1248.o (__do_copy_data)
+c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+                              C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o (__do_clear_bss)
+
+Allocating common symbols
+Common symbol       size              file
+
+full_frame          0x620             C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+nbytes_in_frame     0x2               C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+Discarded input sections
+
+ .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .text          0x00000000        0x0 build/ReadWriteBits.o
+ .data          0x00000000        0x0 build/ReadWriteBits.o
+ .bss           0x00000000        0x0 build/ReadWriteBits.o
+ .text.SetBit   0x00000000       0x16 build/ReadWriteBits.o
+ .text.ClearBit
+                0x00000000       0x18 build/ReadWriteBits.o
+ .text.ToggleBit
+                0x00000000       0x16 build/ReadWriteBits.o
+ .text.BitIsSet
+                0x00000000       0x22 build/ReadWriteBits.o
+ .text.BitIsClear
+                0x00000000       0x1c build/ReadWriteBits.o
+ .debug_info    0x00000000      0x1a9 build/ReadWriteBits.o
+ .debug_abbrev  0x00000000       0xcd build/ReadWriteBits.o
+ .debug_loc     0x00000000       0x50 build/ReadWriteBits.o
+ .debug_aranges
+                0x00000000       0x40 build/ReadWriteBits.o
+ .debug_ranges  0x00000000       0x30 build/ReadWriteBits.o
+ .debug_line    0x00000000      0x114 build/ReadWriteBits.o
+ .debug_str     0x00000000      0x171 build/ReadWriteBits.o
+ .comment       0x00000000       0x31 build/ReadWriteBits.o
+ .debug_frame   0x00000000       0x64 build/ReadWriteBits.o
+ .text          0x00000000        0x0 build/BiColorLed.o
+ .data          0x00000000        0x0 build/BiColorLed.o
+ .bss           0x00000000        0x0 build/BiColorLed.o
+ .text.BiColorLedGreen
+                0x00000000       0x1e build/BiColorLed.o
+ .text.BiColorLedRed
+                0x00000000       0x1c build/BiColorLed.o
+ .text.BiColorLedToggleColor
+                0x00000000       0x1c build/BiColorLed.o
+ .text.BiColorLedOff
+                0x00000000       0x2c build/BiColorLed.o
+ .text.BiColorLedOn
+                0x00000000       0x1c build/BiColorLed.o
+ .text.BiColorLedIsOn
+                0x00000000       0x1e build/BiColorLed.o
+ .text.BiColorLedIsRed
+                0x00000000       0x3e build/BiColorLed.o
+ .debug_info    0x00000000      0x3c4 build/BiColorLed.o
+ .debug_abbrev  0x00000000      0x132 build/BiColorLed.o
+ .debug_loc     0x00000000      0x22e build/BiColorLed.o
+ .debug_aranges
+                0x00000000       0x50 build/BiColorLed.o
+ .debug_ranges  0x00000000       0x40 build/BiColorLed.o
+ .debug_line    0x00000000      0x1bf build/BiColorLed.o
+ .debug_str     0x00000000      0x1fb build/BiColorLed.o
+ .comment       0x00000000       0x31 build/BiColorLed.o
+ .debug_frame   0x00000000       0x84 build/BiColorLed.o
+ .text          0x00000000        0x0 build/Ft1248.o
+ .data          0x00000000        0x0 build/Ft1248.o
+ .bss           0x00000000        0x0 build/Ft1248.o
+ .text.FtHasRoomToWrite_Implementation
+                0x00000000       0x26 build/Ft1248.o
+ .text.FtSetMisoAsInput
+                0x00000000       0x24 build/Ft1248.o
+ .text.FtEnablePullupOnMiso
+                0x00000000       0x22 build/Ft1248.o
+ .text.FtSetMiosioAsInputs
+                0x00000000        0xc build/Ft1248.o
+ .text.FtEnablePullupsOnMiosio
+                0x00000000        0xe build/Ft1248.o
+ .text.FtSckLow
+                0x00000000       0x34 build/Ft1248.o
+ .text.FtSsHigh
+                0x00000000       0x32 build/Ft1248.o
+ .data.FtHasRoomToWrite
+                0x00000000        0x2 build/Ft1248.o
+ .data.FtHasDataToRead
+                0x00000000        0x2 build/Ft1248.o
+ .text          0x00000000        0x0 build/Usb.o
+ .data          0x00000000        0x0 build/Usb.o
+ .bss           0x00000000        0x0 build/Usb.o
+ .text.UsbReadN_Implementation
+                0x00000000       0xa6 build/Usb.o
+ .text.UsbRead  0x00000000       0x92 build/Usb.o
+ .text.UsbHasDataToRead
+                0x00000000        0xa build/Usb.o
+ .text.UsbHasRoomToWrite
+                0x00000000        0xa build/Usb.o
+ .data.UsbReadN
+                0x00000000        0x2 build/Usb.o
+ .text          0x00000000        0x0 build/Spi.o
+ .data          0x00000000        0x0 build/Spi.o
+ .bss           0x00000000        0x0 build/Spi.o
+ .text.DisableSpi_Implementation
+                0x00000000       0x24 build/Spi.o
+ .text.SpiMasterOpenSpi_Implementation
+                0x00000000       0x24 build/Spi.o
+ .text.SpiTransferIsDone_Implementation
+                0x00000000       0x2c build/Spi.o
+ .text.SpiResponseIsReady_Implementation
+                0x00000000       0x26 build/Spi.o
+ .text.SpiSlaveSignalDataIsReady_Implementation
+                0x00000000       0x36 build/Spi.o
+ .text.WriteSpiDataRegister_Implementation
+                0x00000000        0xc build/Spi.o
+ .text.WaitUntilSpiWriteIsDone
+                0x00000000       0x32 build/Spi.o
+ .text.OpenSpiSlave
+                0x00000000       0x24 build/Spi.o
+ .text.CloseSpiSlave
+                0x00000000       0x22 build/Spi.o
+ .text.SpiLaunchByte
+                0x00000000        0xc build/Spi.o
+ .text.SpiMasterReadByte
+                0x00000000       0x68 build/Spi.o
+ .text.SpiMasterWriteByte
+                0x00000000       0x64 build/Spi.o
+ .text.SpiMasterWriteN_NoInlineHelpers
+                0x00000000       0x96 build/Spi.o
+ .text.SpiSlaveShowsDataReady
+                0x00000000       0x26 build/Spi.o
+ .text.IsSpiSlaveReadyToSend
+                0x00000000       0x2c build/Spi.o
+ .text.SpiMasterWaitForSlaveReady
+                0x00000000       0x34 build/Spi.o
+ .text.SpiClearFlagTransferIsDone
+                0x00000000        0xc build/Spi.o
+ .text.SpiMasterDisable
+                0x00000000       0x6e build/Spi.o
+ .text.SpiMasterWrite
+                0x00000000       0x3c build/Spi.o
+ .text.SpiMasterRead
+                0x00000000       0x42 build/Spi.o
+ .text.SpiMasterWaitForResponse
+                0x00000000       0x10 build/Spi.o
+ .text.SpiSlaveInit
+                0x00000000       0x4c build/Spi.o
+ .text.SpiEnableInterrupt
+                0x00000000       0x3e build/Spi.o
+ .text.SpiSlaveRead
+                0x00000000       0x18 build/Spi.o
+ .text.SpiSlaveSendBytes
+                0x00000000       0x5e build/Spi.o
+ .data.WriteSpiDataRegister
+                0x00000000        0x2 build/Spi.o
+ .data.SpiSlaveSignalDataIsReady
+                0x00000000        0x2 build/Spi.o
+ .data.SpiResponseIsReady
+                0x00000000        0x2 build/Spi.o
+ .rodata.test_unknown_cmd
+                0x00000000        0x1 build/Spi.o
+ .data.SpiTransferIsDone
+                0x00000000        0x2 build/Spi.o
+ .data.SpiMasterCloseSpi
+                0x00000000        0x2 build/Spi.o
+ .data.SpiMasterOpenSpi
+                0x00000000        0x2 build/Spi.o
+ .data.DisableSpi
+                0x00000000        0x2 build/Spi.o
+ .text          0x00000000        0x0 build/Lis.o
+ .data          0x00000000        0x0 build/Lis.o
+ .bss           0x00000000        0x0 build/Lis.o
+ .text.LisRunClkAt50kHz_Implementation
+                0x00000000       0x3c build/Lis.o
+ .text.LisClkOn_Implementation
+                0x00000000        0xa build/Lis.o
+ .text.OutputCfgByte
+                0x00000000       0xd2 build/Lis.o
+ .text.LisWriteCfg
+                0x00000000      0x1bc build/Lis.o
+ .text.EnterLisProgrammingMode
+                0x00000000       0x54 build/Lis.o
+ .text.ExitLisProgrammingMode
+                0x00000000       0x46 build/Lis.o
+ .text.LisInit  0x00000000       0xa4 build/Lis.o
+ .text.LisClkOff
+                0x00000000       0x2c build/Lis.o
+ .text.LisExpose
+                0x00000000        0x2 build/Lis.o
+ .data.Lis_exposure_is_done
+                0x00000000        0x1 build/Lis.o
+ .data.LisClkOn
+                0x00000000        0x2 build/Lis.o
+ .data.LisRunClkAt50kHz
+                0x00000000        0x2 build/Lis.o
+ .debug_info    0x00000000      0xaa7 build/Lis.o
+ .debug_abbrev  0x00000000      0x23c build/Lis.o
+ .debug_loc     0x00000000      0x6af build/Lis.o
+ .debug_aranges
+                0x00000000       0x60 build/Lis.o
+ .debug_ranges  0x00000000       0xc8 build/Lis.o
+ .debug_line    0x00000000      0x385 build/Lis.o
+ .debug_str     0x00000000      0x3bb build/Lis.o
+ .comment       0x00000000       0x31 build/Lis.o
+ .debug_frame   0x00000000      0x118 build/Lis.o
+ .text          0x00000000        0x0 build/Pwm.o
+ .data          0x00000000        0x0 build/Pwm.o
+ .bss           0x00000000        0x0 build/Pwm.o
+ .text.ResetCounterAtTop
+                0x00000000       0x38 build/Pwm.o
+ .text.TopIsOcr0a
+                0x00000000       0x22 build/Pwm.o
+ .text.PwmClkIsCpuClk_Implementation
+                0x00000000       0x54 build/Pwm.o
+ .text.EnableOutputSetUntilMatch
+                0x00000000       0x3c build/Pwm.o
+ .text.PwmDisableOutput_Implementation
+                0x00000000       0x3e build/Pwm.o
+ .text.WaitForPwmOutputRisingEdge
+                0x00000000       0x2e build/Pwm.o
+ .data.PwmDisableOutput
+                0x00000000        0x2 build/Pwm.o
+ .data.PwmEnableOutputSetUntilMatch
+                0x00000000        0x2 build/Pwm.o
+ .data.PwmClkIsCpuClk
+                0x00000000        0x2 build/Pwm.o
+ .data.PwmTopIsOcr0a
+                0x00000000        0x2 build/Pwm.o
+ .data.PwmResetCounterAtTop
+                0x00000000        0x2 build/Pwm.o
+ .debug_info    0x00000000      0x40f build/Pwm.o
+ .debug_abbrev  0x00000000      0x11d build/Pwm.o
+ .debug_loc     0x00000000       0xf0 build/Pwm.o
+ .debug_aranges
+                0x00000000       0x48 build/Pwm.o
+ .debug_ranges  0x00000000       0x38 build/Pwm.o
+ .debug_line    0x00000000      0x17c build/Pwm.o
+ .debug_str     0x00000000      0x2bd build/Pwm.o
+ .comment       0x00000000       0x31 build/Pwm.o
+ .debug_frame   0x00000000       0x74 build/Pwm.o
+ .text          0x00000000        0x0 build/Bridge.o
+ .data          0x00000000        0x0 build/Bridge.o
+ .bss           0x00000000        0x0 build/Bridge.o
+ .text.WriteSensor_Implementation
+                0x00000000       0xa6 build/Bridge.o
+ .text.BytesComing
+                0x00000000       0x1a build/Bridge.o
+ .text.oldLookupBridgeCmd
+                0x00000000       0x10 build/Bridge.o
+ .text.CfgBytesAreValid
+                0x00000000      0x1ba build/Bridge.o
+ .text.BridgeCfgLis
+                0x00000000       0xb6 build/Bridge.o
+ .text.CfgTurnsOffAllPixels
+                0x00000000       0x46 build/Bridge.o
+ .text.XOR      0x00000000        0xe build/Bridge.o
+ .text.AllPixelsAreOff
+                0x00000000       0x36 build/Bridge.o
+ .text.AllPixelsAreOn
+                0x00000000       0x66 build/Bridge.o
+ .text.CfgTurnsRowPartiallyOn
+                0x00000000       0xc4 build/Bridge.o
+ .text.UsbWriteStatusOk
+                0x00000000       0x2a build/Bridge.o
+ .text.UsbWriteStatusBadArgs
+                0x00000000       0x2c build/Bridge.o
+ .text.UsbWriteStatusMissingArgs
+                0x00000000       0x2c build/Bridge.o
+ .text.UsbWriteStatusSpiBusError
+                0x00000000       0x2c build/Bridge.o
+ .rodata.row1_mask.2146
+                0x00000000        0x4 build/Bridge.o
+ .rodata.row2_mask.2147
+                0x00000000        0x4 build/Bridge.o
+ .rodata.row3_mask.2148
+                0x00000000        0x4 build/Bridge.o
+ .rodata.row4_mask.2149
+                0x00000000        0x4 build/Bridge.o
+ .rodata.row5_mask.2150
+                0x00000000        0x4 build/Bridge.o
+ .rodata.pm.2151
+                0x00000000        0xa build/Bridge.o
+ .data.WriteSensor
+                0x00000000        0x2 build/Bridge.o
+ .rodata.TestInvalidSensorCmd_key
+                0x00000000        0x1 build/Bridge.o
+ .rodata.SetSensorLED_key
+                0x00000000        0x1 build/Bridge.o
+ .rodata.GetSensorLED_key
+                0x00000000        0x1 build/Bridge.o
+ .rodata.SetBridgeLED_key
+                0x00000000        0x1 build/Bridge.o
+ .rodata.GetBridgeLED_key
+                0x00000000        0x1 build/Bridge.o
+ .rodata.BridgeCfgLis_key
+                0x00000000        0x1 build/Bridge.o
+ .rodata.led_1  0x00000000        0x1 build/Bridge.o
+ .rodata.led_0  0x00000000        0x1 build/Bridge.o
+ .rodata.led_red
+                0x00000000        0x1 build/Bridge.o
+ .rodata.led_green
+                0x00000000        0x1 build/Bridge.o
+ .rodata.led_off
+                0x00000000        0x1 build/Bridge.o
+ .rodata.error  0x00000000        0x1 build/Bridge.o
+ .rodata.ok     0x00000000        0x1 build/Bridge.o
+ .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .text.AutoExpose
+                0x00000000       0x76 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .text.Bridge_data_flow_between_USB_Host_and_SpiSlave
+                0x00000000       0x3c C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .text.SetExposureTime
+                0x00000000       0xa2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .text.SpiMasterPassLisFrame
+                0x00000000       0xf4 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .text.DoCmdSendFourDummyBytes
+                0x00000000       0x66 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .text.SpiMaster_pass_commands_from_USB_Host_pass_data_from_slave_old
+                0x00000000      0x2fc C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.sizeof_half_frame
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.sizeof_full_frame
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.fake_adc_reading
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_124
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_auto_expose
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_1234
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_123
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_12
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_5
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_4
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_3
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_2
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_1
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_rowselect_12345
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_gain_1x
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_gain_2pt5x
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_gain_4x
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_lis_gain_5x
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_write_cfg_to_lis
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_summing_mode_on
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_cfg_summing_mode_off
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_enable_spi_master
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_disable_spi_master
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_set_exposure_time
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_send_lis_frame
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_send_adc_frame
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_send_fake_adc_reading
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_send_adc_reading
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_send_dummy_frame
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_send_four_dummy_bytes
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.cmd_send_dummy_byte
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.Spi_InterruptEnable
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.FtMiosio7
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.FtMiosio6
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.FtMiosio5
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.FtMiosio4
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.FtMiosio3
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.FtMiosio2
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.FtMiosio1
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .rodata.FtMiosio0
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+ .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .text.GlobalInterruptEnable_Implementation
+                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .text.GlobalInterruptDisable_Implementation
+                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .text.Delay3CpuCyclesPerTick_Implementation
+                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .data.Delay3CpuCyclesPerTick
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .data.GlobalInterruptDisable
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .data.GlobalInterruptEnable
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .debug_info    0x00000000      0x142 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .debug_abbrev  0x00000000       0xdd C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .debug_loc     0x00000000       0x34 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .debug_aranges
+                0x00000000       0x30 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .debug_ranges  0x00000000       0x20 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .debug_line    0x00000000      0x141 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .debug_str     0x00000000      0x201 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .comment       0x00000000       0x31 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .debug_frame   0x00000000       0x44 C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+ .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc.mul
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc.div
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc   0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc.fixed
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.mul
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.div
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc   0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.fixed
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+ .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.mul
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.div
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.fixed
+                0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00020000         xr
+data             0x00800060         0x0000ffa0         rw !x
+eeprom           0x00810000         0x00010000         rw !x
+fuse             0x00820000         0x00000003         rw !x
+lock             0x00830000         0x00000400         rw !x
+signature        0x00840000         0x00000400         rw !x
+user_signatures  0x00850000         0x00000400         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+Address of section .data set to 0x800100
+LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+LOAD build/ReadWriteBits.o
+LOAD build/BiColorLed.o
+LOAD build/Ft1248.o
+LOAD build/Usb.o
+LOAD build/Spi.o
+LOAD build/Lis.o
+LOAD build/Pwm.o
+LOAD build/Bridge.o
+LOAD C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+LOAD C:\Users\Mike\AppData\Local\Temp\ccuVgng4.o
+START GROUP
+LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a
+LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
+LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a
+LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libatmega328p.a
+END GROUP
+                0x00020000                __TEXT_REGION_LENGTH__ = DEFINED (__TEXT_REGION_LENGTH__)?__TEXT_REGION_LENGTH__:0x20000
+                0x0000ffa0                __DATA_REGION_LENGTH__ = DEFINED (__DATA_REGION_LENGTH__)?__DATA_REGION_LENGTH__:0xffa0
+                0x00010000                __EEPROM_REGION_LENGTH__ = DEFINED (__EEPROM_REGION_LENGTH__)?__EEPROM_REGION_LENGTH__:0x10000
+                [0x00000003]                __FUSE_REGION_LENGTH__ = DEFINED (__FUSE_REGION_LENGTH__)?__FUSE_REGION_LENGTH__:0x400
+                0x00000400                __LOCK_REGION_LENGTH__ = DEFINED (__LOCK_REGION_LENGTH__)?__LOCK_REGION_LENGTH__:0x400
+                0x00000400                __SIGNATURE_REGION_LENGTH__ = DEFINED (__SIGNATURE_REGION_LENGTH__)?__SIGNATURE_REGION_LENGTH__:0x400
+                0x00000400                __USER_SIGNATURE_REGION_LENGTH__ = DEFINED (__USER_SIGNATURE_REGION_LENGTH__)?__USER_SIGNATURE_REGION_LENGTH__:0x400
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x00000000      0xb44
+ *(.vectors)
+ .vectors       0x00000000       0x68 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+                0x00000000                __vector_default
+                0x00000000                __vectors
+ *(.vectors)
+ *(.progmem.gcc*)
+                0x00000068                . = ALIGN (0x2)
+                0x00000068                __trampolines_start = .
+ *(.trampolines)
+ .trampolines   0x00000068        0x0 linker stubs
+ *(.trampolines*)
+                0x00000068                __trampolines_end = .
+ *libprintf_flt.a:*(.progmem.data)
+ *libc.a:*(.progmem.data)
+ *(.progmem*)
+                0x00000068                . = ALIGN (0x2)
+ *(.jumptables)
+ *(.jumptables*)
+ *(.lowtext)
+ *(.lowtext*)
+                0x00000068                __ctors_start = .
+ *(.ctors)
+                0x00000068                __ctors_end = .
+                0x00000068                __dtors_start = .
+ *(.dtors)
+                0x00000068                __dtors_end = .
+ SORT(*)(.ctors)
+ SORT(*)(.dtors)
+ *(.init0)
+ .init0         0x00000068        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+                0x00000068                __init
+ *(.init0)
+ *(.init1)
+ *(.init1)
+ *(.init2)
+ .init2         0x00000068        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ *(.init2)
+ *(.init3)
+ *(.init3)
+ *(.init4)
+ .init4         0x00000074       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
+                0x00000074                __do_copy_data
+ .init4         0x0000008a       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
+                0x0000008a                __do_clear_bss
+ *(.init4)
+ *(.init5)
+ *(.init5)
+ *(.init6)
+ *(.init6)
+ *(.init7)
+ *(.init7)
+ *(.init8)
+ *(.init8)
+ *(.init9)
+ .init9         0x0000009a        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ *(.init9)
+ *(.text)
+ .text          0x000000a2        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+                0x000000a2                __vector_22
+                0x000000a2                __vector_1
+                0x000000a2                __vector_24
+                0x000000a2                __vector_12
+                0x000000a2                __bad_interrupt
+                0x000000a2                __vector_6
+                0x000000a2                __vector_3
+                0x000000a2                __vector_23
+                0x000000a2                __vector_25
+                0x000000a2                __vector_11
+                0x000000a2                __vector_13
+                0x000000a2                __vector_17
+                0x000000a2                __vector_19
+                0x000000a2                __vector_7
+                0x000000a2                __vector_5
+                0x000000a2                __vector_4
+                0x000000a2                __vector_9
+                0x000000a2                __vector_2
+                0x000000a2                __vector_21
+                0x000000a2                __vector_15
+                0x000000a2                __vector_8
+                0x000000a2                __vector_14
+                0x000000a2                __vector_10
+                0x000000a2                __vector_16
+                0x000000a2                __vector_18
+                0x000000a2                __vector_20
+                0x000000a6                . = ALIGN (0x2)
+ *(.text.*)
+ .text.FtSendCommand_Implementation
+                0x000000a6       0x3a build/Ft1248.o
+ .text.FtBusTurnaround_Implementation
+                0x000000e0       0x28 build/Ft1248.o
+ .text.FtWrite_Implementation
+                0x00000108       0x3e build/Ft1248.o
+ .text.FtActivateInterface_Implementation
+                0x00000146       0x24 build/Ft1248.o
+ .text.FtDeactivateInterface_Implementation
+                0x0000016a       0x22 build/Ft1248.o
+ .text.FtPushData_Implementation
+                0x0000018c       0x22 build/Ft1248.o
+ .text.FtPullData_Implementation
+                0x000001ae       0x24 build/Ft1248.o
+ .text.FtLetMasterDriveBus_Implementation
+                0x000001d2        0xe build/Ft1248.o
+ .text.FtLetSlaveDriveBus_Implementation
+                0x000001e0        0xc build/Ft1248.o
+ .text.FtIsBusOk_Implementation
+                0x000001ec       0x26 build/Ft1248.o
+ .text.FtReadData_Implementation
+                0x00000212        0xc build/Ft1248.o
+ .text.FtWriteData_Implementation
+                0x0000021e        0xc build/Ft1248.o
+ .text.FtRead_Implementation
+                0x0000022a       0x44 build/Ft1248.o
+ .text.FtOutputByte_Implementation
+                0x0000026e        0xc build/Ft1248.o
+ .text.FtInit   0x0000027a       0x90 build/Ft1248.o
+                0x0000027a                FtInit
+ .text.UsbWrite_Implementation
+                0x0000030a       0x86 build/Usb.o
+ .text.UsbReadBytes_Implementation
+                0x00000390       0x78 build/Usb.o
+ .text.UsbInit  0x00000408        0x4 build/Usb.o
+                0x00000408                UsbInit
+ .text.UsbReadOneByte
+                0x0000040c       0x52 build/Usb.o
+                0x0000040c                UsbReadOneByte
+ .text.ClearPendingSpiInterrupt_Implementation
+                0x0000045e       0x14 build/Spi.o
+ .text.ReadSpiStatusRegister_Implementation
+                0x00000472        0xc build/Spi.o
+ .text.EnableSpi_Implementation
+                0x0000047e       0x22 build/Spi.o
+ .text.SpiMasterCloseSpi_Implementation
+                0x000004a0       0x22 build/Spi.o
+ .text.ReadSpiDataRegister_Implementation
+                0x000004c2        0xc build/Spi.o
+ .text.SpiMasterInit
+                0x000004ce       0xf8 build/Spi.o
+                0x000004ce                SpiMasterInit
+ .text.SerialWriteByte_Implementation
+                0x000005c6       0x26 build/Bridge.o
+ .text.SpiWriteByte_Implementation
+                0x000005ec       0x64 build/Bridge.o
+ .text.ReadSensor_Implementation
+                0x00000650       0xf0 build/Bridge.o
+ .text.TestInvalidSensorCmd
+                0x00000740       0x9c build/Bridge.o
+                0x00000740                TestInvalidSensorCmd
+ .text.GetBridgeLED
+                0x000007dc       0xce build/Bridge.o
+                0x000007dc                GetBridgeLED
+ .text.SetBridgeLED
+                0x000008aa       0xe6 build/Bridge.o
+                0x000008aa                SetBridgeLED
+ .text.BridgeGetSensorLED
+                0x00000990      0x120 build/Bridge.o
+                0x00000990                BridgeGetSensorLED
+ .text.LookupBridgeCmd
+                0x00000ab0       0x1c build/Bridge.o
+                0x00000ab0                LookupBridgeCmd
+ .text.UsbWriteStatusInvalid
+                0x00000acc       0x2c build/Bridge.o
+                0x00000acc                UsbWriteStatusInvalid
+ .text.startup.main
+                0x00000af8       0x48 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00000af8                main
+                0x00000b40                . = ALIGN (0x2)
+ *(.fini9)
+ .fini9         0x00000b40        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000b40                _exit
+                0x00000b40                exit
+ *(.fini9)
+ *(.fini8)
+ *(.fini8)
+ *(.fini7)
+ *(.fini7)
+ *(.fini6)
+ *(.fini6)
+ *(.fini5)
+ *(.fini5)
+ *(.fini4)
+ *(.fini4)
+ *(.fini3)
+ *(.fini3)
+ *(.fini2)
+ *(.fini2)
+ *(.fini1)
+ *(.fini1)
+ *(.fini0)
+ .fini0         0x00000b40        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ *(.fini0)
+                0x00000b44                _etext = .
+
+.data           0x00800100       0x64 load address 0x00000b44
+                0x00800100                PROVIDE (__data_start, .)
+ *(.data)
+ *(.data*)
+ .data.FtWriteData
+                0x00800100        0x2 build/Ft1248.o
+                0x00800100                FtWriteData
+ .data.FtReadData
+                0x00800102        0x2 build/Ft1248.o
+                0x00800102                FtReadData
+ .data.FtIsBusOk
+                0x00800104        0x2 build/Ft1248.o
+                0x00800104                FtIsBusOk
+ .data.FtLetSlaveDriveBus
+                0x00800106        0x2 build/Ft1248.o
+                0x00800106                FtLetSlaveDriveBus
+ .data.FtLetMasterDriveBus
+                0x00800108        0x2 build/Ft1248.o
+                0x00800108                FtLetMasterDriveBus
+ .data.FtPullData
+                0x0080010a        0x2 build/Ft1248.o
+                0x0080010a                FtPullData
+ .data.FtOutputByte
+                0x0080010c        0x2 build/Ft1248.o
+                0x0080010c                FtOutputByte
+ .data.FtPushData
+                0x0080010e        0x2 build/Ft1248.o
+                0x0080010e                FtPushData
+ .data.FtDeactivateInterface
+                0x00800110        0x2 build/Ft1248.o
+                0x00800110                FtDeactivateInterface
+ .data.FtActivateInterface
+                0x00800112        0x2 build/Ft1248.o
+                0x00800112                FtActivateInterface
+ .data.FtWrite  0x00800114        0x2 build/Ft1248.o
+                0x00800114                FtWrite
+ .data.FtRead   0x00800116        0x2 build/Ft1248.o
+                0x00800116                FtRead
+ .data.FtBusTurnaround
+                0x00800118        0x2 build/Ft1248.o
+                0x00800118                FtBusTurnaround
+ .data.FtSendCommand
+                0x0080011a        0x2 build/Ft1248.o
+                0x0080011a                FtSendCommand
+ .data.UsbWrite
+                0x0080011c        0x2 build/Usb.o
+                0x0080011c                UsbWrite
+ .data.UsbReadBytes
+                0x0080011e        0x2 build/Usb.o
+                0x0080011e                UsbReadBytes
+ .data.ReadSpiDataRegister
+                0x00800120        0x2 build/Spi.o
+                0x00800120                ReadSpiDataRegister
+ .data.EnableSpi
+                0x00800122        0x2 build/Spi.o
+                0x00800122                EnableSpi
+ .data.ReadSpiStatusRegister
+                0x00800124        0x2 build/Spi.o
+                0x00800124                ReadSpiStatusRegister
+ .data.ClearPendingSpiInterrupt
+                0x00800126        0x2 build/Spi.o
+                0x00800126                ClearPendingSpiInterrupt
+ .data.ReadSensor
+                0x00800128        0x2 build/Bridge.o
+                0x00800128                ReadSensor
+ .data.SpiWriteByte
+                0x0080012a        0x2 build/Bridge.o
+                0x0080012a                SpiWriteByte
+ .data.SerialWriteByte
+                0x0080012c        0x2 build/Bridge.o
+                0x0080012c                SerialWriteByte
+ *(.gnu.linkonce.d*)
+ *(.rodata)
+ *(.rodata*)
+ .rodata.FtCmd_Write
+                0x0080012e        0x1 build/Ft1248.o
+                0x0080012e                FtCmd_Write
+ .rodata.FtCmd_Read
+                0x0080012f        0x1 build/Ft1248.o
+                0x0080012f                FtCmd_Read
+ .rodata.slave_ignore
+                0x00800130        0x1 build/Spi.o
+                0x00800130                slave_ignore
+ .rodata.pf.2010
+                0x00800131        0x8 build/Bridge.o
+ .rodata.Spi_InterruptFlag
+                0x00800139        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800139                Spi_InterruptFlag
+ .rodata.Spi_DoubleClockRate
+                0x0080013a        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080013a                Spi_DoubleClockRate
+ .rodata.Spi_Enable
+                0x0080013b        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080013b                Spi_Enable
+ .rodata.Spi_ClockRateBit1
+                0x0080013c        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080013c                Spi_ClockRateBit1
+ .rodata.Spi_ClockRateBit0
+                0x0080013d        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080013d                Spi_ClockRateBit0
+ .rodata.Spi_MasterSlaveSelect
+                0x0080013e        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080013e                Spi_MasterSlaveSelect
+ .rodata.Spi_Sck
+                0x0080013f        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080013f                Spi_Sck
+ .rodata.Spi_Miso
+                0x00800140        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800140                Spi_Miso
+ .rodata.Spi_Mosi
+                0x00800141        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800141                Spi_Mosi
+ .rodata.Spi_Ss
+                0x00800142        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800142                Spi_Ss
+ .rodata.Spi_spdr
+                0x00800143        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800143                Spi_spdr
+ .rodata.Spi_spsr
+                0x00800145        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800145                Spi_spsr
+ .rodata.Spi_spcr
+                0x00800147        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800147                Spi_spcr
+ .rodata.Spi_pin
+                0x00800149        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800149                Spi_pin
+ .rodata.Spi_port
+                0x0080014b        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080014b                Spi_port
+ .rodata.Spi_ddr
+                0x0080014d        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080014d                Spi_ddr
+ .rodata.Ft1248_Miso
+                0x0080014f        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080014f                Ft1248_Miso
+ .rodata.Ft1248_Sck
+                0x00800150        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800150                Ft1248_Sck
+ .rodata.Ft1248_Ss
+                0x00800151        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800151                Ft1248_Ss
+ .rodata.FtMiosio_pin
+                0x00800152        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800152                FtMiosio_pin
+ .rodata.FtMiosio_port
+                0x00800154        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800154                FtMiosio_port
+ .rodata.FtMiosio_ddr
+                0x00800156        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800156                FtMiosio_ddr
+ .rodata.Ft1248_pin
+                0x00800158        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800158                Ft1248_pin
+ .rodata.Ft1248_port
+                0x0080015a        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080015a                Ft1248_port
+ .rodata.Ft1248_ddr
+                0x0080015c        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080015c                Ft1248_ddr
+ .rodata.status_led
+                0x0080015e        0x1 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080015e                status_led
+ .rodata.BiColorLed_port
+                0x0080015f        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x0080015f                BiColorLed_port
+ .rodata.BiColorLed_ddr
+                0x00800161        0x2 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800161                BiColorLed_ddr
+ *(.gnu.linkonce.r*)
+                0x00800164                . = ALIGN (0x2)
+ *fill*         0x00800163        0x1 
+                0x00800164                _edata = .
+                0x00800164                PROVIDE (__data_end, .)
+
+.bss            0x00800164      0x622
+                0x00800164                PROVIDE (__bss_start, .)
+ *(.bss)
+ *(.bss*)
+ *(COMMON)
+ COMMON         0x00800164      0x622 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                0x00800164                full_frame
+                0x00800784                nbytes_in_frame
+                0x00800786                PROVIDE (__bss_end, .)
+                0x00000b44                __data_load_start = LOADADDR (.data)
+                0x00000ba8                __data_load_end = (__data_load_start + SIZEOF (.data))
+
+.noinit         0x00800786        0x0
+                [!provide]                PROVIDE (__noinit_start, .)
+ *(.noinit*)
+                [!provide]                PROVIDE (__noinit_end, .)
+                0x00800786                _end = .
+                [!provide]                PROVIDE (__heap_start, .)
+
+.eeprom         0x00810000        0x0
+ *(.eeprom*)
+                0x00810000                __eeprom_end = .
+
+.fuse
+ *(.fuse)
+ *(.lfuse)
+ *(.hfuse)
+ *(.efuse)
+
+.lock
+ *(.lock*)
+
+.signature
+ *(.signature*)
+
+.user_signatures
+ *(.user_signatures*)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x00000000       0x30
+ *(.comment)
+ .comment       0x00000000       0x30 build/Ft1248.o
+                                 0x31 (size before relaxing)
+ .comment       0x00000030       0x31 build/Usb.o
+ .comment       0x00000030       0x31 build/Spi.o
+ .comment       0x00000030       0x31 build/Bridge.o
+ .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+.note.gnu.avr.deviceinfo
+                0x00000000       0x40
+ .note.gnu.avr.deviceinfo
+                0x00000000       0x40 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+
+.note.gnu.build-id
+ *(.note.gnu.build-id)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000      0x340
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0xb8 build/Ft1248.o
+ .debug_aranges
+                0x000000b8       0x58 build/Usb.o
+ .debug_aranges
+                0x00000110      0x110 build/Spi.o
+ .debug_aranges
+                0x00000220       0xd0 build/Bridge.o
+ .debug_aranges
+                0x000002f0       0x50 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x00000000     0x5989
+ *(.debug_info .gnu.linkonce.wi.*)
+ .debug_info    0x00000000      0x5f4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_info    0x000005f4      0x88d build/Ft1248.o
+ .debug_info    0x00000e81      0x713 build/Usb.o
+ .debug_info    0x00001594      0xe06 build/Spi.o
+ .debug_info    0x0000239a     0x1d19 build/Bridge.o
+ .debug_info    0x000040b3     0x18d6 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+.debug_abbrev   0x00000000     0x1568
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000      0x5a2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_abbrev  0x000005a2      0x287 build/Ft1248.o
+ .debug_abbrev  0x00000829      0x240 build/Usb.o
+ .debug_abbrev  0x00000a69      0x3b2 build/Spi.o
+ .debug_abbrev  0x00000e1b      0x44e build/Bridge.o
+ .debug_abbrev  0x00001269      0x2ff C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+.debug_line     0x00000000     0x22ae
+ *(.debug_line .debug_line.* .debug_line_end)
+ .debug_line    0x00000000       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_line    0x0000001a      0x3d4 build/Ft1248.o
+ .debug_line    0x000003ee      0x2ca build/Usb.o
+ .debug_line    0x000006b8      0x6ae build/Spi.o
+ .debug_line    0x00000d66      0x807 build/Bridge.o
+ .debug_line    0x0000156d      0xd41 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+.debug_frame    0x00000000      0x994
+ *(.debug_frame)
+ .debug_frame   0x00000000      0x1a4 build/Ft1248.o
+ .debug_frame   0x000001a4      0x118 build/Usb.o
+ .debug_frame   0x000002bc      0x298 build/Spi.o
+ .debug_frame   0x00000554      0x32c build/Bridge.o
+ .debug_frame   0x00000880      0x114 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+.debug_str      0x00000000     0x16e0
+ *(.debug_str)
+ .debug_str     0x00000000      0x208 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_str     0x00000208      0x4dc build/Ft1248.o
+                                0x515 (size before relaxing)
+ .debug_str     0x000006e4      0x19e build/Usb.o
+                                0x387 (size before relaxing)
+ .debug_str     0x00000882      0x569 build/Spi.o
+                                0x748 (size before relaxing)
+ .debug_str     0x00000deb      0x4b3 build/Bridge.o
+                                0x7c5 (size before relaxing)
+ .debug_str     0x0000129e      0x442 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+                                0x900 (size before relaxing)
+
+.debug_loc      0x00000000     0x3c42
+ *(.debug_loc)
+ .debug_loc     0x00000000      0x31c build/Ft1248.o
+ .debug_loc     0x0000031c      0x82f build/Usb.o
+ .debug_loc     0x00000b4b      0x6e8 build/Spi.o
+ .debug_loc     0x00001233     0x19a4 build/Bridge.o
+ .debug_loc     0x00002bd7     0x106b C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges   0x00000000      0x5d8
+ *(.debug_ranges)
+ .debug_ranges  0x00000000       0xa8 build/Ft1248.o
+ .debug_ranges  0x000000a8       0x60 build/Usb.o
+ .debug_ranges  0x00000108      0x100 build/Spi.o
+ .debug_ranges  0x00000208      0x2c0 build/Bridge.o
+ .debug_ranges  0x000004c8      0x110 C:\Users\Mike\AppData\Local\Temp\ccm48D2y.o
+
+.debug_macro
+ *(.debug_macro)
+OUTPUT(build/usb-bridge.elf elf32-avr)
+LOAD linker stubs

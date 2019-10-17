@@ -60,9 +60,9 @@ void API_GetSensorLED(bool run_test) // [ ] unit test GetSensorLED
 void ApiSupport(bool run_test)
 {if (run_test)
     {
-    setUp = SetUp_SendStatus_writes_one_byte_over_USB;
-    tearDown = TearDown_SendStatus_writes_one_byte_over_USB;
-    RUN_TEST(SendStatus_writes_one_byte_over_USB);
+    setUp = SetUp_SerialWriteByte_writes_one_byte_over_USB;
+    tearDown = TearDown_SerialWriteByte_writes_one_byte_over_USB;
+    RUN_TEST(SerialWriteByte_writes_one_byte_over_USB);
 
     setUp = SetUp_Stub_UsbReadN_with_value_in_read_buffer;
     tearDown = TearDown_Stub_UsbReadN_with_value_in_read_buffer;
@@ -111,20 +111,6 @@ void DevelopingInlineSpiMaster(bool run_test) {if (run_test) {
     RUN_TEST(SpiMasterWriteByte_sends_one_byte_to_SpiSlave);
 }}
 
-/* TODO: move this to a `Sensor` lib */
-void DevelopingSpiSlave(bool run_test) {if (run_test) {
-    setUp = SetUp_SpiSlaveSendBytes; tearDown = TearDown_SpiSlaveSendBytes;
-    // These tests require mocking out the calls made by SpiSlaveSendBytes,
-    // otherwise they hang waiting for a reply from an imaginary SpiMaster!
-    RUN_TEST(LookupSensorCmd_example_calling_the_returned_command);
-    RUN_TEST(SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd);
-    RUN_TEST(SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name);
-    //
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LookupSensorCmd_returns_Nth_fn_for_Nth_key);
-    RUN_TEST(LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table);
-}}
-
 int main(void)
 {
     UNITY_BEGIN();
@@ -136,7 +122,6 @@ int main(void)
     /* ---DEPRECATED--- */
     UsbCmdParser_JumpTableSandbox (Nope); // [ ] more functionality to implement
     DevelopingInlineSpiMaster (Nope); // [x] pass
-    DevelopingSpiSlave (Nope); // [ ] ignoring tests until lib `Sensor` exists
     /* LookupSensorCmd_example_calling_the_returned_command() */
     /* Make this pass by adding code to turn usb-bridge status_led green if
      * status is OK. */
@@ -149,9 +134,14 @@ int main(void)
     /* API (Yep); */
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
-    setUp = SetUp_GetSensorLED; tearDown = TearDown_GetSensorLED;
-    RUN_TEST(GetSensorLED_reads_one_byte_of_payload);
-    RUN_TEST(GetSensorLED_passes_cmd_and_led_number_to_Sensor);
-    RUN_TEST(GetSensorLED_reads_msg_status_and_led_status_from_Sensor);
+    setUp = SetUp_BridgeGetSensorLED; tearDown = TearDown_BridgeGetSensorLED;
+    RUN_TEST(BridgeGetSensorLED_reads_one_byte_of_payload);
+    RUN_TEST(BridgeGetSensorLED_responds_ok_after_reading_host_payload);
+    RUN_TEST(BridgeGetSensorLED_passes_cmd_to_Sensor_and_waits_for_response);
+    RUN_TEST(BridgeGetSensorLED_passes_Sensor_command_response_back_to_host);
+    RUN_TEST(BridgeGetSensorLED_exits_if_Sensor_responds_error_to_command);
+    RUN_TEST(BridgeGetSensorLED_sends_Sensor_led_number_if_Sensor_responds_ok_to_command);
+    RUN_TEST(BridgeGetSensorLED_reads_two_bytes_of_reply_size_and_nbytes_of_reply_from_Sensor);
+    RUN_TEST(BridgeGetSensorLED_passes_reply_size_and_reply_to_host);
     return UNITY_END();
 }
