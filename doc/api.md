@@ -1,5 +1,13 @@
 % USB Protocol Design for Developing the Firmware and Host-PC Python API
 
+# 2019-10-17 update
+- reply size is always standard
+- e.g, GetBridgeLED: if status is error, still send one byte placeholder for led
+  status
+- implement SPI without needing a handshake after the command byte (use
+  interrupts)
+- check that USB buffer does not overflow
+
 # See Sean's UsbProtocolTable
 - created as an OpenOffice spreadsheet
 - PDF is the pretty-print version

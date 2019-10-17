@@ -5,13 +5,13 @@
 #include "stdlib.h" // defines NULL
 
 /* TODO: pull these constants from a common file along with Bridge.c */
-sensor_cmd_key const dummy0_key = 0;
-sensor_cmd_key const dummy1_key = 1;
-sensor_cmd_key const GetSensorLED_key = 2;
-sensor_cmd_key const SensorCfgLis_key = 3;
+/* sensor_cmd_key const dummy0_key = 0; */
+/* sensor_cmd_key const dummy1_key = 1; */
+sensor_cmd_key const GetSensorLED_key = 3;
+sensor_cmd_key const SensorCfgLis_key = 4;
 
-void dummy0(void){}
-void dummy1(void){}
+
+void NullCommand(void){}
 
 status_byte ok = 0; 
 status_byte error = 1; 
@@ -146,8 +146,9 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
     /* pf is an array of pointers to SensorCmd functions */
     /* pf lives in static memory, not on the `LookupSensorCmd` stack frame */
     static SensorCmd* const pf[] = {
-        dummy0,
-        dummy1,
+        NullCommand,
+        NULL, // placeholder to bump key value of later function names
+        NULL, // placeholder to bump key value of later function names
         GetSensorLED,
         SensorCfgLis,
         /* SensorLed1Green, */

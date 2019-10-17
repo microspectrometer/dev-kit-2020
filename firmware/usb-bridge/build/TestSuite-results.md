@@ -5,7 +5,7 @@ Call 2 is named SerialWriteByte? Call 2 is SerialWriteByte.
 Value passed to call 2, arg 1? (uint8_t)0000.
 test/test_runner.c:139:BridgeGetSensorLED_responds_ok_after_reading_host_payload:PASS
 Call 3 is named SpiWriteByte? Call 3 is SpiWriteByte.
-Value passed to call 3, arg 1? (uint8_t)0x02.
+Value passed to call 3, arg 1? (uint8_t)0x03.
 Call 4 is named ReadSensor? Call 4 is ReadSensor.
 test/test_runner.c:140:BridgeGetSensorLED_passes_cmd_to_Sensor_and_waits_for_response:PASS
 Call 5 is named SerialWriteByte? Call 5 is SerialWriteByte.

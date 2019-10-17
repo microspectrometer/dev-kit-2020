@@ -176,7 +176,10 @@ build/%.lst: build/%.elf
 # Add `avr-size blah.elf` to see how much memory is used.
 .PHONY: download_flash
 download_flash: build/${board-name}.elf
-	atprogram.exe --tool atmelice --interface isp \
+	# atprogram.exe --tool atmelice --interface isp \
+	# 	--device atmega328p program --chiperase --verify --file $^
+	# avr-size $^
+	atprogram.exe --tool avrispmk2 --interface isp \
 		--device atmega328p program --chiperase --verify --file $^
 	avr-size $^
 

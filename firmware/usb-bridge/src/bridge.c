@@ -137,22 +137,25 @@ void BridgeCfgLis(void)
 }
 /* =====[ API started 2019-10-02 ]===== */
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
-bridge_cmd_key const GetBridgeLED_key = 0;
-bridge_cmd_key const SetBridgeLED_key = 1;
-bridge_cmd_key const GetSensorLED_key = 2;
-bridge_cmd_key const SetSensorLED_key = 3;
-bridge_cmd_key const TestInvalidSensorCmd_key = 3;
+bridge_cmd_key const NullCommand_key = 0;
+bridge_cmd_key const GetBridgeLED_key = 1;
+bridge_cmd_key const SetBridgeLED_key = 2;
+bridge_cmd_key const GetSensorLED_key = 3;
+/* bridge_cmd_key const SetSensorLED_key = 4; */
+bridge_cmd_key const TestInvalidSensorCmd_key = 4;
+void NullCommand(void){}
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
 {
     /* pf is an array of pointers to BridgeCmd functions */
     /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
     static BridgeCmd* const pf[] =
     {
-        GetBridgeLED,   // 0
-        SetBridgeLED,   // 1
-        BridgeGetSensorLED,   // 2
-        TestInvalidSensorCmd, // 3
-        /* SetSensorLED,   // 3 */
+        NullCommand,    // 0
+        GetBridgeLED,   // 1
+        SetBridgeLED,   // 2
+        BridgeGetSensorLED,   // 3
+        TestInvalidSensorCmd, // 4
+        /* SetSensorLED,   // 4 */
     };
 
     /* Return func ptr. Prevent attempts at out-of-bounds access. */

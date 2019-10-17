@@ -217,10 +217,11 @@ led_off = 0
 led_green = 1
 led_red = 2
 # For the USB Host both to *send* to the bridge and to *parse* its reports.
-GetBridgeLED = 0
-SetBridgeLED = 1
-GetSensorLED = 2
-test_invalid_sensor_cmd = 3
+NullCommand = 0
+GetBridgeLED = 1
+SetBridgeLED = 2
+GetSensorLED = 3
+test_invalid_sensor_cmd = 4
 # led_red_key = 0
 # led_green_key = 1
 # cfg_spectrometer_key = 2

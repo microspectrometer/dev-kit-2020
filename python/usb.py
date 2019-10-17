@@ -6,6 +6,7 @@
 import serial
 import serial.tools.list_ports as usb_ports
 import contextlib
+import sys # for sys.stderr
 
 def dev_name(serial_number):
     """Return the device name of the USB device matching grep(serial_number).

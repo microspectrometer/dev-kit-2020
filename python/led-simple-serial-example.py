@@ -31,13 +31,17 @@ def test_SetBridgeLED():
     _print_and_log("--- SetBridgeLED ---")
     _tx_and_log_cmd(commands.SetBridgeLED, "Command is SetBridgeLED")
     _tx_and_log_cmd(commands.led_0, "LED is LED0")
-    _tx_and_log_cmd(commands.led_green, "State is GREEN")
+    # _tx_and_log_cmd(commands.led_green, "State is GREEN")
+    _tx_and_log_cmd(commands.led_red, "State is RED")
     _rx_and_log_reply(
         device_name="BRIDGE",
         reply_type="msg_status",
         expected_reply_byte=codes.OK,
         optional_expectation="Expect OK"
         )
+
+def test_DoesUsbBuffer():
+    print("Send lots of bytes one after another without print to screen inbetween.")
 
 def test_GetBridgeLED():
     _print_and_log("--- GetBridgeLED ---")
@@ -344,7 +348,8 @@ if __name__ == '__main__':
         )
 
     # Find the spectrometer by its serial number.
-    sernum='091113'
+    # sernum='093101' # Sean's Bridge
+    sernum='091113' # Mike's Bridge
 
     # USB open/close is handled by `pyserial` context manager in serialutil.py
     with usb.open_spectrometer(sernum) as kit:
@@ -353,11 +358,12 @@ if __name__ == '__main__':
         _print_and_log(f"Opened CHROMATION{sernum} on {usb.dev_name(sernum)}")
         # TODO: setup kit.write to take GetBridgeLED with its argument
         # TODO: add cmd pre-formatted as bytes to package `commands`
-        # test_SetBridgeLED()
         # test_GetBridgeLED()
-        test_GetSensorLED()
+        # test_SetBridgeLED()
+        # test_GetSensorLED()
         # test_GetSensorLED_Invalid_LED()
         # test_InvalidSensorCommand()
+        test_DoesUsbBuffer()
         # test_SetSensorLED()
     _print_and_log(f"Closed CHROMATION{sernum}")
     # _print_and_log(f"Closed CHROMATION{sernum}")

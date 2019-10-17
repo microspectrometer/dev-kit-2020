@@ -3,31 +3,31 @@ build/usb-bridge.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000064  00800100  00000b44  00000bd8  2**0
+  0 .data         00000066  00800100  00000b46  00000bda  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000b44  00000000  00000000  00000094  2**1
+  1 .text         00000b46  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000622  00800164  00800164  00000c3c  2**0
+  2 .bss          00000622  00800166  00800166  00000c40  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000c3c  2**0
+  3 .comment      00000030  00000000  00000000  00000c40  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000c6c  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000c70  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000340  00000000  00000000  00000cac  2**0
+  5 .debug_aranges 00000348  00000000  00000000  00000cb0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00005989  00000000  00000000  00000fec  2**0
+  6 .debug_info   0000599f  00000000  00000000  00000ff8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00001568  00000000  00000000  00006975  2**0
+  7 .debug_abbrev 00001580  00000000  00000000  00006997  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000022ae  00000000  00000000  00007edd  2**0
+  8 .debug_line   000022c5  00000000  00000000  00007f17  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000994  00000000  00000000  0000a18c  2**2
+  9 .debug_frame  000009a4  00000000  00000000  0000a1dc  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000016e0  00000000  00000000  0000ab20  2**0
+ 10 .debug_str    000016eb  00000000  00000000  0000ab80  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00003c42  00000000  00000000  0000c200  2**0
+ 11 .debug_loc    00003c42  00000000  00000000  0000c26b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000005d8  00000000  00000000  0000fe42  2**0
+ 12 .debug_ranges 000005e0  00000000  00000000  0000fead  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -72,18 +72,18 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e4 e4       	ldi	r30, 0x44	; 68
+  7a:	e6 e4       	ldi	r30, 0x46	; 70
   7c:	fb e0       	ldi	r31, 0x0B	; 11
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
-  84:	a4 36       	cpi	r26, 0x64	; 100
+  84:	a6 36       	cpi	r26, 0x66	; 102
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
 
 0000008a <__do_clear_bss>:
   8a:	27 e0       	ldi	r18, 0x07	; 7
-  8c:	a4 e6       	ldi	r26, 0x64	; 100
+  8c:	a6 e6       	ldi	r26, 0x66	; 102
   8e:	b1 e0       	ldi	r27, 0x01	; 1
   90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
 
@@ -91,11 +91,11 @@ Disassembly of section .text:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	a6 38       	cpi	r26, 0x86	; 134
+  94:	a8 38       	cpi	r26, 0x88	; 136
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 7c 05 	call	0xaf8	; 0xaf8 <main>
-  9e:	0c 94 a0 05 	jmp	0xb40	; 0xb40 <_exit>
+  9a:	0e 94 7d 05 	call	0xafa	; 0xafa <main>
+  9e:	0c 94 a1 05 	jmp	0xb42	; 0xb42 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -165,12 +165,12 @@ static bool FtHasRoomToWrite_Implementation(void)
  144:	09 94       	ijmp
 
 00000146 <FtActivateInterface_Implementation>:
- 146:	e0 91 5a 01 	lds	r30, 0x015A	; 0x80015a <Ft1248_port>
- 14a:	f0 91 5b 01 	lds	r31, 0x015B	; 0x80015b <Ft1248_port+0x1>
+ 146:	e0 91 5c 01 	lds	r30, 0x015C	; 0x80015c <Ft1248_port>
+ 14a:	f0 91 5d 01 	lds	r31, 0x015D	; 0x80015d <Ft1248_port+0x1>
  14e:	20 81       	ld	r18, Z
  150:	81 e0       	ldi	r24, 0x01	; 1
  152:	90 e0       	ldi	r25, 0x00	; 0
- 154:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <Ft1248_Ss>
+ 154:	00 90 53 01 	lds	r0, 0x0153	; 0x800153 <Ft1248_Ss>
  158:	02 c0       	rjmp	.+4      	; 0x15e <FtActivateInterface_Implementation+0x18>
  15a:	88 0f       	add	r24, r24
  15c:	99 1f       	adc	r25, r25
@@ -182,12 +182,12 @@ static bool FtHasRoomToWrite_Implementation(void)
  168:	08 95       	ret
 
 0000016a <FtDeactivateInterface_Implementation>:
- 16a:	e0 91 5a 01 	lds	r30, 0x015A	; 0x80015a <Ft1248_port>
- 16e:	f0 91 5b 01 	lds	r31, 0x015B	; 0x80015b <Ft1248_port+0x1>
+ 16a:	e0 91 5c 01 	lds	r30, 0x015C	; 0x80015c <Ft1248_port>
+ 16e:	f0 91 5d 01 	lds	r31, 0x015D	; 0x80015d <Ft1248_port+0x1>
  172:	20 81       	ld	r18, Z
  174:	81 e0       	ldi	r24, 0x01	; 1
  176:	90 e0       	ldi	r25, 0x00	; 0
- 178:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <Ft1248_Ss>
+ 178:	00 90 53 01 	lds	r0, 0x0153	; 0x800153 <Ft1248_Ss>
  17c:	02 c0       	rjmp	.+4      	; 0x182 <FtDeactivateInterface_Implementation+0x18>
  17e:	88 0f       	add	r24, r24
  180:	99 1f       	adc	r25, r25
@@ -198,12 +198,12 @@ static bool FtHasRoomToWrite_Implementation(void)
  18a:	08 95       	ret
 
 0000018c <FtPushData_Implementation>:
- 18c:	e0 91 5a 01 	lds	r30, 0x015A	; 0x80015a <Ft1248_port>
- 190:	f0 91 5b 01 	lds	r31, 0x015B	; 0x80015b <Ft1248_port+0x1>
+ 18c:	e0 91 5c 01 	lds	r30, 0x015C	; 0x80015c <Ft1248_port>
+ 190:	f0 91 5d 01 	lds	r31, 0x015D	; 0x80015d <Ft1248_port+0x1>
  194:	20 81       	ld	r18, Z
  196:	81 e0       	ldi	r24, 0x01	; 1
  198:	90 e0       	ldi	r25, 0x00	; 0
- 19a:	00 90 50 01 	lds	r0, 0x0150	; 0x800150 <Ft1248_Sck>
+ 19a:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <Ft1248_Sck>
  19e:	02 c0       	rjmp	.+4      	; 0x1a4 <FtPushData_Implementation+0x18>
  1a0:	88 0f       	add	r24, r24
  1a2:	99 1f       	adc	r25, r25
@@ -214,12 +214,12 @@ static bool FtHasRoomToWrite_Implementation(void)
  1ac:	08 95       	ret
 
 000001ae <FtPullData_Implementation>:
- 1ae:	e0 91 5a 01 	lds	r30, 0x015A	; 0x80015a <Ft1248_port>
- 1b2:	f0 91 5b 01 	lds	r31, 0x015B	; 0x80015b <Ft1248_port+0x1>
+ 1ae:	e0 91 5c 01 	lds	r30, 0x015C	; 0x80015c <Ft1248_port>
+ 1b2:	f0 91 5d 01 	lds	r31, 0x015D	; 0x80015d <Ft1248_port+0x1>
  1b6:	20 81       	ld	r18, Z
  1b8:	81 e0       	ldi	r24, 0x01	; 1
  1ba:	90 e0       	ldi	r25, 0x00	; 0
- 1bc:	00 90 50 01 	lds	r0, 0x0150	; 0x800150 <Ft1248_Sck>
+ 1bc:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <Ft1248_Sck>
  1c0:	02 c0       	rjmp	.+4      	; 0x1c6 <FtPullData_Implementation+0x18>
  1c2:	88 0f       	add	r24, r24
  1c4:	99 1f       	adc	r25, r25
@@ -231,24 +231,24 @@ static bool FtHasRoomToWrite_Implementation(void)
  1d0:	08 95       	ret
 
 000001d2 <FtLetMasterDriveBus_Implementation>:
- 1d2:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <FtMiosio_ddr>
- 1d6:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <FtMiosio_ddr+0x1>
+ 1d2:	e0 91 58 01 	lds	r30, 0x0158	; 0x800158 <FtMiosio_ddr>
+ 1d6:	f0 91 59 01 	lds	r31, 0x0159	; 0x800159 <FtMiosio_ddr+0x1>
  1da:	8f ef       	ldi	r24, 0xFF	; 255
  1dc:	80 83       	st	Z, r24
  1de:	08 95       	ret
 
 000001e0 <FtLetSlaveDriveBus_Implementation>:
- 1e0:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <FtMiosio_ddr>
- 1e4:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <FtMiosio_ddr+0x1>
+ 1e0:	e0 91 58 01 	lds	r30, 0x0158	; 0x800158 <FtMiosio_ddr>
+ 1e4:	f0 91 59 01 	lds	r31, 0x0159	; 0x800159 <FtMiosio_ddr+0x1>
  1e8:	10 82       	st	Z, r1
  1ea:	08 95       	ret
 
 000001ec <FtIsBusOk_Implementation>:
- 1ec:	e0 91 58 01 	lds	r30, 0x0158	; 0x800158 <Ft1248_pin>
- 1f0:	f0 91 59 01 	lds	r31, 0x0159	; 0x800159 <Ft1248_pin+0x1>
+ 1ec:	e0 91 5a 01 	lds	r30, 0x015A	; 0x80015a <Ft1248_pin>
+ 1f0:	f0 91 5b 01 	lds	r31, 0x015B	; 0x80015b <Ft1248_pin+0x1>
  1f4:	80 81       	ld	r24, Z
  1f6:	90 e0       	ldi	r25, 0x00	; 0
- 1f8:	00 90 4f 01 	lds	r0, 0x014F	; 0x80014f <Ft1248_Miso>
+ 1f8:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <Ft1248_Miso>
  1fc:	02 c0       	rjmp	.+4      	; 0x202 <FtIsBusOk_Implementation+0x16>
  1fe:	95 95       	asr	r25
  200:	87 95       	ror	r24
@@ -267,8 +267,8 @@ bool (*FtHasRoomToWrite)(void) = FtHasRoomToWrite_Implementation;
 static uint8_t FtReadData_Implementation(void)
 {
     return *FtMiosio_pin;
- 212:	e0 91 52 01 	lds	r30, 0x0152	; 0x800152 <FtMiosio_pin>
- 216:	f0 91 53 01 	lds	r31, 0x0153	; 0x800153 <FtMiosio_pin+0x1>
+ 212:	e0 91 54 01 	lds	r30, 0x0154	; 0x800154 <FtMiosio_pin>
+ 216:	f0 91 55 01 	lds	r31, 0x0155	; 0x800155 <FtMiosio_pin+0x1>
  21a:	80 81       	ld	r24, Z
 }
  21c:	08 95       	ret
@@ -279,8 +279,8 @@ uint8_t (*FtReadData)(void) = FtReadData_Implementation;
 static void FtWriteData_Implementation(uint8_t byte_to_write)
 {
     *FtMiosio_port = byte_to_write;
- 21e:	e0 91 54 01 	lds	r30, 0x0154	; 0x800154 <FtMiosio_port>
- 222:	f0 91 55 01 	lds	r31, 0x0155	; 0x800155 <FtMiosio_port+0x1>
+ 21e:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <FtMiosio_port>
+ 222:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <FtMiosio_port+0x1>
  226:	80 83       	st	Z, r24
  228:	08 95       	ret
 
@@ -325,8 +325,8 @@ static bool FtRead_Implementation(uint8_t *read_buffer)
  26c:	08 95       	ret
 
 0000026e <FtOutputByte_Implementation>:
- 26e:	e0 91 54 01 	lds	r30, 0x0154	; 0x800154 <FtMiosio_port>
- 272:	f0 91 55 01 	lds	r31, 0x0155	; 0x800155 <FtMiosio_port+0x1>
+ 26e:	e0 91 56 01 	lds	r30, 0x0156	; 0x800156 <FtMiosio_port>
+ 272:	f0 91 57 01 	lds	r31, 0x0157	; 0x800157 <FtMiosio_port+0x1>
  276:	80 83       	st	Z, r24
  278:	08 95       	ret
 
@@ -345,8 +345,8 @@ void FtInit(void)
 void FtSetMisoAsInput(void)
 {
     ClearBit(Ft1248_ddr, Ft1248_Miso);
- 27e:	e0 91 5c 01 	lds	r30, 0x015C	; 0x80015c <Ft1248_ddr>
- 282:	f0 91 5d 01 	lds	r31, 0x015D	; 0x80015d <Ft1248_ddr+0x1>
+ 27e:	e0 91 5e 01 	lds	r30, 0x015E	; 0x80015e <Ft1248_ddr>
+ 282:	f0 91 5f 01 	lds	r31, 0x015F	; 0x80015f <Ft1248_ddr+0x1>
 {
     *port |= 1<<bit;
 }
@@ -357,7 +357,7 @@ inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
  288:	81 e0       	ldi	r24, 0x01	; 1
  28a:	90 e0       	ldi	r25, 0x00	; 0
  28c:	9c 01       	movw	r18, r24
- 28e:	00 90 4f 01 	lds	r0, 0x014F	; 0x80014f <Ft1248_Miso>
+ 28e:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <Ft1248_Miso>
  292:	02 c0       	rjmp	.+4      	; 0x298 <FtInit+0x1e>
  294:	22 0f       	add	r18, r18
  296:	33 1f       	adc	r19, r19
@@ -371,8 +371,8 @@ inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 void FtEnablePullupOnMiso(void)
 {
     SetBit(Ft1248_port, Ft1248_Miso);
- 2a4:	a0 91 5a 01 	lds	r26, 0x015A	; 0x80015a <Ft1248_port>
- 2a8:	b0 91 5b 01 	lds	r27, 0x015B	; 0x80015b <Ft1248_port+0x1>
+ 2a4:	a0 91 5c 01 	lds	r26, 0x015C	; 0x80015c <Ft1248_port>
+ 2a8:	b0 91 5d 01 	lds	r27, 0x015D	; 0x80015d <Ft1248_port+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
@@ -386,15 +386,15 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 void FtSetMiosioAsInputs(void)
 {
     *FtMiosio_ddr = 0x00;
- 2b2:	c0 91 56 01 	lds	r28, 0x0156	; 0x800156 <FtMiosio_ddr>
- 2b6:	d0 91 57 01 	lds	r29, 0x0157	; 0x800157 <FtMiosio_ddr+0x1>
+ 2b2:	c0 91 58 01 	lds	r28, 0x0158	; 0x800158 <FtMiosio_ddr>
+ 2b6:	d0 91 59 01 	lds	r29, 0x0159	; 0x800159 <FtMiosio_ddr+0x1>
  2ba:	18 82       	st	Y, r1
 }
 void FtEnablePullupsOnMiosio(void)
 {
     *FtMiosio_port = 0xFF;
- 2bc:	c0 91 54 01 	lds	r28, 0x0154	; 0x800154 <FtMiosio_port>
- 2c0:	d0 91 55 01 	lds	r29, 0x0155	; 0x800155 <FtMiosio_port+0x1>
+ 2bc:	c0 91 56 01 	lds	r28, 0x0156	; 0x800156 <FtMiosio_port>
+ 2c0:	d0 91 57 01 	lds	r29, 0x0157	; 0x800157 <FtMiosio_port+0x1>
  2c4:	2f ef       	ldi	r18, 0xFF	; 255
  2c6:	28 83       	st	Y, r18
 }
@@ -403,7 +403,7 @@ inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
     *port &= ~(1<<bit);
  2c8:	4c 91       	ld	r20, X
  2ca:	9c 01       	movw	r18, r24
- 2cc:	00 90 50 01 	lds	r0, 0x0150	; 0x800150 <Ft1248_Sck>
+ 2cc:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <Ft1248_Sck>
  2d0:	02 c0       	rjmp	.+4      	; 0x2d6 <FtInit+0x5c>
  2d2:	22 0f       	add	r18, r18
  2d4:	33 1f       	adc	r19, r19
@@ -423,7 +423,7 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
  2e4:	23 2b       	or	r18, r19
  2e6:	20 83       	st	Z, r18
  2e8:	2c 91       	ld	r18, X
- 2ea:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <Ft1248_Ss>
+ 2ea:	00 90 53 01 	lds	r0, 0x0153	; 0x800153 <Ft1248_Ss>
  2ee:	02 c0       	rjmp	.+4      	; 0x2f4 <FtInit+0x7a>
  2f0:	88 0f       	add	r24, r24
  2f2:	99 1f       	adc	r25, r25
@@ -731,18 +731,18 @@ void SpiClearFlagTransferIsDone(void)
  470:	09 94       	ijmp
 
 00000472 <ReadSpiStatusRegister_Implementation>:
- 472:	e0 91 45 01 	lds	r30, 0x0145	; 0x800145 <Spi_spsr>
- 476:	f0 91 46 01 	lds	r31, 0x0146	; 0x800146 <Spi_spsr+0x1>
+ 472:	e0 91 47 01 	lds	r30, 0x0147	; 0x800147 <Spi_spsr>
+ 476:	f0 91 48 01 	lds	r31, 0x0148	; 0x800148 <Spi_spsr+0x1>
  47a:	80 81       	ld	r24, Z
  47c:	08 95       	ret
 
 0000047e <EnableSpi_Implementation>:
- 47e:	e0 91 47 01 	lds	r30, 0x0147	; 0x800147 <Spi_spcr>
- 482:	f0 91 48 01 	lds	r31, 0x0148	; 0x800148 <Spi_spcr+0x1>
+ 47e:	e0 91 49 01 	lds	r30, 0x0149	; 0x800149 <Spi_spcr>
+ 482:	f0 91 4a 01 	lds	r31, 0x014A	; 0x80014a <Spi_spcr+0x1>
  486:	20 81       	ld	r18, Z
  488:	81 e0       	ldi	r24, 0x01	; 1
  48a:	90 e0       	ldi	r25, 0x00	; 0
- 48c:	00 90 3b 01 	lds	r0, 0x013B	; 0x80013b <Spi_Enable>
+ 48c:	00 90 3d 01 	lds	r0, 0x013D	; 0x80013d <Spi_Enable>
  490:	02 c0       	rjmp	.+4      	; 0x496 <EnableSpi_Implementation+0x18>
  492:	88 0f       	add	r24, r24
  494:	99 1f       	adc	r25, r25
@@ -753,12 +753,12 @@ void SpiClearFlagTransferIsDone(void)
  49e:	08 95       	ret
 
 000004a0 <SpiMasterCloseSpi_Implementation>:
- 4a0:	e0 91 4b 01 	lds	r30, 0x014B	; 0x80014b <Spi_port>
- 4a4:	f0 91 4c 01 	lds	r31, 0x014C	; 0x80014c <Spi_port+0x1>
+ 4a0:	e0 91 4d 01 	lds	r30, 0x014D	; 0x80014d <Spi_port>
+ 4a4:	f0 91 4e 01 	lds	r31, 0x014E	; 0x80014e <Spi_port+0x1>
  4a8:	20 81       	ld	r18, Z
  4aa:	81 e0       	ldi	r24, 0x01	; 1
  4ac:	90 e0       	ldi	r25, 0x00	; 0
- 4ae:	00 90 42 01 	lds	r0, 0x0142	; 0x800142 <Spi_Ss>
+ 4ae:	00 90 44 01 	lds	r0, 0x0144	; 0x800144 <Spi_Ss>
  4b2:	02 c0       	rjmp	.+4      	; 0x4b8 <SpiMasterCloseSpi_Implementation+0x18>
  4b4:	88 0f       	add	r24, r24
  4b6:	99 1f       	adc	r25, r25
@@ -769,8 +769,8 @@ void SpiClearFlagTransferIsDone(void)
  4c0:	08 95       	ret
 
 000004c2 <ReadSpiDataRegister_Implementation>:
- 4c2:	e0 91 43 01 	lds	r30, 0x0143	; 0x800143 <Spi_spdr>
- 4c6:	f0 91 44 01 	lds	r31, 0x0144	; 0x800144 <Spi_spdr+0x1>
+ 4c2:	e0 91 45 01 	lds	r30, 0x0145	; 0x800145 <Spi_spdr>
+ 4c6:	f0 91 46 01 	lds	r31, 0x0146	; 0x800146 <Spi_spdr+0x1>
  4ca:	80 81       	ld	r24, Z
  4cc:	08 95       	ret
 
@@ -788,8 +788,8 @@ void SpiMasterInit(void)
 static void SetMisoAsPullupInput(void) // For SpiMaster only!
 {
     ClearBit(Spi_ddr, Spi_Miso);    // make it an input
- 4d2:	e0 91 4d 01 	lds	r30, 0x014D	; 0x80014d <Spi_ddr>
- 4d6:	f0 91 4e 01 	lds	r31, 0x014E	; 0x80014e <Spi_ddr+0x1>
+ 4d2:	e0 91 4f 01 	lds	r30, 0x014F	; 0x80014f <Spi_ddr>
+ 4d6:	f0 91 50 01 	lds	r31, 0x0150	; 0x800150 <Spi_ddr+0x1>
 }
 inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
@@ -798,7 +798,7 @@ inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
  4dc:	81 e0       	ldi	r24, 0x01	; 1
  4de:	90 e0       	ldi	r25, 0x00	; 0
  4e0:	9c 01       	movw	r18, r24
- 4e2:	00 90 40 01 	lds	r0, 0x0140	; 0x800140 <Spi_Miso>
+ 4e2:	00 90 42 01 	lds	r0, 0x0142	; 0x800142 <Spi_Miso>
  4e6:	02 c0       	rjmp	.+4      	; 0x4ec <SpiMasterInit+0x1e>
  4e8:	22 0f       	add	r18, r18
  4ea:	33 1f       	adc	r19, r19
@@ -809,8 +809,8 @@ inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
  4f4:	34 23       	and	r19, r20
  4f6:	30 83       	st	Z, r19
     SetBit(Spi_port, Spi_Miso);     // enable pull-up
- 4f8:	a0 91 4b 01 	lds	r26, 0x014B	; 0x80014b <Spi_port>
- 4fc:	b0 91 4c 01 	lds	r27, 0x014C	; 0x80014c <Spi_port+0x1>
+ 4f8:	a0 91 4d 01 	lds	r26, 0x014D	; 0x80014d <Spi_port>
+ 4fc:	b0 91 4e 01 	lds	r27, 0x014E	; 0x80014e <Spi_port+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
@@ -822,7 +822,7 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
  504:	2c 93       	st	X, r18
  506:	40 81       	ld	r20, Z
  508:	9c 01       	movw	r18, r24
- 50a:	00 90 42 01 	lds	r0, 0x0142	; 0x800142 <Spi_Ss>
+ 50a:	00 90 44 01 	lds	r0, 0x0144	; 0x800144 <Spi_Ss>
  50e:	02 c0       	rjmp	.+4      	; 0x514 <SpiMasterInit+0x46>
  510:	22 0f       	add	r18, r18
  512:	33 1f       	adc	r19, r19
@@ -832,7 +832,7 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
  51a:	20 83       	st	Z, r18
  51c:	40 81       	ld	r20, Z
  51e:	9c 01       	movw	r18, r24
- 520:	00 90 41 01 	lds	r0, 0x0141	; 0x800141 <Spi_Mosi>
+ 520:	00 90 43 01 	lds	r0, 0x0143	; 0x800143 <Spi_Mosi>
  524:	02 c0       	rjmp	.+4      	; 0x52a <SpiMasterInit+0x5c>
  526:	22 0f       	add	r18, r18
  528:	33 1f       	adc	r19, r19
@@ -842,7 +842,7 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
  530:	20 83       	st	Z, r18
  532:	40 81       	ld	r20, Z
  534:	9c 01       	movw	r18, r24
- 536:	00 90 3f 01 	lds	r0, 0x013F	; 0x80013f <Spi_Sck>
+ 536:	00 90 41 01 	lds	r0, 0x0141	; 0x800141 <Spi_Sck>
  53a:	02 c0       	rjmp	.+4      	; 0x540 <SpiMasterInit+0x72>
  53c:	22 0f       	add	r18, r18
  53e:	33 1f       	adc	r19, r19
@@ -856,11 +856,11 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 static void MakeMeTheMaster(void)
 {
     SetBit(Spi_spcr, Spi_MasterSlaveSelect);
- 548:	e0 91 47 01 	lds	r30, 0x0147	; 0x800147 <Spi_spcr>
- 54c:	f0 91 48 01 	lds	r31, 0x0148	; 0x800148 <Spi_spcr+0x1>
+ 548:	e0 91 49 01 	lds	r30, 0x0149	; 0x800149 <Spi_spcr>
+ 54c:	f0 91 4a 01 	lds	r31, 0x014A	; 0x80014a <Spi_spcr+0x1>
  550:	40 81       	ld	r20, Z
  552:	9c 01       	movw	r18, r24
- 554:	00 90 3e 01 	lds	r0, 0x013E	; 0x80013e <Spi_MasterSlaveSelect>
+ 554:	00 90 40 01 	lds	r0, 0x0140	; 0x800140 <Spi_MasterSlaveSelect>
  558:	02 c0       	rjmp	.+4      	; 0x55e <SpiMasterInit+0x90>
  55a:	22 0f       	add	r18, r18
  55c:	33 1f       	adc	r19, r19
@@ -870,7 +870,7 @@ static void MakeMeTheMaster(void)
  564:	20 83       	st	Z, r18
  566:	40 81       	ld	r20, Z
  568:	9c 01       	movw	r18, r24
- 56a:	00 90 3d 01 	lds	r0, 0x013D	; 0x80013d <Spi_ClockRateBit0>
+ 56a:	00 90 3f 01 	lds	r0, 0x013F	; 0x80013f <Spi_ClockRateBit0>
  56e:	02 c0       	rjmp	.+4      	; 0x574 <SpiMasterInit+0xa6>
  570:	22 0f       	add	r18, r18
  572:	33 1f       	adc	r19, r19
@@ -884,7 +884,7 @@ inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
     *port &= ~(1<<bit);
  57c:	30 81       	ld	r19, Z
  57e:	ac 01       	movw	r20, r24
- 580:	00 90 3c 01 	lds	r0, 0x013C	; 0x80013c <Spi_ClockRateBit1>
+ 580:	00 90 3e 01 	lds	r0, 0x013E	; 0x80013e <Spi_ClockRateBit1>
  584:	02 c0       	rjmp	.+4      	; 0x58a <SpiMasterInit+0xbc>
  586:	44 0f       	add	r20, r20
  588:	55 1f       	adc	r21, r21
@@ -900,8 +900,8 @@ inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
     SetBit  (Spi_spcr, Spi_ClockRateBit0);
     ClearBit(Spi_spcr, Spi_ClockRateBit1);
     SetBit(Spi_spsr, Spi_DoubleClockRate);
- 596:	e0 91 45 01 	lds	r30, 0x0145	; 0x800145 <Spi_spsr>
- 59a:	f0 91 46 01 	lds	r31, 0x0146	; 0x800146 <Spi_spsr+0x1>
+ 596:	e0 91 47 01 	lds	r30, 0x0147	; 0x800147 <Spi_spsr>
+ 59a:	f0 91 48 01 	lds	r31, 0x0148	; 0x800148 <Spi_spsr+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
@@ -909,7 +909,7 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
  59e:	20 81       	ld	r18, Z
- 5a0:	00 90 3a 01 	lds	r0, 0x013A	; 0x80013a <Spi_DoubleClockRate>
+ 5a0:	00 90 3c 01 	lds	r0, 0x013C	; 0x80013c <Spi_DoubleClockRate>
  5a4:	02 c0       	rjmp	.+4      	; 0x5aa <SpiMasterInit+0xdc>
  5a6:	88 0f       	add	r24, r24
  5a8:	99 1f       	adc	r25, r25
@@ -931,673 +931,676 @@ inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
  5c0:	f0 91 27 01 	lds	r31, 0x0127	; 0x800127 <ClearPendingSpiInterrupt+0x1>
  5c4:	09 94       	ijmp
 
-000005c6 <SerialWriteByte_Implementation>:
+000005c6 <NullCommand>:
 
 uint8_t UsbWriteStatusOk(bridge_cmd_key   cmd_done_by_bridge)
 {
     uint8_t const StatusOk[] = { 0x00, cmd_done_by_bridge};
     return UsbWrite(StatusOk,2);
 }
- 5c6:	cf 93       	push	r28
- 5c8:	df 93       	push	r29
- 5ca:	1f 92       	push	r1
- 5cc:	cd b7       	in	r28, 0x3d	; 61
- 5ce:	de b7       	in	r29, 0x3e	; 62
- 5d0:	89 83       	std	Y+1, r24	; 0x01
- 5d2:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
- 5d6:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
- 5da:	61 e0       	ldi	r22, 0x01	; 1
- 5dc:	70 e0       	ldi	r23, 0x00	; 0
- 5de:	ce 01       	movw	r24, r28
- 5e0:	01 96       	adiw	r24, 0x01	; 1
- 5e2:	09 95       	icall
- 5e4:	0f 90       	pop	r0
- 5e6:	df 91       	pop	r29
- 5e8:	cf 91       	pop	r28
- 5ea:	08 95       	ret
+ 5c6:	08 95       	ret
 
-000005ec <SpiWriteByte_Implementation>:
- 5ec:	cf 93       	push	r28
- 5ee:	df 93       	push	r29
- 5f0:	a0 91 4b 01 	lds	r26, 0x014B	; 0x80014b <Spi_port>
- 5f4:	b0 91 4c 01 	lds	r27, 0x014C	; 0x80014c <Spi_port+0x1>
- 5f8:	9c 91       	ld	r25, X
- 5fa:	21 e0       	ldi	r18, 0x01	; 1
- 5fc:	30 e0       	ldi	r19, 0x00	; 0
- 5fe:	a9 01       	movw	r20, r18
- 600:	00 90 42 01 	lds	r0, 0x0142	; 0x800142 <Spi_Ss>
- 604:	02 c0       	rjmp	.+4      	; 0x60a <SpiWriteByte_Implementation+0x1e>
- 606:	44 0f       	add	r20, r20
- 608:	55 1f       	adc	r21, r21
- 60a:	0a 94       	dec	r0
- 60c:	e2 f7       	brpl	.-8      	; 0x606 <SpiWriteByte_Implementation+0x1a>
- 60e:	64 2f       	mov	r22, r20
- 610:	60 95       	com	r22
- 612:	96 23       	and	r25, r22
- 614:	9c 93       	st	X, r25
- 616:	c0 91 43 01 	lds	r28, 0x0143	; 0x800143 <Spi_spdr>
- 61a:	d0 91 44 01 	lds	r29, 0x0144	; 0x800144 <Spi_spdr+0x1>
- 61e:	88 83       	st	Y, r24
- 620:	e0 91 45 01 	lds	r30, 0x0145	; 0x800145 <Spi_spsr>
- 624:	f0 91 46 01 	lds	r31, 0x0146	; 0x800146 <Spi_spsr+0x1>
- 628:	00 90 39 01 	lds	r0, 0x0139	; 0x800139 <Spi_InterruptFlag>
- 62c:	02 c0       	rjmp	.+4      	; 0x632 <SpiWriteByte_Implementation+0x46>
- 62e:	22 0f       	add	r18, r18
- 630:	33 1f       	adc	r19, r19
- 632:	0a 94       	dec	r0
- 634:	e2 f7       	brpl	.-8      	; 0x62e <SpiWriteByte_Implementation+0x42>
- 636:	80 81       	ld	r24, Z
- 638:	90 e0       	ldi	r25, 0x00	; 0
- 63a:	82 23       	and	r24, r18
- 63c:	93 23       	and	r25, r19
- 63e:	89 2b       	or	r24, r25
- 640:	d1 f3       	breq	.-12     	; 0x636 <SpiWriteByte_Implementation+0x4a>
- 642:	88 81       	ld	r24, Y
- 644:	8c 91       	ld	r24, X
- 646:	48 2b       	or	r20, r24
- 648:	4c 93       	st	X, r20
- 64a:	df 91       	pop	r29
- 64c:	cf 91       	pop	r28
- 64e:	08 95       	ret
+000005c8 <SerialWriteByte_Implementation>:
+ 5c8:	cf 93       	push	r28
+ 5ca:	df 93       	push	r29
+ 5cc:	1f 92       	push	r1
+ 5ce:	cd b7       	in	r28, 0x3d	; 61
+ 5d0:	de b7       	in	r29, 0x3e	; 62
+ 5d2:	89 83       	std	Y+1, r24	; 0x01
+ 5d4:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
+ 5d8:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
+ 5dc:	61 e0       	ldi	r22, 0x01	; 1
+ 5de:	70 e0       	ldi	r23, 0x00	; 0
+ 5e0:	ce 01       	movw	r24, r28
+ 5e2:	01 96       	adiw	r24, 0x01	; 1
+ 5e4:	09 95       	icall
+ 5e6:	0f 90       	pop	r0
+ 5e8:	df 91       	pop	r29
+ 5ea:	cf 91       	pop	r28
+ 5ec:	08 95       	ret
 
-00000650 <ReadSensor_Implementation>:
- 650:	6f 92       	push	r6
- 652:	7f 92       	push	r7
- 654:	8f 92       	push	r8
- 656:	9f 92       	push	r9
- 658:	bf 92       	push	r11
- 65a:	cf 92       	push	r12
- 65c:	df 92       	push	r13
- 65e:	ef 92       	push	r14
- 660:	ff 92       	push	r15
- 662:	0f 93       	push	r16
- 664:	1f 93       	push	r17
- 666:	cf 93       	push	r28
- 668:	df 93       	push	r29
- 66a:	4b 01       	movw	r8, r22
- 66c:	67 2b       	or	r22, r23
- 66e:	09 f4       	brne	.+2      	; 0x672 <ReadSensor_Implementation+0x22>
- 670:	58 c0       	rjmp	.+176    	; 0x722 <ReadSensor_Implementation+0xd2>
- 672:	60 90 4b 01 	lds	r6, 0x014B	; 0x80014b <Spi_port>
- 676:	70 90 4c 01 	lds	r7, 0x014C	; 0x80014c <Spi_port+0x1>
- 67a:	00 91 43 01 	lds	r16, 0x0143	; 0x800143 <Spi_spdr>
- 67e:	10 91 44 01 	lds	r17, 0x0144	; 0x800144 <Spi_spdr+0x1>
- 682:	c0 90 30 01 	lds	r12, 0x0130	; 0x800130 <slave_ignore>
- 686:	a0 91 45 01 	lds	r26, 0x0145	; 0x800145 <Spi_spsr>
- 68a:	b0 91 46 01 	lds	r27, 0x0146	; 0x800146 <Spi_spsr+0x1>
- 68e:	41 e0       	ldi	r20, 0x01	; 1
- 690:	50 e0       	ldi	r21, 0x00	; 0
- 692:	9a 01       	movw	r18, r20
- 694:	00 90 42 01 	lds	r0, 0x0142	; 0x800142 <Spi_Ss>
- 698:	02 c0       	rjmp	.+4      	; 0x69e <ReadSensor_Implementation+0x4e>
- 69a:	22 0f       	add	r18, r18
- 69c:	33 1f       	adc	r19, r19
- 69e:	0a 94       	dec	r0
- 6a0:	e2 f7       	brpl	.-8      	; 0x69a <ReadSensor_Implementation+0x4a>
- 6a2:	d2 2e       	mov	r13, r18
- 6a4:	b2 2e       	mov	r11, r18
- 6a6:	b0 94       	com	r11
- 6a8:	e0 91 49 01 	lds	r30, 0x0149	; 0x800149 <Spi_pin>
- 6ac:	f0 91 4a 01 	lds	r31, 0x014A	; 0x80014a <Spi_pin+0x1>
- 6b0:	9a 01       	movw	r18, r20
- 6b2:	00 90 40 01 	lds	r0, 0x0140	; 0x800140 <Spi_Miso>
- 6b6:	02 c0       	rjmp	.+4      	; 0x6bc <ReadSensor_Implementation+0x6c>
- 6b8:	22 0f       	add	r18, r18
- 6ba:	33 1f       	adc	r19, r19
- 6bc:	0a 94       	dec	r0
- 6be:	e2 f7       	brpl	.-8      	; 0x6b8 <ReadSensor_Implementation+0x68>
- 6c0:	00 90 39 01 	lds	r0, 0x0139	; 0x800139 <Spi_InterruptFlag>
- 6c4:	02 c0       	rjmp	.+4      	; 0x6ca <ReadSensor_Implementation+0x7a>
- 6c6:	44 0f       	add	r20, r20
- 6c8:	55 1f       	adc	r21, r21
- 6ca:	0a 94       	dec	r0
- 6cc:	e2 f7       	brpl	.-8      	; 0x6c6 <ReadSensor_Implementation+0x76>
- 6ce:	bc 01       	movw	r22, r24
- 6d0:	7c 01       	movw	r14, r24
- 6d2:	e8 0c       	add	r14, r8
- 6d4:	f9 1c       	adc	r15, r9
- 6d6:	80 81       	ld	r24, Z
- 6d8:	90 e0       	ldi	r25, 0x00	; 0
- 6da:	82 23       	and	r24, r18
- 6dc:	93 23       	and	r25, r19
- 6de:	89 2b       	or	r24, r25
- 6e0:	d1 f7       	brne	.-12     	; 0x6d6 <ReadSensor_Implementation+0x86>
- 6e2:	80 81       	ld	r24, Z
- 6e4:	90 e0       	ldi	r25, 0x00	; 0
- 6e6:	82 23       	and	r24, r18
- 6e8:	93 23       	and	r25, r19
- 6ea:	89 2b       	or	r24, r25
- 6ec:	d1 f3       	breq	.-12     	; 0x6e2 <ReadSensor_Implementation+0x92>
- 6ee:	e3 01       	movw	r28, r6
- 6f0:	88 81       	ld	r24, Y
- 6f2:	8b 21       	and	r24, r11
- 6f4:	88 83       	st	Y, r24
- 6f6:	e8 01       	movw	r28, r16
- 6f8:	c8 82       	st	Y, r12
- 6fa:	8c 91       	ld	r24, X
- 6fc:	90 e0       	ldi	r25, 0x00	; 0
- 6fe:	84 23       	and	r24, r20
- 700:	95 23       	and	r25, r21
- 702:	89 2b       	or	r24, r25
- 704:	d1 f3       	breq	.-12     	; 0x6fa <ReadSensor_Implementation+0xaa>
- 706:	e8 01       	movw	r28, r16
- 708:	88 81       	ld	r24, Y
- 70a:	e3 01       	movw	r28, r6
- 70c:	88 81       	ld	r24, Y
- 70e:	8d 29       	or	r24, r13
- 710:	88 83       	st	Y, r24
- 712:	e8 01       	movw	r28, r16
- 714:	88 81       	ld	r24, Y
- 716:	eb 01       	movw	r28, r22
- 718:	89 93       	st	Y+, r24
- 71a:	be 01       	movw	r22, r28
- 71c:	ce 15       	cp	r28, r14
- 71e:	df 05       	cpc	r29, r15
- 720:	d1 f6       	brne	.-76     	; 0x6d6 <ReadSensor_Implementation+0x86>
- 722:	c4 01       	movw	r24, r8
- 724:	df 91       	pop	r29
- 726:	cf 91       	pop	r28
- 728:	1f 91       	pop	r17
- 72a:	0f 91       	pop	r16
- 72c:	ff 90       	pop	r15
- 72e:	ef 90       	pop	r14
- 730:	df 90       	pop	r13
- 732:	cf 90       	pop	r12
- 734:	bf 90       	pop	r11
- 736:	9f 90       	pop	r9
- 738:	8f 90       	pop	r8
- 73a:	7f 90       	pop	r7
- 73c:	6f 90       	pop	r6
- 73e:	08 95       	ret
+000005ee <SpiWriteByte_Implementation>:
+ 5ee:	cf 93       	push	r28
+ 5f0:	df 93       	push	r29
+ 5f2:	a0 91 4d 01 	lds	r26, 0x014D	; 0x80014d <Spi_port>
+ 5f6:	b0 91 4e 01 	lds	r27, 0x014E	; 0x80014e <Spi_port+0x1>
+ 5fa:	9c 91       	ld	r25, X
+ 5fc:	21 e0       	ldi	r18, 0x01	; 1
+ 5fe:	30 e0       	ldi	r19, 0x00	; 0
+ 600:	a9 01       	movw	r20, r18
+ 602:	00 90 44 01 	lds	r0, 0x0144	; 0x800144 <Spi_Ss>
+ 606:	02 c0       	rjmp	.+4      	; 0x60c <SpiWriteByte_Implementation+0x1e>
+ 608:	44 0f       	add	r20, r20
+ 60a:	55 1f       	adc	r21, r21
+ 60c:	0a 94       	dec	r0
+ 60e:	e2 f7       	brpl	.-8      	; 0x608 <SpiWriteByte_Implementation+0x1a>
+ 610:	64 2f       	mov	r22, r20
+ 612:	60 95       	com	r22
+ 614:	96 23       	and	r25, r22
+ 616:	9c 93       	st	X, r25
+ 618:	c0 91 45 01 	lds	r28, 0x0145	; 0x800145 <Spi_spdr>
+ 61c:	d0 91 46 01 	lds	r29, 0x0146	; 0x800146 <Spi_spdr+0x1>
+ 620:	88 83       	st	Y, r24
+ 622:	e0 91 47 01 	lds	r30, 0x0147	; 0x800147 <Spi_spsr>
+ 626:	f0 91 48 01 	lds	r31, 0x0148	; 0x800148 <Spi_spsr+0x1>
+ 62a:	00 90 3b 01 	lds	r0, 0x013B	; 0x80013b <Spi_InterruptFlag>
+ 62e:	02 c0       	rjmp	.+4      	; 0x634 <SpiWriteByte_Implementation+0x46>
+ 630:	22 0f       	add	r18, r18
+ 632:	33 1f       	adc	r19, r19
+ 634:	0a 94       	dec	r0
+ 636:	e2 f7       	brpl	.-8      	; 0x630 <SpiWriteByte_Implementation+0x42>
+ 638:	80 81       	ld	r24, Z
+ 63a:	90 e0       	ldi	r25, 0x00	; 0
+ 63c:	82 23       	and	r24, r18
+ 63e:	93 23       	and	r25, r19
+ 640:	89 2b       	or	r24, r25
+ 642:	d1 f3       	breq	.-12     	; 0x638 <SpiWriteByte_Implementation+0x4a>
+ 644:	88 81       	ld	r24, Y
+ 646:	8c 91       	ld	r24, X
+ 648:	48 2b       	or	r20, r24
+ 64a:	4c 93       	st	X, r20
+ 64c:	df 91       	pop	r29
+ 64e:	cf 91       	pop	r28
+ 650:	08 95       	ret
 
-00000740 <TestInvalidSensorCmd>:
- 740:	cf 93       	push	r28
- 742:	df 93       	push	r29
- 744:	1f 92       	push	r1
- 746:	cd b7       	in	r28, 0x3d	; 61
- 748:	de b7       	in	r29, 0x3e	; 62
- 74a:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 74e:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 752:	80 e0       	ldi	r24, 0x00	; 0
- 754:	09 95       	icall
- 756:	a0 91 4b 01 	lds	r26, 0x014B	; 0x80014b <Spi_port>
- 75a:	b0 91 4c 01 	lds	r27, 0x014C	; 0x80014c <Spi_port+0x1>
- 75e:	8c 91       	ld	r24, X
- 760:	21 e0       	ldi	r18, 0x01	; 1
- 762:	30 e0       	ldi	r19, 0x00	; 0
- 764:	a9 01       	movw	r20, r18
- 766:	00 90 42 01 	lds	r0, 0x0142	; 0x800142 <Spi_Ss>
- 76a:	02 c0       	rjmp	.+4      	; 0x770 <TestInvalidSensorCmd+0x30>
- 76c:	44 0f       	add	r20, r20
- 76e:	55 1f       	adc	r21, r21
- 770:	0a 94       	dec	r0
- 772:	e2 f7       	brpl	.-8      	; 0x76c <TestInvalidSensorCmd+0x2c>
- 774:	94 2f       	mov	r25, r20
- 776:	90 95       	com	r25
- 778:	89 23       	and	r24, r25
- 77a:	8c 93       	st	X, r24
- 77c:	60 91 43 01 	lds	r22, 0x0143	; 0x800143 <Spi_spdr>
- 780:	70 91 44 01 	lds	r23, 0x0144	; 0x800144 <Spi_spdr+0x1>
- 784:	8f ef       	ldi	r24, 0xFF	; 255
- 786:	fb 01       	movw	r30, r22
- 788:	80 83       	st	Z, r24
- 78a:	e0 91 45 01 	lds	r30, 0x0145	; 0x800145 <Spi_spsr>
- 78e:	f0 91 46 01 	lds	r31, 0x0146	; 0x800146 <Spi_spsr+0x1>
- 792:	00 90 39 01 	lds	r0, 0x0139	; 0x800139 <Spi_InterruptFlag>
- 796:	02 c0       	rjmp	.+4      	; 0x79c <TestInvalidSensorCmd+0x5c>
- 798:	22 0f       	add	r18, r18
- 79a:	33 1f       	adc	r19, r19
- 79c:	0a 94       	dec	r0
- 79e:	e2 f7       	brpl	.-8      	; 0x798 <TestInvalidSensorCmd+0x58>
- 7a0:	80 81       	ld	r24, Z
- 7a2:	90 e0       	ldi	r25, 0x00	; 0
- 7a4:	82 23       	and	r24, r18
- 7a6:	93 23       	and	r25, r19
- 7a8:	89 2b       	or	r24, r25
- 7aa:	d1 f3       	breq	.-12     	; 0x7a0 <TestInvalidSensorCmd+0x60>
- 7ac:	fb 01       	movw	r30, r22
- 7ae:	80 81       	ld	r24, Z
- 7b0:	8c 91       	ld	r24, X
- 7b2:	48 2b       	or	r20, r24
- 7b4:	4c 93       	st	X, r20
- 7b6:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
- 7ba:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
- 7be:	61 e0       	ldi	r22, 0x01	; 1
- 7c0:	70 e0       	ldi	r23, 0x00	; 0
- 7c2:	ce 01       	movw	r24, r28
- 7c4:	01 96       	adiw	r24, 0x01	; 1
- 7c6:	09 95       	icall
- 7c8:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 7cc:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 7d0:	89 81       	ldd	r24, Y+1	; 0x01
- 7d2:	09 95       	icall
- 7d4:	0f 90       	pop	r0
- 7d6:	df 91       	pop	r29
- 7d8:	cf 91       	pop	r28
- 7da:	08 95       	ret
+00000652 <ReadSensor_Implementation>:
+ 652:	6f 92       	push	r6
+ 654:	7f 92       	push	r7
+ 656:	8f 92       	push	r8
+ 658:	9f 92       	push	r9
+ 65a:	bf 92       	push	r11
+ 65c:	cf 92       	push	r12
+ 65e:	df 92       	push	r13
+ 660:	ef 92       	push	r14
+ 662:	ff 92       	push	r15
+ 664:	0f 93       	push	r16
+ 666:	1f 93       	push	r17
+ 668:	cf 93       	push	r28
+ 66a:	df 93       	push	r29
+ 66c:	4b 01       	movw	r8, r22
+ 66e:	67 2b       	or	r22, r23
+ 670:	09 f4       	brne	.+2      	; 0x674 <ReadSensor_Implementation+0x22>
+ 672:	58 c0       	rjmp	.+176    	; 0x724 <ReadSensor_Implementation+0xd2>
+ 674:	60 90 4d 01 	lds	r6, 0x014D	; 0x80014d <Spi_port>
+ 678:	70 90 4e 01 	lds	r7, 0x014E	; 0x80014e <Spi_port+0x1>
+ 67c:	00 91 45 01 	lds	r16, 0x0145	; 0x800145 <Spi_spdr>
+ 680:	10 91 46 01 	lds	r17, 0x0146	; 0x800146 <Spi_spdr+0x1>
+ 684:	c0 90 30 01 	lds	r12, 0x0130	; 0x800130 <slave_ignore>
+ 688:	a0 91 47 01 	lds	r26, 0x0147	; 0x800147 <Spi_spsr>
+ 68c:	b0 91 48 01 	lds	r27, 0x0148	; 0x800148 <Spi_spsr+0x1>
+ 690:	41 e0       	ldi	r20, 0x01	; 1
+ 692:	50 e0       	ldi	r21, 0x00	; 0
+ 694:	9a 01       	movw	r18, r20
+ 696:	00 90 44 01 	lds	r0, 0x0144	; 0x800144 <Spi_Ss>
+ 69a:	02 c0       	rjmp	.+4      	; 0x6a0 <ReadSensor_Implementation+0x4e>
+ 69c:	22 0f       	add	r18, r18
+ 69e:	33 1f       	adc	r19, r19
+ 6a0:	0a 94       	dec	r0
+ 6a2:	e2 f7       	brpl	.-8      	; 0x69c <ReadSensor_Implementation+0x4a>
+ 6a4:	d2 2e       	mov	r13, r18
+ 6a6:	b2 2e       	mov	r11, r18
+ 6a8:	b0 94       	com	r11
+ 6aa:	e0 91 4b 01 	lds	r30, 0x014B	; 0x80014b <Spi_pin>
+ 6ae:	f0 91 4c 01 	lds	r31, 0x014C	; 0x80014c <Spi_pin+0x1>
+ 6b2:	9a 01       	movw	r18, r20
+ 6b4:	00 90 42 01 	lds	r0, 0x0142	; 0x800142 <Spi_Miso>
+ 6b8:	02 c0       	rjmp	.+4      	; 0x6be <ReadSensor_Implementation+0x6c>
+ 6ba:	22 0f       	add	r18, r18
+ 6bc:	33 1f       	adc	r19, r19
+ 6be:	0a 94       	dec	r0
+ 6c0:	e2 f7       	brpl	.-8      	; 0x6ba <ReadSensor_Implementation+0x68>
+ 6c2:	00 90 3b 01 	lds	r0, 0x013B	; 0x80013b <Spi_InterruptFlag>
+ 6c6:	02 c0       	rjmp	.+4      	; 0x6cc <ReadSensor_Implementation+0x7a>
+ 6c8:	44 0f       	add	r20, r20
+ 6ca:	55 1f       	adc	r21, r21
+ 6cc:	0a 94       	dec	r0
+ 6ce:	e2 f7       	brpl	.-8      	; 0x6c8 <ReadSensor_Implementation+0x76>
+ 6d0:	bc 01       	movw	r22, r24
+ 6d2:	7c 01       	movw	r14, r24
+ 6d4:	e8 0c       	add	r14, r8
+ 6d6:	f9 1c       	adc	r15, r9
+ 6d8:	80 81       	ld	r24, Z
+ 6da:	90 e0       	ldi	r25, 0x00	; 0
+ 6dc:	82 23       	and	r24, r18
+ 6de:	93 23       	and	r25, r19
+ 6e0:	89 2b       	or	r24, r25
+ 6e2:	d1 f7       	brne	.-12     	; 0x6d8 <ReadSensor_Implementation+0x86>
+ 6e4:	80 81       	ld	r24, Z
+ 6e6:	90 e0       	ldi	r25, 0x00	; 0
+ 6e8:	82 23       	and	r24, r18
+ 6ea:	93 23       	and	r25, r19
+ 6ec:	89 2b       	or	r24, r25
+ 6ee:	d1 f3       	breq	.-12     	; 0x6e4 <ReadSensor_Implementation+0x92>
+ 6f0:	e3 01       	movw	r28, r6
+ 6f2:	88 81       	ld	r24, Y
+ 6f4:	8b 21       	and	r24, r11
+ 6f6:	88 83       	st	Y, r24
+ 6f8:	e8 01       	movw	r28, r16
+ 6fa:	c8 82       	st	Y, r12
+ 6fc:	8c 91       	ld	r24, X
+ 6fe:	90 e0       	ldi	r25, 0x00	; 0
+ 700:	84 23       	and	r24, r20
+ 702:	95 23       	and	r25, r21
+ 704:	89 2b       	or	r24, r25
+ 706:	d1 f3       	breq	.-12     	; 0x6fc <ReadSensor_Implementation+0xaa>
+ 708:	e8 01       	movw	r28, r16
+ 70a:	88 81       	ld	r24, Y
+ 70c:	e3 01       	movw	r28, r6
+ 70e:	88 81       	ld	r24, Y
+ 710:	8d 29       	or	r24, r13
+ 712:	88 83       	st	Y, r24
+ 714:	e8 01       	movw	r28, r16
+ 716:	88 81       	ld	r24, Y
+ 718:	eb 01       	movw	r28, r22
+ 71a:	89 93       	st	Y+, r24
+ 71c:	be 01       	movw	r22, r28
+ 71e:	ce 15       	cp	r28, r14
+ 720:	df 05       	cpc	r29, r15
+ 722:	d1 f6       	brne	.-76     	; 0x6d8 <ReadSensor_Implementation+0x86>
+ 724:	c4 01       	movw	r24, r8
+ 726:	df 91       	pop	r29
+ 728:	cf 91       	pop	r28
+ 72a:	1f 91       	pop	r17
+ 72c:	0f 91       	pop	r16
+ 72e:	ff 90       	pop	r15
+ 730:	ef 90       	pop	r14
+ 732:	df 90       	pop	r13
+ 734:	cf 90       	pop	r12
+ 736:	bf 90       	pop	r11
+ 738:	9f 90       	pop	r9
+ 73a:	8f 90       	pop	r8
+ 73c:	7f 90       	pop	r7
+ 73e:	6f 90       	pop	r6
+ 740:	08 95       	ret
 
-000007dc <GetBridgeLED>:
- 7dc:	0f 93       	push	r16
- 7de:	1f 93       	push	r17
- 7e0:	cf 93       	push	r28
- 7e2:	df 93       	push	r29
- 7e4:	1f 92       	push	r1
- 7e6:	cd b7       	in	r28, 0x3d	; 61
- 7e8:	de b7       	in	r29, 0x3e	; 62
- 7ea:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
- 7ee:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
- 7f2:	61 e0       	ldi	r22, 0x01	; 1
- 7f4:	70 e0       	ldi	r23, 0x00	; 0
- 7f6:	ce 01       	movw	r24, r28
- 7f8:	01 96       	adiw	r24, 0x01	; 1
- 7fa:	09 95       	icall
- 7fc:	89 81       	ldd	r24, Y+1	; 0x01
- 7fe:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 802:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 806:	81 11       	cpse	r24, r1
- 808:	48 c0       	rjmp	.+144    	; 0x89a <GetBridgeLED+0xbe>
- 80a:	80 e0       	ldi	r24, 0x00	; 0
- 80c:	09 95       	icall
- 80e:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <BiColorLed_ddr>
- 812:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <BiColorLed_ddr+0x1>
- 816:	80 81       	ld	r24, Z
- 818:	20 91 5e 01 	lds	r18, 0x015E	; 0x80015e <status_led>
- 81c:	90 e0       	ldi	r25, 0x00	; 0
- 81e:	02 2e       	mov	r0, r18
- 820:	02 c0       	rjmp	.+4      	; 0x826 <GetBridgeLED+0x4a>
- 822:	95 95       	asr	r25
- 824:	87 95       	ror	r24
- 826:	0a 94       	dec	r0
- 828:	e2 f7       	brpl	.-8      	; 0x822 <GetBridgeLED+0x46>
- 82a:	80 fd       	sbrc	r24, 0
- 82c:	11 c0       	rjmp	.+34     	; 0x850 <GetBridgeLED+0x74>
- 82e:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 832:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 836:	80 e0       	ldi	r24, 0x00	; 0
- 838:	09 95       	icall
- 83a:	0f b6       	in	r0, 0x3f	; 63
- 83c:	f8 94       	cli
- 83e:	de bf       	out	0x3e, r29	; 62
- 840:	0f be       	out	0x3f, r0	; 63
- 842:	cd bf       	out	0x3d, r28	; 61
- 844:	0f 90       	pop	r0
- 846:	df 91       	pop	r29
- 848:	cf 91       	pop	r28
- 84a:	1f 91       	pop	r17
- 84c:	0f 91       	pop	r16
- 84e:	08 95       	ret
- 850:	80 81       	ld	r24, Z
- 852:	90 e0       	ldi	r25, 0x00	; 0
- 854:	02 2e       	mov	r0, r18
- 856:	02 c0       	rjmp	.+4      	; 0x85c <GetBridgeLED+0x80>
- 858:	95 95       	asr	r25
- 85a:	87 95       	ror	r24
- 85c:	0a 94       	dec	r0
- 85e:	e2 f7       	brpl	.-8      	; 0x858 <GetBridgeLED+0x7c>
- 860:	80 ff       	sbrs	r24, 0
- 862:	0d c0       	rjmp	.+26     	; 0x87e <GetBridgeLED+0xa2>
- 864:	e0 91 5f 01 	lds	r30, 0x015F	; 0x80015f <BiColorLed_port>
- 868:	f0 91 60 01 	lds	r31, 0x0160	; 0x800160 <BiColorLed_port+0x1>
- 86c:	80 81       	ld	r24, Z
- 86e:	90 e0       	ldi	r25, 0x00	; 0
- 870:	02 c0       	rjmp	.+4      	; 0x876 <GetBridgeLED+0x9a>
- 872:	95 95       	asr	r25
- 874:	87 95       	ror	r24
- 876:	2a 95       	dec	r18
- 878:	e2 f7       	brpl	.-8      	; 0x872 <GetBridgeLED+0x96>
- 87a:	80 fd       	sbrc	r24, 0
- 87c:	07 c0       	rjmp	.+14     	; 0x88c <GetBridgeLED+0xb0>
- 87e:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 882:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 886:	81 e0       	ldi	r24, 0x01	; 1
- 888:	09 95       	icall
- 88a:	d7 cf       	rjmp	.-82     	; 0x83a <GetBridgeLED+0x5e>
- 88c:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 890:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 894:	82 e0       	ldi	r24, 0x02	; 2
- 896:	09 95       	icall
- 898:	d0 cf       	rjmp	.-96     	; 0x83a <GetBridgeLED+0x5e>
- 89a:	81 e0       	ldi	r24, 0x01	; 1
- 89c:	09 95       	icall
- 89e:	0f 90       	pop	r0
- 8a0:	df 91       	pop	r29
- 8a2:	cf 91       	pop	r28
- 8a4:	1f 91       	pop	r17
- 8a6:	0f 91       	pop	r16
- 8a8:	08 95       	ret
+00000742 <TestInvalidSensorCmd>:
+ 742:	cf 93       	push	r28
+ 744:	df 93       	push	r29
+ 746:	1f 92       	push	r1
+ 748:	cd b7       	in	r28, 0x3d	; 61
+ 74a:	de b7       	in	r29, 0x3e	; 62
+ 74c:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 750:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 754:	80 e0       	ldi	r24, 0x00	; 0
+ 756:	09 95       	icall
+ 758:	a0 91 4d 01 	lds	r26, 0x014D	; 0x80014d <Spi_port>
+ 75c:	b0 91 4e 01 	lds	r27, 0x014E	; 0x80014e <Spi_port+0x1>
+ 760:	8c 91       	ld	r24, X
+ 762:	21 e0       	ldi	r18, 0x01	; 1
+ 764:	30 e0       	ldi	r19, 0x00	; 0
+ 766:	a9 01       	movw	r20, r18
+ 768:	00 90 44 01 	lds	r0, 0x0144	; 0x800144 <Spi_Ss>
+ 76c:	02 c0       	rjmp	.+4      	; 0x772 <TestInvalidSensorCmd+0x30>
+ 76e:	44 0f       	add	r20, r20
+ 770:	55 1f       	adc	r21, r21
+ 772:	0a 94       	dec	r0
+ 774:	e2 f7       	brpl	.-8      	; 0x76e <TestInvalidSensorCmd+0x2c>
+ 776:	94 2f       	mov	r25, r20
+ 778:	90 95       	com	r25
+ 77a:	89 23       	and	r24, r25
+ 77c:	8c 93       	st	X, r24
+ 77e:	60 91 45 01 	lds	r22, 0x0145	; 0x800145 <Spi_spdr>
+ 782:	70 91 46 01 	lds	r23, 0x0146	; 0x800146 <Spi_spdr+0x1>
+ 786:	8f ef       	ldi	r24, 0xFF	; 255
+ 788:	fb 01       	movw	r30, r22
+ 78a:	80 83       	st	Z, r24
+ 78c:	e0 91 47 01 	lds	r30, 0x0147	; 0x800147 <Spi_spsr>
+ 790:	f0 91 48 01 	lds	r31, 0x0148	; 0x800148 <Spi_spsr+0x1>
+ 794:	00 90 3b 01 	lds	r0, 0x013B	; 0x80013b <Spi_InterruptFlag>
+ 798:	02 c0       	rjmp	.+4      	; 0x79e <TestInvalidSensorCmd+0x5c>
+ 79a:	22 0f       	add	r18, r18
+ 79c:	33 1f       	adc	r19, r19
+ 79e:	0a 94       	dec	r0
+ 7a0:	e2 f7       	brpl	.-8      	; 0x79a <TestInvalidSensorCmd+0x58>
+ 7a2:	80 81       	ld	r24, Z
+ 7a4:	90 e0       	ldi	r25, 0x00	; 0
+ 7a6:	82 23       	and	r24, r18
+ 7a8:	93 23       	and	r25, r19
+ 7aa:	89 2b       	or	r24, r25
+ 7ac:	d1 f3       	breq	.-12     	; 0x7a2 <TestInvalidSensorCmd+0x60>
+ 7ae:	fb 01       	movw	r30, r22
+ 7b0:	80 81       	ld	r24, Z
+ 7b2:	8c 91       	ld	r24, X
+ 7b4:	48 2b       	or	r20, r24
+ 7b6:	4c 93       	st	X, r20
+ 7b8:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
+ 7bc:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
+ 7c0:	61 e0       	ldi	r22, 0x01	; 1
+ 7c2:	70 e0       	ldi	r23, 0x00	; 0
+ 7c4:	ce 01       	movw	r24, r28
+ 7c6:	01 96       	adiw	r24, 0x01	; 1
+ 7c8:	09 95       	icall
+ 7ca:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 7ce:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 7d2:	89 81       	ldd	r24, Y+1	; 0x01
+ 7d4:	09 95       	icall
+ 7d6:	0f 90       	pop	r0
+ 7d8:	df 91       	pop	r29
+ 7da:	cf 91       	pop	r28
+ 7dc:	08 95       	ret
 
-000008aa <SetBridgeLED>:
- 8aa:	0f 93       	push	r16
- 8ac:	1f 93       	push	r17
- 8ae:	cf 93       	push	r28
- 8b0:	df 93       	push	r29
- 8b2:	00 d0       	rcall	.+0      	; 0x8b4 <SetBridgeLED+0xa>
- 8b4:	cd b7       	in	r28, 0x3d	; 61
- 8b6:	de b7       	in	r29, 0x3e	; 62
- 8b8:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
- 8bc:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
- 8c0:	62 e0       	ldi	r22, 0x02	; 2
- 8c2:	70 e0       	ldi	r23, 0x00	; 0
- 8c4:	ce 01       	movw	r24, r28
- 8c6:	01 96       	adiw	r24, 0x01	; 1
- 8c8:	09 95       	icall
- 8ca:	89 81       	ldd	r24, Y+1	; 0x01
- 8cc:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 8d0:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 8d4:	88 23       	and	r24, r24
- 8d6:	71 f0       	breq	.+28     	; 0x8f4 <SetBridgeLED+0x4a>
- 8d8:	81 e0       	ldi	r24, 0x01	; 1
- 8da:	09 95       	icall
- 8dc:	0f b6       	in	r0, 0x3f	; 63
- 8de:	f8 94       	cli
- 8e0:	de bf       	out	0x3e, r29	; 62
- 8e2:	0f be       	out	0x3f, r0	; 63
- 8e4:	cd bf       	out	0x3d, r28	; 61
- 8e6:	0f 90       	pop	r0
+000007de <GetBridgeLED>:
+ 7de:	0f 93       	push	r16
+ 7e0:	1f 93       	push	r17
+ 7e2:	cf 93       	push	r28
+ 7e4:	df 93       	push	r29
+ 7e6:	1f 92       	push	r1
+ 7e8:	cd b7       	in	r28, 0x3d	; 61
+ 7ea:	de b7       	in	r29, 0x3e	; 62
+ 7ec:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
+ 7f0:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
+ 7f4:	61 e0       	ldi	r22, 0x01	; 1
+ 7f6:	70 e0       	ldi	r23, 0x00	; 0
+ 7f8:	ce 01       	movw	r24, r28
+ 7fa:	01 96       	adiw	r24, 0x01	; 1
+ 7fc:	09 95       	icall
+ 7fe:	89 81       	ldd	r24, Y+1	; 0x01
+ 800:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 804:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 808:	81 11       	cpse	r24, r1
+ 80a:	48 c0       	rjmp	.+144    	; 0x89c <GetBridgeLED+0xbe>
+ 80c:	80 e0       	ldi	r24, 0x00	; 0
+ 80e:	09 95       	icall
+ 810:	e0 91 63 01 	lds	r30, 0x0163	; 0x800163 <BiColorLed_ddr>
+ 814:	f0 91 64 01 	lds	r31, 0x0164	; 0x800164 <BiColorLed_ddr+0x1>
+ 818:	80 81       	ld	r24, Z
+ 81a:	20 91 60 01 	lds	r18, 0x0160	; 0x800160 <status_led>
+ 81e:	90 e0       	ldi	r25, 0x00	; 0
+ 820:	02 2e       	mov	r0, r18
+ 822:	02 c0       	rjmp	.+4      	; 0x828 <GetBridgeLED+0x4a>
+ 824:	95 95       	asr	r25
+ 826:	87 95       	ror	r24
+ 828:	0a 94       	dec	r0
+ 82a:	e2 f7       	brpl	.-8      	; 0x824 <GetBridgeLED+0x46>
+ 82c:	80 fd       	sbrc	r24, 0
+ 82e:	11 c0       	rjmp	.+34     	; 0x852 <GetBridgeLED+0x74>
+ 830:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 834:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 838:	80 e0       	ldi	r24, 0x00	; 0
+ 83a:	09 95       	icall
+ 83c:	0f b6       	in	r0, 0x3f	; 63
+ 83e:	f8 94       	cli
+ 840:	de bf       	out	0x3e, r29	; 62
+ 842:	0f be       	out	0x3f, r0	; 63
+ 844:	cd bf       	out	0x3d, r28	; 61
+ 846:	0f 90       	pop	r0
+ 848:	df 91       	pop	r29
+ 84a:	cf 91       	pop	r28
+ 84c:	1f 91       	pop	r17
+ 84e:	0f 91       	pop	r16
+ 850:	08 95       	ret
+ 852:	80 81       	ld	r24, Z
+ 854:	90 e0       	ldi	r25, 0x00	; 0
+ 856:	02 2e       	mov	r0, r18
+ 858:	02 c0       	rjmp	.+4      	; 0x85e <GetBridgeLED+0x80>
+ 85a:	95 95       	asr	r25
+ 85c:	87 95       	ror	r24
+ 85e:	0a 94       	dec	r0
+ 860:	e2 f7       	brpl	.-8      	; 0x85a <GetBridgeLED+0x7c>
+ 862:	80 ff       	sbrs	r24, 0
+ 864:	0d c0       	rjmp	.+26     	; 0x880 <GetBridgeLED+0xa2>
+ 866:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <BiColorLed_port>
+ 86a:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <BiColorLed_port+0x1>
+ 86e:	80 81       	ld	r24, Z
+ 870:	90 e0       	ldi	r25, 0x00	; 0
+ 872:	02 c0       	rjmp	.+4      	; 0x878 <GetBridgeLED+0x9a>
+ 874:	95 95       	asr	r25
+ 876:	87 95       	ror	r24
+ 878:	2a 95       	dec	r18
+ 87a:	e2 f7       	brpl	.-8      	; 0x874 <GetBridgeLED+0x96>
+ 87c:	80 fd       	sbrc	r24, 0
+ 87e:	07 c0       	rjmp	.+14     	; 0x88e <GetBridgeLED+0xb0>
+ 880:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 884:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 888:	81 e0       	ldi	r24, 0x01	; 1
+ 88a:	09 95       	icall
+ 88c:	d7 cf       	rjmp	.-82     	; 0x83c <GetBridgeLED+0x5e>
+ 88e:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 892:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 896:	82 e0       	ldi	r24, 0x02	; 2
+ 898:	09 95       	icall
+ 89a:	d0 cf       	rjmp	.-96     	; 0x83c <GetBridgeLED+0x5e>
+ 89c:	81 e0       	ldi	r24, 0x01	; 1
+ 89e:	09 95       	icall
+ 8a0:	0f 90       	pop	r0
+ 8a2:	df 91       	pop	r29
+ 8a4:	cf 91       	pop	r28
+ 8a6:	1f 91       	pop	r17
+ 8a8:	0f 91       	pop	r16
+ 8aa:	08 95       	ret
+
+000008ac <SetBridgeLED>:
+ 8ac:	0f 93       	push	r16
+ 8ae:	1f 93       	push	r17
+ 8b0:	cf 93       	push	r28
+ 8b2:	df 93       	push	r29
+ 8b4:	00 d0       	rcall	.+0      	; 0x8b6 <SetBridgeLED+0xa>
+ 8b6:	cd b7       	in	r28, 0x3d	; 61
+ 8b8:	de b7       	in	r29, 0x3e	; 62
+ 8ba:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
+ 8be:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
+ 8c2:	62 e0       	ldi	r22, 0x02	; 2
+ 8c4:	70 e0       	ldi	r23, 0x00	; 0
+ 8c6:	ce 01       	movw	r24, r28
+ 8c8:	01 96       	adiw	r24, 0x01	; 1
+ 8ca:	09 95       	icall
+ 8cc:	89 81       	ldd	r24, Y+1	; 0x01
+ 8ce:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 8d2:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 8d6:	88 23       	and	r24, r24
+ 8d8:	71 f0       	breq	.+28     	; 0x8f6 <SetBridgeLED+0x4a>
+ 8da:	81 e0       	ldi	r24, 0x01	; 1
+ 8dc:	09 95       	icall
+ 8de:	0f b6       	in	r0, 0x3f	; 63
+ 8e0:	f8 94       	cli
+ 8e2:	de bf       	out	0x3e, r29	; 62
+ 8e4:	0f be       	out	0x3f, r0	; 63
+ 8e6:	cd bf       	out	0x3d, r28	; 61
  8e8:	0f 90       	pop	r0
- 8ea:	df 91       	pop	r29
- 8ec:	cf 91       	pop	r28
- 8ee:	1f 91       	pop	r17
- 8f0:	0f 91       	pop	r16
- 8f2:	08 95       	ret
- 8f4:	80 e0       	ldi	r24, 0x00	; 0
- 8f6:	09 95       	icall
- 8f8:	8a 81       	ldd	r24, Y+2	; 0x02
- 8fa:	81 11       	cpse	r24, r1
- 8fc:	1a c0       	rjmp	.+52     	; 0x932 <__stack+0x33>
- 8fe:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <BiColorLed_ddr>
- 902:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <BiColorLed_ddr+0x1>
- 906:	20 81       	ld	r18, Z
- 908:	81 e0       	ldi	r24, 0x01	; 1
- 90a:	90 e0       	ldi	r25, 0x00	; 0
- 90c:	00 90 5e 01 	lds	r0, 0x015E	; 0x80015e <status_led>
- 910:	02 c0       	rjmp	.+4      	; 0x916 <__stack+0x17>
- 912:	88 0f       	add	r24, r24
- 914:	99 1f       	adc	r25, r25
- 916:	0a 94       	dec	r0
- 918:	e2 f7       	brpl	.-8      	; 0x912 <__stack+0x13>
- 91a:	80 95       	com	r24
- 91c:	92 2f       	mov	r25, r18
- 91e:	98 23       	and	r25, r24
- 920:	90 83       	st	Z, r25
- 922:	e0 91 5f 01 	lds	r30, 0x015F	; 0x80015f <BiColorLed_port>
- 926:	f0 91 60 01 	lds	r31, 0x0160	; 0x800160 <BiColorLed_port+0x1>
- 92a:	90 81       	ld	r25, Z
- 92c:	89 23       	and	r24, r25
- 92e:	80 83       	st	Z, r24
- 930:	d5 cf       	rjmp	.-86     	; 0x8dc <SetBridgeLED+0x32>
- 932:	81 30       	cpi	r24, 0x01	; 1
- 934:	d9 f0       	breq	.+54     	; 0x96c <__stack+0x6d>
- 936:	82 30       	cpi	r24, 0x02	; 2
- 938:	b1 f6       	brne	.-84     	; 0x8e6 <SetBridgeLED+0x3c>
- 93a:	e0 91 5f 01 	lds	r30, 0x015F	; 0x80015f <BiColorLed_port>
- 93e:	f0 91 60 01 	lds	r31, 0x0160	; 0x800160 <BiColorLed_port+0x1>
- 942:	20 81       	ld	r18, Z
- 944:	81 e0       	ldi	r24, 0x01	; 1
- 946:	90 e0       	ldi	r25, 0x00	; 0
- 948:	00 90 5e 01 	lds	r0, 0x015E	; 0x80015e <status_led>
- 94c:	02 c0       	rjmp	.+4      	; 0x952 <__stack+0x53>
- 94e:	88 0f       	add	r24, r24
- 950:	99 1f       	adc	r25, r25
- 952:	0a 94       	dec	r0
- 954:	e2 f7       	brpl	.-8      	; 0x94e <__stack+0x4f>
- 956:	92 2f       	mov	r25, r18
- 958:	98 2b       	or	r25, r24
- 95a:	90 83       	st	Z, r25
- 95c:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <BiColorLed_ddr>
- 960:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <BiColorLed_ddr+0x1>
- 964:	90 81       	ld	r25, Z
- 966:	89 2b       	or	r24, r25
- 968:	80 83       	st	Z, r24
- 96a:	b8 cf       	rjmp	.-144    	; 0x8dc <SetBridgeLED+0x32>
- 96c:	e0 91 5f 01 	lds	r30, 0x015F	; 0x80015f <BiColorLed_port>
- 970:	f0 91 60 01 	lds	r31, 0x0160	; 0x800160 <BiColorLed_port+0x1>
- 974:	20 81       	ld	r18, Z
- 976:	81 e0       	ldi	r24, 0x01	; 1
- 978:	90 e0       	ldi	r25, 0x00	; 0
- 97a:	00 90 5e 01 	lds	r0, 0x015E	; 0x80015e <status_led>
- 97e:	02 c0       	rjmp	.+4      	; 0x984 <__stack+0x85>
- 980:	88 0f       	add	r24, r24
- 982:	99 1f       	adc	r25, r25
- 984:	0a 94       	dec	r0
- 986:	e2 f7       	brpl	.-8      	; 0x980 <__stack+0x81>
- 988:	98 2f       	mov	r25, r24
- 98a:	90 95       	com	r25
- 98c:	92 23       	and	r25, r18
- 98e:	e5 cf       	rjmp	.-54     	; 0x95a <__stack+0x5b>
+ 8ea:	0f 90       	pop	r0
+ 8ec:	df 91       	pop	r29
+ 8ee:	cf 91       	pop	r28
+ 8f0:	1f 91       	pop	r17
+ 8f2:	0f 91       	pop	r16
+ 8f4:	08 95       	ret
+ 8f6:	80 e0       	ldi	r24, 0x00	; 0
+ 8f8:	09 95       	icall
+ 8fa:	8a 81       	ldd	r24, Y+2	; 0x02
+ 8fc:	81 11       	cpse	r24, r1
+ 8fe:	1a c0       	rjmp	.+52     	; 0x934 <__stack+0x35>
+ 900:	e0 91 63 01 	lds	r30, 0x0163	; 0x800163 <BiColorLed_ddr>
+ 904:	f0 91 64 01 	lds	r31, 0x0164	; 0x800164 <BiColorLed_ddr+0x1>
+ 908:	20 81       	ld	r18, Z
+ 90a:	81 e0       	ldi	r24, 0x01	; 1
+ 90c:	90 e0       	ldi	r25, 0x00	; 0
+ 90e:	00 90 60 01 	lds	r0, 0x0160	; 0x800160 <status_led>
+ 912:	02 c0       	rjmp	.+4      	; 0x918 <__stack+0x19>
+ 914:	88 0f       	add	r24, r24
+ 916:	99 1f       	adc	r25, r25
+ 918:	0a 94       	dec	r0
+ 91a:	e2 f7       	brpl	.-8      	; 0x914 <__stack+0x15>
+ 91c:	80 95       	com	r24
+ 91e:	92 2f       	mov	r25, r18
+ 920:	98 23       	and	r25, r24
+ 922:	90 83       	st	Z, r25
+ 924:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <BiColorLed_port>
+ 928:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <BiColorLed_port+0x1>
+ 92c:	90 81       	ld	r25, Z
+ 92e:	89 23       	and	r24, r25
+ 930:	80 83       	st	Z, r24
+ 932:	d5 cf       	rjmp	.-86     	; 0x8de <SetBridgeLED+0x32>
+ 934:	81 30       	cpi	r24, 0x01	; 1
+ 936:	d9 f0       	breq	.+54     	; 0x96e <__stack+0x6f>
+ 938:	82 30       	cpi	r24, 0x02	; 2
+ 93a:	b1 f6       	brne	.-84     	; 0x8e8 <SetBridgeLED+0x3c>
+ 93c:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <BiColorLed_port>
+ 940:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <BiColorLed_port+0x1>
+ 944:	20 81       	ld	r18, Z
+ 946:	81 e0       	ldi	r24, 0x01	; 1
+ 948:	90 e0       	ldi	r25, 0x00	; 0
+ 94a:	00 90 60 01 	lds	r0, 0x0160	; 0x800160 <status_led>
+ 94e:	02 c0       	rjmp	.+4      	; 0x954 <__stack+0x55>
+ 950:	88 0f       	add	r24, r24
+ 952:	99 1f       	adc	r25, r25
+ 954:	0a 94       	dec	r0
+ 956:	e2 f7       	brpl	.-8      	; 0x950 <__stack+0x51>
+ 958:	92 2f       	mov	r25, r18
+ 95a:	98 2b       	or	r25, r24
+ 95c:	90 83       	st	Z, r25
+ 95e:	e0 91 63 01 	lds	r30, 0x0163	; 0x800163 <BiColorLed_ddr>
+ 962:	f0 91 64 01 	lds	r31, 0x0164	; 0x800164 <BiColorLed_ddr+0x1>
+ 966:	90 81       	ld	r25, Z
+ 968:	89 2b       	or	r24, r25
+ 96a:	80 83       	st	Z, r24
+ 96c:	b8 cf       	rjmp	.-144    	; 0x8de <SetBridgeLED+0x32>
+ 96e:	e0 91 61 01 	lds	r30, 0x0161	; 0x800161 <BiColorLed_port>
+ 972:	f0 91 62 01 	lds	r31, 0x0162	; 0x800162 <BiColorLed_port+0x1>
+ 976:	20 81       	ld	r18, Z
+ 978:	81 e0       	ldi	r24, 0x01	; 1
+ 97a:	90 e0       	ldi	r25, 0x00	; 0
+ 97c:	00 90 60 01 	lds	r0, 0x0160	; 0x800160 <status_led>
+ 980:	02 c0       	rjmp	.+4      	; 0x986 <__stack+0x87>
+ 982:	88 0f       	add	r24, r24
+ 984:	99 1f       	adc	r25, r25
+ 986:	0a 94       	dec	r0
+ 988:	e2 f7       	brpl	.-8      	; 0x982 <__stack+0x83>
+ 98a:	98 2f       	mov	r25, r24
+ 98c:	90 95       	com	r25
+ 98e:	92 23       	and	r25, r18
+ 990:	e5 cf       	rjmp	.-54     	; 0x95c <__stack+0x5d>
 
-00000990 <BridgeGetSensorLED>:
- 990:	cf 92       	push	r12
- 992:	df 92       	push	r13
- 994:	ef 92       	push	r14
- 996:	ff 92       	push	r15
- 998:	0f 93       	push	r16
- 99a:	1f 93       	push	r17
- 99c:	cf 93       	push	r28
- 99e:	df 93       	push	r29
- 9a0:	00 d0       	rcall	.+0      	; 0x9a2 <BridgeGetSensorLED+0x12>
- 9a2:	1f 92       	push	r1
- 9a4:	cd b7       	in	r28, 0x3d	; 61
- 9a6:	de b7       	in	r29, 0x3e	; 62
- 9a8:	cd b6       	in	r12, 0x3d	; 61
- 9aa:	de b6       	in	r13, 0x3e	; 62
- 9ac:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
- 9b0:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
- 9b4:	61 e0       	ldi	r22, 0x01	; 1
- 9b6:	70 e0       	ldi	r23, 0x00	; 0
- 9b8:	ce 01       	movw	r24, r28
- 9ba:	03 96       	adiw	r24, 0x03	; 3
- 9bc:	09 95       	icall
- 9be:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 9c2:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 9c6:	80 e0       	ldi	r24, 0x00	; 0
- 9c8:	09 95       	icall
- 9ca:	eb 80       	ldd	r14, Y+3	; 0x03
- 9cc:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiWriteByte>
- 9d0:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiWriteByte+0x1>
- 9d4:	82 e0       	ldi	r24, 0x02	; 2
- 9d6:	09 95       	icall
- 9d8:	8d b7       	in	r24, 0x3d	; 61
- 9da:	9e b7       	in	r25, 0x3e	; 62
- 9dc:	81 52       	subi	r24, 0x21	; 33
- 9de:	96 40       	sbci	r25, 0x06	; 6
- 9e0:	0f b6       	in	r0, 0x3f	; 63
- 9e2:	f8 94       	cli
- 9e4:	9e bf       	out	0x3e, r25	; 62
- 9e6:	0f be       	out	0x3f, r0	; 63
- 9e8:	8d bf       	out	0x3d, r24	; 61
- 9ea:	0d b7       	in	r16, 0x3d	; 61
- 9ec:	1e b7       	in	r17, 0x3e	; 62
- 9ee:	0f 5f       	subi	r16, 0xFF	; 255
- 9f0:	1f 4f       	sbci	r17, 0xFF	; 255
- 9f2:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
- 9f6:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
- 9fa:	61 e0       	ldi	r22, 0x01	; 1
- 9fc:	70 e0       	ldi	r23, 0x00	; 0
- 9fe:	c8 01       	movw	r24, r16
- a00:	09 95       	icall
- a02:	d8 01       	movw	r26, r16
- a04:	fc 90       	ld	r15, X
- a06:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- a0a:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- a0e:	8f 2d       	mov	r24, r15
- a10:	09 95       	icall
- a12:	f1 10       	cpse	r15, r1
- a14:	37 c0       	rjmp	.+110    	; 0xa84 <BridgeGetSensorLED+0xf4>
- a16:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiWriteByte>
- a1a:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiWriteByte+0x1>
- a1e:	8e 2d       	mov	r24, r14
- a20:	09 95       	icall
- a22:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
- a26:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
- a2a:	62 e0       	ldi	r22, 0x02	; 2
- a2c:	70 e0       	ldi	r23, 0x00	; 0
- a2e:	ce 01       	movw	r24, r28
- a30:	01 96       	adiw	r24, 0x01	; 1
- a32:	09 95       	icall
- a34:	e9 80       	ldd	r14, Y+1	; 0x01
- a36:	fa 80       	ldd	r15, Y+2	; 0x02
- a38:	fe 24       	eor	r15, r14
- a3a:	ef 24       	eor	r14, r15
- a3c:	fe 24       	eor	r15, r14
- a3e:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
- a42:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
- a46:	b7 01       	movw	r22, r14
- a48:	c8 01       	movw	r24, r16
- a4a:	09 95       	icall
- a4c:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- a50:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- a54:	89 81       	ldd	r24, Y+1	; 0x01
- a56:	09 95       	icall
- a58:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- a5c:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- a60:	8a 81       	ldd	r24, Y+2	; 0x02
- a62:	09 95       	icall
- a64:	e1 14       	cp	r14, r1
- a66:	f1 04       	cpc	r15, r1
- a68:	69 f0       	breq	.+26     	; 0xa84 <BridgeGetSensorLED+0xf4>
- a6a:	e0 0e       	add	r14, r16
- a6c:	f1 1e       	adc	r15, r17
- a6e:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- a72:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- a76:	d8 01       	movw	r26, r16
- a78:	8d 91       	ld	r24, X+
- a7a:	8d 01       	movw	r16, r26
- a7c:	09 95       	icall
- a7e:	e0 16       	cp	r14, r16
- a80:	f1 06       	cpc	r15, r17
- a82:	a9 f7       	brne	.-22     	; 0xa6e <BridgeGetSensorLED+0xde>
- a84:	0f b6       	in	r0, 0x3f	; 63
- a86:	f8 94       	cli
- a88:	de be       	out	0x3e, r13	; 62
- a8a:	0f be       	out	0x3f, r0	; 63
- a8c:	cd be       	out	0x3d, r12	; 61
- a8e:	0f b6       	in	r0, 0x3f	; 63
- a90:	f8 94       	cli
- a92:	de be       	out	0x3e, r13	; 62
- a94:	0f be       	out	0x3f, r0	; 63
- a96:	cd be       	out	0x3d, r12	; 61
- a98:	0f 90       	pop	r0
+00000992 <BridgeGetSensorLED>:
+ 992:	cf 92       	push	r12
+ 994:	df 92       	push	r13
+ 996:	ef 92       	push	r14
+ 998:	ff 92       	push	r15
+ 99a:	0f 93       	push	r16
+ 99c:	1f 93       	push	r17
+ 99e:	cf 93       	push	r28
+ 9a0:	df 93       	push	r29
+ 9a2:	00 d0       	rcall	.+0      	; 0x9a4 <BridgeGetSensorLED+0x12>
+ 9a4:	1f 92       	push	r1
+ 9a6:	cd b7       	in	r28, 0x3d	; 61
+ 9a8:	de b7       	in	r29, 0x3e	; 62
+ 9aa:	cd b6       	in	r12, 0x3d	; 61
+ 9ac:	de b6       	in	r13, 0x3e	; 62
+ 9ae:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
+ 9b2:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
+ 9b6:	61 e0       	ldi	r22, 0x01	; 1
+ 9b8:	70 e0       	ldi	r23, 0x00	; 0
+ 9ba:	ce 01       	movw	r24, r28
+ 9bc:	03 96       	adiw	r24, 0x03	; 3
+ 9be:	09 95       	icall
+ 9c0:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 9c4:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 9c8:	80 e0       	ldi	r24, 0x00	; 0
+ 9ca:	09 95       	icall
+ 9cc:	eb 80       	ldd	r14, Y+3	; 0x03
+ 9ce:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiWriteByte>
+ 9d2:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiWriteByte+0x1>
+ 9d6:	83 e0       	ldi	r24, 0x03	; 3
+ 9d8:	09 95       	icall
+ 9da:	8d b7       	in	r24, 0x3d	; 61
+ 9dc:	9e b7       	in	r25, 0x3e	; 62
+ 9de:	81 52       	subi	r24, 0x21	; 33
+ 9e0:	96 40       	sbci	r25, 0x06	; 6
+ 9e2:	0f b6       	in	r0, 0x3f	; 63
+ 9e4:	f8 94       	cli
+ 9e6:	9e bf       	out	0x3e, r25	; 62
+ 9e8:	0f be       	out	0x3f, r0	; 63
+ 9ea:	8d bf       	out	0x3d, r24	; 61
+ 9ec:	0d b7       	in	r16, 0x3d	; 61
+ 9ee:	1e b7       	in	r17, 0x3e	; 62
+ 9f0:	0f 5f       	subi	r16, 0xFF	; 255
+ 9f2:	1f 4f       	sbci	r17, 0xFF	; 255
+ 9f4:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
+ 9f8:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
+ 9fc:	61 e0       	ldi	r22, 0x01	; 1
+ 9fe:	70 e0       	ldi	r23, 0x00	; 0
+ a00:	c8 01       	movw	r24, r16
+ a02:	09 95       	icall
+ a04:	d8 01       	movw	r26, r16
+ a06:	fc 90       	ld	r15, X
+ a08:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ a0c:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ a10:	8f 2d       	mov	r24, r15
+ a12:	09 95       	icall
+ a14:	f1 10       	cpse	r15, r1
+ a16:	37 c0       	rjmp	.+110    	; 0xa86 <BridgeGetSensorLED+0xf4>
+ a18:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiWriteByte>
+ a1c:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiWriteByte+0x1>
+ a20:	8e 2d       	mov	r24, r14
+ a22:	09 95       	icall
+ a24:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
+ a28:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
+ a2c:	62 e0       	ldi	r22, 0x02	; 2
+ a2e:	70 e0       	ldi	r23, 0x00	; 0
+ a30:	ce 01       	movw	r24, r28
+ a32:	01 96       	adiw	r24, 0x01	; 1
+ a34:	09 95       	icall
+ a36:	e9 80       	ldd	r14, Y+1	; 0x01
+ a38:	fa 80       	ldd	r15, Y+2	; 0x02
+ a3a:	fe 24       	eor	r15, r14
+ a3c:	ef 24       	eor	r14, r15
+ a3e:	fe 24       	eor	r15, r14
+ a40:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
+ a44:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
+ a48:	b7 01       	movw	r22, r14
+ a4a:	c8 01       	movw	r24, r16
+ a4c:	09 95       	icall
+ a4e:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ a52:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ a56:	89 81       	ldd	r24, Y+1	; 0x01
+ a58:	09 95       	icall
+ a5a:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ a5e:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ a62:	8a 81       	ldd	r24, Y+2	; 0x02
+ a64:	09 95       	icall
+ a66:	e1 14       	cp	r14, r1
+ a68:	f1 04       	cpc	r15, r1
+ a6a:	69 f0       	breq	.+26     	; 0xa86 <BridgeGetSensorLED+0xf4>
+ a6c:	e0 0e       	add	r14, r16
+ a6e:	f1 1e       	adc	r15, r17
+ a70:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ a74:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ a78:	d8 01       	movw	r26, r16
+ a7a:	8d 91       	ld	r24, X+
+ a7c:	8d 01       	movw	r16, r26
+ a7e:	09 95       	icall
+ a80:	e0 16       	cp	r14, r16
+ a82:	f1 06       	cpc	r15, r17
+ a84:	a9 f7       	brne	.-22     	; 0xa70 <BridgeGetSensorLED+0xde>
+ a86:	0f b6       	in	r0, 0x3f	; 63
+ a88:	f8 94       	cli
+ a8a:	de be       	out	0x3e, r13	; 62
+ a8c:	0f be       	out	0x3f, r0	; 63
+ a8e:	cd be       	out	0x3d, r12	; 61
+ a90:	0f b6       	in	r0, 0x3f	; 63
+ a92:	f8 94       	cli
+ a94:	de be       	out	0x3e, r13	; 62
+ a96:	0f be       	out	0x3f, r0	; 63
+ a98:	cd be       	out	0x3d, r12	; 61
  a9a:	0f 90       	pop	r0
  a9c:	0f 90       	pop	r0
- a9e:	df 91       	pop	r29
- aa0:	cf 91       	pop	r28
- aa2:	1f 91       	pop	r17
- aa4:	0f 91       	pop	r16
- aa6:	ff 90       	pop	r15
- aa8:	ef 90       	pop	r14
- aaa:	df 90       	pop	r13
- aac:	cf 90       	pop	r12
- aae:	08 95       	ret
+ a9e:	0f 90       	pop	r0
+ aa0:	df 91       	pop	r29
+ aa2:	cf 91       	pop	r28
+ aa4:	1f 91       	pop	r17
+ aa6:	0f 91       	pop	r16
+ aa8:	ff 90       	pop	r15
+ aaa:	ef 90       	pop	r14
+ aac:	df 90       	pop	r13
+ aae:	cf 90       	pop	r12
+ ab0:	08 95       	ret
 
-00000ab0 <LookupBridgeCmd>:
- ab0:	84 30       	cpi	r24, 0x04	; 4
- ab2:	48 f4       	brcc	.+18     	; 0xac6 <LookupBridgeCmd+0x16>
- ab4:	e8 2f       	mov	r30, r24
- ab6:	f0 e0       	ldi	r31, 0x00	; 0
- ab8:	ee 0f       	add	r30, r30
- aba:	ff 1f       	adc	r31, r31
- abc:	ef 5c       	subi	r30, 0xCF	; 207
- abe:	fe 4f       	sbci	r31, 0xFE	; 254
- ac0:	80 81       	ld	r24, Z
- ac2:	91 81       	ldd	r25, Z+1	; 0x01
- ac4:	08 95       	ret
- ac6:	80 e0       	ldi	r24, 0x00	; 0
- ac8:	90 e0       	ldi	r25, 0x00	; 0
- aca:	08 95       	ret
+00000ab2 <LookupBridgeCmd>:
+ ab2:	85 30       	cpi	r24, 0x05	; 5
+ ab4:	48 f4       	brcc	.+18     	; 0xac8 <LookupBridgeCmd+0x16>
+ ab6:	e8 2f       	mov	r30, r24
+ ab8:	f0 e0       	ldi	r31, 0x00	; 0
+ aba:	ee 0f       	add	r30, r30
+ abc:	ff 1f       	adc	r31, r31
+ abe:	ef 5c       	subi	r30, 0xCF	; 207
+ ac0:	fe 4f       	sbci	r31, 0xFE	; 254
+ ac2:	80 81       	ld	r24, Z
+ ac4:	91 81       	ldd	r25, Z+1	; 0x01
+ ac6:	08 95       	ret
+ ac8:	80 e0       	ldi	r24, 0x00	; 0
+ aca:	90 e0       	ldi	r25, 0x00	; 0
+ acc:	08 95       	ret
 
-00000acc <UsbWriteStatusInvalid>:
+00000ace <UsbWriteStatusInvalid>:
 uint8_t UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
 {
- acc:	cf 93       	push	r28
- ace:	df 93       	push	r29
- ad0:	00 d0       	rcall	.+0      	; 0xad2 <UsbWriteStatusInvalid+0x6>
- ad2:	cd b7       	in	r28, 0x3d	; 61
- ad4:	de b7       	in	r29, 0x3e	; 62
+ ace:	cf 93       	push	r28
+ ad0:	df 93       	push	r29
+ ad2:	00 d0       	rcall	.+0      	; 0xad4 <UsbWriteStatusInvalid+0x6>
+ ad4:	cd b7       	in	r28, 0x3d	; 61
+ ad6:	de b7       	in	r29, 0x3e	; 62
     uint8_t const StatusInvalid[] = { 0xFF, invalid_cmd };
- ad6:	9f ef       	ldi	r25, 0xFF	; 255
- ad8:	99 83       	std	Y+1, r25	; 0x01
- ada:	8a 83       	std	Y+2, r24	; 0x02
+ ad8:	9f ef       	ldi	r25, 0xFF	; 255
+ ada:	99 83       	std	Y+1, r25	; 0x01
+ adc:	8a 83       	std	Y+2, r24	; 0x02
     return UsbWrite(StatusInvalid,2);
- adc:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
- ae0:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
- ae4:	62 e0       	ldi	r22, 0x02	; 2
- ae6:	70 e0       	ldi	r23, 0x00	; 0
- ae8:	ce 01       	movw	r24, r28
- aea:	01 96       	adiw	r24, 0x01	; 1
- aec:	09 95       	icall
+ ade:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
+ ae2:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
+ ae6:	62 e0       	ldi	r22, 0x02	; 2
+ ae8:	70 e0       	ldi	r23, 0x00	; 0
+ aea:	ce 01       	movw	r24, r28
+ aec:	01 96       	adiw	r24, 0x01	; 1
+ aee:	09 95       	icall
 }
- aee:	0f 90       	pop	r0
  af0:	0f 90       	pop	r0
- af2:	df 91       	pop	r29
- af4:	cf 91       	pop	r28
- af6:	08 95       	ret
+ af2:	0f 90       	pop	r0
+ af4:	df 91       	pop	r29
+ af6:	cf 91       	pop	r28
+ af8:	08 95       	ret
 
-00000af8 <main>:
+00000afa <main>:
 } while (0)
 #define DebugPinLow()  ClearBit(&PORTC, PC5)
 #define DebugPinHigh() SetBit(&PORTC, PC5)
 
 int main()
 {
- af8:	cf 93       	push	r28
- afa:	df 93       	push	r29
- afc:	1f 92       	push	r1
- afe:	cd b7       	in	r28, 0x3d	; 61
- b00:	de b7       	in	r29, 0x3e	; 62
- b02:	3b 9a       	sbi	0x07, 3	; 7
+ afa:	cf 93       	push	r28
+ afc:	df 93       	push	r29
+ afe:	1f 92       	push	r1
+ b00:	cd b7       	in	r28, 0x3d	; 61
+ b02:	de b7       	in	r29, 0x3e	; 62
+ b04:	3b 9a       	sbi	0x07, 3	; 7
     /* =====[ Setup ]===== */
     /* SetupDebugLed(); */
     BiColorLedOn(status_led);
     SpiMasterInit();
- b04:	0e 94 67 02 	call	0x4ce	; 0x4ce <SpiMasterInit>
+ b06:	0e 94 67 02 	call	0x4ce	; 0x4ce <SpiMasterInit>
     UsbInit();
- b08:	0e 94 04 02 	call	0x408	; 0x408 <UsbInit>
- b0c:	3d 9a       	sbi	0x07, 5	; 7
- b0e:	45 9a       	sbi	0x08, 5	; 8
+ b0a:	0e 94 04 02 	call	0x408	; 0x408 <UsbInit>
+ b0e:	3d 9a       	sbi	0x07, 5	; 7
+ b10:	45 9a       	sbi	0x08, 5	; 8
     DebugPinInit();
     nbytes_in_frame = sizeof_full_frame;
- b10:	80 e2       	ldi	r24, 0x20	; 32
- b12:	96 e0       	ldi	r25, 0x06	; 6
- b14:	90 93 85 07 	sts	0x0785, r25	; 0x800785 <nbytes_in_frame+0x1>
- b18:	80 93 84 07 	sts	0x0784, r24	; 0x800784 <nbytes_in_frame>
+ b12:	80 e2       	ldi	r24, 0x20	; 32
+ b14:	96 e0       	ldi	r25, 0x06	; 6
+ b16:	90 93 87 07 	sts	0x0787, r25	; 0x800787 <nbytes_in_frame+0x1>
+ b1a:	80 93 86 07 	sts	0x0786, r24	; 0x800786 <nbytes_in_frame>
 /* =====[ WIP ]===== */
 void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
 {
     bridge_cmd_key cmd;
     // Read USB buffer if there is any data to read.
     if (UsbReadOneByte(&cmd))
- b1c:	ce 01       	movw	r24, r28
- b1e:	01 96       	adiw	r24, 0x01	; 1
- b20:	0e 94 06 02 	call	0x40c	; 0x40c <UsbReadOneByte>
- b24:	88 23       	and	r24, r24
- b26:	d1 f3       	breq	.-12     	; 0xb1c <main+0x24>
+ b1e:	ce 01       	movw	r24, r28
+ b20:	01 96       	adiw	r24, 0x01	; 1
+ b22:	0e 94 06 02 	call	0x40c	; 0x40c <UsbReadOneByte>
+ b26:	88 23       	and	r24, r24
+ b28:	d1 f3       	breq	.-12     	; 0xb1e <main+0x24>
     {
         /* This first byte is *always* a command from the USB host. */
         BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
- b28:	89 81       	ldd	r24, Y+1	; 0x01
- b2a:	0e 94 58 05 	call	0xab0	; 0xab0 <LookupBridgeCmd>
+ b2a:	89 81       	ldd	r24, Y+1	; 0x01
+ b2c:	0e 94 59 05 	call	0xab2	; 0xab2 <LookupBridgeCmd>
         /* Tell UsbHost if the command is invalid. */
         if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
- b2e:	00 97       	sbiw	r24, 0x00	; 0
- b30:	19 f0       	breq	.+6      	; 0xb38 <main+0x40>
+ b30:	00 97       	sbiw	r24, 0x00	; 0
+ b32:	19 f0       	breq	.+6      	; 0xb3a <main+0x40>
         /* Do command if it is valid. */
         else CmdFn();
- b32:	fc 01       	movw	r30, r24
- b34:	09 95       	icall
- b36:	f2 cf       	rjmp	.-28     	; 0xb1c <main+0x24>
+ b34:	fc 01       	movw	r30, r24
+ b36:	09 95       	icall
+ b38:	f2 cf       	rjmp	.-28     	; 0xb1e <main+0x24>
     if (UsbReadOneByte(&cmd))
     {
         /* This first byte is *always* a command from the USB host. */
         BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
         /* Tell UsbHost if the command is invalid. */
         if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
- b38:	89 81       	ldd	r24, Y+1	; 0x01
- b3a:	0e 94 66 05 	call	0xacc	; 0xacc <UsbWriteStatusInvalid>
- b3e:	ee cf       	rjmp	.-36     	; 0xb1c <main+0x24>
+ b3a:	89 81       	ldd	r24, Y+1	; 0x01
+ b3c:	0e 94 67 05 	call	0xace	; 0xace <UsbWriteStatusInvalid>
+ b40:	ee cf       	rjmp	.-36     	; 0xb1e <main+0x24>
 
-00000b40 <_exit>:
- b40:	f8 94       	cli
+00000b42 <_exit>:
+ b42:	f8 94       	cli
 
-00000b42 <__stop_program>:
- b42:	ff cf       	rjmp	.-2      	; 0xb42 <__stop_program>
+00000b44 <__stop_program>:
+ b44:	ff cf       	rjmp	.-2      	; 0xb44 <__stop_program>
