@@ -3,31 +3,31 @@ build/usb-bridge.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000066  00800100  00000b46  00000bda  2**0
+  0 .data         00000066  00800100  00000aa4  00000b38  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000b46  00000000  00000000  00000094  2**1
+  1 .text         00000aa4  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000622  00800166  00800166  00000c40  2**0
+  2 .bss          00000622  00800166  00800166  00000b9e  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000c40  2**0
+  3 .comment      00000030  00000000  00000000  00000b9e  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000c70  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000bd0  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000348  00000000  00000000  00000cb0  2**0
+  5 .debug_aranges 00000350  00000000  00000000  00000c10  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000599f  00000000  00000000  00000ff8  2**0
+  6 .debug_info   00005aa0  00000000  00000000  00000f60  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00001580  00000000  00000000  00006997  2**0
+  7 .debug_abbrev 00001580  00000000  00000000  00006a00  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000022c5  00000000  00000000  00007f17  2**0
+  8 .debug_line   00002300  00000000  00000000  00007f80  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000009a4  00000000  00000000  0000a1dc  2**2
+  9 .debug_frame  000009cc  00000000  00000000  0000a280  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000016eb  00000000  00000000  0000ab80  2**0
+ 10 .debug_str    000016ee  00000000  00000000  0000ac4c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00003c42  00000000  00000000  0000c26b  2**0
+ 11 .debug_loc    00003d55  00000000  00000000  0000c33a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000005e0  00000000  00000000  0000fead  2**0
+ 12 .debug_ranges 000005e8  00000000  00000000  0001008f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -72,8 +72,8 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e6 e4       	ldi	r30, 0x46	; 70
-  7c:	fb e0       	ldi	r31, 0x0B	; 11
+  7a:	e4 ea       	ldi	r30, 0xA4	; 164
+  7c:	fa e0       	ldi	r31, 0x0A	; 10
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
@@ -94,8 +94,8 @@ Disassembly of section .text:
   94:	a8 38       	cpi	r26, 0x88	; 136
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 7d 05 	call	0xafa	; 0xafa <main>
-  9e:	0c 94 a1 05 	jmp	0xb42	; 0xb42 <_exit>
+  9a:	0e 94 2c 05 	call	0xa58	; 0xa58 <main>
+  9e:	0c 94 50 05 	jmp	0xaa0	; 0xaa0 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -1370,237 +1370,164 @@ uint8_t UsbWriteStatusOk(bridge_cmd_key   cmd_done_by_bridge)
  990:	e5 cf       	rjmp	.-54     	; 0x95c <__stack+0x5d>
 
 00000992 <BridgeGetSensorLED>:
- 992:	cf 92       	push	r12
- 994:	df 92       	push	r13
- 996:	ef 92       	push	r14
- 998:	ff 92       	push	r15
- 99a:	0f 93       	push	r16
- 99c:	1f 93       	push	r17
- 99e:	cf 93       	push	r28
- 9a0:	df 93       	push	r29
- 9a2:	00 d0       	rcall	.+0      	; 0x9a4 <BridgeGetSensorLED+0x12>
- 9a4:	1f 92       	push	r1
- 9a6:	cd b7       	in	r28, 0x3d	; 61
- 9a8:	de b7       	in	r29, 0x3e	; 62
- 9aa:	cd b6       	in	r12, 0x3d	; 61
- 9ac:	de b6       	in	r13, 0x3e	; 62
- 9ae:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
- 9b2:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
- 9b6:	61 e0       	ldi	r22, 0x01	; 1
- 9b8:	70 e0       	ldi	r23, 0x00	; 0
- 9ba:	ce 01       	movw	r24, r28
- 9bc:	03 96       	adiw	r24, 0x03	; 3
+ 992:	1f 93       	push	r17
+ 994:	cf 93       	push	r28
+ 996:	df 93       	push	r29
+ 998:	00 d0       	rcall	.+0      	; 0x99a <BridgeGetSensorLED+0x8>
+ 99a:	1f 92       	push	r1
+ 99c:	cd b7       	in	r28, 0x3d	; 61
+ 99e:	de b7       	in	r29, 0x3e	; 62
+ 9a0:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <UsbReadBytes>
+ 9a4:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <UsbReadBytes+0x1>
+ 9a8:	61 e0       	ldi	r22, 0x01	; 1
+ 9aa:	70 e0       	ldi	r23, 0x00	; 0
+ 9ac:	ce 01       	movw	r24, r28
+ 9ae:	03 96       	adiw	r24, 0x03	; 3
+ 9b0:	09 95       	icall
+ 9b2:	1b 81       	ldd	r17, Y+3	; 0x03
+ 9b4:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 9b8:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 9bc:	80 e0       	ldi	r24, 0x00	; 0
  9be:	09 95       	icall
- 9c0:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- 9c4:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- 9c8:	80 e0       	ldi	r24, 0x00	; 0
+ 9c0:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiWriteByte>
+ 9c4:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiWriteByte+0x1>
+ 9c8:	83 e0       	ldi	r24, 0x03	; 3
  9ca:	09 95       	icall
- 9cc:	eb 80       	ldd	r14, Y+3	; 0x03
- 9ce:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiWriteByte>
- 9d2:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiWriteByte+0x1>
- 9d6:	83 e0       	ldi	r24, 0x03	; 3
- 9d8:	09 95       	icall
- 9da:	8d b7       	in	r24, 0x3d	; 61
- 9dc:	9e b7       	in	r25, 0x3e	; 62
- 9de:	81 52       	subi	r24, 0x21	; 33
- 9e0:	96 40       	sbci	r25, 0x06	; 6
- 9e2:	0f b6       	in	r0, 0x3f	; 63
- 9e4:	f8 94       	cli
- 9e6:	9e bf       	out	0x3e, r25	; 62
- 9e8:	0f be       	out	0x3f, r0	; 63
- 9ea:	8d bf       	out	0x3d, r24	; 61
- 9ec:	0d b7       	in	r16, 0x3d	; 61
- 9ee:	1e b7       	in	r17, 0x3e	; 62
- 9f0:	0f 5f       	subi	r16, 0xFF	; 255
- 9f2:	1f 4f       	sbci	r17, 0xFF	; 255
- 9f4:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
- 9f8:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
- 9fc:	61 e0       	ldi	r22, 0x01	; 1
- 9fe:	70 e0       	ldi	r23, 0x00	; 0
- a00:	c8 01       	movw	r24, r16
- a02:	09 95       	icall
- a04:	d8 01       	movw	r26, r16
- a06:	fc 90       	ld	r15, X
- a08:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- a0c:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- a10:	8f 2d       	mov	r24, r15
- a12:	09 95       	icall
- a14:	f1 10       	cpse	r15, r1
- a16:	37 c0       	rjmp	.+110    	; 0xa86 <BridgeGetSensorLED+0xf4>
- a18:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiWriteByte>
- a1c:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiWriteByte+0x1>
- a20:	8e 2d       	mov	r24, r14
- a22:	09 95       	icall
- a24:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
- a28:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
- a2c:	62 e0       	ldi	r22, 0x02	; 2
- a2e:	70 e0       	ldi	r23, 0x00	; 0
- a30:	ce 01       	movw	r24, r28
- a32:	01 96       	adiw	r24, 0x01	; 1
- a34:	09 95       	icall
- a36:	e9 80       	ldd	r14, Y+1	; 0x01
- a38:	fa 80       	ldd	r15, Y+2	; 0x02
- a3a:	fe 24       	eor	r15, r14
- a3c:	ef 24       	eor	r14, r15
- a3e:	fe 24       	eor	r15, r14
- a40:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
- a44:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
- a48:	b7 01       	movw	r22, r14
- a4a:	c8 01       	movw	r24, r16
- a4c:	09 95       	icall
- a4e:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- a52:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- a56:	89 81       	ldd	r24, Y+1	; 0x01
- a58:	09 95       	icall
- a5a:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- a5e:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- a62:	8a 81       	ldd	r24, Y+2	; 0x02
- a64:	09 95       	icall
- a66:	e1 14       	cp	r14, r1
- a68:	f1 04       	cpc	r15, r1
- a6a:	69 f0       	breq	.+26     	; 0xa86 <BridgeGetSensorLED+0xf4>
- a6c:	e0 0e       	add	r14, r16
- a6e:	f1 1e       	adc	r15, r17
- a70:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
- a74:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
- a78:	d8 01       	movw	r26, r16
- a7a:	8d 91       	ld	r24, X+
- a7c:	8d 01       	movw	r16, r26
- a7e:	09 95       	icall
- a80:	e0 16       	cp	r14, r16
- a82:	f1 06       	cpc	r15, r17
- a84:	a9 f7       	brne	.-22     	; 0xa70 <BridgeGetSensorLED+0xde>
- a86:	0f b6       	in	r0, 0x3f	; 63
- a88:	f8 94       	cli
- a8a:	de be       	out	0x3e, r13	; 62
- a8c:	0f be       	out	0x3f, r0	; 63
- a8e:	cd be       	out	0x3d, r12	; 61
- a90:	0f b6       	in	r0, 0x3f	; 63
- a92:	f8 94       	cli
- a94:	de be       	out	0x3e, r13	; 62
- a96:	0f be       	out	0x3f, r0	; 63
- a98:	cd be       	out	0x3d, r12	; 61
- a9a:	0f 90       	pop	r0
- a9c:	0f 90       	pop	r0
- a9e:	0f 90       	pop	r0
- aa0:	df 91       	pop	r29
- aa2:	cf 91       	pop	r28
- aa4:	1f 91       	pop	r17
- aa6:	0f 91       	pop	r16
- aa8:	ff 90       	pop	r15
- aaa:	ef 90       	pop	r14
- aac:	df 90       	pop	r13
- aae:	cf 90       	pop	r12
- ab0:	08 95       	ret
+ 9cc:	e0 91 2a 01 	lds	r30, 0x012A	; 0x80012a <SpiWriteByte>
+ 9d0:	f0 91 2b 01 	lds	r31, 0x012B	; 0x80012b <SpiWriteByte+0x1>
+ 9d4:	81 2f       	mov	r24, r17
+ 9d6:	09 95       	icall
+ 9d8:	e0 91 28 01 	lds	r30, 0x0128	; 0x800128 <ReadSensor>
+ 9dc:	f0 91 29 01 	lds	r31, 0x0129	; 0x800129 <ReadSensor+0x1>
+ 9e0:	62 e0       	ldi	r22, 0x02	; 2
+ 9e2:	70 e0       	ldi	r23, 0x00	; 0
+ 9e4:	ce 01       	movw	r24, r28
+ 9e6:	01 96       	adiw	r24, 0x01	; 1
+ 9e8:	09 95       	icall
+ 9ea:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 9ee:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 9f2:	89 81       	ldd	r24, Y+1	; 0x01
+ 9f4:	09 95       	icall
+ 9f6:	e0 91 2c 01 	lds	r30, 0x012C	; 0x80012c <SerialWriteByte>
+ 9fa:	f0 91 2d 01 	lds	r31, 0x012D	; 0x80012d <SerialWriteByte+0x1>
+ 9fe:	8a 81       	ldd	r24, Y+2	; 0x02
+ a00:	09 95       	icall
+ a02:	0f 90       	pop	r0
+ a04:	0f 90       	pop	r0
+ a06:	0f 90       	pop	r0
+ a08:	df 91       	pop	r29
+ a0a:	cf 91       	pop	r28
+ a0c:	1f 91       	pop	r17
+ a0e:	08 95       	ret
 
-00000ab2 <LookupBridgeCmd>:
- ab2:	85 30       	cpi	r24, 0x05	; 5
- ab4:	48 f4       	brcc	.+18     	; 0xac8 <LookupBridgeCmd+0x16>
- ab6:	e8 2f       	mov	r30, r24
- ab8:	f0 e0       	ldi	r31, 0x00	; 0
- aba:	ee 0f       	add	r30, r30
- abc:	ff 1f       	adc	r31, r31
- abe:	ef 5c       	subi	r30, 0xCF	; 207
- ac0:	fe 4f       	sbci	r31, 0xFE	; 254
- ac2:	80 81       	ld	r24, Z
- ac4:	91 81       	ldd	r25, Z+1	; 0x01
- ac6:	08 95       	ret
- ac8:	80 e0       	ldi	r24, 0x00	; 0
- aca:	90 e0       	ldi	r25, 0x00	; 0
- acc:	08 95       	ret
+00000a10 <LookupBridgeCmd>:
+ a10:	85 30       	cpi	r24, 0x05	; 5
+ a12:	48 f4       	brcc	.+18     	; 0xa26 <LookupBridgeCmd+0x16>
+ a14:	e8 2f       	mov	r30, r24
+ a16:	f0 e0       	ldi	r31, 0x00	; 0
+ a18:	ee 0f       	add	r30, r30
+ a1a:	ff 1f       	adc	r31, r31
+ a1c:	ef 5c       	subi	r30, 0xCF	; 207
+ a1e:	fe 4f       	sbci	r31, 0xFE	; 254
+ a20:	80 81       	ld	r24, Z
+ a22:	91 81       	ldd	r25, Z+1	; 0x01
+ a24:	08 95       	ret
+ a26:	80 e0       	ldi	r24, 0x00	; 0
+ a28:	90 e0       	ldi	r25, 0x00	; 0
+ a2a:	08 95       	ret
 
-00000ace <UsbWriteStatusInvalid>:
+00000a2c <UsbWriteStatusInvalid>:
 uint8_t UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
 {
- ace:	cf 93       	push	r28
- ad0:	df 93       	push	r29
- ad2:	00 d0       	rcall	.+0      	; 0xad4 <UsbWriteStatusInvalid+0x6>
- ad4:	cd b7       	in	r28, 0x3d	; 61
- ad6:	de b7       	in	r29, 0x3e	; 62
+ a2c:	cf 93       	push	r28
+ a2e:	df 93       	push	r29
+ a30:	00 d0       	rcall	.+0      	; 0xa32 <UsbWriteStatusInvalid+0x6>
+ a32:	cd b7       	in	r28, 0x3d	; 61
+ a34:	de b7       	in	r29, 0x3e	; 62
     uint8_t const StatusInvalid[] = { 0xFF, invalid_cmd };
- ad8:	9f ef       	ldi	r25, 0xFF	; 255
- ada:	99 83       	std	Y+1, r25	; 0x01
- adc:	8a 83       	std	Y+2, r24	; 0x02
+ a36:	9f ef       	ldi	r25, 0xFF	; 255
+ a38:	99 83       	std	Y+1, r25	; 0x01
+ a3a:	8a 83       	std	Y+2, r24	; 0x02
     return UsbWrite(StatusInvalid,2);
- ade:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
- ae2:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
- ae6:	62 e0       	ldi	r22, 0x02	; 2
- ae8:	70 e0       	ldi	r23, 0x00	; 0
- aea:	ce 01       	movw	r24, r28
- aec:	01 96       	adiw	r24, 0x01	; 1
- aee:	09 95       	icall
+ a3c:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <UsbWrite>
+ a40:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <UsbWrite+0x1>
+ a44:	62 e0       	ldi	r22, 0x02	; 2
+ a46:	70 e0       	ldi	r23, 0x00	; 0
+ a48:	ce 01       	movw	r24, r28
+ a4a:	01 96       	adiw	r24, 0x01	; 1
+ a4c:	09 95       	icall
 }
- af0:	0f 90       	pop	r0
- af2:	0f 90       	pop	r0
- af4:	df 91       	pop	r29
- af6:	cf 91       	pop	r28
- af8:	08 95       	ret
+ a4e:	0f 90       	pop	r0
+ a50:	0f 90       	pop	r0
+ a52:	df 91       	pop	r29
+ a54:	cf 91       	pop	r28
+ a56:	08 95       	ret
 
-00000afa <main>:
+00000a58 <main>:
 } while (0)
 #define DebugPinLow()  ClearBit(&PORTC, PC5)
 #define DebugPinHigh() SetBit(&PORTC, PC5)
 
 int main()
 {
- afa:	cf 93       	push	r28
- afc:	df 93       	push	r29
- afe:	1f 92       	push	r1
- b00:	cd b7       	in	r28, 0x3d	; 61
- b02:	de b7       	in	r29, 0x3e	; 62
- b04:	3b 9a       	sbi	0x07, 3	; 7
+ a58:	cf 93       	push	r28
+ a5a:	df 93       	push	r29
+ a5c:	1f 92       	push	r1
+ a5e:	cd b7       	in	r28, 0x3d	; 61
+ a60:	de b7       	in	r29, 0x3e	; 62
+ a62:	3b 9a       	sbi	0x07, 3	; 7
     /* =====[ Setup ]===== */
     /* SetupDebugLed(); */
     BiColorLedOn(status_led);
     SpiMasterInit();
- b06:	0e 94 67 02 	call	0x4ce	; 0x4ce <SpiMasterInit>
+ a64:	0e 94 67 02 	call	0x4ce	; 0x4ce <SpiMasterInit>
     UsbInit();
- b0a:	0e 94 04 02 	call	0x408	; 0x408 <UsbInit>
- b0e:	3d 9a       	sbi	0x07, 5	; 7
- b10:	45 9a       	sbi	0x08, 5	; 8
+ a68:	0e 94 04 02 	call	0x408	; 0x408 <UsbInit>
+ a6c:	3d 9a       	sbi	0x07, 5	; 7
+ a6e:	45 9a       	sbi	0x08, 5	; 8
     DebugPinInit();
     nbytes_in_frame = sizeof_full_frame;
- b12:	80 e2       	ldi	r24, 0x20	; 32
- b14:	96 e0       	ldi	r25, 0x06	; 6
- b16:	90 93 87 07 	sts	0x0787, r25	; 0x800787 <nbytes_in_frame+0x1>
- b1a:	80 93 86 07 	sts	0x0786, r24	; 0x800786 <nbytes_in_frame>
+ a70:	80 e2       	ldi	r24, 0x20	; 32
+ a72:	96 e0       	ldi	r25, 0x06	; 6
+ a74:	90 93 87 07 	sts	0x0787, r25	; 0x800787 <nbytes_in_frame+0x1>
+ a78:	80 93 86 07 	sts	0x0786, r24	; 0x800786 <nbytes_in_frame>
 /* =====[ WIP ]===== */
 void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
 {
     bridge_cmd_key cmd;
     // Read USB buffer if there is any data to read.
     if (UsbReadOneByte(&cmd))
- b1e:	ce 01       	movw	r24, r28
- b20:	01 96       	adiw	r24, 0x01	; 1
- b22:	0e 94 06 02 	call	0x40c	; 0x40c <UsbReadOneByte>
- b26:	88 23       	and	r24, r24
- b28:	d1 f3       	breq	.-12     	; 0xb1e <main+0x24>
+ a7c:	ce 01       	movw	r24, r28
+ a7e:	01 96       	adiw	r24, 0x01	; 1
+ a80:	0e 94 06 02 	call	0x40c	; 0x40c <UsbReadOneByte>
+ a84:	88 23       	and	r24, r24
+ a86:	d1 f3       	breq	.-12     	; 0xa7c <main+0x24>
     {
         /* This first byte is *always* a command from the USB host. */
         BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
- b2a:	89 81       	ldd	r24, Y+1	; 0x01
- b2c:	0e 94 59 05 	call	0xab2	; 0xab2 <LookupBridgeCmd>
+ a88:	89 81       	ldd	r24, Y+1	; 0x01
+ a8a:	0e 94 08 05 	call	0xa10	; 0xa10 <LookupBridgeCmd>
         /* Tell UsbHost if the command is invalid. */
         if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
- b30:	00 97       	sbiw	r24, 0x00	; 0
- b32:	19 f0       	breq	.+6      	; 0xb3a <main+0x40>
+ a8e:	00 97       	sbiw	r24, 0x00	; 0
+ a90:	19 f0       	breq	.+6      	; 0xa98 <main+0x40>
         /* Do command if it is valid. */
         else CmdFn();
- b34:	fc 01       	movw	r30, r24
- b36:	09 95       	icall
- b38:	f2 cf       	rjmp	.-28     	; 0xb1e <main+0x24>
+ a92:	fc 01       	movw	r30, r24
+ a94:	09 95       	icall
+ a96:	f2 cf       	rjmp	.-28     	; 0xa7c <main+0x24>
     if (UsbReadOneByte(&cmd))
     {
         /* This first byte is *always* a command from the USB host. */
         BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
         /* Tell UsbHost if the command is invalid. */
         if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
- b3a:	89 81       	ldd	r24, Y+1	; 0x01
- b3c:	0e 94 67 05 	call	0xace	; 0xace <UsbWriteStatusInvalid>
- b40:	ee cf       	rjmp	.-36     	; 0xb1e <main+0x24>
+ a98:	89 81       	ldd	r24, Y+1	; 0x01
+ a9a:	0e 94 16 05 	call	0xa2c	; 0xa2c <UsbWriteStatusInvalid>
+ a9e:	ee cf       	rjmp	.-36     	; 0xa7c <main+0x24>
 
-00000b42 <_exit>:
- b42:	f8 94       	cli
+00000aa0 <_exit>:
+ aa0:	f8 94       	cli
 
-00000b44 <__stop_program>:
- b44:	ff cf       	rjmp	.-2      	; 0xb44 <__stop_program>
+00000aa2 <__stop_program>:
+ aa2:	ff cf       	rjmp	.-2      	; 0xaa2 <__stop_program>

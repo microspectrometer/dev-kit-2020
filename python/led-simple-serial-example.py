@@ -159,6 +159,43 @@ def test_GetSensorLED():
     if reply != expected:
         _print_and_log("TEST FAILED")
         return
+    # read two bytes from SENSOR
+    while (kit.inWaiting() < 2): pass # (message size is two bytes)
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    expected = commands.led_green
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="led_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect GREEN"
+        )
+    if reply != expected:
+        _print_and_log("TEST FAILED")
+        return
+    _print_and_log("TEST PASSED")
+
+def test_oldGetSensorLED():
+    # =====[ GetSensorLED ]=====
+    _print_and_log("--- GetSensorLED ---")
+    _tx_and_log_cmd(commands.GetSensorLED, "Command is GetSensorLED")
+    _tx_and_log_cmd(commands.led_0, "LED is LED0")
+    # read BRIDGE status byte, stop if it is an error
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log("TEST FAILED")
+        return
     # read SENSOR status byte, stop if it is an error
     expected = codes.OK
     reply = _rx_and_log_reply(
@@ -360,10 +397,11 @@ if __name__ == '__main__':
         # TODO: add cmd pre-formatted as bytes to package `commands`
         # test_GetBridgeLED()
         # test_SetBridgeLED()
-        # test_GetSensorLED()
+        # test_oldGetSensorLED()
         # test_GetSensorLED_Invalid_LED()
         # test_InvalidSensorCommand()
-        test_DoesUsbBuffer()
+        test_GetSensorLED()
+        # test_DoesUsbBuffer()
         # test_SetSensorLED()
     _print_and_log(f"Closed CHROMATION{sernum}")
     # _print_and_log(f"Closed CHROMATION{sernum}")

@@ -3,31 +3,31 @@ build/vis-spi-out.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000076  00800100  000009b8  00000a4c  2**0
+  0 .data         00000076  00800100  000009f6  00000a8a  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000009b8  00000000  00000000  00000094  2**1
+  1 .text         000009f6  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000002  00800176  00800176  00000ac2  2**0
+  2 .bss          00000002  00800176  00800176  00000b00  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000ac2  2**0
+  3 .comment      00000030  00000000  00000000  00000b00  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000af4  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000b30  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000460  00000000  00000000  00000b34  2**0
+  5 .debug_aranges 00000460  00000000  00000000  00000b70  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00007b2a  00000000  00000000  00000f94  2**0
+  6 .debug_info   00007bad  00000000  00000000  00000fd0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00001749  00000000  00000000  00008abe  2**0
+  7 .debug_abbrev 00001749  00000000  00000000  00008b7d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00002e81  00000000  00000000  0000a207  2**0
+  8 .debug_line   00002e9b  00000000  00000000  0000a2c6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000b64  00000000  00000000  0000d088  2**2
+  9 .debug_frame  00000b78  00000000  00000000  0000d164  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00001c9e  00000000  00000000  0000dbec  2**0
+ 10 .debug_str    00001c9e  00000000  00000000  0000dcdc  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00004c2c  00000000  00000000  0000f88a  2**0
+ 11 .debug_loc    00004c90  00000000  00000000  0000f97a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000598  00000000  00000000  000144b6  2**0
+ 12 .debug_ranges 00000598  00000000  00000000  0001460a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -47,10 +47,10 @@ Disassembly of section .text:
   2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  38:	0c 94 c0 04 	jmp	0x980	; 0x980 <__vector_14>
-  3c:	0c 94 cb 04 	jmp	0x996	; 0x996 <__vector_15>
+  38:	0c 94 df 04 	jmp	0x9be	; 0x9be <__vector_14>
+  3c:	0c 94 ea 04 	jmp	0x9d4	; 0x9d4 <__vector_15>
   40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  44:	0c 94 ae 04 	jmp	0x95c	; 0x95c <__vector_17>
+  44:	0c 94 cd 04 	jmp	0x99a	; 0x99a <__vector_17>
   48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -72,7 +72,7 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e8 eb       	ldi	r30, 0xB8	; 184
+  7a:	e6 ef       	ldi	r30, 0xF6	; 246
   7c:	f9 e0       	ldi	r31, 0x09	; 9
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
@@ -94,8 +94,8 @@ Disassembly of section .text:
   94:	a8 37       	cpi	r26, 0x78	; 120
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 6d 04 	call	0x8da	; 0x8da <main>
-  9e:	0c 94 da 04 	jmp	0x9b4	; 0x9b4 <_exit>
+  9a:	0e 94 8c 04 	call	0x918	; 0x918 <main>
+  9e:	0c 94 f9 04 	jmp	0x9f2	; 0x9f2 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -1163,267 +1163,295 @@ void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd)
  81a:	a4 cf       	rjmp	.-184    	; 0x764 <GetSensorLED+0x26>
 
 0000081c <WriteSpiMaster_Implementation>:
- 81c:	cf 93       	push	r28
- 81e:	df 93       	push	r29
- 820:	eb 01       	movw	r28, r22
- 822:	0e 94 08 01 	call	0x210	; 0x210 <SpiSlaveSendBytes>
- 826:	ce 01       	movw	r24, r28
- 828:	df 91       	pop	r29
- 82a:	cf 91       	pop	r28
- 82c:	08 95       	ret
+ 81c:	ef 92       	push	r14
+ 81e:	ff 92       	push	r15
+ 820:	0f 93       	push	r16
+ 822:	1f 93       	push	r17
+ 824:	cf 93       	push	r28
+ 826:	df 93       	push	r29
+ 828:	7b 01       	movw	r14, r22
+ 82a:	00 91 69 01 	lds	r16, 0x0169	; 0x800169 <Spi_spcr>
+ 82e:	10 91 6a 01 	lds	r17, 0x016A	; 0x80016a <Spi_spcr+0x1>
+ 832:	f8 01       	movw	r30, r16
+ 834:	20 81       	ld	r18, Z
+ 836:	c1 e0       	ldi	r28, 0x01	; 1
+ 838:	d0 e0       	ldi	r29, 0x00	; 0
+ 83a:	00 90 62 01 	lds	r0, 0x0162	; 0x800162 <Spi_InterruptEnable>
+ 83e:	02 c0       	rjmp	.+4      	; 0x844 <WriteSpiMaster_Implementation+0x28>
+ 840:	cc 0f       	add	r28, r28
+ 842:	dd 1f       	adc	r29, r29
+ 844:	0a 94       	dec	r0
+ 846:	e2 f7       	brpl	.-8      	; 0x840 <WriteSpiMaster_Implementation+0x24>
+ 848:	3c 2f       	mov	r19, r28
+ 84a:	30 95       	com	r19
+ 84c:	23 23       	and	r18, r19
+ 84e:	20 83       	st	Z, r18
+ 850:	0e 94 08 01 	call	0x210	; 0x210 <SpiSlaveSendBytes>
+ 854:	f8 01       	movw	r30, r16
+ 856:	80 81       	ld	r24, Z
+ 858:	c8 2b       	or	r28, r24
+ 85a:	c0 83       	st	Z, r28
+ 85c:	c7 01       	movw	r24, r14
+ 85e:	df 91       	pop	r29
+ 860:	cf 91       	pop	r28
+ 862:	1f 91       	pop	r17
+ 864:	0f 91       	pop	r16
+ 866:	ff 90       	pop	r15
+ 868:	ef 90       	pop	r14
+ 86a:	08 95       	ret
 
-0000082e <SensorCfgLis>:
- 82e:	cf 93       	push	r28
- 830:	df 93       	push	r29
- 832:	00 d0       	rcall	.+0      	; 0x834 <SensorCfgLis+0x6>
- 834:	00 d0       	rcall	.+0      	; 0x836 <SensorCfgLis+0x8>
- 836:	cd b7       	in	r28, 0x3d	; 61
- 838:	de b7       	in	r29, 0x3e	; 62
- 83a:	8f e0       	ldi	r24, 0x0F	; 15
- 83c:	89 83       	std	Y+1, r24	; 0x01
- 83e:	8f ef       	ldi	r24, 0xFF	; 255
- 840:	8a 83       	std	Y+2, r24	; 0x02
- 842:	8b 83       	std	Y+3, r24	; 0x03
- 844:	89 ef       	ldi	r24, 0xF9	; 249
- 846:	8c 83       	std	Y+4, r24	; 0x04
- 848:	ce 01       	movw	r24, r28
- 84a:	01 96       	adiw	r24, 0x01	; 1
- 84c:	0e 94 f9 01 	call	0x3f2	; 0x3f2 <LisWriteCfg>
- 850:	0f 90       	pop	r0
- 852:	0f 90       	pop	r0
- 854:	0f 90       	pop	r0
- 856:	0f 90       	pop	r0
- 858:	df 91       	pop	r29
- 85a:	cf 91       	pop	r28
- 85c:	08 95       	ret
+0000086c <SensorCfgLis>:
+ 86c:	cf 93       	push	r28
+ 86e:	df 93       	push	r29
+ 870:	00 d0       	rcall	.+0      	; 0x872 <SensorCfgLis+0x6>
+ 872:	00 d0       	rcall	.+0      	; 0x874 <SensorCfgLis+0x8>
+ 874:	cd b7       	in	r28, 0x3d	; 61
+ 876:	de b7       	in	r29, 0x3e	; 62
+ 878:	8f e0       	ldi	r24, 0x0F	; 15
+ 87a:	89 83       	std	Y+1, r24	; 0x01
+ 87c:	8f ef       	ldi	r24, 0xFF	; 255
+ 87e:	8a 83       	std	Y+2, r24	; 0x02
+ 880:	8b 83       	std	Y+3, r24	; 0x03
+ 882:	89 ef       	ldi	r24, 0xF9	; 249
+ 884:	8c 83       	std	Y+4, r24	; 0x04
+ 886:	ce 01       	movw	r24, r28
+ 888:	01 96       	adiw	r24, 0x01	; 1
+ 88a:	0e 94 f9 01 	call	0x3f2	; 0x3f2 <LisWriteCfg>
+ 88e:	0f 90       	pop	r0
+ 890:	0f 90       	pop	r0
+ 892:	0f 90       	pop	r0
+ 894:	0f 90       	pop	r0
+ 896:	df 91       	pop	r29
+ 898:	cf 91       	pop	r28
+ 89a:	08 95       	ret
 
-0000085e <LookupSensorCmd>:
- 85e:	85 30       	cpi	r24, 0x05	; 5
- 860:	48 f4       	brcc	.+18     	; 0x874 <LookupSensorCmd+0x16>
- 862:	e8 2f       	mov	r30, r24
- 864:	f0 e0       	ldi	r31, 0x00	; 0
- 866:	ee 0f       	add	r30, r30
- 868:	ff 1f       	adc	r31, r31
- 86a:	ee 5d       	subi	r30, 0xDE	; 222
- 86c:	fe 4f       	sbci	r31, 0xFE	; 254
- 86e:	80 81       	ld	r24, Z
- 870:	91 81       	ldd	r25, Z+1	; 0x01
- 872:	08 95       	ret
- 874:	80 e0       	ldi	r24, 0x00	; 0
- 876:	90 e0       	ldi	r25, 0x00	; 0
- 878:	08 95       	ret
+0000089c <LookupSensorCmd>:
+ 89c:	85 30       	cpi	r24, 0x05	; 5
+ 89e:	48 f4       	brcc	.+18     	; 0x8b2 <LookupSensorCmd+0x16>
+ 8a0:	e8 2f       	mov	r30, r24
+ 8a2:	f0 e0       	ldi	r31, 0x00	; 0
+ 8a4:	ee 0f       	add	r30, r30
+ 8a6:	ff 1f       	adc	r31, r31
+ 8a8:	ee 5d       	subi	r30, 0xDE	; 222
+ 8aa:	fe 4f       	sbci	r31, 0xFE	; 254
+ 8ac:	80 81       	ld	r24, Z
+ 8ae:	91 81       	ldd	r25, Z+1	; 0x01
+ 8b0:	08 95       	ret
+ 8b2:	80 e0       	ldi	r24, 0x00	; 0
+ 8b4:	90 e0       	ldi	r25, 0x00	; 0
+ 8b6:	08 95       	ret
 
-0000087a <LedsShowError>:
+000008b8 <LedsShowError>:
 {
     ClearBit(BiColorLed_port, led_name);
 }
 inline void BiColorLedRed(uint8_t led_name)
 {
     SetBit(BiColorLed_port, led_name);
- 87a:	e0 91 71 01 	lds	r30, 0x0171	; 0x800171 <BiColorLed_port>
- 87e:	f0 91 72 01 	lds	r31, 0x0172	; 0x800172 <BiColorLed_port+0x1>
- 882:	40 81       	ld	r20, Z
- 884:	81 e0       	ldi	r24, 0x01	; 1
- 886:	90 e0       	ldi	r25, 0x00	; 0
- 888:	9c 01       	movw	r18, r24
- 88a:	00 90 70 01 	lds	r0, 0x0170	; 0x800170 <led_TxRx>
- 88e:	02 c0       	rjmp	.+4      	; 0x894 <LedsShowError+0x1a>
- 890:	22 0f       	add	r18, r18
- 892:	33 1f       	adc	r19, r19
- 894:	0a 94       	dec	r0
- 896:	e2 f7       	brpl	.-8      	; 0x890 <LedsShowError+0x16>
- 898:	24 2b       	or	r18, r20
- 89a:	20 83       	st	Z, r18
- 89c:	20 81       	ld	r18, Z
- 89e:	00 90 6f 01 	lds	r0, 0x016F	; 0x80016f <led_Done>
- 8a2:	02 c0       	rjmp	.+4      	; 0x8a8 <LedsShowError+0x2e>
- 8a4:	88 0f       	add	r24, r24
- 8a6:	99 1f       	adc	r25, r25
- 8a8:	0a 94       	dec	r0
- 8aa:	e2 f7       	brpl	.-8      	; 0x8a4 <LedsShowError+0x2a>
- 8ac:	82 2b       	or	r24, r18
- 8ae:	80 83       	st	Z, r24
- 8b0:	08 95       	ret
+ 8b8:	e0 91 71 01 	lds	r30, 0x0171	; 0x800171 <BiColorLed_port>
+ 8bc:	f0 91 72 01 	lds	r31, 0x0172	; 0x800172 <BiColorLed_port+0x1>
+ 8c0:	40 81       	ld	r20, Z
+ 8c2:	81 e0       	ldi	r24, 0x01	; 1
+ 8c4:	90 e0       	ldi	r25, 0x00	; 0
+ 8c6:	9c 01       	movw	r18, r24
+ 8c8:	00 90 70 01 	lds	r0, 0x0170	; 0x800170 <led_TxRx>
+ 8cc:	02 c0       	rjmp	.+4      	; 0x8d2 <LedsShowError+0x1a>
+ 8ce:	22 0f       	add	r18, r18
+ 8d0:	33 1f       	adc	r19, r19
+ 8d2:	0a 94       	dec	r0
+ 8d4:	e2 f7       	brpl	.-8      	; 0x8ce <LedsShowError+0x16>
+ 8d6:	24 2b       	or	r18, r20
+ 8d8:	20 83       	st	Z, r18
+ 8da:	20 81       	ld	r18, Z
+ 8dc:	00 90 6f 01 	lds	r0, 0x016F	; 0x80016f <led_Done>
+ 8e0:	02 c0       	rjmp	.+4      	; 0x8e6 <LedsShowError+0x2e>
+ 8e2:	88 0f       	add	r24, r24
+ 8e4:	99 1f       	adc	r25, r25
+ 8e6:	0a 94       	dec	r0
+ 8e8:	e2 f7       	brpl	.-8      	; 0x8e2 <LedsShowError+0x2a>
+ 8ea:	82 2b       	or	r24, r18
+ 8ec:	80 83       	st	Z, r24
+ 8ee:	08 95       	ret
 
-000008b2 <ReplyCommandInvalid>:
+000008f0 <ReplyCommandInvalid>:
     // first and second LEDs turn red to indicate error
     BiColorLedRed(led_TxRx);
     BiColorLedRed(led_Done);
 }
 void ReplyCommandInvalid(void)
 {
- 8b2:	cf 93       	push	r28
- 8b4:	df 93       	push	r29
- 8b6:	1f 92       	push	r1
- 8b8:	cd b7       	in	r28, 0x3d	; 61
- 8ba:	de b7       	in	r29, 0x3e	; 62
+ 8f0:	cf 93       	push	r28
+ 8f2:	df 93       	push	r29
+ 8f4:	1f 92       	push	r1
+ 8f6:	cd b7       	in	r28, 0x3d	; 61
+ 8f8:	de b7       	in	r29, 0x3e	; 62
     uint8_t cmd_invalid[] = {error};
- 8bc:	81 e0       	ldi	r24, 0x01	; 1
- 8be:	89 83       	std	Y+1, r24	; 0x01
+ 8fa:	81 e0       	ldi	r24, 0x01	; 1
+ 8fc:	89 83       	std	Y+1, r24	; 0x01
     WriteSpiMaster(cmd_invalid, 1);
- 8c0:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <WriteSpiMaster>
- 8c4:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <WriteSpiMaster+0x1>
- 8c8:	61 e0       	ldi	r22, 0x01	; 1
- 8ca:	70 e0       	ldi	r23, 0x00	; 0
- 8cc:	ce 01       	movw	r24, r28
- 8ce:	01 96       	adiw	r24, 0x01	; 1
- 8d0:	09 95       	icall
+ 8fe:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <WriteSpiMaster>
+ 902:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <WriteSpiMaster+0x1>
+ 906:	61 e0       	ldi	r22, 0x01	; 1
+ 908:	70 e0       	ldi	r23, 0x00	; 0
+ 90a:	ce 01       	movw	r24, r28
+ 90c:	01 96       	adiw	r24, 0x01	; 1
+ 90e:	09 95       	icall
 }
- 8d2:	0f 90       	pop	r0
- 8d4:	df 91       	pop	r29
- 8d6:	cf 91       	pop	r28
- 8d8:	08 95       	ret
+ 910:	0f 90       	pop	r0
+ 912:	df 91       	pop	r29
+ 914:	cf 91       	pop	r28
+ 916:	08 95       	ret
 
-000008da <main>:
+00000918 <main>:
     uint8_t *pfour_bits = &four_bits;
     if (BitIsSet(pfour_bits, 0)) BiColorLedRed(led_0);
     if (BitIsSet(pfour_bits, 1)) BiColorLedRed(led_1);
     /* if (BitIsSet(pfour_bits, 2)) BiColorLedRed(status_led3); */
     /* if (BitIsSet(pfour_bits, 3)) BiColorLedRed(status_led4); */
 }
- 8da:	47 b1       	in	r20, 0x07	; 7
- 8dc:	81 e0       	ldi	r24, 0x01	; 1
- 8de:	90 e0       	ldi	r25, 0x00	; 0
- 8e0:	9c 01       	movw	r18, r24
- 8e2:	00 90 2d 01 	lds	r0, 0x012D	; 0x80012d <led_0>
- 8e6:	02 c0       	rjmp	.+4      	; 0x8ec <main+0x12>
- 8e8:	22 0f       	add	r18, r18
- 8ea:	33 1f       	adc	r19, r19
- 8ec:	0a 94       	dec	r0
- 8ee:	e2 f7       	brpl	.-8      	; 0x8e8 <main+0xe>
- 8f0:	34 2f       	mov	r19, r20
- 8f2:	32 2b       	or	r19, r18
- 8f4:	37 b9       	out	0x07, r19	; 7
- 8f6:	37 b1       	in	r19, 0x07	; 7
- 8f8:	00 90 2c 01 	lds	r0, 0x012C	; 0x80012c <led_1>
- 8fc:	02 c0       	rjmp	.+4      	; 0x902 <__stack+0x3>
- 8fe:	88 0f       	add	r24, r24
- 900:	99 1f       	adc	r25, r25
- 902:	0a 94       	dec	r0
- 904:	e2 f7       	brpl	.-8      	; 0x8fe <main+0x24>
- 906:	93 2f       	mov	r25, r19
- 908:	98 2b       	or	r25, r24
- 90a:	97 b9       	out	0x07, r25	; 7
- 90c:	98 b1       	in	r25, 0x08	; 8
- 90e:	20 95       	com	r18
- 910:	29 23       	and	r18, r25
- 912:	28 b9       	out	0x08, r18	; 8
- 914:	98 b1       	in	r25, 0x08	; 8
- 916:	80 95       	com	r24
- 918:	89 23       	and	r24, r25
- 91a:	88 b9       	out	0x08, r24	; 8
- 91c:	0e 94 c3 00 	call	0x186	; 0x186 <SpiSlaveInit>
- 920:	0e 94 e9 00 	call	0x1d2	; 0x1d2 <SpiEnableInterrupt>
- 924:	0e 94 49 01 	call	0x292	; 0x292 <UartSpiInit>
- 928:	0e 94 d7 02 	call	0x5ae	; 0x5ae <LisInit>
- 92c:	10 92 76 01 	sts	0x0176, r1	; 0x800176 <__data_end>
- 930:	10 92 77 01 	sts	0x0177, r1	; 0x800177 <SpiData>
- 934:	80 91 76 01 	lds	r24, 0x0176	; 0x800176 <__data_end>
- 938:	88 23       	and	r24, r24
- 93a:	e1 f3       	breq	.-8      	; 0x934 <__stack+0x35>
- 93c:	80 91 77 01 	lds	r24, 0x0177	; 0x800177 <SpiData>
- 940:	0e 94 2f 04 	call	0x85e	; 0x85e <LookupSensorCmd>
- 944:	10 92 76 01 	sts	0x0176, r1	; 0x800176 <__data_end>
- 948:	00 97       	sbiw	r24, 0x00	; 0
- 94a:	19 f0       	breq	.+6      	; 0x952 <__stack+0x53>
- 94c:	fc 01       	movw	r30, r24
- 94e:	09 95       	icall
- 950:	f1 cf       	rjmp	.-30     	; 0x934 <__stack+0x35>
- 952:	0e 94 59 04 	call	0x8b2	; 0x8b2 <ReplyCommandInvalid>
- 956:	0e 94 3d 04 	call	0x87a	; 0x87a <LedsShowError>
- 95a:	ec cf       	rjmp	.-40     	; 0x934 <__stack+0x35>
+ 918:	47 b1       	in	r20, 0x07	; 7
+ 91a:	81 e0       	ldi	r24, 0x01	; 1
+ 91c:	90 e0       	ldi	r25, 0x00	; 0
+ 91e:	9c 01       	movw	r18, r24
+ 920:	00 90 2d 01 	lds	r0, 0x012D	; 0x80012d <led_0>
+ 924:	02 c0       	rjmp	.+4      	; 0x92a <main+0x12>
+ 926:	22 0f       	add	r18, r18
+ 928:	33 1f       	adc	r19, r19
+ 92a:	0a 94       	dec	r0
+ 92c:	e2 f7       	brpl	.-8      	; 0x926 <main+0xe>
+ 92e:	34 2f       	mov	r19, r20
+ 930:	32 2b       	or	r19, r18
+ 932:	37 b9       	out	0x07, r19	; 7
+ 934:	37 b1       	in	r19, 0x07	; 7
+ 936:	00 90 2c 01 	lds	r0, 0x012C	; 0x80012c <led_1>
+ 93a:	02 c0       	rjmp	.+4      	; 0x940 <main+0x28>
+ 93c:	88 0f       	add	r24, r24
+ 93e:	99 1f       	adc	r25, r25
+ 940:	0a 94       	dec	r0
+ 942:	e2 f7       	brpl	.-8      	; 0x93c <main+0x24>
+ 944:	93 2f       	mov	r25, r19
+ 946:	98 2b       	or	r25, r24
+ 948:	97 b9       	out	0x07, r25	; 7
+ 94a:	98 b1       	in	r25, 0x08	; 8
+ 94c:	20 95       	com	r18
+ 94e:	29 23       	and	r18, r25
+ 950:	28 b9       	out	0x08, r18	; 8
+ 952:	98 b1       	in	r25, 0x08	; 8
+ 954:	80 95       	com	r24
+ 956:	89 23       	and	r24, r25
+ 958:	88 b9       	out	0x08, r24	; 8
+ 95a:	0e 94 c3 00 	call	0x186	; 0x186 <SpiSlaveInit>
+ 95e:	0e 94 e9 00 	call	0x1d2	; 0x1d2 <SpiEnableInterrupt>
+ 962:	0e 94 49 01 	call	0x292	; 0x292 <UartSpiInit>
+ 966:	0e 94 d7 02 	call	0x5ae	; 0x5ae <LisInit>
+ 96a:	10 92 76 01 	sts	0x0176, r1	; 0x800176 <__data_end>
+ 96e:	10 92 77 01 	sts	0x0177, r1	; 0x800177 <SpiData>
+ 972:	80 91 76 01 	lds	r24, 0x0176	; 0x800176 <__data_end>
+ 976:	88 23       	and	r24, r24
+ 978:	e1 f3       	breq	.-8      	; 0x972 <main+0x5a>
+ 97a:	80 91 77 01 	lds	r24, 0x0177	; 0x800177 <SpiData>
+ 97e:	0e 94 4e 04 	call	0x89c	; 0x89c <LookupSensorCmd>
+ 982:	10 92 76 01 	sts	0x0176, r1	; 0x800176 <__data_end>
+ 986:	00 97       	sbiw	r24, 0x00	; 0
+ 988:	19 f0       	breq	.+6      	; 0x990 <main+0x78>
+ 98a:	fc 01       	movw	r30, r24
+ 98c:	09 95       	icall
+ 98e:	f1 cf       	rjmp	.-30     	; 0x972 <main+0x5a>
+ 990:	0e 94 78 04 	call	0x8f0	; 0x8f0 <ReplyCommandInvalid>
+ 994:	0e 94 5c 04 	call	0x8b8	; 0x8b8 <LedsShowError>
+ 998:	ec cf       	rjmp	.-40     	; 0x972 <main+0x5a>
 
-0000095c <__vector_17>:
+0000099a <__vector_17>:
 void SPI_read_in_ISR_and_show_data_on_debug_leds(void);
 /* =====[ Move control over the SPI ISR into the test code ]===== */
 typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
 //
 ISR(SPI_STC_vect)
 {
- 95c:	1f 92       	push	r1
- 95e:	0f 92       	push	r0
- 960:	0f b6       	in	r0, 0x3f	; 63
- 962:	0f 92       	push	r0
- 964:	11 24       	eor	r1, r1
- 966:	8f 93       	push	r24
+ 99a:	1f 92       	push	r1
+ 99c:	0f 92       	push	r0
+ 99e:	0f b6       	in	r0, 0x3f	; 63
+ 9a0:	0f 92       	push	r0
+ 9a2:	11 24       	eor	r1, r1
+ 9a4:	8f 93       	push	r24
     HasSpiData = true;
- 968:	81 e0       	ldi	r24, 0x01	; 1
- 96a:	80 93 76 01 	sts	0x0176, r24	; 0x800176 <__data_end>
+ 9a6:	81 e0       	ldi	r24, 0x01	; 1
+ 9a8:	80 93 76 01 	sts	0x0176, r24	; 0x800176 <__data_end>
     SpiData = *Spi_spdr;
- 96e:	8e b5       	in	r24, 0x2e	; 46
- 970:	80 93 77 01 	sts	0x0177, r24	; 0x800177 <SpiData>
+ 9ac:	8e b5       	in	r24, 0x2e	; 46
+ 9ae:	80 93 77 01 	sts	0x0177, r24	; 0x800177 <SpiData>
     /* DoTaskForThisTest(); // fptr assigned in test code */
 }
- 974:	8f 91       	pop	r24
- 976:	0f 90       	pop	r0
- 978:	0f be       	out	0x3f, r0	; 63
- 97a:	0f 90       	pop	r0
- 97c:	1f 90       	pop	r1
- 97e:	18 95       	reti
+ 9b2:	8f 91       	pop	r24
+ 9b4:	0f 90       	pop	r0
+ 9b6:	0f be       	out	0x3f, r0	; 63
+ 9b8:	0f 90       	pop	r0
+ 9ba:	1f 90       	pop	r1
+ 9bc:	18 95       	reti
 
-00000980 <__vector_14>:
+000009be <__vector_14>:
 ISR(TIMER0_COMPA_vect)
 {
- 980:	1f 92       	push	r1
- 982:	0f 92       	push	r0
- 984:	0f b6       	in	r0, 0x3f	; 63
- 986:	0f 92       	push	r0
- 988:	11 24       	eor	r1, r1
+ 9be:	1f 92       	push	r1
+ 9c0:	0f 92       	push	r0
+ 9c2:	0f b6       	in	r0, 0x3f	; 63
+ 9c4:	0f 92       	push	r0
+ 9c6:	11 24       	eor	r1, r1
     // high-level delay:
     /* SetBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD |= 1<<PD6;    // set bit: Rst High
- 98a:	5e 9a       	sbi	0x0b, 6	; 11
+ 9c8:	5e 9a       	sbi	0x0b, 6	; 11
     // delay is 1.8us-2us from redge to Rst High
 }
- 98c:	0f 90       	pop	r0
- 98e:	0f be       	out	0x3f, r0	; 63
- 990:	0f 90       	pop	r0
- 992:	1f 90       	pop	r1
- 994:	18 95       	reti
+ 9ca:	0f 90       	pop	r0
+ 9cc:	0f be       	out	0x3f, r0	; 63
+ 9ce:	0f 90       	pop	r0
+ 9d0:	1f 90       	pop	r1
+ 9d2:	18 95       	reti
 
-00000996 <__vector_15>:
+000009d4 <__vector_15>:
 ISR(TIMER0_COMPB_vect)
 {
- 996:	1f 92       	push	r1
- 998:	0f 92       	push	r0
- 99a:	0f b6       	in	r0, 0x3f	; 63
- 99c:	0f 92       	push	r0
- 99e:	11 24       	eor	r1, r1
+ 9d4:	1f 92       	push	r1
+ 9d6:	0f 92       	push	r0
+ 9d8:	0f b6       	in	r0, 0x3f	; 63
+ 9da:	0f 92       	push	r0
+ 9dc:	11 24       	eor	r1, r1
     // high-level delay:
     /* ClearBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD &= ~(1<<PD6); // clear bit: Rst Low
- 9a0:	5e 98       	cbi	0x0b, 6	; 11
+ 9de:	5e 98       	cbi	0x0b, 6	; 11
     // delay is 1.8us-2us from fedge to Rst low
 } 
- 9a2:	0f 90       	pop	r0
- 9a4:	0f be       	out	0x3f, r0	; 63
- 9a6:	0f 90       	pop	r0
- 9a8:	1f 90       	pop	r1
- 9aa:	18 95       	reti
+ 9e0:	0f 90       	pop	r0
+ 9e2:	0f be       	out	0x3f, r0	; 63
+ 9e4:	0f 90       	pop	r0
+ 9e6:	1f 90       	pop	r1
+ 9e8:	18 95       	reti
 
-000009ac <GlobalInterruptEnable_Implementation>:
+000009ea <GlobalInterruptEnable_Implementation>:
 #include <avr/interrupt.h>      // defines macros `sei()` and `cli()`
 #include <util/delay_basic.h>   // defines microsecond delay loop
 
 // sei()
 static void GlobalInterruptEnable_Implementation(void)
 { sei(); }
- 9ac:	78 94       	sei
- 9ae:	08 95       	ret
+ 9ea:	78 94       	sei
+ 9ec:	08 95       	ret
 
-000009b0 <GlobalInterruptDisable_Implementation>:
+000009ee <GlobalInterruptDisable_Implementation>:
 void (*GlobalInterruptEnable)(void) = GlobalInterruptEnable_Implementation;
 
 // cli()
 static void GlobalInterruptDisable_Implementation(void)
 { cli(); }
- 9b0:	f8 94       	cli
- 9b2:	08 95       	ret
+ 9ee:	f8 94       	cli
+ 9f0:	08 95       	ret
 
-000009b4 <_exit>:
- 9b4:	f8 94       	cli
+000009f2 <_exit>:
+ 9f2:	f8 94       	cli
 
-000009b6 <__stop_program>:
- 9b6:	ff cf       	rjmp	.-2      	; 0x9b6 <__stop_program>
+000009f4 <__stop_program>:
+ 9f4:	ff cf       	rjmp	.-2      	; 0x9f4 <__stop_program>
