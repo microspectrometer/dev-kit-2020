@@ -3,31 +3,31 @@ build/vis-spi-out.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000072  00800100  00000a22  00000ab6  2**0
+  0 .data         00000076  00800100  000009b8  00000a4c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000a22  00000000  00000000  00000094  2**1
+  1 .text         000009b8  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000622  00800172  00800172  00000b28  2**0
+  2 .bss          00000002  00800176  00800176  00000ac2  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000b28  2**0
+  3 .comment      00000030  00000000  00000000  00000ac2  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000b58  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000af4  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000428  00000000  00000000  00000b98  2**0
+  5 .debug_aranges 00000460  00000000  00000000  00000b34  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00007763  00000000  00000000  00000fc0  2**0
+  6 .debug_info   00007b2a  00000000  00000000  00000f94  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00001684  00000000  00000000  00008723  2**0
+  7 .debug_abbrev 00001749  00000000  00000000  00008abe  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00002c5d  00000000  00000000  00009da7  2**0
+  8 .debug_line   00002e81  00000000  00000000  0000a207  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000b38  00000000  00000000  0000ca04  2**2
+  9 .debug_frame  00000b64  00000000  00000000  0000d088  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00001bf6  00000000  00000000  0000d53c  2**0
+ 10 .debug_str    00001c9e  00000000  00000000  0000dbec  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00004abe  00000000  00000000  0000f132  2**0
+ 11 .debug_loc    00004c2c  00000000  00000000  0000f88a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000570  00000000  00000000  00013bf0  2**0
+ 12 .debug_ranges 00000598  00000000  00000000  000144b6  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -47,10 +47,10 @@ Disassembly of section .text:
   2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  38:	0c 94 f9 04 	jmp	0x9f2	; 0x9f2 <__vector_14>
-  3c:	0c 94 04 05 	jmp	0xa08	; 0xa08 <__vector_15>
+  38:	0c 94 c0 04 	jmp	0x980	; 0x980 <__vector_14>
+  3c:	0c 94 cb 04 	jmp	0x996	; 0x996 <__vector_15>
   40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  44:	0c 94 d2 04 	jmp	0x9a4	; 0x9a4 <__vector_17>
+  44:	0c 94 ae 04 	jmp	0x95c	; 0x95c <__vector_17>
   48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -72,18 +72,18 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e2 e2       	ldi	r30, 0x22	; 34
-  7c:	fa e0       	ldi	r31, 0x0A	; 10
+  7a:	e8 eb       	ldi	r30, 0xB8	; 184
+  7c:	f9 e0       	ldi	r31, 0x09	; 9
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
-  84:	a2 37       	cpi	r26, 0x72	; 114
+  84:	a6 37       	cpi	r26, 0x76	; 118
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
 
 0000008a <__do_clear_bss>:
-  8a:	27 e0       	ldi	r18, 0x07	; 7
-  8c:	a2 e7       	ldi	r26, 0x72	; 114
+  8a:	21 e0       	ldi	r18, 0x01	; 1
+  8c:	a6 e7       	ldi	r26, 0x76	; 118
   8e:	b1 e0       	ldi	r27, 0x01	; 1
   90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
 
@@ -91,11 +91,11 @@ Disassembly of section .text:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	a4 39       	cpi	r26, 0x94	; 148
+  94:	a8 37       	cpi	r26, 0x78	; 120
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 a1 04 	call	0x942	; 0x942 <main>
-  9e:	0c 94 0f 05 	jmp	0xa1e	; 0xa1e <_exit>
+  9a:	0e 94 6d 04 	call	0x8da	; 0x8da <main>
+  9e:	0c 94 da 04 	jmp	0x9b4	; 0x9b4 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -115,18 +115,18 @@ uint8_t SpiSlaveRead(void)
   b8:	09 94       	ijmp
 
 000000ba <ReadSpiStatusRegister_Implementation>:
-  ba:	e0 91 64 01 	lds	r30, 0x0164	; 0x800164 <Spi_spsr>
-  be:	f0 91 65 01 	lds	r31, 0x0165	; 0x800165 <Spi_spsr+0x1>
+  ba:	e0 91 67 01 	lds	r30, 0x0167	; 0x800167 <Spi_spsr>
+  be:	f0 91 68 01 	lds	r31, 0x0168	; 0x800168 <Spi_spsr+0x1>
   c2:	80 81       	ld	r24, Z
   c4:	08 95       	ret
 
 000000c6 <DisableSpi_Implementation>:
-  c6:	e0 91 66 01 	lds	r30, 0x0166	; 0x800166 <Spi_spcr>
-  ca:	f0 91 67 01 	lds	r31, 0x0167	; 0x800167 <Spi_spcr+0x1>
+  c6:	e0 91 69 01 	lds	r30, 0x0169	; 0x800169 <Spi_spcr>
+  ca:	f0 91 6a 01 	lds	r31, 0x016A	; 0x80016a <Spi_spcr+0x1>
   ce:	20 81       	ld	r18, Z
   d0:	81 e0       	ldi	r24, 0x01	; 1
   d2:	90 e0       	ldi	r25, 0x00	; 0
-  d4:	00 90 60 01 	lds	r0, 0x0160	; 0x800160 <Spi_Enable>
+  d4:	00 90 63 01 	lds	r0, 0x0163	; 0x800163 <Spi_Enable>
   d8:	02 c0       	rjmp	.+4      	; 0xde <DisableSpi_Implementation+0x18>
   da:	88 0f       	add	r24, r24
   dc:	99 1f       	adc	r25, r25
@@ -138,12 +138,12 @@ uint8_t SpiSlaveRead(void)
   e8:	08 95       	ret
 
 000000ea <EnableSpi_Implementation>:
-  ea:	e0 91 66 01 	lds	r30, 0x0166	; 0x800166 <Spi_spcr>
-  ee:	f0 91 67 01 	lds	r31, 0x0167	; 0x800167 <Spi_spcr+0x1>
+  ea:	e0 91 69 01 	lds	r30, 0x0169	; 0x800169 <Spi_spcr>
+  ee:	f0 91 6a 01 	lds	r31, 0x016A	; 0x80016a <Spi_spcr+0x1>
   f2:	20 81       	ld	r18, Z
   f4:	81 e0       	ldi	r24, 0x01	; 1
   f6:	90 e0       	ldi	r25, 0x00	; 0
-  f8:	00 90 60 01 	lds	r0, 0x0160	; 0x800160 <Spi_Enable>
+  f8:	00 90 63 01 	lds	r0, 0x0163	; 0x800163 <Spi_Enable>
   fc:	02 c0       	rjmp	.+4      	; 0x102 <EnableSpi_Implementation+0x18>
   fe:	88 0f       	add	r24, r24
  100:	99 1f       	adc	r25, r25
@@ -154,12 +154,12 @@ uint8_t SpiSlaveRead(void)
  10a:	08 95       	ret
 
 0000010c <SpiTransferIsDone_Implementation>:
- 10c:	e0 91 64 01 	lds	r30, 0x0164	; 0x800164 <Spi_spsr>
- 110:	f0 91 65 01 	lds	r31, 0x0165	; 0x800165 <Spi_spsr+0x1>
+ 10c:	e0 91 67 01 	lds	r30, 0x0167	; 0x800167 <Spi_spsr>
+ 110:	f0 91 68 01 	lds	r31, 0x0168	; 0x800168 <Spi_spsr+0x1>
  114:	80 81       	ld	r24, Z
  116:	21 e0       	ldi	r18, 0x01	; 1
  118:	30 e0       	ldi	r19, 0x00	; 0
- 11a:	00 90 5f 01 	lds	r0, 0x015F	; 0x80015f <Spi_InterruptFlag>
+ 11a:	00 90 61 01 	lds	r0, 0x0161	; 0x800161 <Spi_InterruptFlag>
  11e:	02 c0       	rjmp	.+4      	; 0x124 <SpiTransferIsDone_Implementation+0x18>
  120:	22 0f       	add	r18, r18
  122:	33 1f       	adc	r19, r19
@@ -175,18 +175,18 @@ uint8_t SpiSlaveRead(void)
  136:	08 95       	ret
 
 00000138 <ReadSpiDataRegister_Implementation>:
- 138:	e0 91 62 01 	lds	r30, 0x0162	; 0x800162 <Spi_spdr>
- 13c:	f0 91 63 01 	lds	r31, 0x0163	; 0x800163 <Spi_spdr+0x1>
+ 138:	e0 91 65 01 	lds	r30, 0x0165	; 0x800165 <Spi_spdr>
+ 13c:	f0 91 66 01 	lds	r31, 0x0166	; 0x800166 <Spi_spdr+0x1>
  140:	80 81       	ld	r24, Z
  142:	08 95       	ret
 
 00000144 <SpiSlaveSignalDataIsReady_Implementation>:
- 144:	e0 91 68 01 	lds	r30, 0x0168	; 0x800168 <Spi_port>
- 148:	f0 91 69 01 	lds	r31, 0x0169	; 0x800169 <Spi_port+0x1>
+ 144:	e0 91 6b 01 	lds	r30, 0x016B	; 0x80016b <Spi_port>
+ 148:	f0 91 6c 01 	lds	r31, 0x016C	; 0x80016c <Spi_port+0x1>
  14c:	20 81       	ld	r18, Z
  14e:	81 e0       	ldi	r24, 0x01	; 1
  150:	90 e0       	ldi	r25, 0x00	; 0
- 152:	00 90 61 01 	lds	r0, 0x0161	; 0x800161 <Spi_Miso>
+ 152:	00 90 64 01 	lds	r0, 0x0164	; 0x800164 <Spi_Miso>
  156:	02 c0       	rjmp	.+4      	; 0x15c <SpiSlaveSignalDataIsReady_Implementation+0x18>
  158:	88 0f       	add	r24, r24
  15a:	99 1f       	adc	r25, r25
@@ -203,20 +203,20 @@ uint8_t SpiSlaveRead(void)
  178:	09 94       	ijmp
 
 0000017a <WriteSpiDataRegister_Implementation>:
- 17a:	e0 91 62 01 	lds	r30, 0x0162	; 0x800162 <Spi_spdr>
- 17e:	f0 91 63 01 	lds	r31, 0x0163	; 0x800163 <Spi_spdr+0x1>
+ 17a:	e0 91 65 01 	lds	r30, 0x0165	; 0x800165 <Spi_spdr>
+ 17e:	f0 91 66 01 	lds	r31, 0x0166	; 0x800166 <Spi_spdr+0x1>
  182:	80 83       	st	Z, r24
  184:	08 95       	ret
 
 00000186 <SpiSlaveInit>:
  186:	cf 93       	push	r28
  188:	df 93       	push	r29
- 18a:	e0 91 6a 01 	lds	r30, 0x016A	; 0x80016a <Spi_ddr>
- 18e:	f0 91 6b 01 	lds	r31, 0x016B	; 0x80016b <Spi_ddr+0x1>
+ 18a:	e0 91 6d 01 	lds	r30, 0x016D	; 0x80016d <Spi_ddr>
+ 18e:	f0 91 6e 01 	lds	r31, 0x016E	; 0x80016e <Spi_ddr+0x1>
  192:	80 81       	ld	r24, Z
  194:	c1 e0       	ldi	r28, 0x01	; 1
  196:	d0 e0       	ldi	r29, 0x00	; 0
- 198:	00 90 61 01 	lds	r0, 0x0161	; 0x800161 <Spi_Miso>
+ 198:	00 90 64 01 	lds	r0, 0x0164	; 0x800164 <Spi_Miso>
  19c:	02 c0       	rjmp	.+4      	; 0x1a2 <SpiSlaveInit+0x1c>
  19e:	cc 0f       	add	r28, r28
  1a0:	dd 1f       	adc	r29, r29
@@ -227,8 +227,8 @@ uint8_t SpiSlaveRead(void)
  1aa:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <EnableSpi>
  1ae:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <EnableSpi+0x1>
  1b2:	09 95       	icall
- 1b4:	e0 91 68 01 	lds	r30, 0x0168	; 0x800168 <Spi_port>
- 1b8:	f0 91 69 01 	lds	r31, 0x0169	; 0x800169 <Spi_port+0x1>
+ 1b4:	e0 91 6b 01 	lds	r30, 0x016B	; 0x80016b <Spi_port>
+ 1b8:	f0 91 6c 01 	lds	r31, 0x016C	; 0x80016c <Spi_port+0x1>
  1bc:	80 81       	ld	r24, Z
  1be:	c0 95       	com	r28
  1c0:	c8 23       	and	r28, r24
@@ -239,1233 +239,1191 @@ uint8_t SpiSlaveRead(void)
  1ce:	cf 91       	pop	r28
  1d0:	09 94       	ijmp
 
-000001d2 <SpiSlaveSendBytes>:
+000001d2 <SpiEnableInterrupt>:
+ 1d2:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <GlobalInterruptDisable>
+ 1d6:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <GlobalInterruptDisable+0x1>
+ 1da:	09 95       	icall
+ 1dc:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <ClearPendingSpiInterrupt>
+ 1e0:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <ClearPendingSpiInterrupt+0x1>
+ 1e4:	09 95       	icall
+ 1e6:	e0 91 69 01 	lds	r30, 0x0169	; 0x800169 <Spi_spcr>
+ 1ea:	f0 91 6a 01 	lds	r31, 0x016A	; 0x80016a <Spi_spcr+0x1>
+ 1ee:	20 81       	ld	r18, Z
+ 1f0:	81 e0       	ldi	r24, 0x01	; 1
+ 1f2:	90 e0       	ldi	r25, 0x00	; 0
+ 1f4:	00 90 62 01 	lds	r0, 0x0162	; 0x800162 <Spi_InterruptEnable>
+ 1f8:	02 c0       	rjmp	.+4      	; 0x1fe <SpiEnableInterrupt+0x2c>
+ 1fa:	88 0f       	add	r24, r24
+ 1fc:	99 1f       	adc	r25, r25
+ 1fe:	0a 94       	dec	r0
+ 200:	e2 f7       	brpl	.-8      	; 0x1fa <SpiEnableInterrupt+0x28>
+ 202:	82 2b       	or	r24, r18
+ 204:	80 83       	st	Z, r24
+ 206:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <GlobalInterruptEnable>
+ 20a:	f0 91 21 01 	lds	r31, 0x0121	; 0x800121 <GlobalInterruptEnable+0x1>
+ 20e:	09 94       	ijmp
+
+00000210 <SpiSlaveSendBytes>:
 }
 void SpiSlaveSendBytes(uint8_t const *bytes, uint16_t const nbytes)
 {
- 1d2:	ef 92       	push	r14
- 1d4:	ff 92       	push	r15
- 1d6:	0f 93       	push	r16
- 1d8:	1f 93       	push	r17
- 1da:	cf 93       	push	r28
- 1dc:	df 93       	push	r29
+ 210:	ef 92       	push	r14
+ 212:	ff 92       	push	r15
+ 214:	0f 93       	push	r16
+ 216:	1f 93       	push	r17
+ 218:	cf 93       	push	r28
+ 21a:	df 93       	push	r29
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes; byte_index++)
- 1de:	61 15       	cp	r22, r1
- 1e0:	71 05       	cpc	r23, r1
- 1e2:	f9 f0       	breq	.+62     	; 0x222 <SpiSlaveSendBytes+0x50>
- 1e4:	e0 90 62 01 	lds	r14, 0x0162	; 0x800162 <Spi_spdr>
- 1e8:	f0 90 63 01 	lds	r15, 0x0163	; 0x800163 <Spi_spdr+0x1>
- 1ec:	ec 01       	movw	r28, r24
- 1ee:	8c 01       	movw	r16, r24
- 1f0:	06 0f       	add	r16, r22
- 1f2:	17 1f       	adc	r17, r23
+ 21c:	61 15       	cp	r22, r1
+ 21e:	71 05       	cpc	r23, r1
+ 220:	f9 f0       	breq	.+62     	; 0x260 <SpiSlaveSendBytes+0x50>
+ 222:	e0 90 65 01 	lds	r14, 0x0165	; 0x800165 <Spi_spdr>
+ 226:	f0 90 66 01 	lds	r15, 0x0166	; 0x800166 <Spi_spdr+0x1>
+ 22a:	ec 01       	movw	r28, r24
+ 22c:	8c 01       	movw	r16, r24
+ 22e:	06 0f       	add	r16, r22
+ 230:	17 1f       	adc	r17, r23
     {
         /* *Spi_spdr = bytes[byte_index]; */
         WriteSpiDataRegister(bytes[byte_index]);
- 1f4:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <WriteSpiDataRegister>
- 1f8:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <WriteSpiDataRegister+0x1>
- 1fc:	89 91       	ld	r24, Y+
- 1fe:	09 95       	icall
+ 232:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <WriteSpiDataRegister>
+ 236:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <WriteSpiDataRegister+0x1>
+ 23a:	89 91       	ld	r24, Y+
+ 23c:	09 95       	icall
         SpiSlaveSignalDataIsReady();
- 200:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiSlaveSignalDataIsReady>
- 204:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiSlaveSignalDataIsReady+0x1>
- 208:	09 95       	icall
+ 23e:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <SpiSlaveSignalDataIsReady>
+ 242:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <SpiSlaveSignalDataIsReady+0x1>
+ 246:	09 95       	icall
         while ( !SpiTransferIsDone() );
- 20a:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
- 20e:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
- 212:	09 95       	icall
- 214:	88 23       	and	r24, r24
- 216:	c9 f3       	breq	.-14     	; 0x20a <SpiSlaveSendBytes+0x38>
+ 248:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
+ 24c:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
+ 250:	09 95       	icall
+ 252:	88 23       	and	r24, r24
+ 254:	c9 f3       	breq	.-14     	; 0x248 <SpiSlaveSendBytes+0x38>
 void SpiClearFlagTransferIsDone(void)
 {
     // Clear the Spi_Interrupt flag by
     // reading Spi_InterruptFlag while it is set
     // then reading SPDR
     *Spi_spdr;  // this serves as a throwaway access
- 218:	f7 01       	movw	r30, r14
- 21a:	80 81       	ld	r24, Z
+ 256:	f7 01       	movw	r30, r14
+ 258:	80 81       	ld	r24, Z
     return ReadSpiDataRegister();
 }
 void SpiSlaveSendBytes(uint8_t const *bytes, uint16_t const nbytes)
 {
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes; byte_index++)
- 21c:	c0 17       	cp	r28, r16
- 21e:	d1 07       	cpc	r29, r17
- 220:	49 f7       	brne	.-46     	; 0x1f4 <SpiSlaveSendBytes+0x22>
+ 25a:	c0 17       	cp	r28, r16
+ 25c:	d1 07       	cpc	r29, r17
+ 25e:	49 f7       	brne	.-46     	; 0x232 <SpiSlaveSendBytes+0x22>
     // The SPI master waits for MISO to go low after every read.
     // This gaurantees the next byte of data is ready.
     // The SPI master does not have to release SlaveSelect, but it can.
     // SlaveSelect being low should not impact the slave's ability to disable
     // SPI and pull MISO low.
 }
- 222:	df 91       	pop	r29
- 224:	cf 91       	pop	r28
- 226:	1f 91       	pop	r17
- 228:	0f 91       	pop	r16
- 22a:	ff 90       	pop	r15
- 22c:	ef 90       	pop	r14
- 22e:	08 95       	ret
+ 260:	df 91       	pop	r29
+ 262:	cf 91       	pop	r28
+ 264:	1f 91       	pop	r17
+ 266:	0f 91       	pop	r16
+ 268:	ff 90       	pop	r15
+ 26a:	ef 90       	pop	r14
+ 26c:	08 95       	ret
 
-00000230 <StartAdcReadout>:
+0000026e <StartAdcReadout>:
 uint8_t (*UartSpiReadDataRegister)(void) = ReadDataRegister;
 static void Transfer16bits(void)
 {
     uint8_t byte_to_send = 0x00; // arbitrary choice -- write zeroes
     *UartSpi_data = byte_to_send;  // load tx buffer and start SPI transmission
     *UartSpi_data = byte_to_send;  // this makes it a 16-bit transmission ?
- 230:	e0 91 5b 01 	lds	r30, 0x015B	; 0x80015b <UartSpi_port>
- 234:	f0 91 5c 01 	lds	r31, 0x015C	; 0x80015c <UartSpi_port+0x1>
- 238:	20 81       	ld	r18, Z
- 23a:	81 e0       	ldi	r24, 0x01	; 1
- 23c:	90 e0       	ldi	r25, 0x00	; 0
- 23e:	00 90 54 01 	lds	r0, 0x0154	; 0x800154 <UartSpi_AdcConv>
- 242:	02 c0       	rjmp	.+4      	; 0x248 <StartAdcReadout+0x18>
- 244:	88 0f       	add	r24, r24
- 246:	99 1f       	adc	r25, r25
- 248:	0a 94       	dec	r0
- 24a:	e2 f7       	brpl	.-8      	; 0x244 <StartAdcReadout+0x14>
- 24c:	80 95       	com	r24
- 24e:	82 23       	and	r24, r18
- 250:	80 83       	st	Z, r24
- 252:	08 95       	ret
+ 26e:	e0 91 5d 01 	lds	r30, 0x015D	; 0x80015d <UartSpi_port>
+ 272:	f0 91 5e 01 	lds	r31, 0x015E	; 0x80015e <UartSpi_port+0x1>
+ 276:	20 81       	ld	r18, Z
+ 278:	81 e0       	ldi	r24, 0x01	; 1
+ 27a:	90 e0       	ldi	r25, 0x00	; 0
+ 27c:	00 90 56 01 	lds	r0, 0x0156	; 0x800156 <UartSpi_AdcConv>
+ 280:	02 c0       	rjmp	.+4      	; 0x286 <StartAdcReadout+0x18>
+ 282:	88 0f       	add	r24, r24
+ 284:	99 1f       	adc	r25, r25
+ 286:	0a 94       	dec	r0
+ 288:	e2 f7       	brpl	.-8      	; 0x282 <StartAdcReadout+0x14>
+ 28a:	80 95       	com	r24
+ 28c:	82 23       	and	r24, r18
+ 28e:	80 83       	st	Z, r24
+ 290:	08 95       	ret
 
-00000254 <UartSpiInit>:
+00000292 <UartSpiInit>:
     UseSpiDataModeCpol1CPha1();
     CfgSpiToTransferMsbFirst();
     GiveSpiControlOverMisoAndMosiPins();
 }
 void UartSpiInit(void)
 {
- 254:	ef 92       	push	r14
- 256:	ff 92       	push	r15
- 258:	0f 93       	push	r16
- 25a:	1f 93       	push	r17
- 25c:	cf 93       	push	r28
- 25e:	df 93       	push	r29
+ 292:	ef 92       	push	r14
+ 294:	ff 92       	push	r15
+ 296:	0f 93       	push	r16
+ 298:	1f 93       	push	r17
+ 29a:	cf 93       	push	r28
+ 29c:	df 93       	push	r29
         // baudrate in bits per second = fosc/(2*(UBBR0+1))
         // for (baudrate = fosc/2) set UBBR0=0
         // Check:
         // UBRR0 (baud rate register)  = ( fosc/(2*baudrate) ) -1
         // yes, UBBR0 is 0 if fosc=10MHz and baudrate=5MHz
     *UartSpi_br = 0;
- 260:	00 91 55 01 	lds	r16, 0x0155	; 0x800155 <UartSpi_br>
- 264:	10 91 56 01 	lds	r17, 0x0156	; 0x800156 <UartSpi_br+0x1>
- 268:	f8 01       	movw	r30, r16
- 26a:	11 82       	std	Z+1, r1	; 0x01
- 26c:	10 82       	st	Z, r1
+ 29e:	00 91 57 01 	lds	r16, 0x0157	; 0x800157 <UartSpi_br>
+ 2a2:	10 91 58 01 	lds	r17, 0x0158	; 0x800158 <UartSpi_br+0x1>
+ 2a6:	f8 01       	movw	r30, r16
+ 2a8:	11 82       	std	Z+1, r1	; 0x01
+ 2aa:	10 82       	st	Z, r1
 }
 static void SetSckAsOutput(void)
 {
     // Cfg XCK as an output. CPOL=1 makes the clock idle high.
     SetBit(UartSpi_ddr, UartSpi_Sck);
- 26e:	e0 90 5d 01 	lds	r14, 0x015D	; 0x80015d <UartSpi_ddr>
- 272:	f0 90 5e 01 	lds	r15, 0x015E	; 0x80015e <UartSpi_ddr+0x1>
+ 2ac:	e0 90 5f 01 	lds	r14, 0x015F	; 0x80015f <UartSpi_ddr>
+ 2b0:	f0 90 60 01 	lds	r15, 0x0160	; 0x800160 <UartSpi_ddr+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
 inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
- 276:	f7 01       	movw	r30, r14
- 278:	20 81       	ld	r18, Z
- 27a:	c1 e0       	ldi	r28, 0x01	; 1
- 27c:	d0 e0       	ldi	r29, 0x00	; 0
- 27e:	ce 01       	movw	r24, r28
- 280:	00 90 53 01 	lds	r0, 0x0153	; 0x800153 <UartSpi_Sck>
- 284:	02 c0       	rjmp	.+4      	; 0x28a <UartSpiInit+0x36>
- 286:	88 0f       	add	r24, r24
- 288:	99 1f       	adc	r25, r25
- 28a:	0a 94       	dec	r0
- 28c:	e2 f7       	brpl	.-8      	; 0x286 <UartSpiInit+0x32>
- 28e:	82 2b       	or	r24, r18
- 290:	80 83       	st	Z, r24
+ 2b4:	f7 01       	movw	r30, r14
+ 2b6:	20 81       	ld	r18, Z
+ 2b8:	c1 e0       	ldi	r28, 0x01	; 1
+ 2ba:	d0 e0       	ldi	r29, 0x00	; 0
+ 2bc:	ce 01       	movw	r24, r28
+ 2be:	00 90 55 01 	lds	r0, 0x0155	; 0x800155 <UartSpi_Sck>
+ 2c2:	02 c0       	rjmp	.+4      	; 0x2c8 <UartSpiInit+0x36>
+ 2c4:	88 0f       	add	r24, r24
+ 2c6:	99 1f       	adc	r25, r25
+ 2c8:	0a 94       	dec	r0
+ 2ca:	e2 f7       	brpl	.-8      	; 0x2c4 <UartSpiInit+0x32>
+ 2cc:	82 2b       	or	r24, r18
+ 2ce:	80 83       	st	Z, r24
 }
 void UartSpiInit(void)
 {
     RunSpiAt5Mhz(); // datasheet says to call this first
     SetSckAsOutput();
     AdcConvIdleLow(); SetAdcConvAsOutput();
- 292:	0e 94 18 01 	call	0x230	; 0x230 <StartAdcReadout>
- 296:	f7 01       	movw	r30, r14
- 298:	20 81       	ld	r18, Z
- 29a:	ce 01       	movw	r24, r28
- 29c:	00 90 54 01 	lds	r0, 0x0154	; 0x800154 <UartSpi_AdcConv>
- 2a0:	02 c0       	rjmp	.+4      	; 0x2a6 <UartSpiInit+0x52>
- 2a2:	88 0f       	add	r24, r24
- 2a4:	99 1f       	adc	r25, r25
- 2a6:	0a 94       	dec	r0
- 2a8:	e2 f7       	brpl	.-8      	; 0x2a2 <UartSpiInit+0x4e>
- 2aa:	82 2b       	or	r24, r18
- 2ac:	80 83       	st	Z, r24
+ 2d0:	0e 94 37 01 	call	0x26e	; 0x26e <StartAdcReadout>
+ 2d4:	f7 01       	movw	r30, r14
+ 2d6:	20 81       	ld	r18, Z
+ 2d8:	ce 01       	movw	r24, r28
+ 2da:	00 90 56 01 	lds	r0, 0x0156	; 0x800156 <UartSpi_AdcConv>
+ 2de:	02 c0       	rjmp	.+4      	; 0x2e4 <UartSpiInit+0x52>
+ 2e0:	88 0f       	add	r24, r24
+ 2e2:	99 1f       	adc	r25, r25
+ 2e4:	0a 94       	dec	r0
+ 2e6:	e2 f7       	brpl	.-8      	; 0x2e0 <UartSpiInit+0x4e>
+ 2e8:	82 2b       	or	r24, r18
+ 2ea:	80 83       	st	Z, r24
     // cfg general purpose output for conversion-start and readout-start
     SetBit(UartSpi_ddr, UartSpi_AdcConv);
 }
 static void EnableAtmega328UsartInSpiMasterMode(void)
 {
     SetBit(UartSpi_csrc, UartSpi_ModeSelect0);
- 2ae:	e0 91 57 01 	lds	r30, 0x0157	; 0x800157 <UartSpi_csrc>
- 2b2:	f0 91 58 01 	lds	r31, 0x0158	; 0x800158 <UartSpi_csrc+0x1>
- 2b6:	20 81       	ld	r18, Z
- 2b8:	ce 01       	movw	r24, r28
- 2ba:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <UartSpi_ModeSelect0>
- 2be:	02 c0       	rjmp	.+4      	; 0x2c4 <UartSpiInit+0x70>
- 2c0:	88 0f       	add	r24, r24
- 2c2:	99 1f       	adc	r25, r25
- 2c4:	0a 94       	dec	r0
- 2c6:	e2 f7       	brpl	.-8      	; 0x2c0 <UartSpiInit+0x6c>
- 2c8:	82 2b       	or	r24, r18
- 2ca:	80 83       	st	Z, r24
- 2cc:	20 81       	ld	r18, Z
- 2ce:	ce 01       	movw	r24, r28
- 2d0:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <UartSpi_ModeSelect1>
- 2d4:	02 c0       	rjmp	.+4      	; 0x2da <UartSpiInit+0x86>
- 2d6:	88 0f       	add	r24, r24
- 2d8:	99 1f       	adc	r25, r25
- 2da:	0a 94       	dec	r0
- 2dc:	e2 f7       	brpl	.-8      	; 0x2d6 <UartSpiInit+0x82>
- 2de:	82 2b       	or	r24, r18
- 2e0:	80 83       	st	Z, r24
- 2e2:	20 81       	ld	r18, Z
- 2e4:	ce 01       	movw	r24, r28
- 2e6:	00 90 4e 01 	lds	r0, 0x014E	; 0x80014e <UartSpi_ClockPolarity>
- 2ea:	02 c0       	rjmp	.+4      	; 0x2f0 <UartSpiInit+0x9c>
- 2ec:	88 0f       	add	r24, r24
- 2ee:	99 1f       	adc	r25, r25
- 2f0:	0a 94       	dec	r0
- 2f2:	e2 f7       	brpl	.-8      	; 0x2ec <UartSpiInit+0x98>
- 2f4:	82 2b       	or	r24, r18
- 2f6:	80 83       	st	Z, r24
- 2f8:	20 81       	ld	r18, Z
- 2fa:	ce 01       	movw	r24, r28
- 2fc:	00 90 4d 01 	lds	r0, 0x014D	; 0x80014d <UartSpi_ClockPhase>
- 300:	02 c0       	rjmp	.+4      	; 0x306 <UartSpiInit+0xb2>
- 302:	88 0f       	add	r24, r24
- 304:	99 1f       	adc	r25, r25
- 306:	0a 94       	dec	r0
- 308:	e2 f7       	brpl	.-8      	; 0x302 <UartSpiInit+0xae>
- 30a:	82 2b       	or	r24, r18
- 30c:	80 83       	st	Z, r24
+ 2ec:	e0 91 59 01 	lds	r30, 0x0159	; 0x800159 <UartSpi_csrc>
+ 2f0:	f0 91 5a 01 	lds	r31, 0x015A	; 0x80015a <UartSpi_csrc+0x1>
+ 2f4:	20 81       	ld	r18, Z
+ 2f6:	ce 01       	movw	r24, r28
+ 2f8:	00 90 54 01 	lds	r0, 0x0154	; 0x800154 <UartSpi_ModeSelect0>
+ 2fc:	02 c0       	rjmp	.+4      	; 0x302 <UartSpiInit+0x70>
+ 2fe:	88 0f       	add	r24, r24
+ 300:	99 1f       	adc	r25, r25
+ 302:	0a 94       	dec	r0
+ 304:	e2 f7       	brpl	.-8      	; 0x2fe <UartSpiInit+0x6c>
+ 306:	82 2b       	or	r24, r18
+ 308:	80 83       	st	Z, r24
+ 30a:	20 81       	ld	r18, Z
+ 30c:	ce 01       	movw	r24, r28
+ 30e:	00 90 53 01 	lds	r0, 0x0153	; 0x800153 <UartSpi_ModeSelect1>
+ 312:	02 c0       	rjmp	.+4      	; 0x318 <UartSpiInit+0x86>
+ 314:	88 0f       	add	r24, r24
+ 316:	99 1f       	adc	r25, r25
+ 318:	0a 94       	dec	r0
+ 31a:	e2 f7       	brpl	.-8      	; 0x314 <UartSpiInit+0x82>
+ 31c:	82 2b       	or	r24, r18
+ 31e:	80 83       	st	Z, r24
+ 320:	20 81       	ld	r18, Z
+ 322:	ce 01       	movw	r24, r28
+ 324:	00 90 50 01 	lds	r0, 0x0150	; 0x800150 <UartSpi_ClockPolarity>
+ 328:	02 c0       	rjmp	.+4      	; 0x32e <UartSpiInit+0x9c>
+ 32a:	88 0f       	add	r24, r24
+ 32c:	99 1f       	adc	r25, r25
+ 32e:	0a 94       	dec	r0
+ 330:	e2 f7       	brpl	.-8      	; 0x32a <UartSpiInit+0x98>
+ 332:	82 2b       	or	r24, r18
+ 334:	80 83       	st	Z, r24
+ 336:	20 81       	ld	r18, Z
+ 338:	ce 01       	movw	r24, r28
+ 33a:	00 90 4f 01 	lds	r0, 0x014F	; 0x80014f <UartSpi_ClockPhase>
+ 33e:	02 c0       	rjmp	.+4      	; 0x344 <UartSpiInit+0xb2>
+ 340:	88 0f       	add	r24, r24
+ 342:	99 1f       	adc	r25, r25
+ 344:	0a 94       	dec	r0
+ 346:	e2 f7       	brpl	.-8      	; 0x340 <UartSpiInit+0xae>
+ 348:	82 2b       	or	r24, r18
+ 34a:	80 83       	st	Z, r24
 }
 inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port &= ~(1<<bit);
- 30e:	90 81       	ld	r25, Z
- 310:	9e 01       	movw	r18, r28
- 312:	00 90 4c 01 	lds	r0, 0x014C	; 0x80014c <UartSpi_DataOrder>
- 316:	02 c0       	rjmp	.+4      	; 0x31c <UartSpiInit+0xc8>
- 318:	22 0f       	add	r18, r18
- 31a:	33 1f       	adc	r19, r19
- 31c:	0a 94       	dec	r0
- 31e:	e2 f7       	brpl	.-8      	; 0x318 <UartSpiInit+0xc4>
- 320:	82 2f       	mov	r24, r18
- 322:	80 95       	com	r24
- 324:	89 23       	and	r24, r25
- 326:	80 83       	st	Z, r24
+ 34c:	90 81       	ld	r25, Z
+ 34e:	9e 01       	movw	r18, r28
+ 350:	00 90 4e 01 	lds	r0, 0x014E	; 0x80014e <UartSpi_DataOrder>
+ 354:	02 c0       	rjmp	.+4      	; 0x35a <UartSpiInit+0xc8>
+ 356:	22 0f       	add	r18, r18
+ 358:	33 1f       	adc	r19, r19
+ 35a:	0a 94       	dec	r0
+ 35c:	e2 f7       	brpl	.-8      	; 0x356 <UartSpiInit+0xc4>
+ 35e:	82 2f       	mov	r24, r18
+ 360:	80 95       	com	r24
+ 362:	89 23       	and	r24, r25
+ 364:	80 83       	st	Z, r24
 }
 static void GiveSpiControlOverMisoAndMosiPins(void)
 {
     /* ---Enabling Rx and Tx overrides normal port operation--- */
     // Enable the receiver. The UART Rx pin becomes the SPI Miso.
     SetBit(UartSpi_csrb, UartSpi_RxEnable);
- 328:	e0 91 59 01 	lds	r30, 0x0159	; 0x800159 <UartSpi_csrb>
- 32c:	f0 91 5a 01 	lds	r31, 0x015A	; 0x80015a <UartSpi_csrb+0x1>
+ 366:	e0 91 5b 01 	lds	r30, 0x015B	; 0x80015b <UartSpi_csrb>
+ 36a:	f0 91 5c 01 	lds	r31, 0x015C	; 0x80015c <UartSpi_csrb+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
 inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
- 330:	20 81       	ld	r18, Z
- 332:	ce 01       	movw	r24, r28
- 334:	00 90 50 01 	lds	r0, 0x0150	; 0x800150 <UartSpi_RxEnable>
- 338:	02 c0       	rjmp	.+4      	; 0x33e <UartSpiInit+0xea>
- 33a:	88 0f       	add	r24, r24
- 33c:	99 1f       	adc	r25, r25
- 33e:	0a 94       	dec	r0
- 340:	e2 f7       	brpl	.-8      	; 0x33a <UartSpiInit+0xe6>
- 342:	82 2b       	or	r24, r18
- 344:	80 83       	st	Z, r24
- 346:	80 81       	ld	r24, Z
- 348:	00 90 4f 01 	lds	r0, 0x014F	; 0x80014f <UartSpi_TxEnable>
- 34c:	02 c0       	rjmp	.+4      	; 0x352 <UartSpiInit+0xfe>
- 34e:	cc 0f       	add	r28, r28
- 350:	dd 1f       	adc	r29, r29
- 352:	0a 94       	dec	r0
- 354:	e2 f7       	brpl	.-8      	; 0x34e <UartSpiInit+0xfa>
- 356:	c8 2b       	or	r28, r24
- 358:	c0 83       	st	Z, r28
+ 36e:	20 81       	ld	r18, Z
+ 370:	ce 01       	movw	r24, r28
+ 372:	00 90 52 01 	lds	r0, 0x0152	; 0x800152 <UartSpi_RxEnable>
+ 376:	02 c0       	rjmp	.+4      	; 0x37c <UartSpiInit+0xea>
+ 378:	88 0f       	add	r24, r24
+ 37a:	99 1f       	adc	r25, r25
+ 37c:	0a 94       	dec	r0
+ 37e:	e2 f7       	brpl	.-8      	; 0x378 <UartSpiInit+0xe6>
+ 380:	82 2b       	or	r24, r18
+ 382:	80 83       	st	Z, r24
+ 384:	80 81       	ld	r24, Z
+ 386:	00 90 51 01 	lds	r0, 0x0151	; 0x800151 <UartSpi_TxEnable>
+ 38a:	02 c0       	rjmp	.+4      	; 0x390 <UartSpiInit+0xfe>
+ 38c:	cc 0f       	add	r28, r28
+ 38e:	dd 1f       	adc	r29, r29
+ 390:	0a 94       	dec	r0
+ 392:	e2 f7       	brpl	.-8      	; 0x38c <UartSpiInit+0xfa>
+ 394:	c8 2b       	or	r28, r24
+ 396:	c0 83       	st	Z, r28
         // baudrate in bits per second = fosc/(2*(UBBR0+1))
         // for (baudrate = fosc/2) set UBBR0=0
         // Check:
         // UBRR0 (baud rate register)  = ( fosc/(2*baudrate) ) -1
         // yes, UBBR0 is 0 if fosc=10MHz and baudrate=5MHz
     *UartSpi_br = 0;
- 35a:	f8 01       	movw	r30, r16
- 35c:	11 82       	std	Z+1, r1	; 0x01
- 35e:	10 82       	st	Z, r1
+ 398:	f8 01       	movw	r30, r16
+ 39a:	11 82       	std	Z+1, r1	; 0x01
+ 39c:	10 82       	st	Z, r1
     RunSpiAt5Mhz(); // datasheet says to call this first
     SetSckAsOutput();
     AdcConvIdleLow(); SetAdcConvAsOutput();
     SpiMasterCfg();
     RunSpiAt5Mhz(); // datasheet says to call this again after enable
 }
- 360:	df 91       	pop	r29
- 362:	cf 91       	pop	r28
- 364:	1f 91       	pop	r17
- 366:	0f 91       	pop	r16
- 368:	ff 90       	pop	r15
- 36a:	ef 90       	pop	r14
- 36c:	08 95       	ret
+ 39e:	df 91       	pop	r29
+ 3a0:	cf 91       	pop	r28
+ 3a2:	1f 91       	pop	r17
+ 3a4:	0f 91       	pop	r16
+ 3a6:	ff 90       	pop	r15
+ 3a8:	ef 90       	pop	r14
+ 3aa:	08 95       	ret
 
-0000036e <LisRunClkAt50kHz_Implementation>:
+000003ac <LisRunClkAt50kHz_Implementation>:
 }
 inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port &= ~(1<<bit);
- 36e:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <PwmResetCounterAtTop>
- 372:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <PwmResetCounterAtTop+0x1>
- 376:	09 95       	icall
- 378:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <PwmTopIsOcr0a>
- 37c:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <PwmTopIsOcr0a+0x1>
- 380:	09 95       	icall
- 382:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <PwmClkIsCpuClk>
- 386:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <PwmClkIsCpuClk+0x1>
- 38a:	09 95       	icall
- 38c:	e0 91 42 01 	lds	r30, 0x0142	; 0x800142 <Lis_clktop>
- 390:	f0 91 43 01 	lds	r31, 0x0143	; 0x800143 <Lis_clktop+0x1>
- 394:	88 ec       	ldi	r24, 0xC8	; 200
- 396:	80 83       	st	Z, r24
- 398:	80 91 40 01 	lds	r24, 0x0140	; 0x800140 <Lis_clkth>
- 39c:	90 91 41 01 	lds	r25, 0x0141	; 0x800141 <Lis_clkth+0x1>
- 3a0:	20 81       	ld	r18, Z
- 3a2:	26 95       	lsr	r18
- 3a4:	fc 01       	movw	r30, r24
- 3a6:	20 83       	st	Z, r18
- 3a8:	08 95       	ret
+ 3ac:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <PwmResetCounterAtTop>
+ 3b0:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <PwmResetCounterAtTop+0x1>
+ 3b4:	09 95       	icall
+ 3b6:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <PwmTopIsOcr0a>
+ 3ba:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <PwmTopIsOcr0a+0x1>
+ 3be:	09 95       	icall
+ 3c0:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <PwmClkIsCpuClk>
+ 3c4:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <PwmClkIsCpuClk+0x1>
+ 3c8:	09 95       	icall
+ 3ca:	e0 91 44 01 	lds	r30, 0x0144	; 0x800144 <Lis_clktop>
+ 3ce:	f0 91 45 01 	lds	r31, 0x0145	; 0x800145 <Lis_clktop+0x1>
+ 3d2:	88 ec       	ldi	r24, 0xC8	; 200
+ 3d4:	80 83       	st	Z, r24
+ 3d6:	80 91 42 01 	lds	r24, 0x0142	; 0x800142 <Lis_clkth>
+ 3da:	90 91 43 01 	lds	r25, 0x0143	; 0x800143 <Lis_clkth+0x1>
+ 3de:	20 81       	ld	r18, Z
+ 3e0:	26 95       	lsr	r18
+ 3e2:	fc 01       	movw	r30, r24
+ 3e4:	20 83       	st	Z, r18
+ 3e6:	08 95       	ret
 
-000003aa <LisClkOn_Implementation>:
- 3aa:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <PwmEnableOutputSetUntilMatch>
- 3ae:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <PwmEnableOutputSetUntilMatch+0x1>
- 3b2:	09 94       	ijmp
+000003e8 <LisClkOn_Implementation>:
+ 3e8:	e0 91 14 01 	lds	r30, 0x0114	; 0x800114 <PwmEnableOutputSetUntilMatch>
+ 3ec:	f0 91 15 01 	lds	r31, 0x0115	; 0x800115 <PwmEnableOutputSetUntilMatch+0x1>
+ 3f0:	09 94       	ijmp
 
-000003b4 <LisWriteCfg>:
- 3b4:	4f 92       	push	r4
- 3b6:	5f 92       	push	r5
- 3b8:	6f 92       	push	r6
- 3ba:	7f 92       	push	r7
- 3bc:	8f 92       	push	r8
- 3be:	9f 92       	push	r9
- 3c0:	af 92       	push	r10
- 3c2:	bf 92       	push	r11
- 3c4:	cf 92       	push	r12
- 3c6:	df 92       	push	r13
- 3c8:	ef 92       	push	r14
- 3ca:	ff 92       	push	r15
- 3cc:	0f 93       	push	r16
- 3ce:	1f 93       	push	r17
- 3d0:	cf 93       	push	r28
- 3d2:	df 93       	push	r29
- 3d4:	4c 01       	movw	r8, r24
- 3d6:	e0 91 36 01 	lds	r30, 0x0136	; 0x800136 <Pwm_tifr0>
- 3da:	f0 91 37 01 	lds	r31, 0x0137	; 0x800137 <Pwm_tifr0+0x1>
- 3de:	80 81       	ld	r24, Z
- 3e0:	21 e0       	ldi	r18, 0x01	; 1
- 3e2:	30 e0       	ldi	r19, 0x00	; 0
- 3e4:	00 90 2c 01 	lds	r0, 0x012C	; 0x80012c <Pwm_Ocf0b>
- 3e8:	02 c0       	rjmp	.+4      	; 0x3ee <LisWriteCfg+0x3a>
- 3ea:	22 0f       	add	r18, r18
- 3ec:	33 1f       	adc	r19, r19
- 3ee:	0a 94       	dec	r0
- 3f0:	e2 f7       	brpl	.-8      	; 0x3ea <LisWriteCfg+0x36>
- 3f2:	f2 2e       	mov	r15, r18
- 3f4:	82 2b       	or	r24, r18
- 3f6:	80 83       	st	Z, r24
- 3f8:	80 81       	ld	r24, Z
- 3fa:	90 e0       	ldi	r25, 0x00	; 0
- 3fc:	82 23       	and	r24, r18
- 3fe:	93 23       	and	r25, r19
- 400:	89 2b       	or	r24, r25
- 402:	d1 f3       	breq	.-12     	; 0x3f8 <LisWriteCfg+0x44>
- 404:	80 81       	ld	r24, Z
- 406:	82 2b       	or	r24, r18
- 408:	80 83       	st	Z, r24
- 40a:	a0 90 44 01 	lds	r10, 0x0144	; 0x800144 <Lis_port2>
- 40e:	b0 90 45 01 	lds	r11, 0x0145	; 0x800145 <Lis_port2+0x1>
- 412:	d5 01       	movw	r26, r10
- 414:	4c 91       	ld	r20, X
- 416:	81 e0       	ldi	r24, 0x01	; 1
- 418:	90 e0       	ldi	r25, 0x00	; 0
- 41a:	2c 01       	movw	r4, r24
- 41c:	00 90 3f 01 	lds	r0, 0x013F	; 0x80013f <Lis_PixSelect>
- 420:	02 c0       	rjmp	.+4      	; 0x426 <__LOCK_REGION_LENGTH__+0x26>
- 422:	44 0c       	add	r4, r4
- 424:	55 1c       	adc	r5, r5
- 426:	0a 94       	dec	r0
- 428:	e2 f7       	brpl	.-8      	; 0x422 <__LOCK_REGION_LENGTH__+0x22>
- 42a:	44 29       	or	r20, r4
- 42c:	4c 93       	st	X, r20
- 42e:	ac 01       	movw	r20, r24
- 430:	00 90 2d 01 	lds	r0, 0x012D	; 0x80012d <Pwm_Ocf0a>
- 434:	02 c0       	rjmp	.+4      	; 0x43a <__LOCK_REGION_LENGTH__+0x3a>
- 436:	44 0f       	add	r20, r20
- 438:	55 1f       	adc	r21, r21
- 43a:	0a 94       	dec	r0
- 43c:	e2 f7       	brpl	.-8      	; 0x436 <__LOCK_REGION_LENGTH__+0x36>
- 43e:	e4 2e       	mov	r14, r20
- 440:	a0 91 46 01 	lds	r26, 0x0146	; 0x800146 <Lis_port1>
- 444:	b0 91 47 01 	lds	r27, 0x0147	; 0x800147 <Lis_port1+0x1>
- 448:	00 90 3d 01 	lds	r0, 0x013D	; 0x80013d <Lis_Rst>
- 44c:	02 c0       	rjmp	.+4      	; 0x452 <__LOCK_REGION_LENGTH__+0x52>
- 44e:	88 0f       	add	r24, r24
- 450:	99 1f       	adc	r25, r25
- 452:	0a 94       	dec	r0
- 454:	e2 f7       	brpl	.-8      	; 0x44e <__LOCK_REGION_LENGTH__+0x4e>
- 456:	c8 2e       	mov	r12, r24
- 458:	d8 2e       	mov	r13, r24
- 45a:	d0 94       	com	r13
- 45c:	84 01       	movw	r16, r8
- 45e:	0c 5f       	subi	r16, 0xFC	; 252
- 460:	1f 4f       	sbci	r17, 0xFF	; 255
- 462:	34 01       	movw	r6, r8
- 464:	cf ef       	ldi	r28, 0xFF	; 255
- 466:	6c 1a       	sub	r6, r28
- 468:	7c 0a       	sbc	r7, r28
- 46a:	e8 01       	movw	r28, r16
- 46c:	8a 91       	ld	r24, -Y
- 46e:	8e 01       	movw	r16, r28
- 470:	c8 2f       	mov	r28, r24
- 472:	d0 e0       	ldi	r29, 0x00	; 0
- 474:	60 e0       	ldi	r22, 0x00	; 0
- 476:	70 e0       	ldi	r23, 0x00	; 0
- 478:	ce 01       	movw	r24, r28
- 47a:	06 2e       	mov	r0, r22
- 47c:	02 c0       	rjmp	.+4      	; 0x482 <__LOCK_REGION_LENGTH__+0x82>
- 47e:	95 95       	asr	r25
- 480:	87 95       	ror	r24
- 482:	0a 94       	dec	r0
- 484:	e2 f7       	brpl	.-8      	; 0x47e <__LOCK_REGION_LENGTH__+0x7e>
- 486:	80 ff       	sbrs	r24, 0
- 488:	6b c0       	rjmp	.+214    	; 0x560 <__LOCK_REGION_LENGTH__+0x160>
- 48a:	8c 91       	ld	r24, X
- 48c:	8c 29       	or	r24, r12
- 48e:	8c 93       	st	X, r24
- 490:	80 81       	ld	r24, Z
- 492:	8e 29       	or	r24, r14
- 494:	80 83       	st	Z, r24
- 496:	80 81       	ld	r24, Z
- 498:	90 e0       	ldi	r25, 0x00	; 0
- 49a:	84 23       	and	r24, r20
- 49c:	95 23       	and	r25, r21
- 49e:	89 2b       	or	r24, r25
- 4a0:	d1 f3       	breq	.-12     	; 0x496 <__LOCK_REGION_LENGTH__+0x96>
- 4a2:	80 81       	ld	r24, Z
- 4a4:	8e 29       	or	r24, r14
- 4a6:	80 83       	st	Z, r24
- 4a8:	80 81       	ld	r24, Z
- 4aa:	8f 29       	or	r24, r15
- 4ac:	80 83       	st	Z, r24
- 4ae:	80 81       	ld	r24, Z
- 4b0:	90 e0       	ldi	r25, 0x00	; 0
- 4b2:	82 23       	and	r24, r18
- 4b4:	93 23       	and	r25, r19
- 4b6:	89 2b       	or	r24, r25
- 4b8:	d1 f3       	breq	.-12     	; 0x4ae <__LOCK_REGION_LENGTH__+0xae>
- 4ba:	80 81       	ld	r24, Z
- 4bc:	8f 29       	or	r24, r15
- 4be:	80 83       	st	Z, r24
- 4c0:	6f 5f       	subi	r22, 0xFF	; 255
- 4c2:	7f 4f       	sbci	r23, 0xFF	; 255
- 4c4:	68 30       	cpi	r22, 0x08	; 8
- 4c6:	71 05       	cpc	r23, r1
- 4c8:	b9 f6       	brne	.-82     	; 0x478 <__LOCK_REGION_LENGTH__+0x78>
- 4ca:	60 16       	cp	r6, r16
- 4cc:	71 06       	cpc	r7, r17
- 4ce:	69 f6       	brne	.-102    	; 0x46a <__LOCK_REGION_LENGTH__+0x6a>
- 4d0:	e4 01       	movw	r28, r8
- 4d2:	88 81       	ld	r24, Y
- 4d4:	c8 2f       	mov	r28, r24
- 4d6:	d0 e0       	ldi	r29, 0x00	; 0
- 4d8:	60 e0       	ldi	r22, 0x00	; 0
- 4da:	70 e0       	ldi	r23, 0x00	; 0
- 4dc:	ce 01       	movw	r24, r28
- 4de:	06 2e       	mov	r0, r22
- 4e0:	02 c0       	rjmp	.+4      	; 0x4e6 <__LOCK_REGION_LENGTH__+0xe6>
- 4e2:	95 95       	asr	r25
- 4e4:	87 95       	ror	r24
- 4e6:	0a 94       	dec	r0
- 4e8:	e2 f7       	brpl	.-8      	; 0x4e2 <__LOCK_REGION_LENGTH__+0xe2>
- 4ea:	80 ff       	sbrs	r24, 0
- 4ec:	3d c0       	rjmp	.+122    	; 0x568 <__LOCK_REGION_LENGTH__+0x168>
- 4ee:	8c 91       	ld	r24, X
- 4f0:	8c 29       	or	r24, r12
- 4f2:	8c 93       	st	X, r24
- 4f4:	80 81       	ld	r24, Z
- 4f6:	8e 29       	or	r24, r14
- 4f8:	80 83       	st	Z, r24
- 4fa:	80 81       	ld	r24, Z
- 4fc:	90 e0       	ldi	r25, 0x00	; 0
- 4fe:	84 23       	and	r24, r20
- 500:	95 23       	and	r25, r21
- 502:	89 2b       	or	r24, r25
- 504:	d1 f3       	breq	.-12     	; 0x4fa <__LOCK_REGION_LENGTH__+0xfa>
- 506:	80 81       	ld	r24, Z
- 508:	8e 29       	or	r24, r14
- 50a:	80 83       	st	Z, r24
- 50c:	80 81       	ld	r24, Z
- 50e:	8f 29       	or	r24, r15
- 510:	80 83       	st	Z, r24
- 512:	80 81       	ld	r24, Z
- 514:	90 e0       	ldi	r25, 0x00	; 0
- 516:	82 23       	and	r24, r18
- 518:	93 23       	and	r25, r19
- 51a:	89 2b       	or	r24, r25
- 51c:	d1 f3       	breq	.-12     	; 0x512 <__LOCK_REGION_LENGTH__+0x112>
- 51e:	80 81       	ld	r24, Z
- 520:	8f 29       	or	r24, r15
- 522:	80 83       	st	Z, r24
- 524:	6f 5f       	subi	r22, 0xFF	; 255
- 526:	7f 4f       	sbci	r23, 0xFF	; 255
- 528:	64 30       	cpi	r22, 0x04	; 4
- 52a:	71 05       	cpc	r23, r1
- 52c:	b9 f6       	brne	.-82     	; 0x4dc <__LOCK_REGION_LENGTH__+0xdc>
- 52e:	8c 91       	ld	r24, X
- 530:	d8 22       	and	r13, r24
- 532:	dc 92       	st	X, r13
- 534:	f5 01       	movw	r30, r10
- 536:	80 81       	ld	r24, Z
- 538:	40 94       	com	r4
- 53a:	48 22       	and	r4, r24
- 53c:	40 82       	st	Z, r4
- 53e:	df 91       	pop	r29
- 540:	cf 91       	pop	r28
- 542:	1f 91       	pop	r17
- 544:	0f 91       	pop	r16
- 546:	ff 90       	pop	r15
- 548:	ef 90       	pop	r14
- 54a:	df 90       	pop	r13
- 54c:	cf 90       	pop	r12
- 54e:	bf 90       	pop	r11
- 550:	af 90       	pop	r10
- 552:	9f 90       	pop	r9
- 554:	8f 90       	pop	r8
- 556:	7f 90       	pop	r7
- 558:	6f 90       	pop	r6
- 55a:	5f 90       	pop	r5
- 55c:	4f 90       	pop	r4
- 55e:	08 95       	ret
- 560:	8c 91       	ld	r24, X
- 562:	8d 21       	and	r24, r13
- 564:	8c 93       	st	X, r24
- 566:	94 cf       	rjmp	.-216    	; 0x490 <__LOCK_REGION_LENGTH__+0x90>
- 568:	8c 91       	ld	r24, X
- 56a:	8d 21       	and	r24, r13
- 56c:	8c 93       	st	X, r24
- 56e:	c2 cf       	rjmp	.-124    	; 0x4f4 <__LOCK_REGION_LENGTH__+0xf4>
+000003f2 <LisWriteCfg>:
+ 3f2:	4f 92       	push	r4
+ 3f4:	5f 92       	push	r5
+ 3f6:	6f 92       	push	r6
+ 3f8:	7f 92       	push	r7
+ 3fa:	8f 92       	push	r8
+ 3fc:	9f 92       	push	r9
+ 3fe:	af 92       	push	r10
+ 400:	bf 92       	push	r11
+ 402:	cf 92       	push	r12
+ 404:	df 92       	push	r13
+ 406:	ef 92       	push	r14
+ 408:	ff 92       	push	r15
+ 40a:	0f 93       	push	r16
+ 40c:	1f 93       	push	r17
+ 40e:	cf 93       	push	r28
+ 410:	df 93       	push	r29
+ 412:	4c 01       	movw	r8, r24
+ 414:	e0 91 38 01 	lds	r30, 0x0138	; 0x800138 <Pwm_tifr0>
+ 418:	f0 91 39 01 	lds	r31, 0x0139	; 0x800139 <Pwm_tifr0+0x1>
+ 41c:	80 81       	ld	r24, Z
+ 41e:	21 e0       	ldi	r18, 0x01	; 1
+ 420:	30 e0       	ldi	r19, 0x00	; 0
+ 422:	00 90 2e 01 	lds	r0, 0x012E	; 0x80012e <Pwm_Ocf0b>
+ 426:	02 c0       	rjmp	.+4      	; 0x42c <__LOCK_REGION_LENGTH__+0x2c>
+ 428:	22 0f       	add	r18, r18
+ 42a:	33 1f       	adc	r19, r19
+ 42c:	0a 94       	dec	r0
+ 42e:	e2 f7       	brpl	.-8      	; 0x428 <__LOCK_REGION_LENGTH__+0x28>
+ 430:	f2 2e       	mov	r15, r18
+ 432:	82 2b       	or	r24, r18
+ 434:	80 83       	st	Z, r24
+ 436:	80 81       	ld	r24, Z
+ 438:	90 e0       	ldi	r25, 0x00	; 0
+ 43a:	82 23       	and	r24, r18
+ 43c:	93 23       	and	r25, r19
+ 43e:	89 2b       	or	r24, r25
+ 440:	d1 f3       	breq	.-12     	; 0x436 <__LOCK_REGION_LENGTH__+0x36>
+ 442:	80 81       	ld	r24, Z
+ 444:	82 2b       	or	r24, r18
+ 446:	80 83       	st	Z, r24
+ 448:	a0 90 46 01 	lds	r10, 0x0146	; 0x800146 <Lis_port2>
+ 44c:	b0 90 47 01 	lds	r11, 0x0147	; 0x800147 <Lis_port2+0x1>
+ 450:	d5 01       	movw	r26, r10
+ 452:	4c 91       	ld	r20, X
+ 454:	81 e0       	ldi	r24, 0x01	; 1
+ 456:	90 e0       	ldi	r25, 0x00	; 0
+ 458:	2c 01       	movw	r4, r24
+ 45a:	00 90 41 01 	lds	r0, 0x0141	; 0x800141 <Lis_PixSelect>
+ 45e:	02 c0       	rjmp	.+4      	; 0x464 <__LOCK_REGION_LENGTH__+0x64>
+ 460:	44 0c       	add	r4, r4
+ 462:	55 1c       	adc	r5, r5
+ 464:	0a 94       	dec	r0
+ 466:	e2 f7       	brpl	.-8      	; 0x460 <__LOCK_REGION_LENGTH__+0x60>
+ 468:	44 29       	or	r20, r4
+ 46a:	4c 93       	st	X, r20
+ 46c:	ac 01       	movw	r20, r24
+ 46e:	00 90 2f 01 	lds	r0, 0x012F	; 0x80012f <Pwm_Ocf0a>
+ 472:	02 c0       	rjmp	.+4      	; 0x478 <__LOCK_REGION_LENGTH__+0x78>
+ 474:	44 0f       	add	r20, r20
+ 476:	55 1f       	adc	r21, r21
+ 478:	0a 94       	dec	r0
+ 47a:	e2 f7       	brpl	.-8      	; 0x474 <__LOCK_REGION_LENGTH__+0x74>
+ 47c:	e4 2e       	mov	r14, r20
+ 47e:	a0 91 48 01 	lds	r26, 0x0148	; 0x800148 <Lis_port1>
+ 482:	b0 91 49 01 	lds	r27, 0x0149	; 0x800149 <Lis_port1+0x1>
+ 486:	00 90 3f 01 	lds	r0, 0x013F	; 0x80013f <Lis_Rst>
+ 48a:	02 c0       	rjmp	.+4      	; 0x490 <__LOCK_REGION_LENGTH__+0x90>
+ 48c:	88 0f       	add	r24, r24
+ 48e:	99 1f       	adc	r25, r25
+ 490:	0a 94       	dec	r0
+ 492:	e2 f7       	brpl	.-8      	; 0x48c <__LOCK_REGION_LENGTH__+0x8c>
+ 494:	c8 2e       	mov	r12, r24
+ 496:	d8 2e       	mov	r13, r24
+ 498:	d0 94       	com	r13
+ 49a:	84 01       	movw	r16, r8
+ 49c:	0c 5f       	subi	r16, 0xFC	; 252
+ 49e:	1f 4f       	sbci	r17, 0xFF	; 255
+ 4a0:	34 01       	movw	r6, r8
+ 4a2:	cf ef       	ldi	r28, 0xFF	; 255
+ 4a4:	6c 1a       	sub	r6, r28
+ 4a6:	7c 0a       	sbc	r7, r28
+ 4a8:	e8 01       	movw	r28, r16
+ 4aa:	8a 91       	ld	r24, -Y
+ 4ac:	8e 01       	movw	r16, r28
+ 4ae:	c8 2f       	mov	r28, r24
+ 4b0:	d0 e0       	ldi	r29, 0x00	; 0
+ 4b2:	60 e0       	ldi	r22, 0x00	; 0
+ 4b4:	70 e0       	ldi	r23, 0x00	; 0
+ 4b6:	ce 01       	movw	r24, r28
+ 4b8:	06 2e       	mov	r0, r22
+ 4ba:	02 c0       	rjmp	.+4      	; 0x4c0 <__LOCK_REGION_LENGTH__+0xc0>
+ 4bc:	95 95       	asr	r25
+ 4be:	87 95       	ror	r24
+ 4c0:	0a 94       	dec	r0
+ 4c2:	e2 f7       	brpl	.-8      	; 0x4bc <__LOCK_REGION_LENGTH__+0xbc>
+ 4c4:	80 ff       	sbrs	r24, 0
+ 4c6:	6b c0       	rjmp	.+214    	; 0x59e <__LOCK_REGION_LENGTH__+0x19e>
+ 4c8:	8c 91       	ld	r24, X
+ 4ca:	8c 29       	or	r24, r12
+ 4cc:	8c 93       	st	X, r24
+ 4ce:	80 81       	ld	r24, Z
+ 4d0:	8e 29       	or	r24, r14
+ 4d2:	80 83       	st	Z, r24
+ 4d4:	80 81       	ld	r24, Z
+ 4d6:	90 e0       	ldi	r25, 0x00	; 0
+ 4d8:	84 23       	and	r24, r20
+ 4da:	95 23       	and	r25, r21
+ 4dc:	89 2b       	or	r24, r25
+ 4de:	d1 f3       	breq	.-12     	; 0x4d4 <__LOCK_REGION_LENGTH__+0xd4>
+ 4e0:	80 81       	ld	r24, Z
+ 4e2:	8e 29       	or	r24, r14
+ 4e4:	80 83       	st	Z, r24
+ 4e6:	80 81       	ld	r24, Z
+ 4e8:	8f 29       	or	r24, r15
+ 4ea:	80 83       	st	Z, r24
+ 4ec:	80 81       	ld	r24, Z
+ 4ee:	90 e0       	ldi	r25, 0x00	; 0
+ 4f0:	82 23       	and	r24, r18
+ 4f2:	93 23       	and	r25, r19
+ 4f4:	89 2b       	or	r24, r25
+ 4f6:	d1 f3       	breq	.-12     	; 0x4ec <__LOCK_REGION_LENGTH__+0xec>
+ 4f8:	80 81       	ld	r24, Z
+ 4fa:	8f 29       	or	r24, r15
+ 4fc:	80 83       	st	Z, r24
+ 4fe:	6f 5f       	subi	r22, 0xFF	; 255
+ 500:	7f 4f       	sbci	r23, 0xFF	; 255
+ 502:	68 30       	cpi	r22, 0x08	; 8
+ 504:	71 05       	cpc	r23, r1
+ 506:	b9 f6       	brne	.-82     	; 0x4b6 <__LOCK_REGION_LENGTH__+0xb6>
+ 508:	60 16       	cp	r6, r16
+ 50a:	71 06       	cpc	r7, r17
+ 50c:	69 f6       	brne	.-102    	; 0x4a8 <__LOCK_REGION_LENGTH__+0xa8>
+ 50e:	e4 01       	movw	r28, r8
+ 510:	88 81       	ld	r24, Y
+ 512:	c8 2f       	mov	r28, r24
+ 514:	d0 e0       	ldi	r29, 0x00	; 0
+ 516:	60 e0       	ldi	r22, 0x00	; 0
+ 518:	70 e0       	ldi	r23, 0x00	; 0
+ 51a:	ce 01       	movw	r24, r28
+ 51c:	06 2e       	mov	r0, r22
+ 51e:	02 c0       	rjmp	.+4      	; 0x524 <__LOCK_REGION_LENGTH__+0x124>
+ 520:	95 95       	asr	r25
+ 522:	87 95       	ror	r24
+ 524:	0a 94       	dec	r0
+ 526:	e2 f7       	brpl	.-8      	; 0x520 <__LOCK_REGION_LENGTH__+0x120>
+ 528:	80 ff       	sbrs	r24, 0
+ 52a:	3d c0       	rjmp	.+122    	; 0x5a6 <__LOCK_REGION_LENGTH__+0x1a6>
+ 52c:	8c 91       	ld	r24, X
+ 52e:	8c 29       	or	r24, r12
+ 530:	8c 93       	st	X, r24
+ 532:	80 81       	ld	r24, Z
+ 534:	8e 29       	or	r24, r14
+ 536:	80 83       	st	Z, r24
+ 538:	80 81       	ld	r24, Z
+ 53a:	90 e0       	ldi	r25, 0x00	; 0
+ 53c:	84 23       	and	r24, r20
+ 53e:	95 23       	and	r25, r21
+ 540:	89 2b       	or	r24, r25
+ 542:	d1 f3       	breq	.-12     	; 0x538 <__LOCK_REGION_LENGTH__+0x138>
+ 544:	80 81       	ld	r24, Z
+ 546:	8e 29       	or	r24, r14
+ 548:	80 83       	st	Z, r24
+ 54a:	80 81       	ld	r24, Z
+ 54c:	8f 29       	or	r24, r15
+ 54e:	80 83       	st	Z, r24
+ 550:	80 81       	ld	r24, Z
+ 552:	90 e0       	ldi	r25, 0x00	; 0
+ 554:	82 23       	and	r24, r18
+ 556:	93 23       	and	r25, r19
+ 558:	89 2b       	or	r24, r25
+ 55a:	d1 f3       	breq	.-12     	; 0x550 <__LOCK_REGION_LENGTH__+0x150>
+ 55c:	80 81       	ld	r24, Z
+ 55e:	8f 29       	or	r24, r15
+ 560:	80 83       	st	Z, r24
+ 562:	6f 5f       	subi	r22, 0xFF	; 255
+ 564:	7f 4f       	sbci	r23, 0xFF	; 255
+ 566:	64 30       	cpi	r22, 0x04	; 4
+ 568:	71 05       	cpc	r23, r1
+ 56a:	b9 f6       	brne	.-82     	; 0x51a <__LOCK_REGION_LENGTH__+0x11a>
+ 56c:	8c 91       	ld	r24, X
+ 56e:	d8 22       	and	r13, r24
+ 570:	dc 92       	st	X, r13
+ 572:	f5 01       	movw	r30, r10
+ 574:	80 81       	ld	r24, Z
+ 576:	40 94       	com	r4
+ 578:	48 22       	and	r4, r24
+ 57a:	40 82       	st	Z, r4
+ 57c:	df 91       	pop	r29
+ 57e:	cf 91       	pop	r28
+ 580:	1f 91       	pop	r17
+ 582:	0f 91       	pop	r16
+ 584:	ff 90       	pop	r15
+ 586:	ef 90       	pop	r14
+ 588:	df 90       	pop	r13
+ 58a:	cf 90       	pop	r12
+ 58c:	bf 90       	pop	r11
+ 58e:	af 90       	pop	r10
+ 590:	9f 90       	pop	r9
+ 592:	8f 90       	pop	r8
+ 594:	7f 90       	pop	r7
+ 596:	6f 90       	pop	r6
+ 598:	5f 90       	pop	r5
+ 59a:	4f 90       	pop	r4
+ 59c:	08 95       	ret
+ 59e:	8c 91       	ld	r24, X
+ 5a0:	8d 21       	and	r24, r13
+ 5a2:	8c 93       	st	X, r24
+ 5a4:	94 cf       	rjmp	.-216    	; 0x4ce <__LOCK_REGION_LENGTH__+0xce>
+ 5a6:	8c 91       	ld	r24, X
+ 5a8:	8d 21       	and	r24, r13
+ 5aa:	8c 93       	st	X, r24
+ 5ac:	c2 cf       	rjmp	.-124    	; 0x532 <__LOCK_REGION_LENGTH__+0x132>
 
-00000570 <LisInit>:
+000005ae <LisInit>:
     ClearBit(Lis_port2, Lis_PixSelect);
 }
 
 static void SetPixSelectAsOutput(void)
 {
     SetBit(Lis_ddr2, Lis_PixSelect);
- 570:	e0 91 48 01 	lds	r30, 0x0148	; 0x800148 <Lis_ddr2>
- 574:	f0 91 49 01 	lds	r31, 0x0149	; 0x800149 <Lis_ddr2+0x1>
+ 5ae:	e0 91 4a 01 	lds	r30, 0x014A	; 0x80014a <Lis_ddr2>
+ 5b2:	f0 91 4b 01 	lds	r31, 0x014B	; 0x80014b <Lis_ddr2+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
 inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
- 578:	40 81       	ld	r20, Z
- 57a:	81 e0       	ldi	r24, 0x01	; 1
- 57c:	90 e0       	ldi	r25, 0x00	; 0
- 57e:	9c 01       	movw	r18, r24
- 580:	00 90 3f 01 	lds	r0, 0x013F	; 0x80013f <Lis_PixSelect>
- 584:	02 c0       	rjmp	.+4      	; 0x58a <LisInit+0x1a>
- 586:	22 0f       	add	r18, r18
- 588:	33 1f       	adc	r19, r19
- 58a:	0a 94       	dec	r0
- 58c:	e2 f7       	brpl	.-8      	; 0x586 <LisInit+0x16>
- 58e:	34 2f       	mov	r19, r20
- 590:	32 2b       	or	r19, r18
- 592:	30 83       	st	Z, r19
+ 5b6:	40 81       	ld	r20, Z
+ 5b8:	81 e0       	ldi	r24, 0x01	; 1
+ 5ba:	90 e0       	ldi	r25, 0x00	; 0
+ 5bc:	9c 01       	movw	r18, r24
+ 5be:	00 90 41 01 	lds	r0, 0x0141	; 0x800141 <Lis_PixSelect>
+ 5c2:	02 c0       	rjmp	.+4      	; 0x5c8 <LisInit+0x1a>
+ 5c4:	22 0f       	add	r18, r18
+ 5c6:	33 1f       	adc	r19, r19
+ 5c8:	0a 94       	dec	r0
+ 5ca:	e2 f7       	brpl	.-8      	; 0x5c4 <LisInit+0x16>
+ 5cc:	34 2f       	mov	r19, r20
+ 5ce:	32 2b       	or	r19, r18
+ 5d0:	30 83       	st	Z, r19
 {
     ClearBit(Lis_ddr1, Lis_Sync);
 }
 static void PixSelectIdleLow(void)
 {
     ClearBit(Lis_port2, Lis_PixSelect);
- 594:	e0 91 44 01 	lds	r30, 0x0144	; 0x800144 <Lis_port2>
- 598:	f0 91 45 01 	lds	r31, 0x0145	; 0x800145 <Lis_port2+0x1>
+ 5d2:	e0 91 46 01 	lds	r30, 0x0146	; 0x800146 <Lis_port2>
+ 5d6:	f0 91 47 01 	lds	r31, 0x0147	; 0x800147 <Lis_port2+0x1>
 }
 inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port &= ~(1<<bit);
- 59c:	30 81       	ld	r19, Z
- 59e:	20 95       	com	r18
- 5a0:	23 23       	and	r18, r19
- 5a2:	20 83       	st	Z, r18
+ 5da:	30 81       	ld	r19, Z
+ 5dc:	20 95       	com	r18
+ 5de:	23 23       	and	r18, r19
+ 5e0:	20 83       	st	Z, r18
 {
     SetBit(Lis_ddr2, Lis_PixSelect);
 }
 static void SetClkAsOutput(void)
 {
     SetBit(Lis_ddr1, Lis_Clk);
- 5a4:	e0 91 4a 01 	lds	r30, 0x014A	; 0x80014a <Lis_ddr1>
- 5a8:	f0 91 4b 01 	lds	r31, 0x014B	; 0x80014b <Lis_ddr1+0x1>
+ 5e2:	e0 91 4c 01 	lds	r30, 0x014C	; 0x80014c <Lis_ddr1>
+ 5e6:	f0 91 4d 01 	lds	r31, 0x014D	; 0x80014d <Lis_ddr1+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
 inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
- 5ac:	40 81       	ld	r20, Z
- 5ae:	9c 01       	movw	r18, r24
- 5b0:	00 90 3e 01 	lds	r0, 0x013E	; 0x80013e <Lis_Clk>
- 5b4:	02 c0       	rjmp	.+4      	; 0x5ba <LisInit+0x4a>
- 5b6:	22 0f       	add	r18, r18
- 5b8:	33 1f       	adc	r19, r19
- 5ba:	0a 94       	dec	r0
- 5bc:	e2 f7       	brpl	.-8      	; 0x5b6 <LisInit+0x46>
- 5be:	24 2b       	or	r18, r20
- 5c0:	20 83       	st	Z, r18
- 5c2:	40 81       	ld	r20, Z
- 5c4:	9c 01       	movw	r18, r24
- 5c6:	00 90 3d 01 	lds	r0, 0x013D	; 0x80013d <Lis_Rst>
- 5ca:	02 c0       	rjmp	.+4      	; 0x5d0 <LisInit+0x60>
- 5cc:	22 0f       	add	r18, r18
- 5ce:	33 1f       	adc	r19, r19
- 5d0:	0a 94       	dec	r0
- 5d2:	e2 f7       	brpl	.-8      	; 0x5cc <LisInit+0x5c>
- 5d4:	34 2f       	mov	r19, r20
- 5d6:	32 2b       	or	r19, r18
- 5d8:	30 83       	st	Z, r19
+ 5ea:	40 81       	ld	r20, Z
+ 5ec:	9c 01       	movw	r18, r24
+ 5ee:	00 90 40 01 	lds	r0, 0x0140	; 0x800140 <Lis_Clk>
+ 5f2:	02 c0       	rjmp	.+4      	; 0x5f8 <LisInit+0x4a>
+ 5f4:	22 0f       	add	r18, r18
+ 5f6:	33 1f       	adc	r19, r19
+ 5f8:	0a 94       	dec	r0
+ 5fa:	e2 f7       	brpl	.-8      	; 0x5f4 <LisInit+0x46>
+ 5fc:	24 2b       	or	r18, r20
+ 5fe:	20 83       	st	Z, r18
+ 600:	40 81       	ld	r20, Z
+ 602:	9c 01       	movw	r18, r24
+ 604:	00 90 3f 01 	lds	r0, 0x013F	; 0x80013f <Lis_Rst>
+ 608:	02 c0       	rjmp	.+4      	; 0x60e <LisInit+0x60>
+ 60a:	22 0f       	add	r18, r18
+ 60c:	33 1f       	adc	r19, r19
+ 60e:	0a 94       	dec	r0
+ 610:	e2 f7       	brpl	.-8      	; 0x60a <LisInit+0x5c>
+ 612:	34 2f       	mov	r19, r20
+ 614:	32 2b       	or	r19, r18
+ 616:	30 83       	st	Z, r19
 {
     ClearBit(Lis_port2, Lis_PixSelect);
 }
 static void RstIdleLowAfterPowerUp(void)
 {
     ClearBit(Lis_port1, Lis_Rst);
- 5da:	a0 91 46 01 	lds	r26, 0x0146	; 0x800146 <Lis_port1>
- 5de:	b0 91 47 01 	lds	r27, 0x0147	; 0x800147 <Lis_port1+0x1>
+ 618:	a0 91 48 01 	lds	r26, 0x0148	; 0x800148 <Lis_port1>
+ 61c:	b0 91 49 01 	lds	r27, 0x0149	; 0x800149 <Lis_port1+0x1>
 }
 inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port &= ~(1<<bit);
- 5e2:	3c 91       	ld	r19, X
- 5e4:	20 95       	com	r18
- 5e6:	23 23       	and	r18, r19
- 5e8:	2c 93       	st	X, r18
- 5ea:	20 81       	ld	r18, Z
- 5ec:	00 90 3c 01 	lds	r0, 0x013C	; 0x80013c <Lis_Sync>
- 5f0:	02 c0       	rjmp	.+4      	; 0x5f6 <LisInit+0x86>
- 5f2:	88 0f       	add	r24, r24
- 5f4:	99 1f       	adc	r25, r25
- 5f6:	0a 94       	dec	r0
- 5f8:	e2 f7       	brpl	.-8      	; 0x5f2 <LisInit+0x82>
- 5fa:	80 95       	com	r24
- 5fc:	82 23       	and	r24, r18
- 5fe:	80 83       	st	Z, r24
+ 620:	3c 91       	ld	r19, X
+ 622:	20 95       	com	r18
+ 624:	23 23       	and	r18, r19
+ 626:	2c 93       	st	X, r18
+ 628:	20 81       	ld	r18, Z
+ 62a:	00 90 3e 01 	lds	r0, 0x013E	; 0x80013e <Lis_Sync>
+ 62e:	02 c0       	rjmp	.+4      	; 0x634 <LisInit+0x86>
+ 630:	88 0f       	add	r24, r24
+ 632:	99 1f       	adc	r25, r25
+ 634:	0a 94       	dec	r0
+ 636:	e2 f7       	brpl	.-8      	; 0x630 <LisInit+0x82>
+ 638:	80 95       	com	r24
+ 63a:	82 23       	and	r24, r18
+ 63c:	80 83       	st	Z, r24
     PixSelectIdleLow();
     SetClkAsOutput();
     SetRstAsOutput();
     RstIdleLowAfterPowerUp();
     SetSyncAsInput();
     LisRunClkAt50kHz();
- 600:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <LisRunClkAt50kHz>
- 604:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <LisRunClkAt50kHz+0x1>
- 608:	09 95       	icall
+ 63e:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <LisRunClkAt50kHz>
+ 642:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <LisRunClkAt50kHz+0x1>
+ 646:	09 95       	icall
     LisClkOn();
- 60a:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <LisClkOn>
- 60e:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <LisClkOn+0x1>
- 612:	09 94       	ijmp
+ 648:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <LisClkOn>
+ 64c:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <LisClkOn+0x1>
+ 650:	09 94       	ijmp
 
-00000614 <ResetCounterAtTop>:
+00000652 <ResetCounterAtTop>:
 #include "Pwm.h"
 #include "ReadWriteBits.h"
 static void ResetCounterAtTop(void)
 {
     SetBit(Pwm_tccr0a, Pwm_Wgm00);
- 614:	e0 91 3a 01 	lds	r30, 0x013A	; 0x80013a <Pwm_tccr0a>
- 618:	f0 91 3b 01 	lds	r31, 0x013B	; 0x80013b <Pwm_tccr0a+0x1>
+ 652:	e0 91 3c 01 	lds	r30, 0x013C	; 0x80013c <Pwm_tccr0a>
+ 656:	f0 91 3d 01 	lds	r31, 0x013D	; 0x80013d <Pwm_tccr0a+0x1>
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
 inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
- 61c:	40 81       	ld	r20, Z
- 61e:	81 e0       	ldi	r24, 0x01	; 1
- 620:	90 e0       	ldi	r25, 0x00	; 0
- 622:	9c 01       	movw	r18, r24
- 624:	00 90 35 01 	lds	r0, 0x0135	; 0x800135 <Pwm_Wgm00>
- 628:	02 c0       	rjmp	.+4      	; 0x62e <ResetCounterAtTop+0x1a>
- 62a:	22 0f       	add	r18, r18
- 62c:	33 1f       	adc	r19, r19
- 62e:	0a 94       	dec	r0
- 630:	e2 f7       	brpl	.-8      	; 0x62a <ResetCounterAtTop+0x16>
- 632:	24 2b       	or	r18, r20
- 634:	20 83       	st	Z, r18
- 636:	20 81       	ld	r18, Z
- 638:	00 90 34 01 	lds	r0, 0x0134	; 0x800134 <Pwm_Wgm01>
- 63c:	02 c0       	rjmp	.+4      	; 0x642 <ResetCounterAtTop+0x2e>
- 63e:	88 0f       	add	r24, r24
- 640:	99 1f       	adc	r25, r25
- 642:	0a 94       	dec	r0
- 644:	e2 f7       	brpl	.-8      	; 0x63e <ResetCounterAtTop+0x2a>
- 646:	82 2b       	or	r24, r18
- 648:	80 83       	st	Z, r24
- 64a:	08 95       	ret
+ 65a:	40 81       	ld	r20, Z
+ 65c:	81 e0       	ldi	r24, 0x01	; 1
+ 65e:	90 e0       	ldi	r25, 0x00	; 0
+ 660:	9c 01       	movw	r18, r24
+ 662:	00 90 37 01 	lds	r0, 0x0137	; 0x800137 <Pwm_Wgm00>
+ 666:	02 c0       	rjmp	.+4      	; 0x66c <ResetCounterAtTop+0x1a>
+ 668:	22 0f       	add	r18, r18
+ 66a:	33 1f       	adc	r19, r19
+ 66c:	0a 94       	dec	r0
+ 66e:	e2 f7       	brpl	.-8      	; 0x668 <ResetCounterAtTop+0x16>
+ 670:	24 2b       	or	r18, r20
+ 672:	20 83       	st	Z, r18
+ 674:	20 81       	ld	r18, Z
+ 676:	00 90 36 01 	lds	r0, 0x0136	; 0x800136 <Pwm_Wgm01>
+ 67a:	02 c0       	rjmp	.+4      	; 0x680 <ResetCounterAtTop+0x2e>
+ 67c:	88 0f       	add	r24, r24
+ 67e:	99 1f       	adc	r25, r25
+ 680:	0a 94       	dec	r0
+ 682:	e2 f7       	brpl	.-8      	; 0x67c <ResetCounterAtTop+0x2a>
+ 684:	82 2b       	or	r24, r18
+ 686:	80 83       	st	Z, r24
+ 688:	08 95       	ret
 
-0000064c <TopIsOcr0a>:
+0000068a <TopIsOcr0a>:
 }
 void (*PwmResetCounterAtTop)(void) = ResetCounterAtTop;
 
 static void TopIsOcr0a(void)
 {
     SetBit(Pwm_tccr0b, Pwm_Wgm02);
- 64c:	e0 91 38 01 	lds	r30, 0x0138	; 0x800138 <Pwm_tccr0b>
- 650:	f0 91 39 01 	lds	r31, 0x0139	; 0x800139 <Pwm_tccr0b+0x1>
- 654:	20 81       	ld	r18, Z
- 656:	81 e0       	ldi	r24, 0x01	; 1
- 658:	90 e0       	ldi	r25, 0x00	; 0
- 65a:	00 90 33 01 	lds	r0, 0x0133	; 0x800133 <Pwm_Wgm02>
- 65e:	02 c0       	rjmp	.+4      	; 0x664 <TopIsOcr0a+0x18>
- 660:	88 0f       	add	r24, r24
- 662:	99 1f       	adc	r25, r25
- 664:	0a 94       	dec	r0
- 666:	e2 f7       	brpl	.-8      	; 0x660 <TopIsOcr0a+0x14>
- 668:	82 2b       	or	r24, r18
- 66a:	80 83       	st	Z, r24
- 66c:	08 95       	ret
+ 68a:	e0 91 3a 01 	lds	r30, 0x013A	; 0x80013a <Pwm_tccr0b>
+ 68e:	f0 91 3b 01 	lds	r31, 0x013B	; 0x80013b <Pwm_tccr0b+0x1>
+ 692:	20 81       	ld	r18, Z
+ 694:	81 e0       	ldi	r24, 0x01	; 1
+ 696:	90 e0       	ldi	r25, 0x00	; 0
+ 698:	00 90 35 01 	lds	r0, 0x0135	; 0x800135 <Pwm_Wgm02>
+ 69c:	02 c0       	rjmp	.+4      	; 0x6a2 <TopIsOcr0a+0x18>
+ 69e:	88 0f       	add	r24, r24
+ 6a0:	99 1f       	adc	r25, r25
+ 6a2:	0a 94       	dec	r0
+ 6a4:	e2 f7       	brpl	.-8      	; 0x69e <TopIsOcr0a+0x14>
+ 6a6:	82 2b       	or	r24, r18
+ 6a8:	80 83       	st	Z, r24
+ 6aa:	08 95       	ret
 
-0000066e <PwmClkIsCpuClk_Implementation>:
+000006ac <PwmClkIsCpuClk_Implementation>:
 }
 void (*PwmTopIsOcr0a)(void) = TopIsOcr0a;
 
 static void PwmClkIsCpuClk_Implementation(void)
 {
     SetBit  (Pwm_tccr0b, Pwm_Cs00);
- 66e:	e0 91 38 01 	lds	r30, 0x0138	; 0x800138 <Pwm_tccr0b>
- 672:	f0 91 39 01 	lds	r31, 0x0139	; 0x800139 <Pwm_tccr0b+0x1>
- 676:	40 81       	ld	r20, Z
- 678:	81 e0       	ldi	r24, 0x01	; 1
- 67a:	90 e0       	ldi	r25, 0x00	; 0
- 67c:	9c 01       	movw	r18, r24
- 67e:	00 90 32 01 	lds	r0, 0x0132	; 0x800132 <Pwm_Cs00>
- 682:	02 c0       	rjmp	.+4      	; 0x688 <PwmClkIsCpuClk_Implementation+0x1a>
- 684:	22 0f       	add	r18, r18
- 686:	33 1f       	adc	r19, r19
- 688:	0a 94       	dec	r0
- 68a:	e2 f7       	brpl	.-8      	; 0x684 <PwmClkIsCpuClk_Implementation+0x16>
- 68c:	24 2b       	or	r18, r20
- 68e:	20 83       	st	Z, r18
+ 6ac:	e0 91 3a 01 	lds	r30, 0x013A	; 0x80013a <Pwm_tccr0b>
+ 6b0:	f0 91 3b 01 	lds	r31, 0x013B	; 0x80013b <Pwm_tccr0b+0x1>
+ 6b4:	40 81       	ld	r20, Z
+ 6b6:	81 e0       	ldi	r24, 0x01	; 1
+ 6b8:	90 e0       	ldi	r25, 0x00	; 0
+ 6ba:	9c 01       	movw	r18, r24
+ 6bc:	00 90 34 01 	lds	r0, 0x0134	; 0x800134 <Pwm_Cs00>
+ 6c0:	02 c0       	rjmp	.+4      	; 0x6c6 <PwmClkIsCpuClk_Implementation+0x1a>
+ 6c2:	22 0f       	add	r18, r18
+ 6c4:	33 1f       	adc	r19, r19
+ 6c6:	0a 94       	dec	r0
+ 6c8:	e2 f7       	brpl	.-8      	; 0x6c2 <PwmClkIsCpuClk_Implementation+0x16>
+ 6ca:	24 2b       	or	r18, r20
+ 6cc:	20 83       	st	Z, r18
 }
 inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port &= ~(1<<bit);
- 690:	30 81       	ld	r19, Z
- 692:	ac 01       	movw	r20, r24
- 694:	00 90 31 01 	lds	r0, 0x0131	; 0x800131 <Pwm_Cs01>
- 698:	02 c0       	rjmp	.+4      	; 0x69e <PwmClkIsCpuClk_Implementation+0x30>
- 69a:	44 0f       	add	r20, r20
- 69c:	55 1f       	adc	r21, r21
- 69e:	0a 94       	dec	r0
- 6a0:	e2 f7       	brpl	.-8      	; 0x69a <PwmClkIsCpuClk_Implementation+0x2c>
- 6a2:	24 2f       	mov	r18, r20
- 6a4:	20 95       	com	r18
- 6a6:	23 23       	and	r18, r19
- 6a8:	20 83       	st	Z, r18
- 6aa:	20 81       	ld	r18, Z
- 6ac:	00 90 30 01 	lds	r0, 0x0130	; 0x800130 <Pwm_Cs02>
- 6b0:	02 c0       	rjmp	.+4      	; 0x6b6 <PwmClkIsCpuClk_Implementation+0x48>
- 6b2:	88 0f       	add	r24, r24
- 6b4:	99 1f       	adc	r25, r25
- 6b6:	0a 94       	dec	r0
- 6b8:	e2 f7       	brpl	.-8      	; 0x6b2 <PwmClkIsCpuClk_Implementation+0x44>
- 6ba:	80 95       	com	r24
- 6bc:	82 23       	and	r24, r18
- 6be:	80 83       	st	Z, r24
- 6c0:	08 95       	ret
+ 6ce:	30 81       	ld	r19, Z
+ 6d0:	ac 01       	movw	r20, r24
+ 6d2:	00 90 33 01 	lds	r0, 0x0133	; 0x800133 <Pwm_Cs01>
+ 6d6:	02 c0       	rjmp	.+4      	; 0x6dc <PwmClkIsCpuClk_Implementation+0x30>
+ 6d8:	44 0f       	add	r20, r20
+ 6da:	55 1f       	adc	r21, r21
+ 6dc:	0a 94       	dec	r0
+ 6de:	e2 f7       	brpl	.-8      	; 0x6d8 <PwmClkIsCpuClk_Implementation+0x2c>
+ 6e0:	24 2f       	mov	r18, r20
+ 6e2:	20 95       	com	r18
+ 6e4:	23 23       	and	r18, r19
+ 6e6:	20 83       	st	Z, r18
+ 6e8:	20 81       	ld	r18, Z
+ 6ea:	00 90 32 01 	lds	r0, 0x0132	; 0x800132 <Pwm_Cs02>
+ 6ee:	02 c0       	rjmp	.+4      	; 0x6f4 <PwmClkIsCpuClk_Implementation+0x48>
+ 6f0:	88 0f       	add	r24, r24
+ 6f2:	99 1f       	adc	r25, r25
+ 6f4:	0a 94       	dec	r0
+ 6f6:	e2 f7       	brpl	.-8      	; 0x6f0 <PwmClkIsCpuClk_Implementation+0x44>
+ 6f8:	80 95       	com	r24
+ 6fa:	82 23       	and	r24, r18
+ 6fc:	80 83       	st	Z, r24
+ 6fe:	08 95       	ret
 
-000006c2 <EnableOutputSetUntilMatch>:
+00000700 <EnableOutputSetUntilMatch>:
 }
 void (*PwmClkIsCpuClk)(void) = PwmClkIsCpuClk_Implementation;
 
 static void EnableOutputSetUntilMatch(void)
 {
     ClearBit(Pwm_tccr0a, Pwm_Com0b0);
- 6c2:	e0 91 3a 01 	lds	r30, 0x013A	; 0x80013a <Pwm_tccr0a>
- 6c6:	f0 91 3b 01 	lds	r31, 0x013B	; 0x80013b <Pwm_tccr0a+0x1>
- 6ca:	30 81       	ld	r19, Z
- 6cc:	81 e0       	ldi	r24, 0x01	; 1
- 6ce:	90 e0       	ldi	r25, 0x00	; 0
- 6d0:	ac 01       	movw	r20, r24
- 6d2:	00 90 2f 01 	lds	r0, 0x012F	; 0x80012f <Pwm_Com0b0>
- 6d6:	02 c0       	rjmp	.+4      	; 0x6dc <EnableOutputSetUntilMatch+0x1a>
- 6d8:	44 0f       	add	r20, r20
- 6da:	55 1f       	adc	r21, r21
- 6dc:	0a 94       	dec	r0
- 6de:	e2 f7       	brpl	.-8      	; 0x6d8 <EnableOutputSetUntilMatch+0x16>
- 6e0:	24 2f       	mov	r18, r20
- 6e2:	20 95       	com	r18
- 6e4:	23 23       	and	r18, r19
- 6e6:	20 83       	st	Z, r18
+ 700:	e0 91 3c 01 	lds	r30, 0x013C	; 0x80013c <Pwm_tccr0a>
+ 704:	f0 91 3d 01 	lds	r31, 0x013D	; 0x80013d <Pwm_tccr0a+0x1>
+ 708:	30 81       	ld	r19, Z
+ 70a:	81 e0       	ldi	r24, 0x01	; 1
+ 70c:	90 e0       	ldi	r25, 0x00	; 0
+ 70e:	ac 01       	movw	r20, r24
+ 710:	00 90 31 01 	lds	r0, 0x0131	; 0x800131 <Pwm_Com0b0>
+ 714:	02 c0       	rjmp	.+4      	; 0x71a <EnableOutputSetUntilMatch+0x1a>
+ 716:	44 0f       	add	r20, r20
+ 718:	55 1f       	adc	r21, r21
+ 71a:	0a 94       	dec	r0
+ 71c:	e2 f7       	brpl	.-8      	; 0x716 <EnableOutputSetUntilMatch+0x16>
+ 71e:	24 2f       	mov	r18, r20
+ 720:	20 95       	com	r18
+ 722:	23 23       	and	r18, r19
+ 724:	20 83       	st	Z, r18
 /* | 2019-03-04 WIP: inline version of ReadWriteBits | */
 /* --------------------------------------------------- */
 
 inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
 {
     *port |= 1<<bit;
- 6e8:	20 81       	ld	r18, Z
- 6ea:	00 90 2e 01 	lds	r0, 0x012E	; 0x80012e <Pwm_Com0b1>
- 6ee:	02 c0       	rjmp	.+4      	; 0x6f4 <EnableOutputSetUntilMatch+0x32>
- 6f0:	88 0f       	add	r24, r24
- 6f2:	99 1f       	adc	r25, r25
- 6f4:	0a 94       	dec	r0
- 6f6:	e2 f7       	brpl	.-8      	; 0x6f0 <EnableOutputSetUntilMatch+0x2e>
- 6f8:	82 2b       	or	r24, r18
- 6fa:	80 83       	st	Z, r24
- 6fc:	08 95       	ret
+ 726:	20 81       	ld	r18, Z
+ 728:	00 90 30 01 	lds	r0, 0x0130	; 0x800130 <Pwm_Com0b1>
+ 72c:	02 c0       	rjmp	.+4      	; 0x732 <EnableOutputSetUntilMatch+0x32>
+ 72e:	88 0f       	add	r24, r24
+ 730:	99 1f       	adc	r25, r25
+ 732:	0a 94       	dec	r0
+ 734:	e2 f7       	brpl	.-8      	; 0x72e <EnableOutputSetUntilMatch+0x2e>
+ 736:	82 2b       	or	r24, r18
+ 738:	80 83       	st	Z, r24
+ 73a:	08 95       	ret
 
-000006fe <NullCommand>:
+0000073c <NullCommand>:
 void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd)
 {
                              // | nbytes  | data           |
     uint8_t const StatusOk[] = {0x00, 0x02, 0x00, valid_cmd };
     SpiSlaveSendBytes(StatusOk,4);
 }
- 6fe:	08 95       	ret
+ 73c:	08 95       	ret
 
-00000700 <ReadSpiMaster_Implementation>:
- 700:	cf 92       	push	r12
- 702:	df 92       	push	r13
- 704:	ef 92       	push	r14
- 706:	ff 92       	push	r15
- 708:	0f 93       	push	r16
- 70a:	1f 93       	push	r17
- 70c:	cf 93       	push	r28
- 70e:	df 93       	push	r29
- 710:	6b 01       	movw	r12, r22
- 712:	61 15       	cp	r22, r1
- 714:	71 05       	cpc	r23, r1
- 716:	a9 f0       	breq	.+42     	; 0x742 <ReadSpiMaster_Implementation+0x42>
- 718:	e0 90 62 01 	lds	r14, 0x0162	; 0x800162 <Spi_spdr>
- 71c:	f0 90 63 01 	lds	r15, 0x0163	; 0x800163 <Spi_spdr+0x1>
- 720:	ec 01       	movw	r28, r24
- 722:	8c 01       	movw	r16, r24
- 724:	06 0f       	add	r16, r22
- 726:	17 1f       	adc	r17, r23
- 728:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
- 72c:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
- 730:	09 95       	icall
- 732:	88 23       	and	r24, r24
- 734:	c9 f3       	breq	.-14     	; 0x728 <ReadSpiMaster_Implementation+0x28>
- 736:	f7 01       	movw	r30, r14
- 738:	80 81       	ld	r24, Z
- 73a:	89 93       	st	Y+, r24
- 73c:	c0 17       	cp	r28, r16
- 73e:	d1 07       	cpc	r29, r17
- 740:	99 f7       	brne	.-26     	; 0x728 <ReadSpiMaster_Implementation+0x28>
- 742:	c6 01       	movw	r24, r12
- 744:	df 91       	pop	r29
- 746:	cf 91       	pop	r28
- 748:	1f 91       	pop	r17
- 74a:	0f 91       	pop	r16
- 74c:	ff 90       	pop	r15
- 74e:	ef 90       	pop	r14
- 750:	df 90       	pop	r13
- 752:	cf 90       	pop	r12
- 754:	08 95       	ret
-
-00000756 <WriteSpiMaster_Implementation>:
- 756:	cf 93       	push	r28
- 758:	df 93       	push	r29
- 75a:	eb 01       	movw	r28, r22
- 75c:	0e 94 e9 00 	call	0x1d2	; 0x1d2 <SpiSlaveSendBytes>
- 760:	ce 01       	movw	r24, r28
- 762:	df 91       	pop	r29
- 764:	cf 91       	pop	r28
- 766:	08 95       	ret
-
-00000768 <GetSensorLED>:
- 768:	0f 93       	push	r16
- 76a:	1f 93       	push	r17
- 76c:	cf 93       	push	r28
- 76e:	df 93       	push	r29
- 770:	00 d0       	rcall	.+0      	; 0x772 <GetSensorLED+0xa>
- 772:	00 d0       	rcall	.+0      	; 0x774 <GetSensorLED+0xc>
- 774:	00 d0       	rcall	.+0      	; 0x776 <GetSensorLED+0xe>
- 776:	cd b7       	in	r28, 0x3d	; 61
- 778:	de b7       	in	r29, 0x3e	; 62
- 77a:	1e 82       	std	Y+6, r1	; 0x06
- 77c:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <WriteSpiMaster>
- 780:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <WriteSpiMaster+0x1>
- 784:	61 e0       	ldi	r22, 0x01	; 1
- 786:	70 e0       	ldi	r23, 0x00	; 0
- 788:	ce 01       	movw	r24, r28
- 78a:	06 96       	adiw	r24, 0x06	; 6
- 78c:	09 95       	icall
- 78e:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <ReadSpiMaster>
- 792:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <ReadSpiMaster+0x1>
- 796:	61 e0       	ldi	r22, 0x01	; 1
- 798:	70 e0       	ldi	r23, 0x00	; 0
- 79a:	ce 01       	movw	r24, r28
- 79c:	05 96       	adiw	r24, 0x05	; 5
- 79e:	09 95       	icall
- 7a0:	8d 81       	ldd	r24, Y+5	; 0x05
- 7a2:	82 30       	cpi	r24, 0x02	; 2
- 7a4:	88 f5       	brcc	.+98     	; 0x808 <GetSensorLED+0xa0>
- 7a6:	81 11       	cpse	r24, r1
- 7a8:	73 c0       	rjmp	.+230    	; 0x890 <GetSensorLED+0x128>
- 7aa:	20 91 6d 01 	lds	r18, 0x016D	; 0x80016d <led_TxRx>
- 7ae:	e0 91 70 01 	lds	r30, 0x0170	; 0x800170 <BiColorLed_ddr>
- 7b2:	f0 91 71 01 	lds	r31, 0x0171	; 0x800171 <BiColorLed_ddr+0x1>
- 7b6:	80 81       	ld	r24, Z
- 7b8:	90 e0       	ldi	r25, 0x00	; 0
- 7ba:	02 2e       	mov	r0, r18
- 7bc:	02 c0       	rjmp	.+4      	; 0x7c2 <GetSensorLED+0x5a>
- 7be:	95 95       	asr	r25
- 7c0:	87 95       	ror	r24
+0000073e <GetSensorLED>:
+ 73e:	cf 93       	push	r28
+ 740:	df 93       	push	r29
+ 742:	00 d0       	rcall	.+0      	; 0x744 <GetSensorLED+0x6>
+ 744:	cd b7       	in	r28, 0x3d	; 61
+ 746:	de b7       	in	r29, 0x3e	; 62
+ 748:	80 91 76 01 	lds	r24, 0x0176	; 0x800176 <__data_end>
+ 74c:	88 23       	and	r24, r24
+ 74e:	e1 f3       	breq	.-8      	; 0x748 <GetSensorLED+0xa>
+ 750:	80 91 77 01 	lds	r24, 0x0177	; 0x800177 <SpiData>
+ 754:	10 92 76 01 	sts	0x0176, r1	; 0x800176 <__data_end>
+ 758:	82 30       	cpi	r24, 0x02	; 2
+ 75a:	18 f5       	brcc	.+70     	; 0x7a2 <GetSensorLED+0x64>
+ 75c:	81 11       	cpse	r24, r1
+ 75e:	5b c0       	rjmp	.+182    	; 0x816 <GetSensorLED+0xd8>
+ 760:	20 91 70 01 	lds	r18, 0x0170	; 0x800170 <led_TxRx>
+ 764:	e0 91 73 01 	lds	r30, 0x0173	; 0x800173 <BiColorLed_ddr>
+ 768:	f0 91 74 01 	lds	r31, 0x0174	; 0x800174 <BiColorLed_ddr+0x1>
+ 76c:	80 81       	ld	r24, Z
+ 76e:	90 e0       	ldi	r25, 0x00	; 0
+ 770:	02 2e       	mov	r0, r18
+ 772:	02 c0       	rjmp	.+4      	; 0x778 <GetSensorLED+0x3a>
+ 774:	95 95       	asr	r25
+ 776:	87 95       	ror	r24
+ 778:	0a 94       	dec	r0
+ 77a:	e2 f7       	brpl	.-8      	; 0x774 <GetSensorLED+0x36>
+ 77c:	80 fd       	sbrc	r24, 0
+ 77e:	30 c0       	rjmp	.+96     	; 0x7e0 <GetSensorLED+0xa2>
+ 780:	80 e0       	ldi	r24, 0x00	; 0
+ 782:	19 82       	std	Y+1, r1	; 0x01
+ 784:	8a 83       	std	Y+2, r24	; 0x02
+ 786:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <WriteSpiMaster>
+ 78a:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <WriteSpiMaster+0x1>
+ 78e:	62 e0       	ldi	r22, 0x02	; 2
+ 790:	70 e0       	ldi	r23, 0x00	; 0
+ 792:	ce 01       	movw	r24, r28
+ 794:	01 96       	adiw	r24, 0x01	; 1
+ 796:	09 95       	icall
+ 798:	0f 90       	pop	r0
+ 79a:	0f 90       	pop	r0
+ 79c:	df 91       	pop	r29
+ 79e:	cf 91       	pop	r28
+ 7a0:	08 95       	ret
+ 7a2:	81 e0       	ldi	r24, 0x01	; 1
+ 7a4:	89 83       	std	Y+1, r24	; 0x01
+ 7a6:	1a 82       	std	Y+2, r1	; 0x02
+ 7a8:	e0 91 71 01 	lds	r30, 0x0171	; 0x800171 <BiColorLed_port>
+ 7ac:	f0 91 72 01 	lds	r31, 0x0172	; 0x800172 <BiColorLed_port+0x1>
+ 7b0:	40 81       	ld	r20, Z
+ 7b2:	81 e0       	ldi	r24, 0x01	; 1
+ 7b4:	90 e0       	ldi	r25, 0x00	; 0
+ 7b6:	9c 01       	movw	r18, r24
+ 7b8:	00 90 70 01 	lds	r0, 0x0170	; 0x800170 <led_TxRx>
+ 7bc:	02 c0       	rjmp	.+4      	; 0x7c2 <GetSensorLED+0x84>
+ 7be:	22 0f       	add	r18, r18
+ 7c0:	33 1f       	adc	r19, r19
  7c2:	0a 94       	dec	r0
- 7c4:	e2 f7       	brpl	.-8      	; 0x7be <GetSensorLED+0x56>
- 7c6:	80 fd       	sbrc	r24, 0
- 7c8:	48 c0       	rjmp	.+144    	; 0x85a <GetSensorLED+0xf2>
- 7ca:	90 e0       	ldi	r25, 0x00	; 0
- 7cc:	19 82       	std	Y+1, r1	; 0x01
- 7ce:	82 e0       	ldi	r24, 0x02	; 2
- 7d0:	8a 83       	std	Y+2, r24	; 0x02
- 7d2:	1b 82       	std	Y+3, r1	; 0x03
- 7d4:	9c 83       	std	Y+4, r25	; 0x04
- 7d6:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <WriteSpiMaster>
- 7da:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <WriteSpiMaster+0x1>
- 7de:	64 e0       	ldi	r22, 0x04	; 4
- 7e0:	70 e0       	ldi	r23, 0x00	; 0
- 7e2:	ce 01       	movw	r24, r28
- 7e4:	01 96       	adiw	r24, 0x01	; 1
- 7e6:	09 95       	icall
- 7e8:	0f b6       	in	r0, 0x3f	; 63
- 7ea:	f8 94       	cli
- 7ec:	de bf       	out	0x3e, r29	; 62
- 7ee:	0f be       	out	0x3f, r0	; 63
- 7f0:	cd bf       	out	0x3d, r28	; 61
- 7f2:	26 96       	adiw	r28, 0x06	; 6
- 7f4:	0f b6       	in	r0, 0x3f	; 63
- 7f6:	f8 94       	cli
- 7f8:	de bf       	out	0x3e, r29	; 62
- 7fa:	0f be       	out	0x3f, r0	; 63
- 7fc:	cd bf       	out	0x3d, r28	; 61
- 7fe:	df 91       	pop	r29
- 800:	cf 91       	pop	r28
- 802:	1f 91       	pop	r17
- 804:	0f 91       	pop	r16
- 806:	08 95       	ret
- 808:	19 82       	std	Y+1, r1	; 0x01
- 80a:	81 e0       	ldi	r24, 0x01	; 1
- 80c:	8a 83       	std	Y+2, r24	; 0x02
- 80e:	8b 83       	std	Y+3, r24	; 0x03
- 810:	e0 91 6e 01 	lds	r30, 0x016E	; 0x80016e <BiColorLed_port>
- 814:	f0 91 6f 01 	lds	r31, 0x016F	; 0x80016f <BiColorLed_port+0x1>
- 818:	40 81       	ld	r20, Z
- 81a:	81 e0       	ldi	r24, 0x01	; 1
- 81c:	90 e0       	ldi	r25, 0x00	; 0
- 81e:	9c 01       	movw	r18, r24
- 820:	00 90 6d 01 	lds	r0, 0x016D	; 0x80016d <led_TxRx>
- 824:	02 c0       	rjmp	.+4      	; 0x82a <GetSensorLED+0xc2>
- 826:	22 0f       	add	r18, r18
- 828:	33 1f       	adc	r19, r19
- 82a:	0a 94       	dec	r0
- 82c:	e2 f7       	brpl	.-8      	; 0x826 <GetSensorLED+0xbe>
- 82e:	24 2b       	or	r18, r20
- 830:	20 83       	st	Z, r18
- 832:	20 81       	ld	r18, Z
- 834:	00 90 6c 01 	lds	r0, 0x016C	; 0x80016c <led_Done>
- 838:	02 c0       	rjmp	.+4      	; 0x83e <GetSensorLED+0xd6>
- 83a:	88 0f       	add	r24, r24
- 83c:	99 1f       	adc	r25, r25
- 83e:	0a 94       	dec	r0
- 840:	e2 f7       	brpl	.-8      	; 0x83a <GetSensorLED+0xd2>
- 842:	82 2b       	or	r24, r18
- 844:	80 83       	st	Z, r24
- 846:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <WriteSpiMaster>
- 84a:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <WriteSpiMaster+0x1>
- 84e:	63 e0       	ldi	r22, 0x03	; 3
- 850:	70 e0       	ldi	r23, 0x00	; 0
- 852:	ce 01       	movw	r24, r28
- 854:	01 96       	adiw	r24, 0x01	; 1
- 856:	09 95       	icall
- 858:	cc cf       	rjmp	.-104    	; 0x7f2 <GetSensorLED+0x8a>
- 85a:	80 81       	ld	r24, Z
- 85c:	90 e0       	ldi	r25, 0x00	; 0
- 85e:	02 2e       	mov	r0, r18
- 860:	02 c0       	rjmp	.+4      	; 0x866 <GetSensorLED+0xfe>
- 862:	95 95       	asr	r25
- 864:	87 95       	ror	r24
- 866:	0a 94       	dec	r0
- 868:	e2 f7       	brpl	.-8      	; 0x862 <GetSensorLED+0xfa>
- 86a:	80 ff       	sbrs	r24, 0
- 86c:	0f c0       	rjmp	.+30     	; 0x88c <GetSensorLED+0x124>
- 86e:	e0 91 6e 01 	lds	r30, 0x016E	; 0x80016e <BiColorLed_port>
- 872:	f0 91 6f 01 	lds	r31, 0x016F	; 0x80016f <BiColorLed_port+0x1>
- 876:	80 81       	ld	r24, Z
- 878:	90 e0       	ldi	r25, 0x00	; 0
- 87a:	02 c0       	rjmp	.+4      	; 0x880 <GetSensorLED+0x118>
- 87c:	95 95       	asr	r25
- 87e:	87 95       	ror	r24
- 880:	2a 95       	dec	r18
- 882:	e2 f7       	brpl	.-8      	; 0x87c <GetSensorLED+0x114>
- 884:	80 ff       	sbrs	r24, 0
- 886:	02 c0       	rjmp	.+4      	; 0x88c <GetSensorLED+0x124>
- 888:	92 e0       	ldi	r25, 0x02	; 2
- 88a:	a0 cf       	rjmp	.-192    	; 0x7cc <GetSensorLED+0x64>
- 88c:	91 e0       	ldi	r25, 0x01	; 1
- 88e:	9e cf       	rjmp	.-196    	; 0x7cc <GetSensorLED+0x64>
- 890:	20 91 6c 01 	lds	r18, 0x016C	; 0x80016c <led_Done>
- 894:	8c cf       	rjmp	.-232    	; 0x7ae <GetSensorLED+0x46>
+ 7c4:	e2 f7       	brpl	.-8      	; 0x7be <GetSensorLED+0x80>
+ 7c6:	24 2b       	or	r18, r20
+ 7c8:	20 83       	st	Z, r18
+ 7ca:	20 81       	ld	r18, Z
+ 7cc:	00 90 6f 01 	lds	r0, 0x016F	; 0x80016f <led_Done>
+ 7d0:	02 c0       	rjmp	.+4      	; 0x7d6 <GetSensorLED+0x98>
+ 7d2:	88 0f       	add	r24, r24
+ 7d4:	99 1f       	adc	r25, r25
+ 7d6:	0a 94       	dec	r0
+ 7d8:	e2 f7       	brpl	.-8      	; 0x7d2 <GetSensorLED+0x94>
+ 7da:	82 2b       	or	r24, r18
+ 7dc:	80 83       	st	Z, r24
+ 7de:	d3 cf       	rjmp	.-90     	; 0x786 <GetSensorLED+0x48>
+ 7e0:	80 81       	ld	r24, Z
+ 7e2:	90 e0       	ldi	r25, 0x00	; 0
+ 7e4:	02 2e       	mov	r0, r18
+ 7e6:	02 c0       	rjmp	.+4      	; 0x7ec <GetSensorLED+0xae>
+ 7e8:	95 95       	asr	r25
+ 7ea:	87 95       	ror	r24
+ 7ec:	0a 94       	dec	r0
+ 7ee:	e2 f7       	brpl	.-8      	; 0x7e8 <GetSensorLED+0xaa>
+ 7f0:	80 ff       	sbrs	r24, 0
+ 7f2:	0f c0       	rjmp	.+30     	; 0x812 <GetSensorLED+0xd4>
+ 7f4:	e0 91 71 01 	lds	r30, 0x0171	; 0x800171 <BiColorLed_port>
+ 7f8:	f0 91 72 01 	lds	r31, 0x0172	; 0x800172 <BiColorLed_port+0x1>
+ 7fc:	80 81       	ld	r24, Z
+ 7fe:	90 e0       	ldi	r25, 0x00	; 0
+ 800:	02 c0       	rjmp	.+4      	; 0x806 <GetSensorLED+0xc8>
+ 802:	95 95       	asr	r25
+ 804:	87 95       	ror	r24
+ 806:	2a 95       	dec	r18
+ 808:	e2 f7       	brpl	.-8      	; 0x802 <GetSensorLED+0xc4>
+ 80a:	80 ff       	sbrs	r24, 0
+ 80c:	02 c0       	rjmp	.+4      	; 0x812 <GetSensorLED+0xd4>
+ 80e:	82 e0       	ldi	r24, 0x02	; 2
+ 810:	b8 cf       	rjmp	.-144    	; 0x782 <GetSensorLED+0x44>
+ 812:	81 e0       	ldi	r24, 0x01	; 1
+ 814:	b6 cf       	rjmp	.-148    	; 0x782 <GetSensorLED+0x44>
+ 816:	20 91 6f 01 	lds	r18, 0x016F	; 0x80016f <led_Done>
+ 81a:	a4 cf       	rjmp	.-184    	; 0x764 <GetSensorLED+0x26>
 
-00000896 <SensorCfgLis>:
- 896:	cf 93       	push	r28
- 898:	df 93       	push	r29
- 89a:	00 d0       	rcall	.+0      	; 0x89c <SensorCfgLis+0x6>
- 89c:	00 d0       	rcall	.+0      	; 0x89e <SensorCfgLis+0x8>
- 89e:	cd b7       	in	r28, 0x3d	; 61
- 8a0:	de b7       	in	r29, 0x3e	; 62
- 8a2:	8f e0       	ldi	r24, 0x0F	; 15
- 8a4:	89 83       	std	Y+1, r24	; 0x01
- 8a6:	8f ef       	ldi	r24, 0xFF	; 255
- 8a8:	8a 83       	std	Y+2, r24	; 0x02
- 8aa:	8b 83       	std	Y+3, r24	; 0x03
- 8ac:	89 ef       	ldi	r24, 0xF9	; 249
- 8ae:	8c 83       	std	Y+4, r24	; 0x04
- 8b0:	ce 01       	movw	r24, r28
- 8b2:	01 96       	adiw	r24, 0x01	; 1
- 8b4:	0e 94 da 01 	call	0x3b4	; 0x3b4 <LisWriteCfg>
- 8b8:	0f 90       	pop	r0
- 8ba:	0f 90       	pop	r0
- 8bc:	0f 90       	pop	r0
- 8be:	0f 90       	pop	r0
- 8c0:	df 91       	pop	r29
- 8c2:	cf 91       	pop	r28
- 8c4:	08 95       	ret
+0000081c <WriteSpiMaster_Implementation>:
+ 81c:	cf 93       	push	r28
+ 81e:	df 93       	push	r29
+ 820:	eb 01       	movw	r28, r22
+ 822:	0e 94 08 01 	call	0x210	; 0x210 <SpiSlaveSendBytes>
+ 826:	ce 01       	movw	r24, r28
+ 828:	df 91       	pop	r29
+ 82a:	cf 91       	pop	r28
+ 82c:	08 95       	ret
 
-000008c6 <LookupSensorCmd>:
- 8c6:	85 30       	cpi	r24, 0x05	; 5
- 8c8:	48 f4       	brcc	.+18     	; 0x8dc <LookupSensorCmd+0x16>
- 8ca:	e8 2f       	mov	r30, r24
- 8cc:	f0 e0       	ldi	r31, 0x00	; 0
- 8ce:	ee 0f       	add	r30, r30
- 8d0:	ff 1f       	adc	r31, r31
- 8d2:	e0 5e       	subi	r30, 0xE0	; 224
- 8d4:	fe 4f       	sbci	r31, 0xFE	; 254
- 8d6:	80 81       	ld	r24, Z
- 8d8:	91 81       	ldd	r25, Z+1	; 0x01
- 8da:	08 95       	ret
- 8dc:	80 e0       	ldi	r24, 0x00	; 0
- 8de:	90 e0       	ldi	r25, 0x00	; 0
- 8e0:	08 95       	ret
+0000082e <SensorCfgLis>:
+ 82e:	cf 93       	push	r28
+ 830:	df 93       	push	r29
+ 832:	00 d0       	rcall	.+0      	; 0x834 <SensorCfgLis+0x6>
+ 834:	00 d0       	rcall	.+0      	; 0x836 <SensorCfgLis+0x8>
+ 836:	cd b7       	in	r28, 0x3d	; 61
+ 838:	de b7       	in	r29, 0x3e	; 62
+ 83a:	8f e0       	ldi	r24, 0x0F	; 15
+ 83c:	89 83       	std	Y+1, r24	; 0x01
+ 83e:	8f ef       	ldi	r24, 0xFF	; 255
+ 840:	8a 83       	std	Y+2, r24	; 0x02
+ 842:	8b 83       	std	Y+3, r24	; 0x03
+ 844:	89 ef       	ldi	r24, 0xF9	; 249
+ 846:	8c 83       	std	Y+4, r24	; 0x04
+ 848:	ce 01       	movw	r24, r28
+ 84a:	01 96       	adiw	r24, 0x01	; 1
+ 84c:	0e 94 f9 01 	call	0x3f2	; 0x3f2 <LisWriteCfg>
+ 850:	0f 90       	pop	r0
+ 852:	0f 90       	pop	r0
+ 854:	0f 90       	pop	r0
+ 856:	0f 90       	pop	r0
+ 858:	df 91       	pop	r29
+ 85a:	cf 91       	pop	r28
+ 85c:	08 95       	ret
 
-000008e2 <LedsShowError>:
+0000085e <LookupSensorCmd>:
+ 85e:	85 30       	cpi	r24, 0x05	; 5
+ 860:	48 f4       	brcc	.+18     	; 0x874 <LookupSensorCmd+0x16>
+ 862:	e8 2f       	mov	r30, r24
+ 864:	f0 e0       	ldi	r31, 0x00	; 0
+ 866:	ee 0f       	add	r30, r30
+ 868:	ff 1f       	adc	r31, r31
+ 86a:	ee 5d       	subi	r30, 0xDE	; 222
+ 86c:	fe 4f       	sbci	r31, 0xFE	; 254
+ 86e:	80 81       	ld	r24, Z
+ 870:	91 81       	ldd	r25, Z+1	; 0x01
+ 872:	08 95       	ret
+ 874:	80 e0       	ldi	r24, 0x00	; 0
+ 876:	90 e0       	ldi	r25, 0x00	; 0
+ 878:	08 95       	ret
+
+0000087a <LedsShowError>:
 {
     ClearBit(BiColorLed_port, led_name);
 }
 inline void BiColorLedRed(uint8_t led_name)
 {
     SetBit(BiColorLed_port, led_name);
- 8e2:	e0 91 6e 01 	lds	r30, 0x016E	; 0x80016e <BiColorLed_port>
- 8e6:	f0 91 6f 01 	lds	r31, 0x016F	; 0x80016f <BiColorLed_port+0x1>
- 8ea:	40 81       	ld	r20, Z
- 8ec:	81 e0       	ldi	r24, 0x01	; 1
- 8ee:	90 e0       	ldi	r25, 0x00	; 0
- 8f0:	9c 01       	movw	r18, r24
- 8f2:	00 90 6d 01 	lds	r0, 0x016D	; 0x80016d <led_TxRx>
- 8f6:	02 c0       	rjmp	.+4      	; 0x8fc <LedsShowError+0x1a>
- 8f8:	22 0f       	add	r18, r18
- 8fa:	33 1f       	adc	r19, r19
- 8fc:	0a 94       	dec	r0
- 8fe:	e2 f7       	brpl	.-8      	; 0x8f8 <LedsShowError+0x16>
- 900:	24 2b       	or	r18, r20
- 902:	20 83       	st	Z, r18
- 904:	20 81       	ld	r18, Z
- 906:	00 90 6c 01 	lds	r0, 0x016C	; 0x80016c <led_Done>
- 90a:	02 c0       	rjmp	.+4      	; 0x910 <__stack+0x11>
- 90c:	88 0f       	add	r24, r24
- 90e:	99 1f       	adc	r25, r25
- 910:	0a 94       	dec	r0
- 912:	e2 f7       	brpl	.-8      	; 0x90c <__stack+0xd>
- 914:	82 2b       	or	r24, r18
- 916:	80 83       	st	Z, r24
- 918:	08 95       	ret
+ 87a:	e0 91 71 01 	lds	r30, 0x0171	; 0x800171 <BiColorLed_port>
+ 87e:	f0 91 72 01 	lds	r31, 0x0172	; 0x800172 <BiColorLed_port+0x1>
+ 882:	40 81       	ld	r20, Z
+ 884:	81 e0       	ldi	r24, 0x01	; 1
+ 886:	90 e0       	ldi	r25, 0x00	; 0
+ 888:	9c 01       	movw	r18, r24
+ 88a:	00 90 70 01 	lds	r0, 0x0170	; 0x800170 <led_TxRx>
+ 88e:	02 c0       	rjmp	.+4      	; 0x894 <LedsShowError+0x1a>
+ 890:	22 0f       	add	r18, r18
+ 892:	33 1f       	adc	r19, r19
+ 894:	0a 94       	dec	r0
+ 896:	e2 f7       	brpl	.-8      	; 0x890 <LedsShowError+0x16>
+ 898:	24 2b       	or	r18, r20
+ 89a:	20 83       	st	Z, r18
+ 89c:	20 81       	ld	r18, Z
+ 89e:	00 90 6f 01 	lds	r0, 0x016F	; 0x80016f <led_Done>
+ 8a2:	02 c0       	rjmp	.+4      	; 0x8a8 <LedsShowError+0x2e>
+ 8a4:	88 0f       	add	r24, r24
+ 8a6:	99 1f       	adc	r25, r25
+ 8a8:	0a 94       	dec	r0
+ 8aa:	e2 f7       	brpl	.-8      	; 0x8a4 <LedsShowError+0x2a>
+ 8ac:	82 2b       	or	r24, r18
+ 8ae:	80 83       	st	Z, r24
+ 8b0:	08 95       	ret
 
-0000091a <ReplyCommandInvalid>:
+000008b2 <ReplyCommandInvalid>:
     // first and second LEDs turn red to indicate error
     BiColorLedRed(led_TxRx);
     BiColorLedRed(led_Done);
 }
 void ReplyCommandInvalid(void)
 {
- 91a:	cf 93       	push	r28
- 91c:	df 93       	push	r29
- 91e:	1f 92       	push	r1
- 920:	cd b7       	in	r28, 0x3d	; 61
- 922:	de b7       	in	r29, 0x3e	; 62
+ 8b2:	cf 93       	push	r28
+ 8b4:	df 93       	push	r29
+ 8b6:	1f 92       	push	r1
+ 8b8:	cd b7       	in	r28, 0x3d	; 61
+ 8ba:	de b7       	in	r29, 0x3e	; 62
     uint8_t cmd_invalid[] = {error};
- 924:	81 e0       	ldi	r24, 0x01	; 1
- 926:	89 83       	std	Y+1, r24	; 0x01
+ 8bc:	81 e0       	ldi	r24, 0x01	; 1
+ 8be:	89 83       	std	Y+1, r24	; 0x01
     WriteSpiMaster(cmd_invalid, 1);
- 928:	e0 91 1e 01 	lds	r30, 0x011E	; 0x80011e <WriteSpiMaster>
- 92c:	f0 91 1f 01 	lds	r31, 0x011F	; 0x80011f <WriteSpiMaster+0x1>
- 930:	61 e0       	ldi	r22, 0x01	; 1
- 932:	70 e0       	ldi	r23, 0x00	; 0
- 934:	ce 01       	movw	r24, r28
- 936:	01 96       	adiw	r24, 0x01	; 1
- 938:	09 95       	icall
+ 8c0:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <WriteSpiMaster>
+ 8c4:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <WriteSpiMaster+0x1>
+ 8c8:	61 e0       	ldi	r22, 0x01	; 1
+ 8ca:	70 e0       	ldi	r23, 0x00	; 0
+ 8cc:	ce 01       	movw	r24, r28
+ 8ce:	01 96       	adiw	r24, 0x01	; 1
+ 8d0:	09 95       	icall
 }
- 93a:	0f 90       	pop	r0
- 93c:	df 91       	pop	r29
- 93e:	cf 91       	pop	r28
- 940:	08 95       	ret
+ 8d2:	0f 90       	pop	r0
+ 8d4:	df 91       	pop	r29
+ 8d6:	cf 91       	pop	r28
+ 8d8:	08 95       	ret
 
-00000942 <main>:
+000008da <main>:
     uint8_t *pfour_bits = &four_bits;
     if (BitIsSet(pfour_bits, 0)) BiColorLedRed(led_0);
     if (BitIsSet(pfour_bits, 1)) BiColorLedRed(led_1);
     /* if (BitIsSet(pfour_bits, 2)) BiColorLedRed(status_led3); */
     /* if (BitIsSet(pfour_bits, 3)) BiColorLedRed(status_led4); */
 }
- 942:	47 b1       	in	r20, 0x07	; 7
- 944:	81 e0       	ldi	r24, 0x01	; 1
- 946:	90 e0       	ldi	r25, 0x00	; 0
- 948:	9c 01       	movw	r18, r24
- 94a:	00 90 2b 01 	lds	r0, 0x012B	; 0x80012b <led_0>
- 94e:	02 c0       	rjmp	.+4      	; 0x954 <main+0x12>
- 950:	22 0f       	add	r18, r18
- 952:	33 1f       	adc	r19, r19
- 954:	0a 94       	dec	r0
- 956:	e2 f7       	brpl	.-8      	; 0x950 <main+0xe>
- 958:	24 2b       	or	r18, r20
- 95a:	27 b9       	out	0x07, r18	; 7
- 95c:	27 b1       	in	r18, 0x07	; 7
- 95e:	00 90 2a 01 	lds	r0, 0x012A	; 0x80012a <led_1>
- 962:	02 c0       	rjmp	.+4      	; 0x968 <main+0x26>
- 964:	88 0f       	add	r24, r24
- 966:	99 1f       	adc	r25, r25
- 968:	0a 94       	dec	r0
- 96a:	e2 f7       	brpl	.-8      	; 0x964 <main+0x22>
- 96c:	82 2b       	or	r24, r18
- 96e:	87 b9       	out	0x07, r24	; 7
- 970:	0e 94 c3 00 	call	0x186	; 0x186 <SpiSlaveInit>
- 974:	0e 94 2a 01 	call	0x254	; 0x254 <UartSpiInit>
- 978:	0e 94 b8 02 	call	0x570	; 0x570 <LisInit>
- 97c:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <SpiTransferIsDone>
- 980:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <SpiTransferIsDone+0x1>
- 984:	09 95       	icall
- 986:	88 23       	and	r24, r24
- 988:	c9 f3       	breq	.-14     	; 0x97c <main+0x3a>
- 98a:	8e b5       	in	r24, 0x2e	; 46
- 98c:	0e 94 63 04 	call	0x8c6	; 0x8c6 <LookupSensorCmd>
- 990:	00 97       	sbiw	r24, 0x00	; 0
- 992:	19 f0       	breq	.+6      	; 0x99a <main+0x58>
- 994:	fc 01       	movw	r30, r24
- 996:	09 95       	icall
- 998:	f1 cf       	rjmp	.-30     	; 0x97c <main+0x3a>
- 99a:	0e 94 8d 04 	call	0x91a	; 0x91a <ReplyCommandInvalid>
- 99e:	0e 94 71 04 	call	0x8e2	; 0x8e2 <LedsShowError>
- 9a2:	ec cf       	rjmp	.-40     	; 0x97c <main+0x3a>
+ 8da:	47 b1       	in	r20, 0x07	; 7
+ 8dc:	81 e0       	ldi	r24, 0x01	; 1
+ 8de:	90 e0       	ldi	r25, 0x00	; 0
+ 8e0:	9c 01       	movw	r18, r24
+ 8e2:	00 90 2d 01 	lds	r0, 0x012D	; 0x80012d <led_0>
+ 8e6:	02 c0       	rjmp	.+4      	; 0x8ec <main+0x12>
+ 8e8:	22 0f       	add	r18, r18
+ 8ea:	33 1f       	adc	r19, r19
+ 8ec:	0a 94       	dec	r0
+ 8ee:	e2 f7       	brpl	.-8      	; 0x8e8 <main+0xe>
+ 8f0:	34 2f       	mov	r19, r20
+ 8f2:	32 2b       	or	r19, r18
+ 8f4:	37 b9       	out	0x07, r19	; 7
+ 8f6:	37 b1       	in	r19, 0x07	; 7
+ 8f8:	00 90 2c 01 	lds	r0, 0x012C	; 0x80012c <led_1>
+ 8fc:	02 c0       	rjmp	.+4      	; 0x902 <__stack+0x3>
+ 8fe:	88 0f       	add	r24, r24
+ 900:	99 1f       	adc	r25, r25
+ 902:	0a 94       	dec	r0
+ 904:	e2 f7       	brpl	.-8      	; 0x8fe <main+0x24>
+ 906:	93 2f       	mov	r25, r19
+ 908:	98 2b       	or	r25, r24
+ 90a:	97 b9       	out	0x07, r25	; 7
+ 90c:	98 b1       	in	r25, 0x08	; 8
+ 90e:	20 95       	com	r18
+ 910:	29 23       	and	r18, r25
+ 912:	28 b9       	out	0x08, r18	; 8
+ 914:	98 b1       	in	r25, 0x08	; 8
+ 916:	80 95       	com	r24
+ 918:	89 23       	and	r24, r25
+ 91a:	88 b9       	out	0x08, r24	; 8
+ 91c:	0e 94 c3 00 	call	0x186	; 0x186 <SpiSlaveInit>
+ 920:	0e 94 e9 00 	call	0x1d2	; 0x1d2 <SpiEnableInterrupt>
+ 924:	0e 94 49 01 	call	0x292	; 0x292 <UartSpiInit>
+ 928:	0e 94 d7 02 	call	0x5ae	; 0x5ae <LisInit>
+ 92c:	10 92 76 01 	sts	0x0176, r1	; 0x800176 <__data_end>
+ 930:	10 92 77 01 	sts	0x0177, r1	; 0x800177 <SpiData>
+ 934:	80 91 76 01 	lds	r24, 0x0176	; 0x800176 <__data_end>
+ 938:	88 23       	and	r24, r24
+ 93a:	e1 f3       	breq	.-8      	; 0x934 <__stack+0x35>
+ 93c:	80 91 77 01 	lds	r24, 0x0177	; 0x800177 <SpiData>
+ 940:	0e 94 2f 04 	call	0x85e	; 0x85e <LookupSensorCmd>
+ 944:	10 92 76 01 	sts	0x0176, r1	; 0x800176 <__data_end>
+ 948:	00 97       	sbiw	r24, 0x00	; 0
+ 94a:	19 f0       	breq	.+6      	; 0x952 <__stack+0x53>
+ 94c:	fc 01       	movw	r30, r24
+ 94e:	09 95       	icall
+ 950:	f1 cf       	rjmp	.-30     	; 0x934 <__stack+0x35>
+ 952:	0e 94 59 04 	call	0x8b2	; 0x8b2 <ReplyCommandInvalid>
+ 956:	0e 94 3d 04 	call	0x87a	; 0x87a <LedsShowError>
+ 95a:	ec cf       	rjmp	.-40     	; 0x934 <__stack+0x35>
 
-000009a4 <__vector_17>:
+0000095c <__vector_17>:
 void SPI_read_in_ISR_and_show_data_on_debug_leds(void);
 /* =====[ Move control over the SPI ISR into the test code ]===== */
 typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
 //
 ISR(SPI_STC_vect)
 {
- 9a4:	1f 92       	push	r1
- 9a6:	0f 92       	push	r0
- 9a8:	0f b6       	in	r0, 0x3f	; 63
- 9aa:	0f 92       	push	r0
- 9ac:	11 24       	eor	r1, r1
- 9ae:	2f 93       	push	r18
- 9b0:	3f 93       	push	r19
- 9b2:	4f 93       	push	r20
- 9b4:	5f 93       	push	r21
- 9b6:	6f 93       	push	r22
- 9b8:	7f 93       	push	r23
- 9ba:	8f 93       	push	r24
- 9bc:	9f 93       	push	r25
- 9be:	af 93       	push	r26
- 9c0:	bf 93       	push	r27
- 9c2:	ef 93       	push	r30
- 9c4:	ff 93       	push	r31
-    DoTaskForThisTest(); // fptr assigned in test code
- 9c6:	e0 91 72 01 	lds	r30, 0x0172	; 0x800172 <__data_end>
- 9ca:	f0 91 73 01 	lds	r31, 0x0173	; 0x800173 <__data_end+0x1>
- 9ce:	09 95       	icall
+ 95c:	1f 92       	push	r1
+ 95e:	0f 92       	push	r0
+ 960:	0f b6       	in	r0, 0x3f	; 63
+ 962:	0f 92       	push	r0
+ 964:	11 24       	eor	r1, r1
+ 966:	8f 93       	push	r24
+    HasSpiData = true;
+ 968:	81 e0       	ldi	r24, 0x01	; 1
+ 96a:	80 93 76 01 	sts	0x0176, r24	; 0x800176 <__data_end>
+    SpiData = *Spi_spdr;
+ 96e:	8e b5       	in	r24, 0x2e	; 46
+ 970:	80 93 77 01 	sts	0x0177, r24	; 0x800177 <SpiData>
+    /* DoTaskForThisTest(); // fptr assigned in test code */
 }
- 9d0:	ff 91       	pop	r31
- 9d2:	ef 91       	pop	r30
- 9d4:	bf 91       	pop	r27
- 9d6:	af 91       	pop	r26
- 9d8:	9f 91       	pop	r25
- 9da:	8f 91       	pop	r24
- 9dc:	7f 91       	pop	r23
- 9de:	6f 91       	pop	r22
- 9e0:	5f 91       	pop	r21
- 9e2:	4f 91       	pop	r20
- 9e4:	3f 91       	pop	r19
- 9e6:	2f 91       	pop	r18
- 9e8:	0f 90       	pop	r0
- 9ea:	0f be       	out	0x3f, r0	; 63
- 9ec:	0f 90       	pop	r0
- 9ee:	1f 90       	pop	r1
- 9f0:	18 95       	reti
+ 974:	8f 91       	pop	r24
+ 976:	0f 90       	pop	r0
+ 978:	0f be       	out	0x3f, r0	; 63
+ 97a:	0f 90       	pop	r0
+ 97c:	1f 90       	pop	r1
+ 97e:	18 95       	reti
 
-000009f2 <__vector_14>:
+00000980 <__vector_14>:
 ISR(TIMER0_COMPA_vect)
 {
- 9f2:	1f 92       	push	r1
- 9f4:	0f 92       	push	r0
- 9f6:	0f b6       	in	r0, 0x3f	; 63
- 9f8:	0f 92       	push	r0
- 9fa:	11 24       	eor	r1, r1
+ 980:	1f 92       	push	r1
+ 982:	0f 92       	push	r0
+ 984:	0f b6       	in	r0, 0x3f	; 63
+ 986:	0f 92       	push	r0
+ 988:	11 24       	eor	r1, r1
     // high-level delay:
     /* SetBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD |= 1<<PD6;    // set bit: Rst High
- 9fc:	5e 9a       	sbi	0x0b, 6	; 11
+ 98a:	5e 9a       	sbi	0x0b, 6	; 11
     // delay is 1.8us-2us from redge to Rst High
 }
- 9fe:	0f 90       	pop	r0
- a00:	0f be       	out	0x3f, r0	; 63
- a02:	0f 90       	pop	r0
- a04:	1f 90       	pop	r1
- a06:	18 95       	reti
+ 98c:	0f 90       	pop	r0
+ 98e:	0f be       	out	0x3f, r0	; 63
+ 990:	0f 90       	pop	r0
+ 992:	1f 90       	pop	r1
+ 994:	18 95       	reti
 
-00000a08 <__vector_15>:
+00000996 <__vector_15>:
 ISR(TIMER0_COMPB_vect)
 {
- a08:	1f 92       	push	r1
- a0a:	0f 92       	push	r0
- a0c:	0f b6       	in	r0, 0x3f	; 63
- a0e:	0f 92       	push	r0
- a10:	11 24       	eor	r1, r1
+ 996:	1f 92       	push	r1
+ 998:	0f 92       	push	r0
+ 99a:	0f b6       	in	r0, 0x3f	; 63
+ 99c:	0f 92       	push	r0
+ 99e:	11 24       	eor	r1, r1
     // high-level delay:
     /* ClearBit(Lis_port1, Lis_Rst); */
     // low-level delay:
     PORTD &= ~(1<<PD6); // clear bit: Rst Low
- a12:	5e 98       	cbi	0x0b, 6	; 11
+ 9a0:	5e 98       	cbi	0x0b, 6	; 11
     // delay is 1.8us-2us from fedge to Rst low
 } 
- a14:	0f 90       	pop	r0
- a16:	0f be       	out	0x3f, r0	; 63
- a18:	0f 90       	pop	r0
- a1a:	1f 90       	pop	r1
- a1c:	18 95       	reti
+ 9a2:	0f 90       	pop	r0
+ 9a4:	0f be       	out	0x3f, r0	; 63
+ 9a6:	0f 90       	pop	r0
+ 9a8:	1f 90       	pop	r1
+ 9aa:	18 95       	reti
 
-00000a1e <_exit>:
- a1e:	f8 94       	cli
+000009ac <GlobalInterruptEnable_Implementation>:
+#include <avr/interrupt.h>      // defines macros `sei()` and `cli()`
+#include <util/delay_basic.h>   // defines microsecond delay loop
 
-00000a20 <__stop_program>:
- a20:	ff cf       	rjmp	.-2      	; 0xa20 <__stop_program>
+// sei()
+static void GlobalInterruptEnable_Implementation(void)
+{ sei(); }
+ 9ac:	78 94       	sei
+ 9ae:	08 95       	ret
+
+000009b0 <GlobalInterruptDisable_Implementation>:
+void (*GlobalInterruptEnable)(void) = GlobalInterruptEnable_Implementation;
+
+// cli()
+static void GlobalInterruptDisable_Implementation(void)
+{ cli(); }
+ 9b0:	f8 94       	cli
+ 9b2:	08 95       	ret
+
+000009b4 <_exit>:
+ 9b4:	f8 94       	cli
+
+000009b6 <__stop_program>:
+ 9b6:	ff cf       	rjmp	.-2      	; 0x9b6 <__stop_program>

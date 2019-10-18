@@ -3,6 +3,7 @@
 #define _SENSORVIS_H
 
 #include <stdint.h>     // uint8_t
+#include <stdbool.h>    // bool, true, false
 
 /* TODO: this is duplicated in Bridge.h. Consolidate into one file used by both. */
 typedef uint8_t const status_byte;  // TODO: move this to a shared lib
@@ -60,5 +61,11 @@ sensor_cmd_key const GetSensorLED_key;
 void ReplyCommandInvalid(void);
 void GetSensorLED(void);
 void LedsShowError(void);
+
+/* =====[ SPI Flags and Data Register Buffer ]===== */
+// global one-byte register to store SpiData
+volatile uint8_t SpiData; // ISR copies SPI data register to SpiData
+// global flag to track when a new byte is in SpiData
+volatile bool HasSpiData; // ISR sets true. Set false after consuming SpiData.
 
 #endif // _SENSORVIS_H

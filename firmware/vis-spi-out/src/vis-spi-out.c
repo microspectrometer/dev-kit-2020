@@ -295,17 +295,26 @@ void LisFrameReadout(void)
 void Get_commands_from_SpiMaster(void);
 int main()
 {
+    // Turn on LEDs TxRx and Done.
     BiColorLedOn(led_0);
     BiColorLedOn(led_1);
-
+    // Turn both LEDs green.
+    BiColorLedGreen(led_0);
+    BiColorLedGreen(led_1);
     SpiSlaveInit();   // respond to Spi-master (e.g., USB host)
+    SpiEnableInterrupt(); // Use interrupts to receive incoming bytes over SPI
+    // See SPI interrupt routine at `ISR(SPI_STC_vect)`
     UartSpiInit();    // take ADC readings
     LisInit();        // power up Lis, start 50kHz clock
+    /* =====[ Initialize SPI Flags and Data Register Buffer ]===== */
+    // global flag to track if there is SpiData
+    HasSpiData = false;
+    // global one-byte register to store SpiData
+    SpiData = 0x00;
+    // Loop forever acting on commands from the SPI Master.
     while(1) Get_commands_from_SpiMaster();
-    /* while(1) RespondToRequestsForData(); // old main loop */
-    /* LisDoNothingFor10Clocks(); */
-    BiColorLedRed(led_0);
-
+    // The following line of code should *never* be called.
+    LedsShowError();
 }
 void testing_main()  // all of my measurement notes are here
 {
@@ -481,25 +490,28 @@ void App_version_of_Slave_RespondToRequestsForData(void)
         // Visually confirm debug LED 2 is red: slave understood master.
         // Visually confirm debug LED 3 is red: success or failure, slave is done.
 }
+
+// global flag to check when available to process the next command
+/* static volatile bool ReadyForNextCmd = true; */
+
 void Get_commands_from_SpiMaster(void)
 {
-    /* if (SpiSlaveRead_OneByte(&cmd)) */
-    /* if ( BitIsSet(Spi_spsr, Spi_InterruptFlag) ) */
-    // Read SPI data register if there is any transmission.
-    if ( SpiTransferIsDone() )
+    /* while (!ReadyForNextCmd); // wait until done executing last command */
+    // Last command is done. Processor is idle.
+    while (!HasSpiData); // wait until there is SPI data to process
+    // There is SPI data. It is a command to execute.
+    SensorCmd* SensorCmdFn = LookupSensorCmd(SpiData);
+    HasSpiData = false; // consumed the data, so clear the flag
+    if (SensorCmdFn == NULL) // Command is invalid.
     {
-        sensor_cmd_key   cmd = *Spi_spdr;
-        /* This first byte is *always* a command from the SpiMaster. */
-        SensorCmd* SensorCmdFn = LookupSensorCmd(cmd);
-        /* Tell SpiMaster if the command is invalid. */
-        /* if (SensorCmdFn == NULL) SpiSlaveWrite_StatusInvalid(cmd); */
-        if (SensorCmdFn == NULL)
-        {
-            ReplyCommandInvalid();
-            LedsShowError();
-        }
-        /* Do command if it is valid. */
-        else SensorCmdFn();
+        ReplyCommandInvalid(); // tell SpiMaster command is invalid
+        LedsShowError(); // indicate invalid command error on LEDs
+    }
+    else // Command is valid.
+    {
+        /* ReadyForNextCmd = false; // note busy doing this command */
+        SensorCmdFn(); // execute command
+        /* ReadyForNextCmd = true; // execution done, ready for next command */
     }
 }
 void RespondToRequestsForData(void)
@@ -1355,7 +1367,9 @@ typedef void (SPI_ISR_task)(void); SPI_ISR_task *DoTaskForThisTest;
 //
 ISR(SPI_STC_vect)
 {
-    DoTaskForThisTest(); // fptr assigned in test code
+    HasSpiData = true;
+    SpiData = *Spi_spdr;
+    /* DoTaskForThisTest(); // fptr assigned in test code */
 }
 ISR(TIMER0_COMPA_vect)
 {

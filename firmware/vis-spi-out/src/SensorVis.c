@@ -50,6 +50,29 @@ uint16_t (*ReadSpiMaster)(uint8_t *, uint16_t) = ReadSpiMaster_Implementation;
 
 void GetSensorLED(void)
 {
+    while (!HasSpiData); // wait for the led number
+    uint8_t led_number = SpiData;
+    HasSpiData = false; // consumed the data, so clear the flag
+    if ((led_number != led_0) && (led_number != led_1))
+    {
+        uint8_t error_reply[] = {error, 0x00}; // send error and placeholder byte
+        LedsShowError();
+        WriteSpiMaster(error_reply,2); // host is asking about nonexistent LED
+        return;
+    }
+    uint8_t led;
+    if (led_number == led_0) led = led_TxRx;
+    else if (led_number == led_1) led = led_Done;
+    uint8_t led_status;
+    if (!BiColorLedIsOn(led)) led_status = led_off;
+    else if (BiColorLedIsRed(led)) led_status = led_red;
+    else led_status = led_green;
+    uint8_t ok_reply[] = {ok, led_status};
+    /* BiColorLedRed(led_TxRx); // first LED red: all is good */
+    WriteSpiMaster(ok_reply,2);
+}
+void oldGetSensorLED(void)
+{
     /** GetSensorLED behavior:\n 
       * - replies with three bytes if led is non existent\n 
       * - replies msg status error if led is non existent\n 
