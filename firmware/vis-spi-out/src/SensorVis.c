@@ -28,7 +28,9 @@ extern uint8_t const led_Done;      // PINC1
 /* TODO: unit test WriteSpiMaster */
 static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint16_t nbytes)
 {
+    ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt
     SpiSlaveSendBytes(write_buffer, nbytes); // Placeholder until I can clean this up.
+    SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt
     return nbytes; // TODO: use actual num_bytes_sent
     /* return num_bytes_sent; */
 }
