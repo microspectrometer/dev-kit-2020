@@ -216,7 +216,14 @@ void SpiSlaveInit(void)
     /* See SpiSlaveSignalDataIsReady for explanation. */
     ClearBit(Spi_port, Spi_Miso);
     /* ------------------------ */
-    ClearPendingSpiInterrupt();
+    /* ClearPendingSpiInterrupt(); */
+    // Slave uses interrupts to receive incoming bytes over SPI.
+    SpiEnableInterrupt();
+    // Slave disables interrupts for transmitting bytes over SPI.
+    // In client code, enable interrupt with:
+    /* SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt */
+    // and disable with:
+    /* ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt */
 }
 static void EnableTransferCompleteInterrupt(void)
 {
