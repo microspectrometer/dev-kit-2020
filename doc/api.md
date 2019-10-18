@@ -1,12 +1,29 @@
 % USB Protocol Design for Developing the Firmware and Host-PC Python API
 
 # 2019-10-17 update
-- reply size is always standard
-- e.g, GetBridgeLED: if status is error, still send one byte placeholder for led
-  status
-- implement SPI without needing a handshake after the command byte (use
+- [ ] reply size is always standard
+    - e.g, GetBridgeLED: if status is error, still send one byte placeholder for
+      led status
+- [ ] Sensor reply to CaptureFrame starts with reply size, but no other command
+  starts with reply size
+- [ ] implement SPI without needing a handshake after the command byte (use
   interrupts)
-- check that USB buffer does not overflow
+- [ ] check that USB buffer does not overflow
+    - do a system test confirming that FTDI chip is buffering
+    - concern is that if SPI tucks away incoming bytes in the ISR, it will
+      overflow whatever SPI buffer I designate or it will interrupt other
+      activity
+
+## Sean tasks
+- [ ] figure out how to build with avr-gcc and flash with avrdude
+- [ ] create script I can invoke from Makefile to generate C header file from
+  JSON
+- [ ] finish API to the point I can use it instead of my own Python code for
+  system tests
+
+## Mike tasks
+- [ ] make programmer name (atmelice or avrisp) a variable we in the Makefile for
+  setting programmer name when invoking make
 
 # See Sean's UsbProtocolTable
 - created as an OpenOffice spreadsheet
