@@ -16,6 +16,8 @@ extern uint8_t const Spi_Ss;    // used in software for master
 extern uint8_t const Spi_Mosi;  // used in software for master
 extern uint8_t const Spi_Sck;   // used in software for master
 extern uint8_t const Spi_Miso;  // used in software for slave
+/* ---5-Wire SPI: Slave drives Data Ready line to signal Master when Data is Ready--- */
+extern uint8_t const Spi_DataReady;  //  master-in,  slave-out
 /* ---SPI Registers--- */
 extern uint8_t volatile * const Spi_spcr;  // SPI control register
 extern uint8_t volatile * const Spi_spsr;  // SPI status register
@@ -255,6 +257,7 @@ inline void SpiMasterWriteN_NoInlineHelpers(uint8_t const * bytes, uint8_t const
         /* ? Delay3CpuCyclesPerTick(50); */
     }
 }
+/* =====[ NOT USED ANYMORE: ]===== */
 inline bool SpiSlaveShowsDataReady(void)
 {
     /** SpiSlave drives `Spi_Miso` low to signal to the SpiMaster
@@ -262,12 +265,18 @@ inline bool SpiSlaveShowsDataReady(void)
      */
     return BitIsClear(Spi_pin, Spi_Miso);
 }
+/* =====[ NOT USED ANYMORE: ]===== */
 inline bool IsSpiSlaveReadyToSend(void)
 {
     /** SpiSlave releases `Spi_Miso` and it slowly rises high via its pull-up. */
     return BitIsSet(Spi_pin, Spi_Miso);
 }
 inline void SpiMasterWaitForSlaveReady(void)
+{
+    while( BitIsSet(Spi_pin, Spi_DataReady)); // DataReady LOW signals ready
+}
+
+inline void FourWire_SpiMasterWaitForSlaveReady(void)
 {
     /** Wait for the *Data Ready* signal from the SpiSlave. */
     /* Watch for SpiSlave to spike `Spi_Miso` low. */

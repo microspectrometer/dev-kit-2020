@@ -65,6 +65,15 @@ void Get_commands_from_SpiMaster(void)
 }
 ISR(SPI_STC_vect)
 {
-    HasSpiData = true;
-    SpiData = *Spi_spdr;
+    // ---For reading a byte---
+    // Client is stuck in loop `while (!HasSpiData)`.
+    HasSpiData = true; // client responsible to reset `HasSpiData` to false
+    SpiData = *Spi_spdr; // client grabs data from `SpiData`
+    // DataReady was already HIGH, pulling HIGH again makes no difference.
+
+    // ---For writing a byte---
+    // Client pulled DataReady LOW to signal Master that data is ready.
+    SetBit(Spi_port, Spi_DataReady); // ISR resets DataReady to idle HIGH
+    // Client is still responsible to reset `HasSpiData` to false.
+    // But client ignores `SpiData`.
 }

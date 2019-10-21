@@ -33,6 +33,7 @@ uint8_t const Spi_Ss    =   PB2;    // slave select driven by the master
 uint8_t const Spi_Mosi  =   PB3;    // master-out, slave-in
 uint8_t const Spi_Miso  =   PB4;    // master-in,  slave-out
 uint8_t const Spi_Sck   =   PB5;    // Spi clock driven by the master
+uint8_t const Spi_DataReady    =   PB1;    //  master-in,  slave-out
 
 /* =====[ SPI control register bits ]===== */
 uint8_t const Spi_MasterSlaveSelect = MSTR;

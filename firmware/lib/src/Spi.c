@@ -129,17 +129,31 @@ static void SetMisoAsPullupInput(void) // For SpiMaster only!
     ClearBit(Spi_ddr, Spi_Miso);    // make it an input
     SetBit(Spi_port, Spi_Miso);     // enable pull-up
 }
+void SetDataReadyAsPullupInput(void) // For SpiMaster only!
+{
+    ClearBit(Spi_ddr, Spi_DataReady); // make it an input
+    SetBit(Spi_port, Spi_DataReady); // enable pull-up
+}
+void SetDataReadyAsOutputIdlesHigh(void) // For SpiSlave only!
+{
+    SetBit(Spi_port, Spi_DataReady); // idle HIGH
+    SetBit(Spi_ddr, Spi_DataReady); // make it an output pin
+}
+
 void SpiMasterInit(void)
 {
     SlaveSelectIdleHigh();
     SetMisoAsPullupInput(); // protect against false SpiResponseIsReady signals
+    // DataReady LOW signals Master that Slave is ready to send a byte of data
+    SetDataReadyAsPullupInput(); // Added 2019-10-18:
     SetSlaveSelectAsOutput();  // pin-direction is user-defined
     SetMosiAsOutput();         // pin-direction is user-defined
     SetSckAsOutput();          // pin-direction is user-defined
     MakeMeTheMaster();
     SetClockRateToFoscDividedBy8();  // hardcode the SPI clock rate at 1.25MHz
     EnableSpi();
-    ClearPendingSpiInterrupt();
+    ClearPendingSpiInterrupt(); // access SPI status reg and SPI data reg
+    // Master does *not* use interrupts to send and receive bytes over SPI.
 }
 void SpiMasterDisable(void)
 {
@@ -202,29 +216,40 @@ static void SetMisoAsOutput(void)
 }
 void SpiSlaveInit(void)
 {
-    // After SPI is enabled, the alternate port function (SPI MISO) takes
-    // control of the PORT value.
-    // MISO is only driven hard high or hard low when:
-    // - a SPI tranfer is in progress
-    // - SPI is disabled
-    // When not driven hard, the SPI module makes MISO a pull-up.
-    SetMisoAsOutput();         // pin-direction is user-defined
+    // Slave outputs LOW on DataReady to signal Master there is data to read.
+    SetDataReadyAsOutputIdlesHigh();
+    // TODO: do not drive MISO, that's why we have DataReady
+    SetMisoAsOutput(); // pin-direction is user-defined
     EnableSpi();
-    /* ------------------------ */
-    /* | Added on 2019-03-04: | */
-    /* Drive Spi_Miso pin low when the SPI module is disabled. */
-    /* See SpiSlaveSignalDataIsReady for explanation. */
-    ClearBit(Spi_port, Spi_Miso);
-    /* ------------------------ */
-    /* ClearPendingSpiInterrupt(); */
-    // Slave uses interrupts to receive incoming bytes over SPI.
+    ClearPendingSpiInterrupt(); // access SPI status reg and SPI data reg
+    // Slave uses interrupts to send and receive bytes over SPI.
     SpiEnableInterrupt();
-    // Slave disables interrupts for transmitting bytes over SPI.
-    // In client code, enable interrupt with:
-    /* SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt */
-    // and disable with:
-    /* ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt */
 }
+/* void oldSpiSlaveInit(void) */
+/* { */
+/*     // After SPI is enabled, the alternate port function (SPI MISO) takes */
+/*     // control of the PORT value. */
+/*     // MISO is only driven hard high or hard low when: */
+/*     // - a SPI tranfer is in progress */
+/*     // - SPI is disabled */
+/*     // When not driven hard, the SPI module makes MISO a pull-up. */
+/*     SetMisoAsOutput();         // pin-direction is user-defined */
+/*     EnableSpi(); */
+/*     /1* ------------------------ *1/ */
+/*     /1* | Added on 2019-03-04: | *1/ */
+/*     /1* Drive Spi_Miso pin low when the SPI module is disabled. *1/ */
+/*     /1* See FourWire_SpiSlaveSignalDataIsReady for explanation. *1/ */
+/*     ClearBit(Spi_port, Spi_Miso); */
+/*     /1* ------------------------ *1/ */
+/*     /1* ClearPendingSpiInterrupt(); *1/ */
+/*     // Slave uses interrupts to receive incoming bytes over SPI. */
+/*     SpiEnableInterrupt(); */
+/*     // Slave disables interrupts for transmitting bytes over SPI. */
+/*     // In client code, enable interrupt with: */
+/*     /1* SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt *1/ */
+/*     // and disable with: */
+/*     /1* ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt *1/ */
+/* } */
 static void EnableTransferCompleteInterrupt(void)
 {
     SetBit(Spi_spcr, Spi_InterruptEnable);
@@ -239,20 +264,24 @@ void SpiEnableInterrupt(void)
 static void SpiSlaveSignalDataIsReady_Implementation(void)
 {
 
-    /* Prepare to output a low. */
-    ClearBit(Spi_port, Spi_Miso);
-
-    /* Make Spi_Miso a general purpose I/O pin. MISO goes low. */
-    DisableSpi();
-
-    /* Should I drive the pin high before re-enabling SPI? */
-    /* ? SetBit(Spi_port, Spi_Miso); */
-    /* If I do this, I think the SPI master must add a small delay */
-    /* after seeing MISO go high to be sure the SPI slave is ready. */
-
-    /* Make Spi_Miso the SPI Slave Output pin. MISO slowly rises up. */
-    EnableSpi();
 }
+/* static void FourWire_SpiSlaveSignalDataIsReady_Implementation(void) */
+/* { */
+
+/*     /1* Prepare to output a low. *1/ */
+/*     ClearBit(Spi_port, Spi_Miso); */
+
+/*     /1* Make Spi_Miso a general purpose I/O pin. MISO goes low. *1/ */
+/*     DisableSpi(); */
+
+/*     /1* Should I drive the pin high before re-enabling SPI? *1/ */
+/*     /1* ? SetBit(Spi_port, Spi_Miso); *1/ */
+/*     /1* If I do this, I think the SPI master must add a small delay *1/ */
+/*     /1* after seeing MISO go high to be sure the SPI slave is ready. *1/ */
+
+/*     /1* Make Spi_Miso the SPI Slave Output pin. MISO slowly rises up. *1/ */
+/*     EnableSpi(); */
+/* } */
     /** `SpiSlave` signals *Data Ready* by driving pin `Spi_Miso` low.
      *  Attention: this is not the usual step waveform. Instead, pin `Spi_Miso`
      *  idles high, spikes low, then slowly rises back.
@@ -284,9 +313,14 @@ void SpiSlaveSendBytes(uint8_t const *bytes, uint16_t const nbytes)
         /* *Spi_spdr = bytes[byte_index]; */
         WriteSpiDataRegister(bytes[byte_index]);
         SpiSlaveSignalDataIsReady();
+        /* =====[ OLD: wait for transfer to be done ]===== */
         while ( !SpiTransferIsDone() );
         // Added 2018-08-23: I missed this before
         SpiClearFlagTransferIsDone(); // TODO: add unit tests for this
+        /* =====[ NEW: wait for transfer to be done in ISR ]===== */
+        /* // This does not work in lib Spi because HasSpiData is an application global. */
+        /* while (!HasSpiData); */
+        /* HasSpiData = false; // ignore rx byte, clear the flag */
     }
     // When is it safe to load the next byte?
         // Just wait for the transmission to end.

@@ -28,12 +28,29 @@ extern uint8_t const led_Done;      // PINC1
 /* TODO: unit test WriteSpiMaster */
 static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint16_t nbytes)
 {
-    ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt
-    SpiSlaveSendBytes(write_buffer, nbytes); // Placeholder until I can clean this up.
-    SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt
-    return nbytes; // TODO: use actual num_bytes_sent
-    /* return num_bytes_sent; */
+    uint16_t byte_index;
+    for (byte_index = 0; byte_index < nbytes; byte_index++)
+    {
+        *Spi_spdr = write_buffer[byte_index]; // load byte in SPI data register
+        // TODO: rewrite Signal to use DataReady wire
+        /* SpiSlaveSignalDataIsReady(); */
+        /* =====[ NEW: use DataReady to signal Data is Ready ]===== */
+        ClearBit(Spi_port, Spi_DataReady); // LOW signals data is ready
+        /* =====[ NEW: wait for transfer to be done in ISR ]===== */
+        while (!HasSpiData); // HasSpiData is true when the SPI transfer is done
+        HasSpiData = false; // ignore rx byte, clear the flag
+        // ISR pulls DataReady HIGH again
+    }
+    return byte_index; // byte_index == num_bytes_actually_sent
 }
+/* static uint16_t NoIsrWriteSpiMaster_Implementation(uint8_t const *write_buffer, uint16_t nbytes) */
+/* { */
+/*     ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt */
+/*     SpiSlaveSendBytes(write_buffer, nbytes); // Placeholder until I can clean this up. */
+/*     SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt */
+/*     return nbytes; // TODO: use actual num_bytes_sent */
+/*     /1* return num_bytes_sent; *1/ */
+/* } */
 uint16_t (*WriteSpiMaster)(uint8_t const *, uint16_t) = WriteSpiMaster_Implementation;
 
 static uint16_t ReadSpiMaster_Implementation(uint8_t *read_buffer, uint16_t nbytes)
