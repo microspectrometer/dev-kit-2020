@@ -63,9 +63,22 @@ void GetSensorLED(void);
 void LedsShowError(void);
 
 /* =====[ SPI Flags and Data Register Buffer ]===== */
+// typedef eliminates need to declare a Queue with `struct` keyword.
+typedef struct Queue_s Queue_s; // Queue_s defined in SensorVis.c.
+// Declare global SPI FIFO Rx Buffer (memory allocated in .c).
+extern volatile uint8_t spi_rx_buffer[];
+// Access SPI FIFO Rx Buffer through a Queue ptr (definition and mem alloc in .c ).
+extern volatile Queue_s * SpiFifo;
+// Old:
 // global one-byte register to store SpiData
 volatile uint8_t SpiData; // ISR copies SPI data register to SpiData
 // global flag to track when a new byte is in SpiData
 volatile bool HasSpiData; // ISR sets true. Set false after consuming SpiData.
+void QueueInit(volatile Queue_s * SpiFifo, volatile uint8_t * spi_rx_buffer);
+uint16_t QueueLength(volatile Queue_s * pq);
+void QueuePush(volatile Queue_s * SpiFifo, uint8_t data_to_push);
+bool QueueIsFull(volatile Queue_s * SpiFifo);
+bool QueueIsEmpty(volatile Queue_s * SpiFifo);
+uint8_t QueuePop(volatile Queue_s * SpiFifo);
 
 #endif // _SENSORVIS_H

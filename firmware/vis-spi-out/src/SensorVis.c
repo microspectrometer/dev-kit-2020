@@ -4,6 +4,56 @@
 #include "Lis.h" // because SensorCfgLis() calls LisWriteCfg()
 #include "stdlib.h" // defines NULL
 
+// Allocate memory for the SPI FIFO Rx Buffer.
+#define MaxLengthOfSpiRxQueue 2 // bytes
+volatile uint8_t spi_rx_buffer[MaxLengthOfSpiRxQueue]; // global decl in .h
+// Define a Queue struct for accessing the SPI FIFO Rx Buffer.
+struct Queue_s {
+    volatile uint8_t * head; // push writes next byte to this address
+    volatile uint8_t * tail; // pop reads next byte from this address
+    volatile uint16_t length; // number of bytes waiting to be read
+};
+// Struct definitions do not declare symbols or allocate memory.
+// Global symbol is declared in .h for access by unit tests and applications.
+// Allocate memory for a Queue struct to access the SPI FIFO Rx Buffer.
+volatile Queue_s Queue;
+// Define the global pointer to the Queue (declared in .h).
+volatile Queue_s * SpiFifo = &Queue;
+// Define Queue API.
+void QueueInit(volatile Queue_s * pq, volatile uint8_t * pqmem)
+{ // Empty the Rx Buffer.
+  // head/tail point to first byte
+    pq->head = pqmem;
+    pq->tail = pqmem;
+  // queue length is 0
+    pq->length = 0;
+}
+uint16_t QueueLength(volatile Queue_s * pq)
+{ // Return length of Queue
+    return pq->length;
+}
+void QueuePush(volatile Queue_s * pq, uint8_t data)
+{ // Push data onto the Queue
+    if (QueueIsFull(pq)) return;
+    *(pq->head++) = data;
+    pq->length++;
+}
+uint8_t QueuePop(volatile Queue_s *pq)
+{
+    if (QueueIsEmpty(pq)) return 0;
+    pq->length--;
+    return *(pq->tail++);
+}
+bool QueueIsFull(volatile Queue_s * pq)
+{ // Return true if Queue is full
+    if (pq->length >= MaxLengthOfSpiRxQueue) return true;
+    return false;
+}
+bool QueueIsEmpty(volatile Queue_s * pq)
+{ // Return true if Queue is empty
+    if (pq->length == 0) return true;
+    return false;
+}
 /* TODO: pull these constants from a common file along with Bridge.c */
 /* sensor_cmd_key const dummy0_key = 0; */
 /* sensor_cmd_key const dummy1_key = 1; */
