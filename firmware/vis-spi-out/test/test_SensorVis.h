@@ -29,5 +29,8 @@ void test_QueuePop_returns_0_if_Queue_is_empty(void);
 void test_QueuePop_does_not_increment_tail_if_Queue_is_empty(void);
 void test_QueueIsEmpty_returns_true_if_Queue_is_empty(void);
 void test_QueueIsEmpty_returns_false_if_Queue_is_not_empty(void);
+void test_QueuePush_wraps_head_back_to_buffer_index_0(void);
+void test_QueueInit_sets_buffer_length(void);
+void test_QueuePop_wraps_tail_back_to_buffer_index_0(void);
 
 #endif // _TEST_SENSORVIS_H

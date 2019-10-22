@@ -75,5 +75,8 @@ int main(void)
     RUN_TEST(test_QueuePop_does_not_increment_tail_if_Queue_is_empty);
     RUN_TEST(test_QueueIsEmpty_returns_true_if_Queue_is_empty);
     RUN_TEST(test_QueueIsEmpty_returns_false_if_Queue_is_not_empty);
+    RUN_TEST(test_QueuePush_wraps_head_back_to_buffer_index_0);
+    RUN_TEST(test_QueueInit_sets_buffer_length);
+    RUN_TEST(test_QueuePop_wraps_tail_back_to_buffer_index_0);
     return UNITY_END();
 }

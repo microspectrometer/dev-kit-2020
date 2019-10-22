@@ -65,17 +65,41 @@ void test_struct_syntax(void)
     /*     SpiData */
     /*     ); */
 }
+void test_QueueInit_sets_buffer_length(void)
+{
+    /* =====[ Setup ]===== */
+    uint16_t const max_length = 3;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    /* =====[ Operate ]===== */
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
+    /* =====[ Test ]===== */
+    // Fill the Queue. When it is full, check it's length.
+    uint16_t bytes_pushed = 0;
+    while(bytes_pushed < max_length)
+    {
+        QueuePush(SpiFifo, 0);
+        bytes_pushed++;
+    }
+    // Check correct test setup: assert bytes_pushed == max_length
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(
+        max_length, bytes_pushed,
+        "Failed to set this test up correctly. "
+        "Must push exact number of bytes to fill the buffer."
+        );
+    // Is length of Queue == size of buffer passed in Init?
+    TEST_ASSERT_EQUAL_UINT16(max_length, QueueLength(SpiFifo));
+}
 void test_QueueLength_is_0_after_QueueInit(void)
 {
     /* =====[ Operate ]===== */
-    QueueInit(SpiFifo, spi_rx_buffer);
+    QueueInit(SpiFifo, spi_rx_buffer, MaxLengthOfSpiRxQueue);
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_UINT16(0, QueueLength(SpiFifo));
 }
 void test_QueueLength_increments_after_a_push(void)
 {
     /* =====[ Operate ]===== */
-    QueueInit(SpiFifo, spi_rx_buffer);
+    QueueInit(SpiFifo, spi_rx_buffer, MaxLengthOfSpiRxQueue);
     QueuePush(SpiFifo, 0xAB);
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_UINT16(1, QueueLength(SpiFifo));
@@ -83,7 +107,7 @@ void test_QueueLength_increments_after_a_push(void)
 void test_QueuePush_writes_to_byte_pointed_to_by_head(void)
 {
     /* =====[ Setup ]===== */
-    QueueInit(SpiFifo, spi_rx_buffer);
+    QueueInit(SpiFifo, spi_rx_buffer, MaxLengthOfSpiRxQueue);
     /* =====[ Operate ]===== */
     QueuePush(SpiFifo, 0xAB);
     /* =====[ Test ]===== */
@@ -92,7 +116,7 @@ void test_QueuePush_writes_to_byte_pointed_to_by_head(void)
 void test_QueuePush_increments_head(void)
 {
     /* =====[ Setup ]===== */
-    QueueInit(SpiFifo, spi_rx_buffer);
+    QueueInit(SpiFifo, spi_rx_buffer, MaxLengthOfSpiRxQueue);
     /* =====[ Operate ]===== */
     QueuePush(SpiFifo, 0xAB);
     QueuePush(SpiFifo, 0xCD);
@@ -103,12 +127,16 @@ void test_QueueIsFull_returns_true_if_Queue_is_full(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue to give test control over max queue length
-    uint8_t const max_length = 2;
+    uint16_t const max_length = 100;
     volatile uint8_t fake_spi_rx_buffer[max_length];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
-    // Fill the queue
-    QueuePush(SpiFifo, 0xAB);
-    QueuePush(SpiFifo, 0xCD);
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
+    // Fill the Queue
+    uint16_t bytes_pushed = 0;
+    while(bytes_pushed < max_length)
+    {
+        QueuePush(SpiFifo, 0);
+        bytes_pushed++;
+    }
     // Assert the Length is at its max value.
     TEST_ASSERT_EQUAL_UINT16(max_length, QueueLength(SpiFifo));
     /* =====[ Operate and Test ]===== */
@@ -118,9 +146,9 @@ void test_QueueIsFull_returns_false_if_Queue_is_not_full(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue to give test control over max queue length
-    uint8_t const max_length = 2;
+    uint16_t const max_length = 2;
     volatile uint8_t fake_spi_rx_buffer[max_length];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Do not fill the queue
     QueuePush(SpiFifo, 0xAB);
     // Assert the Length is less than the max value.
@@ -132,8 +160,9 @@ void test_QueueIsEmpty_returns_true_if_Queue_is_empty(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue to give test control over max queue length
-    volatile uint8_t fake_spi_rx_buffer[2];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Assert the Queue Length is 0 (nothing pushed onto Queue yet)
     TEST_ASSERT_EQUAL_UINT16(0, QueueLength(SpiFifo));
     /* =====[ Operate and Test ]===== */
@@ -143,8 +172,9 @@ void test_QueueIsEmpty_returns_false_if_Queue_is_not_empty(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue to give test control over max queue length
-    volatile uint8_t fake_spi_rx_buffer[2];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     QueuePush(SpiFifo, 0xAB);
     // Assert the Queue Length is 1
     TEST_ASSERT_EQUAL_UINT16(1, QueueLength(SpiFifo));
@@ -155,9 +185,9 @@ void test_QueuePush_does_nothing_if_Queue_is_full(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue to give test control over max queue length
-    uint8_t const max_length = 2;
+    uint16_t const max_length = 2;
     volatile uint8_t fake_spi_rx_buffer[max_length];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Fill the queue
     QueuePush(SpiFifo, 0xAB);
     QueuePush(SpiFifo, 0xCD);
@@ -175,9 +205,9 @@ void test_QueueLength_does_not_increase_beyond_max_length(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue to give test control over max queue length
-    uint8_t const max_length = 2;
+    uint16_t const max_length = 2;
     volatile uint8_t fake_spi_rx_buffer[max_length];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Fill the queue
     QueuePush(SpiFifo, 0xAB);
     QueuePush(SpiFifo, 0xCD);
@@ -194,8 +224,9 @@ void test_QueueLength_decrements_after_a_pop(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue
-    volatile uint8_t fake_spi_rx_buffer[2];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Fill the queue
     QueuePush(SpiFifo, 0xAB);
     QueuePush(SpiFifo, 0xCD);
@@ -210,8 +241,9 @@ void test_QueuePop_reads_byte_pointed_to_by_tail(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue
-    volatile uint8_t fake_spi_rx_buffer[2];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Fill the queue
     QueuePush(SpiFifo, 0xAB);
     QueuePush(SpiFifo, 0xCD);
@@ -224,8 +256,9 @@ void test_QueuePop_increments_tail(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue
-    volatile uint8_t fake_spi_rx_buffer[2];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Fill the queue
     QueuePush(SpiFifo, 0xAB);
     QueuePush(SpiFifo, 0xCD);
@@ -242,8 +275,9 @@ void test_QueueLength_does_not_decrease_below_zero(void)
 {
     /* =====[ Setup ]===== */
     // Create a fake Spi Rx Queue
-    volatile uint8_t fake_spi_rx_buffer[2];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Fill the queue
     QueuePush(SpiFifo, 0xAB);
     QueuePush(SpiFifo, 0xCD);
@@ -262,8 +296,9 @@ void test_QueueLength_does_not_decrease_below_zero(void)
 void test_QueuePop_returns_0_if_Queue_is_empty(void)
 {
     /* =====[ Setup ]===== */
-    volatile uint8_t fake_spi_rx_buffer[2];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Put fake old garbage non-zero values in the fake buffer
     fake_spi_rx_buffer[0] = 0xAB;
     fake_spi_rx_buffer[1] = 0xCD;
@@ -274,8 +309,9 @@ void test_QueuePop_returns_0_if_Queue_is_empty(void)
 void test_QueuePop_does_not_increment_tail_if_Queue_is_empty(void)
 {
     /* =====[ Setup ]===== */
-    volatile uint8_t fake_spi_rx_buffer[2];
-    QueueInit(SpiFifo, fake_spi_rx_buffer);
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
     // Put fake old garbage non-zero values in the fake buffer
     fake_spi_rx_buffer[0] = 0xAB;
     fake_spi_rx_buffer[1] = 0xCD;
@@ -291,7 +327,68 @@ void test_QueuePop_does_not_increment_tail_if_Queue_is_empty(void)
     // Now tail should be at byte 1, but Queue is empty, so Pop should return 0.
     TEST_ASSERT_EQUAL_UINT8(0, QueuePop(SpiFifo));
 }
-
+void test_QueuePush_wraps_head_back_to_buffer_index_0(void)
+{
+    /* =====[ Setup ]===== */
+    // Create a fake Spi Rx Queue to give test control over max queue length
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
+    // Fill the queue
+    QueuePush(SpiFifo, 11);
+    QueuePush(SpiFifo, 22);
+    // Assert the Queue is full
+    TEST_ASSERT_TRUE(QueueIsFull(SpiFifo));
+    // Assert the head is pointing at the last byte index in the Queue.
+    TEST_ASSERT_EQUAL_UINT16(max_length, QueueLength(SpiFifo));
+    // Empty the queue
+    QueuePop(SpiFifo);
+    QueuePop(SpiFifo);
+    // Assert the Queue is empty.
+    TEST_ASSERT_TRUE(QueueIsEmpty(SpiFifo));
+    /* =====[ Operate ]===== */
+    // Put more data on the Queue. `head` should wrap around.
+    QueuePush(SpiFifo, 33);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_MESSAGE(
+        33, fake_spi_rx_buffer[0],
+        "Failed to overwrite byte 0! "
+        "Head should wrap around when it reaches the end of the array."
+        );
+}
+void test_QueuePop_wraps_tail_back_to_buffer_index_0(void)
+{
+    /* =====[ Setup ]===== */
+    // Create a fake Spi Rx Queue to give test control over max queue length
+    uint16_t const max_length = 2;
+    volatile uint8_t fake_spi_rx_buffer[max_length+1];
+    QueueInit(SpiFifo, fake_spi_rx_buffer, max_length);
+    // Fill the queue
+    QueuePush(SpiFifo, 11);
+    QueuePush(SpiFifo, 22);
+    // Load next byte of buffer with value Pop should never see
+    fake_spi_rx_buffer[2] = 99;
+    // Assert the Queue is full
+    TEST_ASSERT_TRUE(QueueIsFull(SpiFifo));
+    // Empty the queue
+    QueuePop(SpiFifo);
+    QueuePop(SpiFifo);
+    // Assert the Queue is empty.
+    TEST_ASSERT_TRUE(QueueIsEmpty(SpiFifo));
+    // Put more data on the Queue. `head` should wrap around.
+    QueuePush(SpiFifo, 33);
+    // Check test is setup: assert byte 0 is 33.
+    TEST_ASSERT_EQUAL_MESSAGE(
+        33, fake_spi_rx_buffer[0],
+        "Failed to overwrite byte 0! "
+        "Head should wrap around when it reaches the end of the array."
+        );
+    /* =====[ Operate and Test ]===== */
+    // Pop data from the Queue.
+    // `tail` should wrap around to read the value just pushed.
+    // If `tail` does not wrap, it will point to the value 99.
+    TEST_ASSERT_EQUAL_UINT8(33, QueuePop(SpiFifo));
+}
 
 /* =====[ Mock ReadSpiMaster() for unit-testing GetSensorLED() ]===== */
 // Define call recorded when func-under-test calls mocked function.

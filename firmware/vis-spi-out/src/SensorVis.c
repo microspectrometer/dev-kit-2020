@@ -5,13 +5,14 @@
 #include "stdlib.h" // defines NULL
 
 // Allocate memory for the SPI FIFO Rx Buffer.
-#define MaxLengthOfSpiRxQueue 2 // bytes
 volatile uint8_t spi_rx_buffer[MaxLengthOfSpiRxQueue]; // global decl in .h
 // Define a Queue struct for accessing the SPI FIFO Rx Buffer.
 struct Queue_s {
-    volatile uint8_t * head; // push writes next byte to this address
-    volatile uint8_t * tail; // pop reads next byte from this address
+    volatile uint8_t * buffer; // address of SPI FIFO Rx Buffer
+    volatile uint8_t head; // index buffer at head for Push
+    volatile uint8_t tail; // index buffer at tail for Pop
     volatile uint16_t length; // number of bytes waiting to be read
+    volatile uint16_t max_length; // maximum number of bytes the queue can hold
 };
 // Struct definitions do not declare symbols or allocate memory.
 // Global symbol is declared in .h for access by unit tests and applications.
@@ -20,12 +21,16 @@ volatile Queue_s Queue;
 // Define the global pointer to the Queue (declared in .h).
 volatile Queue_s * SpiFifo = &Queue;
 // Define Queue API.
-void QueueInit(volatile Queue_s * pq, volatile uint8_t * pqmem)
+void QueueInit(volatile Queue_s * pq, volatile uint8_t * pqmem, uint16_t const mem_size)
 { // Empty the Rx Buffer.
-  // head/tail point to first byte
-    pq->head = pqmem;
-    pq->tail = pqmem;
-  // queue length is 0
+    // Assign Queue to access the array
+    pq->buffer = pqmem;
+    // Store array size
+    pq->max_length = mem_size;
+    // head/tail index first byte
+    pq->head = 0;
+    pq->tail = 0;
+    // queue length is 0
     pq->length = 0;
 }
 uint16_t QueueLength(volatile Queue_s * pq)
@@ -35,18 +40,22 @@ uint16_t QueueLength(volatile Queue_s * pq)
 void QueuePush(volatile Queue_s * pq, uint8_t data)
 { // Push data onto the Queue
     if (QueueIsFull(pq)) return;
-    *(pq->head++) = data;
+    // wrap head to beginning of buffer when it reaches the end of the buffer
+    if (pq->head >= pq->max_length) pq->head = 0;
+    pq->buffer[pq->head++] = data;
     pq->length++;
 }
 uint8_t QueuePop(volatile Queue_s *pq)
 {
     if (QueueIsEmpty(pq)) return 0;
+    // wrap tail to beginning of buffer when it reaches the end of the buffer
+    if (pq->tail >= pq->max_length) pq->tail = 0;
     pq->length--;
-    return *(pq->tail++);
+    return pq->buffer[pq->tail++];
 }
 bool QueueIsFull(volatile Queue_s * pq)
 { // Return true if Queue is full
-    if (pq->length >= MaxLengthOfSpiRxQueue) return true;
+    if (pq->length >= pq->max_length) return true;
     return false;
 }
 bool QueueIsEmpty(volatile Queue_s * pq)
@@ -54,6 +63,7 @@ bool QueueIsEmpty(volatile Queue_s * pq)
     if (pq->length == 0) return true;
     return false;
 }
+
 /* TODO: pull these constants from a common file along with Bridge.c */
 /* sensor_cmd_key const dummy0_key = 0; */
 /* sensor_cmd_key const dummy1_key = 1; */

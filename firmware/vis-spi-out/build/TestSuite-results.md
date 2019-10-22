@@ -14,7 +14,10 @@ test/test_runner.c:74:test_QueuePop_returns_0_if_Queue_is_empty:PASS
 test/test_runner.c:75:test_QueuePop_does_not_increment_tail_if_Queue_is_empty:PASS
 test/test_runner.c:76:test_QueueIsEmpty_returns_true_if_Queue_is_empty:PASS
 test/test_runner.c:77:test_QueueIsEmpty_returns_false_if_Queue_is_not_empty:PASS
+test/test_runner.c:78:test_QueuePush_wraps_head_back_to_buffer_index_0:PASS
+test/test_runner.c:79:test_QueueInit_sets_buffer_length:PASS
+test/test_runner.c:80:test_QueuePop_wraps_tail_back_to_buffer_index_0:PASS
 
 -----------------------
-16 Tests 0 Failures 0 Ignored 
+19 Tests 0 Failures 0 Ignored 
 OK

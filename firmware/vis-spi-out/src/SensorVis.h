@@ -67,6 +67,8 @@ void LedsShowError(void);
 typedef struct Queue_s Queue_s; // Queue_s defined in SensorVis.c.
 // Declare global SPI FIFO Rx Buffer (memory allocated in .c).
 extern volatile uint8_t spi_rx_buffer[];
+// Define the maximum number of bytes the SPI FIFO Rx Buffer can hold.
+#define MaxLengthOfSpiRxQueue 5 // bytes
 // Access SPI FIFO Rx Buffer through a Queue ptr (definition and mem alloc in .c ).
 extern volatile Queue_s * SpiFifo;
 // Old:
@@ -74,7 +76,7 @@ extern volatile Queue_s * SpiFifo;
 volatile uint8_t SpiData; // ISR copies SPI data register to SpiData
 // global flag to track when a new byte is in SpiData
 volatile bool HasSpiData; // ISR sets true. Set false after consuming SpiData.
-void QueueInit(volatile Queue_s * SpiFifo, volatile uint8_t * spi_rx_buffer);
+void QueueInit(volatile Queue_s * SpiFifo, volatile uint8_t * spi_rx_buffer, uint16_t const size_of_spi_rx_buffer_in_bytes);
 uint16_t QueueLength(volatile Queue_s * pq);
 void QueuePush(volatile Queue_s * SpiFifo, uint8_t data_to_push);
 bool QueueIsFull(volatile Queue_s * SpiFifo);
