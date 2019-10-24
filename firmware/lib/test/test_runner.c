@@ -14,6 +14,7 @@
 #include "test_Lis.h"       // mBrd I/O to LIS-770i
 #include "test_Pwm.h"       // lib `Lis` uses PWM for the clock signal
 #include "test_Auto.h"      // lib `Auto` for running auto-exposure on the mBrd
+#include "test_Queue.h"     // lib 'Queue' for Sensor SPI Rx FIFO Buffer
 
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock;
@@ -114,6 +115,33 @@ void test_UsbReadBytes(bool run_test)
         setUp = SetUp_UsbReadBytes; tearDown = TearDown_UsbReadBytes;
         RUN_TEST(UsbReadBytes_reads_nbytes);
         RUN_TEST(UsbReadBytes_reads_expected_payload);
+    }
+}
+void test_Queue(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        /* RUN_TEST(test_struct_syntax); */
+        RUN_TEST(test_QueueInit_sets_buffer_length);
+        RUN_TEST(test_QueueLength_is_0_after_QueueInit);
+        RUN_TEST(test_QueueLength_increments_after_a_push);
+        RUN_TEST(test_QueuePush_writes_to_byte_pointed_to_by_head);
+        RUN_TEST(test_QueuePush_increments_head);
+        RUN_TEST(test_QueuePush_does_nothing_if_Queue_is_full);
+        RUN_TEST(test_QueueLength_does_not_increase_beyond_max_length);
+        RUN_TEST(test_QueueIsFull_returns_true_if_Queue_is_full);
+        RUN_TEST(test_QueueIsFull_returns_false_if_Queue_is_not_full);
+        RUN_TEST(test_QueueLength_decrements_after_a_pop);
+        RUN_TEST(test_QueuePop_reads_byte_pointed_to_by_tail);
+        RUN_TEST(test_QueuePop_increments_tail);
+        RUN_TEST(test_QueueLength_does_not_decrease_below_zero);
+        RUN_TEST(test_QueuePop_returns_0_if_Queue_is_empty);
+        RUN_TEST(test_QueuePop_does_not_increment_tail_if_Queue_is_empty);
+        RUN_TEST(test_QueueIsEmpty_returns_true_if_Queue_is_empty);
+        RUN_TEST(test_QueueIsEmpty_returns_false_if_Queue_is_not_empty);
+        RUN_TEST(test_QueuePush_wraps_head_back_to_buffer_index_0);
+        RUN_TEST(test_QueuePop_wraps_tail_back_to_buffer_index_0);
     }
 }
 
@@ -308,6 +336,7 @@ int main()
     DevelopingUsbReadOneByte  (Nope);
     DevelopingLisWriteCfg     (Nope);
     DevelopingSpiSlave        (Nope);
-    test_UsbReadBytes         (Yep);
+    test_UsbReadBytes         (Nope);
+    test_Queue                (Yep);
     return UNITY_END();
 }

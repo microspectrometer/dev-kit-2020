@@ -1,68 +1,19 @@
 #include "SensorVis.h"
-#include "BiColorLed.h"
-#include "Spi.h"
+#include "BiColorLed.h" // for two bicolor LEDs on Sensor board
+#include "Spi.h" // Sensor is the SPI slave
 #include "Lis.h" // because SensorCfgLis() calls LisWriteCfg()
 #include "stdlib.h" // defines NULL
 
-// Allocate memory for the SPI FIFO Rx Buffer.
-volatile uint8_t spi_rx_buffer[MaxLengthOfSpiRxQueue]; // global decl in .h
-// Define a Queue struct for accessing the SPI FIFO Rx Buffer.
-struct Queue_s {
-    volatile uint8_t * buffer; // address of SPI FIFO Rx Buffer
-    volatile uint8_t head; // index buffer at head for Push
-    volatile uint8_t tail; // index buffer at tail for Pop
-    volatile uint16_t length; // number of bytes waiting to be read
-    volatile uint16_t max_length; // maximum number of bytes the queue can hold
-};
-// Struct definitions do not declare symbols or allocate memory.
+/* =====[ SPI FIFO Rx Buffer ]===== */
 // Global symbol is declared in .h for access by unit tests and applications.
 // Allocate memory for a Queue struct to access the SPI FIFO Rx Buffer.
-volatile Queue_s Queue;
-// Define the global pointer to the Queue (declared in .h).
-volatile Queue_s * SpiFifo = &Queue;
-// Define Queue API.
-void QueueInit(volatile Queue_s * pq, volatile uint8_t * pqmem, uint16_t const mem_size)
-{ // Empty the Rx Buffer.
-    // Assign Queue to access the array
-    pq->buffer = pqmem;
-    // Store array size
-    pq->max_length = mem_size;
-    // head/tail index first byte
-    pq->head = 0;
-    pq->tail = 0;
-    // queue length is 0
-    pq->length = 0;
-}
-uint16_t QueueLength(volatile Queue_s * pq)
-{ // Return length of Queue
-    return pq->length;
-}
-void QueuePush(volatile Queue_s * pq, uint8_t data)
-{ // Push data onto the Queue
-    if (QueueIsFull(pq)) return;
-    // wrap head to beginning of buffer when it reaches the end of the buffer
-    if (pq->head >= pq->max_length) pq->head = 0;
-    pq->buffer[pq->head++] = data;
-    pq->length++;
-}
-uint8_t QueuePop(volatile Queue_s *pq)
-{
-    if (QueueIsEmpty(pq)) return 0;
-    // wrap tail to beginning of buffer when it reaches the end of the buffer
-    if (pq->tail >= pq->max_length) pq->tail = 0;
-    pq->length--;
-    return pq->buffer[pq->tail++];
-}
-bool QueueIsFull(volatile Queue_s * pq)
-{ // Return true if Queue is full
-    if (pq->length >= pq->max_length) return true;
-    return false;
-}
-bool QueueIsEmpty(volatile Queue_s * pq)
-{ // Return true if Queue is empty
-    if (pq->length == 0) return true;
-    return false;
-}
+/* volatile Queue_s Queue; */
+// Define a global pointer to the Queue (declared extern in .h).
+/* volatile Queue_s * SpiFifo = &Queue; */
+// Allocate memory for the SPI FIFO Rx Buffer.
+/* volatile uint8_t spi_rx_buffer[MaxLengthOfSpiRxQueue]; // extern decl in .h */
+
+/* void InitSpiRxBuffer(volatile Queue_s * SpiFifo, volatile uint8_t * spi_rx_buffer) */
 
 /* TODO: pull these constants from a common file along with Bridge.c */
 /* sensor_cmd_key const dummy0_key = 0; */
@@ -92,14 +43,13 @@ static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint1
     for (byte_index = 0; byte_index < nbytes; byte_index++)
     {
         *Spi_spdr = write_buffer[byte_index]; // load byte in SPI data register
-        // TODO: rewrite Signal to use DataReady wire
-        /* SpiSlaveSignalDataIsReady(); */
-        /* =====[ NEW: use DataReady to signal Data is Ready ]===== */
+        BiColorLedRed(led_TxRx);
         ClearBit(Spi_port, Spi_DataReady); // LOW signals data is ready
-        /* =====[ NEW: wait for transfer to be done in ISR ]===== */
-        while (!HasSpiData); // HasSpiData is true when the SPI transfer is done
-        HasSpiData = false; // ignore rx byte, clear the flag
-        // ISR pulls DataReady HIGH again
+        while (QueueIsEmpty(SpiFifo)); // queue is empty until SPI transfer is done
+        QueuePop(SpiFifo); // ignore rx byte
+        BiColorLedGreen(led_TxRx);
+        // Drive DataReady HIGH to synchronize with Master.
+        SetBit(Spi_port, Spi_DataReady);
     }
     return byte_index; // byte_index == num_bytes_actually_sent
 }
@@ -129,9 +79,9 @@ uint16_t (*ReadSpiMaster)(uint8_t *, uint16_t) = ReadSpiMaster_Implementation;
 
 void GetSensorLED(void)
 {
-    while (!HasSpiData); // wait for the led number
-    uint8_t led_number = SpiData;
-    HasSpiData = false; // consumed the data, so clear the flag
+    while (QueueIsEmpty(SpiFifo)); // wait for the led number
+    // Pop a byte off the Queue. This is the led number.
+    uint8_t led_number = QueuePop(SpiFifo);
     if ((led_number != led_0) && (led_number != led_1))
     {
         uint8_t error_reply[] = {error, 0x00}; // send error and placeholder byte
@@ -147,7 +97,6 @@ void GetSensorLED(void)
     else if (BiColorLedIsRed(led)) led_status = led_red;
     else led_status = led_green;
     uint8_t ok_reply[] = {ok, led_status};
-    /* BiColorLedRed(led_TxRx); // first LED red: all is good */
     WriteSpiMaster(ok_reply,2);
 }
 void oldGetSensorLED(void)
@@ -259,9 +208,13 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
         /* SensorLed2Red, */
         };
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
-    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
+    if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
     /* Out of bounds keys return a NULL pointer. */
-    else return NULL;
+    else
+    {
+        LedsShowError();
+        return NULL;
+    }
     /* Up to caller to check for NULL and take appropriate action. */
     /* Recommended action: tell SpiMaster the command was not recognized. */
 }

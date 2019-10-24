@@ -272,8 +272,12 @@ inline bool IsSpiSlaveReadyToSend(void)
     return BitIsSet(Spi_pin, Spi_Miso);
 }
 inline void SpiMasterWaitForSlaveReady(void)
-{
+{ //! Check the Slave is ready to send before starting a transmission for read.
     while( BitIsSet(Spi_pin, Spi_DataReady)); // DataReady LOW signals ready
+}
+inline void SpiMasterWaitForSlaveReadyReset(void)
+{ //! Check the Slave reset DataReady before checking DataReady again.
+    while( BitIsClear(Spi_pin, Spi_DataReady)); // DataReady HIGH signals done
 }
 
 inline void FourWire_SpiMasterWaitForSlaveReady(void)

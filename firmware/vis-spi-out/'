@@ -17,85 +17,32 @@ extern uint8_t const led_Done;
 #include "mock_Spi.h"
 
 void test_lib_SensorVis_can_use_lib_Queue(void)
-{ // Not really a unit test. Just examples of using lib Queue.
-    /* =====[ To Use the API ]===== */
-    // Note that this test file only needs these two lines:
-        // #include SensorVis.h
-        // InitSpiRxBuffer();
-    // And now it has access to the Queue API.
-
-    /* =====[ Memory Setup ]===== */
-    // Only one Queue instance can exist at a time.
-    //
-    // #include "SensorVis.h"; // provides access to Queue "SpiFifo".
-    // "SensorVis.h" includes "Queue.h" to provide access to the Queue API.
-    // Lib SensorVis names the queue "SpiFifo" because it's a FIFO for SPI Read.
-    // "SpiFifo" lives in static memory.
-        // "SpiFifo" is defined in SensorVis.c
-        // The memory for "SpiFifo" is only allocated by SensorVis.c.
-        // because "SpiFifo" is declared `extern` in SensorVis.h.
-    // "SpiFifo" points to a struct named "Queue".
-    // "Queue" lives in static memory.
-        // Struct "Queue" is defined in Queue.c
-        // The memory for "Queue" is only allocated by Queue.c
-        // because "Queue" is declared `extern` in Queue.h.
+{
+    /* =====[ Setup ]===== */
+    // SpiFifo is defined in SensorVis.c
+    // SpiFifo is declarated global in SensorVis.h
+    // The memory for SpiFifo is allocated in SensorVis.c
+    // because the declaration is `extern`.
+    // SpiFifo points to a struct.
+    // The struct it points to is defined in Queue.c
+    // This struct is a single instance in stack memory.
+    // Only one Queue can exist at a time.
 
     /* =====[ Operate ]===== */
     InitSpiRxBuffer();
     /* =====[ Test ]===== */
-    // Try out the API.
-
-    // It's good form before a Push to make sure the Queue is *not full*.
+    // It's good form to make sure the Queue is not full before pushing.
     TEST_ASSERT_FALSE(QueueIsFull(SpiFifo));
+    // Check it's OK to push three bytes before proceeding.
+    TEST
     QueuePush(SpiFifo, 11);
-    TEST_ASSERT_FALSE(QueueIsFull(SpiFifo));
     QueuePush(SpiFifo, 22);
-    TEST_ASSERT_FALSE(QueueIsFull(SpiFifo));
     QueuePush(SpiFifo, 33);
-
-    // It's good form before a Pop to make sure the Queue is *not empty*.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-    uint8_t first_out = QueuePop(SpiFifo);
+    uint8_t first_in = QueuePop(SpiFifo);
+    TEST_ASSERT_EQUAL_UINT8(
+    uint8_t second_in = QueuePop(SpiFifo);
 
-    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-    uint8_t second_out = QueuePop(SpiFifo);
-
-    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-    uint8_t third_out = QueuePop(SpiFifo);
-
-    // Show this is a FIFO.
-    TEST_ASSERT_EQUAL_UINT8(11, first_out); // first in is first out?
-    TEST_ASSERT_EQUAL_UINT8(22, second_out); // second in is second out?
-    TEST_ASSERT_EQUAL_UINT8(33, third_out); // third in is third out?
-
-    // Reset the Queue to point at a buffer local to this test.
-    /* InitSpiRxBuffer(); // Normally this is how you reset. */
-    volatile uint8_t fake_spi_rx_buffer[MaxLengthOfSpiRxQueue];
-    QueueInit(SpiFifo, fake_spi_rx_buffer, MaxLengthOfSpiRxQueue);
-
-    // Fill the Queue with byte value 99. When it is full, check it's length.
-    uint16_t bytes_pushed = 0;
-    while(bytes_pushed < MaxLengthOfSpiRxQueue)
-    {
-        QueuePush(SpiFifo, 99);
-        bytes_pushed++;
-    }
-    // Check correct test setup: assert bytes_pushed == max_length
-    TEST_ASSERT_EQUAL_UINT16_MESSAGE(
-        MaxLengthOfSpiRxQueue, bytes_pushed,
-        "Failed to set this test up correctly. "
-        "Must push exact number of bytes to fill the buffer."
-        );
-    // Is length of Queue == MaxLengthOfSpiRxQueue?
-    TEST_ASSERT_EQUAL_UINT16(MaxLengthOfSpiRxQueue, QueueLength(SpiFifo));
-
-    // Pop off one byte so there is *room* to push one byte.
-    QueuePop(SpiFifo);
-
-    // A further Push should wrap around to the beginning of the buffer.
-    QueuePush(SpiFifo, 11);
-    // Assert that byte 0 has the value just pushed (instead of 99).
-    TEST_ASSERT_EQUAL_UINT8(11, fake_spi_rx_buffer[0]);
 }
 /* =====[ Mock ReadSpiMaster() for unit-testing GetSensorLED() ]===== */
 // Define call recorded when func-under-test calls mocked function.

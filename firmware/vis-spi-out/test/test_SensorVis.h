@@ -12,25 +12,6 @@ void GetSensorLED_replies_led_green_if_led_is_green(void);
 void GetSensorLED_replies_led_red_if_led_is_red(void);
 
 void GetSensorLED_sends_OK_to_Bridge_to_signal_ready_for_payload(void);
-void test_QueueLength_is_0_after_QueueInit(void);
-void test_struct_syntax(void);
-void test_QueueLength_increments_after_a_push(void);
-void test_QueuePush_writes_to_byte_pointed_to_by_head(void);
-void test_QueuePush_increments_head(void);
-void test_QueuePush_does_nothing_if_Queue_is_full(void);
-void test_QueueIsFull_returns_true_if_Queue_is_full(void);
-void test_QueueIsFull_returns_false_if_Queue_is_not_full(void);
-void test_QueueLength_decrements_after_a_pop(void);
-void test_QueueLength_does_not_increase_beyond_max_length(void);
-void test_QueuePop_reads_byte_pointed_to_by_tail(void);
-void test_QueuePop_increments_tail(void);
-void test_QueueLength_does_not_decrease_below_zero(void);
-void test_QueuePop_returns_0_if_Queue_is_empty(void);
-void test_QueuePop_does_not_increment_tail_if_Queue_is_empty(void);
-void test_QueueIsEmpty_returns_true_if_Queue_is_empty(void);
-void test_QueueIsEmpty_returns_false_if_Queue_is_not_empty(void);
-void test_QueuePush_wraps_head_back_to_buffer_index_0(void);
-void test_QueueInit_sets_buffer_length(void);
-void test_QueuePop_wraps_tail_back_to_buffer_index_0(void);
+void test_lib_SensorVis_can_use_lib_Queue(void);
 
 #endif // _TEST_SENSORVIS_H

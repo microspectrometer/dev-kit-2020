@@ -4,6 +4,11 @@
 
 #include <stdint.h>     // uint8_t
 #include <stdbool.h>    // bool, true, false
+#include "Queue.h" // lib 'Queue' defines Queue_s for Sensor SPI Rx FIFO Buffer
+
+/* =====[ SPI Flags and Data Register Buffer ]===== */
+// SpiFifo points to the FIFO buffer where ISR buffers incoming SPI bytes.
+extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
 
 /* TODO: this is duplicated in Bridge.h. Consolidate into one file used by both. */
 typedef uint8_t const status_byte;  // TODO: move this to a shared lib
@@ -61,26 +66,5 @@ sensor_cmd_key const GetSensorLED_key;
 void ReplyCommandInvalid(void);
 void GetSensorLED(void);
 void LedsShowError(void);
-
-/* =====[ SPI Flags and Data Register Buffer ]===== */
-// typedef eliminates need to declare a Queue with `struct` keyword.
-typedef struct Queue_s Queue_s; // Queue_s defined in SensorVis.c.
-// Declare global SPI FIFO Rx Buffer (memory allocated in .c).
-extern volatile uint8_t spi_rx_buffer[];
-// Define the maximum number of bytes the SPI FIFO Rx Buffer can hold.
-#define MaxLengthOfSpiRxQueue 5 // bytes
-// Access SPI FIFO Rx Buffer through a Queue ptr (definition and mem alloc in .c ).
-extern volatile Queue_s * SpiFifo;
-// Old:
-// global one-byte register to store SpiData
-volatile uint8_t SpiData; // ISR copies SPI data register to SpiData
-// global flag to track when a new byte is in SpiData
-volatile bool HasSpiData; // ISR sets true. Set false after consuming SpiData.
-void QueueInit(volatile Queue_s * SpiFifo, volatile uint8_t * spi_rx_buffer, uint16_t const size_of_spi_rx_buffer_in_bytes);
-uint16_t QueueLength(volatile Queue_s * pq);
-void QueuePush(volatile Queue_s * SpiFifo, uint8_t data_to_push);
-bool QueueIsFull(volatile Queue_s * SpiFifo);
-bool QueueIsEmpty(volatile Queue_s * SpiFifo);
-uint8_t QueuePop(volatile Queue_s * SpiFifo);
-
+//
 #endif // _SENSORVIS_H

@@ -134,6 +134,7 @@ def test_GetSensorLED():
     _print_and_log("--- GetSensorLED ---")
     _tx_and_log_cmd(commands.GetSensorLED, "Command is GetSensorLED")
     _tx_and_log_cmd(commands.led_0, "LED is LED0")
+    # _tx_and_log_cmd(commands.led_1, "LED is LED1")
     # read BRIDGE status byte, stop if it is an error
     expected = codes.OK
     reply = _rx_and_log_reply(
@@ -155,11 +156,13 @@ def test_GetSensorLED():
         optional_expectation="Expect OK"
         )
     expected = commands.led_green
+    # expected = commands.led_red
     reply = _rx_and_log_reply(
         device_name="SENSOR",
         reply_type="led_status",
         expected_reply_byte=expected,
-        optional_expectation="Expect GREEN"
+        optional_expectation="Expect GREEN: LED 0 GREEN means SPI Tx done"
+        # optional_expectation="Expect RED: LED 1 is RED until command done"
         )
     if reply != expected:
         _print_and_log("TEST FAILED")
@@ -465,8 +468,8 @@ if __name__ == '__main__':
         # test_GetBridgeLED()
         # test_SetBridgeLED()
         test_GetSensorLED()
-        test_InvalidSensorCommand()
-        test_GetSensorLED_Invalid_LED()
+        # test_InvalidSensorCommand()
+        # test_GetSensorLED_Invalid_LED()
         # test_DoesUsbBuffer()
         # test_SetSensorLED()
     _print_and_log(f"Closed CHROMATION{sernum}")

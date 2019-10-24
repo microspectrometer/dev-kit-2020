@@ -1,5 +1,6 @@
 // libs and the headers that resolve their hardware dependencies
 #include "SensorVis.h"          // command library for the VIS Sensor
+#include "Queue.h"              // SPI Rx Buffer is a queue
 #include <stdlib.h>             // defines NULL
 #include <ReadWriteBits.h>      // SetBit, ClearBit, etc.
 #include <BiColorLed.h>         // controls the bicolor LEDs on the PCB
@@ -17,6 +18,12 @@
 #include <avr/interrupt.h>      // defines macro ISR()
 
 static void Get_commands_from_SpiMaster(void);
+/* =====[ Allocate memory for the Spi Rx Queue variables ]===== */
+volatile Queue_s * SpiFifo;
+// Define the maximum number of bytes the SPI FIFO Rx Buffer can hold.
+#define max_length_of_queue 5 // bytes
+volatile uint8_t spi_rx_buffer[max_length_of_queue];
+
 int main()
 {
     /* =====[ SETUP ]===== */
@@ -27,17 +34,18 @@ int main()
     BiColorLedGreen(led_0);
     BiColorLedGreen(led_1);
     // Sensor is a SPI slave.
-    // For rx bytes, see SPI interrupt routine at `ISR(SPI_STC_vect)`.
-    // For tx bytes, disable SPI interrupts.
+    // See SPI interrupt routine at `ISR(SPI_STC_vect)`.
     SpiSlaveInit();
+    // Create a FIFO buffer to queue bytes incoming over SPI.
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
     // Use UART to talk to ADC with SPI interface.
     UartSpiInit();
     // Power up the linear array. Start 50kHz clock.
     LisInit();
     /* =====[ Initialize Global SPI Flags and Data Register Buffer ]===== */
     // Use globals because it is an easy way to share data with an ISR.
-    HasSpiData = false; // global flag to track if there is SpiData
-    SpiData = 0x00; // global one-byte register to store SpiData
+    /* HasSpiData = false; // global flag to track if there is SpiData */
+    /* SpiData = 0x00; // global one-byte register to store SpiData */
     /* =====[ LOOP ]===== */
     // Loop forever acting on commands from the SPI Master.
     while(1) Get_commands_from_SpiMaster();
@@ -46,34 +54,64 @@ int main()
 }
 void Get_commands_from_SpiMaster(void)
 {
-    while (!HasSpiData); // wait until there is SPI data to process
-    // The SPI data is a command to execute.
-    SensorCmd* SensorCmdFn = LookupSensorCmd(SpiData);
-    HasSpiData = false; // consumed the data, so clear the flag
+    while (QueueIsEmpty(SpiFifo)); // idle until a command is received
+    // Queue is no longer empty once a command byte is received over SPI.
+    // The SPI ISR pushes the command byte onto the SPI Rx Queue.
+    BiColorLedRed(led_Done); // Indicate command execution is not done.
+    // Pop the command and execute it.
+    SensorCmd* SensorCmdFn = LookupSensorCmd(QueuePop(SpiFifo));
     if (SensorCmdFn == NULL) // Command is invalid.
     {
         ReplyCommandInvalid(); // tell SpiMaster command is invalid
-        LedsShowError(); // indicate invalid command error on LEDs
-        // No command to execute.
+        LedsShowError(); // indicate error on LEDs: invalid command
     }
     else // Command is valid.
     {
         SensorCmdFn(); // execute command
-        // Command is done.
+        BiColorLedGreen(led_Done); // Indicate command execution is done.
     }
-    // Processor is idle.
 }
 ISR(SPI_STC_vect)
 {
-    // ---For reading a byte---
-    // Client is stuck in loop `while (!HasSpiData)`.
-    HasSpiData = true; // client responsible to reset `HasSpiData` to false
-    SpiData = *Spi_spdr; // client grabs data from `SpiData`
-    // DataReady was already HIGH, pulling HIGH again makes no difference.
+    // SPI transfer of one byte just finished.
+    // Program counter jumped from "client" code.
+    // ISR is the same routine, whether "client" is in a SPI read or a SPI write.
 
-    // ---For writing a byte---
-    // Client pulled DataReady LOW to signal Master that data is ready.
-    SetBit(Spi_port, Spi_DataReady); // ISR resets DataReady to idle HIGH
-    // Client is still responsible to reset `HasSpiData` to false.
-    // But client ignores `SpiData`.
+    // Client stuck in loop `while (QueueIsEmpty(SpiFifo));` when ISR is called
+    //
+    if (QueueIsFull(SpiFifo)) LedsShowError(); // TODO: add error handler
+    else
+    {
+        QueuePush(SpiFifo, *Spi_spdr); // "client" must pop data from SpiFifo queue
+    }
+
+    // NOTE:
+    // Even though Sensor did not need data, the "client" code is still
+    // responsible to pop the garbage byte from the queue.
+    //
+    // NOTE:
+    // The SPI Master *must* look for Spi_DataReady to return HIGH to confirm
+    // the SPI Slave finished this receive/transmit *before* the SPI Master
+    // checks for Spi_DataReady LOW as a signal that it's OK to start the next
+    // transmission.
+    //
+    // RATIONALE:
+    // Calling any non-inline functions in an ISR requires stacking many
+    // registers before the ISR C code starts.
+    // Even if Spi_DataReady is driven HIGH as the first line of C in the ISR,
+    // it does not drive HIGH in time. If SPI Master only looks for
+    // Spi_DataReady LOW, it reads a false LOW.
+    //
+    // The Master is throttled by having to first wait for Spi_DataReady
+    // to go HIGH.
+    //
+    // Driving Spi_DataReady HIGH is safely moved out of the ISR to the client
+    // code for execution after returning from the ISR.
+    // This throttles the Master even in the corner case where the Master just
+    // finished a read and then writes another byte. The Master needs throttling
+    // so that it does not send the byte before the Slave has a chance to see
+    // the queue is empty. The Slave waits for QueueIsEmpty to be true after
+    // writing each byte to the Master (to avoid overwriting SPDR during a
+    // transmission). So the Slave would hang if it does not get a chance to see
+    // the queue is empty after the final byte is transmitted.
 }

@@ -239,6 +239,7 @@ static uint16_t ReadSensor_Implementation(uint8_t *read_buffer, uint16_t nbytes)
         MacroSpiMasterWrite(slave_ignore);      // transfer byte
         *(read_buffer++) = *Spi_spdr;  // store byte
         num_bytes_read++;
+        SpiMasterWaitForSlaveReadyReset(); // added 2019-10-23
     }
     return num_bytes_read;
 }
@@ -340,6 +341,11 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
     uint8_t msg_to_sensor[] = {GetSensorLED_key, led_number};
     uint8_t *p_msg_byte = msg_to_sensor;
     SpiWriteByte(*(p_msg_byte++)); SpiWriteByte(*(p_msg_byte++));
+    /* SpiWriteByte(*(p_msg_byte++)); */
+    /* SpiMasterWaitForSlaveReadyReset(); */
+    /* SpiMasterWaitForSlaveReady(); */
+    /* SpiWriteByte(*(p_msg_byte++)); */
+    /* SpiMasterWaitForSlaveReadyReset(); */
     // Get reply from Sensor.
     uint8_t sensor_reply[2];
     ReadSensor(sensor_reply, 2);

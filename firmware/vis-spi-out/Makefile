@@ -61,7 +61,7 @@ endif
 # TODO: fix special treatment of test_Spi.c
 #   For now, build and link test_Spi.c for mocking SpiSlave hardware calls.
 # List the project libs (for dependencies, not for testing):
-names-of-prj-libs := ReadWriteBits BiColorLed Spi UartSpi Lis Pwm
+names-of-prj-libs := ReadWriteBits BiColorLed Spi UartSpi Lis Pwm Queue
 # List the application libs (for unit testing and for dependencies):
 names-of-app-libs := SensorVis
 # name convention for application lib tests
