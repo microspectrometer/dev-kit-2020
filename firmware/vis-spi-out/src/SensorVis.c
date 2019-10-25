@@ -72,6 +72,7 @@ uint16_t (*ReadSpiMaster)(uint8_t *, uint16_t) = ReadSpiMaster_Implementation;
 
 void GetSensorLED(void)
 {
+    /** Check the state of an LED on the Sensor board. */
     /** GetSensorLED behavior:\n 
       * - receives led number\n 
       * - always replies with two bytes\n 
