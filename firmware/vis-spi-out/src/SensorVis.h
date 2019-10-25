@@ -8,7 +8,7 @@
 
 /* =====[ SPI Flags and Data Register Buffer ]===== */
 // SpiFifo points to the FIFO buffer where ISR buffers incoming SPI bytes.
-extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
+/* extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c */
 
 /* TODO: this is duplicated in Bridge.h. Consolidate into one file used by both. */
 typedef uint8_t const status_byte;  // TODO: move this to a shared lib

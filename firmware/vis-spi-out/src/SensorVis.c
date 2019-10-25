@@ -4,16 +4,9 @@
 #include "Lis.h" // because SensorCfgLis() calls LisWriteCfg()
 #include "stdlib.h" // defines NULL
 
-/* =====[ SPI FIFO Rx Buffer ]===== */
-// Global symbol is declared in .h for access by unit tests and applications.
-// Allocate memory for a Queue struct to access the SPI FIFO Rx Buffer.
-/* volatile Queue_s Queue; */
-// Define a global pointer to the Queue (declared extern in .h).
-/* volatile Queue_s * SpiFifo = &Queue; */
-// Allocate memory for the SPI FIFO Rx Buffer.
-/* volatile uint8_t spi_rx_buffer[MaxLengthOfSpiRxQueue]; // extern decl in .h */
-
-/* void InitSpiRxBuffer(volatile Queue_s * SpiFifo, volatile uint8_t * spi_rx_buffer) */
+/* =====[ SPI Flags and Data Register Buffer ]===== */
+// SpiFifo points to the FIFO buffer where ISR buffers incoming SPI bytes.
+extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
 
 /* TODO: pull these constants from a common file along with Bridge.c */
 /* sensor_cmd_key const dummy0_key = 0; */
@@ -79,6 +72,15 @@ uint16_t (*ReadSpiMaster)(uint8_t *, uint16_t) = ReadSpiMaster_Implementation;
 
 void GetSensorLED(void)
 {
+    /** GetSensorLED behavior:\n 
+      * - receives led number\n 
+      * - always replies with two bytes\n 
+      * - replies msg status error if led is non existent\n 
+      * - replies msg status ok if led number is recognized\n 
+      * - replies led off if led is off\n 
+      * - replies led green if led is green\n 
+      * - replies led red if led is red\n 
+      * */
     while (QueueIsEmpty(SpiFifo)); // wait for the led number
     // Pop a byte off the Queue. This is the led number.
     uint8_t led_number = QueuePop(SpiFifo);
