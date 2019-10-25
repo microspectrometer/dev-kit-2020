@@ -31,7 +31,7 @@ void Stub_UsbReadN_with_value_in_read_buffer(void);
 
 /* =====[ API - started 2019-10-03 ]===== */
 void SetUp_GetBridgeLED(void); void TearDown_GetBridgeLED(void);
-void GetBridgeLED_reads_one_byte_of_payload(void);
+void GetBridgeLED_reads_one_byte_of_host_payload(void);
 void GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led(void);
 void GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized(void);
 void GetBridgeLED_replies_msg_status_ok_if_host_queries_status_led(void);
@@ -58,13 +58,15 @@ void SerialWriteByte_writes_one_byte_over_USB(void);
 /* =====[ BridgeJumpTable - started 2019-10-02]===== */
 void LookupBridgeCmd_takes_key_and_returns_fn_ptr(void);
 void LookupBridgeCmd_returns_NULL_if_key_is_not_found(void);
-void BridgeGetSensorLED_reads_one_byte_of_payload(void);
-void BridgeGetSensorLED_passes_cmd_to_Sensor_and_waits_for_response(void);
+void BridgeGetSensorLED_reads_one_byte_of_host_payload(void);
 void BridgeGetSensorLED_reads_two_bytes_of_reply_size_and_nbytes_of_reply_from_Sensor(void);
 void BridgeGetSensorLED_passes_reply_size_and_reply_to_host(void);
 void BridgeGetSensorLED_responds_ok_after_reading_host_payload(void);
 void BridgeGetSensorLED_exits_if_Sensor_responds_error_to_command(void);
 void BridgeGetSensorLED_passes_Sensor_command_response_back_to_host(void);
 void BridgeGetSensorLED_sends_Sensor_led_number_if_Sensor_responds_ok_to_command(void);
+void BridgeGetSensorLED_writes_cmd_and_payload_to_Sensor(void);
+void BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor(void);
+void BridgeGetSensorLED_writes_sensor_reply_to_host(void);
 
 #endif // _TEST_BRIDGE_H

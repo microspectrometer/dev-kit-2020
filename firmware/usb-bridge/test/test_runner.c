@@ -28,7 +28,7 @@ void API_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
 {if (run_test)
     {
     setUp = SetUp_GetBridgeLED; tearDown = TearDown_GetBridgeLED;
-    RUN_TEST(GetBridgeLED_reads_one_byte_of_payload);
+    RUN_TEST(GetBridgeLED_reads_one_byte_of_host_payload);
     RUN_TEST(GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led);
     RUN_TEST(GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized);
     RUN_TEST(GetBridgeLED_replies_msg_status_ok_if_host_queries_status_led);
@@ -55,6 +55,12 @@ void API_SetBridgeLED(bool run_test) // [x] unit test SetBridgeLED
 void API_GetSensorLED(bool run_test) // [ ] unit test GetSensorLED
 {if (run_test)
     {
+        setUp = SetUp_BridgeGetSensorLED; tearDown = TearDown_BridgeGetSensorLED;
+        RUN_TEST(BridgeGetSensorLED_reads_one_byte_of_host_payload);
+        RUN_TEST(BridgeGetSensorLED_responds_ok_after_reading_host_payload);
+        RUN_TEST(BridgeGetSensorLED_writes_cmd_and_payload_to_Sensor);
+        RUN_TEST(BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor);
+        RUN_TEST(BridgeGetSensorLED_writes_sensor_reply_to_host);
     }
 }
 void ApiSupport(bool run_test)
@@ -134,14 +140,5 @@ int main(void)
     /* API (Yep); */
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
-    setUp = SetUp_BridgeGetSensorLED; tearDown = TearDown_BridgeGetSensorLED;
-    RUN_TEST(BridgeGetSensorLED_reads_one_byte_of_payload);
-    RUN_TEST(BridgeGetSensorLED_responds_ok_after_reading_host_payload);
-    RUN_TEST(BridgeGetSensorLED_passes_cmd_to_Sensor_and_waits_for_response);
-    RUN_TEST(BridgeGetSensorLED_passes_Sensor_command_response_back_to_host);
-    RUN_TEST(BridgeGetSensorLED_exits_if_Sensor_responds_error_to_command);
-    RUN_TEST(BridgeGetSensorLED_sends_Sensor_led_number_if_Sensor_responds_ok_to_command);
-    RUN_TEST(BridgeGetSensorLED_reads_two_bytes_of_reply_size_and_nbytes_of_reply_from_Sensor);
-    RUN_TEST(BridgeGetSensorLED_passes_reply_size_and_reply_to_host);
     return UNITY_END();
 }

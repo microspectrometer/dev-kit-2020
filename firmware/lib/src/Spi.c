@@ -26,7 +26,9 @@ void SpiLaunchByte(uint8_t const byte);
 /*     return have_byte; */
 /* } */
 void SpiMasterWaitForSlaveReady(void);
-/* =====[ Helpers to `SpiMasterWaitForSlaveReady` ]===== */
+void SpiMasterWaitForSlaveReadyReset(void);
+
+/* =====[ Old helpers (not used now) to `SpiMasterWaitForSlaveReady` ]===== */
 bool SpiSlaveShowsDataReady(void);
 bool IsSpiSlaveReadyToSend(void);
 
