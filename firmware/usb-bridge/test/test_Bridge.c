@@ -267,6 +267,13 @@ void GetBridgeLED_reads_one_byte_of_host_payload(void)
     // test UsbReadBytes is called with nbytes=1
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &nbytes));
 }
+void GetBridgeLED_always_replies_with_two_bytes(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+
+// old GetBridgeLED crap below here:
+
 void GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led(void)
 {
     /* Inject one byte of payload for fake UsbReadBytes. */

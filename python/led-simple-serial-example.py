@@ -41,7 +41,21 @@ def test_SetBridgeLED():
         )
 
 def test_DoesUsbBuffer():
-    print("Send lots of bytes one after another without print to screen inbetween.")
+    """What happens when the USB bridge IC receives a lot of bytes.
+
+    Send lots of bytes one after another *without* print to screen
+    inbetween. Print to screen takes a long time, providing a delay that hides
+    the need for buffering.
+    """
+    _print_and_log("--- DoesUsbBuffer ---")
+    print("test_DoesUsbBuffer: FAIL: Implement test.")
+
+def test_InvalidBridgeCommand():
+    """What happens when the USB Host sends a command the Bridge does not
+    recognize.
+    """
+    _print_and_log("--- InvalidBridgeCommand ---")
+    print("test_InvalidBridgeCommand: FAIL: Implement test.")
 
 def test_GetBridgeLED():
     _print_and_log("--- GetBridgeLED ---")
@@ -53,13 +67,30 @@ def test_GetBridgeLED():
         expected_reply_byte=codes.OK,
         optional_expectation="Expect OK"
         )
-    if reply == codes.OK:
-        reply = _rx_and_log_reply(
-            device_name="BRIDGE",
-            reply_type="led_status",
-            expected_reply_byte=commands.led_green,
-            optional_expectation="Expect GREEN"
-            )
+    # TODO: add a check here for 0xFF (response that command is *invalid*)
+    while (kit.inWaiting() < 2): pass # (message size is two bytes)
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetBridgeLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = commands.led_green
+    # expected = commands.led_red
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="led_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect GREEN"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetBridgeLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_GetBridgeLED: PASS")
 
 def test_InvalidSensorCommand():
     _print_and_log("--- InvalidSensorCommand ---")
@@ -465,9 +496,10 @@ if __name__ == '__main__':
         _print_and_log(f"Opened CHROMATION{sernum} on {usb.dev_name(sernum)}")
         # TODO: setup kit.write to take GetBridgeLED with its argument
         # TODO: add cmd pre-formatted as bytes to package `commands`
-        # test_GetBridgeLED()
+        test_InvalidBridgeCommand()
+        test_GetBridgeLED()
         # test_SetBridgeLED()
-        test_GetSensorLED()
+        # test_GetSensorLED()
         # test_InvalidSensorCommand()
         # test_GetSensorLED_Invalid_LED()
         # test_DoesUsbBuffer()

@@ -247,37 +247,12 @@ uint16_t (*ReadSensor)(uint8_t *, uint16_t) = ReadSensor_Implementation;
 
 void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
-    /** Check the state of the LED on the Bridge board. */
-    /** GetBridgeLED behavior:\n
-     * - reads one byte of payload.\n 
-     * - replies msg status error if host queries nonexistent led.\n 
-     * - replies with one byte if led number is not recognized.\n 
-     * - replies msg status ok if host queries status led.\n 
-     * - replies with two bytes if led number is recognized.\n 
-     * - replies with msg status byte and led status byte.\n 
-     * - replies led off if status led is off.\n 
-     * - replies led green if status led is green.\n 
-     * - replies led red if status led is red.\n 
-     * */
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;
     uint8_t read_buffer[num_bytes_payload];
     UsbReadBytes(read_buffer, num_bytes_payload);
     // TODO: Add error checking for time out.
         // CASE: host does not send expected number of bytes.
-
-    // Reply to USB Host with message status byte.
-    uint8_t led_number = read_buffer[0];
-    if (led_number != led_0)
-    {
-        SerialWriteByte(error); // host is asking about nonexistent LED
-        return;
-    }
-    SerialWriteByte(ok); // led_number is recognized, send msg_status: ok
-    // Reply to USB Host with led status byte.
-    if (!BiColorLedIsOn(status_led)) SerialWriteByte(led_off);
-    else if (BiColorLedIsRed(status_led)) SerialWriteByte(led_red);
-    else SerialWriteByte(led_green);
 }
 void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
