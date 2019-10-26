@@ -96,6 +96,7 @@ void oldGetBridgeLED(void) // Bridge `led_0` is the `status_led`
     if (led_number != led_0)
     {
         SerialWriteByte(error); // host is asking about nonexistent LED
+        /* SerialWriteByte(0x00); // response is always two bytes, pad with 0 */
         return;
     }
     SerialWriteByte(ok); // led_number is recognized, send msg_status: ok

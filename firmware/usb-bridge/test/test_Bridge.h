@@ -31,7 +31,14 @@ void Stub_UsbReadN_with_value_in_read_buffer(void);
 
 /* =====[ API - started 2019-10-03 ]===== */
 void SetUp_GetBridgeLED(void); void TearDown_GetBridgeLED(void);
-void GetBridgeLED_reads_one_byte_of_host_payload(void);
+void GetBridgeLED_receives_led_number(void);
+void GetBridgeLED_always_replies_with_two_bytes(void);
+void GetBridgeLED_replies_msg_status_ok_if_led_number_is_recognized(void);
+void GetBridgeLED_replies_msg_status_error_if_led_is_non_existent(void);
+void GetBridgeLED_replies_led_off_if_led_is_off(void);
+void GetBridgeLED_replies_led_green_if_led_is_green(void);
+void GetBridgeLED_replies_led_red_if_led_is_red(void);
+
 void GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led(void);
 void GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized(void);
 void GetBridgeLED_replies_msg_status_ok_if_host_queries_status_led(void);
@@ -68,6 +75,5 @@ void BridgeGetSensorLED_sends_Sensor_led_number_if_Sensor_responds_ok_to_command
 void BridgeGetSensorLED_writes_cmd_and_payload_to_Sensor(void);
 void BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor(void);
 void BridgeGetSensorLED_writes_sensor_reply_to_host(void);
-void GetBridgeLED_always_replies_with_two_bytes(void);
 
 #endif // _TEST_BRIDGE_H

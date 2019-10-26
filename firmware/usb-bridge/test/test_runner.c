@@ -28,16 +28,13 @@ void API_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
 {if (run_test)
     {
     setUp = SetUp_GetBridgeLED; tearDown = TearDown_GetBridgeLED;
-    RUN_TEST(GetBridgeLED_reads_one_byte_of_host_payload);
-    // WRONG:
-    /* RUN_TEST(GetBridgeLED_replies_msg_status_error_if_host_queries_nonexistent_led); */
-    /* RUN_TEST(GetBridgeLED_replies_with_one_byte_if_led_number_is_not_recognized); */
-    /* RUN_TEST(GetBridgeLED_replies_msg_status_ok_if_host_queries_status_led); */
-    /* RUN_TEST(GetBridgeLED_replies_with_two_bytes_if_led_number_is_recognized); */
-    /* RUN_TEST(GetBridgeLED_replies_with_msg_status_byte_and_led_status_byte); */
-    /* RUN_TEST(GetBridgeLED_replies_led_off_if_status_led_is_off); */
-    /* RUN_TEST(GetBridgeLED_replies_led_green_if_status_led_is_green); */
-    /* RUN_TEST(GetBridgeLED_replies_led_red_if_status_led_is_red); */
+    RUN_TEST(GetBridgeLED_receives_led_number);
+    RUN_TEST(GetBridgeLED_always_replies_with_two_bytes);
+    RUN_TEST(GetBridgeLED_replies_msg_status_ok_if_led_number_is_recognized);
+    RUN_TEST(GetBridgeLED_replies_msg_status_error_if_led_is_non_existent);
+    RUN_TEST(GetBridgeLED_replies_led_off_if_led_is_off);
+    RUN_TEST(GetBridgeLED_replies_led_green_if_led_is_green);
+    RUN_TEST(GetBridgeLED_replies_led_red_if_led_is_red);
     }
 }
 void API_SetBridgeLED(bool run_test) // [x] unit test SetBridgeLED
@@ -141,6 +138,5 @@ int main(void)
     /* API (Yep); */
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
-    RUN_TEST(GetBridgeLED_always_replies_with_two_bytes);
     return UNITY_END();
 }
