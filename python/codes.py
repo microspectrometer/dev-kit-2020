@@ -35,7 +35,7 @@ bridge.
 # =====[ Dictionary of Communication Codes (bridge_status) ]=====
 OK = 0x00
 ERROR = 0x01
-INVALID = 0xFF
+INVALID_CMD = 0x02
 status_ok               = 0x00
 status_invalid_cmd      = 0xff
 status_cmd_has_bad_args = 0xfe

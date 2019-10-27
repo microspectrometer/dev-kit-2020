@@ -54,7 +54,8 @@ void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
         /* This first byte is *always* a command from the USB host. */
         BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
         /* Tell UsbHost if the command is invalid. */
-        if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
+        /* if (CmdFn == NULL) UsbWriteStatusInvalid(cmd); */
+        if (CmdFn == NULL) UsbWriteStatusInvalid();
         /* Do command if it is valid. */
         else CmdFn();
         /* It is up to CmdFn to let the UsbHost know */

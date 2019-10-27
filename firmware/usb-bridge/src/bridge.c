@@ -176,6 +176,7 @@ bridge_cmd_key const BridgeCfgLis_key = 0;
 /* =====[ API started 2019-10-02 ]===== */
 status_byte ok = 0; 
 status_byte error = 1; 
+status_byte invalid_cmd = 2;
 status_byte led_off = 0; 
 status_byte led_green = 1; 
 status_byte led_red = 2; 
@@ -557,7 +558,12 @@ uint8_t UsbWriteStatusOk(bridge_cmd_key   cmd_done_by_bridge)
     uint8_t const StatusOk[] = { 0x00, cmd_done_by_bridge};
     return UsbWrite(StatusOk,2);
 }
-uint8_t UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
+uint8_t UsbWriteStatusInvalid(void)
+{
+    uint8_t const StatusInvalid[] = { invalid_cmd };
+    return UsbWrite(StatusInvalid,1);
+}
+uint8_t old_UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
 {
     uint8_t const StatusInvalid[] = { 0xFF, invalid_cmd };
     return UsbWrite(StatusInvalid,2);

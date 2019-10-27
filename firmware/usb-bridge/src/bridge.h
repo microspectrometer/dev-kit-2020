@@ -45,6 +45,7 @@ typedef void (BridgeCmd)(void);
 typedef uint8_t const status_byte;  // TODO: move this to a shared lib
 status_byte ok;
 status_byte error;
+status_byte invalid_cmd;
 status_byte led_off;
 status_byte led_green;
 status_byte led_red;
@@ -92,7 +93,8 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key);
 /* report status to UsbHost */
 /* TODO: rename these from `Usb` to `Bridge` */
 uint8_t UsbWriteStatusOk(uint8_t   cmd_done_by_bridge);
-uint8_t UsbWriteStatusInvalid(uint8_t   invalid_cmd); // command not recognized
+uint8_t UsbWriteStatusInvalid(void); // Bridge command not recognized
+/* uint8_t old_UsbWriteStatusInvalid(uint8_t   invalid_cmd); // command not recognized */
 uint8_t UsbWriteStatusBadArgs(uint8_t   bad_args_cmd); // args are wrong val
 uint8_t UsbWriteStatusMissingArgs(uint8_t   missing_args_cmd); // not enough args
 /* TODO: remove dependency on sensor_cmd_key by figuring out what the intent was here */
