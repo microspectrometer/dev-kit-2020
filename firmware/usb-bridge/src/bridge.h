@@ -5,19 +5,6 @@
 #include <stdbool.h>    // bool, true, false
 #include <stdint.h>     // uint8_t
 
-
-/* =====[ WIP: robust UsbRead functionality started 2019-03-01 ]===== */
-/* I'm not using this struct and it's method, it's extra work for no reason. */
-/* Every Sensor reply starts with two bytes indicating how many more bytes are coming. */
-typedef struct {
-    uint8_t msb;
-    uint8_t lsb;
-} BytesComing_s;
-inline uint16_t BytesComing(BytesComing_s reply_size)
-{
-    return reply_size.msb<<8 | reply_size.lsb;
-}
-
 /* =====[ Helpers for BridgeCmd functions ]===== */
 bool CfgBytesAreValid(uint8_t const *cfg_bytes);
 bool CfgTurnsOffAllPixels(uint8_t const *cfg_bytes);
@@ -33,14 +20,6 @@ bool XOR(bool a, bool b);
 typedef void (BridgeCmd)(void);
 /* Give tests of LookupBridgeCmd access to names of functions in */
 /* jump table to compare pointer values. */
-/* =====[ DEPRECATED ]===== */
-/* BridgeCmd BridgeLedRed; */
-/* BridgeCmd BridgeLedGreen; */
-/* BridgeCmd BridgeCfgLis; */
-/* BridgeCmd SendSensorLed1Red; */
-/* BridgeCmd SendSensorLed1Green; */
-/* BridgeCmd SendSensorLed2Red; */
-/* BridgeCmd SendSensorLed2Green; */
 /* =====[ API support started 2019-10-04 ]===== */
 typedef uint8_t const status_byte;  // TODO: move this to a shared lib
 status_byte ok;
@@ -60,31 +39,24 @@ extern uint16_t (*ReadSensor)(uint8_t *read_buffer, uint16_t nbytes);
 
 
 /* =====[ API started 2019-10-02 ]===== */
-/* Do not use the `BridgeCmd` typedef */
-/* Doxygen does not see functions defined with a typedef. */
-/* BridgeCmd GetBridgeLED; */
-/* BridgeCmd SetBridgeLED; */
-/* BridgeCmd GetSensorLED; */
+// Do not use the `BridgeCmd` typedef
+// Doxygen does not pick up documentation for functions defined with a typedef.
+    // example of what *not* to do:
+    // BridgeCmd GetBridgeLED;
 void GetBridgeLED(void);
 void SetBridgeLED(void);
 void BridgeGetSensorLED(void);
+void BridgeSetSensorLED(void);
 void TestInvalidSensorCmd(void);
 
 /* This is the datatype to use when calling LookupBridgeCmd: */
 typedef uint8_t bridge_cmd_key;  // jump-table dictionary uses 8-bit keys
 /* Declare keys for callers of LookupBridgeCmd (values hidden in .c file) */
-/* =====[ DEPRECATED ]===== */
-/* bridge_cmd_key const BridgeLedRed_key; */
-/* bridge_cmd_key const BridgeLedGreen_key; */
 bridge_cmd_key const BridgeCfgLis_key;
-/* bridge_cmd_key const SendSensorLed1Red_key; */
-/* bridge_cmd_key const SendSensorLed1Green_key; */
-/* bridge_cmd_key const SendSensorLed2Red_key; */
-/* bridge_cmd_key const SendSensorLed2Green_key; */
 /* =====[ API started 2019-10-02 ]===== */
 bridge_cmd_key const GetBridgeLED_key;
 bridge_cmd_key const SetBridgeLED_key;
-bridge_cmd_key const GetSensorLED_key;
+bridge_cmd_key const BridgeGetSensorLED_key;
 
 /* =====[ API: ]===== */
  /* LookUpCmd takes key from UsbHost and returns the function pointer to call. */

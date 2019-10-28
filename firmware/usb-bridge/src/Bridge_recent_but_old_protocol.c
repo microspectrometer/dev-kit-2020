@@ -25,7 +25,7 @@ void oldBridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
 
     // Set up message: pass command and led_number along to Sensor.
     uint8_t led_number = read_buffer[0];
-    uint8_t msg_to_sensor[] = {GetSensorLED_key, led_number};
+    uint8_t msg_to_sensor[] = {BridgeGetSensorLED_key, led_number};
     // The Sensor needs time to look up the command.
     // Send the command only, not the command parameter.
     uint8_t *p_msg_byte = msg_to_sensor;

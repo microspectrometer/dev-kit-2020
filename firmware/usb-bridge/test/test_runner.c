@@ -104,7 +104,7 @@ void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
     RUN_TEST(CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds);
     RUN_TEST(CfgBytesAreValid_checks_against_all_255_valid_configs); 
     printf("\n# WIP:\n");
-    RUN_TEST(BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect);
+    /* RUN_TEST(BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect); */
     RUN_TEST(CmdCfgLis_returns_StatusBadArgs_if_cfg_bytes_are_invalid);
     RUN_TEST(CmdCfgLis_1pushes_cfg_to_SpiSlave_2pulls_updated_cfg_3reports_StatusOk_updated_cfg);
 }}
@@ -132,9 +132,10 @@ int main(void)
     /* SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:IGNORE: Move test
      * to lib `Sensor`. */
     /* ---ACTIVE--- */
-    API_GetBridgeLED (Yep);
+    API_GetBridgeLED (Nope);
     API_SetBridgeLED (Nope);
-    API_BridgeGetSensorLED (Nope);
+    API_BridgeGetSensorLED (Yep);
+    setUp = SetUp_BridgeGetSensorLED; tearDown = TearDown_BridgeGetSensorLED;
     /* API (Yep); */
     ApiSupport (Nope);
     BridgeJumpTable (Nope);

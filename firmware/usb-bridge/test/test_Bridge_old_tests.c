@@ -141,3 +141,13 @@ void GetBridgeLED_replies_led_red_if_status_led_is_red(void)
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, (uint8_t*)&led_status));
 }
 
+void BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect(void)
+{
+    /* =====[ Setup ]===== */
+    BytesComing_s response_size;
+    response_size.msb = 0x03;
+    response_size.lsb = 0x10;
+    /* =====[ Operate and Test ]===== */
+    uint16_t expect = 0x0310;
+    TEST_ASSERT_EQUAL_UINT16(expect, BytesComing(response_size));
+}

@@ -4,143 +4,15 @@
 #include "Usb.h"
 #include "stdlib.h" // defines NULL
 
-/* =====[ WIP: Clean Command Parsing with jump tables started 2019-03-01 ]===== */
-/* TODO: implement a top-level error handler */
-/* to do something useful with a conditional check on UsbWriteStatusBlah(). */
-    /* In the application, if you are good-paranoid, */
-    /* you actually do check that the status was sent. */
-    /* // */
-    /* But I have yet to implement a top-level error handler */
-    /* to do something useful with this information. */
-    /* // */
-    /* I just assume status bytes were sent */
-    /* and let the UsbHost deal with the possibility */
-    /* of not getting any response to its command. */
-/* // */
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const status_led;
 
-/* I'm not using this struct's method, it's extra work for no reason. */
-uint16_t BytesComing(BytesComing_s reply_size); // inline defined in .h
-/* =====[ TODO: Pull useful things from here, then get rid of this function. ]===== */
-// Define command functions in jump table for looking up USB commands.
-/* static void SendSensorCommand( */
-/*     sensor_cmd_key cmd_to_sensor,       // send this command key to the sensor */
-/*     bridge_cmd_key cmd_done_by_bridge)  // and report status on this command key */
-/* { */
-/*     /1* Send the command. *1/ */
-/*     SpiMasterWriteByte(cmd_to_sensor); */
-
-/*     /1* TODO: add timer to timeout in case SpiSlave is never ready. *1/ */
-/*     /1* The first two bytes from the SpiSlave are the remaining number of bytes */
-/*      * in the response. *1/ */
-/*     BytesComing_s   response_size; */
-/*     SpiMasterWaitForSlaveReady(); response_size.msb = SpiMasterReadByte(); */
-/*     SpiMasterWaitForSlaveReady(); response_size.lsb = SpiMasterReadByte(); */
-/*     /1* The response should be two bytes. *1/ */
-/*     uint16_t const nbytes_expected = 2; // 16-bit is the general case */
-
-/*     /1* There is an unknown SPI communication error if there are not exactly 2 */
-/*      * bytes coming. *1/ */
-/*     /1* It could be the SpiSlave or the SpiMaster. *1/ */
-/*     /1* Treat this like other BridgeCmd errors. Send back two bytes. *1/ */
-/*     /1* byte 1: error code */
-/*      * byte 2: command sent to SpiSlave *1/ */
-/*     if ( BytesComing(response_size) != nbytes_expected ) */
-/*     { UsbWriteStatusSpiBusError(cmd_to_sensor); return; } */
-
-/*     /1* Read all of the bytes from the SpiSlave. *1/ */
-/*     uint8_t rx[nbytes_expected]; */
-/*     for (uint8_t index=0; index < nbytes_expected; index++) */
-/*     { SpiMasterWaitForSlaveReady(); rx[index]= SpiMasterReadByte(); } */
-/*     /1* There is an error if the SpiSlave is still signaling *Data Ready*. *1/ */
-/*     if ( SpiSlaveShowsDataReady() ) */
-/*     { UsbWriteStatusSpiBusError(cmd_to_sensor); return; } */
-
-/*     /1* The SpiMaster has succeeded at this point, *1/ */
-/*     /1* even if the SpiSlave sent an error code. *1/ */
-/*     UsbWriteStatusOk(cmd_done_by_bridge); */
-/*     /1* Whatever the SpiSlave sent, pass it up to the UsbHost. *1/ */
-/*     uint8_t nbytes_of_data[] = {response_size.msb, response_size.lsb}; */
-/*     UsbWrite(nbytes_of_data, 2); */
-/*     UsbWrite(rx,nbytes_expected); */
-/* } */
-
-/* =====[ DEPRECATED ]===== */
-/* void BridgeLedRed(void) */
-/* { */
-/*     BiColorLedRed(status_led); */
-/*     UsbWriteStatusOk(BridgeLedRed_key); */
-/* } */
-// SpiSlave command lookup keys are defined in `lib/src/Spi.c`
-/* extern sensor_cmd_key const SensorLed1Red_key; */
-/* extern sensor_cmd_key const SensorLed1Green_key; */
-/* void SendSensorLed1Green(void) */
-/* { */
-/*     SendSensorCommand( */
-/*             SensorLed1Green_key,   // send this command key to the sensor */
-/*         SendSensorLed1Green_key);  // and report status on this command key */
-/* } */
-/* void SendSensorLed1Red(void) */
-/* { */
-/*     SendSensorCommand( */
-/*             SensorLed1Red_key,   // send this command key to the sensor */
-/*         SendSensorLed1Red_key);  // and report status on this command key */ 
-/* } */
-/* void SendSensorLed2Green(void) */
-/* { */
-/*     SendSensorCommand( */
-/*             SensorLed2Green_key,   // send this command key to the sensor */
-/*         SendSensorLed2Green_key);  // and report status on this command key */
-/* } */
-/* void SendSensorLed2Red(void) */
-/* { */
-/*     SendSensorCommand( */
-/*             SensorLed2Red_key,   // send this command key to the sensor */
-/*         SendSensorLed2Red_key);  // and report status on this command key */ 
-/* } */
-/* void BridgeLedGreen(void) */
-/* { */
-/*     BiColorLedGreen(status_led); */
-/*     UsbWriteStatusOk(BridgeLedGreen_key); */
-/* } */
-void BridgeCfgLis(void)
-{
-    /* Spectrometer configuration is four bytes. */
-    uint8_t const num_cfgbytes = 4;
-    uint8_t read_buffer[num_cfgbytes];
-    uint16_t nbytes_read = UsbReadN(read_buffer, num_cfgbytes);
-    // TODO: Error checking that we timed out.
-    // This will be next error (253). Timeout on expected num_cfgbytes.
-    // Error checking that nbytes_read != 4
-    if (nbytes_read != num_cfgbytes) { UsbWriteStatusMissingArgs(BridgeCfgLis_key); }
-    // Have the right number of bytes.
-    // Error check that bytes_read are valid.
-    // This is error (254). Valid command with bad args.
-    if (!CfgBytesAreValid(read_buffer)) { UsbWriteStatusBadArgs(BridgeCfgLis_key); }
-    else
-    {
-        // [x] Do system tests with
-        // /cygdrive/c/chromation-dropbox/Dropbox/sales/spect-py3-examples/main.py
-        //
-        // TODO: Left off here
-        // Need something like SendSensorCommand but with the ability to follow
-        // the command with an arg for the four bytes of cfg.
-        // TODO: [ ] pass to mBrd
-        // mBrd converts to uint32_t and does cfg
-        // ...
-        // at end of happy path
-        UsbWriteStatusOk(BridgeCfgLis_key);
-        // echo back cfg bytes
-        UsbWrite(read_buffer,4);
-    }
-}
 /* =====[ API started 2019-10-02 ]===== */
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
 bridge_cmd_key const NullCommand_key = 0;
 bridge_cmd_key const GetBridgeLED_key = 1;
 bridge_cmd_key const SetBridgeLED_key = 2;
-bridge_cmd_key const GetSensorLED_key = 3;
+bridge_cmd_key const BridgeGetSensorLED_key = 3;
 /* bridge_cmd_key const SetSensorLED_key = 4; */
 bridge_cmd_key const TestInvalidSensorCmd_key = 4;
 void NullCommand(void){}
@@ -154,8 +26,8 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
         GetBridgeLED,   // 1
         SetBridgeLED,   // 2
         BridgeGetSensorLED,   // 3
-        TestInvalidSensorCmd, // 4
-        /* SetSensorLED,   // 4 */
+        BridgeSetSensorLED,   // 4
+        TestInvalidSensorCmd, // 5
     };
 
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
@@ -165,14 +37,6 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
     /* Up to caller to check for NULL and take appropriate action. */
     /* Recommended action: tell UsbHost the command was not recognized. */
 }
-/* ---DEPRECATED--- */
-/* bridge_cmd_key const BridgeLedRed_key = 0; */
-/* bridge_cmd_key const BridgeLedGreen_key = 1; */
-bridge_cmd_key const BridgeCfgLis_key = 0;
-/* bridge_cmd_key const SendSensorLed1Red_key = 3; */
-/* bridge_cmd_key const SendSensorLed1Green_key = 4; */
-/* bridge_cmd_key const SendSensorLed2Red_key = 5; */
-/* bridge_cmd_key const SendSensorLed2Green_key = 6; */
 /* =====[ API started 2019-10-02 ]===== */
 status_byte ok = 0; 
 status_byte error = 1; 
@@ -182,26 +46,6 @@ status_byte led_green = 1;
 status_byte led_red = 2; 
 led_name led_0 = 0;
 led_name led_1 = 1;
-
-BridgeCmd* oldLookupBridgeCmd(bridge_cmd_key const key) {
-    /* pf is an array of pointers to BridgeCmd functions */
-    /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
-    static BridgeCmd* const pf[] = {
-        /* BridgeLedRed, */
-        /* BridgeLedGreen, */
-        BridgeCfgLis,
-        /* SendSensorLed1Red, */
-        /* SendSensorLed1Green, */
-        /* SendSensorLed2Red, */
-        /* SendSensorLed2Green, */
-        };
-    /* Return func ptr. Prevent attempts at out-of-bounds access. */
-    if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
-    /* Out of bounds keys return a NULL pointer. */
-    else return NULL;
-    /* Up to caller to check for NULL and take appropriate action. */
-    /* Recommended action: tell UsbHost the command was not recognized. */
-}
 
 /* void SerialWriteByte(status_byte status) {UsbWrite(&status,1);} */
 static void SerialWriteByte_Implementation(status_byte status)
@@ -346,7 +190,7 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
     SerialWriteByte(ok); // Bridge finished reading its expected payload.
 
     // Send command and led_number to Sensor.
-    uint8_t msg_to_sensor[] = {GetSensorLED_key, led_number};
+    uint8_t msg_to_sensor[] = {BridgeGetSensorLED_key, led_number};
     uint8_t *p_msg_byte = msg_to_sensor;
     SpiWriteByte(*(p_msg_byte++)); SpiWriteByte(*(p_msg_byte++));
     /* SpiWriteByte(*(p_msg_byte++)); */
@@ -364,6 +208,9 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
         SerialWriteByte(sensor_reply[byte_count]);
         byte_count++;
     }
+}
+void BridgeSetSensorLED(void)
+{
 }
 void TestInvalidSensorCmd(void) // Test how Sensor responds to invalid cmd.
 {
@@ -585,4 +432,35 @@ uint8_t UsbWriteStatusSpiBusError(sensor_cmd_key spi_slave_cmd)
      * bytes. The UsbHost should reset the system and resend the command. */
     uint8_t const StatusSpiBusError[] = { 0xFC, spi_slave_cmd };
     return UsbWrite(StatusSpiBusError, 2);
+}
+void BridgeCfgLis(void)
+{
+    /* Spectrometer configuration is four bytes. */
+    uint8_t const num_cfgbytes = 4;
+    uint8_t read_buffer[num_cfgbytes];
+    uint16_t nbytes_read = UsbReadN(read_buffer, num_cfgbytes);
+    // TODO: Error checking that we timed out.
+    // This will be next error (253). Timeout on expected num_cfgbytes.
+    // Error checking that nbytes_read != 4
+    if (nbytes_read != num_cfgbytes) { UsbWriteStatusMissingArgs(BridgeCfgLis_key); }
+    // Have the right number of bytes.
+    // Error check that bytes_read are valid.
+    // This is error (254). Valid command with bad args.
+    if (!CfgBytesAreValid(read_buffer)) { UsbWriteStatusBadArgs(BridgeCfgLis_key); }
+    else
+    {
+        // [x] Do system tests with
+        // /cygdrive/c/chromation-dropbox/Dropbox/sales/spect-py3-examples/main.py
+        //
+        // TODO: Left off here
+        // Need something like SendSensorCommand but with the ability to follow
+        // the command with an arg for the four bytes of cfg.
+        // TODO: [ ] pass to mBrd
+        // mBrd converts to uint32_t and does cfg
+        // ...
+        // at end of happy path
+        UsbWriteStatusOk(BridgeCfgLis_key);
+        // echo back cfg bytes
+        UsbWrite(read_buffer,4);
+    }
 }

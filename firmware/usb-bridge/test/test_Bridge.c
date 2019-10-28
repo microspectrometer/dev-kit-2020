@@ -737,7 +737,7 @@ void BridgeGetSensorLED_writes_cmd_and_payload_to_Sensor(void)
             AssertCall(mock, call_n, "SpiWriteByte"),
             "Expect call number 3 is SpiWriteByte."
             )
-    arg_n = 1; arg_value = GetSensorLED_key;
+    arg_n = 1; arg_value = BridgeGetSensorLED_key;
     TEST_ASSERT_TRUE_MESSAGE(
             AssertArg(mock, call_n, arg_n, &arg_value),
             "Expect command byte GetSensorLED_key (0x03)."
@@ -1020,8 +1020,8 @@ void old_BridgeGetSensorLED_passes_cmd_to_Sensor_and_waits_for_response(void)
     printf("WriteSensor called with write_buffer[0] == %d\n", SpyOn_WriteSensor_arg1[0]);
     printf("WriteSensor called with write_buffer[1] == %d\n", SpyOn_WriteSensor_arg1[1]);
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(
-        GetSensorLED_key, SpyOn_WriteSensor_arg1[0],
-        "Expect `msg_to_sensor[0]` == 2 (GetSensorLED_key)."
+        BridgeGetSensorLED_key, SpyOn_WriteSensor_arg1[0],
+        "Expect `msg_to_sensor[0]` == 2 (BridgeGetSensorLED_key)."
         );
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(
         led_number, SpyOn_WriteSensor_arg1[1],
@@ -1152,7 +1152,8 @@ void UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command(void)
     uint8_t num_status_bytes_sent = 0;
     /* =====[ Operate ]===== */
     /* The conditional check shows how UsbWriteStatusInvalid is used in simBrd. */
-    if (CmdFn == NULL) num_status_bytes_sent = UsbWriteStatusInvalid(cmd);
+    /* if (CmdFn == NULL) num_status_bytes_sent = UsbWriteStatusInvalid(cmd); */
+    if (CmdFn == NULL) num_status_bytes_sent = UsbWriteStatusInvalid();
     else CmdFn();
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL(2, num_status_bytes_sent);
@@ -1205,20 +1206,10 @@ void UsbWriteStatusSpiBusError_sends_error_byte_and_slave_cmd(void)
     /* I cannot check the value of those two bytes. */
     /* =====[ Operate ]===== */
     uint8_t num_status_bytes_sent = 0;
-    num_status_bytes_sent = UsbWriteStatusSpiBusError(GetSensorLED_key);
+    num_status_bytes_sent = UsbWriteStatusSpiBusError(BridgeGetSensorLED_key);
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_MESSAGE( 2, num_status_bytes_sent,
         "Expect `UsbWriteStatusSpiBusError` to send two bytes.");
-}
-void BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect(void)
-{
-    /* =====[ Setup ]===== */
-    BytesComing_s response_size;
-    response_size.msb = 0x03;
-    response_size.lsb = 0x10;
-    /* =====[ Operate and Test ]===== */
-    uint16_t expect = 0x0310;
-    TEST_ASSERT_EQUAL_UINT16(expect, BytesComing(response_size));
 }
 void BytesComing_example_usage_to_catch_a_slave_error(void)
 {
@@ -1245,7 +1236,8 @@ void LookupBridgeCmd_sad_example_using_UsbWriteStatus_API(void){
     if (CmdFn == NULL) // sad
     {
         /* Send two bytes: error-code and cmd */
-        UsbWriteStatusInvalid(cmd);
+        /* UsbWriteStatusInvalid(cmd); */
+        UsbWriteStatusInvalid();
     }
     else CmdFn();
 }
@@ -1254,7 +1246,8 @@ void LookupBridgeCmd_happy_example_using_UsbWriteStatus_API(void){
     bridge_cmd_key cmd = SetBridgeLED_key;
     /* =====[ Operate Example of Valid Command (no test here) ]===== */
     BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
-    if (CmdFn == NULL) UsbWriteStatusInvalid(cmd);
+    /* if (CmdFn == NULL) UsbWriteStatusInvalid(cmd); */
+    if (CmdFn == NULL) UsbWriteStatusInvalid();
     else CmdFn();
     /* It is the CmdFn() responsibility to send UsbWriteStatusOk() at the end of a */
     /*     successful command (or some other code). */
@@ -1268,7 +1261,8 @@ void CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes(void){
     BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
      // Make sure the command is in the jump table.
     TEST_ASSERT_NOT_NULL(CmdFn);
-    if (CmdFn == NULL) UsbWriteStatusInvalid(cmd); // just showing the test as example
+    /* if (CmdFn == NULL) UsbWriteStatusInvalid(cmd); // just showing the test as example */
+    if (CmdFn == NULL) UsbWriteStatusInvalid(); // just showing the test as example
     else CmdFn(); // This is `CmdCfgLis()`
     //
     /* =====[ Test ]===== */
