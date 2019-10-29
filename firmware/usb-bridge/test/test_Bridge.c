@@ -716,7 +716,7 @@ void BridgeGetSensorLED_responds_ok_after_reading_host_payload(void)
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SerialWriteByte"));
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &reply));
 }
-void BridgeGetSensorLED_writes_cmd_and_payload_to_Sensor(void)
+void BridgeGetSensorLED_writes_led_number_to_Sensor(void)
 {
     /* =====[ Setup ]===== */
     /* Inject one byte of payload for fake UsbReadBytes. */
@@ -729,21 +729,21 @@ void BridgeGetSensorLED_writes_cmd_and_payload_to_Sensor(void)
     /* =====[ Operate ]===== */
     BridgeGetSensorLED();
     /* =====[ Test ]===== */
-    /* PrintAllCalls(mock); */
+    PrintAllCalls(mock);
     uint8_t call_n; uint8_t arg_n; uint8_t arg_value;
-    //---Write command byte---
-    call_n = 3;
-    TEST_ASSERT_TRUE_MESSAGE(
-            AssertCall(mock, call_n, "SpiWriteByte"),
-            "Expect call number 3 is SpiWriteByte."
-            )
-    arg_n = 1; arg_value = BridgeGetSensorLED_key;
-    TEST_ASSERT_TRUE_MESSAGE(
-            AssertArg(mock, call_n, arg_n, &arg_value),
-            "Expect command byte GetSensorLED_key (0x03)."
-            );
+    //---Does not write command byte!---
+    /* call_n = 3; */
+    /* TEST_ASSERT_TRUE_MESSAGE( */
+    /*         AssertCall(mock, call_n, "SpiWriteByte"), */
+    /*         "Expect call number 3 is SpiWriteByte." */
+    /*         ) */
+    /* arg_n = 1; arg_value = BridgeGetSensorLED_key; */
+    /* TEST_ASSERT_TRUE_MESSAGE( */
+    /*         AssertArg(mock, call_n, arg_n, &arg_value), */
+    /*         "Expect command byte GetSensorLED_key (0x03)." */
+    /*         ); */
     //---Write payload byte---
-    call_n = 4;
+    call_n = 3;
     TEST_ASSERT_TRUE_MESSAGE(
             AssertCall(mock, call_n, "SpiWriteByte"),
             "Expect call number 4 is SpiWriteByte."
@@ -768,7 +768,7 @@ void BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor(void)
     BridgeGetSensorLED();
     /* =====[ Test ]===== */
     /* PrintAllCalls(mock); */
-    uint8_t call_n = 5;
+    uint8_t call_n = 4;
     TEST_ASSERT_TRUE_MESSAGE(
             AssertCall(mock, call_n, "ReadSensor"),
             "Expect call number 5 is ReadSensor."
@@ -792,10 +792,10 @@ void BridgeGetSensorLED_writes_sensor_reply_to_host(void)
     /* =====[ Operate ]===== */
     BridgeGetSensorLED();
     /* =====[ Test ]===== */
-    /* PrintAllCalls(mock); */
+    PrintAllCalls(mock);
     uint8_t call_n; uint8_t arg_n; uint8_t arg_value;
     /* ---Pass first byte of Sensor reply up to host--- */
-    call_n = 6;
+    call_n = 5;
     TEST_ASSERT_TRUE_MESSAGE(
             AssertCall(mock, call_n, "SerialWriteByte"),
             "Expect call number 6 is SerialWriteByte."
@@ -806,7 +806,7 @@ void BridgeGetSensorLED_writes_sensor_reply_to_host(void)
             "Expect first byte of Sensor reply is OK (0x00)."
             );
     /* ---Pass second byte of Sensor reply up to host--- */
-    call_n = 7;
+    call_n++;
     TEST_ASSERT_TRUE_MESSAGE(
             AssertCall(mock, call_n, "SerialWriteByte"),
             "Expect call number 7 is SerialWriteByte."

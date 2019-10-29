@@ -72,7 +72,7 @@ void BridgeGetSensorLED_responds_ok_after_reading_host_payload(void);
 void BridgeGetSensorLED_exits_if_Sensor_responds_error_to_command(void);
 void BridgeGetSensorLED_passes_Sensor_command_response_back_to_host(void);
 void BridgeGetSensorLED_sends_Sensor_led_number_if_Sensor_responds_ok_to_command(void);
-void BridgeGetSensorLED_writes_cmd_and_payload_to_Sensor(void);
+void BridgeGetSensorLED_writes_led_number_to_Sensor(void);
 void BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor(void);
 void BridgeGetSensorLED_writes_sensor_reply_to_host(void);
 

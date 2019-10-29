@@ -95,7 +95,7 @@ void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
     /** Check the state of the LED on the Bridge board. */
     /** GetBridgeLED behavior:\n 
       * - receives led number\n 
-      * - always replies with two bytes\n 
+      * - ~always replies with two bytes~\n 
       * - replies msg status ok if led number is recognized\n 
       * - replies msg status error if led is non existent\n 
       * - replies led off if led is off\n 
@@ -109,11 +109,16 @@ void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
     // TODO: Add error checking for time out.
         // CASE: host does not send expected number of bytes.
 
+    // Flush Sensor reply to this command (invalid command on Sensor)
+    uint8_t sensor_reply[1]; ReadSensor(sensor_reply, 1);
+    // Do not pass Sensor response back up to the host.
+    /* SerialWriteByte(sensor_reply[0]); // Bridge passes Sensor status to host */
+
     uint8_t led_number = read_buffer[0];
     if (led_number != led_0)
     {
         SerialWriteByte(error); // host is asking about nonexistent LED
-        SerialWriteByte(0x00); // response is always two bytes, pad with 0
+        /* SerialWriteByte(0x00); // response is always two bytes, pad with 0 */
         return;
     }
     SerialWriteByte(ok); // led_number is recognized, send msg_status: ok
@@ -139,6 +144,11 @@ void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
     uint8_t read_buffer[num_bytes_payload];
     /* UsbReadN(read_buffer, num_bytes_payload); */
     UsbReadBytes(read_buffer, num_bytes_payload);
+
+    // Flush Sensor reply to this command (invalid command on Sensor)
+    uint8_t sensor_reply[1]; ReadSensor(sensor_reply, 1);
+    // Do not pass Sensor response back up to the host.
+    /* SerialWriteByte(sensor_reply[0]); // Bridge passes Sensor status to host */
 
     // Reply to USB Host with message status byte.
     uint8_t led_number = read_buffer[0];
@@ -190,23 +200,29 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
     SerialWriteByte(ok); // Bridge finished reading its expected payload.
 
     // Send command and led_number to Sensor.
-    uint8_t msg_to_sensor[] = {BridgeGetSensorLED_key, led_number};
-    uint8_t *p_msg_byte = msg_to_sensor;
-    SpiWriteByte(*(p_msg_byte++)); SpiWriteByte(*(p_msg_byte++));
-    /* SpiWriteByte(*(p_msg_byte++)); */
-    /* SpiMasterWaitForSlaveReadyReset(); */
-    /* SpiMasterWaitForSlaveReady(); */
-    /* SpiWriteByte(*(p_msg_byte++)); */
-    /* SpiMasterWaitForSlaveReadyReset(); */
+    /* uint8_t msg_to_sensor[] = {BridgeGetSensorLED_key, led_number}; */
+    /* uint8_t *p_msg_byte = msg_to_sensor; */
+    /* SpiWriteByte(*(p_msg_byte++)); SpiWriteByte(*(p_msg_byte++)); */
+    SpiWriteByte(led_number);
     // Get reply from Sensor.
-    uint8_t sensor_reply[2];
-    ReadSensor(sensor_reply, 2);
+    /* uint8_t sensor_reply[2]; */
+    /* ReadSensor(sensor_reply, 2); */
     // Pass reply to host.
-    uint16_t byte_count = 0;
-    while (byte_count < (2))
+    /* uint16_t byte_count = 0; */
+    /* while (byte_count < (2)) */
+    /* { */
+    /*     SerialWriteByte(sensor_reply[byte_count]); */
+    /*     byte_count++; */
+    /* } */
+    // Get reply from Sensor.
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    // Pass reply to host.
+    SerialWriteByte(sensor_reply);
+    // If there was no error, get next byte and pass to host.
+    if (ok==sensor_reply)
     {
-        SerialWriteByte(sensor_reply[byte_count]);
-        byte_count++;
+        ReadSensor(&sensor_reply, 1);
+        SerialWriteByte(sensor_reply);
     }
 }
 void BridgeSetSensorLED(void)
@@ -216,7 +232,8 @@ void TestInvalidSensorCmd(void) // Test how Sensor responds to invalid cmd.
 {
     SerialWriteByte(ok); // Bridge recognized this command.
     // Send invalid command to the slave.
-    MacroSpiMasterWrite(0xFF); // Guaranteed 0xFF will never be a valid cmd key.
+    /* MacroSpiMasterWrite(0xFF); // Guaranteed 0xFF will never be a valid cmd key. */
+    // Get Sensor reply
     uint8_t sensor_reply[1]; ReadSensor(sensor_reply, 1);
     // Pass Sensor response back up to the host.
     SerialWriteByte(sensor_reply[0]); // Bridge passes Sensor status to host
@@ -405,10 +422,19 @@ uint8_t UsbWriteStatusOk(bridge_cmd_key   cmd_done_by_bridge)
     uint8_t const StatusOk[] = { 0x00, cmd_done_by_bridge};
     return UsbWrite(StatusOk,2);
 }
+// replaced byte FlushInvalidCommand:
 uint8_t UsbWriteStatusInvalid(void)
 {
     uint8_t const StatusInvalid[] = { invalid_cmd };
     return UsbWrite(StatusInvalid,1);
+}
+uint8_t FlushInvalidCommand(void)
+{
+    // Get reply from Sensor.
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    // Send invalid-command-error for Bridge and send reply from Sensor.
+    uint8_t const StatusInvalid[] = { invalid_cmd, sensor_reply };
+    return UsbWrite(StatusInvalid,2);
 }
 uint8_t old_UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
 {

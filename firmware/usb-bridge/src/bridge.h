@@ -72,5 +72,6 @@ uint8_t UsbWriteStatusMissingArgs(uint8_t   missing_args_cmd); // not enough arg
 /* TODO: remove dependency on sensor_cmd_key by figuring out what the intent was here */
 typedef uint8_t sensor_cmd_key;  // jump-table dictionary uses 8-bit keys
 uint8_t UsbWriteStatusSpiBusError(sensor_cmd_key   spi_slave_cmd);
+uint8_t FlushInvalidCommand(void);
 
 #endif // _USB_H

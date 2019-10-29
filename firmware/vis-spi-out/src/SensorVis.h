@@ -14,6 +14,7 @@
 typedef uint8_t const status_byte;  // TODO: move this to a shared lib
 status_byte ok;
 status_byte error;
+status_byte invalid_cmd;
 status_byte led_off;
 status_byte led_green;
 status_byte led_red;
@@ -66,5 +67,6 @@ sensor_cmd_key const GetSensorLED_key;
 void ReplyCommandInvalid(void);
 void GetSensorLED(void);
 void LedsShowError(void);
+void LedsShowNoError(void);
 //
 #endif // _SENSORVIS_H

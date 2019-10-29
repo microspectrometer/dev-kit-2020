@@ -56,7 +56,7 @@ void API_BridgeGetSensorLED(bool run_test) // [ ] unit test GetSensorLED
         setUp = SetUp_BridgeGetSensorLED; tearDown = TearDown_BridgeGetSensorLED;
         RUN_TEST(BridgeGetSensorLED_reads_one_byte_of_host_payload);
         RUN_TEST(BridgeGetSensorLED_responds_ok_after_reading_host_payload);
-        RUN_TEST(BridgeGetSensorLED_writes_cmd_and_payload_to_Sensor);
+        RUN_TEST(BridgeGetSensorLED_writes_led_number_to_Sensor);
         RUN_TEST(BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor);
         RUN_TEST(BridgeGetSensorLED_writes_sensor_reply_to_host);
     }

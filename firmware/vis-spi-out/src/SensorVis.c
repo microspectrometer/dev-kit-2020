@@ -9,16 +9,18 @@
 extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
 
 /* TODO: pull these constants from a common file along with Bridge.c */
-/* sensor_cmd_key const dummy0_key = 0; */
-/* sensor_cmd_key const dummy1_key = 1; */
+sensor_cmd_key const NullCommand_key = 0;
 sensor_cmd_key const GetSensorLED_key = 3;
-sensor_cmd_key const SensorCfgLis_key = 4;
+sensor_cmd_key const SetSensorLED_key = 4;
+/* sensor_cmd_key const SensorCfgLis_key = 4; */
+sensor_cmd_key const TestInvalidSensorCmd_key = 5;
 
 
-void NullCommand(void){}
+void NullCommand(void){LedsShowNoError();}
 
 status_byte ok = 0; 
 status_byte error = 1; 
+status_byte invalid_cmd = 2;
 status_byte led_off = 0; 
 status_byte led_green = 1; 
 status_byte led_red = 2; 
@@ -75,7 +77,7 @@ void GetSensorLED(void)
     /** Check the state of an LED on the Sensor board. */
     /** GetSensorLED behavior:\n 
       * - receives led number\n 
-      * - always replies with two bytes\n 
+      * - ~always replies with two bytes~\n 
       * - replies msg status error if led is non existent\n 
       * - replies msg status ok if led number is recognized\n 
       * - replies led off if led is off\n 
@@ -88,8 +90,9 @@ void GetSensorLED(void)
     if ((led_number != led_0) && (led_number != led_1))
     {
         uint8_t error_reply[] = {error, 0x00}; // send error and placeholder byte
+        /* WriteSpiMaster(error_reply,2); // host is asking about nonexistent LED */
+        WriteSpiMaster(error_reply,1); // host is asking about nonexistent LED
         LedsShowError();
-        WriteSpiMaster(error_reply,2); // host is asking about nonexistent LED
         return;
     }
     uint8_t led;
@@ -205,6 +208,7 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
         NULL, // placeholder to bump key value of later function names
         GetSensorLED,
         SensorCfgLis,
+        NULL, // an invalid key for the system test: TestInvalidSensorCmd
         /* SensorLed1Green, */
         /* SensorLed1Red, */
         /* SensorLed2Green, */
@@ -234,9 +238,15 @@ void LedsShowError(void)
     BiColorLedRed(led_TxRx);
     BiColorLedRed(led_Done);
 }
+void LedsShowNoError(void)
+{
+    // first and second LEDs turn green to indicate error cleared
+    BiColorLedGreen(led_TxRx);
+    BiColorLedGreen(led_Done);
+}
 void ReplyCommandInvalid(void)
 {
-    uint8_t cmd_invalid[] = {error};
+    uint8_t cmd_invalid[] = {invalid_cmd};
     WriteSpiMaster(cmd_invalid, 1);
 }
 // Do not use this.

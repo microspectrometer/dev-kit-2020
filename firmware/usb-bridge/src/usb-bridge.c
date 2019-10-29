@@ -31,13 +31,24 @@ void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
     // Read USB buffer if there is any data to read.
     if (UsbReadOneByte(&cmd))
     {
+        // Pass byte to Sensor
+        SpiWriteByte(cmd);
         /* This first byte is *always* a command from the USB host. */
         BridgeCmd* CmdFn = LookupBridgeCmd(cmd);
         /* Tell UsbHost if the command is invalid. */
         /* if (CmdFn == NULL) UsbWriteStatusInvalid(cmd); */
-        if (CmdFn == NULL) UsbWriteStatusInvalid();
+        /* if (CmdFn == NULL) UsbWriteStatusInvalid(); */
+        if (CmdFn == NULL)
+        {
+            FlushInvalidCommand();
+            BiColorLedRed(status_led);
+        }
         /* Do command if it is valid. */
-        else CmdFn();
+        else
+        {
+            CmdFn();
+            BiColorLedGreen(status_led);
+        }
         /* It is up to CmdFn to let the UsbHost know */
         /* command was successfully carried out. */
         /* If the CmdFn requires sending additional data, */
