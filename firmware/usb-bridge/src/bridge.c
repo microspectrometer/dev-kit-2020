@@ -193,9 +193,10 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
     /** BridgeGetSensorLED behavior:\n 
       * - reads one byte of host payload\n 
       * - responds ok after reading host payload\n 
-      * - ~writes cmd and payload to Sensor~\n 
-      * - reads two bytes of reply from Sensor\n 
-      * - writes sensor reply to host\n 
+      * - writes led number to Sensor\n 
+      * - reads msg status byte from Sensor and sends to USB host\n 
+      * - reads and sends led status byte if Sensor status is ok\n 
+      * - reads no more bytes if Sensor status is error\n 
       * */
     // Read which LED to query (one byte of payload).
     uint8_t const num_bytes_payload = 1;

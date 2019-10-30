@@ -60,8 +60,9 @@ void API_BridgeGetSensorLED(bool run_test) // [ ] unit test GetSensorLED
         RUN_TEST(BridgeGetSensorLED_reads_one_byte_of_host_payload);
         RUN_TEST(BridgeGetSensorLED_responds_ok_after_reading_host_payload);
         RUN_TEST(BridgeGetSensorLED_writes_led_number_to_Sensor);
-        RUN_TEST(BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor);
-        RUN_TEST(BridgeGetSensorLED_writes_sensor_reply_to_host);
+        RUN_TEST(BridgeGetSensorLED_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host);
+        RUN_TEST(BridgeGetSensorLED_reads_and_sends_led_status_byte_if_Sensor_status_is_ok);
+        RUN_TEST(BridgeGetSensorLED_reads_no_more_bytes_if_Sensor_status_is_error);
     }
 }
 void ApiSupport(bool run_test)
@@ -139,7 +140,7 @@ int main(void)
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
     API_GetBridgeLED (Nope);
-    API_SetBridgeLED (Yep);
-    API_BridgeGetSensorLED (Nope);
+    API_SetBridgeLED (Nope);
+    API_BridgeGetSensorLED (Yep);
     return UNITY_END();
 }

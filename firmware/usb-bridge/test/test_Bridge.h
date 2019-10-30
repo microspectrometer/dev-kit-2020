@@ -79,5 +79,8 @@ void GetBridgeLED_reads_and_ignores_Sensor_reply_to_GetBridgeLED(void);
 void GetBridgeLED_sends_no_additional_bytes_if_msg_status_is_error(void);
 void GetBridgeLED_sends_led_status_byte_after_sending_msg_status_ok(void);
 void SetBridgeLED_reads_and_ignores_Sensor_reply_to_SetBridgeLED(void);
+void BridgeGetSensorLED_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host(void);
+void BridgeGetSensorLED_reads_and_sends_led_status_byte_if_Sensor_status_is_ok(void);
+void BridgeGetSensorLED_reads_no_more_bytes_if_Sensor_status_is_error(void);
 
 #endif // _TEST_BRIDGE_H
