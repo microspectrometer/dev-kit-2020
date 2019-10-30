@@ -151,3 +151,58 @@ void BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect(void)
     uint16_t expect = 0x0310;
     TEST_ASSERT_EQUAL_UINT16(expect, BytesComing(response_size));
 }
+
+void old_GetBridgeLED_always_replies_with_two_bytes(void)
+{
+    /* ---Test reply is two bytes when led_number is valid--- */
+    /* =====[ Setup ]===== */
+    // Inject one byte of payload for fake UsbReadBytes.
+    uint8_t good_led_number = led_0;
+    uint8_t payload[] = {good_led_number};
+    FakeByteArray_ForUsbReadBytes = payload;
+    /* Inject LED state */
+    BiColorLedOn(status_led);
+    BiColorLedGreen(status_led);
+    /* uint8_t led_state = led_green; */
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test: assert UsbReadBytes called to read 1 byte ]===== */
+    printf("Valid LED number:\n");
+    /* PrintAllCalls(mock); // view entire call history */
+    uint8_t call_n;
+    /* uint16_t arg_n; uint8_t arg_value; */
+    call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SerialWriteByte"));
+    /* arg_n = 1; arg_value = ok; */
+    /* TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_value)); */
+    call_n = 3;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SerialWriteByte"));
+    /* arg_n = 1; arg_value = led_state; */
+    /* TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_value)); */
+
+    /* ---Test reply is two bytes when led_number is invalid--- */
+    TearDown_Mock();
+    SetUp_Mock();
+    /* =====[ Setup ]===== */
+    // Inject one byte of payload for fake UsbReadBytes.
+    uint8_t bad_led_number = led_0+99;
+    payload[0] = bad_led_number;
+    FakeByteArray_ForUsbReadBytes = payload;
+    /* Inject LED state */
+    BiColorLedOn(status_led);
+    BiColorLedGreen(status_led);
+    /* uint8_t led_state = led_green; */
+    /* =====[ Operate ]===== */
+    GetBridgeLED();
+    /* =====[ Test: assert UsbReadBytes called to read 1 byte ]===== */
+    printf("Invalid LED number:\n");
+    /* PrintAllCalls(mock); // view entire call history */
+    call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SerialWriteByte"));
+    /* arg_n = 1; arg_value = ok; */
+    /* TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_value)); */
+    call_n = 3;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SerialWriteByte"));
+    /* arg_n = 1; arg_value = led_state; */
+    /* TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_value)); */
+}

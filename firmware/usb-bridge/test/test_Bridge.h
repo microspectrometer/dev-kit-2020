@@ -34,7 +34,7 @@ void SetUp_GetBridgeLED(void); void TearDown_GetBridgeLED(void);
 void GetBridgeLED_receives_led_number(void);
 void GetBridgeLED_always_replies_with_two_bytes(void);
 void GetBridgeLED_replies_msg_status_ok_if_led_number_is_recognized(void);
-void GetBridgeLED_replies_msg_status_error_if_led_is_non_existent(void);
+void GetBridgeLED_replies_msg_status_error_if_led_does_not_exist(void);
 void GetBridgeLED_replies_led_off_if_led_is_off(void);
 void GetBridgeLED_replies_led_green_if_led_is_green(void);
 void GetBridgeLED_replies_led_red_if_led_is_red(void);
@@ -48,7 +48,7 @@ void GetBridgeLED_replies_led_off_if_status_led_is_off(void);
 void GetBridgeLED_replies_led_green_if_status_led_is_green(void);
 void GetBridgeLED_replies_led_red_if_status_led_is_red(void);
 void SetUp_SetBridgeLED(void); void TearDown_SetBridgeLED(void);
-void SetBridgeLED_reads_two_bytes_of_payload(void);
+void SetBridgeLED_reads_two_bytes_of_payload_from_usb_host(void);
 void SetBridgeLED_replies_with_one_byte(void);
 void SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led(void);
 void SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized(void);
@@ -75,5 +75,9 @@ void BridgeGetSensorLED_sends_Sensor_led_number_if_Sensor_responds_ok_to_command
 void BridgeGetSensorLED_writes_led_number_to_Sensor(void);
 void BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor(void);
 void BridgeGetSensorLED_writes_sensor_reply_to_host(void);
+void GetBridgeLED_reads_and_ignores_Sensor_reply_to_GetBridgeLED(void);
+void GetBridgeLED_sends_no_additional_bytes_if_msg_status_is_error(void);
+void GetBridgeLED_sends_led_status_byte_after_sending_msg_status_ok(void);
+void SetBridgeLED_reads_and_ignores_Sensor_reply_to_SetBridgeLED(void);
 
 #endif // _TEST_BRIDGE_H

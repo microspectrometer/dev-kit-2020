@@ -28,10 +28,12 @@ void API_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
 {if (run_test)
     {
     setUp = SetUp_GetBridgeLED; tearDown = TearDown_GetBridgeLED;
+    RUN_TEST(GetBridgeLED_reads_and_ignores_Sensor_reply_to_GetBridgeLED);
     RUN_TEST(GetBridgeLED_receives_led_number);
-    RUN_TEST(GetBridgeLED_always_replies_with_two_bytes);
+    RUN_TEST(GetBridgeLED_replies_msg_status_error_if_led_does_not_exist);
+    RUN_TEST(GetBridgeLED_sends_no_additional_bytes_if_msg_status_is_error);
     RUN_TEST(GetBridgeLED_replies_msg_status_ok_if_led_number_is_recognized);
-    RUN_TEST(GetBridgeLED_replies_msg_status_error_if_led_is_non_existent);
+    RUN_TEST(GetBridgeLED_sends_led_status_byte_after_sending_msg_status_ok);
     RUN_TEST(GetBridgeLED_replies_led_off_if_led_is_off);
     RUN_TEST(GetBridgeLED_replies_led_green_if_led_is_green);
     RUN_TEST(GetBridgeLED_replies_led_red_if_led_is_red);
@@ -41,10 +43,11 @@ void API_SetBridgeLED(bool run_test) // [x] unit test SetBridgeLED
 {if (run_test)
     {
     setUp = SetUp_SetBridgeLED; tearDown = TearDown_SetBridgeLED;
-    RUN_TEST(SetBridgeLED_reads_two_bytes_of_payload);
+    RUN_TEST(SetBridgeLED_reads_and_ignores_Sensor_reply_to_SetBridgeLED);
+    RUN_TEST(SetBridgeLED_reads_two_bytes_of_payload_from_usb_host);
     RUN_TEST(SetBridgeLED_replies_with_one_byte);
-    RUN_TEST(SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led);
     RUN_TEST(SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized);
+    RUN_TEST(SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led);
     RUN_TEST(SetBridgeLED_turns_off_led_if_payload_is_led_off);
     RUN_TEST(SetBridgeLED_turns_led_on_and_green_if_payload_is_led_green);
     RUN_TEST(SetBridgeLED_turns_led_on_and_red_if_payload_is_led_red);
@@ -132,12 +135,11 @@ int main(void)
     /* SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:IGNORE: Move test
      * to lib `Sensor`. */
     /* ---ACTIVE--- */
-    API_GetBridgeLED (Nope);
-    API_SetBridgeLED (Nope);
-    API_BridgeGetSensorLED (Yep);
-    setUp = SetUp_BridgeGetSensorLED; tearDown = TearDown_BridgeGetSensorLED;
     /* API (Yep); */
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
+    API_GetBridgeLED (Nope);
+    API_SetBridgeLED (Yep);
+    API_BridgeGetSensorLED (Nope);
     return UNITY_END();
 }

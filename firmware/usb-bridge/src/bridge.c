@@ -94,10 +94,12 @@ void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
     /** Check the state of the LED on the Bridge board. */
     /** GetBridgeLED behavior:\n 
+      * - reads and ignores Sensor reply to GetBridgeLED\n 
       * - receives led number\n 
-      * - ~always replies with two bytes~\n 
+      * - replies msg status error if led does not exist\n 
+      * - sends no additional bytes if msg status is error\n 
       * - replies msg status ok if led number is recognized\n 
-      * - replies msg status error if led is non existent\n 
+      * - sends led status byte after sending msg status ok\n 
       * - replies led off if led is off\n 
       * - replies led green if led is green\n 
       * - replies led red if led is red\n 
@@ -130,15 +132,16 @@ void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
 void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
 {
     /** Turn LED off, green, or red on the Bridge board. */
-    /** SetBridgeLED behavior:\n
-     * - reads two bytes of payload.\n 
-     * - replies with one byte.\n 
-     * - replies msg status ok if led number is status led.\n 
-     * - replies msg status error if led number is not recognized.\n 
-     * - turns off led if payload is led off.\n 
-     * - turns led on and green if payload is led green.\n 
-     * - turns led on and red if payload is led red.\n 
-     * */
+    /** SetBridgeLED behavior:\n 
+      * - reads and ignores Sensor reply to SetBridgeLED\n 
+      * - reads two bytes of payload from usb host\n 
+      * - replies with one byte\n 
+      * - replies msg status error if led number is not recognized\n 
+      * - replies msg status ok if led number is status led\n 
+      * - turns off led if payload is led off\n 
+      * - turns led on and green if payload is led green\n 
+      * - turns led on and red if payload is led red\n 
+      * */
     // Read which LED to set (one byte of payload).
     uint8_t const num_bytes_payload = 2;
     uint8_t read_buffer[num_bytes_payload];

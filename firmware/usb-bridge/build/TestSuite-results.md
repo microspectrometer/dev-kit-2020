@@ -1,39 +1,24 @@
+Call 2 is named ReadSensor? Call 2 is ReadSensor.
+Call 3 is named SerialWriteByte? Call 3 is SerialWriteByte.
+Value passed to call 3, arg 1? (uint8_t)0000.
+test/test_runner.c:46:SetBridgeLED_reads_and_ignores_Sensor_reply_to_SetBridgeLED:PASS
 Call 1 is named UsbReadBytes? Call 1 is UsbReadBytes.
-Value passed to call 1, arg 2? (uint16_t)0x0001.
-test/test_runner.c:57:BridgeGetSensorLED_reads_one_byte_of_host_payload:PASS
-Call 2 is named SerialWriteByte? Call 2 is SerialWriteByte.
-Value passed to call 2, arg 1? (uint8_t)0000.
-test/test_runner.c:58:BridgeGetSensorLED_responds_ok_after_reading_host_payload:PASS
-
-- Expected 0 calls:
-- Received 6 calls:
-    - "UsbReadBytes", (uint8_t *)0x64, (uint16_t)0x0001
-    - "SerialWriteByte", (uint8_t)0000
-    - "SpiWriteByte", (uint8_t)0x63
-    - "ReadSensor", (uint8_t *)0x01, (uint16_t)0x0002
-    - "SerialWriteByte", (uint8_t)0x01
-    - "SerialWriteByte", (uint8_t)0000
-Call 3 is named SpiWriteByte? Call 3 is SpiWriteByte.
-Value passed to call 3, arg 1? (uint8_t)0x63.
-test/test_runner.c:59:BridgeGetSensorLED_writes_led_number_to_Sensor:PASS
-Call 4 is named ReadSensor? Call 4 is ReadSensor.
-Value passed to call 4, arg 2? (uint16_t)0x0002.
-test/test_runner.c:60:BridgeGetSensorLED_reads_two_bytes_of_reply_from_Sensor:PASS
-
-- Expected 0 calls:
-- Received 6 calls:
-    - "UsbReadBytes", (uint8_t *)0x64, (uint16_t)0x0001
-    - "SerialWriteByte", (uint8_t)0000
-    - "SpiWriteByte", (uint8_t)0000
-    - "ReadSensor", (uint8_t *)0000, (uint16_t)0x0002
-    - "SerialWriteByte", (uint8_t)0000
-    - "SerialWriteByte", (uint8_t)0x01
-Call 5 is named SerialWriteByte? Call 5 is SerialWriteByte.
-Value passed to call 5, arg 1? (uint8_t)0000.
-Call 6 is named SerialWriteByte? Call 6 is SerialWriteByte.
-Value passed to call 6, arg 1? (uint8_t)0x01.
-test/test_runner.c:61:BridgeGetSensorLED_writes_sensor_reply_to_host:PASS
+Value passed to call 1, arg 2? (uint16_t)0x0002.
+test/test_runner.c:47:SetBridgeLED_reads_two_bytes_of_payload_from_usb_host:PASS
+Call 1 is named UsbReadBytes? Call 1 is UsbReadBytes.
+Call 2 is named ReadSensor? Call 2 is ReadSensor.
+Call 3 is named SerialWriteByte? Call 3 is SerialWriteByte.
+test/test_runner.c:48:SetBridgeLED_replies_with_one_byte:PASS
+Call 3 is named SerialWriteByte? Call 3 is SerialWriteByte.
+Value passed to call 3, arg 1? (uint8_t)0x01.
+test/test_runner.c:49:SetBridgeLED_replies_msg_status_error_if_led_number_is_not_recognized:PASS
+Call 3 is named SerialWriteByte? Call 3 is SerialWriteByte.
+Value passed to call 3, arg 1? (uint8_t)0000.
+test/test_runner.c:50:SetBridgeLED_replies_msg_status_ok_if_led_number_is_status_led:PASS
+test/test_runner.c:51:SetBridgeLED_turns_off_led_if_payload_is_led_off:PASS
+test/test_runner.c:52:SetBridgeLED_turns_led_on_and_green_if_payload_is_led_green:PASS
+test/test_runner.c:53:SetBridgeLED_turns_led_on_and_red_if_payload_is_led_red:PASS
 
 -----------------------
-5 Tests 0 Failures 0 Ignored 
+8 Tests 0 Failures 0 Ignored 
 OK
