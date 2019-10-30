@@ -37,34 +37,28 @@ void use_Queue_lib_for_SPI_rx_FIFO_buffer(bool run_test)
         RUN_TEST(test_Queue_lib_example_of_push_wrap_around);
     }
 }
-/* TODO: pull useful stuff from these old tests */
-void DevelopingSpiSlave(bool run_test) {if (run_test) {
-    setUp = SetUp_SpiSlaveSendBytes; tearDown = TearDown_SpiSlaveSendBytes;
-    // These tests require mocking out the calls made by SpiSlaveSendBytes,
-    // otherwise they hang waiting for a reply from an imaginary SpiMaster!
-    RUN_TEST(LookupSensorCmd_example_calling_the_returned_command);
-    RUN_TEST(SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd);
-    RUN_TEST(SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name);
-    //
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LookupSensorCmd_returns_Nth_fn_for_Nth_key);
-    RUN_TEST(LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table);
-}}
 
+void unittest_GetSensorLED(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_GetSensorLED; tearDown = TearDown_GetSensorLED;
+        RUN_TEST(GetSensorLED_receives_led_number);
+        RUN_TEST(GetSensorLED_replies_msg_status_error_if_led_does_not_exist);
+        RUN_TEST(GetSensorLED_sends_no_additional_bytes_if_msg_status_is_error);
+        RUN_TEST(GetSensorLED_replies_msg_status_ok_if_led_number_is_recognized);
+        RUN_TEST(GetSensorLED_sends_led_status_byte_after_sending_msg_status_ok);
+        RUN_TEST(GetSensorLED_replies_led_off_if_led_is_off);
+        RUN_TEST(GetSensorLED_replies_led_green_if_led_is_green);
+        RUN_TEST(GetSensorLED_replies_led_red_if_led_is_red);
+    }
+}
 int main(void)
 {
     UNITY_BEGIN();
-    DevelopingSpiSlave(Nope); // ?
     use_Queue_lib_for_SPI_rx_FIFO_buffer(Nope); // good
-    setUp = SetUp_GetSensorLED; tearDown = TearDown_GetSensorLED;
-    RUN_TEST(GetSensorLED_receives_led_number);
-    RUN_TEST(GetSensorLED_always_replies_with_two_bytes);
-    RUN_TEST(GetSensorLED_replies_msg_status_error_if_led_is_non_existent);
-    RUN_TEST(GetSensorLED_replies_msg_status_ok_if_led_number_is_recognized);
-    RUN_TEST(GetSensorLED_replies_led_off_if_led_is_off);
-    RUN_TEST(GetSensorLED_replies_led_green_if_led_is_green);
-    RUN_TEST(GetSensorLED_replies_led_red_if_led_is_red);
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    unittest_GetSensorLED(Yep);
+    /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     // Put single tests here (move single tests to test suite later).
     return UNITY_END();
 }

@@ -195,16 +195,6 @@ void old_GetSensorLED_replies_led_red_if_led_is_red(void)
 /* Pull useful stuff from here: */
 /* =====[ Jump Table Sandbox ]===== */
 /* Functions of type `spi_Cmd` take nothing and return nothing. */
-void LookupSensorCmd_returns_Nth_fn_for_Nth_key(void){
-
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL(GetSensorLED, LookupSensorCmd(GetSensorLED_key));
-}
-static sensor_cmd_key const spi_BlackHat_key = 255; // out-of-bounds: return NULL ptr
-void LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table(void){
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_NULL(LookupSensorCmd(spi_BlackHat_key));
-}
 void LookupSensorCmd_example_calling_the_returned_command(void)
 {
     /* TEST_IGNORE_MESSAGE("I do not understand this test."); */
@@ -263,6 +253,16 @@ void LookupSensorCmd_example_calling_the_returned_command(void)
         RanAsHoped(mock),           // If this is false,
         WhyDidItFail(mock)          // print this message.
         );
+}
+void LookupSensorCmd_returns_Nth_fn_for_Nth_key(void){
+
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_EQUAL(GetSensorLED, LookupSensorCmd(GetSensorLED_key));
+}
+static sensor_cmd_key const spi_BlackHat_key = 255; // out-of-bounds: return NULL ptr
+void LookupSensorCmd_returns_NULL_if_key_is_not_in_jump_table(void){
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_NULL(LookupSensorCmd(spi_BlackHat_key));
 }
 void SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd(void)
 {
@@ -371,5 +371,53 @@ void SpiSlaveWrite_StatusInvalid_sends_0x00_0x02_0xFF_invalid_cmd_name(void)
         );
 }
 
+void old_GetSensorLED_always_replies_with_two_bytes(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
 
+    /* =====[ First test for an invalid LED number ]===== */
 
+    // Fake placing a byte in the queue.
+    uint8_t const fake_bad_led_number = 99;
+    QueuePush(SpiFifo, fake_bad_led_number);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+
+    /* =====[ Operate ]===== */
+    GetSensorLED();
+
+    /* =====[ Test ]===== */
+    printf("If LED number is not valid:\n");
+    // Assert reply with two bytes:
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    uint8_t arg_n = 2; uint16_t assert_val = 2;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
+    // Note, the arg must match the type as well the value!
+
+    /* =====[ Repeat test for a valid LED number. ]===== */
+
+    // Fake placing a byte in the queue.
+    uint8_t const fake_good_led_number = 1;
+    QueuePush(SpiFifo, fake_good_led_number);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+
+    /* =====[ Operate ]===== */
+    GetSensorLED();
+
+    /* =====[ Test ]===== */
+    printf("If LED number is valid:\n");
+    // Assert reply with two bytes:
+    call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    arg_n = 2; assert_val = 2;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
+    // Note, the arg must match the type as well the value!
+
+    // For next test: Assert byte 0 is error
+    /* TEST_ASSERT_EQUAL_UINT8(error, */ 
+}

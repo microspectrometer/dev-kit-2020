@@ -75,9 +75,10 @@ void GetSensorLED(void)
     /** Check the state of an LED on the Sensor board. */
     /** GetSensorLED behavior:\n 
       * - receives led number\n 
-      * - ~always replies with two bytes~\n 
-      * - replies msg status error if led is non existent\n 
+      * - replies msg status error if led does not exist\n 
+      * - sends no additional bytes if msg status is error\n 
       * - replies msg status ok if led number is recognized\n 
+      * - sends led status byte after sending msg status ok\n 
       * - replies led off if led is off\n 
       * - replies led green if led is green\n 
       * - replies led red if led is red\n 

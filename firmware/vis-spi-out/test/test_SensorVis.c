@@ -123,6 +123,8 @@ void test_Queue_lib_example_of_push_wrap_around(void)
     TEST_ASSERT_EQUAL_UINT8(11, spi_rx_buffer[0]);
 }
 
+
+
 /* ---GetSensorLED--- */
 /* =====[ Mock WriteSpiMaster() ]===== */
 static RecordedCall * Record_WriteSpiMaster(uint8_t const *arg1, uint16_t arg2)
@@ -197,57 +199,7 @@ void GetSensorLED_receives_led_number(void)
     // Assert that the queue is now empty.
     TEST_ASSERT_TRUE(QueueIsEmpty(SpiFifo));
 }
-void GetSensorLED_always_replies_with_two_bytes(void)
-{
-    /* =====[ Setup ]===== */
-    volatile uint8_t spi_rx_buffer[max_length_of_queue];
-    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
-    // GetSensorLED waits until there is a byte in the queue.
-
-    /* =====[ First test for an invalid LED number ]===== */
-
-    // Fake placing a byte in the queue.
-    uint8_t const fake_bad_led_number = 99;
-    QueuePush(SpiFifo, fake_bad_led_number);
-    // Assert that the Queue is not empty.
-    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
-    /* =====[ Operate ]===== */
-    GetSensorLED();
-
-    /* =====[ Test ]===== */
-    printf("If LED number is not valid:\n");
-    // Assert reply with two bytes:
-    uint8_t call_n = 1;
-    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
-    uint8_t arg_n = 2; uint16_t assert_val = 2;
-    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
-    // Note, the arg must match the type as well the value!
-
-    /* =====[ Repeat test for a valid LED number. ]===== */
-
-    // Fake placing a byte in the queue.
-    uint8_t const fake_good_led_number = 1;
-    QueuePush(SpiFifo, fake_good_led_number);
-    // Assert that the Queue is not empty.
-    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
-    /* =====[ Operate ]===== */
-    GetSensorLED();
-
-    /* =====[ Test ]===== */
-    printf("If LED number is valid:\n");
-    // Assert reply with two bytes:
-    call_n = 1;
-    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
-    arg_n = 2; assert_val = 2;
-    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
-    // Note, the arg must match the type as well the value!
-
-    // For next test: Assert byte 0 is error
-    /* TEST_ASSERT_EQUAL_UINT8(error, */ 
-}
-void GetSensorLED_replies_msg_status_error_if_led_is_non_existent(void)
+void GetSensorLED_replies_msg_status_error_if_led_does_not_exist(void)
 {
     /* =====[ Setup ]===== */
     volatile uint8_t spi_rx_buffer[max_length_of_queue];
@@ -262,20 +214,45 @@ void GetSensorLED_replies_msg_status_error_if_led_is_non_existent(void)
     /* =====[ Operate ]===== */
     GetSensorLED();
 
-    // Assert reply with two bytes:
+    // Assert reply with one byte:
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
-    uint8_t arg_n = 2; uint16_t assert_val = 2;
-    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
+    uint8_t arg_n = 2; uint16_t arg_val = 1;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
 
     /* =====[ Test ]===== */
     /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
-    /* printf("WriteSpiMaster called with write_buffer[1] == %d\n", SpyOn_WriteSpiMaster_arg1[1]); */
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(
-        0x01, SpyOn_WriteSpiMaster_arg1[0],
+        error, SpyOn_WriteSpiMaster_arg1[0],
         "Expect status ERROR (0x01)."
         );
+}
+void GetSensorLED_sends_no_additional_bytes_if_msg_status_is_error(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const fake_bad_led_number = 99;
+    QueuePush(SpiFifo, fake_bad_led_number);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+
+    /* =====[ Operate ]===== */
+    GetSensorLED();
+    // Assert reply with one byte:
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    uint8_t arg_n = 2; uint16_t arg_val = 1;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
+
+    /* =====[ Test ]===== */
+    // Show human reading test results that status is "error"
+    printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
+    // Assert no additional bytes sent back to Bridge
+    TEST_ASSERT_EQUAL_UINT8(call_n, NumberOfActualCalls(mock));
 }
 void GetSensorLED_replies_msg_status_ok_if_led_number_is_recognized(void)
 {
@@ -315,6 +292,44 @@ void GetSensorLED_replies_msg_status_ok_if_led_number_is_recognized(void)
     /*     "Expect led_status is led_red." */
     /*     ); */
 }
+void GetSensorLED_sends_led_status_byte_after_sending_msg_status_ok(void)
+{    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const fake_good_led_number = led_TxRx;
+    QueuePush(SpiFifo, fake_good_led_number);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+
+    // Fake the led_status to check for.
+    BiColorLedOn(led_TxRx);
+    BiColorLedRed(led_TxRx);
+
+    /* =====[ Operate ]===== */
+    GetSensorLED();
+
+    // Assert reply with two bytes:
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    uint8_t arg_n = 2; uint16_t assert_val = 2;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
+
+    /* =====[ Test ]===== */
+    /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
+    printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
+    printf("WriteSpiMaster called with write_buffer[1] == %d\n", SpyOn_WriteSpiMaster_arg1[1]);
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(
+        0x00, SpyOn_WriteSpiMaster_arg1[0],
+        "Expect OK (0x00)."
+        );
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(
+        led_red, SpyOn_WriteSpiMaster_arg1[1],
+        "Expect led_status is led_red."
+        );
+}
+
 void GetSensorLED_replies_led_off_if_led_is_off(void)
 {
     /* =====[ Setup ]===== */
