@@ -38,21 +38,11 @@ void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
         /* Tell UsbHost if the command is invalid. */
         /* if (CmdFn == NULL) UsbWriteStatusInvalid(cmd); */
         /* if (CmdFn == NULL) UsbWriteStatusInvalid(); */
-        if (CmdFn == NULL)
-        {
-            FlushInvalidCommand();
-            BiColorLedRed(status_led);
-        }
+        if (CmdFn == NULL) FlushInvalidCommand();
         /* Do command if it is valid. */
-        else
-        {
-            CmdFn();
-            BiColorLedGreen(status_led);
-        }
+        else CmdFn();
         /* It is up to CmdFn to let the UsbHost know */
         /* command was successfully carried out. */
-        /* If the CmdFn requires sending additional data, */
-        /* send UsbWriteStatusOk() before sending any other data. */
     }
 }
 int main()

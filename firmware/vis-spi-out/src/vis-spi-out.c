@@ -49,27 +49,16 @@ int main()
     /* =====[ LOOP ]===== */
     // Loop forever acting on commands from the SPI Master.
     while(1) Get_commands_from_SpiMaster();
-    // The following line of code should *never* be called.
-    LedsShowError();
 }
 void Get_commands_from_SpiMaster(void)
 {
     while (QueueIsEmpty(SpiFifo)); // idle until a command is received
     // Queue is no longer empty once a command byte is received over SPI.
     // The SPI ISR pushes the command byte onto the SPI Rx Queue.
-    BiColorLedRed(led_Done); // Indicate command execution is not done.
     // Pop the command and execute it.
     SensorCmd* SensorCmdFn = LookupSensorCmd(QueuePop(SpiFifo));
-    if (SensorCmdFn == NULL) // Command is invalid.
-    {
-        ReplyCommandInvalid(); // tell SpiMaster command is invalid
-        LedsShowError(); // indicate error on LEDs: invalid command
-    }
-    else // Command is valid.
-    {
-        SensorCmdFn(); // execute command
-        BiColorLedGreen(led_Done); // Indicate command execution is done.
-    }
+    if (SensorCmdFn == NULL) ReplyCommandInvalid();
+    else SensorCmdFn();
 }
 ISR(SPI_STC_vect)
 {
@@ -79,7 +68,7 @@ ISR(SPI_STC_vect)
 
     // Client stuck in loop `while (QueueIsEmpty(SpiFifo));` when ISR is called
     //
-    if (QueueIsFull(SpiFifo)) LedsShowError(); // TODO: add error handler
+    if (QueueIsFull(SpiFifo)) DEBUG_LedsShowError(); // TODO: add error handler
     else
     {
         QueuePush(SpiFifo, *Spi_spdr); // "client" must pop data from SpiFifo queue

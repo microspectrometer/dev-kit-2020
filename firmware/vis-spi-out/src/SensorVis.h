@@ -64,9 +64,10 @@ void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd);
 /* --------------------------------------------------------------------------------------- */
 sensor_cmd_key const GetSensorLED_key;
 
-void ReplyCommandInvalid(void);
+void DEBUG_LedsShowError(void);
+void DEBUG_LedsShowNoError(void);
 void GetSensorLED(void);
-void LedsShowError(void);
-void LedsShowNoError(void);
+void SetSensorLED(void);
+void ReplyCommandInvalid(void);
 //
 #endif // _SENSORVIS_H

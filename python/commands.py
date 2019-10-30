@@ -221,6 +221,7 @@ NullCommand = 0
 GetBridgeLED = 1
 SetBridgeLED = 2
 GetSensorLED = 3
+SetSensorLED = 4
 test_invalid_sensor_cmd = 5
 # led_red_key = 0
 # led_green_key = 1

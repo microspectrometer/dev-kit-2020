@@ -13,8 +13,8 @@ bridge_cmd_key const NullCommand_key = 0;
 bridge_cmd_key const GetBridgeLED_key = 1;
 bridge_cmd_key const SetBridgeLED_key = 2;
 bridge_cmd_key const BridgeGetSensorLED_key = 3;
-/* bridge_cmd_key const SetSensorLED_key = 4; */
-bridge_cmd_key const TestInvalidSensorCmd_key = 4;
+bridge_cmd_key const SetSensorLED_key = 4;
+bridge_cmd_key const TestInvalidSensorCmd_key = 5;
 void NullCommand(void){}
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
 {
@@ -157,24 +157,30 @@ void SetBridgeLED(void) // Bridge `led_0` is the `status_led`
         SerialWriteByte(error); // host is asking about nonexistent LED
         return;
     }
-    SerialWriteByte(ok); // led_number is recognized, send msg_status: ok
     uint8_t desired_led_state = read_buffer[1];
     if (desired_led_state == led_off)
     {
         BiColorLedOff(status_led);
+        SerialWriteByte(ok);
         return;
     }
     else if (desired_led_state == led_green)
     {
         BiColorLedGreen(status_led);
         BiColorLedOn(status_led);
+        SerialWriteByte(ok);
         return;
     }
     else if (desired_led_state == led_red)
     {
         BiColorLedRed(status_led);
         BiColorLedOn(status_led);
+        SerialWriteByte(ok);
         return;
+    }
+    else
+    { // led_state is not recognized
+        SerialWriteByte(error);
     }
 }
 void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
@@ -184,7 +190,7 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
     /** BridgeGetSensorLED behavior:\n 
       * - reads one byte of host payload\n 
       * - responds ok after reading host payload\n 
-      * - writes cmd and payload to Sensor\n 
+      * - ~writes cmd and payload to Sensor~\n 
       * - reads two bytes of reply from Sensor\n 
       * - writes sensor reply to host\n 
       * */
@@ -199,21 +205,8 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
     uint8_t led_number = read_buffer[0];
     SerialWriteByte(ok); // Bridge finished reading its expected payload.
 
-    // Send command and led_number to Sensor.
-    /* uint8_t msg_to_sensor[] = {BridgeGetSensorLED_key, led_number}; */
-    /* uint8_t *p_msg_byte = msg_to_sensor; */
-    /* SpiWriteByte(*(p_msg_byte++)); SpiWriteByte(*(p_msg_byte++)); */
+    // Send led_number to Sensor.
     SpiWriteByte(led_number);
-    // Get reply from Sensor.
-    /* uint8_t sensor_reply[2]; */
-    /* ReadSensor(sensor_reply, 2); */
-    // Pass reply to host.
-    /* uint16_t byte_count = 0; */
-    /* while (byte_count < (2)) */
-    /* { */
-    /*     SerialWriteByte(sensor_reply[byte_count]); */
-    /*     byte_count++; */
-    /* } */
     // Get reply from Sensor.
     uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
     // Pass reply to host.
@@ -227,6 +220,23 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
 }
 void BridgeSetSensorLED(void)
 {
+    // Read LED number and state (two bytes of payload).
+    uint8_t const num_bytes_payload = 2;
+    uint8_t read_buffer[num_bytes_payload];
+    UsbReadBytes(read_buffer, num_bytes_payload);
+    // TODO: Add error checking for time out.
+        // CASE: host does not send expected number of bytes.
+
+    uint8_t led_number = read_buffer[0];
+    uint8_t led_state = read_buffer[1];
+    SerialWriteByte(ok); // Bridge finished reading its expected payload.
+    // Send led_number and led_state to Sensor.
+    SpiWriteByte(led_number); SpiWriteByte(led_state);
+    // Get reply from Sensor.
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    // Pass reply to host.
+    SerialWriteByte(sensor_reply);
+    // If there was no error, get next byte and pass to host.
 }
 void TestInvalidSensorCmd(void) // Test how Sensor responds to invalid cmd.
 {

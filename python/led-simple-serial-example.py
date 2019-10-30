@@ -126,10 +126,13 @@ def test_InvalidSensorCommand():
     _print_and_log("(note Sensor LEDs turn red to indicate Sensor ERROR)")
     _print_and_log("test_InvalidSensorCommand: PASS")
 
-def test_GetBridgeLED():
-    _print_and_log("--- GetBridgeLED ---")
+def test_GetBridgeLED_ExpectGreen(led_number):
+    _print_and_log("--- GetBridgeLED: Expect GREEN ---")
+    if commands.led_0 != led_number:
+        _print_and_log(f"test_GetBridgeLED: FAIL: LED {led_number} does not exist")
+        return
     _tx_and_log_cmd(commands.GetBridgeLED, "Command is GetBridgeLED")
-    _tx_and_log_cmd(commands.led_0, "LED is LED0")
+    _tx_and_log_cmd(led_number, f"LED is LED{led_number}")
     expected = codes.OK
     reply = _rx_and_log_reply(
         device_name="BRIDGE",
@@ -138,10 +141,9 @@ def test_GetBridgeLED():
         optional_expectation="Expect OK"
         )
     if reply != expected:
-        _print_and_log("test_GetBridgeLED: FAIL")
+        _print_and_log(f"test_GetBridgeLED: FAIL: Expected {expected}, received {reply}.")
         return
     expected = commands.led_green
-    # expected = commands.led_red
     reply = _rx_and_log_reply(
         device_name="BRIDGE",
         reply_type="led_status",
@@ -151,18 +153,78 @@ def test_GetBridgeLED():
     if reply != expected:
         _print_and_log(f"test_GetBridgeLED: FAIL: Expected {expected}, received {reply}.")
         return
-    _print_and_log("Sensor LEDs turn red because it sees this command as invalid.")
+    _print_and_log("test_GetBridgeLED: PASS")
+def test_GetBridgeLED_ExpectRed(led_number):
+    _print_and_log("--- GetBridgeLED: Expect RED ---")
+    if commands.led_0 != led_number:
+        _print_and_log(f"test_GetBridgeLED: FAIL: LED {led_number} does not exist")
+        return
+    _tx_and_log_cmd(commands.GetBridgeLED, "Command is GetBridgeLED")
+    _tx_and_log_cmd(led_number, f"LED is LED{led_number}")
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetBridgeLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = commands.led_red
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="led_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect RED"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetBridgeLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_GetBridgeLED: PASS")
+def test_GetBridgeLED_ExpectOff(led_number):
+    _print_and_log("--- GetBridgeLED: Expect OFF ---")
+    if commands.led_0 != led_number:
+        _print_and_log(f"test_GetBridgeLED: FAIL: LED {led_number} does not exist")
+        return
+    _tx_and_log_cmd(commands.GetBridgeLED, "Command is GetBridgeLED")
+    _tx_and_log_cmd(led_number, f"LED is LED{led_number}")
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetBridgeLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = commands.led_off
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="led_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OFF"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetBridgeLED: FAIL: Expected {expected}, received {reply}.")
+        return
     _print_and_log("test_GetBridgeLED: PASS")
 
-def test_SetBridgeLED(led_color):
+def test_SetBridgeLED(led_number, led_state):
     _print_and_log("--- SetBridgeLED ---")
     _tx_and_log_cmd(commands.SetBridgeLED, "Command is SetBridgeLED")
-    _tx_and_log_cmd(commands.led_0, "LED is LED0")
+    _tx_and_log_cmd(led_number, f"LED is LED{led_number}")
     # _tx_and_log_cmd(commands.led_green, "State is GREEN")
-    if (led_color != commands.led_red) and (led_color != commands.led_green):
-        _print_and_log(f"test_SetBridgeLED: FAIL: {led_color} is an invalid led_color")
+    if led_state == commands.led_red:
+        _tx_and_log_cmd(led_state, "State is RED")
+    elif led_state == commands.led_green:
+        _tx_and_log_cmd(led_state, "State is GREEN")
+    elif led_state == commands.led_off:
+        _tx_and_log_cmd(led_state, "State is OFF")
+    else:
+        _print_and_log(f"test_SetBridgeLED: FAIL: {led_state} is an invalid led_state")
         return
-    _tx_and_log_cmd(led_color, "State is RED" if commands.led_red==led_color else "State is GREEN")
     expected = codes.OK
     reply = _rx_and_log_reply(
         device_name="BRIDGE",
@@ -173,22 +235,14 @@ def test_SetBridgeLED(led_color):
     if reply != expected:
         _print_and_log(f"test_SetBridgeLED: FAIL: Expected {expected}, received {reply}.")
         return
-    _print_and_log("Sensor LEDs turn red because it sees this command as invalid.")
     _print_and_log("test_SetBridgeLED: PASS")
 
-
-def test_GetSensorLED():
-    _print_and_log("--- GetSensorLED ---")
+def test_GetSensorLED_ExpectOff(led_number):
+    # led_0 is labeled TxRx
+    # led_1 is labeled Done
+    _print_and_log("--- GetSensorLED: Expect OFF ---")
     _tx_and_log_cmd(commands.GetSensorLED, "Command is GetSensorLED")
-    # led_0 is SPI TxRx (it is green when TxRx is done)
-        # Querying led_0 should return green
-    # led_1 is Command Done (it is green when command is done executing)
-        # Querying led_1 should return red
-    # Both LEDs will appear green to the human eye, but led_1 will report red
-    # because it is red when it is queried.
-    # sensor_led = commands.led_0
-    sensor_led = commands.led_1
-    _tx_and_log_cmd(sensor_led, "LED is LED"+f"{sensor_led}")
+    _tx_and_log_cmd(led_number, f"LED is LED{led_number}")
     # read BRIDGE status byte, stop if it is an error
     expected = codes.OK
     reply = _rx_and_log_reply(
@@ -198,7 +252,7 @@ def test_GetSensorLED():
         optional_expectation="Expect OK"
         )
     if reply != expected:
-        _print_and_log("test_GetSensorLED: FAIL")
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
         return
     # read status byte from SENSOR
     expected = codes.OK
@@ -209,9 +263,48 @@ def test_GetSensorLED():
         optional_expectation="Expect OK"
         )
     if reply != expected:
-        _print_and_log("test_GetSensorLED: FAIL")
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
         return
-    expected = commands.led_green if sensor_led==commands.led_0 else commands.led_red
+    expected = commands.led_off
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="led_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OFF"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_GetSensorLED: PASS")
+def test_GetSensorLED_ExpectGreen(led_number):
+    # led_0 is labeled TxRx
+    # led_1 is labeled Done
+    _print_and_log("--- GetSensorLED: Expect GREEN ---")
+    _tx_and_log_cmd(commands.GetSensorLED, "Command is GetSensorLED")
+    _tx_and_log_cmd(led_number, f"LED is LED{led_number}")
+    # read BRIDGE status byte, stop if it is an error
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    # read status byte from SENSOR
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = commands.led_green
     reply = _rx_and_log_reply(
         device_name="SENSOR",
         reply_type="led_status",
@@ -219,9 +312,77 @@ def test_GetSensorLED():
         optional_expectation="Expect GREEN" if expected==commands.led_green else "Expect RED"
         )
     if reply != expected:
-        _print_and_log("test_GetSensorLED: FAIL")
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
         return
     _print_and_log("test_GetSensorLED: PASS")
+def test_GetSensorLED_ExpectRed(led_number):
+    # led_0 is labeled TxRx
+    # led_1 is labeled Done
+    _print_and_log("--- GetSensorLED: Expect RED ---")
+    _tx_and_log_cmd(commands.GetSensorLED, "Command is GetSensorLED")
+    _tx_and_log_cmd(led_number, f"LED is LED{led_number}")
+    # read BRIDGE status byte, stop if it is an error
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    # read status byte from SENSOR
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = commands.led_red
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="led_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect GREEN" if expected==commands.led_green else "Expect RED"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_GetSensorLED: PASS")
+def test_SetSensorLED(led_number, led_state):
+    _print_and_log("--- SetSensorLED ---")
+    _tx_and_log_cmd(commands.SetSensorLED, "Command is SetSensorLED")
+    _tx_and_log_cmd(led_number, f"LED is LED{led_number}")
+    _tx_and_log_cmd(led_state, f"LED state is {led_state}")
+    # read BRIDGE status byte, stop if it is an error
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_SetSensorLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    # read status byte from SENSOR
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_SetSensorLED: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_SetSensorLED: PASS")
+
 
 def test_GetSensorLED_Invalid_LED():
     _print_and_log("--- GetSensorLED for Invalid LED ---")
@@ -548,15 +709,32 @@ if __name__ == '__main__':
         _print_and_log(f"Opened CHROMATION{sernum} on {usb.dev_name(sernum)}")
         # TODO: setup kit.write to take GetBridgeLED with its argument
         # TODO: add cmd pre-formatted as bytes to package `commands`
-        # test_GetBridgeLED()
-        # test_SetBridgeLED(commands.led_red)
-        # test_SetBridgeLED(commands.led_green)
         test_NullCommand()
-        # test_InvalidBridgeCommand()
-        # test_InvalidSensorCommand()
-        # test_GetSensorLED()
+        test_SetBridgeLED(commands.led_0, commands.led_off)
+        test_GetBridgeLED_ExpectOff(commands.led_0)
+        test_SetBridgeLED(commands.led_0, commands.led_green)
+        test_GetBridgeLED_ExpectGreen(commands.led_0)
+        test_SetBridgeLED(commands.led_0, commands.led_red)
+        test_GetBridgeLED_ExpectRed(commands.led_0)
+
+        test_SetSensorLED(commands.led_0, commands.led_off)
+        test_GetSensorLED_ExpectOff(commands.led_0)
+        test_SetSensorLED(commands.led_0, commands.led_green)
+        test_GetSensorLED_ExpectGreen(commands.led_0)
+        test_SetSensorLED(commands.led_0, commands.led_red)
+        test_GetSensorLED_ExpectRed(commands.led_0)
+
+        test_SetSensorLED(commands.led_1, commands.led_off)
+        test_GetSensorLED_ExpectOff(commands.led_1)
+        test_SetSensorLED(commands.led_1, commands.led_green)
+        test_GetSensorLED_ExpectGreen(commands.led_1)
+        test_SetSensorLED(commands.led_1, commands.led_red)
+        test_GetSensorLED_ExpectRed(commands.led_1)
+
         # test_GetSensorLED_Invalid_LED()
+        # test_InvalidBridgeCommand()
+        # test_NullCommand()
+        # test_InvalidSensorCommand()
         # test_DoesUsbBuffer()
-        # test_SetSensorLED()
     _print_and_log(f"Closed CHROMATION{sernum}")
     # _print_and_log(f"Closed CHROMATION{sernum}")
