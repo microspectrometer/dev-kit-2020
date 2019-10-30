@@ -24,7 +24,7 @@ void NothingToTearDown(void){}
 bool Yep=true, Nope=false;
 
 
-void API_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
+void unittest_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
 {if (run_test)
     {
     setUp = SetUp_GetBridgeLED; tearDown = TearDown_GetBridgeLED;
@@ -39,7 +39,7 @@ void API_GetBridgeLED(bool run_test) // [x] unit test GetBridgeLED
     RUN_TEST(GetBridgeLED_replies_led_red_if_led_is_red);
     }
 }
-void API_SetBridgeLED(bool run_test) // [x] unit test SetBridgeLED
+void unittest_SetBridgeLED(bool run_test) // [x] unit test SetBridgeLED
 {if (run_test)
     {
     setUp = SetUp_SetBridgeLED; tearDown = TearDown_SetBridgeLED;
@@ -53,8 +53,9 @@ void API_SetBridgeLED(bool run_test) // [x] unit test SetBridgeLED
     RUN_TEST(SetBridgeLED_turns_led_on_and_red_if_payload_is_led_red);
     }
 }
-void API_BridgeGetSensorLED(bool run_test) // [ ] unit test GetSensorLED
-{if (run_test)
+void unittest_BridgeGetSensorLED(bool run_test) // [x] unit test BridgeGetSensorLED
+{
+    if (run_test)
     {
         setUp = SetUp_BridgeGetSensorLED; tearDown = TearDown_BridgeGetSensorLED;
         RUN_TEST(BridgeGetSensorLED_reads_one_byte_of_host_payload);
@@ -63,6 +64,13 @@ void API_BridgeGetSensorLED(bool run_test) // [ ] unit test GetSensorLED
         RUN_TEST(BridgeGetSensorLED_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host);
         RUN_TEST(BridgeGetSensorLED_reads_and_sends_led_status_byte_if_Sensor_status_is_ok);
         RUN_TEST(BridgeGetSensorLED_reads_no_more_bytes_if_Sensor_status_is_error);
+    }
+}
+void unittest_BridgeSetSensorLED(bool run_test) // [ ] unit test BridgeSetSensorLED
+{
+    if (run_test)
+    {
+        setUp = SetUp_BridgeSetSensorLED; tearDown = TearDown_BridgeSetSensorLED;
     }
 }
 void ApiSupport(bool run_test)
@@ -139,8 +147,14 @@ int main(void)
     /* API (Yep); */
     ApiSupport (Nope);
     BridgeJumpTable (Nope);
-    API_GetBridgeLED (Nope);
-    API_SetBridgeLED (Nope);
-    API_BridgeGetSensorLED (Yep);
+    unittest_GetBridgeLED (Nope);
+    unittest_SetBridgeLED (Nope);
+    unittest_BridgeGetSensorLED (Nope);
+    unittest_BridgeSetSensorLED (Yep);
+    setUp = SetUp_BridgeSetSensorLED; tearDown = TearDown_BridgeSetSensorLED;
+    RUN_TEST(BridgeSetSensorLED_reads_two_bytes_of_host_payload);
+    RUN_TEST(BridgeSetSensorLED_responds_ok_after_reading_host_payload);
+    RUN_TEST(BridgeSetSensorLED_passes_two_bytes_of_payload_to_Sensor);
+    RUN_TEST(BridgeSetSensorLED_reads_and_sends_one_byte_Sensor_reply_to_host);
     return UNITY_END();
 }

@@ -224,6 +224,14 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
 }
 void BridgeSetSensorLED(void)
 {
+    /** Send SetSensorLED command to Sensor and pass reply back up to USB host.
+     * */
+    /** BridgeSetSensorLED behavior:\n 
+      * - reads two bytes of host payload\n 
+      * - responds ok after reading host payload\n 
+      * - passes two bytes of payload to Sensor\n 
+      * - reads and sends one byte Sensor reply to host\n 
+      * */
     // Read LED number and state (two bytes of payload).
     uint8_t const num_bytes_payload = 2;
     uint8_t read_buffer[num_bytes_payload];

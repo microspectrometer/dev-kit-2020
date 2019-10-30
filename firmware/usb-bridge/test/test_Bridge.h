@@ -82,5 +82,11 @@ void SetBridgeLED_reads_and_ignores_Sensor_reply_to_SetBridgeLED(void);
 void BridgeGetSensorLED_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host(void);
 void BridgeGetSensorLED_reads_and_sends_led_status_byte_if_Sensor_status_is_ok(void);
 void BridgeGetSensorLED_reads_no_more_bytes_if_Sensor_status_is_error(void);
+void BridgeSetSensorLED_reads_two_bytes_of_host_payload(void);
+void SetUp_BridgeSetSensorLED(void);
+void TearDown_BridgeSetSensorLED(void);
+void BridgeSetSensorLED_responds_ok_after_reading_host_payload(void);
+void BridgeSetSensorLED_passes_two_bytes_of_payload_to_Sensor(void);
+void BridgeSetSensorLED_reads_and_sends_one_byte_Sensor_reply_to_host(void);
 
 #endif // _TEST_BRIDGE_H

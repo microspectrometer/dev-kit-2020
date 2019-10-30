@@ -912,7 +912,7 @@ void BridgeGetSensorLED_reads_and_sends_led_status_byte_if_Sensor_status_is_ok(v
     FakeByteArray_ForReadSensor = sensor_responses;
     /* Inject LED state */
     BiColorLedOn(led_0);
-    BiColorLedRed(led_0); // uint8_t led_state = led_red;
+    BiColorLedRed(led_0); // sensor_responses[1] == 0x02;
     /* =====[ Operate ]===== */
     BridgeGetSensorLED();
     /* =====[ Test ]===== */
@@ -986,6 +986,117 @@ void BridgeGetSensorLED_reads_no_more_bytes_if_Sensor_status_is_error(void)
 /* TODO: */
 /* void BridgeGetSensorLED_responds_error_if_it_timeouts_waiting_for_host_payload(void) */
 
+
+void SetUp_BridgeSetSensorLED(void)
+{
+    SetUp_Mock();
+    Mock_UsbReadBytes();
+    Mock_SerialWriteByte();
+    Mock_SpiWriteByte();
+    Mock_WriteSensor();
+    Mock_ReadSensor();
+}
+void TearDown_BridgeSetSensorLED(void)
+{
+    TearDown_Mock();
+    Restore_UsbReadBytes();
+    Restore_SerialWriteByte();
+    Restore_SpiWriteByte();
+    Restore_WriteSensor();
+    Restore_ReadSensor();
+}
+void BridgeSetSensorLED_reads_two_bytes_of_host_payload(void)
+{
+    /* =====[ Setup ]===== */
+    // Inject two bytes of payload for fake UsbReadBytes.
+    uint8_t led_number = led_1; uint8_t led_state = led_red;
+    uint8_t payload[] = {led_number, led_state};
+    FakeByteArray_ForUsbReadBytes = payload;
+    // Inject Sensor responses.
+    uint8_t sensor_responses[] = {ok};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    // Inject previous LED state different from desired state
+    /* Inject LED state */
+    BiColorLedOn(led_number);
+    BiColorLedGreen(led_number);
+    /* =====[ Operate ]===== */
+    BridgeSetSensorLED();
+    /* =====[ Test: assert UsbReadBytes called to read 2 bytes ]===== */
+    uint8_t call_n = 1; uint16_t arg_n = 2; uint16_t nbytes = 2;
+    // test call 1 is UsbReadBytes
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadBytes"));
+    // test UsbReadBytes is called with nbytes=2
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &nbytes));
+}
+void BridgeSetSensorLED_responds_ok_after_reading_host_payload(void)
+{
+    /* =====[ Setup ]===== */
+    // Inject two bytes of payload for fake UsbReadBytes.
+    uint8_t led_number = led_1; uint8_t led_state = led_red;
+    uint8_t payload[] = {led_number, led_state};
+    FakeByteArray_ForUsbReadBytes = payload;
+    // Inject Sensor responses.
+    uint8_t sensor_responses[] = {ok};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    // Inject previous LED state different from desired state
+    /* Inject LED state */
+    BiColorLedOn(led_number);
+    BiColorLedGreen(led_number);
+    /* =====[ Operate ]===== */
+    BridgeSetSensorLED();
+    /* =====[ Test: Bridge responds "ok" after receiving host payload ]===== */
+    uint8_t call_n = 2; uint16_t arg_n = 1; uint8_t arg_val = ok;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SerialWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
+}
+void BridgeSetSensorLED_passes_two_bytes_of_payload_to_Sensor(void)
+{
+    /* =====[ Setup ]===== */
+    // Inject two bytes of payload for fake UsbReadBytes.
+    uint8_t led_number = led_1; uint8_t led_state = led_red;
+    uint8_t payload[] = {led_number, led_state};
+    FakeByteArray_ForUsbReadBytes = payload;
+    // Inject Sensor responses.
+    uint8_t sensor_responses[] = {ok};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    // Inject previous LED state different from desired state
+    /* Inject LED state */
+    BiColorLedOn(led_number);
+    BiColorLedGreen(led_number);
+    /* =====[ Operate ]===== */
+    BridgeSetSensorLED();
+    /* =====[ Test: Bridge passes payload to Sensor ]===== */
+    uint8_t call_n = 3; uint16_t arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SpiWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &payload[0]));
+    TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SpiWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &payload[1]));
+}
+void BridgeSetSensorLED_reads_and_sends_one_byte_Sensor_reply_to_host(void)
+{
+    /* =====[ Setup ]===== */
+    // Inject two bytes of payload for fake UsbReadBytes.
+    uint8_t led_number = led_1; uint8_t led_state = led_red;
+    uint8_t payload[] = {led_number, led_state};
+    FakeByteArray_ForUsbReadBytes = payload;
+    // Inject Sensor responses.
+    uint8_t sensor_responses[] = {ok};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    // Inject previous LED state different from desired state
+    /* Inject LED state */
+    BiColorLedOn(led_number);
+    BiColorLedGreen(led_number);
+    /* =====[ Operate ]===== */
+    BridgeSetSensorLED();
+    /* =====[ Test: Bridge reads Sensor reply ]===== */
+    uint8_t call_n = 5; uint8_t arg_n = 2; uint16_t arg_val = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "ReadSensor"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
+    /* =====[ Test: Bridge passes Sensor reply to USB host ]===== */
+    arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SerialWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &sensor_responses[0]));
+}
 
 void SetUp_SerialWriteByte_writes_one_byte_over_USB(void)
 {
