@@ -189,11 +189,9 @@ void GetSensorLED_receives_led_number(void)
     QueuePush(SpiFifo, fake_led_number);
     // Assert that the Queue is not empty.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
     /* =====[ Operate ]===== */
     GetSensorLED();
     // QueueIsEmpty immediately returns false because the test Setup queued a byte.
-
     /* =====[ Test ]===== */
     // Check that GetSensorLED pops the fake_led_number from the queue.
     // Assert that the queue is now empty.
@@ -210,16 +208,13 @@ void GetSensorLED_replies_msg_status_error_if_led_does_not_exist(void)
     QueuePush(SpiFifo, fake_bad_led_number);
     // Assert that the Queue is not empty.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
     /* =====[ Operate ]===== */
     GetSensorLED();
-
     // Assert reply with one byte:
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
     uint8_t arg_n = 2; uint16_t arg_val = 1;
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
-
     /* =====[ Test ]===== */
     /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
@@ -239,7 +234,6 @@ void GetSensorLED_sends_no_additional_bytes_if_msg_status_is_error(void)
     QueuePush(SpiFifo, fake_bad_led_number);
     // Assert that the Queue is not empty.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
     /* =====[ Operate ]===== */
     GetSensorLED();
     // Assert reply with one byte:
@@ -247,7 +241,6 @@ void GetSensorLED_sends_no_additional_bytes_if_msg_status_is_error(void)
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
     uint8_t arg_n = 2; uint16_t arg_val = 1;
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
-
     /* =====[ Test ]===== */
     // Show human reading test results that status is "error"
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
@@ -265,20 +258,16 @@ void GetSensorLED_replies_msg_status_ok_if_led_number_is_recognized(void)
     QueuePush(SpiFifo, fake_good_led_number);
     // Assert that the Queue is not empty.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
     // Fake the led_status to check for.
     BiColorLedOn(led_TxRx);
     BiColorLedRed(led_TxRx);
-
     /* =====[ Operate ]===== */
     GetSensorLED();
-
     // Assert reply with two bytes:
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
     uint8_t arg_n = 2; uint16_t assert_val = 2;
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
-
     /* =====[ Test ]===== */
     /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
@@ -302,20 +291,16 @@ void GetSensorLED_sends_led_status_byte_after_sending_msg_status_ok(void)
     QueuePush(SpiFifo, fake_good_led_number);
     // Assert that the Queue is not empty.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
     // Fake the led_status to check for.
     BiColorLedOn(led_TxRx);
     BiColorLedRed(led_TxRx);
-
     /* =====[ Operate ]===== */
     GetSensorLED();
-
     // Assert reply with two bytes:
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
     uint8_t arg_n = 2; uint16_t assert_val = 2;
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
-
     /* =====[ Test ]===== */
     /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
@@ -329,7 +314,6 @@ void GetSensorLED_sends_led_status_byte_after_sending_msg_status_ok(void)
         "Expect led_status is led_red."
         );
 }
-
 void GetSensorLED_replies_led_off_if_led_is_off(void)
 {
     /* =====[ Setup ]===== */
@@ -341,19 +325,15 @@ void GetSensorLED_replies_led_off_if_led_is_off(void)
     QueuePush(SpiFifo, fake_good_led_number);
     // Assert that the Queue is not empty.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
     // Fake the led_status to check for.
     BiColorLedOff(led_TxRx);
-
     /* =====[ Operate ]===== */
     GetSensorLED();
-
     // Assert reply with two bytes:
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
     uint8_t arg_n = 2; uint16_t assert_val = 2; // bytes
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
-
     /* =====[ Test ]===== */
     /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
@@ -378,20 +358,16 @@ void GetSensorLED_replies_led_green_if_led_is_green(void)
     QueuePush(SpiFifo, fake_good_led_number);
     // Assert that the Queue is not empty.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
     // Fake the led_status to check for.
     BiColorLedOn(led_TxRx);
     BiColorLedGreen(led_TxRx);
-
     /* =====[ Operate ]===== */
     GetSensorLED();
-
     // Assert reply with two bytes:
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
     uint8_t arg_n = 2; uint16_t assert_val = 2; // bytes
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
-
     /* =====[ Test ]===== */
     /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
@@ -416,20 +392,16 @@ void GetSensorLED_replies_led_red_if_led_is_red(void)
     QueuePush(SpiFifo, fake_good_led_number);
     // Assert that the Queue is not empty.
     TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
-
     // Fake the led_status to check for.
     BiColorLedOn(led_TxRx);
     BiColorLedRed(led_TxRx);
-
     /* =====[ Operate ]===== */
     GetSensorLED();
-
     // Assert reply with two bytes:
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
     uint8_t arg_n = 2; uint16_t assert_val = 2; // bytes
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &assert_val));
-
     /* =====[ Test ]===== */
     /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
@@ -444,5 +416,233 @@ void GetSensorLED_replies_led_red_if_led_is_red(void)
         );
 }
 
-
-
+void SetUp_SetSensorLED(void)
+{
+    SetUp_Mock();
+    Mock_WriteSpiMaster();
+}
+void TearDown_SetSensorLED(void)
+{
+    TearDown_Mock();
+    Restore_WriteSpiMaster();
+}
+void SetSensorLED_receives_led_number_and_led_state_from_Bridge(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const fake_led_number = 11;
+    QueuePush(SpiFifo, fake_led_number);
+    uint8_t const fake_led_state = 22;
+    QueuePush(SpiFifo, fake_led_state);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+    /* =====[ Operate ]===== */
+    SetSensorLED();
+    // QueueIsEmpty immediately returns false because the test Setup queued a byte.
+    /* =====[ Test ]===== */
+    // Check that SetSensorLED pops the fake led_number and led_state from the queue.
+    // Assert that the queue is now empty.
+    TEST_ASSERT_TRUE(QueueIsEmpty(SpiFifo));
+}
+void SetSensorLED_replies_with_one_byte(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const fake_led_number = 11;
+    QueuePush(SpiFifo, fake_led_number);
+    uint8_t const fake_led_state = 22;
+    QueuePush(SpiFifo, fake_led_state);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+    /* =====[ Operate ]===== */
+    SetSensorLED();
+    // QueueIsEmpty immediately returns false because the test Setup queued a byte.
+    /* =====[ Test ]===== */
+    // ---WriteSpiMaster sends one byte and is not called again---
+    uint8_t call_n = 1; uint8_t arg_n = 2; uint16_t arg_val = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
+    TEST_ASSERT_EQUAL_UINT8(call_n, NumberOfActualCalls(mock));
+}
+void SetSensorLED_replies_msg_status_error_if_led_number_is_not_valid(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const fake_led_number = 11;
+    QueuePush(SpiFifo, fake_led_number);
+    uint8_t const fake_led_state = 22;
+    QueuePush(SpiFifo, fake_led_state);
+    // Assert that the Queue has two bytes
+    TEST_ASSERT_EQUAL_UINT16(2, QueueLength(SpiFifo));
+    /* =====[ Operate ]===== */
+    SetSensorLED();
+    // QueueIsEmpty immediately returns false because the test Setup queued a byte.
+    /* =====[ Test ]===== */
+    // ---WriteSpiMaster sends status "error"---
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    uint8_t arg_n = 1; uint8_t arg_val = error; uint8_t *parg_val = &arg_val;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArgPointsToValue(mock, call_n, arg_n, &parg_val),
+        "Expect WriteSpiMaster sends ERROR (0x01)."
+        );
+}
+void SetSensorLED_replies_msg_status_error_if_led_state_is_not_valid(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const good_led_number = led_1;
+    QueuePush(SpiFifo, good_led_number);
+    uint8_t const fake_led_state = 22;
+    QueuePush(SpiFifo, fake_led_state);
+    // Assert that the Queue has two bytes
+    TEST_ASSERT_EQUAL_UINT16(2, QueueLength(SpiFifo));
+    /* =====[ Operate ]===== */
+    SetSensorLED();
+    // QueueIsEmpty immediately returns false because the test Setup queued a byte.
+    /* =====[ Test ]===== */
+    // ---WriteSpiMaster sends status "error"---
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    uint8_t arg_n = 1; uint8_t arg_val = error; uint8_t *parg_val = &arg_val;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArgPointsToValue(mock, call_n, arg_n, &parg_val),
+        "Expect WriteSpiMaster sends ERROR (0x01)."
+        );
+}
+void SetSensorLED_replies_msg_status_ok_if_led_number_and_led_state_are_valid(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const good_led_number = led_1;
+    QueuePush(SpiFifo, good_led_number);
+    uint8_t const good_led_state = led_red;
+    QueuePush(SpiFifo, good_led_state);
+    // Assert that the Queue has two bytes
+    TEST_ASSERT_EQUAL_UINT16(2, QueueLength(SpiFifo));
+    /* =====[ Operate ]===== */
+    SetSensorLED();
+    // QueueIsEmpty immediately returns false because the test Setup queued a byte.
+    /* =====[ Test ]===== */
+    // ---WriteSpiMaster sends status "ok"---
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    uint8_t arg_n = 1; uint8_t arg_val = ok; uint8_t *parg_val = &arg_val;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArgPointsToValue(mock, call_n, arg_n, &parg_val),
+        "Expect WriteSpiMaster sends OK (0x00)."
+        );
+}
+void SetSensorLED_turns_off_led_if_payload_is_led_off(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const good_led_number = led_1;
+    QueuePush(SpiFifo, good_led_number);
+    uint8_t const good_led_state = led_off;
+    QueuePush(SpiFifo, good_led_state);
+    // Assert that the Queue has two bytes
+    TEST_ASSERT_EQUAL_UINT16(2, QueueLength(SpiFifo));
+    /* =====[ Test case: led is on before command is sent ]===== */
+    BiColorLedOn(good_led_number);
+    TEST_ASSERT_TRUE_MESSAGE(
+        BiColorLedIsOn(good_led_number),
+        "LED must be on before test begins."
+        );
+    /* =====[ Operate ]===== */
+    SetSensorLED();
+    // SetSensorLED expects 2 bytes in the SpiFifo as folllows.
+    // SetSensorLED does `while (QueueIsEmpty(SpiFifo));` 2 times.
+    // Both times the loop immediately exits because test Setup queued 2 bytes.
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        !BiColorLedIsOn(good_led_number),
+        "Expect SetSensorLED turns off LED."
+        );
+}
+void SetSensorLED_turns_led_on_and_green_if_payload_is_led_green(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const good_led_number = led_1;
+    QueuePush(SpiFifo, good_led_number);
+    uint8_t const good_led_state = led_green;
+    QueuePush(SpiFifo, good_led_state);
+    // Assert that the Queue has two bytes
+    TEST_ASSERT_EQUAL_UINT16(2, QueueLength(SpiFifo));
+    /* =====[ Test case: led is off before command is sent ]===== */
+    BiColorLedOff(good_led_number);
+    TEST_ASSERT_TRUE_MESSAGE(
+        !BiColorLedIsOn(good_led_number),
+        "LED must be off before test begins."
+        );
+    /* =====[ Operate ]===== */
+    SetSensorLED();
+    // SetSensorLED expects 2 bytes in the SpiFifo as folllows.
+    // SetSensorLED does `while (QueueIsEmpty(SpiFifo));` 2 times.
+    // Both times the loop immediately exits because test Setup queued 2 bytes.
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        BiColorLedIsOn(good_led_number),
+        "Expect SetSensorLED turns on LED."
+        );
+    TEST_ASSERT_TRUE_MESSAGE(
+        !BiColorLedIsRed(good_led_number),
+        "Expect SetSensorLED turns LED green."
+        );
+}
+void SetSensorLED_turns_led_on_and_red_if_payload_is_led_red(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const good_led_number = led_1;
+    QueuePush(SpiFifo, good_led_number);
+    uint8_t const good_led_state = led_red;
+    QueuePush(SpiFifo, good_led_state);
+    // Assert that the Queue has two bytes
+    TEST_ASSERT_EQUAL_UINT16(2, QueueLength(SpiFifo));
+    /* =====[ Test case: led is off before command is sent ]===== */
+    BiColorLedOff(good_led_number);
+    TEST_ASSERT_TRUE_MESSAGE(
+        !BiColorLedIsOn(good_led_number),
+        "LED must be off before test begins."
+        );
+    /* =====[ Operate ]===== */
+    SetSensorLED();
+    // SetSensorLED expects 2 bytes in the SpiFifo as folllows.
+    // SetSensorLED does `while (QueueIsEmpty(SpiFifo));` 2 times.
+    // Both times the loop immediately exits because test Setup queued 2 bytes.
+    /* =====[ Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        BiColorLedIsOn(good_led_number),
+        "Expect SetSensorLED turns on LED."
+        );
+    TEST_ASSERT_TRUE_MESSAGE(
+        BiColorLedIsRed(good_led_number),
+        "Expect SetSensorLED turns LED red."
+        );
+}

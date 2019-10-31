@@ -104,6 +104,17 @@ void GetSensorLED(void)
 }
 void SetSensorLED(void)
 {
+    /** Turn an LED off/green/red on the Sensor board. */
+    /** SetSensorLED behavior:\n 
+      * - receives led number and led state from Bridge\n 
+      * - replies with one byte\n 
+      * - replies msg status error if led number is not valid\n 
+      * - replies msg status error if led state is not valid\n 
+      * - replies msg status ok if led number and led state are valid\n 
+      * - turns off led if payload is led off\n 
+      * - turns led on and green if payload is led green\n 
+      * - turns led on and red if payload is led red\n 
+      * */
     while (QueueIsEmpty(SpiFifo)); // wait for the led number
     // Pop a byte off the Queue. This is the led number.
     uint8_t led_number = QueuePop(SpiFifo);

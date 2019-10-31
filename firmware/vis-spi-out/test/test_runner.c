@@ -53,12 +53,28 @@ void unittest_GetSensorLED(bool run_test)
         RUN_TEST(GetSensorLED_replies_led_red_if_led_is_red);
     }
 }
+void unittest_SetSensorLED(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_SetSensorLED; tearDown = TearDown_SetSensorLED;
+        RUN_TEST(SetSensorLED_receives_led_number_and_led_state_from_Bridge);
+        RUN_TEST(SetSensorLED_replies_with_one_byte);
+        RUN_TEST(SetSensorLED_replies_msg_status_error_if_led_number_is_not_valid);
+        RUN_TEST(SetSensorLED_replies_msg_status_error_if_led_state_is_not_valid);
+        RUN_TEST(SetSensorLED_replies_msg_status_ok_if_led_number_and_led_state_are_valid);
+        RUN_TEST(SetSensorLED_turns_off_led_if_payload_is_led_off);
+        RUN_TEST(SetSensorLED_turns_led_on_and_green_if_payload_is_led_green);
+        RUN_TEST(SetSensorLED_turns_led_on_and_red_if_payload_is_led_red);
+    }
+}
 int main(void)
 {
     UNITY_BEGIN();
     use_Queue_lib_for_SPI_rx_FIFO_buffer(Nope); // good
-    unittest_GetSensorLED(Yep);
+    unittest_GetSensorLED(Nope);
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     // Put single tests here (move single tests to test suite later).
+    unittest_SetSensorLED(Yep);
     return UNITY_END();
 }
