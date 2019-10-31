@@ -191,7 +191,8 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
         NULL, // placeholder to bump key value of later function names
         GetSensorLED,
         SetSensorLED,
-        NULL, // an invalid key for the system test: TestInvalidSensorCmd
+        NULL, // invalid key for system test: TestInvalidSensorCmd
+        NULL, // invalid key for system test: TestInvalidSensorCmdPlusPayload
         };
     // Return func ptr. Prevent attempts at out-of-bounds access.
     if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
