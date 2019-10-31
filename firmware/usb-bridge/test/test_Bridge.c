@@ -733,7 +733,7 @@ void SetBridgeLED_turns_off_led_if_payload_is_led_off(void)
     TEST_ASSERT_TRUE_MESSAGE(
         !BiColorLedIsOn(status_led),
         "Expect SetBridgeLED turns off status_led."
-        )
+        );
 }
 void SetBridgeLED_turns_led_on_and_green_if_payload_is_led_green(void)
 {

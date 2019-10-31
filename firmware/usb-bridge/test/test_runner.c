@@ -71,6 +71,10 @@ void unittest_BridgeSetSensorLED(bool run_test) // [ ] unit test BridgeSetSensor
     if (run_test)
     {
         setUp = SetUp_BridgeSetSensorLED; tearDown = TearDown_BridgeSetSensorLED;
+        RUN_TEST(BridgeSetSensorLED_reads_two_bytes_of_host_payload);
+        RUN_TEST(BridgeSetSensorLED_responds_ok_after_reading_host_payload);
+        RUN_TEST(BridgeSetSensorLED_passes_two_bytes_of_payload_to_Sensor);
+        RUN_TEST(BridgeSetSensorLED_reads_and_sends_one_byte_Sensor_reply_to_host);
     }
 }
 void ApiSupport(bool run_test)
@@ -150,11 +154,6 @@ int main(void)
     unittest_GetBridgeLED (Nope);
     unittest_SetBridgeLED (Nope);
     unittest_BridgeGetSensorLED (Nope);
-    unittest_BridgeSetSensorLED (Yep);
-    setUp = SetUp_BridgeSetSensorLED; tearDown = TearDown_BridgeSetSensorLED;
-    RUN_TEST(BridgeSetSensorLED_reads_two_bytes_of_host_payload);
-    RUN_TEST(BridgeSetSensorLED_responds_ok_after_reading_host_payload);
-    RUN_TEST(BridgeSetSensorLED_passes_two_bytes_of_payload_to_Sensor);
-    RUN_TEST(BridgeSetSensorLED_reads_and_sends_one_byte_Sensor_reply_to_host);
+    unittest_BridgeSetSensorLED (Nope);
     return UNITY_END();
 }
