@@ -223,6 +223,7 @@ SetBridgeLED = 2
 GetSensorLED = 3
 SetSensorLED = 4
 test_invalid_sensor_cmd = 5
+test_invalid_sensor_cmd_plus_payload = 6
 # led_red_key = 0
 # led_green_key = 1
 # cfg_spectrometer_key = 2

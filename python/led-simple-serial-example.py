@@ -123,8 +123,70 @@ def test_InvalidSensorCommand():
     if reply != expected:
         _print_and_log(f"test_InvalidSensorCommand: FAIL: Expected {expected}, received {reply}.")
         return
-    _print_and_log("(note Sensor LEDs turn red to indicate Sensor ERROR)")
     _print_and_log("test_InvalidSensorCommand: PASS")
+
+def test_InvalidSensorCommandPlusPayload():
+    """Send an invalid command and follow it with a one byte Payload that does
+    not alias to a valid command. This test consistenly passes because the
+    Bridge does *not* send the payload if the Sensor responds with an
+    invalid-command-error.
+    """
+    _print_and_log("--- InvalidSensorCommand PlusPayload ---")
+    _tx_and_log_cmd(
+        commands.test_invalid_sensor_cmd_plus_payload,
+        "Command with 1 byte of payload, valid on Bridge, invalid on Sensor"
+        )
+    payload = 0x11
+    _tx_and_log_cmd(payload, f"Payload is {payload}")
+    # read BRIDGE status byte, stop if it is *not* invalid-command-error
+    expected = codes.INVALID_CMD
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect INVALID COMMAND ERROR from Sensor"
+        )
+    if reply != expected:
+        _print_and_log(f"test_InvalidSensorCommandPlusPayload: FAIL: Expected {expected}, received {reply}.")
+        return
+    # There should be no more bytes waiting from the Bridge
+    expected = 0
+    actual = kit.inWaiting()
+    if expected != actual:
+        _print_and_log(f"test_InvalidSensorCommandPlusPayload: FAIL: Expected {expected} additional bytes, Bridge still has {actual} bytes.")
+        return
+    _print_and_log("test_InvalidSensorCommandPlusPayload: PASS")
+
+def test_InvalidSensorCommandPlusPayloadThatAliases():
+    """This test passes because the Bridge does *not* send the payload if the
+    Sensor says the command is invalid.
+    """
+    _print_and_log("--- InvalidSensorCommand Plus payload aliased to valid command---")
+    _tx_and_log_cmd(
+        commands.test_invalid_sensor_cmd_plus_payload,
+        "Command with 1 byte of payload, valid on Bridge, invalid on Sensor"
+        )
+    payload = 0x03
+    _tx_and_log_cmd(payload, f"Payload is {payload}")
+    _print_and_log(f"Payload {payload} aliases to command GetSensorLED")
+    # read BRIDGE status byte, stop if it is *not* invalid-command-error
+    expected = codes.INVALID_CMD
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect INVALID COMMAND ERROR from Sensor"
+        )
+    if reply != expected:
+        _print_and_log(f"test_InvalidSensorCommandPlusPayload: FAIL: Expected {expected}, received {reply}.")
+        return
+    # There should be no more bytes waiting from the Bridge
+    expected = 0
+    actual = kit.inWaiting()
+    if expected != actual:
+        _print_and_log(f"test_InvalidSensorCommandPlusPayload: FAIL: Expected {expected} additional bytes, Bridge still has {actual} bytes.")
+        return
+    _print_and_log("test_InvalidSensorCommandPlusPayload: PASS")
 
 def test_GetBridgeLED_ExpectGreen(led_number):
     _print_and_log("--- GetBridgeLED: Expect GREEN ---")
@@ -709,7 +771,7 @@ if __name__ == '__main__':
         _print_and_log(f"Opened CHROMATION{sernum} on {usb.dev_name(sernum)}")
         # TODO: setup kit.write to take GetBridgeLED with its argument
         # TODO: add cmd pre-formatted as bytes to package `commands`
-        test_NullCommand()
+        # test_NullCommand()
         test_SetBridgeLED(commands.led_0, commands.led_off)
         test_GetBridgeLED_ExpectOff(commands.led_0)
         test_SetBridgeLED(commands.led_0, commands.led_green)
@@ -735,6 +797,11 @@ if __name__ == '__main__':
         # test_InvalidBridgeCommand()
         # test_NullCommand()
         # test_InvalidSensorCommand()
+        test_InvalidSensorCommandPlusPayload()
+        test_InvalidSensorCommandPlusPayloadThatAliases()
+        test_SetBridgeLED(commands.led_0, commands.led_green)
+        test_SetSensorLED(commands.led_0, commands.led_green)
+        test_SetSensorLED(commands.led_1, commands.led_green)
         # test_DoesUsbBuffer()
     _print_and_log(f"Closed CHROMATION{sernum}")
     # _print_and_log(f"Closed CHROMATION{sernum}")
