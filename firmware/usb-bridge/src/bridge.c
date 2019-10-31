@@ -15,6 +15,7 @@ bridge_cmd_key const SetBridgeLED_key = 2;
 bridge_cmd_key const BridgeGetSensorLED_key = 3;
 bridge_cmd_key const SetSensorLED_key = 4;
 bridge_cmd_key const TestInvalidSensorCmd_key = 5;
+bridge_cmd_key const TestInvalidSensorCmdPlusPayload_key = 6;
 void NullCommand(void){}
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
 {
@@ -22,12 +23,13 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
     /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
     static BridgeCmd* const pf[] =
     {
-        NullCommand,    // 0
-        GetBridgeLED,   // 1
-        SetBridgeLED,   // 2
-        BridgeGetSensorLED,   // 3
-        BridgeSetSensorLED,   // 4
-        TestInvalidSensorCmd, // 5
+        NullCommand, // 0
+        GetBridgeLED, // 1
+        SetBridgeLED, // 2
+        BridgeGetSensorLED, // 3
+        BridgeSetSensorLED, // 4
+        TestInvalidSensorCmd,            // 5
+        TestInvalidSensorCmdPlusPayload, // 6
     };
 
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
@@ -192,7 +194,10 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
      * */
     /** BridgeGetSensorLED behavior:\n 
       * - reads one byte of host payload\n 
-      * - responds ok after reading host payload\n 
+      * - checks for invalid command error from Sensor\n 
+      * - does not send payload if Sensor says invalid cmd\n 
+      * - passes invalid cmd reply back to host\n 
+      * - responds ok if Sensor does not say invalid cmd\n 
       * - writes led number to Sensor\n 
       * - reads msg status byte from Sensor and sends to USB host\n 
       * - reads and sends led status byte if Sensor status is ok\n 
@@ -207,7 +212,17 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
         // CASE: host does not send expected number of bytes.
 
     uint8_t led_number = read_buffer[0];
-    SerialWriteByte(ok); // Bridge finished reading its expected payload.
+    /* SerialWriteByte(ok); // Bridge finished reading its expected payload. */
+    if (SensorHasResponse())
+    { // something is wrong, let the USB host figure it out
+        uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+        SerialWriteByte(sensor_reply);
+        return;
+    }
+    else
+    { // Sensor is waiting for the payload.
+        SerialWriteByte(ok); // Bridge finished reading the expected payload.
+    }
 
     // Send led_number to Sensor.
     SpiWriteByte(led_number);
@@ -228,7 +243,10 @@ void BridgeSetSensorLED(void)
      * */
     /** BridgeSetSensorLED behavior:\n 
       * - reads two bytes of host payload\n 
-      * - responds ok after reading host payload\n 
+      * - checks for invalid command error from Sensor\n 
+      * - does not send payload if Sensor says invalid cmd\n 
+      * - passes invalid cmd reply back to host\n 
+      * - responds ok if Sensor does not say invalid cmd\n 
       * - passes two bytes of payload to Sensor\n 
       * - reads and sends one byte Sensor reply to host\n 
       * */
@@ -241,7 +259,18 @@ void BridgeSetSensorLED(void)
 
     uint8_t led_number = read_buffer[0];
     uint8_t led_state = read_buffer[1];
-    SerialWriteByte(ok); // Bridge finished reading its expected payload.
+    /* SerialWriteByte(ok); // Bridge finished reading its expected payload. */
+    if (SensorHasResponse())
+    { // something is wrong, let the USB host figure it out
+        uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+        SerialWriteByte(sensor_reply);
+        return;
+    }
+    else
+    { // Sensor is waiting for the payload.
+        SerialWriteByte(ok); // Bridge finished reading the expected payload.
+    }
+
     // Send led_number and led_state to Sensor.
     SpiWriteByte(led_number); SpiWriteByte(led_state);
     // Get reply from Sensor.
@@ -253,12 +282,47 @@ void BridgeSetSensorLED(void)
 void TestInvalidSensorCmd(void) // Test how Sensor responds to invalid cmd.
 {
     SerialWriteByte(ok); // Bridge recognized this command.
-    // Send invalid command to the slave.
-    /* MacroSpiMasterWrite(0xFF); // Guaranteed 0xFF will never be a valid cmd key. */
     // Get Sensor reply
     uint8_t sensor_reply[1]; ReadSensor(sensor_reply, 1);
     // Pass Sensor response back up to the host.
     SerialWriteByte(sensor_reply[0]); // Bridge passes Sensor status to host
+}
+void TestInvalidSensorCmdPlusPayload(void) // Test how Sensor responds to invalid cmd with payload
+{
+    // Read one byte of payload.
+    uint8_t const num_bytes_payload = 1;
+    uint8_t read_buffer[num_bytes_payload];
+    UsbReadBytes(read_buffer, num_bytes_payload);
+
+    uint8_t payload = read_buffer[0];
+
+    // Expect Sensor is expecting a payload of one byte.
+    // But if command is invalid on Sensor, it is *not* expecting a payload.
+    // Instead, Sensor wants to respond with and invalid-command-error.
+    // If Sensor has a response already, then read it and send it back to the
+    // host before continuing.
+    if (SensorHasResponse())
+    { // something is wrong, let the USB host figure it out
+        uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+        SerialWriteByte(sensor_reply);
+        return;
+    }
+    else
+    { // Sensor is waiting for the payload.
+        SerialWriteByte(ok); // Bridge finished reading the expected payload.
+    }
+    // Send payload to Sensor.
+    SpiWriteByte(payload);
+    // Get reply from Sensor.
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    // Pass reply to host.
+    SerialWriteByte(sensor_reply);
+    // If there was no error, get next byte and pass to host.
+    if (ok==sensor_reply)
+    {
+        ReadSensor(&sensor_reply, 1);
+        SerialWriteByte(sensor_reply);
+    }
 }
 
 /* =====[ Helper for CmdFn: BridgeCfgLis ]===== */
@@ -457,6 +521,10 @@ uint8_t FlushInvalidCommand(void)
     // Send invalid-command-error for Bridge and send reply from Sensor.
     uint8_t const StatusInvalid[] = { invalid_cmd, sensor_reply };
     return UsbWrite(StatusInvalid,2);
+}
+bool SensorHasResponse(void)
+{
+    return BitIsClear(Spi_pin, Spi_DataReady); // DataReady LOW signals ready
 }
 uint8_t old_UsbWriteStatusInvalid(bridge_cmd_key invalid_cmd)
 {

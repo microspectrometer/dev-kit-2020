@@ -59,7 +59,10 @@ void unittest_BridgeGetSensorLED(bool run_test) // [x] unit test BridgeGetSensor
     {
         setUp = SetUp_BridgeGetSensorLED; tearDown = TearDown_BridgeGetSensorLED;
         RUN_TEST(BridgeGetSensorLED_reads_one_byte_of_host_payload);
-        RUN_TEST(BridgeGetSensorLED_responds_ok_after_reading_host_payload);
+        RUN_TEST(BridgeGetSensorLED_checks_for_invalid_command_error_from_Sensor);
+        RUN_TEST(BridgeGetSensorLED_does_not_send_payload_if_Sensor_says_invalid_cmd);
+        RUN_TEST(BridgeGetSensorLED_passes_invalid_cmd_reply_back_to_host);
+        RUN_TEST(BridgeGetSensorLED_responds_ok_if_Sensor_does_not_say_invalid_cmd);
         RUN_TEST(BridgeGetSensorLED_writes_led_number_to_Sensor);
         RUN_TEST(BridgeGetSensorLED_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host);
         RUN_TEST(BridgeGetSensorLED_reads_and_sends_led_status_byte_if_Sensor_status_is_ok);
@@ -72,7 +75,10 @@ void unittest_BridgeSetSensorLED(bool run_test) // [ ] unit test BridgeSetSensor
     {
         setUp = SetUp_BridgeSetSensorLED; tearDown = TearDown_BridgeSetSensorLED;
         RUN_TEST(BridgeSetSensorLED_reads_two_bytes_of_host_payload);
-        RUN_TEST(BridgeSetSensorLED_responds_ok_after_reading_host_payload);
+        RUN_TEST(BridgeSetSensorLED_checks_for_invalid_command_error_from_Sensor);
+        RUN_TEST(BridgeSetSensorLED_does_not_send_payload_if_Sensor_says_invalid_cmd);
+        RUN_TEST(BridgeSetSensorLED_passes_invalid_cmd_reply_back_to_host);
+        RUN_TEST(BridgeSetSensorLED_responds_ok_if_Sensor_does_not_say_invalid_cmd);
         RUN_TEST(BridgeSetSensorLED_passes_two_bytes_of_payload_to_Sensor);
         RUN_TEST(BridgeSetSensorLED_reads_and_sends_one_byte_Sensor_reply_to_host);
     }
@@ -154,6 +160,6 @@ int main(void)
     unittest_GetBridgeLED (Nope);
     unittest_SetBridgeLED (Nope);
     unittest_BridgeGetSensorLED (Nope);
-    unittest_BridgeSetSensorLED (Nope);
+    unittest_BridgeSetSensorLED (Yep);
     return UNITY_END();
 }
