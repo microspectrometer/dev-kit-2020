@@ -193,6 +193,8 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
         SetSensorLED,
         NULL, // invalid key for system test: TestInvalidSensorCmd
         NULL, // invalid key for system test: TestInvalidSensorCmdPlusPayload
+        GetSensorConfig, // 7
+        SetSensorConfig, // 8
         };
     // Return func ptr. Prevent attempts at out-of-bounds access.
     if (key < sizeof(pf)/sizeof(*pf)) return pf[key];

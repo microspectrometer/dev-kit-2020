@@ -71,10 +71,10 @@ void unittest_SetSensorLED(bool run_test)
 int main(void)
 {
     UNITY_BEGIN();
-    use_Queue_lib_for_SPI_rx_FIFO_buffer(Nope); // good
-    unittest_GetSensorLED(Nope);
+    use_Queue_lib_for_SPI_rx_FIFO_buffer(Yep); // good
+    unittest_GetSensorLED(Yep);
+    unittest_SetSensorLED(Yep);
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     // Put single tests here (move single tests to test suite later).
-    unittest_SetSensorLED(Yep);
     return UNITY_END();
 }

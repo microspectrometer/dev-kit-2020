@@ -83,6 +83,14 @@ void unittest_BridgeSetSensorLED(bool run_test) // [ ] unit test BridgeSetSensor
         RUN_TEST(BridgeSetSensorLED_reads_and_sends_one_byte_Sensor_reply_to_host);
     }
 }
+void unittest_BridgeSetSensorConfig(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_BridgeSetSensorConfig; tearDown = TearDown_BridgeSetSensorConfig;
+    }
+}
+
 void ApiSupport(bool run_test)
 {if (run_test)
     {
@@ -90,9 +98,6 @@ void ApiSupport(bool run_test)
     tearDown = TearDown_SerialWriteByte_writes_one_byte_over_USB;
     RUN_TEST(SerialWriteByte_writes_one_byte_over_USB);
 
-    setUp = SetUp_Stub_UsbReadN_with_value_in_read_buffer;
-    tearDown = TearDown_Stub_UsbReadN_with_value_in_read_buffer;
-    RUN_TEST(Stub_UsbReadN_with_value_in_read_buffer);
     }
 }
 void BridgeJumpTable(bool run_test)
@@ -103,63 +108,21 @@ void BridgeJumpTable(bool run_test)
     }
 }
 
-void UsbCmdParser_JumpTableSandbox(bool run_test) {if (run_test) {
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LookupBridgeCmd_example_calling_the_command);
-    RUN_TEST(LookupBridgeCmd_example_storing_the_returned_pointer);
-    RUN_TEST(UsbWriteStatusOk_tells_UsbHost_command_was_success);
-    RUN_TEST(UsbWriteStatusInvalid_sends_error_byte_and_echoes_invalid_command);
-    RUN_TEST(UsbWriteStatusBadArgs_sends_error_byte_and_echoes_invalid_command);
-    RUN_TEST(UsbWriteStatusMissingArgs_sends_error_byte_and_echoes_invalid_command);
-    RUN_TEST(UsbWriteStatusSpiBusError_sends_error_byte_and_slave_cmd);
-
-    RUN_TEST(LookupBridgeCmd_sad_example_using_UsbWriteStatus_API);
-    RUN_TEST(LookupBridgeCmd_happy_example_using_UsbWriteStatus_API);
-    RUN_TEST(CmdCfgLis_returns_StatusOk_and_echoes_back_the_4_cfg_bytes);
-    RUN_TEST(CfgTurnsOffAllPixels_returns_true_if_cfg_turns_off_all_pixels);
-    RUN_TEST(CfgTurnsOffAllPixels_ignores_the_3LSB_and_4MSB_of_cfg);
-    RUN_TEST(CfgTurnsOffAllPixels_returns_false_if_any_pixels_are_on);
-    RUN_TEST(XOR_returns_true_if_a_is_true_and_b_is_false);
-    RUN_TEST(CfgTurnsRowPartiallyOn_returns_false_if_cfg_turns_on_all_of_row1);
-    RUN_TEST(CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row1);
-    RUN_TEST(CfgTurnsRowPartiallyOn_returns_true_if_cfg_turns_on_part_of_row5);
-    RUN_TEST(CfgTurnsRowPartiallyOn_returns_true_if_row_number_is_out_bounds);
-    RUN_TEST(CfgBytesAreValid_checks_against_all_255_valid_configs); 
-    printf("\n# WIP:\n");
-    /* RUN_TEST(BytesComing_returns_16bit_word_from_struct_spi_NBytesToExpect); */
-    RUN_TEST(CmdCfgLis_returns_StatusBadArgs_if_cfg_bytes_are_invalid);
-    RUN_TEST(CmdCfgLis_1pushes_cfg_to_SpiSlave_2pulls_updated_cfg_3reports_StatusOk_updated_cfg);
-}}
-
-void DevelopingInlineSpiMaster(bool run_test) {if (run_test) {
-    setUp = SetUp_SpiMasterWrite; tearDown = TearDown_SpiMasterWrite;
-    RUN_TEST(SpiMasterWriteN_NoInlineHelpers_sends_N_bytes_to_SpiSlave);
-    RUN_TEST(SpiMasterWriteByte_sends_one_byte_to_SpiSlave);
-}}
-
 int main(void)
 {
     UNITY_BEGIN();
     /* ---Plumbing Works For Testing Lib `Bridge`--- */
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    // Put single tests here (move single tests to test suite later).
     //
-    /* ---Test Suites--- */
-    /* ---DEPRECATED--- */
-    UsbCmdParser_JumpTableSandbox (Nope); // [ ] more functionality to implement
-    DevelopingInlineSpiMaster (Nope); // [x] pass
-    /* LookupSensorCmd_example_calling_the_returned_command() */
-    /* Make this pass by adding code to turn usb-bridge status_led green if
-     * status is OK. */
-    /* SpiSlaveWrite_StatusOk_sends_0x00_0x02_0x00_valid_cmd:IGNORE: Move test
-     * to lib `Sensor`. */
-    /* ---ACTIVE--- */
-    /* API (Yep); */
-    ApiSupport (Nope);
-    BridgeJumpTable (Nope);
-    unittest_GetBridgeLED (Nope);
-    unittest_SetBridgeLED (Nope);
-    unittest_BridgeGetSensorLED (Nope);
-    unittest_BridgeSetSensorLED (Yep);
+    ApiSupport                      (Nope);
+    BridgeJumpTable                 (Nope);
+    unittest_GetBridgeLED           (Nope);
+    unittest_SetBridgeLED           (Nope);
+    unittest_BridgeGetSensorLED     (Nope);
+    unittest_BridgeSetSensorLED     (Nope);
+    unittest_BridgeSetSensorConfig  (Yep);
+    // Put single tests here (move single tests to test suite later).
+    setUp = SetUp_BridgeSetSensorConfig; tearDown = TearDown_BridgeSetSensorConfig;
+    RUN_TEST(BridgeSetSensorConfig_reads_three_bytes_of_host_payload);
     return UNITY_END();
 }

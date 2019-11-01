@@ -13,9 +13,12 @@ bridge_cmd_key const NullCommand_key = 0;
 bridge_cmd_key const GetBridgeLED_key = 1;
 bridge_cmd_key const SetBridgeLED_key = 2;
 bridge_cmd_key const BridgeGetSensorLED_key = 3;
-bridge_cmd_key const SetSensorLED_key = 4;
+bridge_cmd_key const BridgeSetSensorLED_key = 4;
 bridge_cmd_key const TestInvalidSensorCmd_key = 5;
 bridge_cmd_key const TestInvalidSensorCmdPlusPayload_key = 6;
+bridge_cmd_key const BridgeGetSensorConfig_key = 7;
+bridge_cmd_key const BridgeSetSensorConfig_key = 8;
+
 void NullCommand(void){}
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
 {
@@ -30,6 +33,8 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
         BridgeSetSensorLED, // 4
         TestInvalidSensorCmd,            // 5
         TestInvalidSensorCmdPlusPayload, // 6
+        BridgeGetSensorConfig, // 7
+        BridgeSetSensorConfig, // 8
     };
 
     /* Return func ptr. Prevent attempts at out-of-bounds access. */
@@ -48,6 +53,13 @@ status_byte led_green = 1;
 status_byte led_red = 2; 
 led_name led_0 = 0;
 led_name led_1 = 1;
+config_byte binning_off = 0x00;
+config_byte binning_on  = 0x01;
+config_byte gain1x  = 0x01;
+config_byte gain25x = 0x25;
+config_byte gain4x  = 0x04;
+config_byte gain5x  = 0x05;
+config_byte all_rows_active  = 0x1F; // 0b00011111 is all five rows
 
 /* void SerialWriteByte(status_byte status) {UsbWrite(&status,1);} */
 static void SerialWriteByte_Implementation(status_byte status)
@@ -324,6 +336,26 @@ void TestInvalidSensorCmdPlusPayload(void) // Test how Sensor responds to invali
         SerialWriteByte(sensor_reply);
     }
 }
+void BridgeGetSensorConfig(void)
+{
+}
+void BridgeSetSensorConfig(void)
+{
+    /** Send SetSensorConfig command to Sensor and pass reply back up to USB host.
+     * */
+    // Read config (three bytes of payload).
+    uint8_t const num_bytes_payload = 3;
+    uint8_t read_buffer[num_bytes_payload];
+    UsbReadBytes(read_buffer, num_bytes_payload);
+    // TODO: Add error checking for time out.
+        // CASE: host does not send expected number of bytes.
+    uint8_t binning = read_buffer[0];
+    uint8_t gain = read_buffer[1];
+    uint8_t active_rows = read_buffer[2];
+    (void)binning; (void)gain; (void)active_rows;
+}
+
+
 
 /* =====[ Helper for CmdFn: BridgeCfgLis ]===== */
 bool CfgBytesAreValid(uint8_t const *cfg_bytes)

@@ -31,6 +31,14 @@ status_byte led_red;
 typedef uint8_t const led_name;  // TODO: move this to a shared lib
 led_name led_0;
 led_name led_1;
+typedef uint8_t const config_byte;  // TODO: move this to a shared lib
+config_byte binning_off;
+config_byte binning_on;
+config_byte gain1x;
+config_byte gain25x;
+config_byte gain4x;
+config_byte gain5x;
+config_byte all_rows_active;
 
 extern void (*SerialWriteByte)(status_byte);
 extern void (*SpiWriteByte)(uint8_t byte);
@@ -75,5 +83,7 @@ typedef uint8_t sensor_cmd_key;  // jump-table dictionary uses 8-bit keys
 uint8_t UsbWriteStatusSpiBusError(sensor_cmd_key   spi_slave_cmd);
 uint8_t FlushInvalidCommand(void);
 bool SensorHasResponse(void);
+void BridgeSetSensorConfig(void);
+void BridgeGetSensorConfig(void);
 
 #endif // _USB_H
