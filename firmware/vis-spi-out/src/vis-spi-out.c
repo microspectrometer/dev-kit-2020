@@ -11,7 +11,7 @@
 #include "UartSpi-Hardware.h"   // map UART MSPIM I/O to actual hardware
 #include <Lis.h>                // photodiode array I/O pins and functions
 #include "Lis-Hardware.h"       // map photodiode array I/O to actual AVR I/O
-#include <Pwm.h>                // lib `Lis` uses PWM for the clock signal
+/* #include <Pwm.h>                // lib `Lis` uses PWM for the clock signal */
 #include "Pwm-Hardware.h"       // map `Pwm` I/O to actual AVR I/O
 #include "AvrAsmMacros.h"       // resolve lib dependencies on AVR asm macros
 // avr libs

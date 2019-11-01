@@ -2,6 +2,7 @@
 #include "BiColorLed.h" // for two bicolor LEDs on Sensor board
 #include "Spi.h" // Sensor is the SPI slave
 #include "Lis.h" // because SensorCfgLis() calls LisWriteCfg()
+#include "Pwm.h" // lib `Lis` uses PWM for the clock signal
 #include "stdlib.h" // defines NULL
 
 /* =====[ SPI Flags and Data Register Buffer ]===== */
@@ -217,7 +218,25 @@ void SetSensorConfig(void)
     uint8_t status = ok;
     WriteSpiMaster(&status,1);
     // Convert bytes to LIS programming sequence.
+    uint32_t cfg_bytes = 0x00;
+    uint8_t bit = 0;
+    if (binning_on == binning) cfg_bytes |= 1<<(bit++); // bit 0: bin on/off
+    // bit 1: gain bit G2
+    // bit 2: gain bit G1
+    // {G2,G1}: {0,0} 1x; {0,1} 2.5x; {1,0} 4x; {1,1} 5x
+    if      (gain25x == gain) { bit++; cfg_bytes |= 1<<(bit++); }
+    else if (gain4x == gain)  { cfg_bytes |= 1<<(bit++); bit++; }
+    else if (gain5x == gain)  { cfg_bytes |= 1<<(bit++); cfg_bytes |= 1<<(bit++); }
+    // TODO: finish for active_rows
     // Program LIS.
+    EnterLisProgrammingMode();
+
+    // Example clocking in one bit that is 1
+    // Write a 1:
+    /* SetBit(Lis_port1, Lis_Rst); */
+    // Wait for Lis_Rst value to clock in before loading the next bit.
+    /* LisWaitForClkRiseEdge(); // bit is read on rising edge */
+    /* LisWaitForClkFallEdge(); // hold bit until falling edge */
 }
 
 /* --------------------------------------------------------------------------------------- */
