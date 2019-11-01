@@ -1375,3 +1375,133 @@ void BridgeSetSensorConfig_reads_and_sends_one_byte_Sensor_reply_to_host(void)
     TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SerialWriteByte"));
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &sensor_responses[0]));
 }
+
+void SetUp_BridgeGetSensorConfig(void)
+{
+    SetUp_Mock();
+    Mock_ReadSensor();
+    Mock_SerialWriteByte();
+    // Fake the Sensor signaling it does *not* have a byte to send
+    SetBit(Spi_pin, Spi_DataReady); // DataReady HIGH signals data is *not* ready
+}
+void TearDown_BridgeGetSensorConfig(void)
+{
+    TearDown_Mock();
+    Restore_ReadSensor();
+    Restore_SerialWriteByte();
+}
+void BridgeGetSensorConfig_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host(void)
+{
+    /* =====[ Setup ]===== */
+    /* Inject Sensor responses. */
+    uint8_t sensor_responses[] = {error};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    BridgeGetSensorConfig();
+    /* =====[ Test ]===== */
+    // Bridge reads a byte from sensor
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "ReadSensor"),
+        "Expect call 1 is ReadSensor."
+        );
+    // The Bridge sends the USB host the Sensor msg status.
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, ++call_n, "SerialWriteByte"),
+        "Expect call 2 is SerialWriteByte."
+        );
+    // Check that Bridge sends the Sensor response (see Setup) to the USB host
+    uint8_t arg_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &sensor_responses[0]),
+        "Expect Bridge sends USB host Sensor response: error (0x01)."
+        );
+}
+void BridgeGetSensorConfig_reads_no_more_bytes_if_Sensor_status_is_error(void)
+{
+    /* =====[ Setup ]===== */
+    /* Inject Sensor responses. */
+    uint8_t sensor_responses[] = {error};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    BridgeGetSensorConfig();
+    // ---Assert Sensor response is "error"---
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "ReadSensor"),
+        "Expect call 1 is ReadSensor."
+        );
+    // The Bridge sends the USB host the Sensor msg status.
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, ++call_n, "SerialWriteByte"),
+        "Expect call 2 is SerialWriteByte."
+        );
+    // Check that Bridge sends the Sensor response (see Setup) to the USB host
+    uint8_t arg_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &sensor_responses[0]),
+        "Expect Bridge sends USB host Sensor response: error (0x01)."
+        );
+    /* =====[ Test ]===== */
+    // ---Test: no more calls---
+    TEST_ASSERT_EQUAL_UINT8(call_n,NumberOfActualCalls(mock));
+}
+void BridgeGetSensorConfig_if_status_is_ok_then_read_config_data_from_Sensor_and_send_to_USB_host(void)
+{
+    /* =====[ Setup ]===== */
+    /* Inject Sensor responses. */
+    uint8_t binning = binning_on;
+    uint8_t gain = gain1x;
+    uint8_t active_rows = all_rows_active;
+    uint8_t sensor_responses[] = {ok, binning, gain, active_rows};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    BridgeGetSensorConfig();
+    // ---Assert Sensor response is "ok"---
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "ReadSensor"),
+        "Expect call 1 is ReadSensor."
+        );
+    // The Bridge sends the USB host the Sensor msg status.
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, ++call_n, "SerialWriteByte"),
+        "Expect call 2 is SerialWriteByte."
+        );
+    // Check that Bridge sends the Sensor response (see Setup) to the USB host
+    uint8_t arg_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &sensor_responses[0]),
+        "Expect Bridge sends USB host Sensor response: ok (0x00)."
+        );
+    /* =====[ Test ]===== */
+    // Bridge gets three bytes of data from Sensor
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, ++call_n, "ReadSensor"),
+        "Expect call 3 is ReadSensor."
+        );
+    arg_n = 2; uint16_t nbytes = 3;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &nbytes),
+        "Expect Bridge reads 3 bytes of Sensor data."
+        );
+    // Bridge passes three bytes of Sensor data to USB host
+    arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SerialWriteByte"));
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &sensor_responses[1]),
+        "Expect Bridge sends USB host Sensor Config byte 1."
+        );
+    TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SerialWriteByte"));
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &sensor_responses[2]),
+        "Expect Bridge sends USB host Sensor Config byte 2."
+        );
+    TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SerialWriteByte"));
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &sensor_responses[3]),
+        "Expect Bridge sends USB host Sensor Config byte 3."
+        );
+    // Assert there are no more calls
+    TEST_ASSERT_EQUAL_UINT8(call_n,NumberOfActualCalls(mock));
+}

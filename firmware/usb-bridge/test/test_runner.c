@@ -83,11 +83,28 @@ void unittest_BridgeSetSensorLED(bool run_test) // [ ] unit test BridgeSetSensor
         RUN_TEST(BridgeSetSensorLED_reads_and_sends_one_byte_Sensor_reply_to_host);
     }
 }
+void unittest_BridgeGetSensorConfig(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_BridgeGetSensorConfig; tearDown = TearDown_BridgeGetSensorConfig;
+        RUN_TEST(BridgeGetSensorConfig_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host);
+        RUN_TEST(BridgeGetSensorConfig_reads_no_more_bytes_if_Sensor_status_is_error);
+        RUN_TEST(BridgeGetSensorConfig_if_status_is_ok_then_read_config_data_from_Sensor_and_send_to_USB_host);
+    }
+}
 void unittest_BridgeSetSensorConfig(bool run_test)
 {
     if (run_test)
     {
         setUp = SetUp_BridgeSetSensorConfig; tearDown = TearDown_BridgeSetSensorConfig;
+        RUN_TEST(BridgeSetSensorConfig_reads_three_bytes_of_host_payload);
+        RUN_TEST(BridgeSetSensorConfig_checks_for_invalid_command_error_from_Sensor);
+        RUN_TEST(BridgeSetSensorConfig_does_not_send_payload_if_Sensor_says_invalid_cmd);
+        RUN_TEST(BridgeSetSensorConfig_passes_invalid_cmd_reply_back_to_host);
+        RUN_TEST(BridgeSetSensorConfig_responds_ok_if_Sensor_does_not_say_invalid_cmd);
+        RUN_TEST(BridgeSetSensorConfig_passes_three_bytes_of_payload_to_Sensor);
+        RUN_TEST(BridgeSetSensorConfig_reads_and_sends_one_byte_Sensor_reply_to_host);
     }
 }
 
@@ -120,15 +137,8 @@ int main(void)
     unittest_SetBridgeLED           (Nope);
     unittest_BridgeGetSensorLED     (Nope);
     unittest_BridgeSetSensorLED     (Nope);
-    unittest_BridgeSetSensorConfig  (Yep);
+    unittest_BridgeGetSensorConfig  (Yep);
+    unittest_BridgeSetSensorConfig  (Nope);
     // Put single tests here (move single tests to test suite later).
-    setUp = SetUp_BridgeSetSensorConfig; tearDown = TearDown_BridgeSetSensorConfig;
-    RUN_TEST(BridgeSetSensorConfig_reads_three_bytes_of_host_payload);
-    RUN_TEST(BridgeSetSensorConfig_checks_for_invalid_command_error_from_Sensor);
-    RUN_TEST(BridgeSetSensorConfig_does_not_send_payload_if_Sensor_says_invalid_cmd);
-    RUN_TEST(BridgeSetSensorConfig_passes_invalid_cmd_reply_back_to_host);
-    RUN_TEST(BridgeSetSensorConfig_responds_ok_if_Sensor_does_not_say_invalid_cmd);
-    RUN_TEST(BridgeSetSensorConfig_passes_three_bytes_of_payload_to_Sensor);
-    RUN_TEST(BridgeSetSensorConfig_reads_and_sends_one_byte_Sensor_reply_to_host);
     return UNITY_END();
 }

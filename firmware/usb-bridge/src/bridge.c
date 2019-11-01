@@ -336,6 +336,26 @@ void TestInvalidSensorCmdPlusPayload(void) // Test how Sensor responds to invali
 }
 void BridgeGetSensorConfig(void)
 {
+    /** Send GetSensorConfig command to Sensor and pass reply back up to USB host.
+     * */
+    /** BridgeGetSensorConfig behavior:\n 
+      * - reads msg status byte from Sensor and sends to USB host\n 
+      * - reads no more bytes if Sensor status is error\n 
+      * - if status is ok then read config data from Sensor and send to USB host\n 
+      * */
+    // Get reply from Sensor.
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    // Pass reply to host.
+    SerialWriteByte(sensor_reply);
+    // If there was no error, get data and pass to host.
+    if (ok==sensor_reply)
+    {
+        uint8_t const nbytes_data = 3;
+        uint8_t sensor_data[nbytes_data]; ReadSensor(sensor_data, nbytes_data);
+        uint8_t *pdata = sensor_data;
+        uint8_t byte_count=0;
+        while (byte_count++ < nbytes_data) SerialWriteByte(*(pdata++));
+    }
 }
 void BridgeSetSensorConfig(void)
 {

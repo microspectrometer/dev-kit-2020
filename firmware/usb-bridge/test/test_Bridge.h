@@ -75,5 +75,10 @@ void BridgeSetSensorConfig_passes_invalid_cmd_reply_back_to_host(void);
 void BridgeSetSensorConfig_responds_ok_if_Sensor_does_not_say_invalid_cmd(void);
 void BridgeSetSensorConfig_passes_three_bytes_of_payload_to_Sensor(void);
 void BridgeSetSensorConfig_reads_and_sends_one_byte_Sensor_reply_to_host(void);
+void SetUp_BridgeGetSensorConfig(void);
+void TearDown_BridgeGetSensorConfig(void);
+void BridgeGetSensorConfig_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host(void);
+void BridgeGetSensorConfig_reads_no_more_bytes_if_Sensor_status_is_error(void);
+void BridgeGetSensorConfig_if_status_is_ok_then_read_config_data_from_Sensor_and_send_to_USB_host(void);
 
 #endif // _TEST_BRIDGE_H
