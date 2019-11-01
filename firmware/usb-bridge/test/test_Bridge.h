@@ -69,5 +69,11 @@ void BridgeSetSensorLED_passes_invalid_cmd_reply_back_to_host(void);
 void SetUp_BridgeSetSensorConfig(void);
 void TearDown_BridgeSetSensorConfig(void);
 void BridgeSetSensorConfig_reads_three_bytes_of_host_payload(void);
+void BridgeSetSensorConfig_checks_for_invalid_command_error_from_Sensor(void);
+void BridgeSetSensorConfig_does_not_send_payload_if_Sensor_says_invalid_cmd(void);
+void BridgeSetSensorConfig_passes_invalid_cmd_reply_back_to_host(void);
+void BridgeSetSensorConfig_responds_ok_if_Sensor_does_not_say_invalid_cmd(void);
+void BridgeSetSensorConfig_passes_three_bytes_of_payload_to_Sensor(void);
+void BridgeSetSensorConfig_reads_and_sends_one_byte_Sensor_reply_to_host(void);
 
 #endif // _TEST_BRIDGE_H

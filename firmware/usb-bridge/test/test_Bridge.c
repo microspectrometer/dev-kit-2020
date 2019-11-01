@@ -1204,6 +1204,9 @@ void SetUp_BridgeSetSensorConfig(void)
 {
     SetUp_Mock();
     Mock_UsbReadBytes();
+    Mock_ReadSensor();
+    Mock_SerialWriteByte();
+    Mock_SpiWriteByte();
     // Fake the Sensor signaling it does *not* have a byte to send
     SetBit(Spi_pin, Spi_DataReady); // DataReady HIGH signals data is *not* ready
     // Now the injected Sensor responses are *not* consumed in `if (SensorHasResponse())`
@@ -1212,10 +1215,12 @@ void TearDown_BridgeSetSensorConfig(void)
 {
     TearDown_Mock();
     Restore_UsbReadBytes();
+    Restore_ReadSensor();
+    Restore_SerialWriteByte();
+    Restore_SpiWriteByte();
 }
 void BridgeSetSensorConfig_reads_three_bytes_of_host_payload(void)
 {
-
     /* =====[ Setup ]===== */
     // Inject three bytes of payload for fake UsbReadBytes.
     uint8_t binning = binning_on;
@@ -1238,4 +1243,135 @@ void BridgeSetSensorConfig_reads_three_bytes_of_host_payload(void)
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "UsbReadBytes"));
     // test UsbReadBytes is called with nbytes=3
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &nbytes));
+}
+void BridgeSetSensorConfig_checks_for_invalid_command_error_from_Sensor(void)
+{
+    /* =====[ Setup ]===== */
+    // If Sensor thinks command is invalid, it responds immediately
+    // Inject Sensor Response: invalid command error
+    uint8_t sensor_responses[] = {invalid_cmd};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    // Fake the Sensor signaling it has a byte to send
+    ClearBit(Spi_pin, Spi_DataReady); // DataReady LOW signals ready
+    /* =====[ Operate ]===== */
+    BridgeSetSensorConfig();
+    /* =====[ Test ]===== */
+    // Bridge call n=2 is ReadSensor if Sensor is trying to send invalid cmd error
+    uint8_t call_n=2;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "ReadSensor"),
+        "Expect call 2 is ReadSensor if Sensor is trying to send invalid_cmd."
+        );
+}
+void BridgeSetSensorConfig_does_not_send_payload_if_Sensor_says_invalid_cmd(void)
+{
+    /* =====[ Setup ]===== */
+    // If Sensor thinks command is invalid, it responds immediately
+    // Inject Sensor Response: invalid command error
+    uint8_t sensor_responses[] = {invalid_cmd};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    // Fake the Sensor signaling it has a byte to send
+    ClearBit(Spi_pin, Spi_DataReady); // DataReady LOW signals ready
+    // Now the injected Sensor responses are consumed in `if (SensorHasResponse())`
+    /* =====[ Operate ]===== */
+    BridgeSetSensorConfig();
+    /* =====[ Test ]===== */
+    // Bridge call n=3 is SerialWriteByte if Sensor reply is invalid cmd error
+    uint8_t call_n=3;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "SerialWriteByte"),
+        "Expect call 3 is SerialWriteByte if Sensor reply is invalid_cmd (0x02)."
+        );
+    // Bridge does not do anything else after this SerialWriteByte.
+    TEST_ASSERT_EQUAL_UINT8(call_n,NumberOfActualCalls(mock));
+}
+void BridgeSetSensorConfig_passes_invalid_cmd_reply_back_to_host(void)
+{
+    /* =====[ Setup ]===== */
+    // If Sensor thinks command is invalid, it responds immediately
+    // Inject Sensor Response: invalid command error
+    uint8_t sensor_responses[] = {invalid_cmd};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    // Fake the Sensor signaling it has a byte to send
+    ClearBit(Spi_pin, Spi_DataReady); // DataReady LOW signals ready
+    // Now the injected Sensor responses are consumed in `if (SensorHasResponse())`
+    /* =====[ Operate ]===== */
+    BridgeSetSensorConfig();
+    // Bridge call n=3 is SerialWriteByte if Sensor reply is invalid cmd error
+    uint8_t call_n=3;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "SerialWriteByte"),
+        "Expect call 3 is SerialWriteByte if Sensor reply is invalid_cmd (0x02)."
+        );
+    /* =====[ Test ]===== */
+    uint8_t arg_n = 1; uint8_t arg_val = invalid_cmd;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &arg_val),
+        "Expect Bridge passes invalid_cmd (0x02) back to USB host."
+        );
+}
+void BridgeSetSensorConfig_responds_ok_if_Sensor_does_not_say_invalid_cmd(void)
+{
+    /* =====[ Setup ]===== */
+    // Inject three bytes of payload for fake UsbReadBytes.
+    uint8_t binning = binning_on;
+    uint8_t gain = gain1x;
+    uint8_t active_rows = all_rows_active;
+    uint8_t payload[] = {binning, gain, active_rows};
+    FakeByteArray_ForUsbReadBytes = payload;
+    // Inject Sensor responses.
+    uint8_t sensor_responses[] = {ok};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    BridgeSetSensorConfig();
+    /* =====[ Test: Bridge responds "ok" after receiving host payload ]===== */
+    uint8_t call_n = 2; uint16_t arg_n = 1; uint8_t arg_val = ok;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SerialWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
+}
+void BridgeSetSensorConfig_passes_three_bytes_of_payload_to_Sensor(void)
+{
+    /* =====[ Setup ]===== */
+    // Inject three bytes of payload for fake UsbReadBytes.
+    uint8_t binning = binning_on;
+    uint8_t gain = gain1x;
+    uint8_t active_rows = all_rows_active;
+    uint8_t payload[] = {binning, gain, active_rows};
+    FakeByteArray_ForUsbReadBytes = payload;
+    // Inject Sensor responses.
+    uint8_t sensor_responses[] = {ok};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    BridgeSetSensorConfig();
+    /* =====[ Test: Bridge passes payload to Sensor ]===== */
+    uint8_t call_n = 3; uint16_t arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "SpiWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &payload[0]));
+    TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SpiWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &payload[1]));
+    TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SpiWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &payload[2]));
+}
+void BridgeSetSensorConfig_reads_and_sends_one_byte_Sensor_reply_to_host(void)
+{
+    /* =====[ Setup ]===== */
+    // Inject three bytes of payload for fake UsbReadBytes.
+    uint8_t binning = binning_on;
+    uint8_t gain = gain1x;
+    uint8_t active_rows = all_rows_active;
+    uint8_t payload[] = {binning, gain, active_rows};
+    FakeByteArray_ForUsbReadBytes = payload;
+    // Inject Sensor responses.
+    uint8_t sensor_responses[] = {ok};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    BridgeSetSensorConfig();
+    /* =====[ Test: Bridge reads Sensor reply ]===== */
+    uint8_t call_n = 6; uint8_t arg_n = 2; uint16_t arg_val = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "ReadSensor"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &arg_val));
+    /* =====[ Test: Bridge passes Sensor reply to USB host ]===== */
+    arg_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, ++call_n, "SerialWriteByte"));
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &sensor_responses[0]));
 }

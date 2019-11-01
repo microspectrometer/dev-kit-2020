@@ -124,5 +124,11 @@ int main(void)
     // Put single tests here (move single tests to test suite later).
     setUp = SetUp_BridgeSetSensorConfig; tearDown = TearDown_BridgeSetSensorConfig;
     RUN_TEST(BridgeSetSensorConfig_reads_three_bytes_of_host_payload);
+    RUN_TEST(BridgeSetSensorConfig_checks_for_invalid_command_error_from_Sensor);
+    RUN_TEST(BridgeSetSensorConfig_does_not_send_payload_if_Sensor_says_invalid_cmd);
+    RUN_TEST(BridgeSetSensorConfig_passes_invalid_cmd_reply_back_to_host);
+    RUN_TEST(BridgeSetSensorConfig_responds_ok_if_Sensor_does_not_say_invalid_cmd);
+    RUN_TEST(BridgeSetSensorConfig_passes_three_bytes_of_payload_to_Sensor);
+    RUN_TEST(BridgeSetSensorConfig_reads_and_sends_one_byte_Sensor_reply_to_host);
     return UNITY_END();
 }

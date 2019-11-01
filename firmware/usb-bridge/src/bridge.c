@@ -271,7 +271,6 @@ void BridgeSetSensorLED(void)
 
     uint8_t led_number = read_buffer[0];
     uint8_t led_state = read_buffer[1];
-    /* SerialWriteByte(ok); // Bridge finished reading its expected payload. */
     if (SensorHasResponse())
     { // something is wrong, let the USB host figure it out
         uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
@@ -289,7 +288,6 @@ void BridgeSetSensorLED(void)
     uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
     // Pass reply to host.
     SerialWriteByte(sensor_reply);
-    // If there was no error, get next byte and pass to host.
 }
 void TestInvalidSensorCmd(void) // Test how Sensor responds to invalid cmd.
 {
@@ -343,6 +341,15 @@ void BridgeSetSensorConfig(void)
 {
     /** Send SetSensorConfig command to Sensor and pass reply back up to USB host.
      * */
+    /** BridgeSetSensorConfig behavior:\n 
+      * - reads three bytes of host payload\n 
+      * - checks for invalid command error from Sensor\n 
+      * - does not send payload if Sensor says invalid cmd\n 
+      * - passes invalid cmd reply back to host\n 
+      * - responds ok if Sensor does not say invalid cmd\n 
+      * - passes three bytes of payload to Sensor\n 
+      * - reads and sends one byte Sensor reply to host\n 
+      * */
     // Read config (three bytes of payload).
     uint8_t const num_bytes_payload = 3;
     uint8_t read_buffer[num_bytes_payload];
@@ -353,6 +360,22 @@ void BridgeSetSensorConfig(void)
     uint8_t gain = read_buffer[1];
     uint8_t active_rows = read_buffer[2];
     (void)binning; (void)gain; (void)active_rows;
+    if (SensorHasResponse())
+    { // something is wrong, let the USB host figure it out
+        uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+        SerialWriteByte(sensor_reply);
+        return;
+    }
+    else
+    { // Sensor is waiting for the payload.
+        SerialWriteByte(ok); // Bridge finished reading the expected payload.
+    }
+    // Send payload to Sensor.
+    SpiWriteByte(binning); SpiWriteByte(gain); SpiWriteByte(active_rows);
+    // Read reply (status byte) from Sensor.
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    // Pass reply (status byte) back to host.
+    SerialWriteByte(sensor_reply);
 }
 
 
