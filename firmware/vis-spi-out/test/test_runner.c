@@ -68,13 +68,37 @@ void unittest_SetSensorLED(bool run_test)
         RUN_TEST(SetSensorLED_turns_led_on_and_red_if_payload_is_led_red);
     }
 }
+void unittest_GetSensorConfig(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_GetSensorConfig; tearDown = TearDown_GetSensorConfig;
+        RUN_TEST(GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok);
+    }
+}
+void unittest_SetSensorConfig(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_SetSensorConfig; tearDown = TearDown_SetSensorConfig;
+    }
+}
+
 int main(void)
 {
     UNITY_BEGIN();
-    use_Queue_lib_for_SPI_rx_FIFO_buffer(Yep); // good
-    unittest_GetSensorLED(Yep);
-    unittest_SetSensorLED(Yep);
+    use_Queue_lib_for_SPI_rx_FIFO_buffer(Nope); // good
+    unittest_GetSensorLED(Nope);
+    unittest_SetSensorLED(Nope);
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     // Put single tests here (move single tests to test suite later).
+    unittest_GetSensorConfig(Nope);
+    unittest_SetSensorConfig(Yep);
+    setUp = SetUp_SetSensorConfig; tearDown = TearDown_SetSensorConfig;
+    RUN_TEST(SetSensorConfig_receives_three_bytes_of_config_from_Bridge);
+    RUN_TEST(SetSensorConfig_replies_msg_status_error_if_binning_is_invalid);
+    RUN_TEST(SetSensorConfig_replies_msg_status_error_if_gain_is_invalid);
+    RUN_TEST(SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid);
+    RUN_TEST(SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid);
     return UNITY_END();
 }

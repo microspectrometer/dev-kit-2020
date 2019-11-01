@@ -23,6 +23,11 @@ extern uint8_t const led_Done;
 // `extern` builds SensorVis.o to use same SpiFifo defined in  main application.
 volatile Queue_s * SpiFifo;
 
+// Photodiode Array Config must be global in main application for linking
+// against its extern declaration in SensorVis
+// `extern` builds SensorVis.o to use same data defined in main application.
+uint8_t binning; uint8_t gain; uint8_t active_rows;
+
 /* ---Queue Plumbing and Examples--- */
 void test_lib_SensorVis_can_use_lib_Queue_and_sees_SpiFifo(void)
 {
@@ -490,9 +495,9 @@ void SetSensorLED_replies_msg_status_error_if_led_number_is_not_valid(void)
     // ---WriteSpiMaster sends status "error"---
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
-    uint8_t arg_n = 1; uint8_t arg_val = error; uint8_t *parg_val = &arg_val;
+    uint8_t arg_n = 1; uint8_t argv = error; uint8_t *pargv = &argv;
     TEST_ASSERT_TRUE_MESSAGE(
-        AssertArgPointsToValue(mock, call_n, arg_n, &parg_val),
+        AssertArgPointsToValue(mock, call_n, arg_n, &pargv),
         "Expect WriteSpiMaster sends ERROR (0x01)."
         );
 }
@@ -645,4 +650,183 @@ void SetSensorLED_turns_led_on_and_red_if_payload_is_led_red(void)
         BiColorLedIsRed(good_led_number),
         "Expect SetSensorLED turns LED red."
         );
+}
+
+void SetUp_GetSensorConfig(void)
+{
+    SetUp_Mock();
+    Mock_WriteSpiMaster();
+    // Initialize Photodiode Array Config to match init in vis-spi-out.c main()
+    binning = binning_on; // default to 392 pixels
+    gain = gain1x; // default to 1x gain
+    active_rows = all_rows_active; // default to using all 5 pixel rows
+}
+void TearDown_GetSensorConfig(void)
+{
+    TearDown_Mock();
+    Restore_WriteSpiMaster();
+}
+void GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok(void)
+{
+    /* =====[ Operate ]===== */
+    GetSensorConfig();
+    /* =====[ Test ]===== */
+    // Assert: send 4 bytes to Bridge
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    uint8_t arg_n = 2; uint16_t nbytes_sent = 4;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &nbytes_sent),
+        "Expect WriteSpiMaster sends three data bytes."
+        );
+    // Assert: data bytes sent are {binning, gain, active_rows}
+    arg_n = 1;
+    printf("status byte: %#02x\n", SpyOn_WriteSpiMaster_arg1[0]);
+    TEST_ASSERT_EQUAL_HEX8(ok, SpyOn_WriteSpiMaster_arg1[0]);
+    printf("data byte 1: %#02x\n", SpyOn_WriteSpiMaster_arg1[1]);
+    TEST_ASSERT_EQUAL_HEX8(binning, SpyOn_WriteSpiMaster_arg1[1]);
+    printf("data byte 2: %#02x\n", SpyOn_WriteSpiMaster_arg1[2]);
+    TEST_ASSERT_EQUAL_HEX8(gain, SpyOn_WriteSpiMaster_arg1[2]);
+    printf("data byte 3: %#02x\n", SpyOn_WriteSpiMaster_arg1[3]);
+    TEST_ASSERT_EQUAL_HEX8(active_rows, SpyOn_WriteSpiMaster_arg1[3]);
+}
+
+void SetUp_SetSensorConfig(void)
+{
+    SetUp_Mock();
+    Mock_WriteSpiMaster();
+    // Initialize Photodiode Array Config to match init in vis-spi-out.c main()
+    binning = binning_on; // default to 392 pixels
+    gain = gain1x; // default to 1x gain
+    active_rows = all_rows_active; // default to using all 5 pixel rows
+}
+void TearDown_SetSensorConfig(void)
+{
+    TearDown_Mock();
+    Restore_WriteSpiMaster();
+}
+void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // SetSensorConfig waits until there is a byte in the queue.
+    // Fake placing three bytes in the queue.
+    uint8_t const fake_binning = binning_off;
+    QueuePush(SpiFifo, fake_binning);
+    uint8_t const fake_gain = gain5x;
+    QueuePush(SpiFifo, fake_gain);
+    uint8_t const fake_active_rows = 0x11; // b00010001
+    QueuePush(SpiFifo, fake_active_rows);
+    /* =====[ Operate ]===== */
+    SetSensorConfig();
+    /* =====[ Test ]===== */
+    // SetSensorConfig reads from the Queue and writes to the config globals.
+    TEST_ASSERT_EQUAL_HEX8(fake_binning, binning);
+    TEST_ASSERT_EQUAL_HEX8(fake_gain, gain);
+    TEST_ASSERT_EQUAL_HEX8(fake_active_rows, active_rows);
+}
+void SetSensorConfig_replies_msg_status_error_if_binning_is_invalid(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // SetSensorConfig waits until there is a byte in the queue.
+    // Fake placing three bytes in the queue.
+    uint8_t const fake_bad_binning = binning_off+100;
+    QueuePush(SpiFifo, fake_bad_binning);
+    uint8_t const fake_gain = gain5x;
+    QueuePush(SpiFifo, fake_gain);
+    uint8_t const fake_active_rows = 0x11; // b00010001
+    QueuePush(SpiFifo, fake_active_rows);
+    /* =====[ Operate ]===== */
+    SetSensorConfig();
+    // SetSensorConfig reads from the Queue and writes to the config globals.
+    TEST_ASSERT_EQUAL_HEX8(fake_bad_binning, binning);
+    TEST_ASSERT_EQUAL_HEX8(fake_gain, gain);
+    TEST_ASSERT_EQUAL_HEX8(fake_active_rows, active_rows);
+    /* =====[ Test ]===== */
+    // ---WriteSpiMaster sends status "error"---
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    printf("WriteSpiMaster sends: %#04x\n", SpyOn_WriteSpiMaster_arg1[0]);
+    TEST_ASSERT_EQUAL_HEX8(error, SpyOn_WriteSpiMaster_arg1[0]);
+}
+void SetSensorConfig_replies_msg_status_error_if_gain_is_invalid(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // SetSensorConfig waits until there is a byte in the queue.
+    // Fake placing three bytes in the queue.
+    uint8_t const fake_binning = binning_off;
+    QueuePush(SpiFifo, fake_binning);
+    uint8_t const fake_bad_gain = gain5x+100;
+    QueuePush(SpiFifo, fake_bad_gain);
+    uint8_t const fake_active_rows = 0x11; // b00010001
+    QueuePush(SpiFifo, fake_active_rows);
+    /* =====[ Operate ]===== */
+    SetSensorConfig();
+    // SetSensorConfig reads from the Queue and writes to the config globals.
+    TEST_ASSERT_EQUAL_HEX8(fake_binning, binning);
+    TEST_ASSERT_EQUAL_HEX8(fake_bad_gain, gain);
+    TEST_ASSERT_EQUAL_HEX8(fake_active_rows, active_rows);
+    /* =====[ Test ]===== */
+    // ---WriteSpiMaster sends status "error"---
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    printf("WriteSpiMaster sends: %#04x\n", SpyOn_WriteSpiMaster_arg1[0]);
+    TEST_ASSERT_EQUAL_HEX8(error, SpyOn_WriteSpiMaster_arg1[0]);
+}
+void SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // SetSensorConfig waits until there is a byte in the queue.
+    // Fake placing three bytes in the queue.
+    uint8_t const fake_binning = binning_off;
+    QueuePush(SpiFifo, fake_binning);
+    uint8_t const fake_gain = gain5x;
+    QueuePush(SpiFifo, fake_gain);
+    uint8_t const fake_bad_active_rows = 0xE1; // b11110001
+    QueuePush(SpiFifo, fake_bad_active_rows);
+    /* =====[ Operate ]===== */
+    SetSensorConfig();
+    // SetSensorConfig reads from the Queue and writes to the config globals.
+    TEST_ASSERT_EQUAL_HEX8(fake_binning, binning);
+    TEST_ASSERT_EQUAL_HEX8(fake_gain, gain);
+    TEST_ASSERT_EQUAL_HEX8(fake_bad_active_rows, active_rows);
+    /* =====[ Test ]===== */
+    // ---WriteSpiMaster sends status "error"---
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    printf("WriteSpiMaster sends: %#04x\n", SpyOn_WriteSpiMaster_arg1[0]);
+    TEST_ASSERT_EQUAL_HEX8(error, SpyOn_WriteSpiMaster_arg1[0]);
+}
+void SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // SetSensorConfig waits until there is a byte in the queue.
+    // Fake placing three VALID bytes in the queue.
+    uint8_t const fake_binning = binning_off;
+    QueuePush(SpiFifo, fake_binning);
+    uint8_t const fake_gain = gain5x;
+    QueuePush(SpiFifo, fake_gain);
+    uint8_t const fake_active_rows = 0x11; // b00010001
+    QueuePush(SpiFifo, fake_active_rows);
+    /* =====[ Operate ]===== */
+    SetSensorConfig();
+    // SetSensorConfig reads from the Queue and writes to the config globals.
+    TEST_ASSERT_EQUAL_HEX8(fake_binning, binning);
+    TEST_ASSERT_EQUAL_HEX8(fake_gain, gain);
+    TEST_ASSERT_EQUAL_HEX8(fake_active_rows, active_rows);
+    /* =====[ Test ]===== */
+    // Assert response is OK if all three bytes are valid.
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    printf("WriteSpiMaster sends: 0x%02x\n", SpyOn_WriteSpiMaster_arg1[0]);
+    TEST_ASSERT_EQUAL_HEX8(ok, SpyOn_WriteSpiMaster_arg1[0]);
 }

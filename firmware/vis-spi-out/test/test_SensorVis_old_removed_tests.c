@@ -421,3 +421,40 @@ void old_GetSensorLED_always_replies_with_two_bytes(void)
     // For next test: Assert byte 0 is error
     /* TEST_ASSERT_EQUAL_UINT8(error, */ 
 }
+void GetSensorConfig_sends_status_byte_ok_to_Bridge(void)
+{
+    /* =====[ Operate ]===== */
+    GetSensorConfig();
+    /* =====[ Test ]===== */
+    // ---
+    // AssertArgPointsToValue behaves strangely in this test.
+    // The test PASS/FAIL works, but the printed value "Value at address..." is
+    // wrong. It prints (uint8_t)0x01 when it should be (uint8_t)0x00.
+    // ---
+    /* uint8_t call_n = 1; */
+    /* TEST_ASSERT_TRUE_MESSAGE( */
+    /*     AssertCall(mock, call_n, "WriteSpiMaster"), */
+    /*     "Expect call 1 is WriteSpiMaster." */
+    /*     ); */
+    /* uint8_t arg_n = 1; uint8_t argv = ok; uint8_t *pargv = &argv; */
+    /* TEST_ASSERT_TRUE_MESSAGE( */
+    /*     AssertArgPointsToValue(mock, call_n, arg_n, &pargv), */
+    /*     "Expect WriteSpiMaster sends OK (0x00)." */
+    /*     ); */
+    // ---
+    // Assert: write one byte of status to Bridge
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSpiMaster"),
+        "Expect call 1 is WriteSpiMaster."
+        );
+    uint8_t arg_n = 2; uint16_t nbytes_sent = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &nbytes_sent),
+        "Expect WriteSpiMaster sends one status byte."
+        );
+    // Assert: status byte sent is "ok"
+    arg_n = 1; uint8_t status_byte = ok;
+    printf("Value passed to call 1, arg 1?: %#02x\n", SpyOn_WriteSpiMaster_arg1[0]);
+    TEST_ASSERT_EQUAL_HEX8(status_byte, SpyOn_WriteSpiMaster_arg1[0]);
+}

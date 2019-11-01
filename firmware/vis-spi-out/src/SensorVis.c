@@ -12,8 +12,8 @@ extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
 sensor_cmd_key const NullCommand_key = 0;
 sensor_cmd_key const GetSensorLED_key = 3;
 sensor_cmd_key const SetSensorLED_key = 4;
-/* sensor_cmd_key const SensorCfgLis_key = 4; */
-sensor_cmd_key const TestInvalidSensorCmd_key = 5;
+sensor_cmd_key const GetSensorConfig_key = 7;
+sensor_cmd_key const SetSensorConfig_key = 8;
 
 
 void NullCommand(void){}
@@ -26,6 +26,18 @@ status_byte led_green = 1;
 status_byte led_red = 2; 
 led_name led_0 = 0;
 led_name led_1 = 1;
+config_byte binning_off = 0x00;
+config_byte binning_on  = 0x01;
+config_byte gain1x  = 0x01;
+config_byte gain25x = 0x25;
+config_byte gain4x  = 0x04;
+config_byte gain5x  = 0x05;
+config_byte all_rows_active  = 0x1F; // 0b00011111 is all five rows
+
+// =====[ globals for photodiode array config defined in main() application ]=====
+extern uint8_t binning; // default to 392 pixels
+extern uint8_t gain; // default to 1x gain
+extern uint8_t active_rows; // default to using all 5 pixel rows
 
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const led_TxRx;      // PINC0
@@ -155,6 +167,57 @@ void SetSensorLED(void)
         uint8_t status = error;
         WriteSpiMaster(&status,1);
     }
+}
+void GetSensorConfig(void)
+{
+    /** Send three bytes of photodiode array config data to the Bridge.\n 
+     * - first byte sent: binning (off: 0x00, on: 0x01)\n 
+     * - next byte sent: gain (1x, 2.5x, 4x, 5x)\n 
+     * - last byte sent: which of the five rows are active (all active: b00011111)\n 
+     * */
+    /** GetSensorConfig behavior:\n 
+      * - sends three bytes of data to Bridge after sending ok\n 
+      * */
+    uint8_t reply[] = {ok, binning, gain, active_rows};
+    uint8_t const nbytes_data = 3;
+    WriteSpiMaster(reply, 1+nbytes_data);
+}
+void SetSensorConfig(void)
+{
+    /** Read three bytes of photodiode array config data from the Bridge.\n 
+     * - first byte received: binning (off: 0x00, on: 0x01)\n 
+     * - next byte received: gain (1x, 2.5x, 4x, 5x)\n 
+     * - last byte received: which of the five rows are active (all active: b00011111)\n 
+     * Configure photodiode array.\n 
+     * */
+    /** SetSensorConfig behavior:\n 
+      * - receives three bytes of config from Bridge\n 
+      * - replies msg status error if binning is invalid\n 
+      * - replies msg status error if gain is invalid\n 
+      * - replies msg status error if active rows is invalid\n 
+      * - replies msg status ok if all config bytes are valid\n 
+      * */
+    while (QueueIsEmpty(SpiFifo)); // wait for binning
+    binning = QueuePop(SpiFifo);
+    while (QueueIsEmpty(SpiFifo)); // wait for gain
+    gain = QueuePop(SpiFifo);
+    while (QueueIsEmpty(SpiFifo)); // wait for active_rows
+    active_rows = QueuePop(SpiFifo);
+    // Check that inputs are valid.
+    if (
+            ((binning != binning_off) && (binning != binning_on))
+        ||  ((gain != gain1x) && (gain != gain25x) && (gain != gain4x) && (gain != gain5x))
+        ||  ((active_rows & 0xE0) != 0x00)
+       )
+    { // one or more of the inputs is not valid
+        uint8_t status = error;
+        WriteSpiMaster(&status,1);
+        return;
+    }
+    uint8_t status = ok;
+    WriteSpiMaster(&status,1);
+    // Convert bytes to LIS programming sequence.
+    // Program LIS.
 }
 
 /* --------------------------------------------------------------------------------------- */

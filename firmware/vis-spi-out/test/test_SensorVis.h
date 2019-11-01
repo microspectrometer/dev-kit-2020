@@ -25,5 +25,15 @@ void SetSensorLED_replies_msg_status_ok_if_led_number_and_led_state_are_valid(vo
 void SetSensorLED_turns_off_led_if_payload_is_led_off(void);
 void SetSensorLED_turns_led_on_and_green_if_payload_is_led_green(void);
 void SetSensorLED_turns_led_on_and_red_if_payload_is_led_red(void);
+void SetUp_GetSensorConfig(void);
+void TearDown_GetSensorConfig(void);
+void GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok(void);
+void SetUp_SetSensorConfig(void);
+void TearDown_SetSensorConfig(void);
+void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void);
+void SetSensorConfig_replies_msg_status_error_if_binning_is_invalid(void);
+void SetSensorConfig_replies_msg_status_error_if_gain_is_invalid(void);
+void SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid(void);
+void SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid(void);
 
 #endif // _TEST_SENSORVIS_H

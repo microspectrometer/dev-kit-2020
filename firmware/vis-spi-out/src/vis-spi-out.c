@@ -23,6 +23,8 @@ volatile Queue_s * SpiFifo;
 // Define the maximum number of bytes the SPI FIFO Rx Buffer can hold.
 #define max_length_of_queue 5 // bytes
 volatile uint8_t spi_rx_buffer[max_length_of_queue];
+/* =====[ Allocate memory for the Photodiode Array Config ]===== */
+uint8_t binning; uint8_t gain; uint8_t active_rows;
 
 int main()
 {
@@ -46,6 +48,11 @@ int main()
     // Use globals because it is an easy way to share data with an ISR.
     /* HasSpiData = false; // global flag to track if there is SpiData */
     /* SpiData = 0x00; // global one-byte register to store SpiData */
+    /* =====[ Initialize Globals: Photodiode Array Config ]===== */
+    // Use globals because it is an easy way to share data with lib SensorVis
+    binning = binning_on; // default to 392 pixels
+    gain = gain1x; // default to 1x gain
+    active_rows = all_rows_active; // default to using all 5 pixel rows
     /* =====[ LOOP ]===== */
     // Loop forever acting on commands from the SPI Master.
     while(1) Get_commands_from_SpiMaster();
