@@ -62,5 +62,6 @@ void GetSensorLED(void);
 void SetSensorLED(void);
 void GetSensorConfig(void);
 void SetSensorConfig(void);
+extern void (*ProgramPhotodiodeArray)(uint32_t config);
 //
 #endif // _SENSORVIS_H

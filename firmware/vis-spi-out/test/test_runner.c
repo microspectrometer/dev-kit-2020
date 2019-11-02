@@ -81,6 +81,12 @@ void unittest_SetSensorConfig(bool run_test)
     if (run_test)
     {
         setUp = SetUp_SetSensorConfig; tearDown = TearDown_SetSensorConfig;
+        RUN_TEST(SetSensorConfig_receives_three_bytes_of_config_from_Bridge);
+        RUN_TEST(SetSensorConfig_replies_msg_status_error_if_binning_is_invalid);
+        RUN_TEST(SetSensorConfig_replies_msg_status_error_if_gain_is_invalid);
+        RUN_TEST(SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid);
+        RUN_TEST(SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid);
+        RUN_TEST(SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config);
     }
 }
 
@@ -94,11 +100,5 @@ int main(void)
     // Put single tests here (move single tests to test suite later).
     unittest_GetSensorConfig(Nope);
     unittest_SetSensorConfig(Yep);
-    setUp = SetUp_SetSensorConfig; tearDown = TearDown_SetSensorConfig;
-    RUN_TEST(SetSensorConfig_receives_three_bytes_of_config_from_Bridge);
-    RUN_TEST(SetSensorConfig_replies_msg_status_error_if_binning_is_invalid);
-    RUN_TEST(SetSensorConfig_replies_msg_status_error_if_gain_is_invalid);
-    RUN_TEST(SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid);
-    RUN_TEST(SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid);
     return UNITY_END();
 }

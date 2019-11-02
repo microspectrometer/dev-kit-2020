@@ -183,6 +183,22 @@ void GetSensorConfig(void)
     uint8_t const nbytes_data = 3;
     WriteSpiMaster(reply, 1+nbytes_data);
 }
+static void ProgramPhotodiodeArray_Implementation(uint32_t config)
+{
+    // Program LIS.
+    EnterLisProgrammingMode();
+    uint8_t bit=0;
+    while (bit++ < 28)
+    {
+        if (config & (1<<bit)) SetBit(Lis_port1, Lis_Rst);
+        else ClearBit(Lis_port1, Lis_Rst);
+        // Wait for Lis_Rst value to clock in before loading the next bit.
+        LisWaitForClkRiseEdge(); // bit is read on rising edge
+        LisWaitForClkFallEdge(); // hold bit until falling edge
+    }
+    ExitLisProgrammingMode();
+}
+void (*ProgramPhotodiodeArray)(uint32_t) = ProgramPhotodiodeArray_Implementation;
 void SetSensorConfig(void)
 {
     /** Read three bytes of photodiode array config data from the Bridge.\n 
@@ -197,6 +213,7 @@ void SetSensorConfig(void)
       * - replies msg status error if gain is invalid\n 
       * - replies msg status error if active rows is invalid\n 
       * - replies msg status ok if all config bytes are valid\n 
+      * - converts three data bytes to a 28 bit config\n 
       * */
     while (QueueIsEmpty(SpiFifo)); // wait for binning
     binning = QueuePop(SpiFifo);
@@ -217,8 +234,8 @@ void SetSensorConfig(void)
     }
     uint8_t status = ok;
     WriteSpiMaster(&status,1);
-    // Convert bytes to LIS programming sequence.
-    uint32_t cfg_bytes = 0x00;
+    // Convert three data bytes to 28-bit LIS programming sequence.
+    uint32_t cfg_bytes = 0x00000000;
     uint8_t bit = 0;
     if (binning_on == binning) cfg_bytes |= 1<<(bit++); // bit 0: bin on/off
     // bit 1: gain bit G2
@@ -227,16 +244,28 @@ void SetSensorConfig(void)
     if      (gain25x == gain) { bit++; cfg_bytes |= 1<<(bit++); }
     else if (gain4x == gain)  { cfg_bytes |= 1<<(bit++); bit++; }
     else if (gain5x == gain)  { cfg_bytes |= 1<<(bit++); cfg_bytes |= 1<<(bit++); }
-    // TODO: finish for active_rows
-    // Program LIS.
-    EnterLisProgrammingMode();
-
-    // Example clocking in one bit that is 1
-    // Write a 1:
-    /* SetBit(Lis_port1, Lis_Rst); */
-    // Wait for Lis_Rst value to clock in before loading the next bit.
-    /* LisWaitForClkRiseEdge(); // bit is read on rising edge */
-    /* LisWaitForClkFallEdge(); // hold bit until falling edge */
+    else { bit++; bit++; }
+    // bit 3 to 28 are pixel groups P25 to P1 to select active rows
+    // Example with binning_on and gain1x
+    // ----3----  ----2----  ----1----  ----0-(---) // byte
+    // 7654 3210  7654 3210  7654 3210  7654 3(210) // bit
+    // xxxx 1111  1111 1111  1111 1111  1111 1(001) // all rows on
+    // xxxx 0000  1000 0100  0010 0001  0000 1(001) // row 1 (or 5?)
+    // xxxx 0001  0000 1000  0100 0010  0001 0(001) // row 2 (or 4?)
+    // xxxx 0010  0001 0000  1000 0100  0010 0(001) // row 3
+    // xxxx 0100  0010 0001  0000 1000  0100 0(001) // row 4 (or 2?)
+    // xxxx 1000  0100 0010  0001 0000  1000 0(001) // row 5 (or 1?)
+    uint8_t const row1 = 0; uint32_t const row1_mask = 0x00842108;
+    uint8_t const row2 = 1; uint32_t const row2_mask = 0x01084210;
+    uint8_t const row3 = 2; uint32_t const row3_mask = 0x02108420;
+    uint8_t const row4 = 3; uint32_t const row4_mask = 0x04210840;
+    uint8_t const row5 = 4; uint32_t const row5_mask = 0x08421080;
+    if (active_rows&(1<<row1)) cfg_bytes |= row1_mask;
+    if (active_rows&(1<<row2)) cfg_bytes |= row2_mask;
+    if (active_rows&(1<<row3)) cfg_bytes |= row3_mask;
+    if (active_rows&(1<<row4)) cfg_bytes |= row4_mask;
+    if (active_rows&(1<<row5)) cfg_bytes |= row5_mask;
+    ProgramPhotodiodeArray(cfg_bytes);
 }
 
 /* --------------------------------------------------------------------------------------- */

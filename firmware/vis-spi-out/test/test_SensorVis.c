@@ -691,10 +691,37 @@ void GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok(void)
     TEST_ASSERT_EQUAL_HEX8(active_rows, SpyOn_WriteSpiMaster_arg1[3]);
 }
 
+/* =====[ Mock ProgramPhotodiodeArray() ]===== */
+static RecordedCall * Record_ProgramPhotodiodeArray(uint32_t arg1)
+{ // Define call recorded when func-under-test calls mocked function.
+    char const *call_name = "ProgramPhotodiodeArray";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint32_t);
+    *((uint32_t *)record_of_arg1->pArg) = arg1;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+static void ProgramPhotodiodeArray_Mocked(uint32_t config)
+{ // Define behavior of mocked function: ProgramPhotodiodeArray().
+    RecordActualCall(mock, Record_ProgramPhotodiodeArray(config));
+}
+/* =====[ Define how to swap function definitions ]===== */
+static void (*ProgramPhotodiodeArray_Saved)(uint32_t);
+static void Restore_ProgramPhotodiodeArray(void)
+{ // how to restore real definition
+    ProgramPhotodiodeArray = ProgramPhotodiodeArray_Saved;
+}
+static void Mock_ProgramPhotodiodeArray(void)
+{ // how to swap real definition with mocked version
+    ProgramPhotodiodeArray_Saved = ProgramPhotodiodeArray;
+    ProgramPhotodiodeArray = ProgramPhotodiodeArray_Mocked;
+}
 void SetUp_SetSensorConfig(void)
 {
     SetUp_Mock();
     Mock_WriteSpiMaster();
+    Mock_ProgramPhotodiodeArray();
     // Initialize Photodiode Array Config to match init in vis-spi-out.c main()
     binning = binning_on; // default to 392 pixels
     gain = gain1x; // default to 1x gain
@@ -704,6 +731,7 @@ void TearDown_SetSensorConfig(void)
 {
     TearDown_Mock();
     Restore_WriteSpiMaster();
+    Restore_ProgramPhotodiodeArray();
 }
 void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void)
 {
@@ -829,4 +857,50 @@ void SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid(void)
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
     printf("WriteSpiMaster sends: 0x%02x\n", SpyOn_WriteSpiMaster_arg1[0]);
     TEST_ASSERT_EQUAL_HEX8(ok, SpyOn_WriteSpiMaster_arg1[0]);
+}
+void SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // SetSensorConfig waits until there is a byte in the queue.
+    // Fake placing three VALID bytes in the queue.
+    uint8_t const fake_binning = binning_on;
+    QueuePush(SpiFifo, fake_binning);
+    uint8_t const fake_gain = gain1x;
+    QueuePush(SpiFifo, fake_gain);
+    uint8_t const row1 = 0; uint32_t const row1_mask = 0x00842108;
+    uint8_t const row2 = 1; uint32_t const row2_mask = 0x01084210;
+    uint8_t const row3 = 2; uint32_t const row3_mask = 0x02108420;
+    uint8_t const row4 = 3; uint32_t const row4_mask = 0x04210840;
+    uint8_t const row5 = 4; uint32_t const row5_mask = 0x08421080;
+    uint8_t fake_active_rows = 0;
+    fake_active_rows |= 1<<row1;
+    QueuePush(SpiFifo, fake_active_rows);
+    // Caclulate expected config
+    uint32_t expected_config = 0x00000000;
+    uint8_t bit = 0;
+    if (binning_on == fake_binning) expected_config |= 1<<(bit++); // bit 0: bin on/off
+    if      (gain25x == fake_gain) { bit++; expected_config |= 1<<(bit++); }
+    else if (gain4x == fake_gain)  { expected_config |= 1<<(bit++); bit++; }
+    else if (gain5x == fake_gain)  { expected_config |= 1<<(bit++); expected_config |= 1<<(bit++); }
+    else { bit++; bit++; }
+    if (fake_active_rows&(1<<row1)) expected_config |= row1_mask;
+    if (fake_active_rows&(1<<row2)) expected_config |= row2_mask;
+    if (fake_active_rows&(1<<row3)) expected_config |= row3_mask;
+    if (fake_active_rows&(1<<row4)) expected_config |= row4_mask;
+    if (fake_active_rows&(1<<row5)) expected_config |= row5_mask;
+    /* =====[ Operate ]===== */
+    SetSensorConfig();
+    // SetSensorConfig reads from the Queue and writes to the config globals.
+    TEST_ASSERT_EQUAL_HEX8(fake_binning, binning);
+    TEST_ASSERT_EQUAL_HEX8(fake_gain, gain);
+    TEST_ASSERT_EQUAL_HEX8(fake_active_rows, active_rows);
+    /* =====[ Test ]===== */
+    // Assert response is OK if all three bytes are valid.
+    uint8_t call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "ProgramPhotodiodeArray"));
+    printf("Expected config: %08x\n", expected_config);
+    uint8_t arg_n = 1;
+    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &expected_config));
 }

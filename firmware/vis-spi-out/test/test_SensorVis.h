@@ -35,5 +35,6 @@ void SetSensorConfig_replies_msg_status_error_if_binning_is_invalid(void);
 void SetSensorConfig_replies_msg_status_error_if_gain_is_invalid(void);
 void SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid(void);
 void SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid(void);
+void SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config(void);
 
 #endif // _TEST_SENSORVIS_H
