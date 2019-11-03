@@ -1390,6 +1390,26 @@ void TearDown_BridgeGetSensorConfig(void)
     Restore_ReadSensor();
     Restore_SerialWriteByte();
 }
+void BridgeGetSensorConfig_replies_ok_to_USB_host(void)
+{
+    /* =====[ Setup ]===== */
+    /* Inject Sensor responses. */
+    uint8_t sensor_responses[] = {error};
+    FakeByteArray_ForReadSensor = sensor_responses;
+    /* =====[ Operate ]===== */
+    BridgeGetSensorConfig();
+    // Bridge sends OK to USB Host
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "SerialWriteByte"),
+        "Expect call 1 is SerialWriteByte."
+        );
+    uint8_t arg_n = 1; uint8_t arg_val = ok;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &arg_val),
+        "Expect Bridge sends OK (0x00)."
+        );
+}
 void BridgeGetSensorConfig_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host(void)
 {
     /* =====[ Setup ]===== */
@@ -1400,7 +1420,7 @@ void BridgeGetSensorConfig_reads_msg_status_byte_from_Sensor_and_sends_to_USB_ho
     BridgeGetSensorConfig();
     /* =====[ Test ]===== */
     // Bridge reads a byte from sensor
-    uint8_t call_n = 1;
+    uint8_t call_n = 2;
     TEST_ASSERT_TRUE_MESSAGE(
         AssertCall(mock, call_n, "ReadSensor"),
         "Expect call 1 is ReadSensor."
@@ -1426,7 +1446,7 @@ void BridgeGetSensorConfig_reads_no_more_bytes_if_Sensor_status_is_error(void)
     /* =====[ Operate ]===== */
     BridgeGetSensorConfig();
     // ---Assert Sensor response is "error"---
-    uint8_t call_n = 1;
+    uint8_t call_n = 2;
     TEST_ASSERT_TRUE_MESSAGE(
         AssertCall(mock, call_n, "ReadSensor"),
         "Expect call 1 is ReadSensor."
@@ -1458,7 +1478,7 @@ void BridgeGetSensorConfig_if_status_is_ok_then_read_config_data_from_Sensor_and
     /* =====[ Operate ]===== */
     BridgeGetSensorConfig();
     // ---Assert Sensor response is "ok"---
-    uint8_t call_n = 1;
+    uint8_t call_n = 2;
     TEST_ASSERT_TRUE_MESSAGE(
         AssertCall(mock, call_n, "ReadSensor"),
         "Expect call 1 is ReadSensor."

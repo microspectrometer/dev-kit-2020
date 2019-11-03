@@ -88,6 +88,7 @@ void unittest_BridgeGetSensorConfig(bool run_test)
     if (run_test)
     {
         setUp = SetUp_BridgeGetSensorConfig; tearDown = TearDown_BridgeGetSensorConfig;
+        RUN_TEST(BridgeGetSensorConfig_replies_ok_to_USB_host);
         RUN_TEST(BridgeGetSensorConfig_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host);
         RUN_TEST(BridgeGetSensorConfig_reads_no_more_bytes_if_Sensor_status_is_error);
         RUN_TEST(BridgeGetSensorConfig_if_status_is_ok_then_read_config_data_from_Sensor_and_send_to_USB_host);

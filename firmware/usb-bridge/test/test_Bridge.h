@@ -80,5 +80,6 @@ void TearDown_BridgeGetSensorConfig(void);
 void BridgeGetSensorConfig_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host(void);
 void BridgeGetSensorConfig_reads_no_more_bytes_if_Sensor_status_is_error(void);
 void BridgeGetSensorConfig_if_status_is_ok_then_read_config_data_from_Sensor_and_send_to_USB_host(void);
+void BridgeGetSensorConfig_replies_ok_to_USB_host(void);
 
 #endif // _TEST_BRIDGE_H
