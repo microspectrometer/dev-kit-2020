@@ -98,7 +98,7 @@ int main(void)
     unittest_SetSensorLED(Nope);
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     // Put single tests here (move single tests to test suite later).
-    unittest_GetSensorConfig(Nope);
+    unittest_GetSensorConfig(Yep);
     unittest_SetSensorConfig(Yep);
     return UNITY_END();
 }

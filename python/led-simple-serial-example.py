@@ -444,7 +444,93 @@ def test_SetSensorLED(led_number, led_state):
         _print_and_log(f"test_SetSensorLED: FAIL: Expected {expected}, received {reply}.")
         return
     _print_and_log("test_SetSensorLED: PASS")
-
+def test_SetSensorConfig(binning, gain, active_rows):
+    """Test sending the photodiode array configuration."""
+    _print_and_log("--- SetSensorConfig ---")
+    _tx_and_log_cmd(commands.SetSensorConfig, "Command is SetSensorConfig")
+    _tx_and_log_cmd(binning, f"binning is {binning}")
+    _tx_and_log_cmd(gain, f"gain is {gain}")
+    _tx_and_log_cmd(active_rows, f"active_rows is {active_rows}")
+    # read BRIDGE status byte, stop if it is an error
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_SetSensorConfig: FAIL: Expected {expected}, received {reply}.")
+        return
+    # read status byte from SENSOR
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_SetSensorConfig: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_SetSensorConfig: PASS")
+def test_GetSensorConfig(expected_binning, expected_gain, expected_active_rows):
+    """Test reading the photodiode array configuration."""
+    _print_and_log("--- GetSensorConfig ---")
+    _tx_and_log_cmd(commands.GetSensorConfig, "Command is GetSensorConfig")
+    # read BRIDGE status byte, stop if it is an error
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorConfig: FAIL: Expected {expected}, received {reply}.")
+        return
+    # read status byte from SENSOR
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorConfig: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = expected_binning
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="pixel binning config",
+        expected_reply_byte=expected,
+        optional_expectation=f"Expect binning is {expected}"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorConfig: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = expected_gain
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="gain config",
+        expected_reply_byte=expected,
+        optional_expectation=f"Expect gain is {expected}"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorConfig: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = expected_active_rows
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="active pixel row config",
+        expected_reply_byte=expected,
+        optional_expectation=f"Expect active_rows is {expected}"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetSensorConfig: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_GetSensorLED: PASS")
 
 def test_GetSensorLED_Invalid_LED():
     _print_and_log("--- GetSensorLED for Invalid LED ---")
@@ -772,36 +858,55 @@ if __name__ == '__main__':
         # TODO: setup kit.write to take GetBridgeLED with its argument
         # TODO: add cmd pre-formatted as bytes to package `commands`
         # test_NullCommand()
-        test_SetBridgeLED(commands.led_0, commands.led_off)
-        test_GetBridgeLED_ExpectOff(commands.led_0)
-        test_SetBridgeLED(commands.led_0, commands.led_green)
-        test_GetBridgeLED_ExpectGreen(commands.led_0)
-        test_SetBridgeLED(commands.led_0, commands.led_red)
-        test_GetBridgeLED_ExpectRed(commands.led_0)
+        # test_SetBridgeLED(commands.led_0, commands.led_off)
+        # test_GetBridgeLED_ExpectOff(commands.led_0)
+        # test_SetBridgeLED(commands.led_0, commands.led_green)
+        # test_GetBridgeLED_ExpectGreen(commands.led_0)
+        # test_SetBridgeLED(commands.led_0, commands.led_red)
+        # test_GetBridgeLED_ExpectRed(commands.led_0)
 
-        test_SetSensorLED(commands.led_0, commands.led_off)
-        test_GetSensorLED_ExpectOff(commands.led_0)
-        test_SetSensorLED(commands.led_0, commands.led_green)
-        test_GetSensorLED_ExpectGreen(commands.led_0)
-        test_SetSensorLED(commands.led_0, commands.led_red)
-        test_GetSensorLED_ExpectRed(commands.led_0)
+        # test_SetSensorLED(commands.led_0, commands.led_off)
+        # test_GetSensorLED_ExpectOff(commands.led_0)
+        # test_SetSensorLED(commands.led_0, commands.led_green)
+        # test_GetSensorLED_ExpectGreen(commands.led_0)
+        # test_SetSensorLED(commands.led_0, commands.led_red)
+        # test_GetSensorLED_ExpectRed(commands.led_0)
 
-        test_SetSensorLED(commands.led_1, commands.led_off)
-        test_GetSensorLED_ExpectOff(commands.led_1)
-        test_SetSensorLED(commands.led_1, commands.led_green)
-        test_GetSensorLED_ExpectGreen(commands.led_1)
-        test_SetSensorLED(commands.led_1, commands.led_red)
-        test_GetSensorLED_ExpectRed(commands.led_1)
+        # test_SetSensorLED(commands.led_1, commands.led_off)
+        # test_GetSensorLED_ExpectOff(commands.led_1)
+        # test_SetSensorLED(commands.led_1, commands.led_green)
+        # test_GetSensorLED_ExpectGreen(commands.led_1)
+        # test_SetSensorLED(commands.led_1, commands.led_red)
+        # test_GetSensorLED_ExpectRed(commands.led_1)
 
         # test_GetSensorLED_Invalid_LED()
         # test_InvalidBridgeCommand()
         # test_NullCommand()
         # test_InvalidSensorCommand()
-        test_InvalidSensorCommandPlusPayload()
-        test_InvalidSensorCommandPlusPayloadThatAliases()
-        test_SetBridgeLED(commands.led_0, commands.led_green)
-        test_SetSensorLED(commands.led_0, commands.led_green)
-        test_SetSensorLED(commands.led_1, commands.led_green)
+        # test_InvalidSensorCommandPlusPayload()
+        # test_InvalidSensorCommandPlusPayloadThatAliases()
+        # test_SetBridgeLED(commands.led_0, commands.led_green)
+        # test_SetSensorLED(commands.led_0, commands.led_green)
+        # test_SetSensorLED(commands.led_1, commands.led_green)
+
+        # use these to bit set a byte for active_rows
+        active_rows = 0x00
+        row1 = 0
+        row2 = 1
+        row3 = 2
+        row4 = 3
+        row5 = 4
+        test_SetSensorConfig(
+            binning=commands.binning_on,
+            gain=commands.gain1x,
+            active_rows=commands.all_rows_active
+            )
+        test_GetSensorConfig(
+            expected_binning=commands.binning_on,
+            expected_gain=commands.gain1x,
+            expected_active_rows=commands.all_rows_active
+            )
+
         # test_DoesUsbBuffer()
     _print_and_log(f"Closed CHROMATION{sernum}")
     # _print_and_log(f"Closed CHROMATION{sernum}")

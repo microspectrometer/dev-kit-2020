@@ -216,6 +216,13 @@ led_2 = 2
 led_off = 0
 led_green = 1
 led_red = 2
+binning_off = 0x00
+binning_on = 0x01
+gain1x = 0x01
+gain25x = 0x25
+gain4x  = 0x04;
+gain5x  = 0x05;
+all_rows_active  = 0x1F # 0b00011111 is all five rows
 # For the USB Host both to *send* to the bridge and to *parse* its reports.
 NullCommand = 0
 GetBridgeLED = 1
