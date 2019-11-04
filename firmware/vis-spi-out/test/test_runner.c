@@ -89,6 +89,15 @@ void unittest_SetSensorConfig(bool run_test)
         RUN_TEST(SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config);
     }
 }
+void unittest_GetExposure(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_GetExposure; tearDown = TearDown_GetExposure;
+        RUN_TEST(GetExposure_sends_status_byte_ok);
+        RUN_TEST(GetExposure_sends_two_bytes_of_exposure_time_most_significant_byte_first);
+    }
+}
 
 int main(void)
 {
@@ -98,7 +107,8 @@ int main(void)
     unittest_SetSensorLED(Nope);
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     // Put single tests here (move single tests to test suite later).
-    unittest_GetSensorConfig(Yep);
-    unittest_SetSensorConfig(Yep);
+    unittest_GetSensorConfig(Nope);
+    unittest_SetSensorConfig(Nope);
+    unittest_GetExposure(Yep);
     return UNITY_END();
 }

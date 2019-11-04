@@ -36,5 +36,9 @@ void SetSensorConfig_replies_msg_status_error_if_gain_is_invalid(void);
 void SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid(void);
 void SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid(void);
 void SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config(void);
+void SetUp_GetExposure(void);
+void TearDown_GetExposure(void);
+void GetExposure_sends_two_bytes_of_exposure_time_most_significant_byte_first(void);
+void GetExposure_sends_status_byte_ok(void);
 
 #endif // _TEST_SENSORVIS_H

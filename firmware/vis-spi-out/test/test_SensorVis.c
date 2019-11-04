@@ -27,6 +27,10 @@ volatile Queue_s * SpiFifo;
 // against its extern declaration in SensorVis
 // `extern` builds SensorVis.o to use same data defined in main application.
 uint8_t binning; uint8_t gain; uint8_t active_rows;
+// Exposure Time must be global in main application for linking
+// against its extern declaration in SensorVis
+// `extern` builds SensorVis.o to use same data defined in main application.
+uint16_t exposure_ticks;
 
 /* ---Queue Plumbing and Examples--- */
 void test_lib_SensorVis_can_use_lib_Queue_and_sees_SpiFifo(void)
@@ -146,13 +150,13 @@ static RecordedCall * Record_WriteSpiMaster(uint8_t const *arg1, uint16_t arg2)
     return record_of_this_call;
 }
 // Global for test to spy on array input arg to WriteSpiMaster.
-#define max_sizeof_write_buffer 1596
-uint8_t SpyOn_WriteSpiMaster_arg1[max_sizeof_write_buffer];
+#define max_sizeof_write_buffer 1596+1 // plus 1 for status byte
+uint8_t SpyOn_WriteSpiMaster_arg1[max_sizeof_write_buffer]; uint8_t *spy_writer;
 static uint16_t WriteSpiMaster_Mocked(uint8_t const *write_buffer, uint16_t nbytes)
 { // Define behavior of mocked function: WriteSpiMaster().
     RecordActualCall(mock, Record_WriteSpiMaster(write_buffer, nbytes));
     /* Spy on values passed to write_buffer by storing them in a global */
-    uint8_t *spy_writer = SpyOn_WriteSpiMaster_arg1;
+    /* uint8_t *spy_writer = SpyOn_WriteSpiMaster_arg1; */
     uint16_t num_bytes_sent = 0;
     while(num_bytes_sent < nbytes)
     {
@@ -176,7 +180,7 @@ static void Mock_WriteSpiMaster(void)
 void SetUp_GetSensorLED(void)
 {
     SetUp_Mock();
-    Mock_WriteSpiMaster();
+    Mock_WriteSpiMaster(); spy_writer = SpyOn_WriteSpiMaster_arg1;
 }
 void TearDown_GetSensorLED(void)
 {
@@ -424,7 +428,7 @@ void GetSensorLED_replies_led_red_if_led_is_red(void)
 void SetUp_SetSensorLED(void)
 {
     SetUp_Mock();
-    Mock_WriteSpiMaster();
+    Mock_WriteSpiMaster(); spy_writer = SpyOn_WriteSpiMaster_arg1;
 }
 void TearDown_SetSensorLED(void)
 {
@@ -655,7 +659,7 @@ void SetSensorLED_turns_led_on_and_red_if_payload_is_led_red(void)
 void SetUp_GetSensorConfig(void)
 {
     SetUp_Mock();
-    Mock_WriteSpiMaster();
+    Mock_WriteSpiMaster(); spy_writer = SpyOn_WriteSpiMaster_arg1;
     // Initialize Photodiode Array Config to match init in vis-spi-out.c main()
     binning = binning_on; // default to 392 pixels
     gain = gain1x; // default to 1x gain
@@ -691,6 +695,57 @@ void GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok(void)
     TEST_ASSERT_EQUAL_HEX8(active_rows, SpyOn_WriteSpiMaster_arg1[3]);
 }
 
+void SetUp_GetExposure(void)
+{
+    SetUp_Mock();
+    Mock_WriteSpiMaster(); spy_writer = SpyOn_WriteSpiMaster_arg1;
+    // Initialize exposure time to match init in vis-spi-out.c main()
+    exposure_ticks = 50; // multiply by 20us to get integration time in seconds
+}
+void TearDown_GetExposure(void)
+{
+    TearDown_Mock();
+    Restore_WriteSpiMaster();
+}
+
+void GetExposure_sends_status_byte_ok(void)
+{
+    /* =====[ Operate ]===== */
+    GetExposure();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSpiMaster"),
+        "Expect call 1 is WriteSpiMaster."
+        );
+    uint8_t status = ok;
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        status, SpyOn_WriteSpiMaster_arg1[0],
+        "Expect first byte of reply is ok (0x00)."
+        );
+}
+void GetExposure_sends_two_bytes_of_exposure_time_most_significant_byte_first(void)
+{
+    /* =====[ Operate ]===== */
+    GetExposure();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 2;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSpiMaster"),
+        "Expect call 2 is WriteSpiMaster."
+        );
+    uint8_t exposure_msb = exposure_ticks >> 8;
+    uint8_t exposure_lsb = exposure_ticks & 0xFF;
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        exposure_msb, SpyOn_WriteSpiMaster_arg1[1],
+        "Expect first byte of data is MSByte of exposure time."
+        );
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        exposure_lsb, SpyOn_WriteSpiMaster_arg1[2],
+        "Expect second byte of data is LSByte of exposure time."
+        );
+}
+
 /* =====[ Mock ProgramPhotodiodeArray() ]===== */
 static RecordedCall * Record_ProgramPhotodiodeArray(uint32_t arg1)
 { // Define call recorded when func-under-test calls mocked function.
@@ -720,7 +775,7 @@ static void Mock_ProgramPhotodiodeArray(void)
 void SetUp_SetSensorConfig(void)
 {
     SetUp_Mock();
-    Mock_WriteSpiMaster();
+    Mock_WriteSpiMaster(); spy_writer = SpyOn_WriteSpiMaster_arg1;
     Mock_ProgramPhotodiodeArray();
     // Initialize Photodiode Array Config to match init in vis-spi-out.c main()
     binning = binning_on; // default to 392 pixels

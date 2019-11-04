@@ -42,6 +42,9 @@ extern uint8_t binning; // default to 392 pixels
 extern uint8_t gain; // default to 1x gain
 extern uint8_t active_rows; // default to using all 5 pixel rows
 
+// =====[ global for exposure time defined in main() application ]=====
+extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
+
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const led_TxRx;      // PINC0
 extern uint8_t const led_Done;      // PINC1
@@ -271,6 +274,23 @@ void SetSensorConfig(void)
 }
 void GetExposure(void)
 {
+    /** Send two bytes of exposure time in units of clock ticks to the Bridge.\n 
+     * - exposure is a 16-bit word\n 
+     * - exposure is in units of clock ticks\n 
+     * - multiply exposure by 20e-6 seconds to get exposure time in seconds\n
+     * - clock ticks are 20us because the photodiode array is clocked at 50kHz\n 
+     * */
+    /** GetExposure behavior:\n 
+      * - sends status byte ok\n 
+      * - sends two bytes of exposure time most significant byte first\n 
+      * */
+    uint8_t status = ok;
+    WriteSpiMaster(&status, 1);
+    uint8_t const nbytes_data = 2;
+    uint8_t exposure_msb = exposure_ticks >> 8;
+    uint8_t exposure_lsb = exposure_ticks & 0xFF;
+    uint8_t data[] = {exposure_msb, exposure_lsb};
+    WriteSpiMaster(data, nbytes_data);
 }
 void SetExposure(void)
 {

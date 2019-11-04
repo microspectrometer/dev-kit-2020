@@ -25,6 +25,8 @@ volatile Queue_s * SpiFifo;
 volatile uint8_t spi_rx_buffer[max_length_of_queue];
 /* =====[ Allocate memory for the Photodiode Array Config ]===== */
 uint8_t binning; uint8_t gain; uint8_t active_rows;
+/* =====[ Allocate memory for the Exposure Time ]===== */
+uint16_t exposure_ticks;
 
 int main()
 {
@@ -53,6 +55,7 @@ int main()
     binning = binning_on; // default to 392 pixels
     gain = gain1x; // default to 1x gain
     active_rows = all_rows_active; // default to using all 5 pixel rows
+    exposure_ticks = 50; // multiply by 20us to get integration time in seconds
     /* =====[ LOOP ]===== */
     // Loop forever acting on commands from the SPI Master.
     while(1) Get_commands_from_SpiMaster();
