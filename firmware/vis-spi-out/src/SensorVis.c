@@ -294,6 +294,19 @@ void GetExposure(void)
 }
 void SetExposure(void)
 {
+    /** Set exposure time. */
+    /** SetExposure behavior:\n 
+      * - receives two bytes of exposure msb first from Bridge\n 
+      * - replies msg status ok\n 
+      * - converts two data bytes to new 16 bit exposure ticks value\n 
+      * */
+    while (QueueIsEmpty(SpiFifo)); // wait for the msb of exposure time
+    uint8_t exposure_msb = QueuePop(SpiFifo);
+    while (QueueIsEmpty(SpiFifo)); // wait for the lsb of exposure time
+    uint8_t exposure_lsb = QueuePop(SpiFifo);
+    (void) exposure_msb; (void) exposure_lsb;
+    uint8_t status = ok; WriteSpiMaster(&status, 1);
+    exposure_ticks = (exposure_msb << 8) | exposure_lsb;
 }
 /* --------------------------------------------------------------------------------------- */
 /* TODO: extract the useful SpiSlave stuff */

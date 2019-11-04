@@ -742,6 +742,96 @@ void GetExposure_sends_two_bytes_of_exposure_time_most_significant_byte_first(vo
         );
 }
 
+void SetUp_SetExposure(void)
+{
+    SetUp_Mock();
+    Mock_WriteSpiMaster(); spy_writer = SpyOn_WriteSpiMaster_arg1;
+    // Initialize exposure time to match init in vis-spi-out.c main()
+    exposure_ticks = 50; // multiply by 20us to get integration time in seconds
+}
+void TearDown_SetExposure(void)
+{
+    TearDown_Mock();
+    Restore_WriteSpiMaster();
+}
+void SetExposure_receives_two_bytes_of_exposure_msb_first_from_Bridge(void)
+{
+    /* =====[ Setup ]===== */
+    exposure_ticks = 66; // multiply by 20us to get integration time in seconds
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const fake_exposure_msb = exposure_ticks >> 8;
+    QueuePush(SpiFifo, fake_exposure_msb);
+    uint8_t const fake_exposure_lsb = exposure_ticks & 0xFF;
+    QueuePush(SpiFifo, fake_exposure_lsb);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+    /* =====[ Operate ]===== */
+    SetExposure();
+    /* =====[ Test ]===== */
+    // SetExposure pops the two bytes of fake exposure time from the queue.
+    // Assert that the queue is now empty.
+    TEST_ASSERT_TRUE(QueueIsEmpty(SpiFifo));
+}
+void SetExposure_replies_msg_status_ok(void)
+{
+    /* =====[ Setup ]===== */
+    exposure_ticks = 66; // multiply by 20us to get integration time in seconds
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const fake_exposure_msb = exposure_ticks >> 8;
+    QueuePush(SpiFifo, fake_exposure_msb);
+    uint8_t const fake_exposure_lsb = exposure_ticks & 0xFF;
+    QueuePush(SpiFifo, fake_exposure_lsb);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+    /* =====[ Operate ]===== */
+    SetExposure();
+    // Assert that the queue is now empty.
+    TEST_ASSERT_TRUE(QueueIsEmpty(SpiFifo));
+    /* =====[ Test ]===== */
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSpiMaster"),
+        "Expect call 1 is WriteSpiMaster."
+        );
+    uint8_t status = ok;
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        status, SpyOn_WriteSpiMaster_arg1[0],
+        "Expect status byte is ok (0x00)."
+        );
+}
+void SetExposure_converts_two_data_bytes_to_new_16_bit_exposure_ticks_value(void)
+{
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(
+        50, exposure_ticks,
+        "Expect default exposure_ticks value is 50."
+        );
+    /* =====[ Setup ]===== */
+    uint16_t new_exposure_ticks = 66;
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // GetSensorLED waits until there is a byte in the queue.
+    // Fake placing a byte in the queue.
+    uint8_t const fake_exposure_msb = new_exposure_ticks >> 8;
+    QueuePush(SpiFifo, fake_exposure_msb);
+    uint8_t const fake_exposure_lsb = new_exposure_ticks & 0xFF;
+    QueuePush(SpiFifo, fake_exposure_lsb);
+    // Assert that the Queue is not empty.
+    TEST_ASSERT_FALSE(QueueIsEmpty(SpiFifo));
+    /* =====[ Operate ]===== */
+    SetExposure();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(
+            new_exposure_ticks, exposure_ticks,
+            "Expect exposure_ticks is written with new value, 66."
+            );
+}
+
 /* =====[ Mock ProgramPhotodiodeArray() ]===== */
 static RecordedCall * Record_ProgramPhotodiodeArray(uint32_t arg1)
 { // Define call recorded when func-under-test calls mocked function.

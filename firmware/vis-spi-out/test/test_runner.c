@@ -98,6 +98,16 @@ void unittest_GetExposure(bool run_test)
         RUN_TEST(GetExposure_sends_two_bytes_of_exposure_time_most_significant_byte_first);
     }
 }
+void unittest_SetExposure(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_SetExposure; tearDown = TearDown_SetExposure;
+        RUN_TEST(SetExposure_receives_two_bytes_of_exposure_msb_first_from_Bridge);
+        RUN_TEST(SetExposure_replies_msg_status_ok);
+        RUN_TEST(SetExposure_converts_two_data_bytes_to_new_16_bit_exposure_ticks_value);
+    }
+}
 
 int main(void)
 {
@@ -110,5 +120,6 @@ int main(void)
     unittest_GetSensorConfig(Nope);
     unittest_SetSensorConfig(Nope);
     unittest_GetExposure(Nope);
+    unittest_SetExposure(Yep);
     return UNITY_END();
 }
