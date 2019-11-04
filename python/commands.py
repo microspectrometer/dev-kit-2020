@@ -233,6 +233,8 @@ test_invalid_sensor_cmd = 5
 test_invalid_sensor_cmd_plus_payload = 6
 GetSensorConfig = 7
 SetSensorConfig = 8
+GetExposure = 9
+SetExposure = 10
 
 # led_red_key = 0
 # led_green_key = 1

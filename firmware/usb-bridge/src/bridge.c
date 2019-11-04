@@ -9,15 +9,17 @@ extern uint8_t const status_led;
 
 /* =====[ API started 2019-10-02 ]===== */
 /* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
-bridge_cmd_key const NullCommand_key = 0;
-bridge_cmd_key const GetBridgeLED_key = 1;
-bridge_cmd_key const SetBridgeLED_key = 2;
-bridge_cmd_key const BridgeGetSensorLED_key = 3;
-bridge_cmd_key const BridgeSetSensorLED_key = 4;
-bridge_cmd_key const TestInvalidSensorCmd_key = 5;
-bridge_cmd_key const TestInvalidSensorCmdPlusPayload_key = 6;
-bridge_cmd_key const BridgeGetSensorConfig_key = 7;
-bridge_cmd_key const BridgeSetSensorConfig_key = 8;
+bridge_cmd_key const NullCommand_key                        = 0x00;
+bridge_cmd_key const GetBridgeLED_key                       = 0x01;
+bridge_cmd_key const SetBridgeLED_key                       = 0x02;
+bridge_cmd_key const BridgeGetSensorLED_key                 = 0x03;
+bridge_cmd_key const BridgeSetSensorLED_key                 = 0x04;
+bridge_cmd_key const TestInvalidSensorCmd_key               = 0x05;
+bridge_cmd_key const TestInvalidSensorCmdPlusPayload_key    = 0x06;
+bridge_cmd_key const BridgeGetSensorConfig_key              = 0x07;
+bridge_cmd_key const BridgeSetSensorConfig_key              = 0x08;
+bridge_cmd_key const BridgeGetExposure_key                  = 0x09;
+bridge_cmd_key const BridgeSetExposure_key                  = 0x0A;
 
 void NullCommand(void){}
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
@@ -35,6 +37,8 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
         TestInvalidSensorCmdPlusPayload, // 6
         BridgeGetSensorConfig, // 7
         BridgeSetSensorConfig, // 8
+        BridgeGetExposure, // 9
+        BridgeSetExposure, // 10
     };
 
     /* Return func ptr. Prevent attempts at out-of-bounds access. */

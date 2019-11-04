@@ -10,11 +10,13 @@
 extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
 
 /* TODO: pull these constants from a common file along with Bridge.c */
-sensor_cmd_key const NullCommand_key = 0;
-sensor_cmd_key const GetSensorLED_key = 3;
-sensor_cmd_key const SetSensorLED_key = 4;
-sensor_cmd_key const GetSensorConfig_key = 7;
-sensor_cmd_key const SetSensorConfig_key = 8;
+sensor_cmd_key const NullCommand_key        = 0x00;
+sensor_cmd_key const GetSensorLED_key       = 0x03;
+sensor_cmd_key const SetSensorLED_key       = 0x04;
+sensor_cmd_key const GetSensorConfig_key    = 0x07;
+sensor_cmd_key const SetSensorConfig_key    = 0x08;
+sensor_cmd_key const GetExposure_key        = 0x09;
+sensor_cmd_key const SetExposure_key        = 0x0A;
 
 
 void NullCommand(void){}
@@ -267,7 +269,12 @@ void SetSensorConfig(void)
     if (active_rows&(1<<row5)) cfg_bytes |= row5_mask;
     ProgramPhotodiodeArray(cfg_bytes);
 }
-
+void GetExposure(void)
+{
+}
+void SetExposure(void)
+{
+}
 /* --------------------------------------------------------------------------------------- */
 /* TODO: extract the useful SpiSlave stuff */
 /* --------------------------------------------------------------------------------------- */
@@ -306,6 +313,8 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
         NULL, // invalid key for system test: TestInvalidSensorCmdPlusPayload
         GetSensorConfig, // 7
         SetSensorConfig, // 8
+        GetExposure, // 9
+        SetExposure, // 10
         };
     // Return func ptr. Prevent attempts at out-of-bounds access.
     if (key < sizeof(pf)/sizeof(*pf)) return pf[key];

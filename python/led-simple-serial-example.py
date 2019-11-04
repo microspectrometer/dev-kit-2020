@@ -531,6 +531,43 @@ def test_GetSensorConfig(expected_binning, expected_gain, expected_active_rows):
         _print_and_log(f"test_GetSensorConfig: FAIL: Expected {expected}, received {reply}.")
         return
     _print_and_log("test_GetSensorLED: PASS")
+def test_GetExposure():
+    """Test reading the exposure time."""
+    _print_and_log("--- GetExposure ---")
+    _tx_and_log_cmd(commands.GetExposure, "Command is GetExposure")
+    # read BRIDGE status byte, stop if it is an error
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetExposure: FAIL: Expected {expected}, received {reply}.")
+        return
+    # read status byte from SENSOR
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetExposure: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = expected_exposure
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="exposure time",
+        expected_reply_byte=expected,
+        optional_expectation=f"Expect exposure time is {expected}"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetExposure: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_GetExposure: PASS")
 
 def test_GetSensorLED_Invalid_LED():
     _print_and_log("--- GetSensorLED for Invalid LED ---")
@@ -889,23 +926,25 @@ if __name__ == '__main__':
         # test_SetSensorLED(commands.led_0, commands.led_green)
         # test_SetSensorLED(commands.led_1, commands.led_green)
 
-        # use these to bit set a byte for active_rows
+        # TODO: use these to bit set a byte for active_rows
         active_rows = 0x00
         row1 = 0
         row2 = 1
         row3 = 2
         row4 = 3
         row5 = 4
-        test_SetSensorConfig(
-            binning=commands.binning_on,
-            gain=commands.gain1x,
-            active_rows=commands.all_rows_active
-            )
-        test_GetSensorConfig(
-            expected_binning=commands.binning_on,
-            expected_gain=commands.gain1x,
-            expected_active_rows=commands.all_rows_active
-            )
+        # test_SetSensorConfig(
+        #     binning=commands.binning_on,
+        #     gain=commands.gain1x,
+        #     active_rows=commands.all_rows_active
+        #     )
+        # test_GetSensorConfig(
+        #     expected_binning=commands.binning_on,
+        #     expected_gain=commands.gain1x,
+        #     expected_active_rows=commands.all_rows_active
+        #     )
+        test_GetExposure()
+        # test_SetExposure()
 
         # test_DoesUsbBuffer()
     _print_and_log(f"Closed CHROMATION{sernum}")
