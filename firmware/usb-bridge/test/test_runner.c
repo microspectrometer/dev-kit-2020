@@ -100,12 +100,37 @@ void unittest_BridgeSetSensorConfig(bool run_test)
     {
         setUp = SetUp_BridgeSetSensorConfig; tearDown = TearDown_BridgeSetSensorConfig;
         RUN_TEST(BridgeSetSensorConfig_reads_three_bytes_of_host_payload);
+        RUN_TEST(BridgeSetSensorConfig_sends_msg_status_ok_after_reading_payload);
         RUN_TEST(BridgeSetSensorConfig_checks_for_invalid_command_error_from_Sensor);
         RUN_TEST(BridgeSetSensorConfig_does_not_send_payload_if_Sensor_says_invalid_cmd);
         RUN_TEST(BridgeSetSensorConfig_passes_invalid_cmd_reply_back_to_host);
-        RUN_TEST(BridgeSetSensorConfig_responds_ok_if_Sensor_does_not_say_invalid_cmd);
-        RUN_TEST(BridgeSetSensorConfig_passes_three_bytes_of_payload_to_Sensor);
+        RUN_TEST(BridgeSetSensorConfig_passes_three_bytes_of_payload_to_Sensor_if_it_does_not_say_invalid_cmd);
         RUN_TEST(BridgeSetSensorConfig_reads_and_sends_one_byte_Sensor_reply_to_host);
+    }
+}
+void unittest_BridgeGetExposure(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_BridgeGetExposure; tearDown = TearDown_BridgeGetExposure;
+        RUN_TEST(BridgeGetExposure_replies_ok_to_USB_host);
+        RUN_TEST(BridgeGetExposure_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host);
+        RUN_TEST(BridgeGetExposure_reads_no_more_bytes_if_Sensor_status_is_error);
+        RUN_TEST(BridgeGetExposure_reads_two_bytes_of_exposure_time_from_Sensor_MSB_first_and_sends_to_USB_host);
+    }
+}
+void unittest_BridgeSetExposure(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_BridgeSetExposure; tearDown = TearDown_BridgeSetExposure;
+        RUN_TEST(BridgeSetExposure_reads_two_bytes_of_payload_from_usb_host);
+        RUN_TEST(BridgeSetExposure_sends_msg_status_ok_to_usb_host);
+        RUN_TEST(BridgeSetExposure_checks_for_invalid_command_error_from_Sensor);
+        RUN_TEST(BridgeSetExposure_does_not_send_payload_if_Sensor_says_invalid_cmd);
+        RUN_TEST(BridgeSetExposure_passes_invalid_cmd_reply_back_to_host);
+        RUN_TEST(BridgeSetExposure_passes_two_bytes_of_payload_to_Sensor_if_it_does_not_say_invalid_cmd);
+        RUN_TEST(BridgeSetExposure_reads_and_sends_one_byte_Sensor_reply_to_host);
     }
 }
 
@@ -138,8 +163,10 @@ int main(void)
     unittest_SetBridgeLED           (Nope);
     unittest_BridgeGetSensorLED     (Nope);
     unittest_BridgeSetSensorLED     (Nope);
-    unittest_BridgeGetSensorConfig  (Yep);
+    unittest_BridgeGetSensorConfig  (Nope);
     unittest_BridgeSetSensorConfig  (Nope);
+    unittest_BridgeGetExposure      (Nope);
+    unittest_BridgeSetExposure      (Yep);
     // Put single tests here (move single tests to test suite later).
     return UNITY_END();
 }

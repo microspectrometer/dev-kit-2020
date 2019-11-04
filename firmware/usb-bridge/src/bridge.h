@@ -85,5 +85,7 @@ uint8_t FlushInvalidCommand(void);
 bool SensorHasResponse(void);
 void BridgeSetSensorConfig(void);
 void BridgeGetSensorConfig(void);
+void BridgeGetExposure(void);
+void BridgeSetExposure(void);
 
 #endif // _USB_H

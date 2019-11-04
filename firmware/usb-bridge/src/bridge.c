@@ -369,11 +369,11 @@ void BridgeSetSensorConfig(void)
      * */
     /** BridgeSetSensorConfig behavior:\n 
       * - reads three bytes of host payload\n 
+      * - sends msg status ok after reading payload\n 
       * - checks for invalid command error from Sensor\n 
       * - does not send payload if Sensor says invalid cmd\n 
       * - passes invalid cmd reply back to host\n 
-      * - responds ok if Sensor does not say invalid cmd\n 
-      * - passes three bytes of payload to Sensor\n 
+      * - passes three bytes of payload to Sensor if it does not say invalid cmd\n 
       * - reads and sends one byte Sensor reply to host\n 
       * */
     // Read config (three bytes of payload).
@@ -382,19 +382,18 @@ void BridgeSetSensorConfig(void)
     UsbReadBytes(read_buffer, num_bytes_payload);
     // TODO: Add error checking for time out.
         // CASE: host does not send expected number of bytes.
+
+    SerialWriteByte(ok); // Bridge finished reading the expected payload.
     uint8_t binning = read_buffer[0];
     uint8_t gain = read_buffer[1];
     uint8_t active_rows = read_buffer[2];
-    (void)binning; (void)gain; (void)active_rows;
+    // TODO: this is wrong: Bridge should respond OK no matter what, long as it
+    // gets here. How did this pass the system test?
     if (SensorHasResponse())
     { // something is wrong, let the USB host figure it out
         uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
         SerialWriteByte(sensor_reply);
         return;
-    }
-    else
-    { // Sensor is waiting for the payload.
-        SerialWriteByte(ok); // Bridge finished reading the expected payload.
     }
     // Send payload to Sensor.
     SpiWriteByte(binning); SpiWriteByte(gain); SpiWriteByte(active_rows);
@@ -403,7 +402,67 @@ void BridgeSetSensorConfig(void)
     // Pass reply (status byte) back to host.
     SerialWriteByte(sensor_reply);
 }
+void BridgeGetExposure(void)
+{
+    /** Send GetExposure command to Sensor and pass reply back up to USB host.
+     * */
+    /** BridgeGetExposure behavior:\n 
+      * - replies ok to USB host\n 
+      * - reads msg status byte from Sensor and sends to USB host\n 
+      * - reads no more bytes if Sensor status is error\n 
+      * - reads two bytes of exposure time from Sensor MSB first and sends to USB host\n 
+      * */
+    SerialWriteByte(ok);
+    // Get reply from Sensor.
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    // Pass reply to host.
+    SerialWriteByte(sensor_reply);
+    if (ok==sensor_reply)
+    {
+        uint8_t const nbytes_data = 2;
+        uint8_t sensor_data[nbytes_data]; ReadSensor(sensor_data, nbytes_data);
+        uint8_t *pdata = sensor_data;
+        uint8_t byte_count=0;
+        while (byte_count++ < nbytes_data) SerialWriteByte(*(pdata++));
+    }
+}
+void BridgeSetExposure(void)
+{
+    /** Send SetExposure command to Sensor and pass reply back up to USB host.
+     * */
+    /** BridgeSetExposure behavior:\n 
+      * - reads two bytes of payload from usb host\n 
+      * - sends msg status ok to usb host\n 
+      * - checks for invalid command error from Sensor\n 
+      * - does not send payload if Sensor says invalid cmd\n 
+      * - passes invalid cmd reply back to host\n 
+      * - passes two bytes of payload to Sensor if it does not say invalid cmd\n 
+      * - reads and sends one byte Sensor reply to host\n 
+      * */
+    // Read exposure time (two bytes of payload).
+    uint8_t const num_bytes_payload = 2;
+    uint8_t read_buffer[num_bytes_payload];
+    UsbReadBytes(read_buffer, num_bytes_payload);
+    // TODO: Add error checking for time out.
+        // CASE: host does not send expected number of bytes.
 
+    SerialWriteByte(ok); // Bridge finished reading the expected payload.
+    uint8_t exposure_msb = read_buffer[0];
+    uint8_t exposure_lsb = read_buffer[1];
+    (void)exposure_msb; (void)exposure_lsb;
+    if (SensorHasResponse())
+    { // something is wrong, let the USB host figure it out
+        uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+        SerialWriteByte(sensor_reply);
+        return;
+    }
+    // Send payload to Sensor.
+    SpiWriteByte(exposure_msb); SpiWriteByte(exposure_lsb);
+    // Read reply (status byte) from Sensor.
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    // Pass reply (status byte) back to host.
+    SerialWriteByte(sensor_reply);
+}
 
 
 /* =====[ Helper for CmdFn: BridgeCfgLis ]===== */
