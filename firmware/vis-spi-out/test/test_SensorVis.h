@@ -27,6 +27,7 @@ void SetSensorLED_turns_led_on_and_green_if_payload_is_led_green(void);
 void SetSensorLED_turns_led_on_and_red_if_payload_is_led_red(void);
 void SetUp_GetSensorConfig(void);
 void TearDown_GetSensorConfig(void);
+void GetSensorConfig_sends_msg_status_ok_to_Bridge(void);
 void GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok(void);
 void SetUp_SetSensorConfig(void);
 void TearDown_SetSensorConfig(void);

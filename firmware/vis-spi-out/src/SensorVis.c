@@ -182,11 +182,14 @@ void GetSensorConfig(void)
      * - last byte sent: which of the five rows are active (all active: b00011111)\n 
      * */
     /** GetSensorConfig behavior:\n 
+      * - sends msg status ok to Bridge\n 
       * - sends three bytes of data to Bridge after sending ok\n 
       * */
-    uint8_t reply[] = {ok, binning, gain, active_rows};
+    uint8_t status = ok;
+    WriteSpiMaster(&status, 1);
+    uint8_t data[] = {binning, gain, active_rows};
     uint8_t const nbytes_data = 3;
-    WriteSpiMaster(reply, 1+nbytes_data);
+    WriteSpiMaster(data, nbytes_data);
 }
 static void ProgramPhotodiodeArray_Implementation(uint32_t config)
 {

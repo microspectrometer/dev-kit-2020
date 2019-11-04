@@ -73,6 +73,7 @@ void unittest_GetSensorConfig(bool run_test)
     if (run_test)
     {
         setUp = SetUp_GetSensorConfig; tearDown = TearDown_GetSensorConfig;
+        RUN_TEST(GetSensorConfig_sends_msg_status_ok_to_Bridge);
         RUN_TEST(GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok);
     }
 }
@@ -117,9 +118,9 @@ int main(void)
     unittest_SetSensorLED(Nope);
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     // Put single tests here (move single tests to test suite later).
-    unittest_GetSensorConfig(Nope);
+    unittest_GetSensorConfig(Yep);
     unittest_SetSensorConfig(Nope);
     unittest_GetExposure(Nope);
-    unittest_SetExposure(Yep);
+    unittest_SetExposure(Nope);
     return UNITY_END();
 }

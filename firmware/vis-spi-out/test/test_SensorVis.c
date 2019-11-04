@@ -666,23 +666,32 @@ void TearDown_GetSensorConfig(void)
     TearDown_Mock();
     Restore_WriteSpiMaster();
 }
+void GetSensorConfig_sends_msg_status_ok_to_Bridge(void)
+{
+    /* =====[ Operate ]===== */
+    GetSensorConfig();
+    /* =====[ Test ]===== */
+    // Assert: send one status byte to Bridge
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
+    /* printf("status byte: %#02x\n", SpyOn_WriteSpiMaster_arg1[0]); */
+    TEST_ASSERT_EQUAL_HEX8(ok, SpyOn_WriteSpiMaster_arg1[0]);
+}
 void GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok(void)
 {
     /* =====[ Operate ]===== */
     GetSensorConfig();
     /* =====[ Test ]===== */
-    // Assert: send 4 bytes to Bridge
-    uint8_t call_n = 1;
+    // Assert: send three data bytes to Bridge
+    uint8_t call_n = 2;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
-    uint8_t arg_n = 2; uint16_t nbytes_sent = 4;
+    uint8_t arg_n = 2; uint16_t nbytes_sent = 3;
     TEST_ASSERT_TRUE_MESSAGE(
         AssertArg(mock, call_n, arg_n, &nbytes_sent),
         "Expect WriteSpiMaster sends three data bytes."
         );
     // Assert: data bytes sent are {binning, gain, active_rows}
     arg_n = 1;
-    printf("status byte: %#02x\n", SpyOn_WriteSpiMaster_arg1[0]);
-    TEST_ASSERT_EQUAL_HEX8(ok, SpyOn_WriteSpiMaster_arg1[0]);
     printf("data byte 1: %#02x\n", SpyOn_WriteSpiMaster_arg1[1]);
     TEST_ASSERT_EQUAL_HEX8(binning, SpyOn_WriteSpiMaster_arg1[1]);
     printf("data byte 2: %#02x\n", SpyOn_WriteSpiMaster_arg1[2]);
