@@ -109,6 +109,6 @@ int main(void)
     // Put single tests here (move single tests to test suite later).
     unittest_GetSensorConfig(Nope);
     unittest_SetSensorConfig(Nope);
-    unittest_GetExposure(Yep);
+    unittest_GetExposure(Nope);
     return UNITY_END();
 }

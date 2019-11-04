@@ -280,18 +280,14 @@ void GetSensorLED_replies_msg_status_ok_if_led_number_is_recognized(void)
     /* =====[ Test ]===== */
     /* WriteSpiMaster_Mocked spies on values in input arg `write_buffer` */
     printf("WriteSpiMaster called with write_buffer[0] == %d\n", SpyOn_WriteSpiMaster_arg1[0]);
-    /* printf("WriteSpiMaster called with write_buffer[1] == %d\n", SpyOn_WriteSpiMaster_arg1[1]); */
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(
         0x00, SpyOn_WriteSpiMaster_arg1[0],
         "Expect OK (0x00)."
         );
-    /* TEST_ASSERT_EQUAL_UINT8_MESSAGE( */
-    /*     led_red, SpyOn_WriteSpiMaster_arg1[1], */
-    /*     "Expect led_status is led_red." */
-    /*     ); */
 }
 void GetSensorLED_sends_led_status_byte_after_sending_msg_status_ok(void)
-{    /* =====[ Setup ]===== */
+{
+    /* =====[ Setup ]===== */
     volatile uint8_t spi_rx_buffer[max_length_of_queue];
     SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
     // GetSensorLED waits until there is a byte in the queue.
@@ -499,9 +495,9 @@ void SetSensorLED_replies_msg_status_error_if_led_number_is_not_valid(void)
     // ---WriteSpiMaster sends status "error"---
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
-    uint8_t arg_n = 1; uint8_t argv = error; uint8_t *pargv = &argv;
-    TEST_ASSERT_TRUE_MESSAGE(
-        AssertArgPointsToValue(mock, call_n, arg_n, &pargv),
+    uint8_t status = error;
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        status, SpyOn_WriteSpiMaster_arg1[0],
         "Expect WriteSpiMaster sends ERROR (0x01)."
         );
 }
@@ -525,9 +521,9 @@ void SetSensorLED_replies_msg_status_error_if_led_state_is_not_valid(void)
     // ---WriteSpiMaster sends status "error"---
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
-    uint8_t arg_n = 1; uint8_t arg_val = error; uint8_t *parg_val = &arg_val;
-    TEST_ASSERT_TRUE_MESSAGE(
-        AssertArgPointsToValue(mock, call_n, arg_n, &parg_val),
+    uint8_t status = error;
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        status, SpyOn_WriteSpiMaster_arg1[0],
         "Expect WriteSpiMaster sends ERROR (0x01)."
         );
 }
@@ -551,9 +547,9 @@ void SetSensorLED_replies_msg_status_ok_if_led_number_and_led_state_are_valid(vo
     // ---WriteSpiMaster sends status "ok"---
     uint8_t call_n = 1;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "WriteSpiMaster"));
-    uint8_t arg_n = 1; uint8_t arg_val = ok; uint8_t *parg_val = &arg_val;
-    TEST_ASSERT_TRUE_MESSAGE(
-        AssertArgPointsToValue(mock, call_n, arg_n, &parg_val),
+    uint8_t status = ok;
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        status, SpyOn_WriteSpiMaster_arg1[0],
         "Expect WriteSpiMaster sends OK (0x00)."
         );
 }
