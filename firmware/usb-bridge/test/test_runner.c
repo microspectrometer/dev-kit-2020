@@ -166,7 +166,7 @@ int main(void)
     unittest_BridgeGetSensorConfig  (Nope);
     unittest_BridgeSetSensorConfig  (Nope);
     unittest_BridgeGetExposure      (Nope);
-    unittest_BridgeSetExposure      (Yep);
+    unittest_BridgeSetExposure      (Nope);
     // Put single tests here (move single tests to test suite later).
     return UNITY_END();
 }

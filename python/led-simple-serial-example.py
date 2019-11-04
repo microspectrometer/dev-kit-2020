@@ -27,6 +27,13 @@ import codes
 # led1_red   = commands.send_led1_red_key.to_bytes(1,byteorder='big')
 # led1_green = commands.send_led1_green_key.to_bytes(1,byteorder='big')
 
+def _lsb(word16):
+    """Return least significant byte of a 16-bit word."""
+    return word16%256
+def _msb(word16):
+    """Return most significant byte of a 16-bit word."""
+    return int(word16/256)
+
 def test_DoesUsbBuffer():
     """What happens when the USB bridge IC receives a lot of bytes.
 
@@ -531,8 +538,8 @@ def test_GetSensorConfig(expected_binning, expected_gain, expected_active_rows):
         _print_and_log(f"test_GetSensorConfig: FAIL: Expected {expected}, received {reply}.")
         return
     _print_and_log("test_GetSensorLED: PASS")
-def test_GetExposure():
-    """Test reading the exposure time."""
+def test_GetExposure(expected_exposure_ticks):
+    """Test reading the exposure time. Each exposure tick is 20us."""
     _print_and_log("--- GetExposure ---")
     _tx_and_log_cmd(commands.GetExposure, "Command is GetExposure")
     # read BRIDGE status byte, stop if it is an error
@@ -557,17 +564,61 @@ def test_GetExposure():
     if reply != expected:
         _print_and_log(f"test_GetExposure: FAIL: Expected {expected}, received {reply}.")
         return
-    expected = expected_exposure
+    exposure_msb = _msb(expected_exposure_ticks)
+    exposure_lsb = _lsb(expected_exposure_ticks)
+    expected = exposure_msb
     reply = _rx_and_log_reply(
         device_name="SENSOR",
-        reply_type="exposure time",
+        reply_type="exposure time msb",
         expected_reply_byte=expected,
-        optional_expectation=f"Expect exposure time is {expected}"
+        optional_expectation=f"Expect exposure time MSB is {expected}"
+        )
+    if reply != expected:
+        _print_and_log(f"test_GetExposure: FAIL: Expected {expected}, received {reply}.")
+        return
+    expected = exposure_lsb
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="exposure time lsb",
+        expected_reply_byte=expected,
+        optional_expectation=f"Expect exposure time LSB is {expected}"
         )
     if reply != expected:
         _print_and_log(f"test_GetExposure: FAIL: Expected {expected}, received {reply}.")
         return
     _print_and_log("test_GetExposure: PASS")
+def test_SetExposure(exposure_ticks):
+    """Test setting the exposure time. Each exposure tick is 20us."""
+    _print_and_log("--- SetExposure ---")
+    _tx_and_log_cmd(commands.SetExposure, "Command is SetExposure")
+    exposure_msb = _msb(exposure_ticks)
+    exposure_lsb = _lsb(exposure_ticks)
+    _tx_and_log_cmd(exposure_msb, f"MSB: {exposure_msb}")
+    _tx_and_log_cmd(exposure_lsb, f"LSB: {exposure_lsb}")
+    # read BRIDGE status byte, stop if it is an error
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="BRIDGE",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_SetExposure: FAIL: Expected {expected}, received {reply}.")
+        return
+    # read status byte from SENSOR
+    expected = codes.OK
+    reply = _rx_and_log_reply(
+        device_name="SENSOR",
+        reply_type="msg_status",
+        expected_reply_byte=expected,
+        optional_expectation="Expect OK"
+        )
+    if reply != expected:
+        _print_and_log(f"test_SetExposure: FAIL: Expected {expected}, received {reply}.")
+        return
+    _print_and_log("test_SetExposure: PASS")
+
 
 def test_GetSensorLED_Invalid_LED():
     _print_and_log("--- GetSensorLED for Invalid LED ---")
@@ -943,8 +994,8 @@ if __name__ == '__main__':
         #     expected_gain=commands.gain1x,
         #     expected_active_rows=commands.all_rows_active
         #     )
-        test_GetExposure()
-        # test_SetExposure()
+        test_SetExposure(exposure_ticks=66)
+        test_GetExposure(expected_exposure_ticks=66)
 
         # test_DoesUsbBuffer()
     _print_and_log(f"Closed CHROMATION{sernum}")

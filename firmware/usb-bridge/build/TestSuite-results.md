@@ -1,3 +1,21 @@
+Call 1 is named SerialWriteByte? Call 1 is SerialWriteByte.
+Value passed to call 1, arg 1? (uint8_t)0000.
+test/test_runner.c:116:BridgeGetExposure_replies_ok_to_USB_host:PASS
+Call 2 is named ReadSensor? Call 2 is ReadSensor.
+Value passed to call 2, arg 2? (uint16_t)0x0001.
+Call 3 is named SerialWriteByte? Call 3 is SerialWriteByte.
+Value passed to call 3, arg 1? (uint8_t)0x02.
+test/test_runner.c:117:BridgeGetExposure_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host:PASS
+Call 3 is named SerialWriteByte? Call 3 is SerialWriteByte.
+Value passed to call 3, arg 1? (uint8_t)0x02.
+test/test_runner.c:118:BridgeGetExposure_reads_no_more_bytes_if_Sensor_status_is_error:PASS
+Call 4 is named ReadSensor? Call 4 is ReadSensor.
+Value passed to call 4, arg 2? (uint16_t)0x0002.
+Call 5 is named SerialWriteByte? Call 5 is SerialWriteByte.
+Value passed to call 5, arg 1? (uint8_t)0000.
+Call 6 is named SerialWriteByte? Call 6 is SerialWriteByte.
+Value passed to call 6, arg 1? (uint8_t)0x32.
+test/test_runner.c:119:BridgeGetExposure_reads_two_bytes_of_exposure_time_from_Sensor_MSB_first_and_sends_to_USB_host:PASS
 Call 1 is named UsbReadBytes? Call 1 is UsbReadBytes.
 Value passed to call 1, arg 2? (uint16_t)0x0002.
 test/test_runner.c:127:BridgeSetExposure_reads_two_bytes_of_payload_from_usb_host:PASS
@@ -23,5 +41,5 @@ Value passed to call 6, arg 1? (uint8_t)0000.
 test/test_runner.c:133:BridgeSetExposure_reads_and_sends_one_byte_Sensor_reply_to_host:PASS
 
 -----------------------
-7 Tests 0 Failures 0 Ignored 
+11 Tests 0 Failures 0 Ignored 
 OK
