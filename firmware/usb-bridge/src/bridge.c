@@ -4,6 +4,9 @@
 #include "Usb.h"
 #include "stdlib.h" // defines NULL
 
+#define npixels 784
+extern uint8_t frame[npixels*2];
+
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const status_led;
 
@@ -463,7 +466,44 @@ void BridgeSetExposure(void)
     // Pass reply (status byte) back to host.
     SerialWriteByte(sensor_reply);
 }
-
+void BridgeCaptureFrame(void)
+{
+    /** Send CaptureFrame command to Sensor and pass reply back up to USB host.
+     * */
+    /** BridgeCaptureFrame behavior:\n 
+      * - sends msg status ok to usb host\n 
+      * - reads msg status byte from Sensor and sends to USB host\n 
+      * - reads no more bytes if Sensor status is error\n 
+      * - reads npixels in frame and sends to USB host\n 
+      * - reads another status byte from Sensor and sends to USB host\n 
+      * - does not read frame if Sensor status is error\n 
+      * - reads and sends frame if Sensor status is ok\n 
+      * */
+    // Send Bridge status byte
+    SerialWriteByte(ok);
+    // Get and send Sensor status byte
+    uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
+    SerialWriteByte(sensor_reply);
+    if (ok!=sensor_reply) return;
+    // Get and send Sensor frame size (16-bit word)
+    uint8_t data[2]; ReadSensor(data, 2);
+    uint8_t npixels_msb = data[0]; uint8_t npixels_lsb = data[1];
+    SerialWriteByte(npixels_msb); SerialWriteByte(npixels_lsb);
+    // Calculate npixels in this frame
+    uint16_t npixels_in_frame = (npixels_msb << 8) | npixels_lsb;
+    // Calculate nbytes in this frame (2 bytes for each pixel)
+    uint16_t nbytes = 2*npixels_in_frame;
+    // Get and send status byte from sensor.
+    // Status is error if npixels in this frame exceeds constant `npixels`
+    ReadSensor(&sensor_reply, 1); SerialWriteByte(sensor_reply);
+    // Do not attempt to read the frame if Sensor returns error.
+    if (ok!=sensor_reply) return;
+    // Read the bytes in the frame
+    ReadSensor(frame, nbytes);
+    // Send the frame to the USB host
+    uint16_t byte_count = 0; uint8_t *pframe = frame;
+    while (byte_count++ < nbytes) SerialWriteByte(*pframe++);
+}
 
 /* =====[ Helper for CmdFn: BridgeCfgLis ]===== */
 bool CfgBytesAreValid(uint8_t const *cfg_bytes)

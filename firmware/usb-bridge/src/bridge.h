@@ -87,5 +87,6 @@ void BridgeSetSensorConfig(void);
 void BridgeGetSensorConfig(void);
 void BridgeGetExposure(void);
 void BridgeSetExposure(void);
+void BridgeCaptureFrame(void);
 
 #endif // _USB_H

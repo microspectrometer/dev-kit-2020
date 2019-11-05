@@ -133,7 +133,20 @@ void unittest_BridgeSetExposure(bool run_test)
         RUN_TEST(BridgeSetExposure_reads_and_sends_one_byte_Sensor_reply_to_host);
     }
 }
-
+void unittest_BridgeCaptureFrame(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_BridgeCaptureFrame; tearDown = TearDown_BridgeCaptureFrame;
+        RUN_TEST(BridgeCaptureFrame_sends_msg_status_ok_to_usb_host);
+        RUN_TEST(BridgeCaptureFrame_reads_msg_status_byte_from_Sensor_and_sends_to_USB_host);
+        RUN_TEST(BridgeCaptureFrame_reads_no_more_bytes_if_Sensor_status_is_error);
+        RUN_TEST(BridgeCaptureFrame_reads_npixels_in_frame_and_sends_to_USB_host);
+        RUN_TEST(BridgeCaptureFrame_reads_another_status_byte_from_Sensor_and_sends_to_USB_host);
+        RUN_TEST(BridgeCaptureFrame_does_not_read_frame_if_Sensor_status_is_error);
+        RUN_TEST(BridgeCaptureFrame_reads_and_sends_frame_if_Sensor_status_is_ok);
+    }
+}
 void ApiSupport(bool run_test)
 {if (run_test)
     {
@@ -167,6 +180,7 @@ int main(void)
     unittest_BridgeSetSensorConfig  (Nope);
     unittest_BridgeGetExposure      (Nope);
     unittest_BridgeSetExposure      (Nope);
+    unittest_BridgeCaptureFrame     (Yep);
     // Put single tests here (move single tests to test suite later).
     return UNITY_END();
 }

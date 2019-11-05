@@ -24,6 +24,10 @@
 /* =====[ Cfg on Windows for customer's optional access as a COM Port ]===== */
 /* - check box `Load VCP` */
 
+// ---Allocate memory for one frame with no pixel binning---
+#define npixels 784
+uint8_t frame[npixels*2];
+
 /* =====[ WIP ]===== */
 void Bridge_data_flow_between_USB_Host_and_SpiSlave(void)
 {
