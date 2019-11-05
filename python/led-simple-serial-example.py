@@ -618,6 +618,9 @@ def test_SetExposure(exposure_ticks):
         _print_and_log(f"test_SetExposure: FAIL: Expected {expected}, received {reply}.")
         return
     _print_and_log("test_SetExposure: PASS")
+def test_CaptureFrame():
+    """Test capturing one frame of pixel data."""
+    _print_and_log("--- CaptureFrame ---")
 
 
 def test_GetSensorLED_Invalid_LED():
@@ -996,6 +999,8 @@ if __name__ == '__main__':
         #     )
         test_SetExposure(exposure_ticks=66)
         test_GetExposure(expected_exposure_ticks=66)
+
+        test_CaptureFrame()
 
         # test_DoesUsbBuffer()
     _print_and_log(f"Closed CHROMATION{sernum}")

@@ -27,6 +27,9 @@ volatile uint8_t spi_rx_buffer[max_length_of_queue];
 uint8_t binning; uint8_t gain; uint8_t active_rows;
 /* =====[ Allocate memory for the Exposure Time ]===== */
 uint16_t exposure_ticks;
+/* =====[ Allocate memory for one Frame of pixel data ]===== */
+#define npixels 784
+uint8_t frame[npixels*2];
 
 int main()
 {

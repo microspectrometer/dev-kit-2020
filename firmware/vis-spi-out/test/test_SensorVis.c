@@ -1054,3 +1054,31 @@ void SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config(void)
     uint8_t arg_n = 1;
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &expected_config));
 }
+
+void SetUp_CaptureFrame(void)
+{
+    SetUp_Mock();
+    Mock_WriteSpiMaster(); spy_writer = SpyOn_WriteSpiMaster_arg1;
+    // Initialize Photodiode Array Config to match init in vis-spi-out.c main()
+    binning = binning_on; // default to 392 pixels
+}
+void TearDown_CaptureFrame(void)
+{
+    TearDown_Mock();
+}
+void CaptureFrame_sends_status_byte_ok(void)
+{
+    /* =====[ Operate ]===== */
+    CaptureFrame();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSpiMaster"),
+        "Expect call 1 is WriteSpiMaster."
+        );
+    uint8_t status = ok;
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        status, SpyOn_WriteSpiMaster_arg1[0],
+        "Expect first byte of reply is ok (0x00)."
+        );
+}

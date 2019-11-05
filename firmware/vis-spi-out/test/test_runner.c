@@ -109,6 +109,13 @@ void unittest_SetExposure(bool run_test)
         RUN_TEST(SetExposure_converts_two_data_bytes_to_new_16_bit_exposure_ticks_value);
     }
 }
+void uinttest_CaptureFrame(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_CaptureFrame; tearDown = TearDown_CaptureFrame;
+    }
+}
 
 int main(void)
 {
@@ -118,9 +125,12 @@ int main(void)
     unittest_SetSensorLED(Nope);
     /* setUp = NothingToSetUp; tearDown = NothingToTearDown; */
     // Put single tests here (move single tests to test suite later).
-    unittest_GetSensorConfig(Yep);
+    unittest_GetSensorConfig(Nope);
     unittest_SetSensorConfig(Nope);
     unittest_GetExposure(Nope);
     unittest_SetExposure(Nope);
+    uinttest_CaptureFrame(Yep);
+    setUp = SetUp_CaptureFrame; tearDown = TearDown_CaptureFrame;
+    RUN_TEST(CaptureFrame_sends_status_byte_ok);
     return UNITY_END();
 }

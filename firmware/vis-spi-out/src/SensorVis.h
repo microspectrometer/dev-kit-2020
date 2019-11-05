@@ -65,5 +65,6 @@ void SetSensorConfig(void);
 void GetExposure(void);
 void SetExposure(void);
 extern void (*ProgramPhotodiodeArray)(uint32_t config);
+void CaptureFrame(void);
 //
 #endif // _SENSORVIS_H

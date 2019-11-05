@@ -46,5 +46,8 @@ void TearDown_SetExposure(void);
 void SetExposure_receives_two_bytes_of_exposure_msb_first_from_Bridge(void);
 void SetExposure_replies_msg_status_ok(void);
 void SetExposure_converts_two_data_bytes_to_new_16_bit_exposure_ticks_value(void);
+void SetUp_CaptureFrame(void);
+void TearDown_CaptureFrame(void);
+void CaptureFrame_sends_status_byte_ok(void);
 
 #endif // _TEST_SENSORVIS_H

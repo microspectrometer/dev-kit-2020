@@ -45,6 +45,9 @@ extern uint8_t active_rows; // default to using all 5 pixel rows
 // =====[ global for exposure time defined in main() application ]=====
 extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
 
+#define npixels 784
+extern uint8_t frame[npixels*2];
+
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const led_TxRx;      // PINC0
 extern uint8_t const led_Done;      // PINC1
@@ -311,6 +314,17 @@ void SetExposure(void)
     uint8_t status = ok; WriteSpiMaster(&status, 1);
     exposure_ticks = (exposure_msb << 8) | exposure_lsb;
 }
+void CaptureFrame(void)
+{
+    /** CaptureFrame sends one frame of pixel data to the Bridge.*/
+    /** CaptureFrame behavior:\n 
+      * - sends status byte ok\n 
+      * */
+    uint8_t status = ok;
+    WriteSpiMaster(&status, 1);
+}
+
+
 /* --------------------------------------------------------------------------------------- */
 /* TODO: extract the useful SpiSlave stuff */
 /* --------------------------------------------------------------------------------------- */
