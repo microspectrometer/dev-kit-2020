@@ -31,6 +31,11 @@ uint8_t binning; uint8_t gain; uint8_t active_rows;
 // against its extern declaration in SensorVis
 // `extern` builds SensorVis.o to use same data defined in main application.
 uint16_t exposure_ticks;
+// Frame of pixel data must be global in main application for linking
+// against its extern declaration in SensorVis
+// `extern` builds SensorVis.o to use same data defined in main application.
+/* #define npixels 784 */
+uint8_t frame[npixels*2];
 
 /* ---Queue Plumbing and Examples--- */
 void test_lib_SensorVis_can_use_lib_Queue_and_sees_SpiFifo(void)
@@ -175,6 +180,29 @@ static void Mock_WriteSpiMaster(void)
 { // how to swap real definition with mocked version
     WriteSpiMaster_Saved = WriteSpiMaster;
     WriteSpiMaster = WriteSpiMaster_Mocked;
+}
+
+/* =====[ Mock GetFrame() ]===== */
+static RecordedCall * Record_GetFrame(void)
+{ // Define call recorded when func-under-test calls mocked function.
+    char const *call_name = "GetFrame";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+static void GetFrame_Mocked(void)
+{ // Define behavior of mocked function: GetFrame().
+    RecordActualCall(mock, Record_GetFrame());
+}
+/* =====[ Define how to swap function definitions ]===== */
+static void (*GetFrame_Saved)(void);
+static void Restore_GetFrame(void)
+{ // how to restore real definition
+    GetFrame = GetFrame_Saved;
+}
+static void Mock_GetFrame(void)
+{ // how to swap real definition with mocked version
+    GetFrame_Saved = GetFrame;
+    GetFrame = GetFrame_Mocked;
 }
 
 void SetUp_GetSensorLED(void)
@@ -1061,10 +1089,13 @@ void SetUp_CaptureFrame(void)
     Mock_WriteSpiMaster(); spy_writer = SpyOn_WriteSpiMaster_arg1;
     // Initialize Photodiode Array Config to match init in vis-spi-out.c main()
     binning = binning_on; // default to 392 pixels
+    Mock_GetFrame();
 }
 void TearDown_CaptureFrame(void)
 {
     TearDown_Mock();
+    Restore_WriteSpiMaster();
+    Restore_GetFrame();
 }
 void CaptureFrame_sends_status_byte_ok(void)
 {
@@ -1081,4 +1112,19 @@ void CaptureFrame_sends_status_byte_ok(void)
         status, SpyOn_WriteSpiMaster_arg1[0],
         "Expect first byte of reply is ok (0x00)."
         );
+}
+void CaptureFrame_collects_a_frame_of_pixel_data(void)
+{
+    /* =====[ Operate ]===== */
+    CaptureFrame();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 2;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "GetFrame"),
+        "Expect call 2 is GetFrame."
+        );
+}
+void CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
 }

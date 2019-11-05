@@ -1,8 +1,7 @@
 #include "SensorVis.h"
 #include "BiColorLed.h" // for two bicolor LEDs on Sensor board
 #include "Spi.h" // Sensor is the SPI slave
-#include "Lis.h" // because SensorCfgLis() calls LisWriteCfg()
-#include "Pwm.h" // lib `Lis` uses PWM for the clock signal
+#include "UartSpi.h" // USART in MSPIM mode for ADC readout
 #include "stdlib.h" // defines NULL
 
 /* =====[ SPI Flags and Data Register Buffer ]===== */
@@ -42,15 +41,57 @@ extern uint8_t binning; // default to 392 pixels
 extern uint8_t gain; // default to 1x gain
 extern uint8_t active_rows; // default to using all 5 pixel rows
 
-// =====[ global for exposure time defined in main() application ]=====
-extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
-
-#define npixels 784
-extern uint8_t frame[npixels*2];
+// Why do I need these variables?
+/* extern uint8_t frame[npixels*2]; */
+extern uint8_t frame[];
 
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const led_TxRx;      // PINC0
 extern uint8_t const led_Done;      // PINC1
+
+/* Declare inline functions here to emit symbols in this translation unit. */
+void ExposePhotodiodeArray(void); // see definition in .h
+static void GetFrame_Implementation(void)
+{
+    ExposePhotodiodeArray();
+    // Prepare pixel counter
+    uint8_t *pframe = frame; (void)pframe;
+    uint16_t pixel_count = 0; // track number of pixels read
+    // Wait for readout to start
+    while(BitIsClear(Lis_pin1, Lis_Sync)); // wait for SYNC rising redge
+    while(BitIsSet(Lis_pin1, Lis_Sync)); // wait for SYNC falling redge
+    // Calculate number of pixels in Frame
+    uint16_t npixels_in_frame;
+    if (binning == binning_on) npixels_in_frame = npixels >> 2;
+    else npixels_in_frame = npixels;
+    while (pixel_count++ < npixels_in_frame)
+    {
+        // ---Obtain 16-bit value for next pixel and save to frame---
+        // 1 - Wait for clock rising edge
+        SetBit(Pwm_tifr0, Pwm_Ocf0a); // clear flag PWM rising edge
+        while(BitIsClear(Pwm_tifr0, Pwm_Ocf0a)); // block until flag is set
+        SetBit(Pwm_tifr0, Pwm_Ocf0a); // clear flag PWM rising edge
+        // 2 - Start ADC conversion
+        SetBit(UartSpi_port, UartSpi_AdcConv);
+        // 3- Wait for at least t_CONV (4.66us max) for conversion to finish.
+        Delay3CpuCyclesPerTick(11); // definition in AvrAsmMacro.c, Makefile picks real/fake version of AvrAsmMacros.c
+        // 4- Start ADC readout
+        ClearBit(UartSpi_port, UartSpi_AdcConv);
+        // Wait for empty transmit buffer (should always be true on first check).
+        while (!BitIsSet(UartSpi_csra, UartSpi_DataRegEmpty));
+        // Transfer 16 bits by writing two dummy bytes to UartSpi_Data.
+        *UartSpi_data = 0x00; *UartSpi_data = 0x00;
+        // 5- Wait for first byte of ADC readout to finish
+        while (!BitIsSet(UartSpi_csra, UartSpi_RxComplete));
+        // Save the most significant byte of the pixel reading in the frame
+        *(pframe++) =  *UartSpi_data;
+        // 6- Wait for second byte of ADC readout to finish
+        while (!BitIsSet(UartSpi_csra, UartSpi_RxComplete));
+        // Save the least significant byte of the pixel reading in the frame
+        *(pframe++) =  *UartSpi_data;
+    }
+}
+void (*GetFrame)(void) = GetFrame_Implementation;
 
 /* TODO: unit test WriteSpiMaster */
 static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint16_t nbytes)
@@ -67,14 +108,6 @@ static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint1
     }
     return byte_index; // byte_index == num_bytes_actually_sent
 }
-/* static uint16_t NoIsrWriteSpiMaster_Implementation(uint8_t const *write_buffer, uint16_t nbytes) */
-/* { */
-/*     ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt */
-/*     SpiSlaveSendBytes(write_buffer, nbytes); // Placeholder until I can clean this up. */
-/*     SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt */
-/*     return nbytes; // TODO: use actual num_bytes_sent */
-/*     /1* return num_bytes_sent; *1/ */
-/* } */
 uint16_t (*WriteSpiMaster)(uint8_t const *, uint16_t) = WriteSpiMaster_Implementation;
 
 static uint16_t ReadSpiMaster_Implementation(uint8_t *read_buffer, uint16_t nbytes)
@@ -319,37 +352,21 @@ void CaptureFrame(void)
     /** CaptureFrame sends one frame of pixel data to the Bridge.*/
     /** CaptureFrame behavior:\n 
       * - sends status byte ok\n 
+      * - collects a frame of pixel data\n 
       * */
     uint8_t status = ok;
     WriteSpiMaster(&status, 1);
+    GetFrame(); // implemented (copied from old code) but not tested
 }
 
 
-/* --------------------------------------------------------------------------------------- */
-/* TODO: extract the useful SpiSlave stuff */
-/* --------------------------------------------------------------------------------------- */
-/* | 2019-03-03 WIP: New SpiSlave API functionality for robust multi-byte communication. | */
 /* --------------------------------------------------------------------------------------- */
 /* Define command functions in jump table */
-void SensorCfgLis(void)
+void ReplyCommandInvalid(void)
 {
-    /* TODO: left off here */
-    ;// get 4-byte arg from bridge
-    /* Fake receiving a valid `cfg`. */
-    uint8_t const valid_cfg[] = {0x0F, 0xFF, 0xFF, 0xF9};
-    LisWriteCfg(valid_cfg);
-    // LisWriteCfg must handle the StatusOk since it follow that with
-    // the updated cfg.
+    uint8_t cmd_invalid[] = {invalid_cmd};
+    WriteSpiMaster(cmd_invalid, 1);
 }
-/* =====[ DEPRECATED ]===== */
-/* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
-/* sensor_cmd_key const SensorLed1Green_key = 0; */
-/* sensor_cmd_key const SensorLed1Red_key = 1; */
-/* sensor_cmd_key const SensorLed2Green_key = 2; */
-/* sensor_cmd_key const SensorLed2Red_key = 3; */
-/* TODO: left off here */
-
-/* =====[ TODO: Salvage any of this? ]===== */
 SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
     // pf is an array of pointers to SensorCmd functions
     // pf lives in static memory, not on the `LookupSensorCmd` stack frame
@@ -373,13 +390,6 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
     // Up to caller to check for NULL and take appropriate action.
     // Recommended action: tell SpiMaster the command was not recognized.
 }
-/* SpiSlaveSendBytes has been unit-tested. No need to unit test this. */
-void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd)
-{
-                             // | nbytes  | data           |
-    uint8_t const StatusOk[] = {0x00, 0x02, 0x00, valid_cmd };
-    SpiSlaveSendBytes(StatusOk,4);
-}
 // Do not use these DEBUG functions in production code.
 void DEBUG_LedsShowError(void)
 {
@@ -393,20 +403,3 @@ void DEBUG_LedsShowNoError(void)
     BiColorLedGreen(led_TxRx);
     BiColorLedGreen(led_Done);
 }
-void ReplyCommandInvalid(void)
-{
-    uint8_t cmd_invalid[] = {invalid_cmd};
-    WriteSpiMaster(cmd_invalid, 1);
-}
-// Do not use this.
-void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd)
-{                                  // | nbytes  |   data          |
-    uint8_t const StatusInvalid[] = { 0x00, 0x02, 0xFF, invalid_cmd };
-    SpiSlaveSendBytes(StatusInvalid,4);
-}
-
-
-/* --------------------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------------------- */
-
-

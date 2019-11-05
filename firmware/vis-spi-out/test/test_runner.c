@@ -132,5 +132,7 @@ int main(void)
     uinttest_CaptureFrame(Yep);
     setUp = SetUp_CaptureFrame; tearDown = TearDown_CaptureFrame;
     RUN_TEST(CaptureFrame_sends_status_byte_ok);
+    RUN_TEST(CaptureFrame_collects_a_frame_of_pixel_data);
+    /* RUN_TEST(CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame); */
     return UNITY_END();
 }

@@ -1,3 +1,31 @@
+/* =====[ DEPRECATED ]===== */
+/* Define a named key for each function (`FooBar_key` is the key for `FooBar`) */
+/* sensor_cmd_key const SensorLed1Green_key = 0; */
+/* sensor_cmd_key const SensorLed1Red_key = 1; */
+/* sensor_cmd_key const SensorLed2Green_key = 2; */
+/* sensor_cmd_key const SensorLed2Red_key = 3; */
+/* TODO: left off here */
+
+// .h
+// Do not use this. Use ReplyCommandInvalid() instead.
+void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd);
+// report status to SpiMaster
+void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd);
+// .c
+// Do not use this.
+void SpiSlaveWrite_StatusInvalid(sensor_cmd_key invalid_cmd)
+{                                  // | nbytes  |   data          |
+    uint8_t const StatusInvalid[] = { 0x00, 0x02, 0xFF, invalid_cmd };
+    SpiSlaveSendBytes(StatusInvalid,4);
+}
+/* SpiSlaveSendBytes has been unit-tested. No need to unit test this. */
+void SpiSlaveWrite_StatusOk(sensor_cmd_key valid_cmd)
+{
+                             // | nbytes  | data           |
+    uint8_t const StatusOk[] = {0x00, 0x02, 0x00, valid_cmd };
+    SpiSlaveSendBytes(StatusOk,4);
+}
+
 void oldGetSensorLED(void)
 {
     /** GetSensorLED behavior:\n 
@@ -44,3 +72,21 @@ void oldGetSensorLED(void)
     /* DEBUG END */
 }
 
+static uint16_t NoIsrWriteSpiMaster_Implementation(uint8_t const *write_buffer, uint16_t nbytes)
+{
+    ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt
+    SpiSlaveSendBytes(write_buffer, nbytes); // Placeholder until I can clean this up.
+    SetBit(Spi_spcr, Spi_InterruptEnable); // Enable SPI interrupt
+    return nbytes; // TODO: use actual num_bytes_sent
+    /* return num_bytes_sent; */
+}
+void SensorCfgLis(void)
+{
+    /* TODO: left off here */
+    ;// get 4-byte arg from bridge
+    /* Fake receiving a valid `cfg`. */
+    uint8_t const valid_cfg[] = {0x0F, 0xFF, 0xFF, 0xF9};
+    LisWriteCfg(valid_cfg);
+    // LisWriteCfg must handle the StatusOk since it follow that with
+    // the updated cfg.
+}

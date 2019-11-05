@@ -49,5 +49,7 @@ void SetExposure_converts_two_data_bytes_to_new_16_bit_exposure_ticks_value(void
 void SetUp_CaptureFrame(void);
 void TearDown_CaptureFrame(void);
 void CaptureFrame_sends_status_byte_ok(void);
+void CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame(void);
+void CaptureFrame_collects_a_frame_of_pixel_data(void);
 
 #endif // _TEST_SENSORVIS_H

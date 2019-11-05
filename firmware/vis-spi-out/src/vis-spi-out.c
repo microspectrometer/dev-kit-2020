@@ -7,7 +7,7 @@
 #include "BiColorLed-Hardware.h"// map bicolor LEDs to actual hardware
 #include <Spi.h>                // Chromation spectrometer is a SPI slave
 #include "Spi-Hardware.h"       // map SPI I/O to actual hardware
-#include <UartSpi.h>            // USART in MSPIM mode for ADC readout
+/* #include <UartSpi.h>            // USART in MSPIM mode for ADC readout */
 #include "UartSpi-Hardware.h"   // map UART MSPIM I/O to actual hardware
 #include <Lis.h>                // photodiode array I/O pins and functions
 #include "Lis-Hardware.h"       // map photodiode array I/O to actual AVR I/O
@@ -28,7 +28,7 @@ uint8_t binning; uint8_t gain; uint8_t active_rows;
 /* =====[ Allocate memory for the Exposure Time ]===== */
 uint16_t exposure_ticks;
 /* =====[ Allocate memory for one Frame of pixel data ]===== */
-#define npixels 784
+/* #define npixels 784 */
 uint8_t frame[npixels*2];
 
 int main()
