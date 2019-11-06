@@ -51,5 +51,8 @@ void TearDown_CaptureFrame(void);
 void CaptureFrame_sends_status_byte_ok(void);
 void CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame(void);
 void CaptureFrame_collects_a_frame_of_pixel_data(void);
+void NumPixelsInFrame_returns_784_if_binning_is_off(void);
+void npixels_is_a_macro_constant_equal_to_784(void);
+void NumPixelsInFrame_returns_392_if_binning_is_on(void);
 
 #endif // _TEST_SENSORVIS_H

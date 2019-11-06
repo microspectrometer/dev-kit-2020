@@ -28,21 +28,16 @@ status_byte led_green = 1;
 status_byte led_red = 2; 
 led_name led_0 = 0;
 led_name led_1 = 1;
-config_byte binning_off = 0x00;
-config_byte binning_on  = 0x01;
+// Definition needed in SensorVis.h for inline function.
+/* config_byte binning_off = 0x00; */
+/* config_byte binning_on  = 0x01; */
 config_byte gain1x  = 0x01;
 config_byte gain25x = 0x25;
 config_byte gain4x  = 0x04;
 config_byte gain5x  = 0x05;
 config_byte all_rows_active  = 0x1F; // 0b00011111 is all five rows
 
-// =====[ globals for photodiode array config defined in main() application ]=====
-extern uint8_t binning; // default to 392 pixels
-extern uint8_t gain; // default to 1x gain
-extern uint8_t active_rows; // default to using all 5 pixel rows
-
-// Why do I need these variables?
-/* extern uint8_t frame[npixels*2]; */
+// ---Memory for `frame` allocated in main() application---
 extern uint8_t frame[];
 
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
@@ -50,20 +45,20 @@ extern uint8_t const led_TxRx;      // PINC0
 extern uint8_t const led_Done;      // PINC1
 
 /* Declare inline functions here to emit symbols in this translation unit. */
-void ExposePhotodiodeArray(void); // see definition in .h
+// See definition of these inline functions in SensorVis.h
+void ExposePhotodiodeArray(void);
+uint16_t NumPixelsInFrame(void);
 static void GetFrame_Implementation(void)
 {
     ExposePhotodiodeArray();
-    // Prepare pixel counter
-    uint8_t *pframe = frame; (void)pframe;
+    // Prepare pixel counter and frame pointer
+    uint8_t *pframe = frame;
     uint16_t pixel_count = 0; // track number of pixels read
+    // Get total number of pixels in this frame
+    uint16_t npixels_in_frame = NumPixelsInFrame();
     // Wait for readout to start
     while(BitIsClear(Lis_pin1, Lis_Sync)); // wait for SYNC rising redge
     while(BitIsSet(Lis_pin1, Lis_Sync)); // wait for SYNC falling redge
-    // Calculate number of pixels in Frame
-    uint16_t npixels_in_frame;
-    if (binning == binning_on) npixels_in_frame = npixels >> 2;
-    else npixels_in_frame = npixels;
     while (pixel_count++ < npixels_in_frame)
     {
         // ---Obtain 16-bit value for next pixel and save to frame---
@@ -357,6 +352,9 @@ void CaptureFrame(void)
     uint8_t status = ok;
     WriteSpiMaster(&status, 1);
     GetFrame(); // implemented (copied from old code) but not tested
+    uint16_t npixels_in_frame = NumPixelsInFrame();
+    uint8_t npixels_msb_lsb[] = {(npixels_in_frame>>8), npixels_in_frame & 0xFF};
+    WriteSpiMaster(npixels_msb_lsb, 2);
 }
 
 

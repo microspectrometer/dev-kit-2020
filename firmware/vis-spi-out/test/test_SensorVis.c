@@ -34,7 +34,6 @@ uint16_t exposure_ticks;
 // Frame of pixel data must be global in main application for linking
 // against its extern declaration in SensorVis
 // `extern` builds SensorVis.o to use same data defined in main application.
-/* #define npixels 784 */
 uint8_t frame[npixels*2];
 
 /* ---Queue Plumbing and Examples--- */
@@ -1083,6 +1082,31 @@ void SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config(void)
     TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &expected_config));
 }
 
+// tdd NumPixelsInFrame
+void npixels_is_a_macro_constant_equal_to_784(void)
+{
+    // macro `npixels` is defined in SensorVis.h
+    // this test file includes SensorVis.h
+    // the application includes SensorVis.h
+    TEST_ASSERT_EQUAL_UINT16(784,npixels);
+}
+void NumPixelsInFrame_returns_784_if_binning_is_off(void)
+{
+    /* =====[ Setup ]===== */
+    binning = binning_off;
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_EQUAL_UINT16(npixels, NumPixelsInFrame());
+}
+void NumPixelsInFrame_returns_392_if_binning_is_on(void)
+{
+    /* =====[ Setup ]===== */
+    binning = binning_on;
+    // Assert my math is correct:
+    TEST_ASSERT_EQUAL_UINT16(392, npixels>>1);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_EQUAL_UINT16((npixels>>1), NumPixelsInFrame());
+}
+
 void SetUp_CaptureFrame(void)
 {
     SetUp_Mock();
@@ -1126,5 +1150,37 @@ void CaptureFrame_collects_a_frame_of_pixel_data(void)
 }
 void CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    /* =====[ Setup ]===== */
+    // Set binning to define number of pixels in frame
+    binning = binning_on; // default to 392 pixels
+    /* binning = binning_off; // this test also works for 784 pixels */
+    // Calculate msb and lsb of npixels_in_frame
+    uint8_t msb = NumPixelsInFrame() >> 8;
+    uint8_t lsb = NumPixelsInFrame() & 0xFF;
+    /* =====[ Operate ]===== */
+    CaptureFrame();
+    /* =====[ Test ]===== */
+    // Assert send (call to WriteSpiMaster) two bytes (arg2 is value 2)
+    uint8_t call_n = 3;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSpiMaster"),
+        "Expect call 3 is WriteSpiMaster."
+        );
+    uint8_t arg_n = 2; uint16_t nbytes_sent = 2;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &nbytes_sent),
+        "Expect 2 bytes are sent."
+        );
+    // Assert first byte is MSB of npixels_in_frame, second byte is LSB
+    printf("Expected msb: %02x\n", msb);
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        msb, SpyOn_WriteSpiMaster_arg1[1],
+        "Expect first byte is most significant."
+        );
+    printf("Expected lsb: %02x\n", lsb);
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        lsb, SpyOn_WriteSpiMaster_arg1[2],
+        "Expect second byte is least significant."
+        );
 }
+

@@ -8,10 +8,51 @@
 // ---CaptureFrame dependencies---
 #include "Pwm.h" // use PWM for the clock signal to the Photodiode Array
 #include "Lis.h" // define I/O connections to Photodiode Array
+
+/* TODO: this is duplicated in Bridge.h. Consolidate into one file used by both. */
+typedef uint8_t const status_byte;  // TODO: move this to a shared lib
+status_byte ok;
+status_byte error;
+status_byte invalid_cmd;
+status_byte led_off;
+status_byte led_green;
+status_byte led_red;
+typedef uint8_t const led_name;  // TODO: move this to a shared lib
+led_name led_0;
+led_name led_1;
+typedef uint8_t const config_byte;  // TODO: move this to a shared lib
+// binning_on binning_off MUST be macro-defined because:
+// value is needed by inline definition in this file
+// but by defining in the header, each translation unit thinks *it* defines it
+// can I inline a constant?
+#define binning_off 0x00
+#define binning_on 0x01
+config_byte gain1x;
+config_byte gain25x;
+config_byte gain4x;
+config_byte gain5x;
+config_byte all_rows_active;
+
 // =====[ global for exposure time defined in main() application ]=====
 extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
 // ---CaptureFrame dependencies---
 #define npixels 784
+// =====[ globals for photodiode array config defined in main() application ]=====
+extern uint8_t binning; // default to 392 pixels
+extern uint8_t gain; // default to 1x gain
+extern uint8_t active_rows; // default to using all 5 pixel rows
+inline uint16_t NumPixelsInFrame(void)
+{
+    /** NumPixelsInFrame behavior:\n 
+      * - depends on constant `npixels` equal to 784\n 
+      * - returns 784 if binning is off\n 
+      * - returns 392 if binning is on\n 
+      * */
+    uint16_t npixels_in_frame;
+    if (binning == binning_on) npixels_in_frame = npixels >> 1;
+    else npixels_in_frame = npixels;
+    return npixels_in_frame;
+}
 // TODO: unit test ExposePhotodiodeArray. Does this belong in lib SensorVis?
 inline void ExposePhotodiodeArray(void)
 {
@@ -34,25 +75,6 @@ inline void ExposePhotodiodeArray(void)
     ClearBit(Lis_port1, Lis_Rst); // RST low
 }
 
-/* TODO: this is duplicated in Bridge.h. Consolidate into one file used by both. */
-typedef uint8_t const status_byte;  // TODO: move this to a shared lib
-status_byte ok;
-status_byte error;
-status_byte invalid_cmd;
-status_byte led_off;
-status_byte led_green;
-status_byte led_red;
-typedef uint8_t const led_name;  // TODO: move this to a shared lib
-led_name led_0;
-led_name led_1;
-typedef uint8_t const config_byte;  // TODO: move this to a shared lib
-config_byte binning_off;
-config_byte binning_on;
-config_byte gain1x;
-config_byte gain25x;
-config_byte gain4x;
-config_byte gain5x;
-config_byte all_rows_active;
 
 /* =====[ Sensor API ]===== */
 /* Functions of type `SensorCmd` take nothing and return nothing. */
