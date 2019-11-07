@@ -19,7 +19,7 @@ atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/AT
 
 #=====[ AVR Compiler and Linker flags ]=====
 CFLAGS_for_avr = -I../lib/src -Isrc \
--g -Wall -Wextra -pedantic -Wno-pointer-sign\
+-g -Wall -Wextra -pedantic -Winline -Wno-pointer-sign\
 -O3 -ffunction-sections -fdata-sections -fshort-enums \
 -mmcu=atmega328p
 #Used to be -O1, not sure why.

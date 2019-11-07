@@ -10,9 +10,12 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 Allocating common symbols
 Common symbol       size              file
 
-full_frame          0x620             C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
-BridgeCfgLis_key    0x1               build/Bridge.o
-frame               0x620             C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+gain1x              0x1               build/Bridge.o
+gain25x             0x1               build/Bridge.o
+gain5x              0x1               build/Bridge.o
+all_rows_active     0x1               build/Bridge.o
+frame               0x620             C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
+gain4x              0x1               build/Bridge.o
 
 Discarded input sections
 
@@ -251,83 +254,10 @@ Discarded input sections
  .bss           0x00000000        0x0 build/Bridge.o
  .text.WriteSensor_Implementation
                 0x00000000       0xa6 build/Bridge.o
- .text.CfgBytesAreValid
-                0x00000000      0x1ba build/Bridge.o
- .text.CfgTurnsOffAllPixels
-                0x00000000       0x46 build/Bridge.o
- .text.XOR      0x00000000        0xe build/Bridge.o
- .text.AllPixelsAreOff
-                0x00000000       0x36 build/Bridge.o
- .text.AllPixelsAreOn
-                0x00000000       0x66 build/Bridge.o
- .text.CfgTurnsRowPartiallyOn
-                0x00000000       0xc4 build/Bridge.o
- .text.UsbWriteStatusOk
-                0x00000000       0x2a build/Bridge.o
- .text.UsbWriteStatusInvalid
-                0x00000000       0x28 build/Bridge.o
  .text.SensorHasResponse
                 0x00000000       0x26 build/Bridge.o
- .text.old_UsbWriteStatusInvalid
-                0x00000000       0x2c build/Bridge.o
- .text.UsbWriteStatusBadArgs
-                0x00000000       0x2c build/Bridge.o
- .text.UsbWriteStatusMissingArgs
-                0x00000000       0x2c build/Bridge.o
- .text.UsbWriteStatusSpiBusError
-                0x00000000       0x2c build/Bridge.o
- .text.BridgeCfgLis
-                0x00000000       0xc0 build/Bridge.o
- .rodata.row1_mask.2242
-                0x00000000        0x4 build/Bridge.o
- .rodata.row2_mask.2243
-                0x00000000        0x4 build/Bridge.o
- .rodata.row3_mask.2244
-                0x00000000        0x4 build/Bridge.o
- .rodata.row4_mask.2245
-                0x00000000        0x4 build/Bridge.o
- .rodata.row5_mask.2246
-                0x00000000        0x4 build/Bridge.o
- .rodata.pm.2247
-                0x00000000        0xa build/Bridge.o
  .data.WriteSensor
                 0x00000000        0x2 build/Bridge.o
- .rodata.BridgeSetExposure_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.BridgeGetExposure_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.BridgeSetSensorConfig_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.BridgeGetSensorConfig_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.TestInvalidSensorCmdPlusPayload_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.TestInvalidSensorCmd_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.BridgeSetSensorLED_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.NullCommand_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.BridgeGetSensorLED_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.SetBridgeLED_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.GetBridgeLED_key
-                0x00000000        0x1 build/Bridge.o
- .rodata.all_rows_active
-                0x00000000        0x1 build/Bridge.o
- .rodata.gain5x
-                0x00000000        0x1 build/Bridge.o
- .rodata.gain4x
-                0x00000000        0x1 build/Bridge.o
- .rodata.gain25x
-                0x00000000        0x1 build/Bridge.o
- .rodata.gain1x
-                0x00000000        0x1 build/Bridge.o
- .rodata.binning_on
-                0x00000000        0x1 build/Bridge.o
- .rodata.binning_off
-                0x00000000        0x1 build/Bridge.o
  .rodata.led_1  0x00000000        0x1 build/Bridge.o
  .rodata.led_0  0x00000000        0x1 build/Bridge.o
  .rodata.led_red
@@ -340,117 +270,55 @@ Discarded input sections
                 0x00000000        0x1 build/Bridge.o
  .rodata.error  0x00000000        0x1 build/Bridge.o
  .rodata.ok     0x00000000        0x1 build/Bridge.o
- COMMON         0x00000000        0x1 build/Bridge.o
- .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+ COMMON         0x00000000        0x5 build/Bridge.o
+ .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
+ .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
+ .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .text.Bridge_data_flow_between_USB_Host_and_SpiSlave
-                0x00000000       0x46 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.sizeof_half_frame
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.sizeof_full_frame
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.fake_adc_reading
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_124
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_auto_expose
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_1234
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_123
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_12
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_5
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_4
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_3
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_2
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_1
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_rowselect_12345
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_gain_1x
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_gain_2pt5x
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_gain_4x
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_lis_gain_5x
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_write_cfg_to_lis
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_summing_mode_on
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_cfg_summing_mode_off
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_enable_spi_master
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_disable_spi_master
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_set_exposure_time
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_send_lis_frame
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_send_adc_frame
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_send_fake_adc_reading
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_send_adc_reading
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_send_dummy_frame
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_send_four_dummy_bytes
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .rodata.cmd_send_dummy_byte
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000       0x46 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.Spi_InterruptEnable
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.FtMiosio7
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.FtMiosio6
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.FtMiosio5
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.FtMiosio4
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.FtMiosio3
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.FtMiosio2
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.FtMiosio1
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
  .rodata.FtMiosio0
-                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
- .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+                0x00000000        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
+ .text          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .data          0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .bss           0x00000000        0x0 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
  .text.GlobalInterruptEnable_Implementation
-                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
  .text.GlobalInterruptDisable_Implementation
-                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+                0x00000000        0x4 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
  .text.Delay3CpuCyclesPerTick_Implementation
-                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+                0x00000000        0x6 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
  .data.Delay3CpuCyclesPerTick
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
  .data.GlobalInterruptDisable
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
  .data.GlobalInterruptEnable
-                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .debug_info    0x00000000      0x142 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .debug_abbrev  0x00000000       0xdd C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .debug_loc     0x00000000       0x34 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+                0x00000000        0x2 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .debug_info    0x00000000      0x142 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .debug_abbrev  0x00000000       0xdd C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .debug_loc     0x00000000       0x34 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
  .debug_aranges
-                0x00000000       0x30 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .debug_ranges  0x00000000       0x20 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .debug_line    0x00000000      0x141 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .debug_str     0x00000000      0x201 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .comment       0x00000000       0x31 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
- .debug_frame   0x00000000       0x44 C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+                0x00000000       0x30 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .debug_ranges  0x00000000       0x20 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .debug_line    0x00000000      0x141 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .debug_str     0x00000000      0x201 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .comment       0x00000000       0x31 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
+ .debug_frame   0x00000000       0x44 C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -524,8 +392,8 @@ LOAD build/Spi.o
 LOAD build/Lis.o
 LOAD build/Pwm.o
 LOAD build/Bridge.o
-LOAD C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
-LOAD C:\Users\Mike\AppData\Local\Temp\ccTR4ndq.o
+LOAD C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
+LOAD C:\Users\Mike\AppData\Local\Temp\ccqi32FZ.o
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
@@ -769,15 +637,15 @@ END GROUP
  .text.SpiMasterInit
                 0x000004ce      0x118 build/Spi.o
                 0x000004ce                SpiMasterInit
- .text.NullCommand
-                0x000005e6        0x2 build/Bridge.o
-                0x000005e6                NullCommand
  .text.SerialWriteByte_Implementation
-                0x000005e8       0x26 build/Bridge.o
+                0x000005e6       0x26 build/Bridge.o
  .text.SpiWriteByte_Implementation
-                0x0000060e       0x64 build/Bridge.o
+                0x0000060c       0x64 build/Bridge.o
  .text.ReadSensor_Implementation
-                0x00000672       0xf0 build/Bridge.o
+                0x00000670       0xf0 build/Bridge.o
+ .text.NullCommand
+                0x00000760        0x2 build/Bridge.o
+                0x00000760                NullCommand
  .text.TestInvalidSensorCmd
                 0x00000762       0x3c build/Bridge.o
                 0x00000762                TestInvalidSensorCmd
@@ -811,14 +679,14 @@ END GROUP
  .text.BridgeGetSensorLED
                 0x00000e68       0xe6 build/Bridge.o
                 0x00000e68                BridgeGetSensorLED
- .text.LookupBridgeCmd
-                0x00000f4e       0x1c build/Bridge.o
-                0x00000f4e                LookupBridgeCmd
  .text.FlushInvalidCommand
-                0x00000f6a       0x44 build/Bridge.o
-                0x00000f6a                FlushInvalidCommand
+                0x00000f4e       0x44 build/Bridge.o
+                0x00000f4e                FlushInvalidCommand
+ .text.LookupBridgeCmd
+                0x00000f92       0x1c build/Bridge.o
+                0x00000f92                LookupBridgeCmd
  .text.startup.main
-                0x00000fae       0x44 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00000fae       0x44 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00000fae                main
                 0x00000ff2                . = ALIGN (0x2)
  *(.fini9)
@@ -930,117 +798,116 @@ END GROUP
  .rodata.slave_ignore
                 0x00800130        0x1 build/Spi.o
                 0x00800130                slave_ignore
- .rodata.pf.2044
+ .rodata.pf.2173
                 0x00800131       0x18 build/Bridge.o
  .rodata.Spi_InterruptFlag
-                0x00800149        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800149        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800149                Spi_InterruptFlag
  .rodata.Spi_DoubleClockRate
-                0x0080014a        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080014a        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080014a                Spi_DoubleClockRate
  .rodata.Spi_Enable
-                0x0080014b        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080014b        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080014b                Spi_Enable
  .rodata.Spi_ClockRateBit1
-                0x0080014c        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080014c        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080014c                Spi_ClockRateBit1
  .rodata.Spi_ClockRateBit0
-                0x0080014d        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080014d        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080014d                Spi_ClockRateBit0
  .rodata.Spi_MasterSlaveSelect
-                0x0080014e        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080014e        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080014e                Spi_MasterSlaveSelect
  .rodata.Spi_DataReady
-                0x0080014f        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080014f        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080014f                Spi_DataReady
  .rodata.Spi_Sck
-                0x00800150        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800150        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800150                Spi_Sck
  .rodata.Spi_Miso
-                0x00800151        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800151        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800151                Spi_Miso
  .rodata.Spi_Mosi
-                0x00800152        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800152        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800152                Spi_Mosi
  .rodata.Spi_Ss
-                0x00800153        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800153        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800153                Spi_Ss
  .rodata.Spi_spdr
-                0x00800154        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800154        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800154                Spi_spdr
  .rodata.Spi_spsr
-                0x00800156        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800156        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800156                Spi_spsr
  .rodata.Spi_spcr
-                0x00800158        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800158        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800158                Spi_spcr
  .rodata.Spi_pin
-                0x0080015a        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080015a        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080015a                Spi_pin
  .rodata.Spi_port
-                0x0080015c        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080015c        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080015c                Spi_port
  .rodata.Spi_ddr
-                0x0080015e        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080015e        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080015e                Spi_ddr
  .rodata.Ft1248_Miso
-                0x00800160        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800160        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800160                Ft1248_Miso
  .rodata.Ft1248_Sck
-                0x00800161        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800161        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800161                Ft1248_Sck
  .rodata.Ft1248_Ss
-                0x00800162        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800162        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800162                Ft1248_Ss
  .rodata.FtMiosio_pin
-                0x00800163        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800163        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800163                FtMiosio_pin
  .rodata.FtMiosio_port
-                0x00800165        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800165        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800165                FtMiosio_port
  .rodata.FtMiosio_ddr
-                0x00800167        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800167        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800167                FtMiosio_ddr
  .rodata.Ft1248_pin
-                0x00800169        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800169        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800169                Ft1248_pin
  .rodata.Ft1248_port
-                0x0080016b        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080016b        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080016b                Ft1248_port
  .rodata.Ft1248_ddr
-                0x0080016d        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080016d        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080016d                Ft1248_ddr
  .rodata.status_led
-                0x0080016f        0x1 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x0080016f        0x1 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x0080016f                status_led
  .rodata.BiColorLed_port
-                0x00800170        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800170        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800170                BiColorLed_port
  .rodata.BiColorLed_ddr
-                0x00800172        0x2 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x00800172        0x2 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
                 0x00800172                BiColorLed_ddr
  *(.gnu.linkonce.r*)
                 0x00800174                . = ALIGN (0x2)
                 0x00800174                _edata = .
                 0x00800174                PROVIDE (__data_end, .)
 
-.bss            0x00800174      0xc40
+.bss            0x00800174      0x620
                 0x00800174                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  *(COMMON)
- COMMON         0x00800174      0xc40 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
-                0x00800174                full_frame
-                0x00800794                frame
-                0x00800db4                PROVIDE (__bss_end, .)
+ COMMON         0x00800174      0x620 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
+                0x00800174                frame
+                0x00800794                PROVIDE (__bss_end, .)
                 0x00000ff6                __data_load_start = LOADADDR (.data)
                 0x0000106a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800db4        0x0
+.noinit         0x00800794        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800db4                _end = .
+                0x00800794                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -1087,7 +954,7 @@ END GROUP
  .comment       0x00000030       0x31 build/Usb.o
  .comment       0x00000030       0x31 build/Spi.o
  .comment       0x00000030       0x31 build/Bridge.o
- .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+ .comment       0x00000030       0x31 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
 
 .note.gnu.avr.deviceinfo
                 0x00000000       0x40
@@ -1109,7 +976,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x370
+.debug_aranges  0x00000000      0x308
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0xb8 build/Ft1248.o
@@ -1118,49 +985,49 @@ END GROUP
  .debug_aranges
                 0x00000110      0x128 build/Spi.o
  .debug_aranges
-                0x00000238      0x110 build/Bridge.o
+                0x00000238       0xa8 build/Bridge.o
  .debug_aranges
-                0x00000348       0x28 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+                0x000002e0       0x28 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x540d
+.debug_info     0x00000000     0x408d
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_info    0x000005f4      0x88d build/Ft1248.o
  .debug_info    0x00000e81      0x720 build/Usb.o
  .debug_info    0x000015a1      0xf71 build/Spi.o
- .debug_info    0x00002512     0x2515 build/Bridge.o
- .debug_info    0x00004a27      0x9e6 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+ .debug_info    0x00002512     0x1456 build/Bridge.o
+ .debug_info    0x00003968      0x725 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
 
-.debug_abbrev   0x00000000     0x14ad
+.debug_abbrev   0x00000000     0x13fa
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2      0x287 build/Ft1248.o
  .debug_abbrev  0x00000829      0x240 build/Usb.o
  .debug_abbrev  0x00000a69      0x3da build/Spi.o
- .debug_abbrev  0x00000e43      0x4ae build/Bridge.o
- .debug_abbrev  0x000012f1      0x1bc C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+ .debug_abbrev  0x00000e43      0x3fb build/Bridge.o
+ .debug_abbrev  0x0000123e      0x1bc C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
 
-.debug_line     0x00000000     0x19d4
+.debug_line     0x00000000     0x16ad
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_line    0x0000001a      0x3d4 build/Ft1248.o
  .debug_line    0x000003ee      0x2ca build/Usb.o
  .debug_line    0x000006b8      0x73e build/Spi.o
- .debug_line    0x00000df6      0x9fe build/Bridge.o
- .debug_line    0x000017f4      0x1e0 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+ .debug_line    0x00000df6      0x6e9 build/Bridge.o
+ .debug_line    0x000014df      0x1ce C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
 
-.debug_frame    0x00000000      0xa6c
+.debug_frame    0x00000000      0x8fc
  *(.debug_frame)
  .debug_frame   0x00000000      0x1a4 build/Ft1248.o
  .debug_frame   0x000001a4      0x118 build/Usb.o
  .debug_frame   0x000002bc      0x2c8 build/Spi.o
- .debug_frame   0x00000584      0x494 build/Bridge.o
- .debug_frame   0x00000a18       0x54 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+ .debug_frame   0x00000584      0x324 build/Bridge.o
+ .debug_frame   0x000008a8       0x54 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
 
-.debug_str      0x00000000     0x17ed
+.debug_str      0x00000000     0x1256
  *(.debug_str)
  .debug_str     0x00000000      0x208 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
  .debug_str     0x00000208      0x4dc build/Ft1248.o
@@ -1169,18 +1036,18 @@ END GROUP
                                 0x395 (size before relaxing)
  .debug_str     0x00000890      0x5c1 build/Spi.o
                                 0x7ae (size before relaxing)
- .debug_str     0x00000e51      0x667 build/Bridge.o
-                                0x992 (size before relaxing)
- .debug_str     0x000014b8      0x335 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
-                                0x7b9 (size before relaxing)
+ .debug_str     0x00000e51      0x374 build/Bridge.o
+                                0x637 (size before relaxing)
+ .debug_str     0x000011c5       0x91 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
+                                0x48f (size before relaxing)
 
-.debug_loc      0x00000000     0x31a3
+.debug_loc      0x00000000     0x2103
  *(.debug_loc)
  .debug_loc     0x00000000      0x31c build/Ft1248.o
  .debug_loc     0x0000031c      0x82f build/Usb.o
  .debug_loc     0x00000b4b      0x790 build/Spi.o
- .debug_loc     0x000012db     0x1d96 build/Bridge.o
- .debug_loc     0x00003071      0x132 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+ .debug_loc     0x000012db      0xcf6 build/Bridge.o
+ .debug_loc     0x00001fd1      0x132 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -1200,13 +1067,13 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x598
+.debug_ranges   0x00000000      0x330
  *(.debug_ranges)
  .debug_ranges  0x00000000       0xa8 build/Ft1248.o
  .debug_ranges  0x000000a8       0x60 build/Usb.o
  .debug_ranges  0x00000108      0x130 build/Spi.o
- .debug_ranges  0x00000238      0x330 build/Bridge.o
- .debug_ranges  0x00000568       0x30 C:\Users\Mike\AppData\Local\Temp\ccwmXN6K.o
+ .debug_ranges  0x00000238       0xc8 build/Bridge.o
+ .debug_ranges  0x00000300       0x30 C:\Users\Mike\AppData\Local\Temp\cciwtwxS.o
 
 .debug_macro
  *(.debug_macro)

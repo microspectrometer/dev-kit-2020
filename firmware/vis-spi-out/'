@@ -1019,7 +1019,7 @@ if __name__ == '__main__':
         _print_and_log(f"Opened CHROMATION{sernum} on {usb.dev_name(sernum)}")
         # TODO: setup kit.write to take GetBridgeLED with its argument
         # TODO: add cmd pre-formatted as bytes to package `commands`
-        # test_NullCommand()
+        test_NullCommand()
         # test_SetBridgeLED(commands.led_0, commands.led_off)
         # test_GetBridgeLED_ExpectOff(commands.led_0)
         # test_SetBridgeLED(commands.led_0, commands.led_green)
@@ -1071,7 +1071,7 @@ if __name__ == '__main__':
         # test_SetExposure(exposure_ticks=66)
         # test_GetExposure(expected_exposure_ticks=66)
 
-        test_CaptureFrame()
+        # test_CaptureFrame()
 
         # test_DoesUsbBuffer()
     _print_and_log(f"Closed CHROMATION{sernum}")

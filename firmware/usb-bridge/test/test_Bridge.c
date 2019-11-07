@@ -89,7 +89,8 @@ void SerialWriteByte_writes_one_byte_over_USB(void)
     /* so `GetBridgeLED()` reads one more byte. */
 void LookupBridgeCmd_takes_key_and_returns_fn_ptr(void){
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL(GetBridgeLED, LookupBridgeCmd(GetBridgeLED_key));
+    uint8_t const key = 0x01;
+    TEST_ASSERT_EQUAL(GetBridgeLED, LookupBridgeCmd(key));
 }
 static bridge_cmd_key const CmdBlackHat_key = 255; // out-of-bounds: return NULL ptr
 void LookupBridgeCmd_returns_NULL_if_key_is_not_found(void)

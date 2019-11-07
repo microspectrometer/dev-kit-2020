@@ -235,6 +235,7 @@ GetSensorConfig = 7
 SetSensorConfig = 8
 GetExposure = 9
 SetExposure = 10
+CaptureFrame = 11
 
 # led_red_key = 0
 # led_green_key = 1
