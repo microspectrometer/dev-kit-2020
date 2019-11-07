@@ -24,7 +24,6 @@ typedef uint8_t const config_byte;  // TODO: move this to a shared lib
 // binning_on binning_off MUST be macro-defined because:
 // value is needed by inline definition in this file
 // but by defining in the header, each translation unit thinks *it* defines it
-// can I inline a constant?
 #define binning_off 0x00
 #define binning_on 0x01
 config_byte gain1x;
@@ -52,6 +51,15 @@ inline uint16_t NumPixelsInFrame(void)
     if (binning == binning_on) npixels_in_frame = npixels >> 1;
     else npixels_in_frame = npixels;
     return npixels_in_frame;
+}
+inline void WordToTwoByteArray(uint16_t word, uint8_t * parray)
+{
+    /** Return 16-bit word as a two-byte array MSB first.\n 
+     * */
+    *parray++ = word>>8;
+    *parray++ = word & 0xFF;
+    /* uint8_t npixels_msb_lsb[] = {(npixels_in_frame>>8), npixels_in_frame & 0xFF}; */
+
 }
 // TODO: unit test ExposePhotodiodeArray. Does this belong in lib SensorVis?
 inline void ExposePhotodiodeArray(void)

@@ -119,11 +119,24 @@ void unittest_NumPixelsInFrame(bool run_test)
         RUN_TEST(NumPixelsInFrame_returns_392_if_binning_is_on);
     }
 }
+void unittest_WordToTwoByteArray(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(WordToTwoByteArray_stores_16bit_word_msb_first_in_input_array);
+    }
+}
 void unittest_CaptureFrame(bool run_test)
 {
     if (run_test)
     {
         setUp = SetUp_CaptureFrame; tearDown = TearDown_CaptureFrame;
+        RUN_TEST(CaptureFrame_sends_status_byte_ok);
+        RUN_TEST(CaptureFrame_collects_a_frame_of_pixel_data);
+        RUN_TEST(CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame);
+        RUN_TEST(CaptureFrame_sends_another_status_byte_ok);
+        RUN_TEST(CaptureFrame_sends_the_frame_as_two_bytes_per_pixel_msb_first);
     }
 }
 
@@ -140,10 +153,7 @@ int main(void)
     unittest_GetExposure(Nope);
     unittest_SetExposure(Nope);
     unittest_NumPixelsInFrame(Nope);
+    unittest_WordToTwoByteArray(Nope);
     unittest_CaptureFrame(Yep);
-    setUp = SetUp_CaptureFrame; tearDown = TearDown_CaptureFrame;
-    RUN_TEST(CaptureFrame_sends_status_byte_ok);
-    RUN_TEST(CaptureFrame_collects_a_frame_of_pixel_data);
-    RUN_TEST(CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame);
     return UNITY_END();
 }

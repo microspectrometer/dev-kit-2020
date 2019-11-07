@@ -1107,6 +1107,18 @@ void NumPixelsInFrame_returns_392_if_binning_is_on(void)
     TEST_ASSERT_EQUAL_UINT16((npixels>>1), NumPixelsInFrame());
 }
 
+// tdd WordToTwoByteArray
+void WordToTwoByteArray_stores_16bit_word_msb_first_in_input_array(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t array[2]; uint16_t word = 0xabcd;
+    /* =====[ Operate ]===== */
+    WordToTwoByteArray(word, array);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_HEX8(0xab, array[0]);
+    TEST_ASSERT_EQUAL_HEX8(0xcd, array[1]);
+}
+
 void SetUp_CaptureFrame(void)
 {
     SetUp_Mock();
@@ -1166,21 +1178,75 @@ void CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame(void)
         AssertCall(mock, call_n, "WriteSpiMaster"),
         "Expect call 3 is WriteSpiMaster."
         );
+    printf(
+        "Number of pixels is %d = %#04x.\n",
+        NumPixelsInFrame(), NumPixelsInFrame()
+        );
     uint8_t arg_n = 2; uint16_t nbytes_sent = 2;
     TEST_ASSERT_TRUE_MESSAGE(
         AssertArg(mock, call_n, arg_n, &nbytes_sent),
         "Expect 2 bytes are sent."
         );
     // Assert first byte is MSB of npixels_in_frame, second byte is LSB
-    printf("Expected msb: %02x\n", msb);
+    printf("Expected msb is %#04x\n", msb);
     TEST_ASSERT_EQUAL_HEX8_MESSAGE(
         msb, SpyOn_WriteSpiMaster_arg1[1],
         "Expect first byte is most significant."
         );
-    printf("Expected lsb: %02x\n", lsb);
+    printf("Expected lsb is %#04x\n", lsb);
     TEST_ASSERT_EQUAL_HEX8_MESSAGE(
         lsb, SpyOn_WriteSpiMaster_arg1[2],
         "Expect second byte is least significant."
         );
+}
+void CaptureFrame_sends_another_status_byte_ok(void)
+{
+    /* =====[ Operate ]===== */
+    CaptureFrame();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 4;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSpiMaster"),
+        "Expect call 4 is WriteSpiMaster."
+        );
+    uint8_t status = ok;
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(
+        status, SpyOn_WriteSpiMaster_arg1[3],
+        "Expect fourth byte of reply is ok (0x00)."
+        );
+}
+void CaptureFrame_sends_the_frame_as_two_bytes_per_pixel_msb_first(void)
+{
+    /* =====[ Setup ]===== */
+    binning = binning_on; // default to 392 pixels
+    TEST_ASSERT_EQUAL_UINT16(392, NumPixelsInFrame());
+    uint8_t *pframe = frame;
+    *pframe++ = 0xab;
+    *pframe++ = 0xcd;
+    // Check that frame is fake-loaded with data msb first.
+    pframe = frame;
+    TEST_ASSERT_EQUAL_UINT8(0xab, *pframe++);
+    TEST_ASSERT_EQUAL_UINT8(0xcd, *pframe++);
+    /* =====[ Operate ]===== */
+    CaptureFrame();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 5;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "WriteSpiMaster"),
+        "Expect call 5 is WriteSpiMaster."
+        );
+    uint16_t nbytes_sent = 2*NumPixelsInFrame();
+    printf(
+        "Number of pixels is %d = %#04x. Number of bytes in frame is %d = %#04x.\n",
+        NumPixelsInFrame(), NumPixelsInFrame(), nbytes_sent, nbytes_sent
+        );
+    uint8_t arg_n = 2;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, &nbytes_sent),
+        "Expect number of bytes sent is 2 x number of pixels."
+        );
+    // Check that bytes are sent msb first.
+    TEST_ASSERT_EQUAL_UINT8(0xab, SpyOn_WriteSpiMaster_arg1[4]);
+    TEST_ASSERT_EQUAL_UINT8(0xcd, SpyOn_WriteSpiMaster_arg1[5]);
 }
 

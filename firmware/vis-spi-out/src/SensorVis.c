@@ -48,6 +48,7 @@ extern uint8_t const led_Done;      // PINC1
 // See definition of these inline functions in SensorVis.h
 void ExposePhotodiodeArray(void);
 uint16_t NumPixelsInFrame(void);
+void WordToTwoByteArray(uint16_t, uint8_t *);
 static void GetFrame_Implementation(void)
 {
     ExposePhotodiodeArray();
@@ -348,13 +349,23 @@ void CaptureFrame(void)
     /** CaptureFrame behavior:\n 
       * - sends status byte ok\n 
       * - collects a frame of pixel data\n 
+      * - sends two bytes msb first with number of pixels in frame\n 
+      * - sends another status byte ok\n 
+      * - sends the frame as two bytes per pixel msb first\n 
       * */
+    // Send status OK
     uint8_t status = ok;
     WriteSpiMaster(&status, 1);
+    // Collect the frame from the photodiode array
     GetFrame(); // implemented (copied from old code) but not tested
-    uint16_t npixels_in_frame = NumPixelsInFrame();
-    uint8_t npixels_msb_lsb[] = {(npixels_in_frame>>8), npixels_in_frame & 0xFF};
-    WriteSpiMaster(npixels_msb_lsb, 2);
+    // Send the number of pixels in the frame
+    uint8_t msb_lsb[2]; WordToTwoByteArray(NumPixelsInFrame(), msb_lsb);
+    WriteSpiMaster(msb_lsb, 2);
+    // Send status OK
+    WriteSpiMaster(&status, 1);
+    // Send frame
+    uint16_t nbytes_in_frame = 2*NumPixelsInFrame();
+    WriteSpiMaster(frame, nbytes_in_frame);
 }
 
 
@@ -380,6 +391,7 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
         SetSensorConfig, // 8
         GetExposure, // 9
         SetExposure, // 10
+        CaptureFrame, // 11
         };
     // Return func ptr. Prevent attempts at out-of-bounds access.
     if (key < sizeof(pf)/sizeof(*pf)) return pf[key];

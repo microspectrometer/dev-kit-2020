@@ -42,6 +42,7 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
         BridgeSetSensorConfig, // 8
         BridgeGetExposure, // 9
         BridgeSetExposure, // 10
+        BridgeCaptureFrame, // 11
     };
 
     /* Return func ptr. Prevent attempts at out-of-bounds access. */

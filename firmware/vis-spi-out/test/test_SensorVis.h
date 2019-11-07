@@ -54,5 +54,8 @@ void CaptureFrame_collects_a_frame_of_pixel_data(void);
 void NumPixelsInFrame_returns_784_if_binning_is_off(void);
 void npixels_is_a_macro_constant_equal_to_784(void);
 void NumPixelsInFrame_returns_392_if_binning_is_on(void);
+void WordToTwoByteArray_stores_16bit_word_msb_first_in_input_array(void);
+void CaptureFrame_sends_another_status_byte_ok(void);
+void CaptureFrame_sends_the_frame_as_two_bytes_per_pixel_msb_first(void);
 
 #endif // _TEST_SENSORVIS_H
