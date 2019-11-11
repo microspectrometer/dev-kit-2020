@@ -491,8 +491,8 @@ uint8_t FlushInvalidCommand(void)
 // ---Jump Table: position of function name determines its key value---
 BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
 {
-    /* pf is an array of pointers to BridgeCmd functions */
-    /* pf lives in static memory, not on the `LookupBridgeCmd` stack frame */
+    // pf is an array of pointers to BridgeCmd functions
+    // pf lives in static memory, not on the `LookupBridgeCmd` stack frame
     static BridgeCmd* const pf[] =
     {
         NullCommand, // 0
@@ -509,11 +509,11 @@ BridgeCmd* LookupBridgeCmd(bridge_cmd_key const key)
         BridgeCaptureFrame, // 11
     };
     //
-    /* Return func ptr. Prevent attempts at out-of-bounds access. */
+    // Return func ptr. Prevent attempts at out-of-bounds access.
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
-    /* Out of bounds keys return a NULL pointer. */
+    // Out of bounds keys return a NULL pointer.
     else return NULL;
-    /* Up to caller to check for NULL and take appropriate action. */
-    /* Recommended action: tell UsbHost the command was not recognized. */
+    // Up to caller to check for NULL and take appropriate action.
+    // Recommended action: call FlushInvalidCommand().
 }
 

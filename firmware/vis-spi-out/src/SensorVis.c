@@ -376,6 +376,21 @@ void ReplyCommandInvalid(void)
     uint8_t cmd_invalid[] = {invalid_cmd};
     WriteSpiMaster(cmd_invalid, 1);
 }
+// Do not use these DEBUG functions in production code.
+void DEBUG_LedsShowError(void)
+{
+    // first and second LEDs turn red to indicate error
+    BiColorLedRed(led_TxRx);
+    BiColorLedRed(led_Done);
+}
+void DEBUG_LedsShowNoError(void)
+{
+    // first and second LEDs turn green to indicate error cleared
+    BiColorLedGreen(led_TxRx);
+    BiColorLedGreen(led_Done);
+}
+
+// ---Jump table---
 SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
     // pf is an array of pointers to SensorCmd functions
     // pf lives in static memory, not on the `LookupSensorCmd` stack frame
@@ -398,18 +413,5 @@ SensorCmd* LookupSensorCmd(sensor_cmd_key const key) {
     // Out of bounds keys return a NULL pointer.
     else return NULL; // error
     // Up to caller to check for NULL and take appropriate action.
-    // Recommended action: tell SpiMaster the command was not recognized.
-}
-// Do not use these DEBUG functions in production code.
-void DEBUG_LedsShowError(void)
-{
-    // first and second LEDs turn red to indicate error
-    BiColorLedRed(led_TxRx);
-    BiColorLedRed(led_Done);
-}
-void DEBUG_LedsShowNoError(void)
-{
-    // first and second LEDs turn green to indicate error cleared
-    BiColorLedGreen(led_TxRx);
-    BiColorLedGreen(led_Done);
+    // Recommended action: call ReplyCommandInvalid().
 }

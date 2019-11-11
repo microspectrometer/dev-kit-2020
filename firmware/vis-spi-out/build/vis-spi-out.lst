@@ -23,11 +23,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  000009a0  00000000  00000000  0000d53c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000015c1  00000000  00000000  0000dedc  2**0
+ 10 .debug_str    000015f9  00000000  00000000  0000dedc  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000024f7  00000000  00000000  0000f49d  2**0
+ 11 .debug_loc    000024f7  00000000  00000000  0000f4d5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000408  00000000  00000000  00011994  2**0
+ 12 .debug_ranges 00000408  00000000  00000000  000119cc  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1026,12 +1026,10 @@ bool QueueIsEmpty(volatile Queue_s * pq)
      5f8:	08 95       	ret
 
 000005fa <NullCommand>:
-        while(BitIsClear(Pwm_tifr0, Pwm_Ocf0b)); // Block until flag is set
-        SetBit(Pwm_tifr0, Pwm_Ocf0b); // Clear flag PWM falling edge
-    }
-    // Stop exposure
-    ClearBit(Lis_port1, Lis_Rst); // RST low
 }
+inline void ClearBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port &= ~(1<<bit);
      5fa:	08 95       	ret
 
 000005fc <GetFrame_Implementation>:
@@ -9807,21 +9805,13 @@ bool QueueIsEmpty(volatile Queue_s * pq)
     4baa:	d0 cf       	rjmp	.-96     	; 0x4b4c <ProgramPhotodiodeArray_Implementation+0xa4>
 
 00004bac <ReplyCommandInvalid>:
-
-
-/* --------------------------------------------------------------------------------------- */
-/* Define command functions in jump table */
-void ReplyCommandInvalid(void)
-{
     4bac:	cf 93       	push	r28
     4bae:	df 93       	push	r29
     4bb0:	1f 92       	push	r1
     4bb2:	cd b7       	in	r28, 0x3d	; 61
     4bb4:	de b7       	in	r29, 0x3e	; 62
-    uint8_t cmd_invalid[] = {invalid_cmd};
     4bb6:	82 e0       	ldi	r24, 0x02	; 2
     4bb8:	89 83       	std	Y+1, r24	; 0x01
-    WriteSpiMaster(cmd_invalid, 1);
     4bba:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
     4bbe:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
     4bc2:	61 e0       	ldi	r22, 0x01	; 1
@@ -9829,72 +9819,71 @@ void ReplyCommandInvalid(void)
     4bc6:	ce 01       	movw	r24, r28
     4bc8:	01 96       	adiw	r24, 0x01	; 1
     4bca:	09 95       	icall
-}
     4bcc:	0f 90       	pop	r0
     4bce:	df 91       	pop	r29
     4bd0:	cf 91       	pop	r28
     4bd2:	08 95       	ret
 
-00004bd4 <LookupSensorCmd>:
+00004bd4 <DEBUG_LedsShowError>:
+    4bd4:	e0 91 87 01 	lds	r30, 0x0187	; 0x800187 <BiColorLed_port>
+    4bd8:	f0 91 88 01 	lds	r31, 0x0188	; 0x800188 <BiColorLed_port+0x1>
+    4bdc:	40 81       	ld	r20, Z
+    4bde:	81 e0       	ldi	r24, 0x01	; 1
+    4be0:	90 e0       	ldi	r25, 0x00	; 0
+    4be2:	9c 01       	movw	r18, r24
+    4be4:	00 90 86 01 	lds	r0, 0x0186	; 0x800186 <led_TxRx>
+    4be8:	02 c0       	rjmp	.+4      	; 0x4bee <DEBUG_LedsShowError+0x1a>
+    4bea:	22 0f       	add	r18, r18
+    4bec:	33 1f       	adc	r19, r19
+    4bee:	0a 94       	dec	r0
+    4bf0:	e2 f7       	brpl	.-8      	; 0x4bea <DEBUG_LedsShowError+0x16>
+    4bf2:	24 2b       	or	r18, r20
+    4bf4:	20 83       	st	Z, r18
+    4bf6:	20 81       	ld	r18, Z
+    4bf8:	00 90 85 01 	lds	r0, 0x0185	; 0x800185 <led_Done>
+    4bfc:	02 c0       	rjmp	.+4      	; 0x4c02 <DEBUG_LedsShowError+0x2e>
+    4bfe:	88 0f       	add	r24, r24
+    4c00:	99 1f       	adc	r25, r25
+    4c02:	0a 94       	dec	r0
+    4c04:	e2 f7       	brpl	.-8      	; 0x4bfe <DEBUG_LedsShowError+0x2a>
+    4c06:	82 2b       	or	r24, r18
+    4c08:	80 83       	st	Z, r24
+    4c0a:	08 95       	ret
+
+00004c0c <LookupSensorCmd>:
         GetExposure, // 9
         SetExposure, // 10
         CaptureFrame, // 11
         };
     // Return func ptr. Prevent attempts at out-of-bounds access.
     if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
-    4bd4:	8c 30       	cpi	r24, 0x0C	; 12
-    4bd6:	48 f4       	brcc	.+18     	; 0x4bea <LookupSensorCmd+0x16>
-    4bd8:	e8 2f       	mov	r30, r24
-    4bda:	f0 e0       	ldi	r31, 0x00	; 0
-    4bdc:	ee 0f       	add	r30, r30
-    4bde:	ff 1f       	adc	r31, r31
-    4be0:	e0 5e       	subi	r30, 0xE0	; 224
-    4be2:	fe 4f       	sbci	r31, 0xFE	; 254
-    4be4:	80 81       	ld	r24, Z
-    4be6:	91 81       	ldd	r25, Z+1	; 0x01
-    4be8:	08 95       	ret
+    4c0c:	8c 30       	cpi	r24, 0x0C	; 12
+    4c0e:	48 f4       	brcc	.+18     	; 0x4c22 <LookupSensorCmd+0x16>
+    4c10:	e8 2f       	mov	r30, r24
+    4c12:	f0 e0       	ldi	r31, 0x00	; 0
+    4c14:	ee 0f       	add	r30, r30
+    4c16:	ff 1f       	adc	r31, r31
+    4c18:	e0 5e       	subi	r30, 0xE0	; 224
+    4c1a:	fe 4f       	sbci	r31, 0xFE	; 254
+    4c1c:	80 81       	ld	r24, Z
+    4c1e:	91 81       	ldd	r25, Z+1	; 0x01
+    4c20:	08 95       	ret
     // Out of bounds keys return a NULL pointer.
     else return NULL; // error
-    4bea:	80 e0       	ldi	r24, 0x00	; 0
-    4bec:	90 e0       	ldi	r25, 0x00	; 0
+    4c22:	80 e0       	ldi	r24, 0x00	; 0
+    4c24:	90 e0       	ldi	r25, 0x00	; 0
     // Up to caller to check for NULL and take appropriate action.
-    // Recommended action: tell SpiMaster the command was not recognized.
+    // Recommended action: call ReplyCommandInvalid().
 }
-    4bee:	08 95       	ret
-
-00004bf0 <DEBUG_LedsShowError>:
-{
-    ClearBit(BiColorLed_port, led_name);
-}
-inline void BiColorLedRed(uint8_t led_name)
-{
-    SetBit(BiColorLed_port, led_name);
-    4bf0:	e0 91 87 01 	lds	r30, 0x0187	; 0x800187 <BiColorLed_port>
-    4bf4:	f0 91 88 01 	lds	r31, 0x0188	; 0x800188 <BiColorLed_port+0x1>
-    4bf8:	40 81       	ld	r20, Z
-    4bfa:	81 e0       	ldi	r24, 0x01	; 1
-    4bfc:	90 e0       	ldi	r25, 0x00	; 0
-    4bfe:	9c 01       	movw	r18, r24
-    4c00:	00 90 86 01 	lds	r0, 0x0186	; 0x800186 <led_TxRx>
-    4c04:	02 c0       	rjmp	.+4      	; 0x4c0a <DEBUG_LedsShowError+0x1a>
-    4c06:	22 0f       	add	r18, r18
-    4c08:	33 1f       	adc	r19, r19
-    4c0a:	0a 94       	dec	r0
-    4c0c:	e2 f7       	brpl	.-8      	; 0x4c06 <DEBUG_LedsShowError+0x16>
-    4c0e:	24 2b       	or	r18, r20
-    4c10:	20 83       	st	Z, r18
-    4c12:	20 81       	ld	r18, Z
-    4c14:	00 90 85 01 	lds	r0, 0x0185	; 0x800185 <led_Done>
-    4c18:	02 c0       	rjmp	.+4      	; 0x4c1e <DEBUG_LedsShowError+0x2e>
-    4c1a:	88 0f       	add	r24, r24
-    4c1c:	99 1f       	adc	r25, r25
-    4c1e:	0a 94       	dec	r0
-    4c20:	e2 f7       	brpl	.-8      	; 0x4c1a <DEBUG_LedsShowError+0x2a>
-    4c22:	82 2b       	or	r24, r18
-    4c24:	80 83       	st	Z, r24
     4c26:	08 95       	ret
 
 00004c28 <main>:
+/* | 2019-03-04 WIP: inline version of ReadWriteBits | */
+/* --------------------------------------------------- */
+
+inline void SetBit(uint8_t volatile * const port, uint8_t const bit)
+{
+    *port |= 1<<bit;
     4c28:	47 b1       	in	r20, 0x07	; 7
     4c2a:	81 e0       	ldi	r24, 0x01	; 1
     4c2c:	90 e0       	ldi	r25, 0x00	; 0
@@ -9989,7 +9978,7 @@ void Get_commands_from_SpiMaster(void)
     4cbc:	80 91 94 01 	lds	r24, 0x0194	; 0x800194 <SpiFifo>
     4cc0:	90 91 95 01 	lds	r25, 0x0195	; 0x800195 <SpiFifo+0x1>
     4cc4:	0e 94 cb 02 	call	0x596	; 0x596 <QueuePop>
-    4cc8:	0e 94 ea 25 	call	0x4bd4	; 0x4bd4 <LookupSensorCmd>
+    4cc8:	0e 94 06 26 	call	0x4c0c	; 0x4c0c <LookupSensorCmd>
     if (SensorCmdFn == NULL) ReplyCommandInvalid();
     4ccc:	00 97       	sbiw	r24, 0x00	; 0
     4cce:	19 f0       	breq	.+6      	; 0x4cd6 <main+0xae>
@@ -10075,7 +10064,7 @@ ISR(SPI_STC_vect)
     // Client stuck in loop `while (QueueIsEmpty(SpiFifo));` when ISR is called
     //
     if (QueueIsFull(SpiFifo)) DEBUG_LedsShowError(); // TODO: add error handler
-    4d3e:	0e 94 f8 25 	call	0x4bf0	; 0x4bf0 <DEBUG_LedsShowError>
+    4d3e:	0e 94 ea 25 	call	0x4bd4	; 0x4bd4 <DEBUG_LedsShowError>
     4d42:	ec cf       	rjmp	.-40     	; 0x4d1c <__vector_17+0x40>
 
 00004d44 <GlobalInterruptEnable_Implementation>:

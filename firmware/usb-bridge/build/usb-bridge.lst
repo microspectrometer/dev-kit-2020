@@ -2038,7 +2038,7 @@ uint8_t FlushInvalidCommand(void)
         BridgeCaptureFrame, // 11
     };
     //
-    /* Return func ptr. Prevent attempts at out-of-bounds access. */
+    // Return func ptr. Prevent attempts at out-of-bounds access.
     if (key < sizeof(pf)/sizeof(*pf))   return pf[key];
  f92:	8c 30       	cpi	r24, 0x0C	; 12
  f94:	48 f4       	brcc	.+18     	; 0xfa8 <LookupBridgeCmd+0x16>
@@ -2051,12 +2051,12 @@ uint8_t FlushInvalidCommand(void)
  fa2:	80 81       	ld	r24, Z
  fa4:	91 81       	ldd	r25, Z+1	; 0x01
  fa6:	08 95       	ret
-    /* Out of bounds keys return a NULL pointer. */
+    // Out of bounds keys return a NULL pointer.
     else return NULL;
  fa8:	80 e0       	ldi	r24, 0x00	; 0
  faa:	90 e0       	ldi	r25, 0x00	; 0
-    /* Up to caller to check for NULL and take appropriate action. */
-    /* Recommended action: tell UsbHost the command was not recognized. */
+    // Up to caller to check for NULL and take appropriate action.
+    // Recommended action: call FlushInvalidCommand().
 }
  fac:	08 95       	ret
 

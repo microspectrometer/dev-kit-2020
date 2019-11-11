@@ -1068,6 +1068,16 @@ if __name__ == '__main__':
         #     expected_gain=commands.gain1x,
         #     expected_active_rows=commands.all_rows_active
         #     )
+        # test_SetSensorConfig(
+        #     binning=commands.binning_on,
+        #     gain=commands.gain25x,
+        #     active_rows=commands.all_rows_active
+        #     )
+        # test_GetSensorConfig(
+        #     expected_binning=commands.binning_on,
+        #     expected_gain=commands.gain25x,
+        #     expected_active_rows=commands.all_rows_active
+        #     )
         # test_SetExposure(exposure_ticks=66)
         # test_GetExposure(expected_exposure_ticks=66)
 

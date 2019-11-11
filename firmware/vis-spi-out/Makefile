@@ -21,6 +21,7 @@ CFLAGS_for_avr = -I../lib/src -Isrc \
 -g -Wall -Wextra -pedantic -Winline -Wno-pointer-sign\
 -O3 -ffunction-sections -fdata-sections -fshort-enums \
 -mmcu=atmega328p
+# -fearly-inlining -findirect-inlining -finline-functions \
 #Used to be -O1, not sure why.
 #The avr ld.exe does not recognize any of these
 #LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0

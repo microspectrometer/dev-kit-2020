@@ -8,6 +8,7 @@
 // ---CaptureFrame dependencies---
 #include "Pwm.h" // use PWM for the clock signal to the Photodiode Array
 #include "Lis.h" // define I/O connections to Photodiode Array
+#include "ReadWriteBits.h" // make inline functions visible to this translation unit
 
 /* TODO: this is duplicated in Bridge.h. Consolidate into one file used by both. */
 typedef uint8_t const status_byte;  // TODO: move this to a shared lib
@@ -59,7 +60,6 @@ inline void WordToTwoByteArray(uint16_t word, uint8_t * parray)
     *parray++ = word>>8;
     *parray++ = word & 0xFF;
     /* uint8_t npixels_msb_lsb[] = {(npixels_in_frame>>8), npixels_in_frame & 0xFF}; */
-
 }
 // TODO: unit test ExposePhotodiodeArray. Does this belong in lib SensorVis?
 inline void ExposePhotodiodeArray(void)
