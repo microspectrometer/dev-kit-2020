@@ -17,7 +17,7 @@ avr-target: build/${board-name}.elf build/${board-name}.lst
 atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
 
 #=====[ AVR Compiler and Linker flags ]=====
-CFLAGS_for_avr = -I../lib/src -Isrc \
+CFLAGS_for_avr = -Isrc -I../lib/src \
 -g -Wall -Wextra -pedantic -Winline -Wno-pointer-sign\
 -O3 -ffunction-sections -fdata-sections -fshort-enums \
 -mmcu=atmega328p
@@ -157,7 +157,9 @@ ${obj_shared-lib_mock-c}
 
 avr-asm-macros := src/AvrAsmMacros.c
 # Target `avr-target` ends up here:
-build/%.elf: ${obj_prj-libs} ${obj_app-libs} src/%.c ${avr-asm-macros}
+# build/%.elf: ${obj_prj-libs} ${obj_app-libs} src/%.c ${avr-asm-macros}
+# Do NOT build SensorVis.o (this is the only file in obj_app-libs)
+build/%.elf: ${obj_prj-libs} src/%.c ${avr-asm-macros}
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.

@@ -1,5 +1,6 @@
 // libs and the headers that resolve their hardware dependencies
-#include "SensorVis.h"          // command library for the VIS Sensor
+/* #include "SensorVis.h"          // command library for the VIS Sensor */
+#include "SensorVis.c"          // command library for the VIS Sensor
 #include "Queue.h"              // SPI Rx Buffer is a queue
 #include <stdlib.h>             // defines NULL
 #include <ReadWriteBits.h>      // SetBit, ClearBit, etc.
