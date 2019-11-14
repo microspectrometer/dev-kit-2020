@@ -159,7 +159,11 @@ avr-asm-macros := src/AvrAsmMacros.c
 # Target `avr-target` ends up here:
 # build/%.elf: ${obj_prj-libs} ${obj_app-libs} src/%.c ${avr-asm-macros}
 # Do NOT build SensorVis.o (this is the only file in obj_app-libs)
-build/%.elf: ${obj_prj-libs} src/%.c ${avr-asm-macros}
+# ReadWriteBits BiColorLed Spi UartSpi Lis Pwm Queue
+# Remove: Lis.o, Pwm.o, UartSpi.o, AvrAsmMacros.o
+# Include lib *only in vis-spi-out.c* with #include <lib.c>
+# build/%.elf: ${obj_prj-libs} src/%.c ${avr-asm-macros}
+build/%.elf: build/ReadWriteBits.o build/BiColorLed.o build/Spi.o build/Queue.o src/%.c
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.

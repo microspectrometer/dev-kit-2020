@@ -16,3 +16,5 @@ void (*GlobalInterruptDisable)(void) = GlobalInterruptDisable_Implementation;
 static void Delay3CpuCyclesPerTick_Implementation(uint8_t ticks)
 { _delay_loop_1(ticks); }
 void (*Delay3CpuCyclesPerTick)(uint8_t) = Delay3CpuCyclesPerTick_Implementation;
+inline void Delay3ClocksPerTick(uint8_t ticks)
+{ _delay_loop_1(ticks); }

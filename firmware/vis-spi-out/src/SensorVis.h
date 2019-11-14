@@ -64,23 +64,19 @@ inline void WordToTwoByteArray(uint16_t word, uint8_t * parray)
 // TODO: unit test ExposePhotodiodeArray. Does this belong in lib SensorVis?
 inline void ExposePhotodiodeArray(void)
 {
-    // Wait for clock falling edge
-    SetBit(Pwm_tifr0, Pwm_Ocf0b); // Clear flag PWM falling edge
-    while(BitIsClear(Pwm_tifr0, Pwm_Ocf0b)); // Block until flag is set
-    SetBit(Pwm_tifr0, Pwm_Ocf0b); // Clear flag PWM falling edge
-    // Start exposure
-    SetBit(Lis_port1, Lis_Rst); // RST high
-    // Expose
+    /* Find this line in disassembly .lst file: sbi	0x15, 2	; 21 */
+    LisWaitForClockFallingEdge(); // Wait for Lis clock falling edge
+    // ---Expose---
     uint16_t tick_count = 0; // track number of ticks of exposure
-    while (tick_count++ < exposure_ticks)
-    {
-        // Wait for clock falling edge
-        SetBit(Pwm_tifr0, Pwm_Ocf0b); // Clear flag PWM falling edge
-        while(BitIsClear(Pwm_tifr0, Pwm_Ocf0b)); // Block until flag is set
-        SetBit(Pwm_tifr0, Pwm_Ocf0b); // Clear flag PWM falling edge
-    }
+    /* Find this line in disassembly .lst file: sbi	0x0b, 6	; 11 */
+    LisStartExposure();
+    // while loop consumes 20 lines of assembly. TODO: increment count in ISR
+    // and just check a flag here instead?
+    while (tick_count++ < exposure_ticks) LisWaitForClockFallingEdge();
     // Stop exposure
-    ClearBit(Lis_port1, Lis_Rst); // RST low
+    /* ClearBit(Lis_port1, Lis_Rst); // RST low */
+    /* Find this line in disassembly .lst file: cbi	0x0b, 6	; 11 */
+    LisStopExposure();
 }
 
 
@@ -113,5 +109,6 @@ extern uint16_t (*WriteSpiMaster)(uint8_t const *write_buffer, uint16_t nbytes);
 extern void (*ProgramPhotodiodeArray)(uint32_t config);
 extern void (*GetFrame)(void);
 
+uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_rows);
 //
 #endif // _SENSORVIS_H

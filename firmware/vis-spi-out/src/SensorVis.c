@@ -52,37 +52,32 @@ void WordToTwoByteArray(uint16_t, uint8_t *);
 static void GetFrame_Implementation(void)
 {
     ExposePhotodiodeArray();
+    LisWaitForReadoutToStart(); // wait for SYNC pulse
     // Prepare pixel counter and frame pointer
     uint8_t *pframe = frame;
     uint16_t pixel_count = 0; // track number of pixels read
     // Get total number of pixels in this frame
     uint16_t npixels_in_frame = NumPixelsInFrame();
     // Wait for readout to start
-    while(BitIsClear(Lis_pin1, Lis_Sync)); // wait for SYNC rising redge
-    while(BitIsSet(Lis_pin1, Lis_Sync)); // wait for SYNC falling redge
     while (pixel_count++ < npixels_in_frame)
     {
         // ---Obtain 16-bit value for next pixel and save to frame---
-        // 1 - Wait for clock rising edge
-        SetBit(Pwm_tifr0, Pwm_Ocf0a); // clear flag PWM rising edge
-        while(BitIsClear(Pwm_tifr0, Pwm_Ocf0a)); // block until flag is set
-        SetBit(Pwm_tifr0, Pwm_Ocf0a); // clear flag PWM rising edge
-        // 2 - Start ADC conversion
-        SetBit(UartSpi_port, UartSpi_AdcConv);
-        // 3- Wait for at least t_CONV (4.66us max) for conversion to finish.
-        Delay3CpuCyclesPerTick(11); // definition in AvrAsmMacro.c, Makefile picks real/fake version of AvrAsmMacros.c
-        // 4- Start ADC readout
-        ClearBit(UartSpi_port, UartSpi_AdcConv);
-        // Wait for empty transmit buffer (should always be true on first check).
-        while (!BitIsSet(UartSpi_csra, UartSpi_DataRegEmpty));
+        LisWaitForClockRisingEdge(); //       LisWaitForClockFallingEdge();
+        /* Delay3ClocksPerTick(6); // 6*0.3us = 1.8us delay here, no affect */
+        StartAdcConversion(); // sbi	0x0b, 2	; 11
+        /* WaitForConversion(); // hard-coded delay of 16*0.3us=4.8us*/
+        // Try waiting this way:
+        LisWaitForClockFallingEdge(); // 10us delay (half-clock period)
+        // hmmmm.. makes no difference how I wait.
+        //
+        StartAdcReadout(); // cbi	0x0b, 2	; 11
+        WaitForEmptyTxBuffer(); // always empty on this first check
         // Transfer 16 bits by writing two dummy bytes to UartSpi_Data.
         *UartSpi_data = 0x00; *UartSpi_data = 0x00;
-        // 5- Wait for first byte of ADC readout to finish
-        while (!BitIsSet(UartSpi_csra, UartSpi_RxComplete));
+        WaitForByteFromAdc(); // first byte of ADC readout
         // Save the most significant byte of the pixel reading in the frame
         *(pframe++) =  *UartSpi_data;
-        // 6- Wait for second byte of ADC readout to finish
-        while (!BitIsSet(UartSpi_csra, UartSpi_RxComplete));
+        WaitForByteFromAdc(); // second byte of ADC readout
         // Save the least significant byte of the pixel reading in the frame
         *(pframe++) =  *UartSpi_data;
     }
@@ -224,7 +219,7 @@ void GetSensorConfig(void)
     WriteSpiMaster(data, nbytes_data);
 }
 static void ProgramPhotodiodeArray_Implementation(uint32_t config)
-{
+{ // TODO: clean this up using optimized inline functions
     // Program LIS.
     EnterLisProgrammingMode();
     uint8_t bit=0;
@@ -239,6 +234,66 @@ static void ProgramPhotodiodeArray_Implementation(uint32_t config)
     ExitLisProgrammingMode();
 }
 void (*ProgramPhotodiodeArray)(uint32_t) = ProgramPhotodiodeArray_Implementation;
+uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_rows)
+{
+    /** Return the 28-bit LIS config given three config bytes.\n 
+     *  Input format for the three config bytes:
+     *  - binning: 0x00 (off), 0x01 (on)\n 
+     *  - gain: 0x01 (1x), 0x25 (2.5x), 0x04 (4x), 0x05 (5x)\n 
+     *  - active_rows: 5 rows, set the bit to turn the row on\n 
+     *    bits [8..0]: xxx54321 (1 to 5 are the row numbers, x is don't care)\n 
+     *  Output format:\n 
+     *  - bit0 of the 28-bit sequence is bit0 of the uint32 return value\n 
+     *  - program the LIS starting with bit0 */
+    /** RepresentConfigAs28bits behavior:\n 
+      * - returns uint32 with bit0 set if binning is on\n 
+      * - returns uint32 with bit0 clear if binning is off\n 
+      * - returns uint32 with bits1to2 clear if gain is 1x\n 
+      * - returns uint32 with bit1 clear bit2 set if gain is 2p5x\n 
+      * - returns uint32 with bit1 set bit2 clear if gain is 4x\n 
+      * - returns uint32 with bits1to2 set if gain is 5x\n 
+      * - returns uint32 with bits3to27 set if all rows are active\n 
+      * - returns uint32 with b3b8b13b18b23 set if row1 is active\n 
+      * - returns uint32 with b4b9b14b19b24 set if row2 is active\n 
+      * - returns uint32 with b5b10b15b20b25 set if row3 is active\n 
+      * - returns uint32 with b6b11b16b21b26 set if row4 is active\n 
+      * - returns uint32 with b7b12b17b22b27 set if row5 is active\n 
+      * */
+    // Convert three data bytes to 28-bit LIS programming sequence.
+    uint32_t config = 0x00000000;
+    uint8_t bit = 0;
+    if (binning_on == binning) config |= 1<<(bit++); // bit 0: bin on/off
+    else bit++;
+    // bit 1: gain bit G2
+    // bit 2: gain bit G1
+    // {G2,G1}: {0,0} 1x; {0,1} 2.5x; {1,0} 4x; {1,1} 5x
+    if      (gain25x == gain) { bit++; config |= 1<<(bit++); }
+    else if (gain4x == gain)  { config |= 1<<(bit++); bit++; }
+    else if (gain5x == gain)  { config |= 1<<(bit++); config |= 1<<(bit++); }
+    else { bit++; bit++; }
+    // bit 3 to 28 are pixel groups P25 to P1 to select active rows
+    // Example with binning_on and gain1x
+    // ----3----  ----2----  ----1----  ----0-(---) // byte
+    // 7654 3210  7654 3210  7654 3210  7654 3(210) // bit
+    // xxxx 1111  1111 1111  1111 1111  1111 1(001) // all rows on
+    // xxxx 0000  1000 0100  0010 0001  0000 1(001) // row 1 (or 5?)
+    // xxxx 0001  0000 1000  0100 0010  0001 0(001) // row 2 (or 4?)
+    // xxxx 0010  0001 0000  1000 0100  0010 0(001) // row 3
+    // xxxx 0100  0010 0001  0000 1000  0100 0(001) // row 4 (or 2?)
+    // xxxx 1000  0100 0010  0001 0000  1000 0(001) // row 5 (or 1?)
+    uint8_t const row1 = 0; uint32_t const row1_mask = 0x00842108;
+    uint8_t const row2 = 1; uint32_t const row2_mask = 0x01084210;
+    uint8_t const row3 = 2; uint32_t const row3_mask = 0x02108420;
+    uint8_t const row4 = 3; uint32_t const row4_mask = 0x04210840;
+    uint8_t const row5 = 4; uint32_t const row5_mask = 0x08421080;
+    if (active_rows&(1<<row1)) config |= row1_mask;
+    if (active_rows&(1<<row2)) config |= row2_mask;
+    if (active_rows&(1<<row3)) config |= row3_mask;
+    if (active_rows&(1<<row4)) config |= row4_mask;
+    if (active_rows&(1<<row5)) config |= row5_mask;
+    return config;
+}
+
 void SetSensorConfig(void)
 {
     /** Read three bytes of photodiode array config data from the Bridge.\n 
@@ -274,9 +329,11 @@ void SetSensorConfig(void)
     }
     uint8_t status = ok;
     WriteSpiMaster(&status,1);
+
     // Convert three data bytes to 28-bit LIS programming sequence.
     uint32_t cfg_bytes = 0x00000000;
     uint8_t bit = 0;
+    // TODO: make this a function and unit test! Is config what i think it is?
     if (binning_on == binning) cfg_bytes |= 1<<(bit++); // bit 0: bin on/off
     // bit 1: gain bit G2
     // bit 2: gain bit G1
@@ -305,7 +362,11 @@ void SetSensorConfig(void)
     if (active_rows&(1<<row3)) cfg_bytes |= row3_mask;
     if (active_rows&(1<<row4)) cfg_bytes |= row4_mask;
     if (active_rows&(1<<row5)) cfg_bytes |= row5_mask;
+    // 2019-11-13 hardcode cfg_bytes to troubleshoot bug.
+    /* cfg_bytes = 0x0FFFFFF9; */
+    /* cfg_bytes = 0x00000FF9; */
     ProgramPhotodiodeArray(cfg_bytes);
+    // 0000 1111   1111 1111   1111 1111   1111 1001
 }
 void GetExposure(void)
 {
