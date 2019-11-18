@@ -1035,7 +1035,7 @@ void SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid(void)
     printf("WriteSpiMaster sends: 0x%02x\n", SpyOn_WriteSpiMaster_arg1[0]);
     TEST_ASSERT_EQUAL_HEX8(ok, SpyOn_WriteSpiMaster_arg1[0]);
 }
-void SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config(void)
+void SetSensorConfig_programs_the_photodiode_array_with_the_config(void)
 {
     /* =====[ Setup ]===== */
     volatile uint8_t spi_rx_buffer[max_length_of_queue];
@@ -1046,39 +1046,24 @@ void SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config(void)
     QueuePush(SpiFifo, fake_binning);
     uint8_t const fake_gain = gain1x;
     QueuePush(SpiFifo, fake_gain);
-    uint8_t const row1 = 0; uint32_t const row1_mask = 0x00842108;
-    uint8_t const row2 = 1; uint32_t const row2_mask = 0x01084210;
-    uint8_t const row3 = 2; uint32_t const row3_mask = 0x02108420;
-    uint8_t const row4 = 3; uint32_t const row4_mask = 0x04210840;
-    uint8_t const row5 = 4; uint32_t const row5_mask = 0x08421080;
     uint8_t fake_active_rows = 0;
-    fake_active_rows |= 1<<row1;
-    fake_active_rows |= 1<<row2;
-    fake_active_rows |= 1<<row3;
-    fake_active_rows |= 1<<row4;
-    fake_active_rows |= 1<<row5;
+    uint8_t const row1 = 0; fake_active_rows |= 1<<row1;
+    uint8_t const row2 = 1; fake_active_rows |= 1<<row2;
+    uint8_t const row3 = 2; fake_active_rows |= 1<<row3;
+    uint8_t const row4 = 3; fake_active_rows |= 1<<row4;
+    uint8_t const row5 = 4; fake_active_rows |= 1<<row5;
     QueuePush(SpiFifo, fake_active_rows);
     // Caclulate expected config
-    uint32_t expected_config = 0x00000000;
-    uint8_t bit = 0;
-    if (binning_on == fake_binning) expected_config |= 1<<(bit++); // bit 0: bin on/off
-    if      (gain25x == fake_gain) { bit++; expected_config |= 1<<(bit++); }
-    else if (gain4x == fake_gain)  { expected_config |= 1<<(bit++); bit++; }
-    else if (gain5x == fake_gain)  { expected_config |= 1<<(bit++); expected_config |= 1<<(bit++); }
-    else { bit++; bit++; }
-    if (fake_active_rows&(1<<row1)) expected_config |= row1_mask;
-    if (fake_active_rows&(1<<row2)) expected_config |= row2_mask;
-    if (fake_active_rows&(1<<row3)) expected_config |= row3_mask;
-    if (fake_active_rows&(1<<row4)) expected_config |= row4_mask;
-    if (fake_active_rows&(1<<row5)) expected_config |= row5_mask;
+    uint32_t expected_config = RepresentConfigAs28bits(fake_binning, fake_gain, fake_active_rows);
     /* =====[ Operate ]===== */
     SetSensorConfig();
+    /* =====[ Test ]===== */
     // SetSensorConfig reads from the Queue and writes to the config globals.
     TEST_ASSERT_EQUAL_HEX8(fake_binning, binning);
     TEST_ASSERT_EQUAL_HEX8(fake_gain, gain);
     TEST_ASSERT_EQUAL_HEX8(fake_active_rows, active_rows);
-    /* =====[ Test ]===== */
-    // Assert response is OK if all three bytes are valid.
+    // ProgramPhotodiodeArray takes the 28-bit config as its input argument.
+    // Assert this 28-bit config is the expected config.
     uint8_t call_n = 2;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "ProgramPhotodiodeArray"));
     printf("Expected config: %#010x\n", expected_config);
@@ -1252,6 +1237,36 @@ void RepresentConfigAs28bits_returns_uint32_with_b7b12b17b22b27_set_if_row5_is_a
     TEST_ASSERT_EQUAL_HEX32(0x08421080, RepresentConfigAs28bits(binning, gain, active_rows));
 }
 
+// tdd LIS programming sequence
+void bit_number_is_correct_on_each_iteration_of_while_loop(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t binning = binning_on;
+    uint8_t gain = gain1x;
+    uint8_t active_rows = all_rows_active;
+    uint32_t config = RepresentConfigAs28bits(binning, gain, active_rows);
+    /* =====[ Operate and Test ]===== */
+    uint8_t bit=0;
+    while (bit < 28)
+    {
+        if (config & (1<<bit))
+        {
+            /* SetBit(Lis_port1, Lis_Rst); */
+            printf("set bit %d\n", bit);
+        }
+        else
+        {
+            /* ClearBit(Lis_port1, Lis_Rst); */
+            printf("clear bit %d\n", bit);
+        }
+        bit++;
+        // Wait for Lis_Rst value to clock in before loading the next bit.
+        /* LisWaitForClkRiseEdge(); // bit is read on rising edge */
+        /* LisWaitForClkFallEdge(); // hold bit until falling edge */
+    }
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+
 // tdd NumPixelsInFrame
 void npixels_is_a_macro_constant_equal_to_784(void)
 {
@@ -1287,6 +1302,55 @@ void WordToTwoByteArray_stores_16bit_word_msb_first_in_input_array(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_HEX8(0xab, array[0]);
     TEST_ASSERT_EQUAL_HEX8(0xcd, array[1]);
+}
+
+// tdd GetFrame: hmm... cannot stub without adding function call overhead
+void GetFrame_exposes_the_photodiode_array(void)
+{
+    // If I make a function pointer to stub LisWaitForReadoutToStart(), it adds
+    // function call overhead like this:
+    //
+    // lds	r30, 0x0110	; 0x800110 <LisWaitForReadoutToStart>
+    // lds	r31, 0x0111	; 0x800111 <LisWaitForReadoutToStart+0x1>
+    // icall
+    //
+    // The function itself is still optimized. Here is the function the call
+    // jumps to:
+    //
+    // breq	.-16     	; 0x4da <LisWaitForReadoutToStart_Implementation>
+    // sbic	0x09, 7	; 9
+    // rjmp	.-4      	; 0x4ea <LisWaitForReadoutToStart_Implementation+0x10>
+    // ret
+    //
+    // Is it possible to test this without making a function pointer?
+    //
+    /* =====[ Operate ]===== */
+    /* GetFrame(); */
+    // need to stub LisWaitForReadoutToStart, otherwise it hangs waiting for SYNC
+    // high followed by SYNC low
+    /* =====[ Test ]===== */
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+
+// tdd LisReadout
+void LisReadout_reads_npixels(void)
+{
+    /* =====[ Setup ]===== */
+    binning = binning_on;
+    uint16_t npixels_in_frame = NumPixelsInFrame();
+    printf("npixels_in_frame: %d\n", npixels_in_frame);
+    /* =====[ Operate ]===== */
+    LisReadout(); // just calling this to check plumbing
+    // copy and paste body of function below
+    uint16_t pixel_count = 0; // track number of pixels read
+    uint16_t pixels_read;
+    while (pixel_count++ < npixels_in_frame) pixels_read = pixel_count;
+    // printf("pixels_read: %d\n",pixels_read);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT16(npixels_in_frame, pixels_read);
+    // All the rest of the code is optimized.
+    // The only questionable piece is sending two bytes then reading two bytes.
+    // [ ] Try reading one byte after sending one byte.
 }
 
 void SetUp_CaptureFrame(void)

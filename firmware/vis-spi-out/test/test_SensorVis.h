@@ -36,7 +36,7 @@ void SetSensorConfig_replies_msg_status_error_if_binning_is_invalid(void);
 void SetSensorConfig_replies_msg_status_error_if_gain_is_invalid(void);
 void SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid(void);
 void SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid(void);
-void SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config(void);
+void SetSensorConfig_programs_the_photodiode_array_with_the_config(void);
 void SetUp_GetExposure(void);
 void TearDown_GetExposure(void);
 void GetExposure_sends_two_bytes_of_exposure_time_most_significant_byte_first(void);
@@ -69,5 +69,8 @@ void RepresentConfigAs28bits_returns_uint32_with_b4b9b14b19b24_set_if_row2_is_ac
 void RepresentConfigAs28bits_returns_uint32_with_b5b10b15b20b25_set_if_row3_is_active(void);
 void RepresentConfigAs28bits_returns_uint32_with_b6b11b16b21b26_set_if_row4_is_active(void);
 void RepresentConfigAs28bits_returns_uint32_with_b7b12b17b22b27_set_if_row5_is_active(void);
+void bit_number_is_correct_on_each_iteration_of_while_loop(void);
+void GetFrame_exposes_the_photodiode_array(void);
+void LisReadout_reads_npixels(void);
 
 #endif // _TEST_SENSORVIS_H

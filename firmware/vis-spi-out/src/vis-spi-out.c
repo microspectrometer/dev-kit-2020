@@ -22,14 +22,14 @@
 #include <Spi.h>                // Chromation spectrometer is a SPI slave
 #include "Spi-Hardware.h"       // map SPI I/O to actual hardware
 /* #include <UartSpi.h>            // USART in MSPIM mode for ADC readout */
-#include <UartSpi.c>            // USART in MSPIM mode for ADC readout
 #include "UartSpi-Hardware.h"   // map UART MSPIM I/O to actual hardware
+#include <UartSpi.c>            // USART in MSPIM mode for ADC readout
 /* #include <Lis.h>                // photodiode array I/O pins and functions */
-#include <Lis.c>                // photodiode array I/O pins and functions
 #include "Lis-Hardware.h"       // map photodiode array I/O to actual AVR I/O
+#include <Lis.c>                // photodiode array I/O pins and functions
 /* #include <Pwm.h>                // lib `Lis` uses PWM for the clock signal */
-#include <Pwm.c>                // lib `Lis` uses PWM for the clock signal
 #include "Pwm-Hardware.h"       // map `Pwm` I/O to actual AVR I/O
+#include <Pwm.c>                // lib `Lis` uses PWM for the clock signal
 
 static void Get_commands_from_SpiMaster(void);
 /* =====[ Allocate memory for the Spi Rx Queue variables ]===== */

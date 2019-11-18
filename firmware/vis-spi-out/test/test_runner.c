@@ -106,7 +106,7 @@ void unittest_SetSensorConfig(bool run_test)
         RUN_TEST(SetSensorConfig_replies_msg_status_error_if_gain_is_invalid);
         RUN_TEST(SetSensorConfig_replies_msg_status_error_if_active_rows_is_invalid);
         RUN_TEST(SetSensorConfig_replies_msg_status_ok_if_all_config_bytes_are_valid);
-        RUN_TEST(SetSensorConfig_converts_three_data_bytes_to_a_28_bit_config);
+        RUN_TEST(SetSensorConfig_programs_the_photodiode_array_with_the_config);
     }
 }
 void unittest_GetExposure(bool run_test)
@@ -146,6 +146,21 @@ void unittest_WordToTwoByteArray(bool run_test)
         RUN_TEST(WordToTwoByteArray_stores_16bit_word_msb_first_in_input_array);
     }
 }
+void unittest_LisReadout(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    }
+}
+void unittest_GetFrame(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(GetFrame_exposes_the_photodiode_array);
+    }
+}
 void unittest_CaptureFrame(bool run_test)
 {
     if (run_test)
@@ -156,6 +171,14 @@ void unittest_CaptureFrame(bool run_test)
         RUN_TEST(CaptureFrame_sends_two_bytes_msb_first_with_number_of_pixels_in_frame);
         RUN_TEST(CaptureFrame_sends_another_status_byte_ok);
         RUN_TEST(CaptureFrame_sends_the_frame_as_two_bytes_per_pixel_msb_first);
+    }
+}
+void develop_LIS_programming_sequence(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(bit_number_is_correct_on_each_iteration_of_while_loop);
     }
 }
 
@@ -173,7 +196,13 @@ int main(void)
     unittest_SetExposure(Nope);
     unittest_NumPixelsInFrame(Nope);
     unittest_WordToTwoByteArray(Nope);
+    unittest_LisReadout(Yep);
+    unittest_GetFrame(Nope);
     unittest_CaptureFrame(Nope);
-    unittest_RepresentConfigAs28bits(Yep);
+    unittest_RepresentConfigAs28bits(Nope);
+    // TODO: move the LIS_programming_sequence to a function
+    develop_LIS_programming_sequence(Nope);
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(LisReadout_reads_npixels);
     return UNITY_END();
 }

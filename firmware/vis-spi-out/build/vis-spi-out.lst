@@ -1,0 +1,1428 @@
+
+build/vis-spi-out.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000044  00800100  00000a1a  00000aae  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         00000a1a  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000634  00800144  00800144  00000af2  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  00000af2  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000b24  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000370  00000000  00000000  00000b64  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   000035be  00000000  00000000  00000ed4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 00000fe4  00000000  00000000  00004492  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00001789  00000000  00000000  00005476  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  000008a4  00000000  00000000  00006c00  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00001677  00000000  00000000  000074a4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    000016b1  00000000  00000000  00008b1b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000448  00000000  00000000  0000a1cc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+   8:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+   c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  10:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  14:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  18:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  1c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  20:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  24:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  28:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  38:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  3c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  40:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  44:	0c 94 d7 04 	jmp	0x9ae	; 0x9ae <__vector_17>
+  48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  50:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  54:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  58:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  5c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  60:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+  64:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+
+00000074 <__do_copy_data>:
+  74:	11 e0       	ldi	r17, 0x01	; 1
+  76:	a0 e0       	ldi	r26, 0x00	; 0
+  78:	b1 e0       	ldi	r27, 0x01	; 1
+  7a:	ea e1       	ldi	r30, 0x1A	; 26
+  7c:	fa e0       	ldi	r31, 0x0A	; 10
+  7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
+  80:	05 90       	lpm	r0, Z+
+  82:	0d 92       	st	X+, r0
+  84:	a4 34       	cpi	r26, 0x44	; 68
+  86:	b1 07       	cpc	r27, r17
+  88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
+
+0000008a <__do_clear_bss>:
+  8a:	27 e0       	ldi	r18, 0x07	; 7
+  8c:	a4 e4       	ldi	r26, 0x44	; 68
+  8e:	b1 e0       	ldi	r27, 0x01	; 1
+  90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
+
+00000092 <.do_clear_bss_loop>:
+  92:	1d 92       	st	X+, r1
+
+00000094 <.do_clear_bss_start>:
+  94:	a8 37       	cpi	r26, 0x78	; 120
+  96:	b2 07       	cpc	r27, r18
+  98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
+  9a:	0e 94 87 04 	call	0x90e	; 0x90e <main>
+  9e:	0c 94 0b 05 	jmp	0xa16	; 0xa16 <_exit>
+
+000000a2 <__bad_interrupt>:
+  a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+000000a6 <ClearPendingSpiInterrupt_Implementation>:
+}
+bool (*SpiResponseIsReady)(void) = SpiResponseIsReady_Implementation;
+void SpiMasterWaitForResponse(void)
+{
+    while( !SpiResponseIsReady() );
+}
+  a6:	e0 91 04 01 	lds	r30, 0x0104	; 0x800104 <ReadSpiStatusRegister>
+  aa:	f0 91 05 01 	lds	r31, 0x0105	; 0x800105 <ReadSpiStatusRegister+0x1>
+  ae:	09 95       	icall
+  b0:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <ReadSpiDataRegister>
+  b4:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <ReadSpiDataRegister+0x1>
+  b8:	09 94       	ijmp
+
+000000ba <ReadSpiStatusRegister_Implementation>:
+  ba:	e0 91 3c 01 	lds	r30, 0x013C	; 0x80013c <Spi_spsr>
+  be:	f0 91 3d 01 	lds	r31, 0x013D	; 0x80013d <Spi_spsr+0x1>
+  c2:	80 81       	ld	r24, Z
+  c4:	08 95       	ret
+
+000000c6 <EnableSpi_Implementation>:
+  c6:	e0 91 3e 01 	lds	r30, 0x013E	; 0x80013e <Spi_spcr>
+  ca:	f0 91 3f 01 	lds	r31, 0x013F	; 0x80013f <Spi_spcr+0x1>
+  ce:	20 81       	ld	r18, Z
+  d0:	81 e0       	ldi	r24, 0x01	; 1
+  d2:	90 e0       	ldi	r25, 0x00	; 0
+  d4:	00 90 37 01 	lds	r0, 0x0137	; 0x800137 <Spi_Enable>
+  d8:	02 c0       	rjmp	.+4      	; 0xde <EnableSpi_Implementation+0x18>
+  da:	88 0f       	add	r24, r24
+  dc:	99 1f       	adc	r25, r25
+  de:	0a 94       	dec	r0
+  e0:	e2 f7       	brpl	.-8      	; 0xda <EnableSpi_Implementation+0x14>
+  e2:	82 2b       	or	r24, r18
+  e4:	80 83       	st	Z, r24
+  e6:	08 95       	ret
+
+000000e8 <ReadSpiDataRegister_Implementation>:
+  e8:	e0 91 3a 01 	lds	r30, 0x013A	; 0x80013a <Spi_spdr>
+  ec:	f0 91 3b 01 	lds	r31, 0x013B	; 0x80013b <Spi_spdr+0x1>
+  f0:	80 81       	ld	r24, Z
+  f2:	08 95       	ret
+
+000000f4 <SpiSlaveInit>:
+static void SetMisoAsOutput(void)
+{
+    SetBit(Spi_ddr, Spi_Miso);
+}
+void SpiSlaveInit(void)
+{
+  f4:	cf 93       	push	r28
+  f6:	df 93       	push	r29
+    ClearBit(Spi_ddr, Spi_DataReady); // make it an input
+    SetBit(Spi_port, Spi_DataReady); // enable pull-up
+}
+void SetDataReadyAsOutputIdlesHigh(void) // For SpiSlave only!
+{
+    SetBit(Spi_port, Spi_DataReady); // idle HIGH
+  f8:	e0 91 40 01 	lds	r30, 0x0140	; 0x800140 <Spi_port>
+  fc:	f0 91 41 01 	lds	r31, 0x0141	; 0x800141 <Spi_port+0x1>
+ 100:	20 81       	ld	r18, Z
+ 102:	c1 e0       	ldi	r28, 0x01	; 1
+ 104:	d0 e0       	ldi	r29, 0x00	; 0
+ 106:	ce 01       	movw	r24, r28
+ 108:	00 90 38 01 	lds	r0, 0x0138	; 0x800138 <Spi_DataReady>
+ 10c:	02 c0       	rjmp	.+4      	; 0x112 <SpiSlaveInit+0x1e>
+ 10e:	88 0f       	add	r24, r24
+ 110:	99 1f       	adc	r25, r25
+ 112:	0a 94       	dec	r0
+ 114:	e2 f7       	brpl	.-8      	; 0x10e <SpiSlaveInit+0x1a>
+ 116:	92 2f       	mov	r25, r18
+ 118:	98 2b       	or	r25, r24
+ 11a:	90 83       	st	Z, r25
+    SetBit(Spi_ddr, Spi_DataReady); // make it an output pin
+ 11c:	e0 91 42 01 	lds	r30, 0x0142	; 0x800142 <Spi_ddr>
+ 120:	f0 91 43 01 	lds	r31, 0x0143	; 0x800143 <Spi_ddr+0x1>
+ 124:	90 81       	ld	r25, Z
+ 126:	89 2b       	or	r24, r25
+ 128:	80 83       	st	Z, r24
+//
+/* =====[ Spi Slave ]===== */
+//
+static void SetMisoAsOutput(void)
+{
+    SetBit(Spi_ddr, Spi_Miso);
+ 12a:	20 81       	ld	r18, Z
+ 12c:	ce 01       	movw	r24, r28
+ 12e:	00 90 39 01 	lds	r0, 0x0139	; 0x800139 <Spi_Miso>
+ 132:	02 c0       	rjmp	.+4      	; 0x138 <SpiSlaveInit+0x44>
+ 134:	88 0f       	add	r24, r24
+ 136:	99 1f       	adc	r25, r25
+ 138:	0a 94       	dec	r0
+ 13a:	e2 f7       	brpl	.-8      	; 0x134 <SpiSlaveInit+0x40>
+ 13c:	82 2b       	or	r24, r18
+ 13e:	80 83       	st	Z, r24
+{
+    // Slave outputs LOW on DataReady to signal Master there is data to read.
+    SetDataReadyAsOutputIdlesHigh();
+    // TODO: do not drive MISO, that's why we have DataReady
+    SetMisoAsOutput(); // pin-direction is user-defined
+    EnableSpi();
+ 140:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <EnableSpi>
+ 144:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <EnableSpi+0x1>
+ 148:	09 95       	icall
+    ClearPendingSpiInterrupt(); // access SPI status reg and SPI data reg
+ 14a:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <ClearPendingSpiInterrupt>
+ 14e:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <ClearPendingSpiInterrupt+0x1>
+ 152:	09 95       	icall
+{
+    SetBit(Spi_spcr, Spi_InterruptEnable);
+}
+void SpiEnableInterrupt(void)
+{
+    GlobalInterruptDisable();
+ 154:	e0 91 1a 01 	lds	r30, 0x011A	; 0x80011a <GlobalInterruptDisable>
+ 158:	f0 91 1b 01 	lds	r31, 0x011B	; 0x80011b <GlobalInterruptDisable+0x1>
+ 15c:	09 95       	icall
+    ClearPendingSpiInterrupt();
+ 15e:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <ClearPendingSpiInterrupt>
+ 162:	f0 91 07 01 	lds	r31, 0x0107	; 0x800107 <ClearPendingSpiInterrupt+0x1>
+ 166:	09 95       	icall
+/*     // and disable with: */
+/*     /1* ClearBit(Spi_spcr, Spi_InterruptEnable); // Disable SPI interrupt *1/ */
+/* } */
+static void EnableTransferCompleteInterrupt(void)
+{
+    SetBit(Spi_spcr, Spi_InterruptEnable);
+ 168:	e0 91 3e 01 	lds	r30, 0x013E	; 0x80013e <Spi_spcr>
+ 16c:	f0 91 3f 01 	lds	r31, 0x013F	; 0x80013f <Spi_spcr+0x1>
+ 170:	80 81       	ld	r24, Z
+ 172:	00 90 36 01 	lds	r0, 0x0136	; 0x800136 <Spi_InterruptEnable>
+ 176:	02 c0       	rjmp	.+4      	; 0x17c <SpiSlaveInit+0x88>
+ 178:	cc 0f       	add	r28, r28
+ 17a:	dd 1f       	adc	r29, r29
+ 17c:	0a 94       	dec	r0
+ 17e:	e2 f7       	brpl	.-8      	; 0x178 <SpiSlaveInit+0x84>
+ 180:	c8 2b       	or	r28, r24
+ 182:	c0 83       	st	Z, r28
+void SpiEnableInterrupt(void)
+{
+    GlobalInterruptDisable();
+    ClearPendingSpiInterrupt();
+    EnableTransferCompleteInterrupt();
+    GlobalInterruptEnable();
+ 184:	e0 91 1c 01 	lds	r30, 0x011C	; 0x80011c <GlobalInterruptEnable>
+ 188:	f0 91 1d 01 	lds	r31, 0x011D	; 0x80011d <GlobalInterruptEnable+0x1>
+    SetMisoAsOutput(); // pin-direction is user-defined
+    EnableSpi();
+    ClearPendingSpiInterrupt(); // access SPI status reg and SPI data reg
+    // Slave uses interrupts to send and receive bytes over SPI.
+    SpiEnableInterrupt();
+}
+ 18c:	df 91       	pop	r29
+ 18e:	cf 91       	pop	r28
+void SpiEnableInterrupt(void)
+{
+    GlobalInterruptDisable();
+    ClearPendingSpiInterrupt();
+    EnableTransferCompleteInterrupt();
+    GlobalInterruptEnable();
+ 190:	09 94       	ijmp
+
+00000192 <QueueInit>:
+    return pq;
+}
+uint16_t QueueLength(volatile Queue_s * pq)
+{ // Return length of Queue
+    return pq->length;
+}
+ 192:	e4 e4       	ldi	r30, 0x44	; 68
+ 194:	f1 e0       	ldi	r31, 0x01	; 1
+ 196:	91 83       	std	Z+1, r25	; 0x01
+ 198:	80 83       	st	Z, r24
+ 19a:	77 83       	std	Z+7, r23	; 0x07
+ 19c:	66 83       	std	Z+6, r22	; 0x06
+ 19e:	12 82       	std	Z+2, r1	; 0x02
+ 1a0:	13 82       	std	Z+3, r1	; 0x03
+ 1a2:	15 82       	std	Z+5, r1	; 0x05
+ 1a4:	14 82       	std	Z+4, r1	; 0x04
+ 1a6:	cf 01       	movw	r24, r30
+ 1a8:	08 95       	ret
+
+000001aa <QueuePush>:
+void QueuePush(volatile Queue_s * pq, uint8_t data)
+{ // Push data onto the Queue
+ 1aa:	fc 01       	movw	r30, r24
+    pq->length--;
+    return pq->buffer[pq->tail++];
+}
+bool QueueIsFull(volatile Queue_s * pq)
+{ // Return true if Queue is full
+    if (pq->length >= pq->max_length) return true;
+ 1ac:	24 81       	ldd	r18, Z+4	; 0x04
+ 1ae:	35 81       	ldd	r19, Z+5	; 0x05
+ 1b0:	86 81       	ldd	r24, Z+6	; 0x06
+ 1b2:	97 81       	ldd	r25, Z+7	; 0x07
+ 1b4:	28 17       	cp	r18, r24
+ 1b6:	39 07       	cpc	r19, r25
+ 1b8:	b8 f4       	brcc	.+46     	; 0x1e8 <QueuePush+0x3e>
+}
+void QueuePush(volatile Queue_s * pq, uint8_t data)
+{ // Push data onto the Queue
+    if (QueueIsFull(pq)) return;
+    // wrap head to beginning of buffer when it reaches the end of the buffer
+    if (pq->head >= pq->max_length) pq->head = 0;
+ 1ba:	82 81       	ldd	r24, Z+2	; 0x02
+ 1bc:	26 81       	ldd	r18, Z+6	; 0x06
+ 1be:	37 81       	ldd	r19, Z+7	; 0x07
+ 1c0:	90 e0       	ldi	r25, 0x00	; 0
+ 1c2:	82 17       	cp	r24, r18
+ 1c4:	93 07       	cpc	r25, r19
+ 1c6:	08 f0       	brcs	.+2      	; 0x1ca <QueuePush+0x20>
+ 1c8:	12 82       	std	Z+2, r1	; 0x02
+    pq->buffer[pq->head++] = data;
+ 1ca:	a0 81       	ld	r26, Z
+ 1cc:	b1 81       	ldd	r27, Z+1	; 0x01
+ 1ce:	82 81       	ldd	r24, Z+2	; 0x02
+ 1d0:	91 e0       	ldi	r25, 0x01	; 1
+ 1d2:	98 0f       	add	r25, r24
+ 1d4:	92 83       	std	Z+2, r25	; 0x02
+ 1d6:	a8 0f       	add	r26, r24
+ 1d8:	b1 1d       	adc	r27, r1
+ 1da:	6c 93       	st	X, r22
+    pq->length++;
+ 1dc:	84 81       	ldd	r24, Z+4	; 0x04
+ 1de:	95 81       	ldd	r25, Z+5	; 0x05
+ 1e0:	01 96       	adiw	r24, 0x01	; 1
+ 1e2:	95 83       	std	Z+5, r25	; 0x05
+ 1e4:	84 83       	std	Z+4, r24	; 0x04
+ 1e6:	08 95       	ret
+ 1e8:	08 95       	ret
+
+000001ea <QueuePop>:
+}
+uint8_t QueuePop(volatile Queue_s *pq)
+{
+ 1ea:	fc 01       	movw	r30, r24
+    if (pq->length >= pq->max_length) return true;
+    return false;
+}
+bool QueueIsEmpty(volatile Queue_s * pq)
+{ // Return true if Queue is empty
+    if (pq->length == 0) return true;
+ 1ec:	84 81       	ldd	r24, Z+4	; 0x04
+ 1ee:	95 81       	ldd	r25, Z+5	; 0x05
+ 1f0:	89 2b       	or	r24, r25
+ 1f2:	11 f4       	brne	.+4      	; 0x1f8 <QueuePop+0xe>
+    pq->buffer[pq->head++] = data;
+    pq->length++;
+}
+uint8_t QueuePop(volatile Queue_s *pq)
+{
+    if (QueueIsEmpty(pq)) return 0;
+ 1f4:	80 e0       	ldi	r24, 0x00	; 0
+ 1f6:	08 95       	ret
+    // wrap tail to beginning of buffer when it reaches the end of the buffer
+    if (pq->tail >= pq->max_length) pq->tail = 0;
+ 1f8:	83 81       	ldd	r24, Z+3	; 0x03
+ 1fa:	26 81       	ldd	r18, Z+6	; 0x06
+ 1fc:	37 81       	ldd	r19, Z+7	; 0x07
+ 1fe:	90 e0       	ldi	r25, 0x00	; 0
+ 200:	82 17       	cp	r24, r18
+ 202:	93 07       	cpc	r25, r19
+ 204:	08 f0       	brcs	.+2      	; 0x208 <QueuePop+0x1e>
+ 206:	13 82       	std	Z+3, r1	; 0x03
+    pq->length--;
+ 208:	84 81       	ldd	r24, Z+4	; 0x04
+ 20a:	95 81       	ldd	r25, Z+5	; 0x05
+ 20c:	01 97       	sbiw	r24, 0x01	; 1
+ 20e:	95 83       	std	Z+5, r25	; 0x05
+ 210:	84 83       	std	Z+4, r24	; 0x04
+    return pq->buffer[pq->tail++];
+ 212:	80 81       	ld	r24, Z
+ 214:	91 81       	ldd	r25, Z+1	; 0x01
+ 216:	23 81       	ldd	r18, Z+3	; 0x03
+ 218:	31 e0       	ldi	r19, 0x01	; 1
+ 21a:	32 0f       	add	r19, r18
+ 21c:	33 83       	std	Z+3, r19	; 0x03
+ 21e:	fc 01       	movw	r30, r24
+ 220:	e2 0f       	add	r30, r18
+ 222:	f1 1d       	adc	r31, r1
+ 224:	80 81       	ld	r24, Z
+ 226:	08 95       	ret
+
+00000228 <QueueIsFull>:
+}
+bool QueueIsFull(volatile Queue_s * pq)
+{ // Return true if Queue is full
+    if (pq->length >= pq->max_length) return true;
+ 228:	fc 01       	movw	r30, r24
+ 22a:	44 81       	ldd	r20, Z+4	; 0x04
+ 22c:	55 81       	ldd	r21, Z+5	; 0x05
+ 22e:	26 81       	ldd	r18, Z+6	; 0x06
+ 230:	37 81       	ldd	r19, Z+7	; 0x07
+ 232:	81 e0       	ldi	r24, 0x01	; 1
+ 234:	42 17       	cp	r20, r18
+ 236:	53 07       	cpc	r21, r19
+ 238:	08 f4       	brcc	.+2      	; 0x23c <QueueIsFull+0x14>
+ 23a:	80 e0       	ldi	r24, 0x00	; 0
+    return false;
+}
+ 23c:	08 95       	ret
+
+0000023e <QueueIsEmpty>:
+bool QueueIsEmpty(volatile Queue_s * pq)
+{ // Return true if Queue is empty
+    if (pq->length == 0) return true;
+ 23e:	fc 01       	movw	r30, r24
+ 240:	24 81       	ldd	r18, Z+4	; 0x04
+ 242:	35 81       	ldd	r19, Z+5	; 0x05
+ 244:	81 e0       	ldi	r24, 0x01	; 1
+ 246:	23 2b       	or	r18, r19
+ 248:	09 f0       	breq	.+2      	; 0x24c <QueueIsEmpty+0xe>
+ 24a:	80 e0       	ldi	r24, 0x00	; 0
+    return false;
+}
+ 24c:	08 95       	ret
+
+0000024e <GlobalInterruptEnable_Implementation>:
+    // clear rising edge flag
+    SetBit(Pwm_tifr0, Pwm_Ocf0a); // sbi	0x15, 1	; 21
+    // wait until rising edge flag sets
+    while(BitIsClear(Pwm_tifr0, Pwm_Ocf0a)); // sbis	0x15, 1	; 21
+    // clear rising edge flag
+    SetBit(Pwm_tifr0, Pwm_Ocf0a); // sbi	0x15, 1	; 21
+ 24e:	78 94       	sei
+ 250:	08 95       	ret
+
+00000252 <GlobalInterruptDisable_Implementation>:
+ 252:	f8 94       	cli
+ 254:	08 95       	ret
+
+00000256 <NullCommand>:
+ 256:	08 95       	ret
+
+00000258 <GetSensorConfig>:
+ 258:	cf 93       	push	r28
+ 25a:	df 93       	push	r29
+ 25c:	00 d0       	rcall	.+0      	; 0x25e <GetSensorConfig+0x6>
+ 25e:	00 d0       	rcall	.+0      	; 0x260 <GetSensorConfig+0x8>
+ 260:	cd b7       	in	r28, 0x3d	; 61
+ 262:	de b7       	in	r29, 0x3e	; 62
+ 264:	1c 82       	std	Y+4, r1	; 0x04
+ 266:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 26a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 26e:	61 e0       	ldi	r22, 0x01	; 1
+ 270:	70 e0       	ldi	r23, 0x00	; 0
+ 272:	ce 01       	movw	r24, r28
+ 274:	04 96       	adiw	r24, 0x04	; 4
+ 276:	09 95       	icall
+ 278:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
+ 27c:	89 83       	std	Y+1, r24	; 0x01
+ 27e:	80 91 57 01 	lds	r24, 0x0157	; 0x800157 <gain>
+ 282:	8a 83       	std	Y+2, r24	; 0x02
+ 284:	80 91 56 01 	lds	r24, 0x0156	; 0x800156 <active_rows>
+ 288:	8b 83       	std	Y+3, r24	; 0x03
+ 28a:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 28e:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 292:	63 e0       	ldi	r22, 0x03	; 3
+ 294:	70 e0       	ldi	r23, 0x00	; 0
+ 296:	ce 01       	movw	r24, r28
+ 298:	01 96       	adiw	r24, 0x01	; 1
+ 29a:	09 95       	icall
+ 29c:	0f 90       	pop	r0
+ 29e:	0f 90       	pop	r0
+ 2a0:	0f 90       	pop	r0
+ 2a2:	0f 90       	pop	r0
+ 2a4:	df 91       	pop	r29
+ 2a6:	cf 91       	pop	r28
+ 2a8:	08 95       	ret
+
+000002aa <ProgramPhotodiodeArray_Implementation>:
+ 2aa:	cf 92       	push	r12
+ 2ac:	df 92       	push	r13
+ 2ae:	ef 92       	push	r14
+ 2b0:	ff 92       	push	r15
+ 2b2:	6b 01       	movw	r12, r22
+ 2b4:	7c 01       	movw	r14, r24
+ 2b6:	aa 9a       	sbi	0x15, 2	; 21
+ 2b8:	aa 9b       	sbis	0x15, 2	; 21
+ 2ba:	fe cf       	rjmp	.-4      	; 0x2b8 <ProgramPhotodiodeArray_Implementation+0xe>
+ 2bc:	aa 9a       	sbi	0x15, 2	; 21
+ 2be:	28 9a       	sbi	0x05, 0	; 5
+ 2c0:	20 e0       	ldi	r18, 0x00	; 0
+ 2c2:	30 e0       	ldi	r19, 0x00	; 0
+ 2c4:	41 e0       	ldi	r20, 0x01	; 1
+ 2c6:	50 e0       	ldi	r21, 0x00	; 0
+ 2c8:	ca 01       	movw	r24, r20
+ 2ca:	02 2e       	mov	r0, r18
+ 2cc:	02 c0       	rjmp	.+4      	; 0x2d2 <ProgramPhotodiodeArray_Implementation+0x28>
+ 2ce:	88 0f       	add	r24, r24
+ 2d0:	99 1f       	adc	r25, r25
+ 2d2:	0a 94       	dec	r0
+ 2d4:	e2 f7       	brpl	.-8      	; 0x2ce <ProgramPhotodiodeArray_Implementation+0x24>
+ 2d6:	09 2e       	mov	r0, r25
+ 2d8:	00 0c       	add	r0, r0
+ 2da:	aa 0b       	sbc	r26, r26
+ 2dc:	bb 0b       	sbc	r27, r27
+ 2de:	8c 21       	and	r24, r12
+ 2e0:	9d 21       	and	r25, r13
+ 2e2:	ae 21       	and	r26, r14
+ 2e4:	bf 21       	and	r27, r15
+ 2e6:	89 2b       	or	r24, r25
+ 2e8:	8a 2b       	or	r24, r26
+ 2ea:	8b 2b       	or	r24, r27
+ 2ec:	a9 f0       	breq	.+42     	; 0x318 <ProgramPhotodiodeArray_Implementation+0x6e>
+ 2ee:	5e 9a       	sbi	0x0b, 6	; 11
+ 2f0:	a9 9a       	sbi	0x15, 1	; 21
+ 2f2:	a9 9b       	sbis	0x15, 1	; 21
+ 2f4:	fe cf       	rjmp	.-4      	; 0x2f2 <ProgramPhotodiodeArray_Implementation+0x48>
+ 2f6:	a9 9a       	sbi	0x15, 1	; 21
+ 2f8:	aa 9a       	sbi	0x15, 2	; 21
+ 2fa:	aa 9b       	sbis	0x15, 2	; 21
+ 2fc:	fe cf       	rjmp	.-4      	; 0x2fa <ProgramPhotodiodeArray_Implementation+0x50>
+ 2fe:	aa 9a       	sbi	0x15, 2	; 21
+ 300:	2f 5f       	subi	r18, 0xFF	; 255
+ 302:	3f 4f       	sbci	r19, 0xFF	; 255
+ 304:	2c 31       	cpi	r18, 0x1C	; 28
+ 306:	31 05       	cpc	r19, r1
+ 308:	f9 f6       	brne	.-66     	; 0x2c8 <ProgramPhotodiodeArray_Implementation+0x1e>
+ 30a:	5e 98       	cbi	0x0b, 6	; 11
+ 30c:	28 98       	cbi	0x05, 0	; 5
+ 30e:	ff 90       	pop	r15
+ 310:	ef 90       	pop	r14
+ 312:	df 90       	pop	r13
+ 314:	cf 90       	pop	r12
+ 316:	08 95       	ret
+ 318:	5e 98       	cbi	0x0b, 6	; 11
+ 31a:	ea cf       	rjmp	.-44     	; 0x2f0 <ProgramPhotodiodeArray_Implementation+0x46>
+
+0000031c <GetExposure>:
+ 31c:	cf 93       	push	r28
+ 31e:	df 93       	push	r29
+ 320:	00 d0       	rcall	.+0      	; 0x322 <GetExposure+0x6>
+ 322:	1f 92       	push	r1
+ 324:	cd b7       	in	r28, 0x3d	; 61
+ 326:	de b7       	in	r29, 0x3e	; 62
+ 328:	1b 82       	std	Y+3, r1	; 0x03
+ 32a:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 32e:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 332:	61 e0       	ldi	r22, 0x01	; 1
+ 334:	70 e0       	ldi	r23, 0x00	; 0
+ 336:	ce 01       	movw	r24, r28
+ 338:	03 96       	adiw	r24, 0x03	; 3
+ 33a:	09 95       	icall
+ 33c:	80 91 4e 01 	lds	r24, 0x014E	; 0x80014e <exposure_ticks>
+ 340:	90 91 4f 01 	lds	r25, 0x014F	; 0x80014f <exposure_ticks+0x1>
+ 344:	99 83       	std	Y+1, r25	; 0x01
+ 346:	8a 83       	std	Y+2, r24	; 0x02
+ 348:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 34c:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 350:	62 e0       	ldi	r22, 0x02	; 2
+ 352:	70 e0       	ldi	r23, 0x00	; 0
+ 354:	ce 01       	movw	r24, r28
+ 356:	01 96       	adiw	r24, 0x01	; 1
+ 358:	09 95       	icall
+ 35a:	0f 90       	pop	r0
+ 35c:	0f 90       	pop	r0
+ 35e:	0f 90       	pop	r0
+ 360:	df 91       	pop	r29
+ 362:	cf 91       	pop	r28
+ 364:	08 95       	ret
+
+00000366 <CaptureFrame>:
+ 366:	cf 93       	push	r28
+ 368:	df 93       	push	r29
+ 36a:	00 d0       	rcall	.+0      	; 0x36c <CaptureFrame+0x6>
+ 36c:	1f 92       	push	r1
+ 36e:	cd b7       	in	r28, 0x3d	; 61
+ 370:	de b7       	in	r29, 0x3e	; 62
+ 372:	1b 82       	std	Y+3, r1	; 0x03
+ 374:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 378:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 37c:	61 e0       	ldi	r22, 0x01	; 1
+ 37e:	70 e0       	ldi	r23, 0x00	; 0
+ 380:	ce 01       	movw	r24, r28
+ 382:	03 96       	adiw	r24, 0x03	; 3
+ 384:	09 95       	icall
+ 386:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <GetFrame>
+ 38a:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <GetFrame+0x1>
+ 38e:	09 95       	icall
+ 390:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
+ 394:	81 30       	cpi	r24, 0x01	; 1
+ 396:	49 f1       	breq	.+82     	; 0x3ea <CaptureFrame+0x84>
+ 398:	90 e1       	ldi	r25, 0x10	; 16
+ 39a:	83 e0       	ldi	r24, 0x03	; 3
+ 39c:	89 83       	std	Y+1, r24	; 0x01
+ 39e:	9a 83       	std	Y+2, r25	; 0x02
+ 3a0:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 3a4:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 3a8:	62 e0       	ldi	r22, 0x02	; 2
+ 3aa:	70 e0       	ldi	r23, 0x00	; 0
+ 3ac:	ce 01       	movw	r24, r28
+ 3ae:	01 96       	adiw	r24, 0x01	; 1
+ 3b0:	09 95       	icall
+ 3b2:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 3b6:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 3ba:	61 e0       	ldi	r22, 0x01	; 1
+ 3bc:	70 e0       	ldi	r23, 0x00	; 0
+ 3be:	ce 01       	movw	r24, r28
+ 3c0:	03 96       	adiw	r24, 0x03	; 3
+ 3c2:	09 95       	icall
+ 3c4:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
+ 3c8:	81 30       	cpi	r24, 0x01	; 1
+ 3ca:	89 f0       	breq	.+34     	; 0x3ee <CaptureFrame+0x88>
+ 3cc:	60 e2       	ldi	r22, 0x20	; 32
+ 3ce:	76 e0       	ldi	r23, 0x06	; 6
+ 3d0:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 3d4:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 3d8:	88 e5       	ldi	r24, 0x58	; 88
+ 3da:	91 e0       	ldi	r25, 0x01	; 1
+ 3dc:	09 95       	icall
+ 3de:	0f 90       	pop	r0
+ 3e0:	0f 90       	pop	r0
+ 3e2:	0f 90       	pop	r0
+ 3e4:	df 91       	pop	r29
+ 3e6:	cf 91       	pop	r28
+ 3e8:	08 95       	ret
+ 3ea:	98 e8       	ldi	r25, 0x88	; 136
+ 3ec:	d7 cf       	rjmp	.-82     	; 0x39c <CaptureFrame+0x36>
+ 3ee:	60 e1       	ldi	r22, 0x10	; 16
+ 3f0:	73 e0       	ldi	r23, 0x03	; 3
+ 3f2:	ee cf       	rjmp	.-36     	; 0x3d0 <CaptureFrame+0x6a>
+
+000003f4 <StartAdcReadout>:
+ 3f4:	5a 98       	cbi	0x0b, 2	; 11
+ 3f6:	08 95       	ret
+
+000003f8 <LisRunClkAt50kHz_Implementation>:
+ 3f8:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <PwmResetCounterAtTop>
+ 3fc:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <PwmResetCounterAtTop+0x1>
+ 400:	09 95       	icall
+ 402:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <PwmTopIsOcr0a>
+ 406:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <PwmTopIsOcr0a+0x1>
+ 40a:	09 95       	icall
+ 40c:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <PwmClkIsCpuClk>
+ 410:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <PwmClkIsCpuClk+0x1>
+ 414:	09 95       	icall
+ 416:	88 ec       	ldi	r24, 0xC8	; 200
+ 418:	87 bd       	out	0x27, r24	; 39
+ 41a:	87 b5       	in	r24, 0x27	; 39
+ 41c:	86 95       	lsr	r24
+ 41e:	88 bd       	out	0x28, r24	; 40
+ 420:	08 95       	ret
+
+00000422 <LisClkOn_Implementation>:
+ 422:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <PwmEnableOutputSetUntilMatch>
+ 426:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <PwmEnableOutputSetUntilMatch+0x1>
+ 42a:	09 94       	ijmp
+
+0000042c <ResetCounterAtTop>:
+ 42c:	84 b5       	in	r24, 0x24	; 36
+ 42e:	81 60       	ori	r24, 0x01	; 1
+ 430:	84 bd       	out	0x24, r24	; 36
+ 432:	84 b5       	in	r24, 0x24	; 36
+ 434:	82 60       	ori	r24, 0x02	; 2
+ 436:	84 bd       	out	0x24, r24	; 36
+ 438:	08 95       	ret
+
+0000043a <TopIsOcr0a>:
+ 43a:	85 b5       	in	r24, 0x25	; 37
+ 43c:	88 60       	ori	r24, 0x08	; 8
+ 43e:	85 bd       	out	0x25, r24	; 37
+ 440:	08 95       	ret
+
+00000442 <PwmClkIsCpuClk_Implementation>:
+ 442:	85 b5       	in	r24, 0x25	; 37
+ 444:	81 60       	ori	r24, 0x01	; 1
+ 446:	85 bd       	out	0x25, r24	; 37
+ 448:	85 b5       	in	r24, 0x25	; 37
+ 44a:	8d 7f       	andi	r24, 0xFD	; 253
+ 44c:	85 bd       	out	0x25, r24	; 37
+ 44e:	85 b5       	in	r24, 0x25	; 37
+ 450:	8b 7f       	andi	r24, 0xFB	; 251
+ 452:	85 bd       	out	0x25, r24	; 37
+ 454:	08 95       	ret
+
+00000456 <EnableOutputSetUntilMatch>:
+ 456:	84 b5       	in	r24, 0x24	; 36
+ 458:	8f 7e       	andi	r24, 0xEF	; 239
+ 45a:	84 bd       	out	0x24, r24	; 36
+ 45c:	84 b5       	in	r24, 0x24	; 36
+ 45e:	80 62       	ori	r24, 0x20	; 32
+ 460:	84 bd       	out	0x24, r24	; 36
+ 462:	08 95       	ret
+
+00000464 <WriteSpiMaster_Implementation>:
+ 464:	ef 92       	push	r14
+ 466:	ff 92       	push	r15
+ 468:	0f 93       	push	r16
+ 46a:	1f 93       	push	r17
+ 46c:	cf 93       	push	r28
+ 46e:	df 93       	push	r29
+ 470:	7b 01       	movw	r14, r22
+ 472:	61 15       	cp	r22, r1
+ 474:	71 05       	cpc	r23, r1
+ 476:	c9 f0       	breq	.+50     	; 0x4aa <WriteSpiMaster_Implementation+0x46>
+ 478:	ec 01       	movw	r28, r24
+ 47a:	8c 01       	movw	r16, r24
+ 47c:	06 0f       	add	r16, r22
+ 47e:	17 1f       	adc	r17, r23
+ 480:	89 91       	ld	r24, Y+
+ 482:	8e bd       	out	0x2e, r24	; 46
+ 484:	29 98       	cbi	0x05, 1	; 5
+ 486:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 48a:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 48e:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 492:	81 11       	cpse	r24, r1
+ 494:	f8 cf       	rjmp	.-16     	; 0x486 <WriteSpiMaster_Implementation+0x22>
+ 496:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 49a:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 49e:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 4a2:	29 9a       	sbi	0x05, 1	; 5
+ 4a4:	c0 17       	cp	r28, r16
+ 4a6:	d1 07       	cpc	r29, r17
+ 4a8:	59 f7       	brne	.-42     	; 0x480 <WriteSpiMaster_Implementation+0x1c>
+ 4aa:	c7 01       	movw	r24, r14
+ 4ac:	df 91       	pop	r29
+ 4ae:	cf 91       	pop	r28
+ 4b0:	1f 91       	pop	r17
+ 4b2:	0f 91       	pop	r16
+ 4b4:	ff 90       	pop	r15
+ 4b6:	ef 90       	pop	r14
+ 4b8:	08 95       	ret
+
+000004ba <GetSensorLED>:
+ 4ba:	cf 93       	push	r28
+ 4bc:	df 93       	push	r29
+ 4be:	00 d0       	rcall	.+0      	; 0x4c0 <GetSensorLED+0x6>
+ 4c0:	cd b7       	in	r28, 0x3d	; 61
+ 4c2:	de b7       	in	r29, 0x3e	; 62
+ 4c4:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 4c8:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 4cc:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 4d0:	81 11       	cpse	r24, r1
+ 4d2:	f8 cf       	rjmp	.-16     	; 0x4c4 <GetSensorLED+0xa>
+ 4d4:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 4d8:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 4dc:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 4e0:	82 30       	cpi	r24, 0x02	; 2
+ 4e2:	78 f5       	brcc	.+94     	; 0x542 <GetSensorLED+0x88>
+ 4e4:	97 b1       	in	r25, 0x07	; 7
+ 4e6:	21 e0       	ldi	r18, 0x01	; 1
+ 4e8:	30 e0       	ldi	r19, 0x00	; 0
+ 4ea:	02 c0       	rjmp	.+4      	; 0x4f0 <GetSensorLED+0x36>
+ 4ec:	22 0f       	add	r18, r18
+ 4ee:	33 1f       	adc	r19, r19
+ 4f0:	8a 95       	dec	r24
+ 4f2:	e2 f7       	brpl	.-8      	; 0x4ec <GetSensorLED+0x32>
+ 4f4:	89 2f       	mov	r24, r25
+ 4f6:	90 e0       	ldi	r25, 0x00	; 0
+ 4f8:	82 23       	and	r24, r18
+ 4fa:	93 23       	and	r25, r19
+ 4fc:	89 2b       	or	r24, r25
+ 4fe:	89 f4       	brne	.+34     	; 0x522 <GetSensorLED+0x68>
+ 500:	80 e0       	ldi	r24, 0x00	; 0
+ 502:	19 82       	std	Y+1, r1	; 0x01
+ 504:	8a 83       	std	Y+2, r24	; 0x02
+ 506:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 50a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 50e:	62 e0       	ldi	r22, 0x02	; 2
+ 510:	70 e0       	ldi	r23, 0x00	; 0
+ 512:	ce 01       	movw	r24, r28
+ 514:	01 96       	adiw	r24, 0x01	; 1
+ 516:	09 95       	icall
+ 518:	0f 90       	pop	r0
+ 51a:	0f 90       	pop	r0
+ 51c:	df 91       	pop	r29
+ 51e:	cf 91       	pop	r28
+ 520:	08 95       	ret
+ 522:	87 b1       	in	r24, 0x07	; 7
+ 524:	90 e0       	ldi	r25, 0x00	; 0
+ 526:	82 23       	and	r24, r18
+ 528:	93 23       	and	r25, r19
+ 52a:	89 2b       	or	r24, r25
+ 52c:	41 f0       	breq	.+16     	; 0x53e <GetSensorLED+0x84>
+ 52e:	88 b1       	in	r24, 0x08	; 8
+ 530:	90 e0       	ldi	r25, 0x00	; 0
+ 532:	28 23       	and	r18, r24
+ 534:	39 23       	and	r19, r25
+ 536:	23 2b       	or	r18, r19
+ 538:	11 f0       	breq	.+4      	; 0x53e <GetSensorLED+0x84>
+ 53a:	82 e0       	ldi	r24, 0x02	; 2
+ 53c:	e2 cf       	rjmp	.-60     	; 0x502 <GetSensorLED+0x48>
+ 53e:	81 e0       	ldi	r24, 0x01	; 1
+ 540:	e0 cf       	rjmp	.-64     	; 0x502 <GetSensorLED+0x48>
+ 542:	81 e0       	ldi	r24, 0x01	; 1
+ 544:	89 83       	std	Y+1, r24	; 0x01
+ 546:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 54a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 54e:	61 e0       	ldi	r22, 0x01	; 1
+ 550:	70 e0       	ldi	r23, 0x00	; 0
+ 552:	ce 01       	movw	r24, r28
+ 554:	01 96       	adiw	r24, 0x01	; 1
+ 556:	09 95       	icall
+ 558:	0f 90       	pop	r0
+ 55a:	0f 90       	pop	r0
+ 55c:	df 91       	pop	r29
+ 55e:	cf 91       	pop	r28
+ 560:	08 95       	ret
+
+00000562 <SetSensorLED>:
+ 562:	1f 93       	push	r17
+ 564:	cf 93       	push	r28
+ 566:	df 93       	push	r29
+ 568:	1f 92       	push	r1
+ 56a:	cd b7       	in	r28, 0x3d	; 61
+ 56c:	de b7       	in	r29, 0x3e	; 62
+ 56e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 572:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 576:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 57a:	81 11       	cpse	r24, r1
+ 57c:	f8 cf       	rjmp	.-16     	; 0x56e <SetSensorLED+0xc>
+ 57e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 582:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 586:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 58a:	18 2f       	mov	r17, r24
+ 58c:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 590:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 594:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 598:	81 11       	cpse	r24, r1
+ 59a:	f8 cf       	rjmp	.-16     	; 0x58c <SetSensorLED+0x2a>
+ 59c:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 5a0:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 5a4:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 5a8:	12 30       	cpi	r17, 0x02	; 2
+ 5aa:	30 f4       	brcc	.+12     	; 0x5b8 <SetSensorLED+0x56>
+ 5ac:	88 23       	and	r24, r24
+ 5ae:	a1 f0       	breq	.+40     	; 0x5d8 <SetSensorLED+0x76>
+ 5b0:	81 30       	cpi	r24, 0x01	; 1
+ 5b2:	89 f1       	breq	.+98     	; 0x616 <SetSensorLED+0xb4>
+ 5b4:	82 30       	cpi	r24, 0x02	; 2
+ 5b6:	01 f1       	breq	.+64     	; 0x5f8 <SetSensorLED+0x96>
+ 5b8:	81 e0       	ldi	r24, 0x01	; 1
+ 5ba:	89 83       	std	Y+1, r24	; 0x01
+ 5bc:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 5c0:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 5c4:	61 e0       	ldi	r22, 0x01	; 1
+ 5c6:	70 e0       	ldi	r23, 0x00	; 0
+ 5c8:	ce 01       	movw	r24, r28
+ 5ca:	01 96       	adiw	r24, 0x01	; 1
+ 5cc:	09 95       	icall
+ 5ce:	0f 90       	pop	r0
+ 5d0:	df 91       	pop	r29
+ 5d2:	cf 91       	pop	r28
+ 5d4:	1f 91       	pop	r17
+ 5d6:	08 95       	ret
+ 5d8:	27 b1       	in	r18, 0x07	; 7
+ 5da:	81 e0       	ldi	r24, 0x01	; 1
+ 5dc:	90 e0       	ldi	r25, 0x00	; 0
+ 5de:	01 c0       	rjmp	.+2      	; 0x5e2 <SetSensorLED+0x80>
+ 5e0:	88 0f       	add	r24, r24
+ 5e2:	1a 95       	dec	r17
+ 5e4:	ea f7       	brpl	.-6      	; 0x5e0 <SetSensorLED+0x7e>
+ 5e6:	80 95       	com	r24
+ 5e8:	92 2f       	mov	r25, r18
+ 5ea:	98 23       	and	r25, r24
+ 5ec:	97 b9       	out	0x07, r25	; 7
+ 5ee:	98 b1       	in	r25, 0x08	; 8
+ 5f0:	89 23       	and	r24, r25
+ 5f2:	88 b9       	out	0x08, r24	; 8
+ 5f4:	19 82       	std	Y+1, r1	; 0x01
+ 5f6:	e2 cf       	rjmp	.-60     	; 0x5bc <SetSensorLED+0x5a>
+ 5f8:	28 b1       	in	r18, 0x08	; 8
+ 5fa:	81 e0       	ldi	r24, 0x01	; 1
+ 5fc:	90 e0       	ldi	r25, 0x00	; 0
+ 5fe:	01 c0       	rjmp	.+2      	; 0x602 <SetSensorLED+0xa0>
+ 600:	88 0f       	add	r24, r24
+ 602:	1a 95       	dec	r17
+ 604:	ea f7       	brpl	.-6      	; 0x600 <SetSensorLED+0x9e>
+ 606:	92 2f       	mov	r25, r18
+ 608:	98 2b       	or	r25, r24
+ 60a:	98 b9       	out	0x08, r25	; 8
+ 60c:	97 b1       	in	r25, 0x07	; 7
+ 60e:	89 2b       	or	r24, r25
+ 610:	87 b9       	out	0x07, r24	; 7
+ 612:	19 82       	std	Y+1, r1	; 0x01
+ 614:	d3 cf       	rjmp	.-90     	; 0x5bc <SetSensorLED+0x5a>
+ 616:	28 b1       	in	r18, 0x08	; 8
+ 618:	81 e0       	ldi	r24, 0x01	; 1
+ 61a:	90 e0       	ldi	r25, 0x00	; 0
+ 61c:	01 c0       	rjmp	.+2      	; 0x620 <SetSensorLED+0xbe>
+ 61e:	88 0f       	add	r24, r24
+ 620:	1a 95       	dec	r17
+ 622:	ea f7       	brpl	.-6      	; 0x61e <SetSensorLED+0xbc>
+ 624:	98 2f       	mov	r25, r24
+ 626:	90 95       	com	r25
+ 628:	92 23       	and	r25, r18
+ 62a:	ef cf       	rjmp	.-34     	; 0x60a <SetSensorLED+0xa8>
+
+0000062c <SetExposure>:
+ 62c:	0f 93       	push	r16
+ 62e:	1f 93       	push	r17
+ 630:	cf 93       	push	r28
+ 632:	df 93       	push	r29
+ 634:	1f 92       	push	r1
+ 636:	cd b7       	in	r28, 0x3d	; 61
+ 638:	de b7       	in	r29, 0x3e	; 62
+ 63a:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 63e:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 642:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 646:	81 11       	cpse	r24, r1
+ 648:	f8 cf       	rjmp	.-16     	; 0x63a <SetExposure+0xe>
+ 64a:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 64e:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 652:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 656:	08 2f       	mov	r16, r24
+ 658:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 65c:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 660:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 664:	81 11       	cpse	r24, r1
+ 666:	f8 cf       	rjmp	.-16     	; 0x658 <SetExposure+0x2c>
+ 668:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 66c:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 670:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 674:	18 2f       	mov	r17, r24
+ 676:	19 82       	std	Y+1, r1	; 0x01
+ 678:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 67c:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 680:	61 e0       	ldi	r22, 0x01	; 1
+ 682:	70 e0       	ldi	r23, 0x00	; 0
+ 684:	ce 01       	movw	r24, r28
+ 686:	01 96       	adiw	r24, 0x01	; 1
+ 688:	09 95       	icall
+ 68a:	81 2f       	mov	r24, r17
+ 68c:	90 e0       	ldi	r25, 0x00	; 0
+ 68e:	90 2b       	or	r25, r16
+ 690:	90 93 4f 01 	sts	0x014F, r25	; 0x80014f <exposure_ticks+0x1>
+ 694:	80 93 4e 01 	sts	0x014E, r24	; 0x80014e <exposure_ticks>
+ 698:	0f 90       	pop	r0
+ 69a:	df 91       	pop	r29
+ 69c:	cf 91       	pop	r28
+ 69e:	1f 91       	pop	r17
+ 6a0:	0f 91       	pop	r16
+ 6a2:	08 95       	ret
+
+000006a4 <GetFrame_Implementation>:
+ 6a4:	aa 9a       	sbi	0x15, 2	; 21
+ 6a6:	aa 9b       	sbis	0x15, 2	; 21
+ 6a8:	fe cf       	rjmp	.-4      	; 0x6a6 <GetFrame_Implementation+0x2>
+ 6aa:	aa 9a       	sbi	0x15, 2	; 21
+ 6ac:	5e 9a       	sbi	0x0b, 6	; 11
+ 6ae:	80 91 4e 01 	lds	r24, 0x014E	; 0x80014e <exposure_ticks>
+ 6b2:	90 91 4f 01 	lds	r25, 0x014F	; 0x80014f <exposure_ticks+0x1>
+ 6b6:	89 2b       	or	r24, r25
+ 6b8:	91 f0       	breq	.+36     	; 0x6de <GetFrame_Implementation+0x3a>
+ 6ba:	81 e0       	ldi	r24, 0x01	; 1
+ 6bc:	90 e0       	ldi	r25, 0x00	; 0
+ 6be:	aa 9a       	sbi	0x15, 2	; 21
+ 6c0:	aa 9b       	sbis	0x15, 2	; 21
+ 6c2:	fe cf       	rjmp	.-4      	; 0x6c0 <GetFrame_Implementation+0x1c>
+ 6c4:	aa 9a       	sbi	0x15, 2	; 21
+ 6c6:	ac 01       	movw	r20, r24
+ 6c8:	4f 5f       	subi	r20, 0xFF	; 255
+ 6ca:	5f 4f       	sbci	r21, 0xFF	; 255
+ 6cc:	20 91 4e 01 	lds	r18, 0x014E	; 0x80014e <exposure_ticks>
+ 6d0:	30 91 4f 01 	lds	r19, 0x014F	; 0x80014f <exposure_ticks+0x1>
+ 6d4:	82 17       	cp	r24, r18
+ 6d6:	93 07       	cpc	r25, r19
+ 6d8:	10 f4       	brcc	.+4      	; 0x6de <GetFrame_Implementation+0x3a>
+ 6da:	ca 01       	movw	r24, r20
+ 6dc:	f0 cf       	rjmp	.-32     	; 0x6be <GetFrame_Implementation+0x1a>
+ 6de:	5e 98       	cbi	0x0b, 6	; 11
+ 6e0:	4f 9b       	sbis	0x09, 7	; 9
+ 6e2:	fe cf       	rjmp	.-4      	; 0x6e0 <GetFrame_Implementation+0x3c>
+ 6e4:	4f 99       	sbic	0x09, 7	; 9
+ 6e6:	fe cf       	rjmp	.-4      	; 0x6e4 <GetFrame_Implementation+0x40>
+ 6e8:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
+ 6ec:	81 30       	cpi	r24, 0x01	; 1
+ 6ee:	69 f1       	breq	.+90     	; 0x74a <GetFrame_Implementation+0xa6>
+ 6f0:	20 e1       	ldi	r18, 0x10	; 16
+ 6f2:	33 e0       	ldi	r19, 0x03	; 3
+ 6f4:	e8 e5       	ldi	r30, 0x58	; 88
+ 6f6:	f1 e0       	ldi	r31, 0x01	; 1
+ 6f8:	22 0f       	add	r18, r18
+ 6fa:	33 1f       	adc	r19, r19
+ 6fc:	28 5a       	subi	r18, 0xA8	; 168
+ 6fe:	3e 4f       	sbci	r19, 0xFE	; 254
+ 700:	a9 9a       	sbi	0x15, 1	; 21
+ 702:	a9 9b       	sbis	0x15, 1	; 21
+ 704:	fe cf       	rjmp	.-4      	; 0x702 <GetFrame_Implementation+0x5e>
+ 706:	a9 9a       	sbi	0x15, 1	; 21
+ 708:	5a 9a       	sbi	0x0b, 2	; 11
+ 70a:	aa 9a       	sbi	0x15, 2	; 21
+ 70c:	aa 9b       	sbis	0x15, 2	; 21
+ 70e:	fe cf       	rjmp	.-4      	; 0x70c <GetFrame_Implementation+0x68>
+ 710:	aa 9a       	sbi	0x15, 2	; 21
+ 712:	5a 98       	cbi	0x0b, 2	; 11
+ 714:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7e00c0>
+ 718:	85 ff       	sbrs	r24, 5
+ 71a:	fc cf       	rjmp	.-8      	; 0x714 <GetFrame_Implementation+0x70>
+ 71c:	10 92 c6 00 	sts	0x00C6, r1	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
+ 720:	10 92 c6 00 	sts	0x00C6, r1	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
+ 724:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7e00c0>
+ 728:	87 ff       	sbrs	r24, 7
+ 72a:	fc cf       	rjmp	.-8      	; 0x724 <GetFrame_Implementation+0x80>
+ 72c:	80 91 c6 00 	lds	r24, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
+ 730:	80 83       	st	Z, r24
+ 732:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7e00c0>
+ 736:	87 ff       	sbrs	r24, 7
+ 738:	fc cf       	rjmp	.-8      	; 0x732 <GetFrame_Implementation+0x8e>
+ 73a:	80 91 c6 00 	lds	r24, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
+ 73e:	81 83       	std	Z+1, r24	; 0x01
+ 740:	32 96       	adiw	r30, 0x02	; 2
+ 742:	e2 17       	cp	r30, r18
+ 744:	f3 07       	cpc	r31, r19
+ 746:	e1 f6       	brne	.-72     	; 0x700 <GetFrame_Implementation+0x5c>
+ 748:	08 95       	ret
+ 74a:	28 e8       	ldi	r18, 0x88	; 136
+ 74c:	31 e0       	ldi	r19, 0x01	; 1
+ 74e:	d2 cf       	rjmp	.-92     	; 0x6f4 <GetFrame_Implementation+0x50>
+
+00000750 <SetSensorConfig>:
+ 750:	0f 93       	push	r16
+ 752:	1f 93       	push	r17
+ 754:	cf 93       	push	r28
+ 756:	df 93       	push	r29
+ 758:	1f 92       	push	r1
+ 75a:	cd b7       	in	r28, 0x3d	; 61
+ 75c:	de b7       	in	r29, 0x3e	; 62
+ 75e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 762:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 766:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 76a:	81 11       	cpse	r24, r1
+ 76c:	f8 cf       	rjmp	.-16     	; 0x75e <SetSensorConfig+0xe>
+ 76e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 772:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 776:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 77a:	80 93 50 01 	sts	0x0150, r24	; 0x800150 <binning>
+ 77e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 782:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 786:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 78a:	81 11       	cpse	r24, r1
+ 78c:	f8 cf       	rjmp	.-16     	; 0x77e <SetSensorConfig+0x2e>
+ 78e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 792:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 796:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 79a:	80 93 57 01 	sts	0x0157, r24	; 0x800157 <gain>
+ 79e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 7a2:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 7a6:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 7aa:	81 11       	cpse	r24, r1
+ 7ac:	f8 cf       	rjmp	.-16     	; 0x79e <SetSensorConfig+0x4e>
+ 7ae:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 7b2:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 7b6:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+ 7ba:	80 93 56 01 	sts	0x0156, r24	; 0x800156 <active_rows>
+ 7be:	90 91 50 01 	lds	r25, 0x0150	; 0x800150 <binning>
+ 7c2:	92 30       	cpi	r25, 0x02	; 2
+ 7c4:	48 f4       	brcc	.+18     	; 0x7d8 <SetSensorConfig+0x88>
+ 7c6:	90 91 57 01 	lds	r25, 0x0157	; 0x800157 <gain>
+ 7ca:	91 30       	cpi	r25, 0x01	; 1
+ 7cc:	b1 f0       	breq	.+44     	; 0x7fa <SetSensorConfig+0xaa>
+ 7ce:	95 32       	cpi	r25, 0x25	; 37
+ 7d0:	a1 f0       	breq	.+40     	; 0x7fa <SetSensorConfig+0xaa>
+ 7d2:	94 50       	subi	r25, 0x04	; 4
+ 7d4:	92 30       	cpi	r25, 0x02	; 2
+ 7d6:	88 f0       	brcs	.+34     	; 0x7fa <SetSensorConfig+0xaa>
+ 7d8:	81 e0       	ldi	r24, 0x01	; 1
+ 7da:	89 83       	std	Y+1, r24	; 0x01
+ 7dc:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 7e0:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 7e4:	61 e0       	ldi	r22, 0x01	; 1
+ 7e6:	70 e0       	ldi	r23, 0x00	; 0
+ 7e8:	ce 01       	movw	r24, r28
+ 7ea:	01 96       	adiw	r24, 0x01	; 1
+ 7ec:	09 95       	icall
+ 7ee:	0f 90       	pop	r0
+ 7f0:	df 91       	pop	r29
+ 7f2:	cf 91       	pop	r28
+ 7f4:	1f 91       	pop	r17
+ 7f6:	0f 91       	pop	r16
+ 7f8:	08 95       	ret
+ 7fa:	80 7e       	andi	r24, 0xE0	; 224
+ 7fc:	69 f7       	brne	.-38     	; 0x7d8 <SetSensorConfig+0x88>
+ 7fe:	19 82       	std	Y+1, r1	; 0x01
+ 800:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 804:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 808:	61 e0       	ldi	r22, 0x01	; 1
+ 80a:	70 e0       	ldi	r23, 0x00	; 0
+ 80c:	ce 01       	movw	r24, r28
+ 80e:	01 96       	adiw	r24, 0x01	; 1
+ 810:	09 95       	icall
+ 812:	00 91 14 01 	lds	r16, 0x0114	; 0x800114 <ProgramPhotodiodeArray>
+ 816:	10 91 15 01 	lds	r17, 0x0115	; 0x800115 <ProgramPhotodiodeArray+0x1>
+ 81a:	20 91 56 01 	lds	r18, 0x0156	; 0x800156 <active_rows>
+ 81e:	30 91 57 01 	lds	r19, 0x0157	; 0x800157 <gain>
+ 822:	a1 e0       	ldi	r26, 0x01	; 1
+ 824:	f0 e0       	ldi	r31, 0x00	; 0
+ 826:	50 e0       	ldi	r21, 0x00	; 0
+ 828:	40 e0       	ldi	r20, 0x00	; 0
+ 82a:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
+ 82e:	81 30       	cpi	r24, 0x01	; 1
+ 830:	09 f0       	breq	.+2      	; 0x834 <SetSensorConfig+0xe4>
+ 832:	a0 e0       	ldi	r26, 0x00	; 0
+ 834:	6a 2f       	mov	r22, r26
+ 836:	7f 2f       	mov	r23, r31
+ 838:	85 2f       	mov	r24, r21
+ 83a:	94 2f       	mov	r25, r20
+ 83c:	35 32       	cpi	r19, 0x25	; 37
+ 83e:	49 f1       	breq	.+82     	; 0x892 <SetSensorConfig+0x142>
+ 840:	34 30       	cpi	r19, 0x04	; 4
+ 842:	49 f1       	breq	.+82     	; 0x896 <SetSensorConfig+0x146>
+ 844:	35 30       	cpi	r19, 0x05	; 5
+ 846:	49 f1       	breq	.+82     	; 0x89a <SetSensorConfig+0x14a>
+ 848:	20 ff       	sbrs	r18, 0
+ 84a:	03 c0       	rjmp	.+6      	; 0x852 <SetSensorConfig+0x102>
+ 84c:	68 60       	ori	r22, 0x08	; 8
+ 84e:	71 62       	ori	r23, 0x21	; 33
+ 850:	84 68       	ori	r24, 0x84	; 132
+ 852:	21 ff       	sbrs	r18, 1
+ 854:	04 c0       	rjmp	.+8      	; 0x85e <SetSensorConfig+0x10e>
+ 856:	60 61       	ori	r22, 0x10	; 16
+ 858:	72 64       	ori	r23, 0x42	; 66
+ 85a:	88 60       	ori	r24, 0x08	; 8
+ 85c:	91 60       	ori	r25, 0x01	; 1
+ 85e:	22 ff       	sbrs	r18, 2
+ 860:	04 c0       	rjmp	.+8      	; 0x86a <SetSensorConfig+0x11a>
+ 862:	60 62       	ori	r22, 0x20	; 32
+ 864:	74 68       	ori	r23, 0x84	; 132
+ 866:	80 61       	ori	r24, 0x10	; 16
+ 868:	92 60       	ori	r25, 0x02	; 2
+ 86a:	23 ff       	sbrs	r18, 3
+ 86c:	04 c0       	rjmp	.+8      	; 0x876 <SetSensorConfig+0x126>
+ 86e:	60 64       	ori	r22, 0x40	; 64
+ 870:	78 60       	ori	r23, 0x08	; 8
+ 872:	81 62       	ori	r24, 0x21	; 33
+ 874:	94 60       	ori	r25, 0x04	; 4
+ 876:	24 ff       	sbrs	r18, 4
+ 878:	04 c0       	rjmp	.+8      	; 0x882 <SetSensorConfig+0x132>
+ 87a:	60 68       	ori	r22, 0x80	; 128
+ 87c:	70 61       	ori	r23, 0x10	; 16
+ 87e:	82 64       	ori	r24, 0x42	; 66
+ 880:	98 60       	ori	r25, 0x08	; 8
+ 882:	f8 01       	movw	r30, r16
+ 884:	09 95       	icall
+ 886:	0f 90       	pop	r0
+ 888:	df 91       	pop	r29
+ 88a:	cf 91       	pop	r28
+ 88c:	1f 91       	pop	r17
+ 88e:	0f 91       	pop	r16
+ 890:	08 95       	ret
+ 892:	64 60       	ori	r22, 0x04	; 4
+ 894:	d9 cf       	rjmp	.-78     	; 0x848 <SetSensorConfig+0xf8>
+ 896:	62 60       	ori	r22, 0x02	; 2
+ 898:	d7 cf       	rjmp	.-82     	; 0x848 <SetSensorConfig+0xf8>
+ 89a:	66 60       	ori	r22, 0x06	; 6
+ 89c:	d5 cf       	rjmp	.-86     	; 0x848 <SetSensorConfig+0xf8>
+
+0000089e <UartSpiInit>:
+ 89e:	cf 93       	push	r28
+ 8a0:	df 93       	push	r29
+ 8a2:	c4 ec       	ldi	r28, 0xC4	; 196
+ 8a4:	d0 e0       	ldi	r29, 0x00	; 0
+ 8a6:	19 82       	std	Y+1, r1	; 0x01
+ 8a8:	18 82       	st	Y, r1
+ 8aa:	54 9a       	sbi	0x0a, 4	; 10
+ 8ac:	0e 94 fa 01 	call	0x3f4	; 0x3f4 <StartAdcReadout>
+ 8b0:	52 9a       	sbi	0x0a, 2	; 10
+ 8b2:	e2 ec       	ldi	r30, 0xC2	; 194
+ 8b4:	f0 e0       	ldi	r31, 0x00	; 0
+ 8b6:	80 81       	ld	r24, Z
+ 8b8:	80 64       	ori	r24, 0x40	; 64
+ 8ba:	80 83       	st	Z, r24
+ 8bc:	80 81       	ld	r24, Z
+ 8be:	80 68       	ori	r24, 0x80	; 128
+ 8c0:	80 83       	st	Z, r24
+ 8c2:	80 81       	ld	r24, Z
+ 8c4:	81 60       	ori	r24, 0x01	; 1
+ 8c6:	80 83       	st	Z, r24
+ 8c8:	80 81       	ld	r24, Z
+ 8ca:	82 60       	ori	r24, 0x02	; 2
+ 8cc:	80 83       	st	Z, r24
+ 8ce:	80 81       	ld	r24, Z
+ 8d0:	8b 7f       	andi	r24, 0xFB	; 251
+ 8d2:	80 83       	st	Z, r24
+ 8d4:	e1 ec       	ldi	r30, 0xC1	; 193
+ 8d6:	f0 e0       	ldi	r31, 0x00	; 0
+ 8d8:	80 81       	ld	r24, Z
+ 8da:	80 61       	ori	r24, 0x10	; 16
+ 8dc:	80 83       	st	Z, r24
+ 8de:	80 81       	ld	r24, Z
+ 8e0:	88 60       	ori	r24, 0x08	; 8
+ 8e2:	80 83       	st	Z, r24
+ 8e4:	19 82       	std	Y+1, r1	; 0x01
+ 8e6:	18 82       	st	Y, r1
+ 8e8:	df 91       	pop	r29
+ 8ea:	cf 91       	pop	r28
+ 8ec:	08 95       	ret
+
+000008ee <LisInit>:
+ 8ee:	20 9a       	sbi	0x04, 0	; 4
+ 8f0:	28 98       	cbi	0x05, 0	; 5
+ 8f2:	55 9a       	sbi	0x0a, 5	; 10
+ 8f4:	56 9a       	sbi	0x0a, 6	; 10
+ 8f6:	5e 98       	cbi	0x0b, 6	; 11
+ 8f8:	57 98       	cbi	0x0a, 7	; 10
+ 8fa:	e0 91 12 01 	lds	r30, 0x0112	; 0x800112 <LisRunClkAt50kHz>
+ 8fe:	f0 91 13 01 	lds	r31, 0x0113	; 0x800113 <LisRunClkAt50kHz+0x1>
+ 902:	09 95       	icall
+ 904:	e0 91 10 01 	lds	r30, 0x0110	; 0x800110 <LisClkOn>
+ 908:	f0 91 11 01 	lds	r31, 0x0111	; 0x800111 <LisClkOn+0x1>
+ 90c:	09 94       	ijmp
+
+0000090e <main>:
+/* =====[ Allocate memory for one Frame of pixel data ]===== */
+/* #define npixels 784 */
+uint8_t frame[npixels*2];
+
+int main()
+{
+ 90e:	cf 93       	push	r28
+ 910:	df 93       	push	r29
+ 912:	1f 92       	push	r1
+ 914:	cd b7       	in	r28, 0x3d	; 61
+ 916:	de b7       	in	r29, 0x3e	; 62
+inline void BiColorLedOn(uint8_t led_name)
+{
+    /** LED defaults to green when turned on.
+     * To blink red, remember to turn the LED
+     * red *each time* it is turned on. */
+    SetBit(BiColorLed_ddr, led_name);
+ 918:	38 9a       	sbi	0x07, 0	; 7
+ 91a:	39 9a       	sbi	0x07, 1	; 7
+/* =====[ API ]===== */
+/** These are all commands. Read them as actions, not queries.
+ * */
+inline void BiColorLedGreen(uint8_t led_name)
+{
+    ClearBit(BiColorLed_port, led_name);
+ 91c:	40 98       	cbi	0x08, 0	; 8
+ 91e:	41 98       	cbi	0x08, 1	; 8
+    // Turn both LEDs green.
+    BiColorLedGreen(led_0);
+    BiColorLedGreen(led_1);
+    // Sensor is a SPI slave.
+    // See SPI interrupt routine at `ISR(SPI_STC_vect)`.
+    SpiSlaveInit();
+ 920:	0e 94 7a 00 	call	0xf4	; 0xf4 <SpiSlaveInit>
+    // Create a FIFO buffer to queue bytes incoming over SPI.
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+ 924:	65 e0       	ldi	r22, 0x05	; 5
+ 926:	70 e0       	ldi	r23, 0x00	; 0
+ 928:	81 e5       	ldi	r24, 0x51	; 81
+ 92a:	91 e0       	ldi	r25, 0x01	; 1
+ 92c:	0e 94 c9 00 	call	0x192	; 0x192 <QueueInit>
+ 930:	90 93 4d 01 	sts	0x014D, r25	; 0x80014d <SpiFifo+0x1>
+ 934:	80 93 4c 01 	sts	0x014C, r24	; 0x80014c <SpiFifo>
+    // Use UART to talk to ADC with SPI interface.
+    UartSpiInit();
+ 938:	0e 94 4f 04 	call	0x89e	; 0x89e <UartSpiInit>
+    // Power up the linear array. Start 50kHz clock.
+    LisInit();
+ 93c:	0e 94 77 04 	call	0x8ee	; 0x8ee <LisInit>
+    // Use globals because it is an easy way to share data with an ISR.
+    /* HasSpiData = false; // global flag to track if there is SpiData */
+    /* SpiData = 0x00; // global one-byte register to store SpiData */
+    /* =====[ Initialize Globals: Photodiode Array Config ]===== */
+    // Use globals because it is an easy way to share data with lib SensorVis
+    binning = binning_on; // default to 392 pixels
+ 940:	81 e0       	ldi	r24, 0x01	; 1
+ 942:	80 93 50 01 	sts	0x0150, r24	; 0x800150 <binning>
+    gain = gain1x; // default to 1x gain
+ 946:	80 93 57 01 	sts	0x0157, r24	; 0x800157 <gain>
+    active_rows = all_rows_active; // default to using all 5 pixel rows
+ 94a:	8f e1       	ldi	r24, 0x1F	; 31
+ 94c:	80 93 56 01 	sts	0x0156, r24	; 0x800156 <active_rows>
+    exposure_ticks = 50; // multiply by 20us to get integration time in seconds
+ 950:	82 e3       	ldi	r24, 0x32	; 50
+ 952:	90 e0       	ldi	r25, 0x00	; 0
+ 954:	90 93 4f 01 	sts	0x014F, r25	; 0x80014f <exposure_ticks+0x1>
+ 958:	80 93 4e 01 	sts	0x014E, r24	; 0x80014e <exposure_ticks>
+
+/* --------------------------------------------------------------------------------------- */
+/* Define command functions in jump table */
+void ReplyCommandInvalid(void)
+{
+    uint8_t cmd_invalid[] = {invalid_cmd};
+ 95c:	12 e0       	ldi	r17, 0x02	; 2
+    // Loop forever acting on commands from the SPI Master.
+    while(1) Get_commands_from_SpiMaster();
+}
+void Get_commands_from_SpiMaster(void)
+{
+    while (QueueIsEmpty(SpiFifo)); // idle until a command is received
+ 95e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 962:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 966:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+ 96a:	81 11       	cpse	r24, r1
+ 96c:	f8 cf       	rjmp	.-16     	; 0x95e <main+0x50>
+    // Queue is no longer empty once a command byte is received over SPI.
+    // The SPI ISR pushes the command byte onto the SPI Rx Queue.
+    // Pop the command and execute it.
+    SensorCmd* SensorCmdFn = LookupSensorCmd(QueuePop(SpiFifo));
+ 96e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 972:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 976:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+        GetExposure, // 9
+        SetExposure, // 10
+        CaptureFrame, // 11
+        };
+    // Return func ptr. Prevent attempts at out-of-bounds access.
+    if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
+ 97a:	8c 30       	cpi	r24, 0x0C	; 12
+ 97c:	58 f0       	brcs	.+22     	; 0x994 <main+0x86>
+
+/* --------------------------------------------------------------------------------------- */
+/* Define command functions in jump table */
+void ReplyCommandInvalid(void)
+{
+    uint8_t cmd_invalid[] = {invalid_cmd};
+ 97e:	19 83       	std	Y+1, r17	; 0x01
+    WriteSpiMaster(cmd_invalid, 1);
+ 980:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+ 984:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+ 988:	61 e0       	ldi	r22, 0x01	; 1
+ 98a:	70 e0       	ldi	r23, 0x00	; 0
+ 98c:	ce 01       	movw	r24, r28
+ 98e:	01 96       	adiw	r24, 0x01	; 1
+ 990:	09 95       	icall
+ 992:	e5 cf       	rjmp	.-54     	; 0x95e <main+0x50>
+        GetExposure, // 9
+        SetExposure, // 10
+        CaptureFrame, // 11
+        };
+    // Return func ptr. Prevent attempts at out-of-bounds access.
+    if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
+ 994:	e8 2f       	mov	r30, r24
+ 996:	f0 e0       	ldi	r31, 0x00	; 0
+ 998:	ee 0f       	add	r30, r30
+ 99a:	ff 1f       	adc	r31, r31
+ 99c:	e2 5e       	subi	r30, 0xE2	; 226
+ 99e:	fe 4f       	sbci	r31, 0xFE	; 254
+ 9a0:	01 90       	ld	r0, Z+
+ 9a2:	f0 81       	ld	r31, Z
+ 9a4:	e0 2d       	mov	r30, r0
+    if (SensorCmdFn == NULL) ReplyCommandInvalid();
+ 9a6:	30 97       	sbiw	r30, 0x00	; 0
+ 9a8:	51 f3       	breq	.-44     	; 0x97e <main+0x70>
+    else SensorCmdFn();
+ 9aa:	09 95       	icall
+ 9ac:	d8 cf       	rjmp	.-80     	; 0x95e <main+0x50>
+
+000009ae <__vector_17>:
+}
+ISR(SPI_STC_vect)
+{
+ 9ae:	1f 92       	push	r1
+ 9b0:	0f 92       	push	r0
+ 9b2:	0f b6       	in	r0, 0x3f	; 63
+ 9b4:	0f 92       	push	r0
+ 9b6:	11 24       	eor	r1, r1
+ 9b8:	2f 93       	push	r18
+ 9ba:	3f 93       	push	r19
+ 9bc:	4f 93       	push	r20
+ 9be:	5f 93       	push	r21
+ 9c0:	6f 93       	push	r22
+ 9c2:	7f 93       	push	r23
+ 9c4:	8f 93       	push	r24
+ 9c6:	9f 93       	push	r25
+ 9c8:	af 93       	push	r26
+ 9ca:	bf 93       	push	r27
+ 9cc:	ef 93       	push	r30
+ 9ce:	ff 93       	push	r31
+    // Program counter jumped from "client" code.
+    // ISR is the same routine, whether "client" is in a SPI read or a SPI write.
+
+    // Client stuck in loop `while (QueueIsEmpty(SpiFifo));` when ISR is called
+    //
+    if (QueueIsFull(SpiFifo)) DEBUG_LedsShowError(); // TODO: add error handler
+ 9d0:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ 9d4:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ 9d8:	0e 94 14 01 	call	0x228	; 0x228 <QueueIsFull>
+ 9dc:	88 23       	and	r24, r24
+ 9de:	99 f0       	breq	.+38     	; 0xa06 <__vector_17+0x58>
+}
+inline void BiColorLedRed(uint8_t led_name)
+{
+    SetBit(BiColorLed_port, led_name);
+ 9e0:	40 9a       	sbi	0x08, 0	; 8
+ 9e2:	41 9a       	sbi	0x08, 1	; 8
+    // so that it does not send the byte before the Slave has a chance to see
+    // the queue is empty. The Slave waits for QueueIsEmpty to be true after
+    // writing each byte to the Master (to avoid overwriting SPDR during a
+    // transmission). So the Slave would hang if it does not get a chance to see
+    // the queue is empty after the final byte is transmitted.
+}
+ 9e4:	ff 91       	pop	r31
+ 9e6:	ef 91       	pop	r30
+ 9e8:	bf 91       	pop	r27
+ 9ea:	af 91       	pop	r26
+ 9ec:	9f 91       	pop	r25
+ 9ee:	8f 91       	pop	r24
+ 9f0:	7f 91       	pop	r23
+ 9f2:	6f 91       	pop	r22
+ 9f4:	5f 91       	pop	r21
+ 9f6:	4f 91       	pop	r20
+ 9f8:	3f 91       	pop	r19
+ 9fa:	2f 91       	pop	r18
+ 9fc:	0f 90       	pop	r0
+ 9fe:	0f be       	out	0x3f, r0	; 63
+ a00:	0f 90       	pop	r0
+ a02:	1f 90       	pop	r1
+ a04:	18 95       	reti
+    // Client stuck in loop `while (QueueIsEmpty(SpiFifo));` when ISR is called
+    //
+    if (QueueIsFull(SpiFifo)) DEBUG_LedsShowError(); // TODO: add error handler
+    else
+    {
+        QueuePush(SpiFifo, *Spi_spdr); // "client" must pop data from SpiFifo queue
+ a06:	6e b5       	in	r22, 0x2e	; 46
+ a08:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+ a0c:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+ a10:	0e 94 d5 00 	call	0x1aa	; 0x1aa <QueuePush>
+    // so that it does not send the byte before the Slave has a chance to see
+    // the queue is empty. The Slave waits for QueueIsEmpty to be true after
+    // writing each byte to the Master (to avoid overwriting SPDR during a
+    // transmission). So the Slave would hang if it does not get a chance to see
+    // the queue is empty after the final byte is transmitted.
+}
+ a14:	e7 cf       	rjmp	.-50     	; 0x9e4 <__vector_17+0x36>
+
+00000a16 <_exit>:
+ a16:	f8 94       	cli
+
+00000a18 <__stop_program>:
+ a18:	ff cf       	rjmp	.-2      	; 0xa18 <__stop_program>
