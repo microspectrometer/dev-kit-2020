@@ -39,6 +39,7 @@ config_byte all_rows_active  = 0x1F; // 0b00011111 is all five rows
 
 // ---Memory for `frame` allocated in main() application---
 extern uint8_t volatile frame[];
+extern uint8_t volatile * pframe;
 
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const led_TxRx;      // PINC0
@@ -78,12 +79,14 @@ static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint1
     return byte_index; // byte_index == num_bytes_actually_sent
 }
 uint16_t (*WriteSpiMaster)(uint8_t const *, uint16_t) = WriteSpiMaster_Implementation;
-inline uint16_t WriteFrameToSpiMaster(uint8_t volatile *pframe, uint16_t nbytes_in_frame)
+inline uint16_t WriteFrameToSpiMaster(uint16_t nbytes_in_frame)
 {
+    pframe = frame; // point to start of frame
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes_in_frame; byte_index++)
     {
-        *Spi_spdr = pframe[byte_index]; // load byte in SPI data register
+        /* *Spi_spdr = pframe[byte_index]; // load byte in SPI data register */
+        *Spi_spdr = *(pframe++); // load byte in SPI data register
         ClearBit(Spi_port, Spi_DataReady); // LOW signals data is ready
         while (QueueIsEmpty(SpiFifo)); // queue is empty until SPI transfer is done
         QueuePop(SpiFifo); // ignore rx byte
@@ -92,6 +95,20 @@ inline uint16_t WriteFrameToSpiMaster(uint8_t volatile *pframe, uint16_t nbytes_
     }
     return byte_index; // byte_index == num_bytes_actually_sent
 }
+/* inline uint16_t WriteFrameToSpiMaster(uint8_t volatile *pframe, uint16_t nbytes_in_frame) */
+/* { */
+/*     uint16_t byte_index; */
+/*     for (byte_index = 0; byte_index < nbytes_in_frame; byte_index++) */
+/*     { */
+/*         *Spi_spdr = pframe[byte_index]; // load byte in SPI data register */
+/*         ClearBit(Spi_port, Spi_DataReady); // LOW signals data is ready */
+/*         while (QueueIsEmpty(SpiFifo)); // queue is empty until SPI transfer is done */
+/*         QueuePop(SpiFifo); // ignore rx byte */
+/*         // Drive DataReady HIGH to synchronize with Master. */
+/*         SetBit(Spi_port, Spi_DataReady); */
+/*     } */
+/*     return byte_index; // byte_index == num_bytes_actually_sent */
+/* } */
 
 static uint16_t ReadSpiMaster_Implementation(uint8_t *read_buffer, uint16_t nbytes)
 {
@@ -386,7 +403,8 @@ void CaptureFrame(void)
     WriteSpiMaster(&status, 1);
     // Send frame
     uint16_t nbytes_in_frame = 2*NumPixelsInFrame();
-    WriteFrameToSpiMaster(frame, nbytes_in_frame);
+    /* WriteFrameToSpiMaster(frame, nbytes_in_frame); */
+    WriteFrameToSpiMaster(nbytes_in_frame);
 }
 
 

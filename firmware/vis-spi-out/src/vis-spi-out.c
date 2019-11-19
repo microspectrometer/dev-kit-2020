@@ -44,6 +44,7 @@ uint16_t exposure_ticks;
 /* =====[ Allocate memory for one Frame of pixel data ]===== */
 /* #define npixels 784 */
 uint8_t volatile frame[npixels*2];
+uint8_t volatile * pframe;
 
 int main()
 {
