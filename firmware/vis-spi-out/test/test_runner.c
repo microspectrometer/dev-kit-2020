@@ -77,8 +77,28 @@ void unittest_GetSensorConfig(bool run_test)
         RUN_TEST(GetSensorConfig_sends_three_bytes_of_data_to_Bridge_after_sending_ok);
     }
 }
-void unittest_RepresentConfigAs28bits(bool run_test)
+void unittest_RepresentConfigAs4bytes(bool run_test)
 {
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_byte0_bit0_set_if_binning_is_on);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_byte0_bit0_clear_if_binning_is_off);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_byte0_bits1to2_clear_if_gain_is_1x);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_byte0_bit1_clear_bit2_set_if_gain_is_2p5x);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_byte0_bit1_set_bit2_clear_if_gain_is_4x);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_byte0_bits1to2_set_if_gain_is_5x);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_as_little_endian_so_prog_bit27_is_byte_3_bit3_not_byte0_bit_3);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_bits3to27_set_if_all_rows_are_active);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_b3b8b13b18b23_set_if_row1_is_active);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_b4b9b14b19b24_set_if_row2_is_active);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_b5b10b15b20b25_set_if_row3_is_active);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_b6b11b16b21b26_set_if_row4_is_active);
+        RUN_TEST(RepresentConfigAs4bytes_writes_config_b7b12b17b22b27_set_if_row5_is_active);
+    }
+}
+void unittest_RepresentConfigAs28bits(bool run_test)
+{ // ---This is old. Need four bytes, not a uint32_t.---
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
@@ -196,13 +216,14 @@ int main(void)
     unittest_SetExposure(Nope);
     unittest_NumPixelsInFrame(Nope);
     unittest_WordToTwoByteArray(Nope);
-    unittest_LisReadout(Yep);
+    unittest_LisReadout(Nope);
     unittest_GetFrame(Nope);
     unittest_CaptureFrame(Nope);
-    unittest_RepresentConfigAs28bits(Nope);
+    unittest_RepresentConfigAs28bits(Nope); // deprecated
+    unittest_RepresentConfigAs4bytes(Yep);
     // TODO: move the LIS_programming_sequence to a function
     develop_LIS_programming_sequence(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(LisReadout_reads_npixels);
+    /* RUN_TEST(LisReadout_reads_npixels); */
     return UNITY_END();
 }

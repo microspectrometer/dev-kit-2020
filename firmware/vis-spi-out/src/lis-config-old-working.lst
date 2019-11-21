@@ -1,0 +1,509 @@
+; Working LIS config instructions
+; Create binary value 0000 1100 to toggle debug LEDs?
+in	r25, 0x08	; 8
+ldi	r24, 0x04	; 4
+eor	r24, r25
+; Output 0000 1100 on PORTC
+out	0x08, r24	; 8
+; Now make 0000 1010
+in	r25, 0x08	; 8
+ldi	r24, 0x02	; 2
+eor	r24, r25
+; Output 0000 1010 on PORTC
+out	0x08, r24	; 8
+; Not sure why the above is useful, but whatever.
+;
+; LisStartProgramMode():
+; Wait for falling edge of clock
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x5e4 <WriteCfgToLis+0x12>
+sbi	0x15, 2	; 21
+; PixSelect HIGH
+sbi	0x05, 0	; 5
+; Rst LOW
+cbi	0x0b, 6	; 11
+; Wait for rising edge of clock
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x5f0 <WriteCfgToLis+0x1e>
+sbi	0x15, 1	; 21
+; Wait for falling edge of clock
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x5f8 <WriteCfgToLis+0x26>
+sbi	0x15, 2	; 21
+; Check if summing mode is on or off
+lds	r24, 0x0262	; 0x800262 <lis_sum_mode>
+cpi	r24, 0x01	; 1
+brne	.+2      	; 0x608 <WriteCfgToLis+0x36>
+rjmp	.+328    	; 0x750 <WriteCfgToLis+0x17e>
+; output LOW (binning off)
+cbi	0x0b, 6	; 11
+; Wait for rising edge of clock
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x60c <WriteCfgToLis+0x3a>
+sbi	0x15, 1	; 21
+; Wait for falling edge of clock
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x614 <WriteCfgToLis+0x42>
+sbi	0x15, 2	; 21
+lds	r24, 0x0211	; 0x800211 <lis_gain>
+cpi	r24, 0x04	; 4
+brne	.+2      	; 0x624 <WriteCfgToLis+0x52>
+rjmp	.+176    	; 0x6d4 <WriteCfgToLis+0x102>
+cpi	r24, 0x02	; 2
+brne	.+2      	; 0x62a <WriteCfgToLis+0x58>
+rjmp	.+312    	; 0x762 <WriteCfgToLis+0x190>
+cpi	r24, 0x01	; 1
+brne	.+2      	; 0x630 <WriteCfgToLis+0x5e>
+rjmp	.+420    	; 0x7d4 <WriteCfgToLis+0x202>
+sbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x634 <WriteCfgToLis+0x62>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x63c <WriteCfgToLis+0x6a>
+sbi	0x15, 2	; 21
+sbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x646 <WriteCfgToLis+0x74>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x64e <WriteCfgToLis+0x7c>
+sbi	0x15, 2	; 21
+lds	r24, 0x0261	; 0x800261 <lis_rowselect>
+sts	0x0260, r1	; 0x800260 <__data_end>
+cpi	r24, 0x01	; 1
+brne	.+2      	; 0x662 <WriteCfgToLis+0x90>
+rjmp	.+164    	; 0x706 <WriteCfgToLis+0x134>
+cpi	r24, 0x02	; 2
+brne	.+2      	; 0x668 <WriteCfgToLis+0x96>
+rjmp	.+286    	; 0x786 <WriteCfgToLis+0x1b4>
+cpi	r24, 0x03	; 3
+brne	.+2      	; 0x66e <WriteCfgToLis+0x9c>
+rjmp	.+476    	; 0x84a <WriteCfgToLis+0x278>
+cpi	r24, 0x04	; 4
+brne	.+2      	; 0x674 <WriteCfgToLis+0xa2>
+rjmp	.+548    	; 0x898 <WriteCfgToLis+0x2c6>
+cpi	r24, 0x05	; 5
+brne	.+2      	; 0x67a <WriteCfgToLis+0xa8>
+rjmp	.+382    	; 0x7f8 <WriteCfgToLis+0x226>
+cpi	r24, 0x06	; 6
+brne	.+2      	; 0x680 <WriteCfgToLis+0xae>
+rjmp	.+614    	; 0x8e6 <WriteCfgToLis+0x314>
+cpi	r24, 0x07	; 7
+brne	.+2      	; 0x686 <WriteCfgToLis+0xb4>
+rjmp	.+686    	; 0x934 <__stack+0x35>
+cpi	r24, 0x08	; 8
+brne	.+2      	; 0x68c <WriteCfgToLis+0xba>
+rjmp	.+758    	; 0x982 <__stack+0x83>
+cpi	r24, 0x09	; 9
+brne	.+2      	; 0x692 <WriteCfgToLis+0xc0>
+rjmp	.+818    	; 0x9c4 <__stack+0xc5>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+breq	.+52     	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0x09	; 9
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+brne	.+2      	; 0x6aa <WriteCfgToLis+0xd8>
+rjmp	.+412    	; 0x846 <WriteCfgToLis+0x274>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x6ae <WriteCfgToLis+0xdc>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x6b6 <WriteCfgToLis+0xe4>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.-50     	; 0x69c <WriteCfgToLis+0xca>
+cbi	0x0b, 6	; 11
+cbi	0x05, 0	; 5
+ret
+sbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x6d8 <WriteCfgToLis+0x106>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x6e0 <WriteCfgToLis+0x10e>
+sbi	0x15, 2	; 21
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x6ea <WriteCfgToLis+0x118>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x6f2 <WriteCfgToLis+0x120>
+sbi	0x15, 2	; 21
+lds	r24, 0x0261	; 0x800261 <lis_rowselect>
+sts	0x0260, r1	; 0x800260 <__data_end>
+cpi	r24, 0x01	; 1
+breq	.+2      	; 0x706 <WriteCfgToLis+0x134>
+rjmp	.-164    	; 0x662 <WriteCfgToLis+0x90>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+breq	.-64     	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0xEA	; 234
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+48     	; 0x74c <WriteCfgToLis+0x17a>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x720 <WriteCfgToLis+0x14e>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x728 <WriteCfgToLis+0x156>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcc	.-114    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r31, 0x00	; 0
+subi	r30, 0xEA	; 234
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+brne	.-48     	; 0x71c <WriteCfgToLis+0x14a>
+sbi	0x0b, 6	; 11
+rjmp	.-50     	; 0x71e <WriteCfgToLis+0x14c>
+sbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x754 <WriteCfgToLis+0x182>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x75c <WriteCfgToLis+0x18a>
+rjmp	.-330    	; 0x618 <WriteCfgToLis+0x46>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x766 <WriteCfgToLis+0x194>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x76e <WriteCfgToLis+0x19c>
+sbi	0x15, 2	; 21
+sbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x778 <WriteCfgToLis+0x1a6>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x780 <WriteCfgToLis+0x1ae>
+rjmp	.-308    	; 0x652 <WriteCfgToLis+0x80>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+brne	.+2      	; 0x790 <WriteCfgToLis+0x1be>
+rjmp	.-194    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0xD1	; 209
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+50     	; 0x7d0 <WriteCfgToLis+0x1fe>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x7a2 <WriteCfgToLis+0x1d0>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x7aa <WriteCfgToLis+0x1d8>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.+2      	; 0x7c4 <WriteCfgToLis+0x1f2>
+rjmp	.-246    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r31, 0x00	; 0
+subi	r30, 0xD1	; 209
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+brne	.-50     	; 0x79e <WriteCfgToLis+0x1cc>
+sbi	0x0b, 6	; 11
+rjmp	.-52     	; 0x7a0 <WriteCfgToLis+0x1ce>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x7d8 <WriteCfgToLis+0x206>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x7e0 <WriteCfgToLis+0x20e>
+sbi	0x15, 2	; 21
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x7ea <WriteCfgToLis+0x218>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x7f2 <WriteCfgToLis+0x220>
+rjmp	.-422    	; 0x652 <WriteCfgToLis+0x80>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+brne	.+2      	; 0x802 <WriteCfgToLis+0x230>
+rjmp	.-308    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0x86	; 134
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+50     	; 0x842 <WriteCfgToLis+0x270>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x814 <WriteCfgToLis+0x242>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x81c <WriteCfgToLis+0x24a>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.+2      	; 0x836 <WriteCfgToLis+0x264>
+rjmp	.-360    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r31, 0x00	; 0
+subi	r30, 0x86	; 134
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+brne	.-50     	; 0x810 <WriteCfgToLis+0x23e>
+sbi	0x0b, 6	; 11
+rjmp	.-52     	; 0x812 <WriteCfgToLis+0x240>
+sbi	0x0b, 6	; 11
+rjmp	.-414    	; 0x6ac <WriteCfgToLis+0xda>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+brne	.+2      	; 0x854 <WriteCfgToLis+0x282>
+rjmp	.-390    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0xB8	; 184
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+50     	; 0x894 <WriteCfgToLis+0x2c2>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x866 <WriteCfgToLis+0x294>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x86e <WriteCfgToLis+0x29c>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.+2      	; 0x888 <WriteCfgToLis+0x2b6>
+rjmp	.-442    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r31, 0x00	; 0
+subi	r30, 0xB8	; 184
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+brne	.-50     	; 0x862 <WriteCfgToLis+0x290>
+sbi	0x0b, 6	; 11
+rjmp	.-52     	; 0x864 <WriteCfgToLis+0x292>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+brne	.+2      	; 0x8a2 <WriteCfgToLis+0x2d0>
+rjmp	.-468    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0x9F	; 159
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+50     	; 0x8e2 <WriteCfgToLis+0x310>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x8b4 <WriteCfgToLis+0x2e2>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x8bc <WriteCfgToLis+0x2ea>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.+2      	; 0x8d6 <WriteCfgToLis+0x304>
+rjmp	.-520    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r31, 0x00	; 0
+subi	r30, 0x9F	; 159
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+brne	.-50     	; 0x8b0 <WriteCfgToLis+0x2de>
+sbi	0x0b, 6	; 11
+rjmp	.-52     	; 0x8b2 <WriteCfgToLis+0x2e0>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+brne	.+2      	; 0x8f0 <WriteCfgToLis+0x31e>
+rjmp	.-546    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0x22	; 34
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+50     	; 0x930 <__stack+0x31>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x902 <__stack+0x3>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x90a <__stack+0xb>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.+2      	; 0x924 <__stack+0x25>
+rjmp	.-598    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r31, 0x00	; 0
+subi	r30, 0x22	; 34
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+brne	.-50     	; 0x8fe <WriteCfgToLis+0x32c>
+sbi	0x0b, 6	; 11
+rjmp	.-52     	; 0x900 <__stack+0x1>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+brne	.+2      	; 0x93e <__stack+0x3f>
+rjmp	.-624    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0x3B	; 59
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+50     	; 0x97e <__stack+0x7f>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x950 <__stack+0x51>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x958 <__stack+0x59>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.+2      	; 0x972 <__stack+0x73>
+rjmp	.-676    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r31, 0x00	; 0
+subi	r30, 0x3B	; 59
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+brne	.-50     	; 0x94c <__stack+0x4d>
+sbi	0x0b, 6	; 11
+rjmp	.-52     	; 0x94e <__stack+0x4f>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+brne	.+2      	; 0x98c <__stack+0x8d>
+rjmp	.-702    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0x54	; 84
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+38     	; 0x9c0 <__stack+0xc1>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x99e <__stack+0x9f>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x9a6 <__stack+0xa7>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.-48     	; 0x98e <__stack+0x8f>
+rjmp	.-754    	; 0x6ce <WriteCfgToLis+0xfc>
+sbi	0x0b, 6	; 11
+rjmp	.-40     	; 0x99c <__stack+0x9d>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+and	r24, r24
+brne	.+2      	; 0x9ce <__stack+0xcf>
+rjmp	.-768    	; 0x6ce <WriteCfgToLis+0xfc>
+ldi	r30, 0x00	; 0
+ldi	r31, 0x00	; 0
+subi	r30, 0x6D	; 109
+sbci	r31, 0xFE	; 254
+ld	r24, Z
+cpi	r24, 0x01	; 1
+breq	.+38     	; 0xa02 <__stack+0x103>
+cbi	0x0b, 6	; 11
+sbi	0x15, 1	; 21
+sbis	0x15, 1	; 21
+rjmp	.-4      	; 0x9e0 <__stack+0xe1>
+sbi	0x15, 1	; 21
+sbi	0x15, 2	; 21
+sbis	0x15, 2	; 21
+rjmp	.-4      	; 0x9e8 <__stack+0xe9>
+sbi	0x15, 2	; 21
+lds	r30, 0x0260	; 0x800260 <__data_end>
+subi	r30, 0xFF	; 255
+sts	0x0260, r30	; 0x800260 <__data_end>
+lds	r24, 0x0210	; 0x800210 <nprogbits_rowselect>
+cp	r30, r24
+brcs	.-48     	; 0x9d0 <__stack+0xd1>
+rjmp	.-820    	; 0x6ce <WriteCfgToLis+0xfc>
+sbi	0x0b, 6	; 11
+rjmp	.-40     	; 0x9de <__stack+0xdf>

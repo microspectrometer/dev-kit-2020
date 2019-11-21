@@ -21,38 +21,15 @@ status_byte led_red;
 typedef uint8_t const led_name;  // TODO: move this to a shared lib
 led_name led_0;
 led_name led_1;
-typedef uint8_t const config_byte;  // TODO: move this to a shared lib
-// binning_on binning_off MUST be macro-defined because:
-// value is needed by inline definition in this file
-// but by defining in the header, each translation unit thinks *it* defines it
-#define binning_off 0x00
-#define binning_on 0x01
-config_byte gain1x;
-config_byte gain25x;
-config_byte gain4x;
-config_byte gain5x;
-config_byte all_rows_active;
 
 // =====[ global for exposure time defined in main() application ]=====
 extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
 // ---CaptureFrame dependencies---
-#define npixels 784
+/* #define npixels 784 */
 // =====[ globals for photodiode array config defined in main() application ]=====
 extern uint8_t binning; // default to 392 pixels
 extern uint8_t gain; // default to 1x gain
 extern uint8_t active_rows; // default to using all 5 pixel rows
-inline uint16_t NumPixelsInFrame(void)
-{
-    /** NumPixelsInFrame behavior:\n 
-      * - depends on constant `npixels` equal to 784\n 
-      * - returns 784 if binning is off\n 
-      * - returns 392 if binning is on\n 
-      * */
-    uint16_t npixels_in_frame;
-    if (binning == binning_on) npixels_in_frame = npixels >> 1;
-    else npixels_in_frame = npixels;
-    return npixels_in_frame;
-}
 inline void WordToTwoByteArray(uint16_t word, uint8_t * parray)
 {
     /** Return 16-bit word as a two-byte array MSB first.\n 
@@ -111,6 +88,9 @@ uint16_t WriteFrameToSpiMaster(uint16_t nbytes_in_frame);
 extern void (*ProgramPhotodiodeArray)(uint32_t config);
 extern void (*GetFrame)(void);
 
+// RepresentConfigAs28bits is deprecated
 uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_rows);
+//
+void RepresentConfigAs4bytes(uint8_t *pconfig, uint8_t binning, uint8_t gain, uint8_t active_rows);
 //
 #endif // _SENSORVIS_H

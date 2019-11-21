@@ -4,6 +4,8 @@
 #include "UartSpi.h" // USART in MSPIM mode for ADC readout
 #include "stdlib.h" // defines NULL
 
+#define manual_config 1 // troubleshoot LIS programming sequence
+
 /* =====[ SPI Flags and Data Register Buffer ]===== */
 // SpiFifo points to the FIFO buffer where ISR buffers incoming SPI bytes.
 extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
@@ -38,8 +40,7 @@ config_byte gain5x  = 0x05;
 config_byte all_rows_active  = 0x1F; // 0b00011111 is all five rows
 
 // ---Memory for `frame` allocated in main() application---
-extern uint8_t volatile frame[];
-extern uint8_t volatile * pframe;
+extern uint8_t frame[];
 
 // =====[status_led pin number defined in BiColorLed-Hardware header]=====
 extern uint8_t const led_TxRx;      // PINC0
@@ -48,7 +49,6 @@ extern uint8_t const led_Done;      // PINC1
 /* Declare inline functions here to emit symbols in this translation unit. */
 // See definition of these inline functions in SensorVis.h
 void ExposePhotodiodeArray(void);
-uint16_t NumPixelsInFrame(void);
 void WordToTwoByteArray(uint16_t, uint8_t *);
 static void GetFrame_Implementation(void)
 {
@@ -81,7 +81,7 @@ static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint1
 uint16_t (*WriteSpiMaster)(uint8_t const *, uint16_t) = WriteSpiMaster_Implementation;
 inline uint16_t WriteFrameToSpiMaster(uint16_t nbytes_in_frame)
 {
-    pframe = frame; // point to start of frame
+    uint8_t *pframe = frame; // point to start of frame
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes_in_frame; byte_index++)
     {
@@ -227,23 +227,97 @@ void GetSensorConfig(void)
     uint8_t const nbytes_data = 3;
     WriteSpiMaster(data, nbytes_data);
 }
+inline void ProgramLis(uint8_t * config)
+{
+    /** config is little endian:\n 
+     *  byte 0,         byte 1,     byte 2,     byte 3\n 
+     *  LSB cfg_byte0,  cfg_byte1,  cfg_byte2,  MSB cfg_byte3\n 
+     * */
+    EnterLisProgrammingMode(); // Wait for Clock falling edge, PixSelect HIGH
+    uint8_t byte_index = 0;
+    while (byte_index < 4)
+    {
+        uint8_t bit = 0;
+        while (bit < 8)
+        {
+            if (config[byte_index] & (1<<bit)) SetBit(Lis_port1, Lis_Rst); // sbi 0x0b, 6
+            else ClearBit(Lis_port1, Lis_Rst); // cbi 0x0b, 6
+            bit++;
+            // Wait for Lis_Rst value to clock in before loading the next bit.
+            LisWaitForClockRisingEdge(); // bit is read on rising edge
+            LisWaitForClockFallingEdge(); // hold bit until falling edge
+        }
+        byte_index++;
+    }
+}
 static void ProgramPhotodiodeArray_Implementation(uint32_t config)
 { // TODO: clean this up using optimized inline functions
     // Program LIS.
-    EnterLisProgrammingMode();
-    uint8_t bit=0;
-    while (bit < 28)
+    EnterLisProgrammingMode(); // Wait for Clock falling edge, PixSelect HIGH
+    if (0)
     {
-        if (config & (1<<bit)) SetBit(Lis_port1, Lis_Rst);
-        else ClearBit(Lis_port1, Lis_Rst);
-        bit++;
-        // Wait for Lis_Rst value to clock in before loading the next bit.
-        LisWaitForClockRisingEdge(); // bit is read on rising edge
-        LisWaitForClockFallingEdge(); // hold bit until falling edge
+        // I might not need these, but they are in the old code, no idea why.
+        /* ClearBit(Lis_port1, Lis_Rst); // old code does this */
+        /* LisWaitForClockRisingEdge(); // old code does this */
+        /* LisWaitForClockFallingEdge(); // old code does this */
+    }
+    if (manual_config)
+    {
+        // ---Manual config---
+        // binning on
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        // gain 1x
+        ClearBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        ClearBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        // all the rows on
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+    }
+    if (0)
+    {
+        // This while loop reading a 32-bit value is problematic.
+        uint8_t bit=0;
+        while (bit < 28)
+        {
+            // TODO: this is too time intensive to set up each time.
+            // The old code just jumps straight into pulling Rst high/low.
+            // config & (1<<bit) requires four `and` operations
+            // Split 
+            if (config & (1<<bit)) SetBit(Lis_port1, Lis_Rst); // sbi 0x0b, 6
+            else ClearBit(Lis_port1, Lis_Rst); // cbi 0x0b, 6
+            bit++;
+            // Wait for Lis_Rst value to clock in before loading the next bit.
+            LisWaitForClockRisingEdge(); // bit is read on rising edge
+            LisWaitForClockFallingEdge(); // hold bit until falling edge
+        }
     }
     ExitLisProgrammingMode();
 }
 void (*ProgramPhotodiodeArray)(uint32_t) = ProgramPhotodiodeArray_Implementation;
+// RepresentConfigAs28bits is deprecated -- need four bytes instead of uint32_t
 uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_rows)
 {
     /** Return the 28-bit LIS config given three config bytes.\n 
@@ -281,7 +355,7 @@ uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_r
     else if (gain4x == gain)  { config |= 1<<(bit++); bit++; }
     else if (gain5x == gain)  { config |= 1<<(bit++); config |= 1<<(bit++); }
     else { bit++; bit++; }
-    // bit 3 to 28 are pixel groups P25 to P1 to select active rows
+    // bit 3 to 27 are pixel groups P25 to P1 to select active rows
     // Example with binning_on and gain1x
     // ----3----  ----2----  ----1----  ----0-(---) // byte
     // 7654 3210  7654 3210  7654 3210  7654 3(210) // bit
@@ -302,6 +376,101 @@ uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_r
     if (active_rows&(1<<row4)) config |= row4_mask;
     if (active_rows&(1<<row5)) config |= row5_mask;
     return config;
+}
+void RepresentConfigAs4bytes(uint8_t *config, uint8_t binning, uint8_t gain, uint8_t active_rows)
+{
+    /** Return the 28-bit LIS config given three config bytes.\n 
+     *  Input format for the three config bytes:
+     *  - binning: 0x00 (off), 0x01 (on)\n 
+     *  - gain: 0x01 (1x), 0x25 (2.5x), 0x04 (4x), 0x05 (5x)\n 
+     *  - active_rows: 5 rows, set the bit to turn the row on\n 
+     *    bits [8..0]: xxx54321 (1 to 5 are the row numbers, x is don't care)\n 
+     *  Output format:\n 
+     *  - input `config` points to an array of four bytes to hold the output\n 
+     *  - bit0 of the 28-bit sequence is byte0, bit0 in config\n 
+     *  - bit27 of the 28-bit sequence is byte3, bit3 in config\n 
+     *  - program the LIS starting with bit0 */
+    /** RepresentConfigAs4bytes behavior:\n 
+      * - writes config byte0 bit0 set if binning is on\n 
+      * - writes config byte0 bit0 clear if binning is off\n 
+      * - writes config byte0 bits1to2 clear if gain is 1x\n 
+      * - writes config byte0 bit1 clear bit2 set if gain is 2p5x\n 
+      * - writes config byte0 bit1 set bit2 clear if gain is 4x\n 
+      * - writes config byte0 bits1to2 set if gain is 5x\n 
+      * - writes config as little endian so prog bit27 is byte 3 bit3 not byte0 bit 3\n 
+      * - writes config bits3to27 set if all rows are active\n 
+      * - writes config b3b8b13b18b23 set if row1 is active\n 
+      * - writes config b4b9b14b19b24 set if row2 is active\n 
+      * - writes config b5b10b15b20b25 set if row3 is active\n 
+      * - writes config b6b11b16b21b26 set if row4 is active\n 
+      * - writes config b7b12b17b22b27 set if row5 is active\n 
+      * */
+    // Clear all bits in array at input address `config`.
+    config[0]=0x00; config[1]=0x00; config[2]=0x00; config[3]=0x00;
+    // binning is bit 0 of byte 0
+    uint8_t bit = 0;
+    if (binning_on == binning) config[0] |= 1<<(bit++); // bit 0: bin on/off
+    else bit++;
+    // bit 1: gain bit G2
+    // bit 2: gain bit G1
+    // {G2,G1}: {0,0} 1x; {0,1} 2.5x; {1,0} 4x; {1,1} 5x
+    if      (gain25x == gain) { bit++; config[0] |= 1<<(bit++); }
+    else if (gain4x == gain)  { config[0] |= 1<<(bit++); bit++; }
+    else if (gain5x == gain)  { config[0] |= 1<<(bit++); config[0] |= 1<<(bit++); }
+    else { bit++; bit++; }
+    // bit 3 to 27 are pixel groups P25 to P1 to select active rows
+    // Example with binning_on and gain1x
+    // ----3----  ----2----  ----1----  ----0-(---) // byte
+    // 7654 3210  7654 3210  7654 3210  7654 3(210) // bit
+    // xxxx 1111  1111 1111  1111 1111  1111 1(001) // all rows on
+    // xxxx 0000  1000 0100  0010 0001  0000 1(001) // row 1 (or 5?)
+    // xxxx 0001  0000 1000  0100 0010  0001 0(001) // row 2 (or 4?)
+    // xxxx 0010  0001 0000  1000 0100  0010 0(001) // row 3
+    // xxxx 0100  0010 0001  0000 1000  0100 0(001) // row 4 (or 2?)
+    // xxxx 1000  0100 0010  0001 0000  1000 0(001) // row 5 (or 1?)
+    uint8_t const row1 = 0; uint8_t const row1_mask[] = {0x00,0x84,0x21,0x08};
+    uint8_t const row2 = 1; uint8_t const row2_mask[] = {0x01,0x08,0x42,0x10};
+    uint8_t const row3 = 2; uint8_t const row3_mask[] = {0x02,0x10,0x84,0x20};
+    uint8_t const row4 = 3; uint8_t const row4_mask[] = {0x04,0x21,0x08,0x40};
+    uint8_t const row5 = 4; uint8_t const row5_mask[] = {0x08,0x42,0x10,0x80};
+    // byte orders are mirrored below because
+    // rowN_mask[] is big endian, but
+    // config[] is little endian
+    if (active_rows&(1<<row1))
+    {
+        config[0] |= row1_mask[3];
+        config[1] |= row1_mask[2];
+        config[2] |= row1_mask[1];
+        config[3] |= row1_mask[0];
+    }
+    if (active_rows&(1<<row2))
+    {
+        config[0] |= row2_mask[3];
+        config[1] |= row2_mask[2];
+        config[2] |= row2_mask[1];
+        config[3] |= row2_mask[0];
+    }
+    if (active_rows&(1<<row3))
+    {
+        config[0] |= row3_mask[3];
+        config[1] |= row3_mask[2];
+        config[2] |= row3_mask[1];
+        config[3] |= row3_mask[0];
+    }
+    if (active_rows&(1<<row4))
+    {
+        config[0] |= row4_mask[3];
+        config[1] |= row4_mask[2];
+        config[2] |= row4_mask[1];
+        config[3] |= row4_mask[0];
+    }
+    if (active_rows&(1<<row5))
+    {
+        config[0] |= row5_mask[3];
+        config[1] |= row5_mask[2];
+        config[2] |= row5_mask[1];
+        config[3] |= row5_mask[0];
+    }
 }
 
 void SetSensorConfig(void)
