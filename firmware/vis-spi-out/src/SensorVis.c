@@ -4,8 +4,6 @@
 #include "UartSpi.h" // USART in MSPIM mode for ADC readout
 #include "stdlib.h" // defines NULL
 
-#define manual_config 0 // troubleshoot LIS programming sequence
-
 /* =====[ SPI Flags and Data Register Buffer ]===== */
 // SpiFifo points to the FIFO buffer where ISR buffers incoming SPI bytes.
 extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
@@ -250,72 +248,23 @@ inline void ProgramLis(uint8_t * config)
         byte_index++;
     }
 }
-static void ProgramPhotodiodeArray_Implementation(uint8_t *config)
+static void ProgramPhotodiodeArray_Implementation(uint8_t const *config)
 { // TODO: clean this up using optimized inline functions
-    // Program LIS.
     EnterLisProgrammingMode(); // Wait for Clock falling edge, PixSelect HIGH
-    (void)config;
-    if (manual_config)
-    {
-        // ---Manual config---
-        // binning on
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        // gain 1x
-        ClearBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        ClearBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        // all the rows on
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-    }
     // write all of the first three bytes
     uint8_t byte_index = 0;
     while(byte_index++ < 3)
     {
         uint8_t bit_index = 0;
-        while(bit_index < 8)
-        {
-            if (BitIsSet(config,bit_index)) SetBit(Lis_port1, Lis_Rst);
-            else ClearBit(Lis_port1, Lis_Rst);
-            LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-            bit_index++;
-        }
+        while(bit_index < 8) LisWriteConfigBitN(config, bit_index++); 
         config++;
     }
     // write the first four bits of the fourth byte
     uint8_t bit_index = 0;
-    while(bit_index < 4)
-    {
-        if (BitIsSet(config,bit_index)) SetBit(Lis_port1, Lis_Rst);
-        else ClearBit(Lis_port1, Lis_Rst);
-        LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
-        bit_index++;
-    }
+    while(bit_index < 4) LisWriteConfigBitN(config, bit_index++); 
     ExitLisProgrammingMode();
 }
-void (*ProgramPhotodiodeArray)(uint8_t *) = ProgramPhotodiodeArray_Implementation;
+void (*ProgramPhotodiodeArray)(uint8_t const *) = ProgramPhotodiodeArray_Implementation;
 // RepresentConfigAs28bits is deprecated -- need four bytes instead of uint32_t
 uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_rows)
 {

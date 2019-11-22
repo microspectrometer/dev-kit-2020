@@ -80,6 +80,197 @@ static uint16_t NoIsrWriteSpiMaster_Implementation(uint8_t const *write_buffer, 
     return nbytes; // TODO: use actual num_bytes_sent
     /* return num_bytes_sent; */
 }
+// ---Start From Lis.h---
+void LisWriteCfg(uint8_t const * cfg);
+void OutputCfgByte(uint8_t const cfg_byte, uint8_t const nbits);
+// ---End From Lis.h---
+// ---Start From Lis.c---
+void LisWriteCfg(uint8_t const * cfg)
+{
+    /** Program the Lis with the four `cfg` bytes sent from the SpiMaster.
+     *  The programming sequence clocks 28 bits into the LIS-770i.
+     *  `cfg` is the 28-bit sequence stored in four bytes.
+     *  Bit[0] is bit index 0 of `cfg[3]`.
+     *  Bit[27] is bit index 3 of `cfg[0]`.
+     *
+     *  The 28 bits are output sequentially on Lis_Rst, starting with bit 0.
+     *  Bit 0 is binning on/off. Bits 1 and 2 set the gain. The remaining 25
+     *  bits select which pixels are active.
+     * */
+
+    /* bit 0: bin_on_off */
+    /*     bin_on: bin_on_off = 1 */
+    /* bit 1: gain bit G2 */
+    /* bit 2: gain bit G1 */
+    /*     gain_1x: G2 G1 = 0 0 */
+    /* next are 25 bits to select pixels by row in groups of 154 */
+    /* use these 25 bits to select entire rows (groups of 784) */
+    // Plan of attack:
+        // Four bytes received from SpiMaster.
+        // Most significant byte received first.
+        // Start with the least significant byte (cfg[3]).
+        // Load all of its bits onto Lis_Rst
+        // do the same for the next two bytes
+        // then only load the four least LSB of the most significant byte
+    EnterLisProgrammingMode();
+    // load bits
+    // TODO: unit test this.
+        // I only wrote this code to silence the -Wunused parameter warning:
+        // Spectrometer configuration is four bytes.
+    uint8_t const num_cfgbytes = 4;
+    // Start at the least significant byte (the last byte in cfg).
+    // Only do cfg[3] to cfg[1]. Byte cfg[0] is a special case.
+    uint8_t byte_index = num_cfgbytes;
+    while (--byte_index != 0)
+    {
+        uint8_t const nbits = 8;
+        OutputCfgByte(cfg[byte_index], nbits);
+        /* printf("\nByte cfg[%d] uses nbits=%d", byte_index, nbits); */
+    }
+    // Most significant byte (the first byte in cfg) only has four bits to output.
+    uint8_t const nbits = 4;
+    OutputCfgByte(cfg[0], nbits);
+    /* printf("\nByte cfg[%d] uses nbits=%d\n", byte_index, nbits); */
+    ExitLisProgrammingMode();
+}
+/* =====[ Helper function for LisWriteCfg ]===== */
+inline void OutputCfgByte(uint8_t const cfg_byte, uint8_t const nbits)
+{
+    /** Output `nbits` of cfg_byte, from bit[0] to bit[n-1].
+     *  Output values sequentially on pin `Lis_Rst`.
+     *  Do nothing if `nbits` is 0 or `nbits` is > 8.
+     * */
+
+    // This function does nothing if nbits is out of bounds.
+    if ( (nbits < 1) || (nbits > 8) ) return;
+    // For each bit in cfg_byte[0:nbits], output masked bit to Lis_Rst.
+    for (uint8_t bit_index = 0; bit_index < nbits; bit_index++)
+    {
+        if ( cfg_byte & (1<<bit_index)) { SetBit(Lis_port1, Lis_Rst); }
+        else { ClearBit(Lis_port1, Lis_Rst); }
+        // Wait for Lis_Rst value to clock in before loading the next bit.
+        LisWaitForClkRiseEdge(); // bit is read on rising edge
+        LisWaitForClkFallEdge(); // hold bit until falling edge
+    }
+}
+/* TODO: figure out how the SpiSlave gets cfg from SpiMaster, then come back to this */
+
+// ---End From Lis.c---
+// ---Start from test_Lis.c---
+/* =====[ LisWriteCfg ]===== */
+/* This is an API call for the client to load a configuration into the LIS. */
+void LisWriteCfg_example_usage(void)
+{
+    /** `LisWriteCfg` handles entering and exiting the LIS programming mode.
+     *  For each byte in the `cfg` byte stream,
+     *  `LisWriteCfg` calls `OutputCfgByte`.
+     * */
+    /** LisWriteCfg cannot be tested because I do not mock its helpers:
+     *  EnterLisProgrammingMode()
+     *  OutputCfgByte()
+     *  ExitLisProgrammingMode()
+     *  I do not mock its helpers because I do not want function pointer seams.
+     *  Function pointer seams prevent inlining. Calls compile with `jump` and
+     *  `return`.
+     * . */
+    /* Therefore, this *test* is just a documentation example. */
+
+    /* Fake receiving a valid `cfg`. */
+    uint8_t const valid_cfg[] = {0x0F, 0xFF, 0xFF, 0xF9};
+    /* =====[ Operate ]===== */
+    LisWriteCfg(valid_cfg);
+}
+void OutputCfgByte_does_nothing_if_arg_nbits_is_0(void)
+{
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00; // fake Lis_Rst pin is low
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* Fake a cfg byte that makes Rst high. */
+    uint8_t const cfg_byte = 0xFF;
+    /* =====[ Operate ]===== */
+    uint8_t const bad_nbits = 0;
+    OutputCfgByte(cfg_byte, bad_nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1] *if nbits is in bound*. */
+    /* But nbits is out of bounds, so Rst is still low from set up. */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+}
+void OutputCfgByte_does_nothing_if_arg_nbits_is_more_than_8(void)
+{
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00; // fake Lis_Rst pin is low
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* Fake a cfg byte that makes Rst high. */
+    uint8_t const cfg_byte = 0xFF;
+    /* =====[ Operate ]===== */
+    uint8_t const bad_nbits = 9;
+    OutputCfgByte(cfg_byte, bad_nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1] *if nbits is in bound*. */
+    /* But nbits is out of bounds, so Rst is still low from set up. */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+}
+void OutputCfgByte_outputs_cfg_byte_on_Lis_Rst(void)
+{
+    uint8_t nbits, cfg_byte;
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00;
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* =====[ Operate ]===== */
+    /* Fake a cfg byte that makes Rst high on bit[nbits-1]. */
+    nbits = 1; cfg_byte = 0x01; // 0b 0000 0001
+    OutputCfgByte(cfg_byte, nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1]. */
+    TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_port1);
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00;
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* =====[ Operate ]===== */
+    /* Fake a cfg byte that makes Rst high on bit[nbits-1]. */
+    nbits = 2; cfg_byte = 0x02; // 0b 0000 0010
+    OutputCfgByte(cfg_byte, nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1]. */
+    TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_port1);
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00;
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* =====[ Operate ]===== */
+    /* Fake a cfg byte that makes Rst high on bit[nbits-1]. */
+    nbits = 8; cfg_byte = 0x80; // 0b 1000 0000
+    OutputCfgByte(cfg_byte, nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[nbits-1]. */
+    TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_port1);
+    //
+    /* Prove the test really is looking at bit index nbits-1. */
+    /* =====[ Setup ]===== */
+    /* Fake the Lis_Rst pin is starting out low. */
+    *Lis_port1 = 0x00;
+    /* Check the test is set up correctly */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+    /* =====[ Operate ]===== */
+    /* Fake a cfg byte that makes Rst high on bit[nbits-1]. */
+    nbits = 8; cfg_byte = 0x08; // 0b 0000 1000
+    OutputCfgByte(cfg_byte, nbits);
+    /* =====[ Test ]===== */
+    /* Rst has the value of cfg_byte bit[7]. */
+    /* But this test uses a cfg_byte with bit[3] set and bit[7] clear. */
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+}
+
+// ---End from test_Lis.c---
 void SensorCfgLis(void)
 {
     /* TODO: left off here */

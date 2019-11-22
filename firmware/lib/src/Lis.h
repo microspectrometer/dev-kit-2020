@@ -31,6 +31,20 @@ inline uint16_t NumPixelsInFrame(void)
     else npixels_in_frame = npixels;
     return npixels_in_frame;
 }
+// LisWriteConfigBitN is also inline but function body is in Lis.c.
+// This impacts the build recipes.
+// For embedded target:
+    // #include Lis.c (not .h)
+    // do not link vis-spi-out.o to Lis.o
+    // -> function is inline on embedded target
+// For unit test target:
+    // #include Lis.h
+    // link test_runner.o to Lis.o
+    // -> function is still inline
+    // -> hardware definitions are unknown when Lis.o is built, but it makes no
+    // difference since gcc has no special assembly instructions for hardware
+    // I/O registers
+void LisWriteConfigBitN(uint8_t const *config, uint8_t bit_index);
 
 void LisInit(void);
 extern void (*LisRunClkAt50kHz)(void);
@@ -83,10 +97,6 @@ extern uint8_t const Lis_Sync;      // pin1 and ddr1
 /* =====[ Internal helper functions. Exposed for testing. Not part of API ]===== */
 void EnterLisProgrammingMode(void);
 void ExitLisProgrammingMode(void);
-void OutputCfgByte(uint8_t const cfg_byte, uint8_t const nbits);
-/* =====[ API ]===== */
-void LisWriteCfg(uint8_t const * cfg);
-/* ----------------------------------------- */
 
 /* TODO: rename Lis_port1 Lis_portio and Lis_port2 Lis_portprog */
 

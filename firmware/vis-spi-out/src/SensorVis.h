@@ -85,7 +85,7 @@ extern uint16_t (*ReadSpiMaster)(uint8_t *read_buffer, uint16_t nbytes);
 extern uint16_t (*WriteSpiMaster)(uint8_t const *write_buffer, uint16_t nbytes);
 uint16_t WriteFrameToSpiMaster(uint16_t nbytes_in_frame);
 /* uint16_t WriteFrameToSpiMaster(uint8_t volatile *pframe, uint16_t nbytes_in_frame); */
-extern void (*ProgramPhotodiodeArray)(uint8_t *config);
+extern void (*ProgramPhotodiodeArray)(uint8_t const *config);
 extern void (*GetFrame)(void);
 
 // RepresentConfigAs28bits is deprecated

@@ -31,8 +31,9 @@ sbi	0x15, 2	; 21
 sbis	0x15, 2	; 21
 rjmp	.-4      	; 0x2cc <ProgramPhotodiodeArray_Implementation+0x22>
 sbi	0x15, 2	; 21
-; Setup the while loop. This setup takes 
-; ldi:1, movw:1, mov:1, rjmp:2
+; Setup the while loop. This setup takes 8 cycles.
+; 4 ldi:1, 1 movw:1, 1 mov:1, 1 rjmp:2
+; 4*1+1*1+1*1+1*2 = 8 cycles
 ldi	r18, 0x00	; 0
 ldi	r19, 0x00	; 0
 ldi	r20, 0x01	; 1

@@ -13,21 +13,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  0000148c  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000380  00000000  00000000  000014cc  2**0
+  5 .debug_aranges 00000378  00000000  00000000  000014cc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000386f  00000000  00000000  0000184c  2**0
+  6 .debug_info   0000379c  00000000  00000000  00001844  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00001043  00000000  00000000  000050bb  2**0
+  7 .debug_abbrev 00001034  00000000  00000000  00004fe0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000195f  00000000  00000000  000060fe  2**0
+  8 .debug_line   0000190b  00000000  00000000  00006014  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000954  00000000  00000000  00007a60  2**2
+  9 .debug_frame  00000944  00000000  00000000  00007920  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000016b8  00000000  00000000  000083b4  2**0
+ 10 .debug_str    000016a5  00000000  00000000  00008264  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00001ab9  00000000  00000000  00009a6c  2**0
+ 11 .debug_loc    000019d9  00000000  00000000  00009909  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000004e0  00000000  00000000  0000b525  2**0
+ 12 .debug_ranges 000004a0  00000000  00000000  0000b2e2  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -470,527 +470,527 @@ bool QueueIsEmpty(volatile Queue_s * pq)
      2a6:	cf 91       	pop	r28
      2a8:	08 95       	ret
 
-000002aa <GetExposure>:
+000002aa <ProgramPhotodiodeArray_Implementation>:
      2aa:	cf 93       	push	r28
      2ac:	df 93       	push	r29
-     2ae:	00 d0       	rcall	.+0      	; 0x2b0 <GetExposure+0x6>
-     2b0:	1f 92       	push	r1
-     2b2:	cd b7       	in	r28, 0x3d	; 61
-     2b4:	de b7       	in	r29, 0x3e	; 62
-     2b6:	1b 82       	std	Y+3, r1	; 0x03
-     2b8:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     2bc:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     2c0:	61 e0       	ldi	r22, 0x01	; 1
-     2c2:	70 e0       	ldi	r23, 0x00	; 0
-     2c4:	ce 01       	movw	r24, r28
-     2c6:	03 96       	adiw	r24, 0x03	; 3
-     2c8:	09 95       	icall
-     2ca:	80 91 4e 01 	lds	r24, 0x014E	; 0x80014e <exposure_ticks>
-     2ce:	90 91 4f 01 	lds	r25, 0x014F	; 0x80014f <exposure_ticks+0x1>
-     2d2:	99 83       	std	Y+1, r25	; 0x01
-     2d4:	8a 83       	std	Y+2, r24	; 0x02
-     2d6:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     2da:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     2de:	62 e0       	ldi	r22, 0x02	; 2
-     2e0:	70 e0       	ldi	r23, 0x00	; 0
-     2e2:	ce 01       	movw	r24, r28
-     2e4:	01 96       	adiw	r24, 0x01	; 1
-     2e6:	09 95       	icall
-     2e8:	0f 90       	pop	r0
-     2ea:	0f 90       	pop	r0
-     2ec:	0f 90       	pop	r0
-     2ee:	df 91       	pop	r29
-     2f0:	cf 91       	pop	r28
-     2f2:	08 95       	ret
+     2ae:	ec 01       	movw	r28, r24
+     2b0:	aa 9a       	sbi	0x15, 2	; 21
+     2b2:	aa 9b       	sbis	0x15, 2	; 21
+     2b4:	fe cf       	rjmp	.-4      	; 0x2b2 <ProgramPhotodiodeArray_Implementation+0x8>
+     2b6:	aa 9a       	sbi	0x15, 2	; 21
+     2b8:	28 9a       	sbi	0x05, 0	; 5
+     2ba:	ce 01       	movw	r24, r28
+     2bc:	03 96       	adiw	r24, 0x03	; 3
+     2be:	fe 01       	movw	r30, r28
+     2c0:	a1 e0       	ldi	r26, 0x01	; 1
+     2c2:	b0 e0       	ldi	r27, 0x00	; 0
+     2c4:	20 e0       	ldi	r18, 0x00	; 0
+     2c6:	30 e0       	ldi	r19, 0x00	; 0
+     2c8:	40 81       	ld	r20, Z
+     2ca:	64 2f       	mov	r22, r20
+     2cc:	70 e0       	ldi	r23, 0x00	; 0
+     2ce:	ad 01       	movw	r20, r26
+     2d0:	02 2e       	mov	r0, r18
+     2d2:	02 c0       	rjmp	.+4      	; 0x2d8 <ProgramPhotodiodeArray_Implementation+0x2e>
+     2d4:	44 0f       	add	r20, r20
+     2d6:	55 1f       	adc	r21, r21
+     2d8:	0a 94       	dec	r0
+     2da:	e2 f7       	brpl	.-8      	; 0x2d4 <ProgramPhotodiodeArray_Implementation+0x2a>
+     2dc:	46 23       	and	r20, r22
+     2de:	57 23       	and	r21, r23
+     2e0:	45 2b       	or	r20, r21
+     2e2:	b1 f1       	breq	.+108    	; 0x350 <ProgramPhotodiodeArray_Implementation+0xa6>
+     2e4:	5e 9a       	sbi	0x0b, 6	; 11
+     2e6:	a9 9a       	sbi	0x15, 1	; 21
+     2e8:	a9 9b       	sbis	0x15, 1	; 21
+     2ea:	fe cf       	rjmp	.-4      	; 0x2e8 <ProgramPhotodiodeArray_Implementation+0x3e>
+     2ec:	a9 9a       	sbi	0x15, 1	; 21
+     2ee:	aa 9a       	sbi	0x15, 2	; 21
+     2f0:	aa 9b       	sbis	0x15, 2	; 21
+     2f2:	fe cf       	rjmp	.-4      	; 0x2f0 <ProgramPhotodiodeArray_Implementation+0x46>
+     2f4:	aa 9a       	sbi	0x15, 2	; 21
+     2f6:	2f 5f       	subi	r18, 0xFF	; 255
+     2f8:	3f 4f       	sbci	r19, 0xFF	; 255
+     2fa:	28 30       	cpi	r18, 0x08	; 8
+     2fc:	31 05       	cpc	r19, r1
+     2fe:	21 f7       	brne	.-56     	; 0x2c8 <ProgramPhotodiodeArray_Implementation+0x1e>
+     300:	31 96       	adiw	r30, 0x01	; 1
+     302:	e8 17       	cp	r30, r24
+     304:	f9 07       	cpc	r31, r25
+     306:	f1 f6       	brne	.-68     	; 0x2c4 <ProgramPhotodiodeArray_Implementation+0x1a>
+     308:	20 e0       	ldi	r18, 0x00	; 0
+     30a:	30 e0       	ldi	r19, 0x00	; 0
+     30c:	61 e0       	ldi	r22, 0x01	; 1
+     30e:	70 e0       	ldi	r23, 0x00	; 0
+     310:	4b 81       	ldd	r20, Y+3	; 0x03
+     312:	50 e0       	ldi	r21, 0x00	; 0
+     314:	cb 01       	movw	r24, r22
+     316:	02 2e       	mov	r0, r18
+     318:	02 c0       	rjmp	.+4      	; 0x31e <ProgramPhotodiodeArray_Implementation+0x74>
+     31a:	88 0f       	add	r24, r24
+     31c:	99 1f       	adc	r25, r25
+     31e:	0a 94       	dec	r0
+     320:	e2 f7       	brpl	.-8      	; 0x31a <ProgramPhotodiodeArray_Implementation+0x70>
+     322:	48 23       	and	r20, r24
+     324:	59 23       	and	r21, r25
+     326:	45 2b       	or	r20, r21
+     328:	a9 f0       	breq	.+42     	; 0x354 <ProgramPhotodiodeArray_Implementation+0xaa>
+     32a:	5e 9a       	sbi	0x0b, 6	; 11
+     32c:	a9 9a       	sbi	0x15, 1	; 21
+     32e:	a9 9b       	sbis	0x15, 1	; 21
+     330:	fe cf       	rjmp	.-4      	; 0x32e <ProgramPhotodiodeArray_Implementation+0x84>
+     332:	a9 9a       	sbi	0x15, 1	; 21
+     334:	aa 9a       	sbi	0x15, 2	; 21
+     336:	aa 9b       	sbis	0x15, 2	; 21
+     338:	fe cf       	rjmp	.-4      	; 0x336 <ProgramPhotodiodeArray_Implementation+0x8c>
+     33a:	aa 9a       	sbi	0x15, 2	; 21
+     33c:	2f 5f       	subi	r18, 0xFF	; 255
+     33e:	3f 4f       	sbci	r19, 0xFF	; 255
+     340:	24 30       	cpi	r18, 0x04	; 4
+     342:	31 05       	cpc	r19, r1
+     344:	29 f7       	brne	.-54     	; 0x310 <ProgramPhotodiodeArray_Implementation+0x66>
+     346:	5e 98       	cbi	0x0b, 6	; 11
+     348:	28 98       	cbi	0x05, 0	; 5
+     34a:	df 91       	pop	r29
+     34c:	cf 91       	pop	r28
+     34e:	08 95       	ret
+     350:	5e 98       	cbi	0x0b, 6	; 11
+     352:	c9 cf       	rjmp	.-110    	; 0x2e6 <ProgramPhotodiodeArray_Implementation+0x3c>
+     354:	5e 98       	cbi	0x0b, 6	; 11
+     356:	ea cf       	rjmp	.-44     	; 0x32c <ProgramPhotodiodeArray_Implementation+0x82>
 
-000002f4 <StartAdcReadout>:
-     2f4:	5a 98       	cbi	0x0b, 2	; 11
-     2f6:	08 95       	ret
+00000358 <GetExposure>:
+     358:	cf 93       	push	r28
+     35a:	df 93       	push	r29
+     35c:	00 d0       	rcall	.+0      	; 0x35e <GetExposure+0x6>
+     35e:	1f 92       	push	r1
+     360:	cd b7       	in	r28, 0x3d	; 61
+     362:	de b7       	in	r29, 0x3e	; 62
+     364:	1b 82       	std	Y+3, r1	; 0x03
+     366:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     36a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     36e:	61 e0       	ldi	r22, 0x01	; 1
+     370:	70 e0       	ldi	r23, 0x00	; 0
+     372:	ce 01       	movw	r24, r28
+     374:	03 96       	adiw	r24, 0x03	; 3
+     376:	09 95       	icall
+     378:	80 91 4e 01 	lds	r24, 0x014E	; 0x80014e <exposure_ticks>
+     37c:	90 91 4f 01 	lds	r25, 0x014F	; 0x80014f <exposure_ticks+0x1>
+     380:	99 83       	std	Y+1, r25	; 0x01
+     382:	8a 83       	std	Y+2, r24	; 0x02
+     384:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     388:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     38c:	62 e0       	ldi	r22, 0x02	; 2
+     38e:	70 e0       	ldi	r23, 0x00	; 0
+     390:	ce 01       	movw	r24, r28
+     392:	01 96       	adiw	r24, 0x01	; 1
+     394:	09 95       	icall
+     396:	0f 90       	pop	r0
+     398:	0f 90       	pop	r0
+     39a:	0f 90       	pop	r0
+     39c:	df 91       	pop	r29
+     39e:	cf 91       	pop	r28
+     3a0:	08 95       	ret
 
-000002f8 <LisRunClkAt50kHz_Implementation>:
-     2f8:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <PwmResetCounterAtTop>
-     2fc:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <PwmResetCounterAtTop+0x1>
-     300:	09 95       	icall
-     302:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <PwmTopIsOcr0a>
-     306:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <PwmTopIsOcr0a+0x1>
-     30a:	09 95       	icall
-     30c:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <PwmClkIsCpuClk>
-     310:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <PwmClkIsCpuClk+0x1>
-     314:	09 95       	icall
-     316:	88 ec       	ldi	r24, 0xC8	; 200
-     318:	87 bd       	out	0x27, r24	; 39
-     31a:	87 b5       	in	r24, 0x27	; 39
-     31c:	86 95       	lsr	r24
-     31e:	88 bd       	out	0x28, r24	; 40
-     320:	08 95       	ret
+000003a2 <StartAdcReadout>:
+     3a2:	5a 98       	cbi	0x0b, 2	; 11
+     3a4:	08 95       	ret
 
-00000322 <LisClkOn_Implementation>:
-     322:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <PwmEnableOutputSetUntilMatch>
-     326:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <PwmEnableOutputSetUntilMatch+0x1>
-     32a:	09 94       	ijmp
+000003a6 <LisRunClkAt50kHz_Implementation>:
+     3a6:	e0 91 0e 01 	lds	r30, 0x010E	; 0x80010e <PwmResetCounterAtTop>
+     3aa:	f0 91 0f 01 	lds	r31, 0x010F	; 0x80010f <PwmResetCounterAtTop+0x1>
+     3ae:	09 95       	icall
+     3b0:	e0 91 0c 01 	lds	r30, 0x010C	; 0x80010c <PwmTopIsOcr0a>
+     3b4:	f0 91 0d 01 	lds	r31, 0x010D	; 0x80010d <PwmTopIsOcr0a+0x1>
+     3b8:	09 95       	icall
+     3ba:	e0 91 0a 01 	lds	r30, 0x010A	; 0x80010a <PwmClkIsCpuClk>
+     3be:	f0 91 0b 01 	lds	r31, 0x010B	; 0x80010b <PwmClkIsCpuClk+0x1>
+     3c2:	09 95       	icall
+     3c4:	88 ec       	ldi	r24, 0xC8	; 200
+     3c6:	87 bd       	out	0x27, r24	; 39
+     3c8:	87 b5       	in	r24, 0x27	; 39
+     3ca:	86 95       	lsr	r24
+     3cc:	88 bd       	out	0x28, r24	; 40
+     3ce:	08 95       	ret
 
-0000032c <ResetCounterAtTop>:
-     32c:	84 b5       	in	r24, 0x24	; 36
-     32e:	81 60       	ori	r24, 0x01	; 1
-     330:	84 bd       	out	0x24, r24	; 36
-     332:	84 b5       	in	r24, 0x24	; 36
-     334:	82 60       	ori	r24, 0x02	; 2
-     336:	84 bd       	out	0x24, r24	; 36
-     338:	08 95       	ret
+000003d0 <LisClkOn_Implementation>:
+     3d0:	e0 91 08 01 	lds	r30, 0x0108	; 0x800108 <PwmEnableOutputSetUntilMatch>
+     3d4:	f0 91 09 01 	lds	r31, 0x0109	; 0x800109 <PwmEnableOutputSetUntilMatch+0x1>
+     3d8:	09 94       	ijmp
 
-0000033a <TopIsOcr0a>:
-     33a:	85 b5       	in	r24, 0x25	; 37
-     33c:	88 60       	ori	r24, 0x08	; 8
-     33e:	85 bd       	out	0x25, r24	; 37
-     340:	08 95       	ret
+000003da <ResetCounterAtTop>:
+     3da:	84 b5       	in	r24, 0x24	; 36
+     3dc:	81 60       	ori	r24, 0x01	; 1
+     3de:	84 bd       	out	0x24, r24	; 36
+     3e0:	84 b5       	in	r24, 0x24	; 36
+     3e2:	82 60       	ori	r24, 0x02	; 2
+     3e4:	84 bd       	out	0x24, r24	; 36
+     3e6:	08 95       	ret
 
-00000342 <PwmClkIsCpuClk_Implementation>:
-     342:	85 b5       	in	r24, 0x25	; 37
-     344:	81 60       	ori	r24, 0x01	; 1
-     346:	85 bd       	out	0x25, r24	; 37
-     348:	85 b5       	in	r24, 0x25	; 37
-     34a:	8d 7f       	andi	r24, 0xFD	; 253
-     34c:	85 bd       	out	0x25, r24	; 37
-     34e:	85 b5       	in	r24, 0x25	; 37
-     350:	8b 7f       	andi	r24, 0xFB	; 251
-     352:	85 bd       	out	0x25, r24	; 37
-     354:	08 95       	ret
+000003e8 <TopIsOcr0a>:
+     3e8:	85 b5       	in	r24, 0x25	; 37
+     3ea:	88 60       	ori	r24, 0x08	; 8
+     3ec:	85 bd       	out	0x25, r24	; 37
+     3ee:	08 95       	ret
 
-00000356 <EnableOutputSetUntilMatch>:
-     356:	84 b5       	in	r24, 0x24	; 36
-     358:	8f 7e       	andi	r24, 0xEF	; 239
-     35a:	84 bd       	out	0x24, r24	; 36
-     35c:	84 b5       	in	r24, 0x24	; 36
-     35e:	80 62       	ori	r24, 0x20	; 32
-     360:	84 bd       	out	0x24, r24	; 36
-     362:	08 95       	ret
+000003f0 <PwmClkIsCpuClk_Implementation>:
+     3f0:	85 b5       	in	r24, 0x25	; 37
+     3f2:	81 60       	ori	r24, 0x01	; 1
+     3f4:	85 bd       	out	0x25, r24	; 37
+     3f6:	85 b5       	in	r24, 0x25	; 37
+     3f8:	8d 7f       	andi	r24, 0xFD	; 253
+     3fa:	85 bd       	out	0x25, r24	; 37
+     3fc:	85 b5       	in	r24, 0x25	; 37
+     3fe:	8b 7f       	andi	r24, 0xFB	; 251
+     400:	85 bd       	out	0x25, r24	; 37
+     402:	08 95       	ret
 
-00000364 <WriteSpiMaster_Implementation>:
-     364:	ef 92       	push	r14
-     366:	ff 92       	push	r15
-     368:	0f 93       	push	r16
-     36a:	1f 93       	push	r17
-     36c:	cf 93       	push	r28
-     36e:	df 93       	push	r29
-     370:	7b 01       	movw	r14, r22
-     372:	61 15       	cp	r22, r1
-     374:	71 05       	cpc	r23, r1
-     376:	c9 f0       	breq	.+50     	; 0x3aa <WriteSpiMaster_Implementation+0x46>
-     378:	ec 01       	movw	r28, r24
-     37a:	8c 01       	movw	r16, r24
-     37c:	06 0f       	add	r16, r22
-     37e:	17 1f       	adc	r17, r23
-     380:	89 91       	ld	r24, Y+
-     382:	8e bd       	out	0x2e, r24	; 46
-     384:	29 98       	cbi	0x05, 1	; 5
-     386:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     38a:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     38e:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
-     392:	81 11       	cpse	r24, r1
-     394:	f8 cf       	rjmp	.-16     	; 0x386 <WriteSpiMaster_Implementation+0x22>
-     396:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     39a:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     39e:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
-     3a2:	29 9a       	sbi	0x05, 1	; 5
-     3a4:	c0 17       	cp	r28, r16
-     3a6:	d1 07       	cpc	r29, r17
-     3a8:	59 f7       	brne	.-42     	; 0x380 <WriteSpiMaster_Implementation+0x1c>
-     3aa:	c7 01       	movw	r24, r14
-     3ac:	df 91       	pop	r29
-     3ae:	cf 91       	pop	r28
-     3b0:	1f 91       	pop	r17
-     3b2:	0f 91       	pop	r16
-     3b4:	ff 90       	pop	r15
-     3b6:	ef 90       	pop	r14
-     3b8:	08 95       	ret
+00000404 <EnableOutputSetUntilMatch>:
+     404:	84 b5       	in	r24, 0x24	; 36
+     406:	8f 7e       	andi	r24, 0xEF	; 239
+     408:	84 bd       	out	0x24, r24	; 36
+     40a:	84 b5       	in	r24, 0x24	; 36
+     40c:	80 62       	ori	r24, 0x20	; 32
+     40e:	84 bd       	out	0x24, r24	; 36
+     410:	08 95       	ret
 
-000003ba <GetSensorLED>:
-     3ba:	cf 93       	push	r28
-     3bc:	df 93       	push	r29
-     3be:	00 d0       	rcall	.+0      	; 0x3c0 <GetSensorLED+0x6>
-     3c0:	cd b7       	in	r28, 0x3d	; 61
-     3c2:	de b7       	in	r29, 0x3e	; 62
-     3c4:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     3c8:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     3cc:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
-     3d0:	81 11       	cpse	r24, r1
-     3d2:	f8 cf       	rjmp	.-16     	; 0x3c4 <GetSensorLED+0xa>
-     3d4:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     3d8:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     3dc:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
-     3e0:	82 30       	cpi	r24, 0x02	; 2
-     3e2:	78 f5       	brcc	.+94     	; 0x442 <__LOCK_REGION_LENGTH__+0x42>
-     3e4:	97 b1       	in	r25, 0x07	; 7
-     3e6:	21 e0       	ldi	r18, 0x01	; 1
-     3e8:	30 e0       	ldi	r19, 0x00	; 0
-     3ea:	02 c0       	rjmp	.+4      	; 0x3f0 <GetSensorLED+0x36>
-     3ec:	22 0f       	add	r18, r18
-     3ee:	33 1f       	adc	r19, r19
-     3f0:	8a 95       	dec	r24
-     3f2:	e2 f7       	brpl	.-8      	; 0x3ec <GetSensorLED+0x32>
-     3f4:	89 2f       	mov	r24, r25
-     3f6:	90 e0       	ldi	r25, 0x00	; 0
-     3f8:	82 23       	and	r24, r18
-     3fa:	93 23       	and	r25, r19
-     3fc:	89 2b       	or	r24, r25
-     3fe:	89 f4       	brne	.+34     	; 0x422 <__LOCK_REGION_LENGTH__+0x22>
-     400:	80 e0       	ldi	r24, 0x00	; 0
-     402:	19 82       	std	Y+1, r1	; 0x01
-     404:	8a 83       	std	Y+2, r24	; 0x02
-     406:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     40a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     40e:	62 e0       	ldi	r22, 0x02	; 2
-     410:	70 e0       	ldi	r23, 0x00	; 0
-     412:	ce 01       	movw	r24, r28
-     414:	01 96       	adiw	r24, 0x01	; 1
-     416:	09 95       	icall
-     418:	0f 90       	pop	r0
-     41a:	0f 90       	pop	r0
-     41c:	df 91       	pop	r29
-     41e:	cf 91       	pop	r28
-     420:	08 95       	ret
-     422:	87 b1       	in	r24, 0x07	; 7
-     424:	90 e0       	ldi	r25, 0x00	; 0
-     426:	82 23       	and	r24, r18
-     428:	93 23       	and	r25, r19
-     42a:	89 2b       	or	r24, r25
-     42c:	41 f0       	breq	.+16     	; 0x43e <__LOCK_REGION_LENGTH__+0x3e>
-     42e:	88 b1       	in	r24, 0x08	; 8
-     430:	90 e0       	ldi	r25, 0x00	; 0
-     432:	28 23       	and	r18, r24
-     434:	39 23       	and	r19, r25
-     436:	23 2b       	or	r18, r19
-     438:	11 f0       	breq	.+4      	; 0x43e <__LOCK_REGION_LENGTH__+0x3e>
-     43a:	82 e0       	ldi	r24, 0x02	; 2
-     43c:	e2 cf       	rjmp	.-60     	; 0x402 <__LOCK_REGION_LENGTH__+0x2>
-     43e:	81 e0       	ldi	r24, 0x01	; 1
-     440:	e0 cf       	rjmp	.-64     	; 0x402 <__LOCK_REGION_LENGTH__+0x2>
-     442:	81 e0       	ldi	r24, 0x01	; 1
-     444:	89 83       	std	Y+1, r24	; 0x01
-     446:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     44a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     44e:	61 e0       	ldi	r22, 0x01	; 1
-     450:	70 e0       	ldi	r23, 0x00	; 0
-     452:	ce 01       	movw	r24, r28
-     454:	01 96       	adiw	r24, 0x01	; 1
-     456:	09 95       	icall
-     458:	0f 90       	pop	r0
-     45a:	0f 90       	pop	r0
-     45c:	df 91       	pop	r29
-     45e:	cf 91       	pop	r28
-     460:	08 95       	ret
+00000412 <WriteSpiMaster_Implementation>:
+     412:	ef 92       	push	r14
+     414:	ff 92       	push	r15
+     416:	0f 93       	push	r16
+     418:	1f 93       	push	r17
+     41a:	cf 93       	push	r28
+     41c:	df 93       	push	r29
+     41e:	7b 01       	movw	r14, r22
+     420:	61 15       	cp	r22, r1
+     422:	71 05       	cpc	r23, r1
+     424:	c9 f0       	breq	.+50     	; 0x458 <WriteSpiMaster_Implementation+0x46>
+     426:	ec 01       	movw	r28, r24
+     428:	8c 01       	movw	r16, r24
+     42a:	06 0f       	add	r16, r22
+     42c:	17 1f       	adc	r17, r23
+     42e:	89 91       	ld	r24, Y+
+     430:	8e bd       	out	0x2e, r24	; 46
+     432:	29 98       	cbi	0x05, 1	; 5
+     434:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     438:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     43c:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+     440:	81 11       	cpse	r24, r1
+     442:	f8 cf       	rjmp	.-16     	; 0x434 <WriteSpiMaster_Implementation+0x22>
+     444:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     448:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     44c:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+     450:	29 9a       	sbi	0x05, 1	; 5
+     452:	c0 17       	cp	r28, r16
+     454:	d1 07       	cpc	r29, r17
+     456:	59 f7       	brne	.-42     	; 0x42e <WriteSpiMaster_Implementation+0x1c>
+     458:	c7 01       	movw	r24, r14
+     45a:	df 91       	pop	r29
+     45c:	cf 91       	pop	r28
+     45e:	1f 91       	pop	r17
+     460:	0f 91       	pop	r16
+     462:	ff 90       	pop	r15
+     464:	ef 90       	pop	r14
+     466:	08 95       	ret
 
-00000462 <SetSensorLED>:
-     462:	1f 93       	push	r17
-     464:	cf 93       	push	r28
-     466:	df 93       	push	r29
-     468:	1f 92       	push	r1
-     46a:	cd b7       	in	r28, 0x3d	; 61
-     46c:	de b7       	in	r29, 0x3e	; 62
-     46e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     472:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     476:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
-     47a:	81 11       	cpse	r24, r1
-     47c:	f8 cf       	rjmp	.-16     	; 0x46e <SetSensorLED+0xc>
-     47e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     482:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     486:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
-     48a:	18 2f       	mov	r17, r24
-     48c:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     490:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     494:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
-     498:	81 11       	cpse	r24, r1
-     49a:	f8 cf       	rjmp	.-16     	; 0x48c <SetSensorLED+0x2a>
-     49c:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     4a0:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     4a4:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
-     4a8:	12 30       	cpi	r17, 0x02	; 2
-     4aa:	30 f4       	brcc	.+12     	; 0x4b8 <SetSensorLED+0x56>
-     4ac:	88 23       	and	r24, r24
-     4ae:	a1 f0       	breq	.+40     	; 0x4d8 <SetSensorLED+0x76>
-     4b0:	81 30       	cpi	r24, 0x01	; 1
-     4b2:	89 f1       	breq	.+98     	; 0x516 <SetSensorLED+0xb4>
-     4b4:	82 30       	cpi	r24, 0x02	; 2
-     4b6:	01 f1       	breq	.+64     	; 0x4f8 <SetSensorLED+0x96>
-     4b8:	81 e0       	ldi	r24, 0x01	; 1
-     4ba:	89 83       	std	Y+1, r24	; 0x01
-     4bc:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     4c0:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     4c4:	61 e0       	ldi	r22, 0x01	; 1
-     4c6:	70 e0       	ldi	r23, 0x00	; 0
-     4c8:	ce 01       	movw	r24, r28
-     4ca:	01 96       	adiw	r24, 0x01	; 1
-     4cc:	09 95       	icall
-     4ce:	0f 90       	pop	r0
-     4d0:	df 91       	pop	r29
-     4d2:	cf 91       	pop	r28
-     4d4:	1f 91       	pop	r17
-     4d6:	08 95       	ret
-     4d8:	27 b1       	in	r18, 0x07	; 7
-     4da:	81 e0       	ldi	r24, 0x01	; 1
-     4dc:	90 e0       	ldi	r25, 0x00	; 0
-     4de:	01 c0       	rjmp	.+2      	; 0x4e2 <SetSensorLED+0x80>
-     4e0:	88 0f       	add	r24, r24
-     4e2:	1a 95       	dec	r17
-     4e4:	ea f7       	brpl	.-6      	; 0x4e0 <SetSensorLED+0x7e>
-     4e6:	80 95       	com	r24
-     4e8:	92 2f       	mov	r25, r18
-     4ea:	98 23       	and	r25, r24
-     4ec:	97 b9       	out	0x07, r25	; 7
-     4ee:	98 b1       	in	r25, 0x08	; 8
-     4f0:	89 23       	and	r24, r25
-     4f2:	88 b9       	out	0x08, r24	; 8
-     4f4:	19 82       	std	Y+1, r1	; 0x01
-     4f6:	e2 cf       	rjmp	.-60     	; 0x4bc <SetSensorLED+0x5a>
-     4f8:	28 b1       	in	r18, 0x08	; 8
-     4fa:	81 e0       	ldi	r24, 0x01	; 1
-     4fc:	90 e0       	ldi	r25, 0x00	; 0
-     4fe:	01 c0       	rjmp	.+2      	; 0x502 <SetSensorLED+0xa0>
-     500:	88 0f       	add	r24, r24
-     502:	1a 95       	dec	r17
-     504:	ea f7       	brpl	.-6      	; 0x500 <SetSensorLED+0x9e>
-     506:	92 2f       	mov	r25, r18
-     508:	98 2b       	or	r25, r24
-     50a:	98 b9       	out	0x08, r25	; 8
-     50c:	97 b1       	in	r25, 0x07	; 7
-     50e:	89 2b       	or	r24, r25
-     510:	87 b9       	out	0x07, r24	; 7
-     512:	19 82       	std	Y+1, r1	; 0x01
-     514:	d3 cf       	rjmp	.-90     	; 0x4bc <SetSensorLED+0x5a>
-     516:	28 b1       	in	r18, 0x08	; 8
-     518:	81 e0       	ldi	r24, 0x01	; 1
-     51a:	90 e0       	ldi	r25, 0x00	; 0
-     51c:	01 c0       	rjmp	.+2      	; 0x520 <SetSensorLED+0xbe>
-     51e:	88 0f       	add	r24, r24
-     520:	1a 95       	dec	r17
-     522:	ea f7       	brpl	.-6      	; 0x51e <SetSensorLED+0xbc>
-     524:	98 2f       	mov	r25, r24
-     526:	90 95       	com	r25
-     528:	92 23       	and	r25, r18
-     52a:	ef cf       	rjmp	.-34     	; 0x50a <SetSensorLED+0xa8>
+00000468 <GetSensorLED>:
+     468:	cf 93       	push	r28
+     46a:	df 93       	push	r29
+     46c:	00 d0       	rcall	.+0      	; 0x46e <GetSensorLED+0x6>
+     46e:	cd b7       	in	r28, 0x3d	; 61
+     470:	de b7       	in	r29, 0x3e	; 62
+     472:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     476:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     47a:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+     47e:	81 11       	cpse	r24, r1
+     480:	f8 cf       	rjmp	.-16     	; 0x472 <GetSensorLED+0xa>
+     482:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     486:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     48a:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+     48e:	82 30       	cpi	r24, 0x02	; 2
+     490:	78 f5       	brcc	.+94     	; 0x4f0 <GetSensorLED+0x88>
+     492:	97 b1       	in	r25, 0x07	; 7
+     494:	21 e0       	ldi	r18, 0x01	; 1
+     496:	30 e0       	ldi	r19, 0x00	; 0
+     498:	02 c0       	rjmp	.+4      	; 0x49e <GetSensorLED+0x36>
+     49a:	22 0f       	add	r18, r18
+     49c:	33 1f       	adc	r19, r19
+     49e:	8a 95       	dec	r24
+     4a0:	e2 f7       	brpl	.-8      	; 0x49a <GetSensorLED+0x32>
+     4a2:	89 2f       	mov	r24, r25
+     4a4:	90 e0       	ldi	r25, 0x00	; 0
+     4a6:	82 23       	and	r24, r18
+     4a8:	93 23       	and	r25, r19
+     4aa:	89 2b       	or	r24, r25
+     4ac:	89 f4       	brne	.+34     	; 0x4d0 <GetSensorLED+0x68>
+     4ae:	80 e0       	ldi	r24, 0x00	; 0
+     4b0:	19 82       	std	Y+1, r1	; 0x01
+     4b2:	8a 83       	std	Y+2, r24	; 0x02
+     4b4:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     4b8:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     4bc:	62 e0       	ldi	r22, 0x02	; 2
+     4be:	70 e0       	ldi	r23, 0x00	; 0
+     4c0:	ce 01       	movw	r24, r28
+     4c2:	01 96       	adiw	r24, 0x01	; 1
+     4c4:	09 95       	icall
+     4c6:	0f 90       	pop	r0
+     4c8:	0f 90       	pop	r0
+     4ca:	df 91       	pop	r29
+     4cc:	cf 91       	pop	r28
+     4ce:	08 95       	ret
+     4d0:	87 b1       	in	r24, 0x07	; 7
+     4d2:	90 e0       	ldi	r25, 0x00	; 0
+     4d4:	82 23       	and	r24, r18
+     4d6:	93 23       	and	r25, r19
+     4d8:	89 2b       	or	r24, r25
+     4da:	41 f0       	breq	.+16     	; 0x4ec <GetSensorLED+0x84>
+     4dc:	88 b1       	in	r24, 0x08	; 8
+     4de:	90 e0       	ldi	r25, 0x00	; 0
+     4e0:	28 23       	and	r18, r24
+     4e2:	39 23       	and	r19, r25
+     4e4:	23 2b       	or	r18, r19
+     4e6:	11 f0       	breq	.+4      	; 0x4ec <GetSensorLED+0x84>
+     4e8:	82 e0       	ldi	r24, 0x02	; 2
+     4ea:	e2 cf       	rjmp	.-60     	; 0x4b0 <GetSensorLED+0x48>
+     4ec:	81 e0       	ldi	r24, 0x01	; 1
+     4ee:	e0 cf       	rjmp	.-64     	; 0x4b0 <GetSensorLED+0x48>
+     4f0:	81 e0       	ldi	r24, 0x01	; 1
+     4f2:	89 83       	std	Y+1, r24	; 0x01
+     4f4:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     4f8:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     4fc:	61 e0       	ldi	r22, 0x01	; 1
+     4fe:	70 e0       	ldi	r23, 0x00	; 0
+     500:	ce 01       	movw	r24, r28
+     502:	01 96       	adiw	r24, 0x01	; 1
+     504:	09 95       	icall
+     506:	0f 90       	pop	r0
+     508:	0f 90       	pop	r0
+     50a:	df 91       	pop	r29
+     50c:	cf 91       	pop	r28
+     50e:	08 95       	ret
 
-0000052c <SetExposure>:
-     52c:	0f 93       	push	r16
-     52e:	1f 93       	push	r17
-     530:	cf 93       	push	r28
-     532:	df 93       	push	r29
-     534:	1f 92       	push	r1
-     536:	cd b7       	in	r28, 0x3d	; 61
-     538:	de b7       	in	r29, 0x3e	; 62
+00000510 <SetSensorLED>:
+     510:	1f 93       	push	r17
+     512:	cf 93       	push	r28
+     514:	df 93       	push	r29
+     516:	1f 92       	push	r1
+     518:	cd b7       	in	r28, 0x3d	; 61
+     51a:	de b7       	in	r29, 0x3e	; 62
+     51c:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     520:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     524:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+     528:	81 11       	cpse	r24, r1
+     52a:	f8 cf       	rjmp	.-16     	; 0x51c <SetSensorLED+0xc>
+     52c:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     530:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     534:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+     538:	18 2f       	mov	r17, r24
      53a:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
      53e:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
      542:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
      546:	81 11       	cpse	r24, r1
-     548:	f8 cf       	rjmp	.-16     	; 0x53a <SetExposure+0xe>
+     548:	f8 cf       	rjmp	.-16     	; 0x53a <SetSensorLED+0x2a>
      54a:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
      54e:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
      552:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
-     556:	08 2f       	mov	r16, r24
-     558:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     55c:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     560:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
-     564:	81 11       	cpse	r24, r1
-     566:	f8 cf       	rjmp	.-16     	; 0x558 <SetExposure+0x2c>
-     568:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     56c:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     570:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
-     574:	18 2f       	mov	r17, r24
-     576:	19 82       	std	Y+1, r1	; 0x01
-     578:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     57c:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     580:	61 e0       	ldi	r22, 0x01	; 1
-     582:	70 e0       	ldi	r23, 0x00	; 0
-     584:	ce 01       	movw	r24, r28
-     586:	01 96       	adiw	r24, 0x01	; 1
-     588:	09 95       	icall
-     58a:	81 2f       	mov	r24, r17
-     58c:	90 e0       	ldi	r25, 0x00	; 0
-     58e:	90 2b       	or	r25, r16
-     590:	90 93 4f 01 	sts	0x014F, r25	; 0x80014f <exposure_ticks+0x1>
-     594:	80 93 4e 01 	sts	0x014E, r24	; 0x80014e <exposure_ticks>
-     598:	0f 90       	pop	r0
-     59a:	df 91       	pop	r29
-     59c:	cf 91       	pop	r28
-     59e:	1f 91       	pop	r17
-     5a0:	0f 91       	pop	r16
-     5a2:	08 95       	ret
+     556:	12 30       	cpi	r17, 0x02	; 2
+     558:	30 f4       	brcc	.+12     	; 0x566 <SetSensorLED+0x56>
+     55a:	88 23       	and	r24, r24
+     55c:	a1 f0       	breq	.+40     	; 0x586 <SetSensorLED+0x76>
+     55e:	81 30       	cpi	r24, 0x01	; 1
+     560:	89 f1       	breq	.+98     	; 0x5c4 <SetSensorLED+0xb4>
+     562:	82 30       	cpi	r24, 0x02	; 2
+     564:	01 f1       	breq	.+64     	; 0x5a6 <SetSensorLED+0x96>
+     566:	81 e0       	ldi	r24, 0x01	; 1
+     568:	89 83       	std	Y+1, r24	; 0x01
+     56a:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     56e:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     572:	61 e0       	ldi	r22, 0x01	; 1
+     574:	70 e0       	ldi	r23, 0x00	; 0
+     576:	ce 01       	movw	r24, r28
+     578:	01 96       	adiw	r24, 0x01	; 1
+     57a:	09 95       	icall
+     57c:	0f 90       	pop	r0
+     57e:	df 91       	pop	r29
+     580:	cf 91       	pop	r28
+     582:	1f 91       	pop	r17
+     584:	08 95       	ret
+     586:	27 b1       	in	r18, 0x07	; 7
+     588:	81 e0       	ldi	r24, 0x01	; 1
+     58a:	90 e0       	ldi	r25, 0x00	; 0
+     58c:	01 c0       	rjmp	.+2      	; 0x590 <SetSensorLED+0x80>
+     58e:	88 0f       	add	r24, r24
+     590:	1a 95       	dec	r17
+     592:	ea f7       	brpl	.-6      	; 0x58e <SetSensorLED+0x7e>
+     594:	80 95       	com	r24
+     596:	92 2f       	mov	r25, r18
+     598:	98 23       	and	r25, r24
+     59a:	97 b9       	out	0x07, r25	; 7
+     59c:	98 b1       	in	r25, 0x08	; 8
+     59e:	89 23       	and	r24, r25
+     5a0:	88 b9       	out	0x08, r24	; 8
+     5a2:	19 82       	std	Y+1, r1	; 0x01
+     5a4:	e2 cf       	rjmp	.-60     	; 0x56a <SetSensorLED+0x5a>
+     5a6:	28 b1       	in	r18, 0x08	; 8
+     5a8:	81 e0       	ldi	r24, 0x01	; 1
+     5aa:	90 e0       	ldi	r25, 0x00	; 0
+     5ac:	01 c0       	rjmp	.+2      	; 0x5b0 <SetSensorLED+0xa0>
+     5ae:	88 0f       	add	r24, r24
+     5b0:	1a 95       	dec	r17
+     5b2:	ea f7       	brpl	.-6      	; 0x5ae <SetSensorLED+0x9e>
+     5b4:	92 2f       	mov	r25, r18
+     5b6:	98 2b       	or	r25, r24
+     5b8:	98 b9       	out	0x08, r25	; 8
+     5ba:	97 b1       	in	r25, 0x07	; 7
+     5bc:	89 2b       	or	r24, r25
+     5be:	87 b9       	out	0x07, r24	; 7
+     5c0:	19 82       	std	Y+1, r1	; 0x01
+     5c2:	d3 cf       	rjmp	.-90     	; 0x56a <SetSensorLED+0x5a>
+     5c4:	28 b1       	in	r18, 0x08	; 8
+     5c6:	81 e0       	ldi	r24, 0x01	; 1
+     5c8:	90 e0       	ldi	r25, 0x00	; 0
+     5ca:	01 c0       	rjmp	.+2      	; 0x5ce <SetSensorLED+0xbe>
+     5cc:	88 0f       	add	r24, r24
+     5ce:	1a 95       	dec	r17
+     5d0:	ea f7       	brpl	.-6      	; 0x5cc <SetSensorLED+0xbc>
+     5d2:	98 2f       	mov	r25, r24
+     5d4:	90 95       	com	r25
+     5d6:	92 23       	and	r25, r18
+     5d8:	ef cf       	rjmp	.-34     	; 0x5b8 <SetSensorLED+0xa8>
 
-000005a4 <CaptureFrame>:
-     5a4:	ef 92       	push	r14
-     5a6:	ff 92       	push	r15
-     5a8:	0f 93       	push	r16
-     5aa:	1f 93       	push	r17
-     5ac:	cf 93       	push	r28
-     5ae:	df 93       	push	r29
-     5b0:	00 d0       	rcall	.+0      	; 0x5b2 <CaptureFrame+0xe>
-     5b2:	1f 92       	push	r1
-     5b4:	cd b7       	in	r28, 0x3d	; 61
-     5b6:	de b7       	in	r29, 0x3e	; 62
-     5b8:	1b 82       	std	Y+3, r1	; 0x03
-     5ba:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     5be:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     5c2:	61 e0       	ldi	r22, 0x01	; 1
-     5c4:	70 e0       	ldi	r23, 0x00	; 0
-     5c6:	ce 01       	movw	r24, r28
-     5c8:	03 96       	adiw	r24, 0x03	; 3
-     5ca:	09 95       	icall
-     5cc:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <GetFrame>
-     5d0:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <GetFrame+0x1>
-     5d4:	09 95       	icall
-     5d6:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
-     5da:	81 30       	cpi	r24, 0x01	; 1
-     5dc:	09 f4       	brne	.+2      	; 0x5e0 <CaptureFrame+0x3c>
-     5de:	43 c0       	rjmp	.+134    	; 0x666 <CaptureFrame+0xc2>
-     5e0:	90 e1       	ldi	r25, 0x10	; 16
-     5e2:	83 e0       	ldi	r24, 0x03	; 3
-     5e4:	89 83       	std	Y+1, r24	; 0x01
-     5e6:	9a 83       	std	Y+2, r25	; 0x02
-     5e8:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     5ec:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     5f0:	62 e0       	ldi	r22, 0x02	; 2
-     5f2:	70 e0       	ldi	r23, 0x00	; 0
-     5f4:	ce 01       	movw	r24, r28
-     5f6:	01 96       	adiw	r24, 0x01	; 1
-     5f8:	09 95       	icall
-     5fa:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
-     5fe:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
-     602:	61 e0       	ldi	r22, 0x01	; 1
-     604:	70 e0       	ldi	r23, 0x00	; 0
-     606:	ce 01       	movw	r24, r28
-     608:	03 96       	adiw	r24, 0x03	; 3
-     60a:	09 95       	icall
-     60c:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
-     610:	81 30       	cpi	r24, 0x01	; 1
-     612:	59 f1       	breq	.+86     	; 0x66a <CaptureFrame+0xc6>
-     614:	80 e2       	ldi	r24, 0x20	; 32
-     616:	96 e0       	ldi	r25, 0x06	; 6
-     618:	08 e5       	ldi	r16, 0x58	; 88
-     61a:	11 e0       	ldi	r17, 0x01	; 1
-     61c:	9c 01       	movw	r18, r24
-     61e:	28 5a       	subi	r18, 0xA8	; 168
-     620:	3e 4f       	sbci	r19, 0xFE	; 254
-     622:	79 01       	movw	r14, r18
-     624:	f8 01       	movw	r30, r16
-     626:	81 91       	ld	r24, Z+
-     628:	8f 01       	movw	r16, r30
-     62a:	8e bd       	out	0x2e, r24	; 46
-     62c:	29 98       	cbi	0x05, 1	; 5
-     62e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     632:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     636:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
-     63a:	81 11       	cpse	r24, r1
-     63c:	f8 cf       	rjmp	.-16     	; 0x62e <CaptureFrame+0x8a>
-     63e:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
-     642:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
-     646:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
-     64a:	29 9a       	sbi	0x05, 1	; 5
-     64c:	e0 16       	cp	r14, r16
-     64e:	f1 06       	cpc	r15, r17
-     650:	49 f7       	brne	.-46     	; 0x624 <CaptureFrame+0x80>
-     652:	0f 90       	pop	r0
-     654:	0f 90       	pop	r0
-     656:	0f 90       	pop	r0
-     658:	df 91       	pop	r29
-     65a:	cf 91       	pop	r28
-     65c:	1f 91       	pop	r17
-     65e:	0f 91       	pop	r16
-     660:	ff 90       	pop	r15
-     662:	ef 90       	pop	r14
-     664:	08 95       	ret
-     666:	98 e8       	ldi	r25, 0x88	; 136
-     668:	bd cf       	rjmp	.-134    	; 0x5e4 <CaptureFrame+0x40>
-     66a:	80 e1       	ldi	r24, 0x10	; 16
-     66c:	93 e0       	ldi	r25, 0x03	; 3
-     66e:	d4 cf       	rjmp	.-88     	; 0x618 <CaptureFrame+0x74>
+000005da <SetExposure>:
+     5da:	0f 93       	push	r16
+     5dc:	1f 93       	push	r17
+     5de:	cf 93       	push	r28
+     5e0:	df 93       	push	r29
+     5e2:	1f 92       	push	r1
+     5e4:	cd b7       	in	r28, 0x3d	; 61
+     5e6:	de b7       	in	r29, 0x3e	; 62
+     5e8:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     5ec:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     5f0:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+     5f4:	81 11       	cpse	r24, r1
+     5f6:	f8 cf       	rjmp	.-16     	; 0x5e8 <SetExposure+0xe>
+     5f8:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     5fc:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     600:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+     604:	08 2f       	mov	r16, r24
+     606:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     60a:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     60e:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+     612:	81 11       	cpse	r24, r1
+     614:	f8 cf       	rjmp	.-16     	; 0x606 <SetExposure+0x2c>
+     616:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     61a:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     61e:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+     622:	18 2f       	mov	r17, r24
+     624:	19 82       	std	Y+1, r1	; 0x01
+     626:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     62a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     62e:	61 e0       	ldi	r22, 0x01	; 1
+     630:	70 e0       	ldi	r23, 0x00	; 0
+     632:	ce 01       	movw	r24, r28
+     634:	01 96       	adiw	r24, 0x01	; 1
+     636:	09 95       	icall
+     638:	81 2f       	mov	r24, r17
+     63a:	90 e0       	ldi	r25, 0x00	; 0
+     63c:	90 2b       	or	r25, r16
+     63e:	90 93 4f 01 	sts	0x014F, r25	; 0x80014f <exposure_ticks+0x1>
+     642:	80 93 4e 01 	sts	0x014E, r24	; 0x80014e <exposure_ticks>
+     646:	0f 90       	pop	r0
+     648:	df 91       	pop	r29
+     64a:	cf 91       	pop	r28
+     64c:	1f 91       	pop	r17
+     64e:	0f 91       	pop	r16
+     650:	08 95       	ret
 
-00000670 <ProgramPhotodiodeArray_Implementation>:
-     670:	cf 93       	push	r28
-     672:	df 93       	push	r29
-     674:	ec 01       	movw	r28, r24
-     676:	aa 9a       	sbi	0x15, 2	; 21
-     678:	aa 9b       	sbis	0x15, 2	; 21
-     67a:	fe cf       	rjmp	.-4      	; 0x678 <ProgramPhotodiodeArray_Implementation+0x8>
-     67c:	aa 9a       	sbi	0x15, 2	; 21
-     67e:	28 9a       	sbi	0x05, 0	; 5
-     680:	ce 01       	movw	r24, r28
-     682:	03 96       	adiw	r24, 0x03	; 3
-     684:	fe 01       	movw	r30, r28
-     686:	a1 e0       	ldi	r26, 0x01	; 1
-     688:	b0 e0       	ldi	r27, 0x00	; 0
-     68a:	20 e0       	ldi	r18, 0x00	; 0
-     68c:	30 e0       	ldi	r19, 0x00	; 0
-     68e:	40 81       	ld	r20, Z
-     690:	64 2f       	mov	r22, r20
-     692:	70 e0       	ldi	r23, 0x00	; 0
-     694:	ad 01       	movw	r20, r26
-     696:	02 2e       	mov	r0, r18
-     698:	02 c0       	rjmp	.+4      	; 0x69e <ProgramPhotodiodeArray_Implementation+0x2e>
-     69a:	44 0f       	add	r20, r20
-     69c:	55 1f       	adc	r21, r21
-     69e:	0a 94       	dec	r0
-     6a0:	e2 f7       	brpl	.-8      	; 0x69a <ProgramPhotodiodeArray_Implementation+0x2a>
-     6a2:	46 23       	and	r20, r22
-     6a4:	57 23       	and	r21, r23
-     6a6:	45 2b       	or	r20, r21
-     6a8:	b1 f1       	breq	.+108    	; 0x716 <ProgramPhotodiodeArray_Implementation+0xa6>
-     6aa:	5e 9a       	sbi	0x0b, 6	; 11
-     6ac:	a9 9a       	sbi	0x15, 1	; 21
-     6ae:	a9 9b       	sbis	0x15, 1	; 21
-     6b0:	fe cf       	rjmp	.-4      	; 0x6ae <ProgramPhotodiodeArray_Implementation+0x3e>
-     6b2:	a9 9a       	sbi	0x15, 1	; 21
-     6b4:	aa 9a       	sbi	0x15, 2	; 21
-     6b6:	aa 9b       	sbis	0x15, 2	; 21
-     6b8:	fe cf       	rjmp	.-4      	; 0x6b6 <ProgramPhotodiodeArray_Implementation+0x46>
-     6ba:	aa 9a       	sbi	0x15, 2	; 21
-     6bc:	2f 5f       	subi	r18, 0xFF	; 255
-     6be:	3f 4f       	sbci	r19, 0xFF	; 255
-     6c0:	28 30       	cpi	r18, 0x08	; 8
-     6c2:	31 05       	cpc	r19, r1
-     6c4:	21 f7       	brne	.-56     	; 0x68e <ProgramPhotodiodeArray_Implementation+0x1e>
-     6c6:	31 96       	adiw	r30, 0x01	; 1
-     6c8:	e8 17       	cp	r30, r24
-     6ca:	f9 07       	cpc	r31, r25
-     6cc:	f1 f6       	brne	.-68     	; 0x68a <ProgramPhotodiodeArray_Implementation+0x1a>
-     6ce:	20 e0       	ldi	r18, 0x00	; 0
-     6d0:	30 e0       	ldi	r19, 0x00	; 0
-     6d2:	61 e0       	ldi	r22, 0x01	; 1
-     6d4:	70 e0       	ldi	r23, 0x00	; 0
-     6d6:	4b 81       	ldd	r20, Y+3	; 0x03
-     6d8:	50 e0       	ldi	r21, 0x00	; 0
-     6da:	cb 01       	movw	r24, r22
-     6dc:	02 2e       	mov	r0, r18
-     6de:	02 c0       	rjmp	.+4      	; 0x6e4 <ProgramPhotodiodeArray_Implementation+0x74>
-     6e0:	88 0f       	add	r24, r24
-     6e2:	99 1f       	adc	r25, r25
-     6e4:	0a 94       	dec	r0
-     6e6:	e2 f7       	brpl	.-8      	; 0x6e0 <ProgramPhotodiodeArray_Implementation+0x70>
-     6e8:	48 23       	and	r20, r24
-     6ea:	59 23       	and	r21, r25
-     6ec:	45 2b       	or	r20, r21
-     6ee:	a9 f0       	breq	.+42     	; 0x71a <ProgramPhotodiodeArray_Implementation+0xaa>
-     6f0:	5e 9a       	sbi	0x0b, 6	; 11
-     6f2:	a9 9a       	sbi	0x15, 1	; 21
-     6f4:	a9 9b       	sbis	0x15, 1	; 21
-     6f6:	fe cf       	rjmp	.-4      	; 0x6f4 <ProgramPhotodiodeArray_Implementation+0x84>
-     6f8:	a9 9a       	sbi	0x15, 1	; 21
-     6fa:	aa 9a       	sbi	0x15, 2	; 21
-     6fc:	aa 9b       	sbis	0x15, 2	; 21
-     6fe:	fe cf       	rjmp	.-4      	; 0x6fc <ProgramPhotodiodeArray_Implementation+0x8c>
-     700:	aa 9a       	sbi	0x15, 2	; 21
-     702:	2f 5f       	subi	r18, 0xFF	; 255
-     704:	3f 4f       	sbci	r19, 0xFF	; 255
-     706:	24 30       	cpi	r18, 0x04	; 4
-     708:	31 05       	cpc	r19, r1
-     70a:	29 f7       	brne	.-54     	; 0x6d6 <ProgramPhotodiodeArray_Implementation+0x66>
-     70c:	5e 98       	cbi	0x0b, 6	; 11
-     70e:	28 98       	cbi	0x05, 0	; 5
-     710:	df 91       	pop	r29
-     712:	cf 91       	pop	r28
-     714:	08 95       	ret
-     716:	5e 98       	cbi	0x0b, 6	; 11
-     718:	c9 cf       	rjmp	.-110    	; 0x6ac <ProgramPhotodiodeArray_Implementation+0x3c>
-     71a:	5e 98       	cbi	0x0b, 6	; 11
-     71c:	ea cf       	rjmp	.-44     	; 0x6f2 <ProgramPhotodiodeArray_Implementation+0x82>
+00000652 <CaptureFrame>:
+     652:	ef 92       	push	r14
+     654:	ff 92       	push	r15
+     656:	0f 93       	push	r16
+     658:	1f 93       	push	r17
+     65a:	cf 93       	push	r28
+     65c:	df 93       	push	r29
+     65e:	00 d0       	rcall	.+0      	; 0x660 <CaptureFrame+0xe>
+     660:	1f 92       	push	r1
+     662:	cd b7       	in	r28, 0x3d	; 61
+     664:	de b7       	in	r29, 0x3e	; 62
+     666:	1b 82       	std	Y+3, r1	; 0x03
+     668:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     66c:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     670:	61 e0       	ldi	r22, 0x01	; 1
+     672:	70 e0       	ldi	r23, 0x00	; 0
+     674:	ce 01       	movw	r24, r28
+     676:	03 96       	adiw	r24, 0x03	; 3
+     678:	09 95       	icall
+     67a:	e0 91 18 01 	lds	r30, 0x0118	; 0x800118 <GetFrame>
+     67e:	f0 91 19 01 	lds	r31, 0x0119	; 0x800119 <GetFrame+0x1>
+     682:	09 95       	icall
+     684:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
+     688:	81 30       	cpi	r24, 0x01	; 1
+     68a:	09 f4       	brne	.+2      	; 0x68e <CaptureFrame+0x3c>
+     68c:	43 c0       	rjmp	.+134    	; 0x714 <CaptureFrame+0xc2>
+     68e:	90 e1       	ldi	r25, 0x10	; 16
+     690:	83 e0       	ldi	r24, 0x03	; 3
+     692:	89 83       	std	Y+1, r24	; 0x01
+     694:	9a 83       	std	Y+2, r25	; 0x02
+     696:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     69a:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     69e:	62 e0       	ldi	r22, 0x02	; 2
+     6a0:	70 e0       	ldi	r23, 0x00	; 0
+     6a2:	ce 01       	movw	r24, r28
+     6a4:	01 96       	adiw	r24, 0x01	; 1
+     6a6:	09 95       	icall
+     6a8:	e0 91 16 01 	lds	r30, 0x0116	; 0x800116 <WriteSpiMaster>
+     6ac:	f0 91 17 01 	lds	r31, 0x0117	; 0x800117 <WriteSpiMaster+0x1>
+     6b0:	61 e0       	ldi	r22, 0x01	; 1
+     6b2:	70 e0       	ldi	r23, 0x00	; 0
+     6b4:	ce 01       	movw	r24, r28
+     6b6:	03 96       	adiw	r24, 0x03	; 3
+     6b8:	09 95       	icall
+     6ba:	80 91 50 01 	lds	r24, 0x0150	; 0x800150 <binning>
+     6be:	81 30       	cpi	r24, 0x01	; 1
+     6c0:	59 f1       	breq	.+86     	; 0x718 <CaptureFrame+0xc6>
+     6c2:	80 e2       	ldi	r24, 0x20	; 32
+     6c4:	96 e0       	ldi	r25, 0x06	; 6
+     6c6:	08 e5       	ldi	r16, 0x58	; 88
+     6c8:	11 e0       	ldi	r17, 0x01	; 1
+     6ca:	9c 01       	movw	r18, r24
+     6cc:	28 5a       	subi	r18, 0xA8	; 168
+     6ce:	3e 4f       	sbci	r19, 0xFE	; 254
+     6d0:	79 01       	movw	r14, r18
+     6d2:	f8 01       	movw	r30, r16
+     6d4:	81 91       	ld	r24, Z+
+     6d6:	8f 01       	movw	r16, r30
+     6d8:	8e bd       	out	0x2e, r24	; 46
+     6da:	29 98       	cbi	0x05, 1	; 5
+     6dc:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     6e0:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     6e4:	0e 94 1f 01 	call	0x23e	; 0x23e <QueueIsEmpty>
+     6e8:	81 11       	cpse	r24, r1
+     6ea:	f8 cf       	rjmp	.-16     	; 0x6dc <CaptureFrame+0x8a>
+     6ec:	80 91 4c 01 	lds	r24, 0x014C	; 0x80014c <SpiFifo>
+     6f0:	90 91 4d 01 	lds	r25, 0x014D	; 0x80014d <SpiFifo+0x1>
+     6f4:	0e 94 f5 00 	call	0x1ea	; 0x1ea <QueuePop>
+     6f8:	29 9a       	sbi	0x05, 1	; 5
+     6fa:	e0 16       	cp	r14, r16
+     6fc:	f1 06       	cpc	r15, r17
+     6fe:	49 f7       	brne	.-46     	; 0x6d2 <CaptureFrame+0x80>
+     700:	0f 90       	pop	r0
+     702:	0f 90       	pop	r0
+     704:	0f 90       	pop	r0
+     706:	df 91       	pop	r29
+     708:	cf 91       	pop	r28
+     70a:	1f 91       	pop	r17
+     70c:	0f 91       	pop	r16
+     70e:	ff 90       	pop	r15
+     710:	ef 90       	pop	r14
+     712:	08 95       	ret
+     714:	98 e8       	ldi	r25, 0x88	; 136
+     716:	bd cf       	rjmp	.-134    	; 0x692 <CaptureFrame+0x40>
+     718:	80 e1       	ldi	r24, 0x10	; 16
+     71a:	93 e0       	ldi	r25, 0x03	; 3
+     71c:	d4 cf       	rjmp	.-88     	; 0x6c6 <CaptureFrame+0x74>
 
 0000071e <GetFrame_Implementation>:
      71e:	aa 9a       	sbi	0x15, 2	; 21
@@ -2357,7 +2357,7 @@ bool QueueIsEmpty(volatile Queue_s * pq)
     120e:	19 82       	std	Y+1, r1	; 0x01
     1210:	18 82       	st	Y, r1
     1212:	54 9a       	sbi	0x0a, 4	; 10
-    1214:	0e 94 7a 01 	call	0x2f4	; 0x2f4 <StartAdcReadout>
+    1214:	0e 94 d1 01 	call	0x3a2	; 0x3a2 <StartAdcReadout>
     1218:	52 9a       	sbi	0x0a, 2	; 10
     121a:	e2 ec       	ldi	r30, 0xC2	; 194
     121c:	f0 e0       	ldi	r31, 0x00	; 0
