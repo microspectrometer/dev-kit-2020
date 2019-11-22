@@ -869,22 +869,22 @@ void SetExposure_converts_two_data_bytes_to_new_16_bit_exposure_ticks_value(void
 }
 
 /* =====[ Mock ProgramPhotodiodeArray() ]===== */
-static RecordedCall * Record_ProgramPhotodiodeArray(uint32_t arg1)
+static RecordedCall * Record_ProgramPhotodiodeArray(uint8_t *arg1)
 { // Define call recorded when func-under-test calls mocked function.
     char const *call_name = "ProgramPhotodiodeArray";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
-    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint32_t);
-    *((uint32_t *)record_of_arg1->pArg) = arg1;
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t const **)record_of_arg1->pArg) = arg1;
     // Store the arg records in the call record.
     RecordArg(record_of_this_call, record_of_arg1);
     return record_of_this_call;
 }
-static void ProgramPhotodiodeArray_Mocked(uint32_t config)
+static void ProgramPhotodiodeArray_Mocked(uint8_t *config)
 { // Define behavior of mocked function: ProgramPhotodiodeArray().
     RecordActualCall(mock, Record_ProgramPhotodiodeArray(config));
 }
 /* =====[ Define how to swap function definitions ]===== */
-static void (*ProgramPhotodiodeArray_Saved)(uint32_t);
+static void (*ProgramPhotodiodeArray_Saved)(uint8_t *);
 static void Restore_ProgramPhotodiodeArray(void)
 { // how to restore real definition
     ProgramPhotodiodeArray = ProgramPhotodiodeArray_Saved;
@@ -1054,8 +1054,13 @@ void SetSensorConfig_programs_the_photodiode_array_with_the_config(void)
     uint8_t const row5 = 4; fake_active_rows |= 1<<row5;
     QueuePush(SpiFifo, fake_active_rows);
     // Calculate expected config
-    // TODO: change this uint32_t to an array of four bytes
-    uint32_t expected_config = RepresentConfigAs28bits(fake_binning, fake_gain, fake_active_rows);
+    uint8_t expected_config[4];
+    RepresentConfigAs4bytes(expected_config, fake_binning, fake_gain, fake_active_rows);
+    // Assert config now contains the following LIS programming sequence.
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0xF9, expected_config[0], "Expected config[0]");
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0xFF, expected_config[1], "Expected config[1]");
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0xFF, expected_config[2], "Expected config[2]");
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, expected_config[3], "Expected config[3]");
     /* =====[ Operate ]===== */
     SetSensorConfig();
     /* =====[ Test ]===== */
@@ -1063,14 +1068,9 @@ void SetSensorConfig_programs_the_photodiode_array_with_the_config(void)
     TEST_ASSERT_EQUAL_HEX8(fake_binning, binning);
     TEST_ASSERT_EQUAL_HEX8(fake_gain, gain);
     TEST_ASSERT_EQUAL_HEX8(fake_active_rows, active_rows);
-    // ProgramPhotodiodeArray takes the 28-bit config as its input argument.
-    // TODO: change this uint32_t to an array of four bytes
-    // Assert this 28-bit config is the expected config.
+    // ProgramPhotodiodeArray takes the address of the four-byte config.
     uint8_t call_n = 2;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "ProgramPhotodiodeArray"));
-    printf("Expected config: %#010x\n", expected_config);
-    uint8_t arg_n = 1;
-    TEST_ASSERT_TRUE(AssertArg(mock, call_n, arg_n, &expected_config));
 }
 
 // tdd RepresentConfigAs4bytes
@@ -1302,173 +1302,6 @@ void RepresentConfigAs4bytes_writes_config_b7b12b17b22b27_set_if_row5_is_active(
     TEST_ASSERT_EQUAL_HEX8(0x10, config[1]);
     TEST_ASSERT_EQUAL_HEX8(0x42, config[2]);
     TEST_ASSERT_EQUAL_HEX8(0x08, config[3]);
-}
-
-// ---This is old. Need four bytes, not a uint32_t.---
-// tdd RepresentConfigAs28bits
-void RepresentConfigAs28bits_returns_uint32_with_bit0_set_if_binning_is_on(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_on;
-    uint8_t gain = gain1x;
-    uint8_t active_rows = all_rows_active;
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_BIT_HIGH(0,RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_bit0_clear_if_binning_is_off(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain1x;
-    uint8_t active_rows = all_rows_active;
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_BIT_LOW(0,RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_bits1to2_clear_if_gain_is_1x(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain1x;
-    uint8_t active_rows = all_rows_active;
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_BIT_LOW(1,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_LOW(2,RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_bit1_clear_bit2_set_if_gain_is_2p5x(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain25x;
-    uint8_t active_rows = all_rows_active;
-    /* =====[ Operate and Test ]===== */
-    /* printf("Config: %010x\n", RepresentConfigAs28bits(binning, gain, active_rows)); */
-    TEST_ASSERT_BIT_LOW(1,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(2,RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_bit1_set_bit2_clear_if_gain_is_4x(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain4x;
-    uint8_t active_rows = all_rows_active;
-    /* =====[ Operate and Test ]===== */
-    /* printf("Config: %010x\n", RepresentConfigAs28bits(binning, gain, active_rows)); */
-    TEST_ASSERT_BIT_HIGH(1,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_LOW(2,RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_bits1to2_set_if_gain_is_5x(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain5x;
-    uint8_t active_rows = all_rows_active;
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_BIT_HIGH(1,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(2,RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_bits3to27_set_if_all_rows_are_active(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain1x;
-    uint8_t active_rows = all_rows_active;
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL_HEX32(0x0FFFFFF8, RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(3,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(4,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(5,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(6,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(7,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(8,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(9,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(10,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(11,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(12,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(13,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(14,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(15,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(16,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(17,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(18,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(19,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(20,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(21,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(22,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(23,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(24,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(25,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(26,RepresentConfigAs28bits(binning, gain, active_rows));
-    TEST_ASSERT_BIT_HIGH(27,RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_b3b8b13b18b23_set_if_row1_is_active(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain1x;
-    uint8_t const row1 = 0;
-    uint8_t const row2 = 1; (void)row2;
-    uint8_t const row3 = 2; (void)row3;
-    uint8_t const row4 = 3; (void)row4;
-    uint8_t const row5 = 4; (void)row5;
-    uint8_t active_rows = (1<<row1);
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL_HEX32(0x00842108, RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_b4b9b14b19b24_set_if_row2_is_active(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain1x;
-    uint8_t const row1 = 0; (void)row1;
-    uint8_t const row2 = 1;
-    uint8_t const row3 = 2; (void)row3;
-    uint8_t const row4 = 3; (void)row4;
-    uint8_t const row5 = 4; (void)row5;
-    uint8_t active_rows = (1<<row2);
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL_HEX32(0x01084210, RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_b5b10b15b20b25_set_if_row3_is_active(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain1x;
-    uint8_t const row1 = 0; (void)row1;
-    uint8_t const row2 = 1; (void)row2;
-    uint8_t const row3 = 2;
-    uint8_t const row4 = 3; (void)row4;
-    uint8_t const row5 = 4; (void)row5;
-    uint8_t active_rows = (1<<row3);
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL_HEX32(0x02108420, RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_b6b11b16b21b26_set_if_row4_is_active(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain1x;
-    uint8_t const row1 = 0; (void)row1;
-    uint8_t const row2 = 1; (void)row2;
-    uint8_t const row3 = 2; (void)row3;
-    uint8_t const row4 = 3;
-    uint8_t const row5 = 4; (void)row5;
-    uint8_t active_rows = (1<<row4);
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL_HEX32(0x04210840, RepresentConfigAs28bits(binning, gain, active_rows));
-}
-void RepresentConfigAs28bits_returns_uint32_with_b7b12b17b22b27_set_if_row5_is_active(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t binning = binning_off;
-    uint8_t gain = gain1x;
-    uint8_t const row1 = 0; (void)row1;
-    uint8_t const row2 = 1; (void)row2;
-    uint8_t const row3 = 2; (void)row3;
-    uint8_t const row4 = 3; (void)row4;
-    uint8_t const row5 = 4;
-    uint8_t active_rows = (1<<row5);
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_EQUAL_HEX32(0x08421080, RepresentConfigAs28bits(binning, gain, active_rows));
 }
 
 // tdd LIS programming sequence

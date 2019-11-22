@@ -4,7 +4,7 @@
 #include "UartSpi.h" // USART in MSPIM mode for ADC readout
 #include "stdlib.h" // defines NULL
 
-#define manual_config 1 // troubleshoot LIS programming sequence
+#define manual_config 0 // troubleshoot LIS programming sequence
 
 /* =====[ SPI Flags and Data Register Buffer ]===== */
 // SpiFifo points to the FIFO buffer where ISR buffers incoming SPI bytes.
@@ -250,17 +250,11 @@ inline void ProgramLis(uint8_t * config)
         byte_index++;
     }
 }
-static void ProgramPhotodiodeArray_Implementation(uint32_t config)
+static void ProgramPhotodiodeArray_Implementation(uint8_t *config)
 { // TODO: clean this up using optimized inline functions
     // Program LIS.
     EnterLisProgrammingMode(); // Wait for Clock falling edge, PixSelect HIGH
-    if (0)
-    {
-        // I might not need these, but they are in the old code, no idea why.
-        /* ClearBit(Lis_port1, Lis_Rst); // old code does this */
-        /* LisWaitForClockRisingEdge(); // old code does this */
-        /* LisWaitForClockFallingEdge(); // old code does this */
-    }
+    (void)config;
     if (manual_config)
     {
         // ---Manual config---
@@ -296,27 +290,32 @@ static void ProgramPhotodiodeArray_Implementation(uint32_t config)
         SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
         SetBit(Lis_port1, Lis_Rst); LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
     }
-    if (0)
+    // write all of the first three bytes
+    uint8_t byte_index = 0;
+    while(byte_index++ < 3)
     {
-        // This while loop reading a 32-bit value is problematic.
-        uint8_t bit=0;
-        while (bit < 28)
+        uint8_t bit_index = 0;
+        while(bit_index < 8)
         {
-            // TODO: this is too time intensive to set up each time.
-            // The old code just jumps straight into pulling Rst high/low.
-            // config & (1<<bit) requires four `and` operations
-            // Split 
-            if (config & (1<<bit)) SetBit(Lis_port1, Lis_Rst); // sbi 0x0b, 6
-            else ClearBit(Lis_port1, Lis_Rst); // cbi 0x0b, 6
-            bit++;
-            // Wait for Lis_Rst value to clock in before loading the next bit.
-            LisWaitForClockRisingEdge(); // bit is read on rising edge
-            LisWaitForClockFallingEdge(); // hold bit until falling edge
+            if (BitIsSet(config,bit_index)) SetBit(Lis_port1, Lis_Rst);
+            else ClearBit(Lis_port1, Lis_Rst);
+            LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+            bit_index++;
         }
+        config++;
+    }
+    // write the first four bits of the fourth byte
+    uint8_t bit_index = 0;
+    while(bit_index < 4)
+    {
+        if (BitIsSet(config,bit_index)) SetBit(Lis_port1, Lis_Rst);
+        else ClearBit(Lis_port1, Lis_Rst);
+        LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+        bit_index++;
     }
     ExitLisProgrammingMode();
 }
-void (*ProgramPhotodiodeArray)(uint32_t) = ProgramPhotodiodeArray_Implementation;
+void (*ProgramPhotodiodeArray)(uint8_t *) = ProgramPhotodiodeArray_Implementation;
 // RepresentConfigAs28bits is deprecated -- need four bytes instead of uint32_t
 uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_rows)
 {
@@ -510,7 +509,8 @@ void SetSensorConfig(void)
     WriteSpiMaster(&status,1);
 
     // Convert three data bytes to 28-bit LIS programming sequence.
-    ProgramPhotodiodeArray(RepresentConfigAs28bits(binning, gain, active_rows));
+    uint8_t config[4]; RepresentConfigAs4bytes(config, binning, gain, active_rows);
+    ProgramPhotodiodeArray(config);
     // typical 28-bit sequence: 0000 1111   1111 1111   1111 1111   1111 1001
     // msb 0000 is ignored
 }

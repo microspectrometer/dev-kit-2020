@@ -30,6 +30,15 @@
 // [ ] LisExpose
     // [ ] LisExpose_exposes_pixels_for_nticks_of_LIS_clock
 
+// Photodiode Array Config must be global in main application for linking
+// against its extern declaration in SensorVis
+// `extern` builds Lis.o to use same data defined in main application.
+uint8_t binning; uint8_t gain; uint8_t active_rows;
+// Frame of pixel data must be global in main application for linking
+// against its extern declaration in SensorVis
+// `extern` builds SensorVis.o to use same data defined in main application.
+uint8_t frame[npixels*2];
+
 /* =====[ LisWriteCfg ]===== */
 /* This is an API call for the client to load a configuration into the LIS. */
 void LisWriteCfg_example_usage(void)

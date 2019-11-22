@@ -363,8 +363,6 @@ void BridgeSetSensorConfig(void)
     uint8_t binning = read_buffer[0];
     uint8_t gain = read_buffer[1];
     uint8_t active_rows = read_buffer[2];
-    // TODO: this is wrong: Bridge should respond OK no matter what, long as it
-    // gets here. How did this pass the system test?
     if (SensorHasResponse())
     { // something is wrong, let the USB host figure it out
         uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);

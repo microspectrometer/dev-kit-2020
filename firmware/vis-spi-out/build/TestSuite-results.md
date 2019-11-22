@@ -1,17 +1,4 @@
-test/test_runner.c:85:RepresentConfigAs4bytes_writes_config_byte0_bit0_set_if_binning_is_on:PASS
-test/test_runner.c:86:RepresentConfigAs4bytes_writes_config_byte0_bit0_clear_if_binning_is_off:PASS
-test/test_runner.c:87:RepresentConfigAs4bytes_writes_config_byte0_bits1to2_clear_if_gain_is_1x:PASS
-test/test_runner.c:88:RepresentConfigAs4bytes_writes_config_byte0_bit1_clear_bit2_set_if_gain_is_2p5x:PASS
-test/test_runner.c:89:RepresentConfigAs4bytes_writes_config_byte0_bit1_set_bit2_clear_if_gain_is_4x:PASS
-test/test_runner.c:90:RepresentConfigAs4bytes_writes_config_byte0_bits1to2_set_if_gain_is_5x:PASS
-test/test_runner.c:91:RepresentConfigAs4bytes_writes_config_as_little_endian_so_prog_bit27_is_byte_3_bit3_not_byte0_bit_3:PASS
-test/test_runner.c:92:RepresentConfigAs4bytes_writes_config_bits3to27_set_if_all_rows_are_active:PASS
-test/test_runner.c:93:RepresentConfigAs4bytes_writes_config_b3b8b13b18b23_set_if_row1_is_active:PASS
-test/test_runner.c:94:RepresentConfigAs4bytes_writes_config_b4b9b14b19b24_set_if_row2_is_active:PASS
-test/test_runner.c:95:RepresentConfigAs4bytes_writes_config_b5b10b15b20b25_set_if_row3_is_active:PASS
-test/test_runner.c:96:RepresentConfigAs4bytes_writes_config_b6b11b16b21b26_set_if_row4_is_active:PASS
-test/test_runner.c:97:RepresentConfigAs4bytes_writes_config_b7b12b17b22b27_set_if_row5_is_active:PASS
 
 -----------------------
-13 Tests 0 Failures 0 Ignored 
+0 Tests 0 Failures 0 Ignored 
 OK

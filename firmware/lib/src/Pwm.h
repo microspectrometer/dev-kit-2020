@@ -53,4 +53,8 @@ extern void (*PwmDisableOutput)(void);
 extern uint8_t volatile * const Pwm_tifr0;  // timer0 interrupt flags
 extern uint8_t const Pwm_Ocf0a; // tifr0
 extern uint8_t const Pwm_Ocf0b; // tifr0
+
+// 2019-11-12 correct use of inline for optimal assembly
+void WaitForPwmRisingEdge(void);
+void WaitForPwmFallingEdge(void);
 #endif // _PWM_H

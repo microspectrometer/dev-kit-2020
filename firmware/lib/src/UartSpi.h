@@ -65,4 +65,16 @@ extern void (*UartSpiStartAdcConversion)(void);
 extern void (*UartSpiStartAdcReadout)(void);
 extern uint8_t (*UartSpiReadDataRegister)(void);
 
+// ---2019-11-12 inline for optimal assembly---
+/* void StartAdcConversion(void); */
+inline void StartAdcConversion(void)
+{
+    SetBit(UartSpi_port, UartSpi_AdcConv);
+}
+void StartAdcReadout(void);
+/* void WaitForConversion(void); */
+void WaitForConversion(uint8_t ticks_of_3cpu_cycles);
+void WaitForEmptyTxBuffer(void);
+void WaitForByteFromAdc(void);
+
 #endif // _UARTSPI_H

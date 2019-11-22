@@ -1,4 +1,7 @@
 #include "AvrAsmMacros.h"
+// ---2019-11-12 fake inline functions that call AVR asm macros ---
+void Delay3ClocksPerTick(uint8_t ticks) { (void)ticks; }
+
 /* =====[ Fake the AVR asm macros with empty definitions ]===== */
 // sei()
 static void GlobalInterruptEnable_Implementation(void) {}

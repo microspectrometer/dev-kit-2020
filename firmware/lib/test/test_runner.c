@@ -337,6 +337,6 @@ int main()
     DevelopingLisWriteCfg     (Nope);
     DevelopingSpiSlave        (Nope);
     test_UsbReadBytes         (Nope);
-    test_Queue                (Yep);
+    test_Queue                (Nope);
     return UNITY_END();
 }
