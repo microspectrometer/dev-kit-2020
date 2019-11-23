@@ -87,9 +87,6 @@ uint16_t WriteFrameToSpiMaster(uint16_t nbytes_in_frame);
 /* uint16_t WriteFrameToSpiMaster(uint8_t volatile *pframe, uint16_t nbytes_in_frame); */
 extern void (*ProgramPhotodiodeArray)(uint8_t const *config);
 extern void (*GetFrame)(void);
-
-// RepresentConfigAs28bits is deprecated
-uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_rows);
 //
 void RepresentConfigAs4bytes(uint8_t *pconfig, uint8_t binning, uint8_t gain, uint8_t active_rows);
 //

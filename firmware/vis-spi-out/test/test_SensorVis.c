@@ -869,7 +869,7 @@ void SetExposure_converts_two_data_bytes_to_new_16_bit_exposure_ticks_value(void
 }
 
 /* =====[ Mock ProgramPhotodiodeArray() ]===== */
-static RecordedCall * Record_ProgramPhotodiodeArray(uint8_t *arg1)
+static RecordedCall * Record_ProgramPhotodiodeArray(uint8_t const *arg1)
 { // Define call recorded when func-under-test calls mocked function.
     char const *call_name = "ProgramPhotodiodeArray";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
@@ -879,12 +879,12 @@ static RecordedCall * Record_ProgramPhotodiodeArray(uint8_t *arg1)
     RecordArg(record_of_this_call, record_of_arg1);
     return record_of_this_call;
 }
-static void ProgramPhotodiodeArray_Mocked(uint8_t *config)
+static void ProgramPhotodiodeArray_Mocked(uint8_t const *config)
 { // Define behavior of mocked function: ProgramPhotodiodeArray().
     RecordActualCall(mock, Record_ProgramPhotodiodeArray(config));
 }
 /* =====[ Define how to swap function definitions ]===== */
-static void (*ProgramPhotodiodeArray_Saved)(uint8_t *);
+static void (*ProgramPhotodiodeArray_Saved)(uint8_t const *);
 static void Restore_ProgramPhotodiodeArray(void)
 { // how to restore real definition
     ProgramPhotodiodeArray = ProgramPhotodiodeArray_Saved;
@@ -1311,7 +1311,9 @@ void bit_number_is_correct_on_each_iteration_of_while_loop(void)
     uint8_t binning = binning_on;
     uint8_t gain = gain1x;
     uint8_t active_rows = all_rows_active;
-    uint32_t config = RepresentConfigAs28bits(binning, gain, active_rows);
+    (void) binning; (void) gain; (void) active_rows;
+    /* uint32_t config = RepresentConfigAs28bits(binning, gain, active_rows); */
+    uint32_t config = 0;
     /* =====[ Operate and Test ]===== */
     uint8_t bit=0;
     while (bit < 28)

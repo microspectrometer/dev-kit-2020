@@ -52,9 +52,6 @@ static void GetFrame_Implementation(void)
 {
     ExposePhotodiodeArray();
     LisWaitForReadoutToStart(); // wait for SYNC pulse
-    // TEST: Does "Wait for sync rising edge" show up in .lst if function body
-    // is in this file?
-    // RESULT: No. "Wait for sync falling edge" is still the only assembly.
     LisReadout();
     /* return; */
     /* // Readout*/
@@ -225,106 +222,13 @@ void GetSensorConfig(void)
     uint8_t const nbytes_data = 3;
     WriteSpiMaster(data, nbytes_data);
 }
-inline void ProgramLis(uint8_t * config)
-{
-    /** config is little endian:\n 
-     *  byte 0,         byte 1,     byte 2,     byte 3\n 
-     *  LSB cfg_byte0,  cfg_byte1,  cfg_byte2,  MSB cfg_byte3\n 
-     * */
-    EnterLisProgrammingMode(); // Wait for Clock falling edge, PixSelect HIGH
-    uint8_t byte_index = 0;
-    while (byte_index < 4)
-    {
-        uint8_t bit = 0;
-        while (bit < 8)
-        {
-            if (config[byte_index] & (1<<bit)) SetBit(Lis_port1, Lis_Rst); // sbi 0x0b, 6
-            else ClearBit(Lis_port1, Lis_Rst); // cbi 0x0b, 6
-            bit++;
-            // Wait for Lis_Rst value to clock in before loading the next bit.
-            LisWaitForClockRisingEdge(); // bit is read on rising edge
-            LisWaitForClockFallingEdge(); // hold bit until falling edge
-        }
-        byte_index++;
-    }
-}
 static void ProgramPhotodiodeArray_Implementation(uint8_t const *config)
 { // TODO: clean this up using optimized inline functions
     EnterLisProgrammingMode(); // Wait for Clock falling edge, PixSelect HIGH
-    // write all of the first three bytes
-    uint8_t byte_index = 0;
-    while(byte_index++ < 3)
-    {
-        uint8_t bit_index = 0;
-        while(bit_index < 8) LisWriteConfigBitN(config, bit_index++); 
-        config++;
-    }
-    // write the first four bits of the fourth byte
-    uint8_t bit_index = 0;
-    while(bit_index < 4) LisWriteConfigBitN(config, bit_index++); 
+    LisWriteConfig(config);
     ExitLisProgrammingMode();
 }
 void (*ProgramPhotodiodeArray)(uint8_t const *) = ProgramPhotodiodeArray_Implementation;
-// RepresentConfigAs28bits is deprecated -- need four bytes instead of uint32_t
-uint32_t RepresentConfigAs28bits(uint8_t binning, uint8_t gain, uint8_t active_rows)
-{
-    /** Return the 28-bit LIS config given three config bytes.\n 
-     *  Input format for the three config bytes:
-     *  - binning: 0x00 (off), 0x01 (on)\n 
-     *  - gain: 0x01 (1x), 0x25 (2.5x), 0x04 (4x), 0x05 (5x)\n 
-     *  - active_rows: 5 rows, set the bit to turn the row on\n 
-     *    bits [8..0]: xxx54321 (1 to 5 are the row numbers, x is don't care)\n 
-     *  Output format:\n 
-     *  - bit0 of the 28-bit sequence is bit0 of the uint32 return value\n 
-     *  - program the LIS starting with bit0 */
-    /** RepresentConfigAs28bits behavior:\n 
-      * - returns uint32 with bit0 set if binning is on\n 
-      * - returns uint32 with bit0 clear if binning is off\n 
-      * - returns uint32 with bits1to2 clear if gain is 1x\n 
-      * - returns uint32 with bit1 clear bit2 set if gain is 2p5x\n 
-      * - returns uint32 with bit1 set bit2 clear if gain is 4x\n 
-      * - returns uint32 with bits1to2 set if gain is 5x\n 
-      * - returns uint32 with bits3to27 set if all rows are active\n 
-      * - returns uint32 with b3b8b13b18b23 set if row1 is active\n 
-      * - returns uint32 with b4b9b14b19b24 set if row2 is active\n 
-      * - returns uint32 with b5b10b15b20b25 set if row3 is active\n 
-      * - returns uint32 with b6b11b16b21b26 set if row4 is active\n 
-      * - returns uint32 with b7b12b17b22b27 set if row5 is active\n 
-      * */
-    // Convert three data bytes to 28-bit LIS programming sequence.
-    uint32_t config = 0x00000000;
-    uint8_t bit = 0;
-    if (binning_on == binning) config |= 1<<(bit++); // bit 0: bin on/off
-    else bit++;
-    // bit 1: gain bit G2
-    // bit 2: gain bit G1
-    // {G2,G1}: {0,0} 1x; {0,1} 2.5x; {1,0} 4x; {1,1} 5x
-    if      (gain25x == gain) { bit++; config |= 1<<(bit++); }
-    else if (gain4x == gain)  { config |= 1<<(bit++); bit++; }
-    else if (gain5x == gain)  { config |= 1<<(bit++); config |= 1<<(bit++); }
-    else { bit++; bit++; }
-    // bit 3 to 27 are pixel groups P25 to P1 to select active rows
-    // Example with binning_on and gain1x
-    // ----3----  ----2----  ----1----  ----0-(---) // byte
-    // 7654 3210  7654 3210  7654 3210  7654 3(210) // bit
-    // xxxx 1111  1111 1111  1111 1111  1111 1(001) // all rows on
-    // xxxx 0000  1000 0100  0010 0001  0000 1(001) // row 1 (or 5?)
-    // xxxx 0001  0000 1000  0100 0010  0001 0(001) // row 2 (or 4?)
-    // xxxx 0010  0001 0000  1000 0100  0010 0(001) // row 3
-    // xxxx 0100  0010 0001  0000 1000  0100 0(001) // row 4 (or 2?)
-    // xxxx 1000  0100 0010  0001 0000  1000 0(001) // row 5 (or 1?)
-    uint8_t const row1 = 0; uint32_t const row1_mask = 0x00842108;
-    uint8_t const row2 = 1; uint32_t const row2_mask = 0x01084210;
-    uint8_t const row3 = 2; uint32_t const row3_mask = 0x02108420;
-    uint8_t const row4 = 3; uint32_t const row4_mask = 0x04210840;
-    uint8_t const row5 = 4; uint32_t const row5_mask = 0x08421080;
-    if (active_rows&(1<<row1)) config |= row1_mask;
-    if (active_rows&(1<<row2)) config |= row2_mask;
-    if (active_rows&(1<<row3)) config |= row3_mask;
-    if (active_rows&(1<<row4)) config |= row4_mask;
-    if (active_rows&(1<<row5)) config |= row5_mask;
-    return config;
-}
 void RepresentConfigAs4bytes(uint8_t *config, uint8_t binning, uint8_t gain, uint8_t active_rows)
 {
     /** Return the 28-bit LIS config given three config bytes.\n 
