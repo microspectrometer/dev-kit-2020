@@ -22,8 +22,6 @@ typedef uint8_t const led_name;  // TODO: move this to a shared lib
 led_name led_0;
 led_name led_1;
 
-// =====[ global for exposure time defined in main() application ]=====
-extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
 // ---CaptureFrame dependencies---
 /* #define npixels 784 */
 // =====[ globals for photodiode array config defined in main() application ]=====
@@ -37,23 +35,6 @@ inline void WordToTwoByteArray(uint16_t word, uint8_t * parray)
     *parray++ = word>>8;
     *parray++ = word & 0xFF;
     /* uint8_t npixels_msb_lsb[] = {(npixels_in_frame>>8), npixels_in_frame & 0xFF}; */
-}
-// TODO: unit test ExposePhotodiodeArray. Does this belong in lib SensorVis?
-inline void ExposePhotodiodeArray(void)
-{
-    /* Find this line in disassembly .lst file: sbi	0x15, 2	; 21 */
-    LisWaitForClockFallingEdge(); // Wait for Lis clock falling edge
-    // ---Expose---
-    uint16_t tick_count = 0; // track number of ticks of exposure
-    /* Find this line in disassembly .lst file: sbi	0x0b, 6	; 11 */
-    LisStartExposure();
-    // while loop consumes 20 lines of assembly. TODO: increment count in ISR
-    // and just check a flag here instead?
-    while (tick_count++ < exposure_ticks) LisWaitForClockFallingEdge();
-    // Stop exposure
-    /* ClearBit(Lis_port1, Lis_Rst); // RST low */
-    /* Find this line in disassembly .lst file: cbi	0x0b, 6	; 11 */
-    LisStopExposure();
 }
 
 

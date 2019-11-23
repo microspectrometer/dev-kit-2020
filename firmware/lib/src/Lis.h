@@ -44,6 +44,7 @@ inline uint16_t NumPixelsInFrame(void)
     // -> hardware definitions are unknown when Lis.o is built, but it makes no
     // difference since gcc has no special assembly instructions for hardware
     // I/O registers
+void LisWriteConfig(uint8_t const *config);
 void LisWriteConfigBitN(uint8_t const *config, uint8_t bit_index);
 
 void LisInit(void);
@@ -105,6 +106,7 @@ void LisWaitForClockRisingEdge(void);
 void LisWaitForClockFallingEdge(void);
 void LisWaitForSyncRisingEdge(void);
 void LisWaitForSyncFallingEdge(void);
+void ExposePhotodiodeArray(void);
 void LisStartExposure(void);
 void LisStopExposure(void);
 void LisWaitForReadoutToStart(void);

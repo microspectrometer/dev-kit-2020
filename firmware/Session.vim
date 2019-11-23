@@ -17,6 +17,8 @@ nnoremap s :cs find s <cword>
 vnoremap - zvdpzvV']
 nnoremap - zvddp
 nmap . <Plug>(RepeatDot)
+nnoremap ;bb :call ToggleCursorbind()
+nnoremap ;bo :set noscb nocrb
 vmap ;p?=s <Plug>PyCalcAppendWithEqAndSum
 vmap ;p?s <Plug>PyCalcAppendWithSum
 vmap ;p?= <Plug>PyCalcAppendWithEq
@@ -283,10 +285,10 @@ nmap ySs <Plug>YSsurround
 nmap yss <Plug>Yssurround
 nmap yS <Plug>YSurround
 nmap ys <Plug>Ysurround
-nnoremap <silent> <Plug>(RepeatDot) :exe repeat#run(v:count)
-nnoremap <silent> <Plug>(RepeatUndo) :call repeat#wrap('u',v:count)
-nnoremap <silent> <Plug>(RepeatUndoLine) :call repeat#wrap('U',v:count)
 nnoremap <silent> <Plug>(RepeatRedo) :call repeat#wrap("\<C-R>",v:count)
+nnoremap <silent> <Plug>(RepeatUndoLine) :call repeat#wrap('U',v:count)
+nnoremap <silent> <Plug>(RepeatUndo) :call repeat#wrap('u',v:count)
+nnoremap <silent> <Plug>(RepeatDot) :exe repeat#run(v:count)
 nnoremap <silent> <Plug>SurroundRepeat .
 nmap <silent> <Plug>CommentaryUndo :echoerr "Change your <Plug>CommentaryUndo map to <Plug>Commentary<Plug>Commentary"
 vnoremap <silent> <Plug>PyCalcAppendWithEqAndSum :call HowMuch#HowMuch(1,1,1,'py')
@@ -362,11 +364,12 @@ set nolangremap
 set laststatus=2
 set listchars=tab:>-,trail:·,space:·
 set nrformats=bin,hex
-set operatorfunc=<SNR>52_opfunc
+set operatorfunc=<SNR>49_go
 set path=.,/usr/include,,,./**,/usr/include/glib-2.0,/cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/include,/cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/test,/cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/test/unity,/cygdrive/c/Program\\\ Files\\\ (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include,/usr/lib/clang/5.0.1/include,/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/include,/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/include/c++,/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/include/c++/tr1,/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/include/c++/x86_64-pc-cygwin,~/.local/lib/python3.6/site-packages,/usr/lib/python3.7/,/usr/lib/python3.7/site-packages/
 set previewheight=6
 set ruler
 set runtimepath=~/.vim,~/.vim/pack/bundle/start/vim-surround,~/.vim/pack/bundle/start/vim-repeat,~/.vim/pack/bundle/start/vim-markdown,~/.vim/pack/bundle/start/vim-easy-align,~/.vim/pack/bundle/start/vim-commentary,~/.vim/pack/bundle/start/tabulous,~/.vim/pack/bundle/start/nerdtree,~/.vim/pack/bundle/start/HowMuch,~/.vim/pack/bundle/start/echodoc.vim,~/.vim/pack/bundle/start/deol.nvim,/usr/share/vim/vimfiles,/usr/share/vim/vim81,/usr/share/vim/vimfiles/after,~/.vim/after,~/.vim/pack/bundle/dev
+set scrollopt=hor
 set shell=bash
 set shiftwidth=4
 set showcmd
@@ -401,7 +404,7 @@ set stal=2
 tabnew
 tabnew
 tabrewind
-edit ~/.vimrc
+edit /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/src/mBrd.c
 set splitbelow splitright
 wincmd _ | wincmd |
 split
@@ -409,10 +412,6 @@ split
 wincmd _ | wincmd |
 vsplit
 1wincmd h
-wincmd _ | wincmd |
-split
-1wincmd k
-wincmd w
 wincmd w
 wincmd _ | wincmd |
 split
@@ -433,254 +432,19 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 8 + 18) / 37)
-exe 'vert 1resize ' . ((&columns * 95 + 79) / 159)
-exe '2resize ' . ((&lines * 7 + 18) / 37)
-exe 'vert 2resize ' . ((&columns * 95 + 79) / 159)
-exe '3resize ' . ((&lines * 8 + 18) / 37)
-exe 'vert 3resize ' . ((&columns * 63 + 79) / 159)
-exe '4resize ' . ((&lines * 7 + 18) / 37)
-exe 'vert 4resize ' . ((&columns * 63 + 79) / 159)
-exe '5resize ' . ((&lines * 16 + 18) / 37)
-exe 'vert 5resize ' . ((&columns * 95 + 79) / 159)
+exe '1resize ' . ((&lines * 16 + 18) / 37)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe '2resize ' . ((&lines * 8 + 18) / 37)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
+exe '3resize ' . ((&lines * 7 + 18) / 37)
+exe 'vert 3resize ' . ((&columns * 79 + 79) / 159)
+exe '4resize ' . ((&lines * 16 + 18) / 37)
+exe 'vert 4resize ' . ((&columns * 79 + 79) / 159)
+exe '5resize ' . ((&lines * 8 + 18) / 37)
+exe 'vert 5resize ' . ((&columns * 79 + 79) / 159)
 exe '6resize ' . ((&lines * 7 + 18) / 37)
-exe 'vert 6resize ' . ((&columns * 63 + 79) / 159)
-exe '7resize ' . ((&lines * 8 + 18) / 37)
-exe 'vert 7resize ' . ((&columns * 63 + 79) / 159)
+exe 'vert 6resize ' . ((&columns * 79 + 79) / 159)
 argglobal
-vnoremap <buffer> <silent> [" :exe "normal! gv"|call search('\%(^\s*".*\n\)\%(^\s*"\)\@!', "bW")
-nnoremap <buffer> <silent> [" :call search('\%(^\s*".*\n\)\%(^\s*"\)\@!', "bW")
-vnoremap <buffer> <silent> [] m':exe "normal! gv"|call search('^\s*endf\%[unction]\>', "bW")
-nnoremap <buffer> <silent> [] m':call search('^\s*endf\%[unction]\>', "bW")
-vnoremap <buffer> <silent> [[ m':exe "normal! gv"|call search('^\s*fu\%[nction]\>', "bW")
-nnoremap <buffer> <silent> [[ m':call search('^\s*fu\%[nction]\>', "bW")
-vnoremap <buffer> <silent> ]" :exe "normal! gv"|call search('^\(\s*".*\n\)\@<!\(\s*"\)', "W")
-nnoremap <buffer> <silent> ]" :call search('^\(\s*".*\n\)\@<!\(\s*"\)', "W")
-vnoremap <buffer> <silent> ][ m':exe "normal! gv"|call search('^\s*endf\%[unction]\>', "W")
-nnoremap <buffer> <silent> ][ m':call search('^\s*endf\%[unction]\>', "W")
-vnoremap <buffer> <silent> ]] m':exe "normal! gv"|call search('^\s*fu\%[nction]\>', "W")
-nnoremap <buffer> <silent> ]] m':call search('^\s*fu\%[nction]\>', "W")
-lnoremap <buffer> ALPHA Α
-lnoremap <buffer> BETA Β
-lnoremap <buffer> CHI Χ
-lnoremap <buffer> Dhh ┅
-lnoremap <buffer> Dhv ┇
-lnoremap <buffer> Dlh ┄
-lnoremap <buffer> Dlv ┆
-lnoremap <buffer> DELTA Δ
-lnoremap <buffer> ETA Η
-lnoremap <buffer> EPSILON Ε
-lnoremap <buffer> GAMMA Γ
-lnoremap <buffer> PHI Φ
-lnoremap <buffer> RHO Ρ
-lnoremap <buffer> THETA Θ
-lnoremap <buffer> ZETA Ζ
-lnoremap <buffer> aumlaut ä
-lnoremap <buffer> alpha α
-lnoremap <buffer> a4 à
-lnoremap <buffer> a3 ǎ
-lnoremap <buffer> a2 á
-lnoremap <buffer> a1 ā
-lnoremap <buffer> bvv │
-let s:cpo_save=&cpo
-set cpo&vim
-lnoremap <buffer> bhh ─
-lnoremap <buffer> bul ┘
-lnoremap <buffer> bur └
-lnoremap <buffer> bdl ┐
-lnoremap <buffer> bdr ┌
-lnoremap <buffer> beta β
-lnoremap <buffer> chi χ
-lnoremap <buffer> dul ┛
-lnoremap <buffer> dur ┗
-lnoremap <buffer> ddl ┓
-lnoremap <buffer> ddr ┏
-lnoremap <buffer> dhh ┉
-lnoremap <buffer> dhv ┋
-lnoremap <buffer> dlh ┈
-lnoremap <buffer> dlv ┊
-lnoremap <buffer> dac ▾
-lnoremap <buffer> dae ▸
-lnoremap <buffer> delta δ
-lnoremap <buffer> deg °
-lnoremap <buffer> eumlaut ë
-lnoremap <buffer> eta η
-lnoremap <buffer> epsilon ε
-lnoremap <buffer> e4 è
-lnoremap <buffer> e3 ě
-lnoremap <buffer> e2 é
-lnoremap <buffer> e1 ē
-lnoremap <buffer> geq ≥
-lnoremap <buffer> gamma γ
-lnoremap <buffer> iumlaut ï
-lnoremap <buffer> i4 ì
-lnoremap <buffer> i3 ǐ
-lnoremap <buffer> i2 í
-lnoremap <buffer> i1 ī
-lnoremap <buffer> lar ←
-lnoremap <buffer> leq ≤
-lnoremap <buffer> lambda λ
-lnoremap <buffer> mu µ
-lnoremap <buffer> oumlaut ö
-lnoremap <buffer> ohm Ω
-lnoremap <buffer> o4 ò
-lnoremap <buffer> o3 ǒ
-lnoremap <buffer> o2 ó
-lnoremap <buffer> o1 ō
-lnoremap <buffer> pm ±
-lnoremap <buffer> phi ϕ
-lnoremap <buffer> rho ρ
-lnoremap <buffer> theta θ
-lnoremap <buffer> uumlaut ü
-lnoremap <buffer> u4 ù
-lnoremap <buffer> u3 ǔ
-lnoremap <buffer> u2 ú
-lnoremap <buffer> u1 ū
-lnoremap <buffer> zeta ζ
-let &cpo=s:cpo_save
-unlet s:cpo_save
-setlocal keymap=symbols
-setlocal noarabic
-setlocal autoindent
-setlocal backupcopy=
-setlocal balloonexpr=
-setlocal nobinary
-setlocal nobreakindent
-setlocal breakindentopt=
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal nocindent
-setlocal cinkeys=0{,0},0),0],:,0#,!^F,o,O,e
-setlocal cinoptions=
-setlocal cinwords=if,else,while,do,for,switch
-set colorcolumn=+1
-setlocal colorcolumn=+1
-setlocal comments=sO:\"\ -,mO:\"\ \ ,eO:\"\",:\"
-setlocal commentstring=\"%s
-setlocal complete=.,w,b,u,t,i
-setlocal concealcursor=
-setlocal conceallevel=0
-setlocal completefunc=
-setlocal nocopyindent
-setlocal cryptmethod=
-setlocal nocursorbind
-setlocal nocursorcolumn
-set cursorline
-setlocal cursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal expandtab
-if &filetype != 'vim'
-setlocal filetype=vim
-endif
-setlocal fixendofline
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=indent
-setlocal foldmethod=indent
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=croql
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal formatprg=
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=-1
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=GetVimIndent()
-setlocal indentkeys=0{,0},0),0],:,0#,!^F,o,O,e,=end,=else,=cat,=fina,=END,0\\,0=\"\\\ 
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255,#
-setlocal keywordprg=:help
-setlocal nolinebreak
-setlocal nolisp
-setlocal lispwords=
-set list
-setlocal list
-setlocal makeencoding=
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal modeline
-setlocal modifiable
-setlocal nrformats=bin,hex
-set number
-setlocal number
-setlocal numberwidth=4
-setlocal omnifunc=
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-set relativenumber
-setlocal relativenumber
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal scrolloff=-1
-setlocal shiftwidth=4
-setlocal noshortname
-setlocal sidescrolloff=-1
-setlocal signcolumn=auto
-setlocal nosmartindent
-setlocal softtabstop=4
-setlocal nospell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal swapfile
-setlocal synmaxcol=160
-if &syntax != 'vim'
-setlocal syntax=vim
-endif
-setlocal tabstop=4
-setlocal tagcase=
-setlocal tagfunc=
-setlocal tags=
-setlocal termwinkey=
-setlocal termwinscroll=10000
-setlocal termwinsize=
-setlocal textwidth=80
-setlocal thesaurus=
-setlocal undofile
-setlocal undolevels=-123456
-setlocal varsofttabstop=
-setlocal vartabstop=
-setlocal wincolor=
-setlocal nowinfixheight
-setlocal nowinfixwidth
-setlocal wrap
-setlocal wrapmargin=0
-2
-normal! zo
-5376
-normal! zo
-7708
-normal! zo
-7763
-normal! zo
-let s:l = 5387 - ((5 * winheight(0) + 4) / 8)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-5387
-normal! 03|
-wincmd w
-argglobal
-if bufexists("/cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/src/mBrd.c") | buffer /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/src/mBrd.c | else | edit /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/src/mBrd.c | endif
 lnoremap <buffer> ALPHA Α
 lnoremap <buffer> BETA Β
 lnoremap <buffer> CHI Χ
@@ -889,12 +653,229 @@ setlocal wrapmargin=0
 normal! zo
 797
 normal! zo
-let s:l = 570 - ((5 * winheight(0) + 3) / 7)
+let s:l = 571 - ((12 * winheight(0) + 8) / 16)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-570
+571
 normal! 09|
+wincmd w
+argglobal
+if bufexists("vis-spi-out/src/manual-lis-config-example.c") | buffer vis-spi-out/src/manual-lis-config-example.c | else | edit vis-spi-out/src/manual-lis-config-example.c | endif
+lnoremap <buffer> ALPHA Α
+lnoremap <buffer> BETA Β
+lnoremap <buffer> CHI Χ
+lnoremap <buffer> Dhh ┅
+lnoremap <buffer> Dhv ┇
+lnoremap <buffer> Dlh ┄
+lnoremap <buffer> Dlv ┆
+lnoremap <buffer> DELTA Δ
+lnoremap <buffer> ETA Η
+lnoremap <buffer> EPSILON Ε
+lnoremap <buffer> GAMMA Γ
+lnoremap <buffer> PHI Φ
+lnoremap <buffer> RHO Ρ
+lnoremap <buffer> THETA Θ
+lnoremap <buffer> ZETA Ζ
+lnoremap <buffer> aumlaut ä
+lnoremap <buffer> alpha α
+lnoremap <buffer> a4 à
+lnoremap <buffer> a3 ǎ
+lnoremap <buffer> a2 á
+lnoremap <buffer> a1 ā
+lnoremap <buffer> bvv │
+let s:cpo_save=&cpo
+set cpo&vim
+lnoremap <buffer> bhh ─
+lnoremap <buffer> bul ┘
+lnoremap <buffer> bur └
+lnoremap <buffer> bdl ┐
+lnoremap <buffer> bdr ┌
+lnoremap <buffer> beta β
+lnoremap <buffer> chi χ
+lnoremap <buffer> dul ┛
+lnoremap <buffer> dur ┗
+lnoremap <buffer> ddl ┓
+lnoremap <buffer> ddr ┏
+lnoremap <buffer> dhh ┉
+lnoremap <buffer> dhv ┋
+lnoremap <buffer> dlh ┈
+lnoremap <buffer> dlv ┊
+lnoremap <buffer> dac ▾
+lnoremap <buffer> dae ▸
+lnoremap <buffer> delta δ
+lnoremap <buffer> deg °
+lnoremap <buffer> eumlaut ë
+lnoremap <buffer> eta η
+lnoremap <buffer> epsilon ε
+lnoremap <buffer> e4 è
+lnoremap <buffer> e3 ě
+lnoremap <buffer> e2 é
+lnoremap <buffer> e1 ē
+lnoremap <buffer> geq ≥
+lnoremap <buffer> gamma γ
+lnoremap <buffer> iumlaut ï
+lnoremap <buffer> i4 ì
+lnoremap <buffer> i3 ǐ
+lnoremap <buffer> i2 í
+lnoremap <buffer> i1 ī
+lnoremap <buffer> lar ←
+lnoremap <buffer> leq ≤
+lnoremap <buffer> lambda λ
+lnoremap <buffer> mu µ
+lnoremap <buffer> oumlaut ö
+lnoremap <buffer> ohm Ω
+lnoremap <buffer> o4 ò
+lnoremap <buffer> o3 ǒ
+lnoremap <buffer> o2 ó
+lnoremap <buffer> o1 ō
+lnoremap <buffer> pm ±
+lnoremap <buffer> phi ϕ
+lnoremap <buffer> rho ρ
+lnoremap <buffer> theta θ
+lnoremap <buffer> uumlaut ü
+lnoremap <buffer> u4 ù
+lnoremap <buffer> u3 ǔ
+lnoremap <buffer> u2 ú
+lnoremap <buffer> u1 ū
+lnoremap <buffer> zeta ζ
+let &cpo=s:cpo_save
+unlet s:cpo_save
+setlocal keymap=symbols
+setlocal noarabic
+setlocal autoindent
+setlocal backupcopy=
+setlocal balloonexpr=
+setlocal nobinary
+setlocal nobreakindent
+setlocal breakindentopt=
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),0],:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+set colorcolumn=+1
+setlocal colorcolumn=+1
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'c'
+setlocal filetype=c
+endif
+setlocal fixendofline
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+set foldmethod=indent
+setlocal foldmethod=indent
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal formatprg=
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=-1
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},0),0],:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal lispwords=
+set list
+setlocal list
+setlocal makeencoding=
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=bin,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+set relativenumber
+setlocal relativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal scrolloff=-1
+setlocal shiftwidth=4
+setlocal noshortname
+setlocal sidescrolloff=-1
+setlocal signcolumn=auto
+setlocal nosmartindent
+setlocal softtabstop=4
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=160
+if &syntax != 'c'
+setlocal syntax=c
+endif
+setlocal tabstop=4
+setlocal tagcase=
+setlocal tagfunc=
+setlocal tags=
+setlocal termwinkey=
+setlocal termwinscroll=10000
+setlocal termwinsize=
+setlocal textwidth=80
+setlocal thesaurus=
+setlocal undofile
+setlocal undolevels=-123456
+setlocal varsofttabstop=
+setlocal vartabstop=
+setlocal wincolor=
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+5
+normal! zo
+7
+normal! zo
+let s:l = 2 - ((1 * winheight(0) + 4) / 8)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+2
+normal! 0
 wincmd w
 argglobal
 if bufexists("vis-spi-out/src/SensorVis.c") | buffer vis-spi-out/src/SensorVis.c | else | edit vis-spi-out/src/SensorVis.c | endif
@@ -1102,285 +1083,36 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-232
-normal! zo
-240
-normal! zo
-243
-normal! zo
-255
-normal! zo
-260
-normal! zo
-297
-normal! zo
-300
-normal! zo
-311
-normal! zo
-322
-normal! zo
-381
-normal! zo
-440
-normal! zo
-447
-normal! zo
-454
-normal! zo
-461
-normal! zo
-468
-normal! zo
-let s:l = 230 - ((69 * winheight(0) + 4) / 8)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
 230
-normal! 013|
-wincmd w
-argglobal
-if bufexists("vis-spi-out/src/SensorVis.c") | buffer vis-spi-out/src/SensorVis.c | else | edit vis-spi-out/src/SensorVis.c | endif
-lnoremap <buffer> ALPHA Α
-lnoremap <buffer> BETA Β
-lnoremap <buffer> CHI Χ
-lnoremap <buffer> Dhh ┅
-lnoremap <buffer> Dhv ┇
-lnoremap <buffer> Dlh ┄
-lnoremap <buffer> Dlv ┆
-lnoremap <buffer> DELTA Δ
-lnoremap <buffer> ETA Η
-lnoremap <buffer> EPSILON Ε
-lnoremap <buffer> GAMMA Γ
-lnoremap <buffer> PHI Φ
-lnoremap <buffer> RHO Ρ
-lnoremap <buffer> THETA Θ
-lnoremap <buffer> ZETA Ζ
-lnoremap <buffer> aumlaut ä
-lnoremap <buffer> alpha α
-lnoremap <buffer> a4 à
-lnoremap <buffer> a3 ǎ
-lnoremap <buffer> a2 á
-lnoremap <buffer> a1 ā
-lnoremap <buffer> bvv │
-let s:cpo_save=&cpo
-set cpo&vim
-lnoremap <buffer> bhh ─
-lnoremap <buffer> bul ┘
-lnoremap <buffer> bur └
-lnoremap <buffer> bdl ┐
-lnoremap <buffer> bdr ┌
-lnoremap <buffer> beta β
-lnoremap <buffer> chi χ
-lnoremap <buffer> dul ┛
-lnoremap <buffer> dur ┗
-lnoremap <buffer> ddl ┓
-lnoremap <buffer> ddr ┏
-lnoremap <buffer> dhh ┉
-lnoremap <buffer> dhv ┋
-lnoremap <buffer> dlh ┈
-lnoremap <buffer> dlv ┊
-lnoremap <buffer> dac ▾
-lnoremap <buffer> dae ▸
-lnoremap <buffer> delta δ
-lnoremap <buffer> deg °
-lnoremap <buffer> eumlaut ë
-lnoremap <buffer> eta η
-lnoremap <buffer> epsilon ε
-lnoremap <buffer> e4 è
-lnoremap <buffer> e3 ě
-lnoremap <buffer> e2 é
-lnoremap <buffer> e1 ē
-lnoremap <buffer> geq ≥
-lnoremap <buffer> gamma γ
-lnoremap <buffer> iumlaut ï
-lnoremap <buffer> i4 ì
-lnoremap <buffer> i3 ǐ
-lnoremap <buffer> i2 í
-lnoremap <buffer> i1 ī
-lnoremap <buffer> lar ←
-lnoremap <buffer> leq ≤
-lnoremap <buffer> lambda λ
-lnoremap <buffer> mu µ
-lnoremap <buffer> oumlaut ö
-lnoremap <buffer> ohm Ω
-lnoremap <buffer> o4 ò
-lnoremap <buffer> o3 ǒ
-lnoremap <buffer> o2 ó
-lnoremap <buffer> o1 ō
-lnoremap <buffer> pm ±
-lnoremap <buffer> phi ϕ
-lnoremap <buffer> rho ρ
-lnoremap <buffer> theta θ
-lnoremap <buffer> uumlaut ü
-lnoremap <buffer> u4 ù
-lnoremap <buffer> u3 ǔ
-lnoremap <buffer> u2 ú
-lnoremap <buffer> u1 ū
-lnoremap <buffer> zeta ζ
-let &cpo=s:cpo_save
-unlet s:cpo_save
-setlocal keymap=symbols
-setlocal noarabic
-setlocal autoindent
-setlocal backupcopy=
-setlocal balloonexpr=
-setlocal nobinary
-setlocal nobreakindent
-setlocal breakindentopt=
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal cindent
-setlocal cinkeys=0{,0},0),0],:,0#,!^F,o,O,e
-setlocal cinoptions=
-setlocal cinwords=if,else,while,do,for,switch
-set colorcolumn=+1
-setlocal colorcolumn=+1
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=/*%s*/
-setlocal complete=.,w,b,u,t,i
-setlocal concealcursor=
-setlocal conceallevel=0
-setlocal completefunc=
-setlocal nocopyindent
-setlocal cryptmethod=
-setlocal nocursorbind
-setlocal nocursorcolumn
-set cursorline
-setlocal cursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal expandtab
-if &filetype != 'c'
-setlocal filetype=c
-endif
-setlocal fixendofline
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=indent
-setlocal foldmethod=indent
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=croql
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal formatprg=
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=-1
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},0),0],:,0#,!^F,o,O,e
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal lispwords=
-set list
-setlocal list
-setlocal makeencoding=
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal modeline
-setlocal modifiable
-setlocal nrformats=bin,hex
-set number
-setlocal number
-setlocal numberwidth=4
-setlocal omnifunc=ccomplete#Complete
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-set relativenumber
-setlocal relativenumber
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal scrolloff=-1
-setlocal shiftwidth=4
-setlocal noshortname
-setlocal sidescrolloff=-1
-setlocal signcolumn=auto
-setlocal nosmartindent
-setlocal softtabstop=4
-setlocal nospell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal noswapfile
-setlocal synmaxcol=160
-if &syntax != 'c'
-setlocal syntax=c
-endif
-setlocal tabstop=4
-setlocal tagcase=
-setlocal tagfunc=
-setlocal tags=
-setlocal termwinkey=
-setlocal termwinscroll=10000
-setlocal termwinsize=
-setlocal textwidth=80
-setlocal thesaurus=
-setlocal undofile
-setlocal undolevels=-123456
-setlocal varsofttabstop=
-setlocal vartabstop=
-setlocal wincolor=
-setlocal nowinfixheight
-setlocal nowinfixwidth
-setlocal wrap
-setlocal wrapmargin=0
-232
 normal! zo
-240
+238
 normal! zo
-243
+241
 normal! zo
-255
+253
 normal! zo
-260
+258
 normal! zo
-297
+271
 normal! zo
-300
+330
 normal! zo
-311
+389
 normal! zo
-322
+396
 normal! zo
-381
+403
 normal! zo
-440
+410
 normal! zo
-447
+417
 normal! zo
-454
-normal! zo
-461
-normal! zo
-468
-normal! zo
-let s:l = 288 - ((0 * winheight(0) + 3) / 7)
+let s:l = 253 - ((2 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-288
-normal! 09|
+253
+normal! 05|
 wincmd w
 argglobal
 if bufexists("vis-spi-out/src/lis-config-old-working.lst") | buffer vis-spi-out/src/lis-config-old-working.lst | else | edit vis-spi-out/src/lis-config-old-working.lst | endif
@@ -1588,12 +1320,225 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 67 - ((7 * winheight(0) + 8) / 16)
+let s:l = 25 - ((8 * winheight(0) + 8) / 16)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-67
-normal! 016|
+25
+normal! 03|
+wincmd w
+argglobal
+if bufexists("vis-spi-out/src/lis-config-new-fixed.lst") | buffer vis-spi-out/src/lis-config-new-fixed.lst | else | edit vis-spi-out/src/lis-config-new-fixed.lst | endif
+lnoremap <buffer> ALPHA Α
+lnoremap <buffer> BETA Β
+lnoremap <buffer> CHI Χ
+lnoremap <buffer> Dhh ┅
+lnoremap <buffer> Dhv ┇
+lnoremap <buffer> Dlh ┄
+lnoremap <buffer> Dlv ┆
+lnoremap <buffer> DELTA Δ
+lnoremap <buffer> ETA Η
+lnoremap <buffer> EPSILON Ε
+lnoremap <buffer> GAMMA Γ
+lnoremap <buffer> PHI Φ
+lnoremap <buffer> RHO Ρ
+lnoremap <buffer> THETA Θ
+lnoremap <buffer> ZETA Ζ
+lnoremap <buffer> aumlaut ä
+lnoremap <buffer> alpha α
+lnoremap <buffer> a4 à
+lnoremap <buffer> a3 ǎ
+lnoremap <buffer> a2 á
+lnoremap <buffer> a1 ā
+lnoremap <buffer> bvv │
+let s:cpo_save=&cpo
+set cpo&vim
+lnoremap <buffer> bhh ─
+lnoremap <buffer> bul ┘
+lnoremap <buffer> bur └
+lnoremap <buffer> bdl ┐
+lnoremap <buffer> bdr ┌
+lnoremap <buffer> beta β
+lnoremap <buffer> chi χ
+lnoremap <buffer> dul ┛
+lnoremap <buffer> dur ┗
+lnoremap <buffer> ddl ┓
+lnoremap <buffer> ddr ┏
+lnoremap <buffer> dhh ┉
+lnoremap <buffer> dhv ┋
+lnoremap <buffer> dlh ┈
+lnoremap <buffer> dlv ┊
+lnoremap <buffer> dac ▾
+lnoremap <buffer> dae ▸
+lnoremap <buffer> delta δ
+lnoremap <buffer> deg °
+lnoremap <buffer> eumlaut ë
+lnoremap <buffer> eta η
+lnoremap <buffer> epsilon ε
+lnoremap <buffer> e4 è
+lnoremap <buffer> e3 ě
+lnoremap <buffer> e2 é
+lnoremap <buffer> e1 ē
+lnoremap <buffer> geq ≥
+lnoremap <buffer> gamma γ
+lnoremap <buffer> iumlaut ï
+lnoremap <buffer> i4 ì
+lnoremap <buffer> i3 ǐ
+lnoremap <buffer> i2 í
+lnoremap <buffer> i1 ī
+lnoremap <buffer> lar ←
+lnoremap <buffer> leq ≤
+lnoremap <buffer> lambda λ
+lnoremap <buffer> mu µ
+lnoremap <buffer> oumlaut ö
+lnoremap <buffer> ohm Ω
+lnoremap <buffer> o4 ò
+lnoremap <buffer> o3 ǒ
+lnoremap <buffer> o2 ó
+lnoremap <buffer> o1 ō
+lnoremap <buffer> pm ±
+lnoremap <buffer> phi ϕ
+lnoremap <buffer> rho ρ
+lnoremap <buffer> theta θ
+lnoremap <buffer> uumlaut ü
+lnoremap <buffer> u4 ù
+lnoremap <buffer> u3 ǔ
+lnoremap <buffer> u2 ú
+lnoremap <buffer> u1 ū
+lnoremap <buffer> zeta ζ
+let &cpo=s:cpo_save
+unlet s:cpo_save
+setlocal keymap=symbols
+setlocal noarabic
+setlocal autoindent
+setlocal backupcopy=
+setlocal balloonexpr=
+setlocal nobinary
+setlocal nobreakindent
+setlocal breakindentopt=
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal nocindent
+setlocal cinkeys=0{,0},0),0],:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+set colorcolumn=+1
+setlocal colorcolumn=+1
+setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'asm'
+setlocal filetype=asm
+endif
+setlocal fixendofline
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+set foldmethod=indent
+setlocal foldmethod=indent
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=tcq
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal formatprg=
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=-1
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},0),0],:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal lispwords=
+set list
+setlocal list
+setlocal makeencoding=
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=bin,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+set relativenumber
+setlocal relativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal scrolloff=-1
+setlocal shiftwidth=4
+setlocal noshortname
+setlocal sidescrolloff=-1
+setlocal signcolumn=auto
+setlocal nosmartindent
+setlocal softtabstop=4
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=160
+if &syntax != 'asm'
+setlocal syntax=asm
+endif
+setlocal tabstop=4
+setlocal tagcase=
+setlocal tagfunc=
+setlocal tags=
+setlocal termwinkey=
+setlocal termwinscroll=10000
+setlocal termwinsize=
+setlocal textwidth=80
+setlocal thesaurus=
+setlocal undofile
+setlocal undolevels=-123456
+setlocal varsofttabstop=
+setlocal vartabstop=
+setlocal wincolor=
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+let s:l = 14 - ((6 * winheight(0) + 4) / 8)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+14
+normal! 0
 wincmd w
 argglobal
 if bufexists("vis-spi-out/src/lis-config-new-broken.lst") | buffer vis-spi-out/src/lis-config-new-broken.lst | else | edit vis-spi-out/src/lis-config-new-broken.lst | endif
@@ -1801,240 +1746,25 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 8 - ((1 * winheight(0) + 3) / 7)
+let s:l = 34 - ((3 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-8
-normal! 055|
+34
+normal! 050|
 wincmd w
-argglobal
-if bufexists("vis-spi-out/src/lis-config-new-broken.lst") | buffer vis-spi-out/src/lis-config-new-broken.lst | else | edit vis-spi-out/src/lis-config-new-broken.lst | endif
-lnoremap <buffer> ALPHA Α
-lnoremap <buffer> BETA Β
-lnoremap <buffer> CHI Χ
-lnoremap <buffer> Dhh ┅
-lnoremap <buffer> Dhv ┇
-lnoremap <buffer> Dlh ┄
-lnoremap <buffer> Dlv ┆
-lnoremap <buffer> DELTA Δ
-lnoremap <buffer> ETA Η
-lnoremap <buffer> EPSILON Ε
-lnoremap <buffer> GAMMA Γ
-lnoremap <buffer> PHI Φ
-lnoremap <buffer> RHO Ρ
-lnoremap <buffer> THETA Θ
-lnoremap <buffer> ZETA Ζ
-lnoremap <buffer> aumlaut ä
-lnoremap <buffer> alpha α
-lnoremap <buffer> a4 à
-lnoremap <buffer> a3 ǎ
-lnoremap <buffer> a2 á
-lnoremap <buffer> a1 ā
-lnoremap <buffer> bvv │
-let s:cpo_save=&cpo
-set cpo&vim
-lnoremap <buffer> bhh ─
-lnoremap <buffer> bul ┘
-lnoremap <buffer> bur └
-lnoremap <buffer> bdl ┐
-lnoremap <buffer> bdr ┌
-lnoremap <buffer> beta β
-lnoremap <buffer> chi χ
-lnoremap <buffer> dul ┛
-lnoremap <buffer> dur ┗
-lnoremap <buffer> ddl ┓
-lnoremap <buffer> ddr ┏
-lnoremap <buffer> dhh ┉
-lnoremap <buffer> dhv ┋
-lnoremap <buffer> dlh ┈
-lnoremap <buffer> dlv ┊
-lnoremap <buffer> dac ▾
-lnoremap <buffer> dae ▸
-lnoremap <buffer> delta δ
-lnoremap <buffer> deg °
-lnoremap <buffer> eumlaut ë
-lnoremap <buffer> eta η
-lnoremap <buffer> epsilon ε
-lnoremap <buffer> e4 è
-lnoremap <buffer> e3 ě
-lnoremap <buffer> e2 é
-lnoremap <buffer> e1 ē
-lnoremap <buffer> geq ≥
-lnoremap <buffer> gamma γ
-lnoremap <buffer> iumlaut ï
-lnoremap <buffer> i4 ì
-lnoremap <buffer> i3 ǐ
-lnoremap <buffer> i2 í
-lnoremap <buffer> i1 ī
-lnoremap <buffer> lar ←
-lnoremap <buffer> leq ≤
-lnoremap <buffer> lambda λ
-lnoremap <buffer> mu µ
-lnoremap <buffer> oumlaut ö
-lnoremap <buffer> ohm Ω
-lnoremap <buffer> o4 ò
-lnoremap <buffer> o3 ǒ
-lnoremap <buffer> o2 ó
-lnoremap <buffer> o1 ō
-lnoremap <buffer> pm ±
-lnoremap <buffer> phi ϕ
-lnoremap <buffer> rho ρ
-lnoremap <buffer> theta θ
-lnoremap <buffer> uumlaut ü
-lnoremap <buffer> u4 ù
-lnoremap <buffer> u3 ǔ
-lnoremap <buffer> u2 ú
-lnoremap <buffer> u1 ū
-lnoremap <buffer> zeta ζ
-let &cpo=s:cpo_save
-unlet s:cpo_save
-setlocal keymap=symbols
-setlocal noarabic
-setlocal autoindent
-setlocal backupcopy=
-setlocal balloonexpr=
-setlocal nobinary
-setlocal nobreakindent
-setlocal breakindentopt=
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal nocindent
-setlocal cinkeys=0{,0},0),0],:,0#,!^F,o,O,e
-setlocal cinoptions=
-setlocal cinwords=if,else,while,do,for,switch
-set colorcolumn=+1
-setlocal colorcolumn=+1
-setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
-setlocal commentstring=/*%s*/
-setlocal complete=.,w,b,u,t,i
-setlocal concealcursor=
-setlocal conceallevel=0
-setlocal completefunc=
-setlocal nocopyindent
-setlocal cryptmethod=
-setlocal nocursorbind
-setlocal nocursorcolumn
-set cursorline
-setlocal cursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal expandtab
-if &filetype != 'asm'
-setlocal filetype=asm
-endif
-setlocal fixendofline
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-set foldmethod=indent
-setlocal foldmethod=indent
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=tcq
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal formatprg=
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=-1
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},0),0],:,0#,!^F,o,O,e
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal lispwords=
-set list
-setlocal list
-setlocal makeencoding=
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal modeline
-setlocal modifiable
-setlocal nrformats=bin,hex
-set number
-setlocal number
-setlocal numberwidth=4
-setlocal omnifunc=
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-set relativenumber
-setlocal relativenumber
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal scrolloff=-1
-setlocal shiftwidth=4
-setlocal noshortname
-setlocal sidescrolloff=-1
-setlocal signcolumn=auto
-setlocal nosmartindent
-setlocal softtabstop=4
-setlocal nospell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal swapfile
-setlocal synmaxcol=160
-if &syntax != 'asm'
-setlocal syntax=asm
-endif
-setlocal tabstop=4
-setlocal tagcase=
-setlocal tagfunc=
-setlocal tags=
-setlocal termwinkey=
-setlocal termwinscroll=10000
-setlocal termwinsize=
-setlocal textwidth=80
-setlocal thesaurus=
-setlocal undofile
-setlocal undolevels=-123456
-setlocal varsofttabstop=
-setlocal vartabstop=
-setlocal wincolor=
-setlocal nowinfixheight
-setlocal nowinfixwidth
-setlocal wrap
-setlocal wrapmargin=0
-let s:l = 52 - ((3 * winheight(0) + 4) / 8)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-52
-normal! 012|
-wincmd w
-exe '1resize ' . ((&lines * 8 + 18) / 37)
-exe 'vert 1resize ' . ((&columns * 95 + 79) / 159)
-exe '2resize ' . ((&lines * 7 + 18) / 37)
-exe 'vert 2resize ' . ((&columns * 95 + 79) / 159)
-exe '3resize ' . ((&lines * 8 + 18) / 37)
-exe 'vert 3resize ' . ((&columns * 63 + 79) / 159)
-exe '4resize ' . ((&lines * 7 + 18) / 37)
-exe 'vert 4resize ' . ((&columns * 63 + 79) / 159)
-exe '5resize ' . ((&lines * 16 + 18) / 37)
-exe 'vert 5resize ' . ((&columns * 95 + 79) / 159)
+exe '1resize ' . ((&lines * 16 + 18) / 37)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe '2resize ' . ((&lines * 8 + 18) / 37)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
+exe '3resize ' . ((&lines * 7 + 18) / 37)
+exe 'vert 3resize ' . ((&columns * 79 + 79) / 159)
+exe '4resize ' . ((&lines * 16 + 18) / 37)
+exe 'vert 4resize ' . ((&columns * 79 + 79) / 159)
+exe '5resize ' . ((&lines * 8 + 18) / 37)
+exe 'vert 5resize ' . ((&columns * 79 + 79) / 159)
 exe '6resize ' . ((&lines * 7 + 18) / 37)
-exe 'vert 6resize ' . ((&columns * 63 + 79) / 159)
-exe '7resize ' . ((&lines * 8 + 18) / 37)
-exe 'vert 7resize ' . ((&columns * 63 + 79) / 159)
+exe 'vert 6resize ' . ((&columns * 79 + 79) / 159)
 tabnext
 edit vis-spi-out/test/test_runner.c
 set splitbelow splitright
@@ -2046,6 +1776,10 @@ split
 1wincmd k
 wincmd w
 wincmd w
+wincmd _ | wincmd |
+split
+1wincmd k
+wincmd w
 set nosplitbelow
 wincmd t
 set winminheight=0
@@ -2056,7 +1790,10 @@ exe '1resize ' . ((&lines * 16 + 18) / 37)
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe '2resize ' . ((&lines * 16 + 18) / 37)
 exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
+exe '3resize ' . ((&lines * 16 + 18) / 37)
 exe 'vert 3resize ' . ((&columns * 79 + 79) / 159)
+exe '4resize ' . ((&lines * 16 + 18) / 37)
+exe 'vert 4resize ' . ((&columns * 79 + 79) / 159)
 argglobal
 lnoremap <buffer> ALPHA Α
 lnoremap <buffer> BETA Β
@@ -2507,6 +2244,223 @@ normal! zt
 normal! 016|
 wincmd w
 argglobal
+if bufexists("lib/src/Lis.h") | buffer lib/src/Lis.h | else | edit lib/src/Lis.h | endif
+lnoremap <buffer> ALPHA Α
+lnoremap <buffer> BETA Β
+lnoremap <buffer> CHI Χ
+lnoremap <buffer> Dhh ┅
+lnoremap <buffer> Dhv ┇
+lnoremap <buffer> Dlh ┄
+lnoremap <buffer> Dlv ┆
+lnoremap <buffer> DELTA Δ
+lnoremap <buffer> ETA Η
+lnoremap <buffer> EPSILON Ε
+lnoremap <buffer> GAMMA Γ
+lnoremap <buffer> PHI Φ
+lnoremap <buffer> RHO Ρ
+lnoremap <buffer> THETA Θ
+lnoremap <buffer> ZETA Ζ
+lnoremap <buffer> aumlaut ä
+lnoremap <buffer> alpha α
+lnoremap <buffer> a4 à
+lnoremap <buffer> a3 ǎ
+lnoremap <buffer> a2 á
+lnoremap <buffer> a1 ā
+lnoremap <buffer> bvv │
+let s:cpo_save=&cpo
+set cpo&vim
+lnoremap <buffer> bhh ─
+lnoremap <buffer> bul ┘
+lnoremap <buffer> bur └
+lnoremap <buffer> bdl ┐
+lnoremap <buffer> bdr ┌
+lnoremap <buffer> beta β
+lnoremap <buffer> chi χ
+lnoremap <buffer> dul ┛
+lnoremap <buffer> dur ┗
+lnoremap <buffer> ddl ┓
+lnoremap <buffer> ddr ┏
+lnoremap <buffer> dhh ┉
+lnoremap <buffer> dhv ┋
+lnoremap <buffer> dlh ┈
+lnoremap <buffer> dlv ┊
+lnoremap <buffer> dac ▾
+lnoremap <buffer> dae ▸
+lnoremap <buffer> delta δ
+lnoremap <buffer> deg °
+lnoremap <buffer> eumlaut ë
+lnoremap <buffer> eta η
+lnoremap <buffer> epsilon ε
+lnoremap <buffer> e4 è
+lnoremap <buffer> e3 ě
+lnoremap <buffer> e2 é
+lnoremap <buffer> e1 ē
+lnoremap <buffer> geq ≥
+lnoremap <buffer> gamma γ
+lnoremap <buffer> iumlaut ï
+lnoremap <buffer> i4 ì
+lnoremap <buffer> i3 ǐ
+lnoremap <buffer> i2 í
+lnoremap <buffer> i1 ī
+lnoremap <buffer> lar ←
+lnoremap <buffer> leq ≤
+lnoremap <buffer> lambda λ
+lnoremap <buffer> mu µ
+lnoremap <buffer> oumlaut ö
+lnoremap <buffer> ohm Ω
+lnoremap <buffer> o4 ò
+lnoremap <buffer> o3 ǒ
+lnoremap <buffer> o2 ó
+lnoremap <buffer> o1 ō
+lnoremap <buffer> pm ±
+lnoremap <buffer> phi ϕ
+lnoremap <buffer> rho ρ
+lnoremap <buffer> theta θ
+lnoremap <buffer> uumlaut ü
+lnoremap <buffer> u4 ù
+lnoremap <buffer> u3 ǔ
+lnoremap <buffer> u2 ú
+lnoremap <buffer> u1 ū
+lnoremap <buffer> zeta ζ
+let &cpo=s:cpo_save
+unlet s:cpo_save
+setlocal keymap=symbols
+setlocal noarabic
+setlocal autoindent
+setlocal backupcopy=
+setlocal balloonexpr=
+setlocal nobinary
+setlocal nobreakindent
+setlocal breakindentopt=
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),0],:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+set colorcolumn=+1
+setlocal colorcolumn=+1
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal fixendofline
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+set foldmethod=indent
+setlocal foldmethod=indent
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal formatprg=
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=-1
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},0),0],:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal lispwords=
+set list
+setlocal list
+setlocal makeencoding=
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=bin,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+set relativenumber
+setlocal relativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal scrolloff=-1
+setlocal shiftwidth=4
+setlocal noshortname
+setlocal sidescrolloff=-1
+setlocal signcolumn=auto
+setlocal nosmartindent
+setlocal softtabstop=4
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=160
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=4
+setlocal tagcase=
+setlocal tagfunc=
+setlocal tags=
+setlocal termwinkey=
+setlocal termwinscroll=10000
+setlocal termwinsize=
+setlocal textwidth=80
+setlocal thesaurus=
+setlocal undofile
+setlocal undolevels=-123456
+setlocal varsofttabstop=
+setlocal vartabstop=
+setlocal wincolor=
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+37
+normal! zo
+41
+normal! zo
+let s:l = 45 - ((21 * winheight(0) + 8) / 16)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+45
+normal! 0
+wincmd w
+argglobal
 if bufexists("vis-spi-out/src/SensorVis.c") | buffer vis-spi-out/src/SensorVis.c | else | edit vis-spi-out/src/SensorVis.c | endif
 lnoremap <buffer> ALPHA Α
 lnoremap <buffer> BETA Β
@@ -2712,48 +2666,25 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-84
+253
 normal! zo
-88
+426
 normal! zo
-232
-normal! zo
-240
-normal! zo
-255
-normal! zo
-297
-normal! zo
-300
-normal! zo
-381
-normal! zo
-440
-normal! zo
-447
-normal! zo
-454
-normal! zo
-461
-normal! zo
-468
-normal! zo
-381
-normal! zc
-477
-normal! zo
-let s:l = 259 - ((8 * winheight(0) + 16) / 33)
+let s:l = 254 - ((25 * winheight(0) + 8) / 16)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-259
+254
 normal! 0
 wincmd w
 exe '1resize ' . ((&lines * 16 + 18) / 37)
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe '2resize ' . ((&lines * 16 + 18) / 37)
 exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
+exe '3resize ' . ((&lines * 16 + 18) / 37)
 exe 'vert 3resize ' . ((&columns * 79 + 79) / 159)
+exe '4resize ' . ((&lines * 16 + 18) / 37)
+exe 'vert 4resize ' . ((&columns * 79 + 79) / 159)
 tabnext
 edit ~/chromation/dev-kit-mike/README.md
 set splitbelow splitright
@@ -3219,11 +3150,21 @@ normal! zo
 normal! zo
 6540
 normal! zo
-let s:l = 6541 - ((1 * winheight(0) + 5) / 11)
+6550
+normal! zo
+6553
+normal! zo
+6563
+normal! zo
+7141
+normal! zo
+7190
+normal! zo
+let s:l = 6547 - ((7 * winheight(0) + 5) / 11)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-6541
+6547
 normal! 0
 wincmd w
 argglobal
@@ -3452,52 +3393,52 @@ normal! zo
 normal! zo
 6441
 normal! zo
-6500
-normal! zo
-6510
-normal! zo
 6415
 normal! zc
-6561
+6550
 normal! zo
-7128
+6553
 normal! zo
-7177
+6563
 normal! zo
-let s:l = 6912 - ((1 * winheight(0) + 5) / 10)
+7141
+normal! zo
+7190
+normal! zo
+let s:l = 6925 - ((8 * winheight(0) + 5) / 10)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-6912
-normal! 04|
+6925
+normal! 0
 wincmd w
-2wincmd w
+3wincmd w
 exe '1resize ' . ((&lines * 10 + 18) / 37)
 exe '2resize ' . ((&lines * 11 + 18) / 37)
 exe '3resize ' . ((&lines * 10 + 18) / 37)
 tabnext 3
 set stal=1
-badd +138 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/src/mBrd.c
+badd +4893 ~/.vimrc
 badd +97 vis-spi-out/test/test_runner.c
 badd +1 ~/chromation/dev-kit-mike/README.md
-badd +1 vis-spi-out/src/SensorVis.c
+badd +138 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/src/mBrd.c
+badd +254 vis-spi-out/src/SensorVis.c
 badd +1 vis-spi-out/src/lis-config-old-working.lst
-badd +1 vis-spi-out/src/lis-config-new-broken.lst
+badd +53 vis-spi-out/src/lis-config-new-broken.lst
 badd +1286 vis-spi-out/test/test_SensorVis.c
-badd +7171 /cygdrive/c/Users/Mike/Documents/chromation/txt/updates/notes-for-update/notes_for_update.md
+badd +1 /cygdrive/c/Users/Mike/Documents/chromation/txt/updates/notes-for-update/notes_for_update.md
 badd +45 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/lib/src/Lis.c
-badd +963 vis-spi-out/build/vis-spi-out.lst
-badd +7 lib/src/Lis.c
-badd +884 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/build/mBrd.lst
-badd +1 ~/.vimrc
-badd +46 vis-spi-out/src/vis-spi-out.c
+badd +518 vis-spi-out/build/p_vis-spi-out.lst
+badd +8 lib/src/Lis.c
+badd +937 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/build/mBrd.lst
+badd +29 vis-spi-out/src/vis-spi-out.c
 badd +30 vis-spi-out/src/UartSpi-Hardware.h
 badd +153 lib/src/UartSpi.c
 badd +743 /cygdrive/c/Program\ Files\ (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/avr/iom328p.h
 badd +10 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/lib/src/ReadWriteBits.h
 badd +1 vis-spi-out/build/vis-spi-out.elf
 badd +2091 usb-bridge/build/usb-bridge.lst
-badd +89 vis-spi-out/src/SensorVis.h
+badd +88 vis-spi-out/src/SensorVis.h
 badd +47 lib/src/Pwm.c
 badd +27 lib/test/fake/Lis-Hardware.h
 badd +41 vis-spi-out/src/Lis-Hardware.h
@@ -3508,7 +3449,7 @@ badd +63 lib/src/BiColorLed.h
 badd +142 lib/src/Ft1248.c
 badd +32 lib/src/ReadWriteBits.h
 badd +1 In\ file\ included\ from\ ../lib/src/ReadWriteBits.c
-badd +50 lib/src/Lis.h
+badd +87 lib/src/Lis.h
 badd +1 In\ file\ included\ from\ src/vis-spi-out.c
 badd +6 lib/src/deprecated/ReadWriteBits.c
 badd +36 lib/src/deprecated/ReadWriteBits.h
@@ -3536,14 +3477,23 @@ badd +333 lib/test/test_runner.c
 badd +665 /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/test/unity/unity_internals.h
 badd +1 lib/make:\ \*\*\*\ \[Makefile
 badd +60 vis-spi-out/test/test_SensorVis.h
-badd +36 lib/test/test_Lis.c
-badd +1 lib/build/TestSuite-results.md
+badd +3 lib/test/test_Lis.c
 badd +22 vis-spi-out/src/bad-embedded-c-ProgramPhotodiodeArray.c
 badd +22 vis-spi-out/test/deprecated_tests_for_RepresentConfigAs28bits.c
 badd +1 /cygdrive/c/chromation-dropbox/Dropbox/labview\ programs/LabVIEW\ 2012/2018/LisSweep/map-files/maps/1002-06_map.txt
 badd +7 /cygdrive/c/chromation-dropbox/Dropbox/python/serial_number_project/example.py
 badd +291 ~/.bashrc
 badd +13 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/readme-flash.md
+badd +0 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-04/cal/wavelength/meas/nm-sweep/raw-response-matrix.txt
+badd +0 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-20/cal/wavelength/analysis/map.txt
+badd +0 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-23/cal/wavelength/meas/nm-sweep/raw-response-matrix.txt
+badd +0 vis-spi-out/src/manual-lis-config-example.c
+badd +0 vis-spi-out/src/lis-config-new-fixed.lst
+badd +935 vis-spi-out/build/vis-spi-out.lst
+badd +223 vis-spi-out/Makefile
+badd +1 In\ file\ included\ from\ ../lib/src/Pwm.h
+badd +1 from\ src/vis-spi-out.c
+badd +85 vis-spi-out/src/deprecated/SensorVis-old.c
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif

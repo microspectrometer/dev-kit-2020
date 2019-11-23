@@ -3,7 +3,10 @@
 #include "Spi.h" // Sensor is the SPI slave
 #include "UartSpi.h" // USART in MSPIM mode for ADC readout
 #include "stdlib.h" // defines NULL
+// Lis must be included as Lis.c, so it is better included by main() file.
 
+// =====[ global for exposure time defined in main() application ]=====
+extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
 /* =====[ SPI Flags and Data Register Buffer ]===== */
 // SpiFifo points to the FIFO buffer where ISR buffers incoming SPI bytes.
 extern volatile Queue_s * SpiFifo; // defined and allocated in vis-spi-out-.c
@@ -46,7 +49,6 @@ extern uint8_t const led_Done;      // PINC1
 
 /* Declare inline functions here to emit symbols in this translation unit. */
 // See definition of these inline functions in SensorVis.h
-void ExposePhotodiodeArray(void);
 void WordToTwoByteArray(uint16_t, uint8_t *);
 static void GetFrame_Implementation(void)
 {

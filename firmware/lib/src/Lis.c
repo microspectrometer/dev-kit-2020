@@ -6,6 +6,9 @@
 #include "ReadWriteBits.h"
 extern uint8_t frame[npixels*2]; // define symbol in main() file
 uint16_t NumPixelsInFrame(void); // inline function body is in Lis.h
+// =====[ global for exposure time defined in main() application ]=====
+extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
+
 inline void EnterLisProgrammingMode(void)
 {
     /* Do all setup of Lis_Rst while Lis_Clk is low */
@@ -28,9 +31,29 @@ inline void ExitLisProgrammingMode(void)
 }
 inline void LisWriteConfigBitN(uint8_t const *config, uint8_t bit_index)
 {
+    /** Write one bit of the configuration. */
     if (BitIsSet(config,bit_index)) SetBit(Lis_port1, Lis_Rst);
     else ClearBit(Lis_port1, Lis_Rst);
     LisWaitForClockRisingEdge(); LisWaitForClockFallingEdge();
+}
+inline void LisWriteConfig(uint8_t const *config)
+{
+    /** Write 28 bits to the LIS.\n 
+     * Input config is a little endian array of four bytes.\n 
+     *  - bit0 of the 28-bit sequence is byte0, bit0 in config\n 
+     *  - bit27 of the 28-bit sequence is byte3, bit3 in config\n 
+     *  - program the LIS starting with bit0 */
+    // write all of the first three bytes
+    uint8_t byte_index = 0;
+    while(byte_index++ < 3)
+    {
+        uint8_t bit_index = 0;
+        while(bit_index < 8) LisWriteConfigBitN(config, bit_index++); 
+        config++;
+    }
+    // write the first four bits of the fourth byte
+    uint8_t bit_index = 0;
+    while(bit_index < 4) LisWriteConfigBitN(config, bit_index++); 
 }
 
 static void SetPixSelectAsOutput(void)
@@ -122,6 +145,30 @@ inline void LisWaitForClockRisingEdge(void)
     // Wait for Lis clock rising edge
     WaitForPwmRisingEdge();
 }
+// TODO: unit test ExposePhotodiodeArray
+/* inline void ExposePhotodiodeArray(exposure_ticks) */
+inline void ExposePhotodiodeArray(void)
+{
+    /* Find this line in disassembly .lst file: sbi	0x15, 2	; 21 */
+    LisWaitForClockFallingEdge(); // Wait for Lis clock falling edge
+    // ---Expose---
+    uint16_t tick_count = 0; // track number of ticks of exposure
+    /* Find this line in disassembly .lst file: sbi	0x0b, 6	; 11 */
+    // Start exposure:
+    // line 1000: sbi	0x0b, 6	; 11
+    LisStartExposure();
+    // Load number of ticks direct from SRAM (each lds is 2 cycles)
+    // lds	r24, 0x014E	; 0x80014e <exposure_ticks>
+    // lds	r25, 0x014F	; 0x80014f <exposure_ticks+0x1>
+    // while loop consumes 20 lines of assembly.
+    // TODO: increment count in ISR and just check a flag here instead?
+    while (tick_count++ < exposure_ticks) LisWaitForClockFallingEdge();
+    // Stop exposure
+    // Find this line in disassembly .lst file:
+    // line 1021: cbi	0x0b, 6	; 11
+    LisStopExposure();
+}
+
 inline void LisStartExposure(void)
 {
     // &PORTD (0x0B), PD6 (6)
