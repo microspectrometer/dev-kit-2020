@@ -52,11 +52,9 @@ extern uint8_t const led_Done;      // PINC1
 void WordToTwoByteArray(uint16_t, uint8_t *);
 static void GetFrame_Implementation(void)
 {
-    ExposePhotodiodeArray();
+    ExposePhotodiodeArray(exposure_ticks);
     LisWaitForReadoutToStart(); // wait for SYNC pulse
     LisReadout();
-    /* return; */
-    /* // Readout*/
 }
 void (*GetFrame)(void) = GetFrame_Implementation;
 

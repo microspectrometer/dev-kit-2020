@@ -106,7 +106,7 @@ void LisWaitForClockRisingEdge(void);
 void LisWaitForClockFallingEdge(void);
 void LisWaitForSyncRisingEdge(void);
 void LisWaitForSyncFallingEdge(void);
-void ExposePhotodiodeArray(void);
+void ExposePhotodiodeArray(uint16_t exposure_ticks);
 void LisStartExposure(void);
 void LisStopExposure(void);
 void LisWaitForReadoutToStart(void);

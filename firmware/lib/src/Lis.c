@@ -6,8 +6,6 @@
 #include "ReadWriteBits.h"
 extern uint8_t frame[npixels*2]; // define symbol in main() file
 uint16_t NumPixelsInFrame(void); // inline function body is in Lis.h
-// =====[ global for exposure time defined in main() application ]=====
-extern uint16_t exposure_ticks; // default to 50 ticks (1ms)
 
 inline void EnterLisProgrammingMode(void)
 {
@@ -146,8 +144,8 @@ inline void LisWaitForClockRisingEdge(void)
     WaitForPwmRisingEdge();
 }
 // TODO: unit test ExposePhotodiodeArray
-/* inline void ExposePhotodiodeArray(exposure_ticks) */
-inline void ExposePhotodiodeArray(void)
+inline void ExposePhotodiodeArray(uint16_t exposure_ticks)
+/* inline void ExposePhotodiodeArray(void) */
 {
     /* Find this line in disassembly .lst file: sbi	0x15, 2	; 21 */
     LisWaitForClockFallingEdge(); // Wait for Lis clock falling edge
@@ -155,17 +153,22 @@ inline void ExposePhotodiodeArray(void)
     uint16_t tick_count = 0; // track number of ticks of exposure
     /* Find this line in disassembly .lst file: sbi	0x0b, 6	; 11 */
     // Start exposure:
-    // line 1000: sbi	0x0b, 6	; 11
+    // line 1002: sbi	0x0b, 6	; 11
     LisStartExposure();
     // Load number of ticks direct from SRAM (each lds is 2 cycles)
     // lds	r24, 0x014E	; 0x80014e <exposure_ticks>
     // lds	r25, 0x014F	; 0x80014f <exposure_ticks+0x1>
+    // when I changed exposure_ticks from global to input arg
+    // these lines moved up to the start of the function and changed to:
+    // lds	r18, 0x014E	; 0x80014e <exposure_ticks>
+    // lds	r19, 0x014F	; 0x80014f <exposure_ticks+0x1
     // while loop consumes 20 lines of assembly.
     // TODO: increment count in ISR and just check a flag here instead?
+    // or is the overhead ok?
     while (tick_count++ < exposure_ticks) LisWaitForClockFallingEdge();
     // Stop exposure
     // Find this line in disassembly .lst file:
-    // line 1021: cbi	0x0b, 6	; 11
+    // line 1016: cbi	0x0b, 6	; 11
     LisStopExposure();
 }
 
