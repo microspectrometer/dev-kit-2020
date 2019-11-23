@@ -17,8 +17,6 @@ nnoremap s :cs find s <cword>
 vnoremap - zvdpzvV']
 nnoremap - zvddp
 nmap . <Plug>(RepeatDot)
-nnoremap ;bb :call ToggleCursorbind()
-nnoremap ;bo :set noscb nocrb
 vmap ;p?=s <Plug>PyCalcAppendWithEqAndSum
 vmap ;p?s <Plug>PyCalcAppendWithSum
 vmap ;p?= <Plug>PyCalcAppendWithEq
@@ -126,6 +124,8 @@ nnoremap ;TK :topleft terminal
 nnoremap ;TL :botright vertical terminal
 nnoremap ;TJ :botright terminal
 nnoremap ;T  :terminal
+nnoremap ;bb :call ToggleCursorbind()
+nnoremap ;bo :set noscb nocrb
 nnoremap ;do :diffoff
 nnoremap ;dt :diffthis
 nnoremap ;eK :topleft split 
@@ -285,10 +285,10 @@ nmap ySs <Plug>YSsurround
 nmap yss <Plug>Yssurround
 nmap yS <Plug>YSurround
 nmap ys <Plug>Ysurround
-nnoremap <silent> <Plug>(RepeatRedo) :call repeat#wrap("\<C-R>",v:count)
-nnoremap <silent> <Plug>(RepeatUndoLine) :call repeat#wrap('U',v:count)
-nnoremap <silent> <Plug>(RepeatUndo) :call repeat#wrap('u',v:count)
 nnoremap <silent> <Plug>(RepeatDot) :exe repeat#run(v:count)
+nnoremap <silent> <Plug>(RepeatUndo) :call repeat#wrap('u',v:count)
+nnoremap <silent> <Plug>(RepeatUndoLine) :call repeat#wrap('U',v:count)
+nnoremap <silent> <Plug>(RepeatRedo) :call repeat#wrap("\<C-R>",v:count)
 nnoremap <silent> <Plug>SurroundRepeat .
 nmap <silent> <Plug>CommentaryUndo :echoerr "Change your <Plug>CommentaryUndo map to <Plug>Commentary<Plug>Commentary"
 vnoremap <silent> <Plug>PyCalcAppendWithEqAndSum :call HowMuch#HowMuch(1,1,1,'py')
@@ -364,7 +364,7 @@ set nolangremap
 set laststatus=2
 set listchars=tab:>-,trail:·,space:·
 set nrformats=bin,hex
-set operatorfunc=<SNR>49_go
+set operatorfunc=<SNR>52_opfunc
 set path=.,/usr/include,,,./**,/usr/include/glib-2.0,/cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/include,/cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/test,/cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/test/unity,/cygdrive/c/Program\\\ Files\\\ (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include,/usr/lib/clang/5.0.1/include,/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/include,/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/include/c++,/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/include/c++/tr1,/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/include/c++/x86_64-pc-cygwin,~/.local/lib/python3.6/site-packages,/usr/lib/python3.7/,/usr/lib/python3.7/site-packages/
 set previewheight=6
 set ruler
@@ -1083,35 +1083,25 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-230
+227
 normal! zo
-238
+234
 normal! zo
-241
+293
 normal! zo
-253
+300
 normal! zo
-258
+307
 normal! zo
-271
+314
 normal! zo
-330
+321
 normal! zo
-389
-normal! zo
-396
-normal! zo
-403
-normal! zo
-410
-normal! zo
-417
-normal! zo
-let s:l = 253 - ((2 * winheight(0) + 3) / 7)
+let s:l = 227 - ((2 * winheight(0) + 3) / 7)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-253
+227
 normal! 05|
 wincmd w
 argglobal
@@ -1533,11 +1523,11 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-let s:l = 14 - ((6 * winheight(0) + 4) / 8)
+let s:l = 7 - ((0 * winheight(0) + 4) / 8)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-14
+7
 normal! 0
 wincmd w
 argglobal
@@ -1766,7 +1756,7 @@ exe 'vert 5resize ' . ((&columns * 79 + 79) / 159)
 exe '6resize ' . ((&lines * 7 + 18) / 37)
 exe 'vert 6resize ' . ((&columns * 79 + 79) / 159)
 tabnext
-edit vis-spi-out/test/test_runner.c
+edit vis-spi-out/src/SensorVis.c
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -1999,22 +1989,30 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-82
+55
 normal! zo
-102
+227
 normal! zo
-179
+234
 normal! zo
-181
+234
+normal! zc
+330
 normal! zo
-188
+330
+normal! zc
+372
 normal! zo
-let s:l = 203 - ((11 * winheight(0) + 8) / 16)
+392
+normal! zo
+408
+normal! zo
+let s:l = 55 - ((6 * winheight(0) + 8) / 16)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-203
-normal! 02|
+55
+normal! 05|
 wincmd w
 argglobal
 if bufexists("vis-spi-out/test/test_SensorVis.c") | buffer vis-spi-out/test/test_SensorVis.c | else | edit vis-spi-out/test/test_SensorVis.c | endif
@@ -2236,15 +2234,19 @@ normal! zo
 normal! zo
 1040
 normal! zo
-let s:l = 871 - ((28 * winheight(0) + 8) / 16)
+1310
+normal! zo
+1321
+normal! zo
+let s:l = 1307 - ((1 * winheight(0) + 8) / 16)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-871
-normal! 016|
+1307
+normal! 05|
 wincmd w
 argglobal
-if bufexists("lib/src/Lis.h") | buffer lib/src/Lis.h | else | edit lib/src/Lis.h | endif
+if bufexists("lib/src/Lis.c") | buffer lib/src/Lis.c | else | edit lib/src/Lis.c | endif
 lnoremap <buffer> ALPHA Α
 lnoremap <buffer> BETA Β
 lnoremap <buffer> CHI Χ
@@ -2359,8 +2361,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'cpp'
-setlocal filetype=cpp
+if &filetype != 'c'
+setlocal filetype=c
 endif
 setlocal fixendofline
 setlocal foldcolumn=0
@@ -2426,10 +2428,10 @@ setlocal spellfile=
 setlocal spelllang=en
 setlocal statusline=
 setlocal suffixesadd=
-setlocal swapfile
+setlocal noswapfile
 setlocal synmaxcol=160
-if &syntax != 'cpp'
-setlocal syntax=cpp
+if &syntax != 'c'
+setlocal syntax=c
 endif
 setlocal tabstop=4
 setlocal tagcase=
@@ -2449,15 +2451,21 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-37
+32
 normal! zo
-41
+39
 normal! zo
-let s:l = 45 - ((21 * winheight(0) + 8) / 16)
+48
+normal! zo
+149
+normal! zo
+204
+normal! zo
+let s:l = 149 - ((8 * winheight(0) + 8) / 16)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-45
+149
 normal! 0
 wincmd w
 argglobal
@@ -2666,17 +2674,32 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-253
+55
 normal! zo
-426
+227
 normal! zo
-let s:l = 254 - ((25 * winheight(0) + 8) / 16)
+234
+normal! zo
+234
+normal! zc
+330
+normal! zo
+330
+normal! zc
+372
+normal! zo
+392
+normal! zo
+408
+normal! zo
+let s:l = 9 - ((8 * winheight(0) + 8) / 16)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-254
-normal! 0
+9
+normal! 017|
 wincmd w
+2wincmd w
 exe '1resize ' . ((&lines * 16 + 18) / 37)
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe '2resize ' . ((&lines * 16 + 18) / 37)
@@ -3412,33 +3435,35 @@ normal! zt
 6925
 normal! 0
 wincmd w
-3wincmd w
 exe '1resize ' . ((&lines * 10 + 18) / 37)
 exe '2resize ' . ((&lines * 11 + 18) / 37)
 exe '3resize ' . ((&lines * 10 + 18) / 37)
-tabnext 3
+tabnext 2
 set stal=1
-badd +4893 ~/.vimrc
-badd +97 vis-spi-out/test/test_runner.c
-badd +1 ~/chromation/dev-kit-mike/README.md
 badd +138 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/src/mBrd.c
-badd +254 vis-spi-out/src/SensorVis.c
+badd +162 vis-spi-out/test/test_runner.c
+badd +1 ~/chromation/dev-kit-mike/README.md
+badd +1 vis-spi-out/src/manual-lis-config-example.c
+badd +49 vis-spi-out/src/SensorVis.c
 badd +1 vis-spi-out/src/lis-config-old-working.lst
+badd +1 vis-spi-out/src/lis-config-new-fixed.lst
 badd +53 vis-spi-out/src/lis-config-new-broken.lst
-badd +1286 vis-spi-out/test/test_SensorVis.c
+badd +1378 vis-spi-out/test/test_SensorVis.c
+badd +109 lib/src/Lis.h
 badd +1 /cygdrive/c/Users/Mike/Documents/chromation/txt/updates/notes-for-update/notes_for_update.md
+badd +1 ~/.vimrc
 badd +45 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/lib/src/Lis.c
 badd +518 vis-spi-out/build/p_vis-spi-out.lst
-badd +8 lib/src/Lis.c
+badd +149 lib/src/Lis.c
 badd +937 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/mBrd/build/mBrd.lst
-badd +29 vis-spi-out/src/vis-spi-out.c
+badd +75 vis-spi-out/src/vis-spi-out.c
 badd +30 vis-spi-out/src/UartSpi-Hardware.h
 badd +153 lib/src/UartSpi.c
 badd +743 /cygdrive/c/Program\ Files\ (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/avr/iom328p.h
 badd +10 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/lib/src/ReadWriteBits.h
 badd +1 vis-spi-out/build/vis-spi-out.elf
 badd +2091 usb-bridge/build/usb-bridge.lst
-badd +88 vis-spi-out/src/SensorVis.h
+badd +39 vis-spi-out/src/SensorVis.h
 badd +47 lib/src/Pwm.c
 badd +27 lib/test/fake/Lis-Hardware.h
 badd +41 vis-spi-out/src/Lis-Hardware.h
@@ -3449,7 +3474,6 @@ badd +63 lib/src/BiColorLed.h
 badd +142 lib/src/Ft1248.c
 badd +32 lib/src/ReadWriteBits.h
 badd +1 In\ file\ included\ from\ ../lib/src/ReadWriteBits.c
-badd +87 lib/src/Lis.h
 badd +1 In\ file\ included\ from\ src/vis-spi-out.c
 badd +6 lib/src/deprecated/ReadWriteBits.c
 badd +36 lib/src/deprecated/ReadWriteBits.h
@@ -3476,24 +3500,22 @@ badd +52 lib/src/Spi.h
 badd +333 lib/test/test_runner.c
 badd +665 /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/test/unity/unity_internals.h
 badd +1 lib/make:\ \*\*\*\ \[Makefile
-badd +60 vis-spi-out/test/test_SensorVis.h
+badd +61 vis-spi-out/test/test_SensorVis.h
 badd +3 lib/test/test_Lis.c
 badd +22 vis-spi-out/src/bad-embedded-c-ProgramPhotodiodeArray.c
-badd +22 vis-spi-out/test/deprecated_tests_for_RepresentConfigAs28bits.c
+badd +50 vis-spi-out/test/deprecated_tests_for_RepresentConfigAs28bits.c
 badd +1 /cygdrive/c/chromation-dropbox/Dropbox/labview\ programs/LabVIEW\ 2012/2018/LisSweep/map-files/maps/1002-06_map.txt
 badd +7 /cygdrive/c/chromation-dropbox/Dropbox/python/serial_number_project/example.py
 badd +291 ~/.bashrc
 badd +13 /cygdrive/c/chromation-dropbox/Dropbox/c/LIS-770i/readme-flash.md
-badd +0 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-04/cal/wavelength/meas/nm-sweep/raw-response-matrix.txt
-badd +0 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-20/cal/wavelength/analysis/map.txt
-badd +0 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-23/cal/wavelength/meas/nm-sweep/raw-response-matrix.txt
-badd +0 vis-spi-out/src/manual-lis-config-example.c
-badd +0 vis-spi-out/src/lis-config-new-fixed.lst
-badd +935 vis-spi-out/build/vis-spi-out.lst
+badd +1 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-04/cal/wavelength/meas/nm-sweep/raw-response-matrix.txt
+badd +1 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-20/cal/wavelength/analysis/map.txt
+badd +1 /cygdrive/c/chromation-dropbox/Dropbox/ChromationData/spectrometer/1002-23/cal/wavelength/meas/nm-sweep/raw-response-matrix.txt
+badd +996 vis-spi-out/build/vis-spi-out.lst
 badd +223 vis-spi-out/Makefile
 badd +1 In\ file\ included\ from\ ../lib/src/Pwm.h
 badd +1 from\ src/vis-spi-out.c
-badd +85 vis-spi-out/src/deprecated/SensorVis-old.c
+badd +353 vis-spi-out/src/deprecated/SensorVis-old.c
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif

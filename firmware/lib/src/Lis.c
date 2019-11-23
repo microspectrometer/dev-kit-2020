@@ -145,7 +145,6 @@ inline void LisWaitForClockRisingEdge(void)
 }
 // TODO: unit test ExposePhotodiodeArray
 inline void ExposePhotodiodeArray(uint16_t exposure_ticks)
-/* inline void ExposePhotodiodeArray(void) */
 {
     /* Find this line in disassembly .lst file: sbi	0x15, 2	; 21 */
     LisWaitForClockFallingEdge(); // Wait for Lis clock falling edge
