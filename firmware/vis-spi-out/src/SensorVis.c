@@ -64,7 +64,11 @@ static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint1
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes; byte_index++)
     {
+        // ld   r24, Y+
+        // SPDR is 0x2e
+        // out	0x2e, r24	; 46
         *Spi_spdr = write_buffer[byte_index]; // load byte in SPI data register
+        // cbi	0x05, 1	; 5
         ClearBit(Spi_port, Spi_DataReady); // LOW signals data is ready
         while (QueueIsEmpty(SpiFifo)); // queue is empty until SPI transfer is done
         QueuePop(SpiFifo); // ignore rx byte
@@ -74,22 +78,22 @@ static uint16_t WriteSpiMaster_Implementation(uint8_t const *write_buffer, uint1
     return byte_index; // byte_index == num_bytes_actually_sent
 }
 uint16_t (*WriteSpiMaster)(uint8_t const *, uint16_t) = WriteSpiMaster_Implementation;
-inline uint16_t WriteFrameToSpiMaster(uint16_t nbytes_in_frame)
-{
-    uint8_t *pframe = frame; // point to start of frame
-    uint16_t byte_index;
-    for (byte_index = 0; byte_index < nbytes_in_frame; byte_index++)
-    {
-        /* *Spi_spdr = pframe[byte_index]; // load byte in SPI data register */
-        *Spi_spdr = *(pframe++); // load byte in SPI data register
-        ClearBit(Spi_port, Spi_DataReady); // LOW signals data is ready
-        while (QueueIsEmpty(SpiFifo)); // queue is empty until SPI transfer is done
-        QueuePop(SpiFifo); // ignore rx byte
-        // Drive DataReady HIGH to synchronize with Master.
-        SetBit(Spi_port, Spi_DataReady);
-    }
-    return byte_index; // byte_index == num_bytes_actually_sent
-}
+/* inline uint16_t WriteFrameToSpiMaster(uint16_t nbytes_in_frame) */
+/* { */
+/*     uint8_t *pframe = frame; // point to start of frame */
+/*     uint16_t byte_index; */
+/*     for (byte_index = 0; byte_index < nbytes_in_frame; byte_index++) */
+/*     { */
+/*         /1* *Spi_spdr = pframe[byte_index]; // load byte in SPI data register *1/ */
+/*         *Spi_spdr = *(pframe++); // load byte in SPI data register */
+/*         ClearBit(Spi_port, Spi_DataReady); // LOW signals data is ready */
+/*         while (QueueIsEmpty(SpiFifo)); // queue is empty until SPI transfer is done */
+/*         QueuePop(SpiFifo); // ignore rx byte */
+/*         // Drive DataReady HIGH to synchronize with Master. */
+/*         SetBit(Spi_port, Spi_DataReady); */
+/*     } */
+/*     return byte_index; // byte_index == num_bytes_actually_sent */
+/* } */
 /* inline uint16_t WriteFrameToSpiMaster(uint8_t volatile *pframe, uint16_t nbytes_in_frame) */
 /* { */
 /*     uint16_t byte_index; */
@@ -421,12 +425,14 @@ void CaptureFrame(void)
     // Send the number of pixels in the frame
     uint8_t msb_lsb[2]; WordToTwoByteArray(NumPixelsInFrame(), msb_lsb);
     WriteSpiMaster(msb_lsb, 2);
+    // TODO: get rid of this, don't need a second status byte
     // Send status OK
     WriteSpiMaster(&status, 1);
     // Send frame
     uint16_t nbytes_in_frame = 2*NumPixelsInFrame();
     /* WriteFrameToSpiMaster(frame, nbytes_in_frame); */
-    WriteFrameToSpiMaster(nbytes_in_frame);
+    /* WriteFrameToSpiMaster(nbytes_in_frame); */
+    WriteSpiMaster(frame, nbytes_in_frame);
 }
 
 

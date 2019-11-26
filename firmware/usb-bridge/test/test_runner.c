@@ -170,17 +170,17 @@ int main(void)
     /* ---Plumbing Works For Testing Lib `Bridge`--- */
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     //
-    ApiSupport                      (Yep);
-    BridgeJumpTable                 (Yep);
+    ApiSupport                      (Nope);
+    BridgeJumpTable                 (Nope);
     unittest_GetBridgeLED           (Yep);
-    unittest_SetBridgeLED           (Yep);
-    unittest_BridgeGetSensorLED     (Yep);
-    unittest_BridgeSetSensorLED     (Yep);
-    unittest_BridgeGetSensorConfig  (Yep);
-    unittest_BridgeSetSensorConfig  (Yep);
-    unittest_BridgeGetExposure      (Yep);
-    unittest_BridgeSetExposure      (Yep);
-    unittest_BridgeCaptureFrame     (Yep);
+    unittest_SetBridgeLED           (Nope);
+    unittest_BridgeGetSensorLED     (Nope);
+    unittest_BridgeSetSensorLED     (Nope);
+    unittest_BridgeGetSensorConfig  (Nope);
+    unittest_BridgeSetSensorConfig  (Nope);
+    unittest_BridgeGetExposure      (Nope);
+    unittest_BridgeSetExposure      (Nope);
+    unittest_BridgeCaptureFrame     (Nope);
     // Put single tests here (move single tests to test suite later).
     return UNITY_END();
 }

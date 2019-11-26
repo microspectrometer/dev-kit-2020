@@ -1,5 +1,8 @@
 #include "test_Bridge.h"
 #include "Bridge.h"         // lib under test
+#define binning_off 0x00
+#define binning_on 0x01
+/* #include "Lis.h" // define config parameters */
 /* ---Unit Test Framework--- */
 #include "unity.h"          // unity macros: TEST_BLAH
 #include <Mock.h>           // record call history: PrintAllCalls, AssertCalls, AssertArgs
