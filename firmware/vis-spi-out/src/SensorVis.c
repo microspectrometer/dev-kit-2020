@@ -143,6 +143,10 @@ void GetSensorLED(void)
     { // host is asking about nonexistent LED
         uint8_t status = error;
         WriteSpiMaster(&status,1);
+        // TODO: unit-test this, if there is a led_number error Sensor still
+        // sends a placeholder (0xAB) reply
+        // TODO: update doc string with new unit test output
+        uint8_t placeholder = 0xAB; WriteSpiMaster(&placeholder,1);
         return;
     }
     uint8_t led;
@@ -425,9 +429,12 @@ void CaptureFrame(void)
     // Send the number of pixels in the frame
     uint8_t msb_lsb[2]; WordToTwoByteArray(NumPixelsInFrame(), msb_lsb);
     WriteSpiMaster(msb_lsb, 2);
-    // TODO: get rid of this, don't need a second status byte
+    //
+    // TODO: unit-test this, don't need a second status byte
+    // TODO: update doc string with new unit test output
     // Send status OK
-    WriteSpiMaster(&status, 1);
+    /* WriteSpiMaster(&status, 1); */
+    //
     // Send frame
     uint16_t nbytes_in_frame = 2*NumPixelsInFrame();
     /* WriteFrameToSpiMaster(frame, nbytes_in_frame); */

@@ -114,7 +114,12 @@ void GetBridgeLED(void) // Bridge `led_0` is the `status_led`
     if (led_number != led_0)
     {
         SerialWriteByte(error); // host is asking about nonexistent LED
-        /* SerialWriteByte(0x00); // response is always two bytes, pad with 0 */
+        //
+        // TODO: unit-test this, if there is a led_number error Bridge still
+        // sends a placeholder (0xAB) reply
+        // TODO: update doc string with new unit test output
+        SerialWriteByte(0xAB);
+        //
         return;
     }
     SerialWriteByte(ok); // led_number is recognized, send msg_status: ok
@@ -222,12 +227,20 @@ void BridgeGetSensorLED(void) // Sensor has `led_0` and `led_1`.
     uint8_t sensor_reply; ReadSensor(&sensor_reply, 1);
     // Pass reply to host.
     SerialWriteByte(sensor_reply);
+    //
+    // TODO: unit-test this, if there is a led_number error Sensor still sends a
+    // placeholder reply
+    // TODO: update doc string with new unit test output
     // If there was no error, get next byte and pass to host.
-    if (ok==sensor_reply)
-    {
-        ReadSensor(&sensor_reply, 1);
-        SerialWriteByte(sensor_reply);
-    }
+    /* if (ok==sensor_reply) */
+    /* { */
+    /*     ReadSensor(&sensor_reply, 1); */
+    /*     SerialWriteByte(sensor_reply); */
+    /* } */
+    //
+    // Sensor replies with an LED status, even if there is an error.
+    ReadSensor(&sensor_reply, 1);
+    SerialWriteByte(sensor_reply);
 }
 void BridgeSetSensorLED(void)
 {
@@ -464,11 +477,15 @@ void BridgeCaptureFrame(void)
     uint16_t npixels_in_frame = (npixels_msb << 8) | npixels_lsb;
     // Calculate nbytes in this frame (2 bytes for each pixel)
     uint16_t nbytes = 2*npixels_in_frame;
+    //
+    // TODO: unit-test this, don't need a second status byte
+    // TODO: update doc string with new unit test output
     // Get and send status byte from sensor.
     // Status is error if npixels in this frame exceeds constant `npixels`
-    ReadSensor(&sensor_reply, 1); SerialWriteByte(sensor_reply);
+    /* ReadSensor(&sensor_reply, 1); SerialWriteByte(sensor_reply); */
     // Do not attempt to read the frame if Sensor returns error.
-    if (ok!=sensor_reply) return;
+    /* if (ok!=sensor_reply) return; */
+    //
     // Read the bytes in the frame
     ReadSensor(frame, nbytes);
     // Send the frame to the USB host
