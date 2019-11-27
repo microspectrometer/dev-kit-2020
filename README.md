@@ -1552,15 +1552,32 @@ char const * WhyDidItFail(Mock_s *self);
 char const * ListAllCalls(Mock_s *self);  // alternate to WhyDidItFail()
 ```
 
+### About `inline` in the C language (different from `inline` in C++)
+- see Jens Gustedt post on `inline`:
+  <https://gustedt.wordpress.com/2010/11/29/myth-and-reality-about-inline-in-c99/>
+- I read the post, kind of got the idea, played with `inline` *a lot* and
+  sort-of rediscovered the takeaways from this post
+- I re-read the post months later and:
+    - I agree with it except for the mention of `extern` in the function
+      declaration -- the `extern` is unnecessary
+- my experience is limited to the `avr-gcc` compiler, but based on that
+  experience, I also found that `inline` is *more than a suggestion*, it
+  *always* changes the "emitted code", so `avr-gcc` at least complies with C99
+  if not even more recent standards
+
 ### Lib header has definitions for `inline` and `#define`
-Everything in the header is a delcaration, no definitions. But there are two
+Everything in the header is a declaration, no definitions. But there are two
 exceptions:
 
 1. `inline` functions: To enable the compiler to inline a lib function in the
    client code, the definition must go in the lib header (and the declaration
    goes in the lib .c file to emit the symbol when the lib is compiled).
 2. `#define` macros: The presence of a `#define` macro in one of my lib headers
-   indicates a kludge fix.
+   indicates a kludge fix. The exception is the bit manipulation macros. There
+   are times when `inline` would work for some of these but not others. I could
+   not figure out why this happened. My solution was to make these macros and I
+   am at peace with that. In all other cases, `inline` behaves as expected, so a
+   `#define` is a kludge fix.
 
 ## Hardware abstraction pattern
 The lib depends on a value specific to the application: a pin name, register
@@ -1568,9 +1585,36 @@ name, or vendor-specific macro. Breaking this dependency makes the lib re-usable
 with other microcontroller targets. More importantly, it makes the lib testable
 on the development target.
 
+### If it is *not* hardware I/O then pass an input arg instead of using extern
+The pattern gives the libs access to globals. Globals are frowned upon. But
+globals are fine for this hardware I/O purpose. Before explaining the hardware
+abstraction pattern, here is my approach to accessing application globals from a
+lib function.
+
+If the function works on variables defined in the application, my default
+practice is to make these input arguments. I do *not* declare the global extern
+in the lib to make it accessible by the lib, even if the variable is global in
+the applcation.
+
+I have two reasons why I prefer an input argument over a global, besides the
+usual "shared state" reason that computer scientists always recite.
+
+First, there is no overhead penalty in passing an application global as an input
+argument. `avr-gcc` emits `lds` instructions either way. `lds` is Load direct
+from SRAM. If it's a global, it's in SRAM and it needs to be loaded. If it's an
+input argument, it's in SRAM and it needs to be loaded. In fact, if it's passed
+as an input argument, the `lds` instructions show up as the *first* instructions
+in the emitted assembly code for the function body. This makes it easier to spot
+when reading the .lst assembly file. If the function accesses the global
+instead, then the `lds` instructions show up *when the variable is used* in the
+function. I find this makes it a little harder to follow what is going on.
+
+Second, it's easier to write unit-tests if a function takes an input. I can test
+that the function was called with the correct value.
+
 ### Scheme for variables: extern in lib header, defined in client
-The lib header declares the variable `extern` and does not define it. The
-variable is linked to the definition in the client when lib.o is linked to
+The lib header declares the global variable `extern` and does not define it. The
+global variable is linked to the definition in the client when lib.o is linked to
 the client.o. If client.o is the application, this is the actual hardware value.
 If client.o is the test code, this is a fake value. This may not seem too
 important for pin names, but register names it is essential. The address space
@@ -1603,6 +1647,57 @@ which the test includes:
 // lib/test/test_Spi.c
 #include "fake/Spi-Hardware.h"  // fake hardware dependencies in Spi.h
 ```
+
+There is an important difference, however, between the embedded target and the
+unit-test target for code that is *timing critical*. And hardware I/O usually is
+timing critical once the embedded system gets through the initial setup phase of
+its program.
+
+For unit-testing, timing does not matter. For the embedded target, the hardware
+I/O timing incurs bug-causing delays if the emitted assembly code is not
+optimized.
+
+What causes the compiler to emit assembly code that is not optimized? The choice
+of assembly instruction depends on knowledge of where the hardware register
+lands in the memory map. There is a special range of addresses that allow faster
+instructions. This is not unique to the AVR families, it is a consequence of how
+memory is accessed: to access a large memory space, it's necessary to work with
+large address values. For timing-critical memory access, alternative fast
+hardware exists, but the key to making it faster is that it works on a reduced
+memory range.
+
+The application code sees the hardware definitions because it includes the
+hardware header. The lib code does not see the hardware definitions by design.
+It lets the application define the hardware. But that means the assembly for the
+lib code translation unit cannot be optimized. The lib code only knows a
+memory is accessed, it doesn't know if the memory is in the range that permits
+the faster instructions.
+
+For clocks that are *much* faster than any events or communication
+in the application, if using the slower access incurs a 10x increase in the
+number of clock cycles, it probably does not matter. But for clocks that are
+*just fast enough* to keep up with the application, using the optimized
+instruction is key to preventing some nasty bugs. These bugs are hard to find
+because they are the result of timing mistakes, not logic mistakes. And they can
+be intermittent!
+
+Even if a communication protocol uses handshakes to eliminate the possibilty of
+a timing critical bug, failing to use optimal assembly noticeably slows the
+protocol. My SPI communication is an example of this. Even with the faster
+5-wire SPI, the resulting communication was slower than the slow 4-wire SPI
+because my assembly was not optimized.
+
+The fix is simple and it does not break modularization, readability, etc., nor
+does it affect the unit testing. The fix is two simple steps:
+
+- the embedded application includes the lib `.c` instead of the lib `.h`
+- the embedded target build recipe does *not* link the lib `.o` with the
+  application `.o` to make the final `.elf` executable
+
+This is functionally equivalent to taking all of the lib code, including its
+header, and pasting it into the application code `.c`. When the compiler builds
+the application `.o`, the hardware definitions are available, so the compiler is
+able to choose the fastest assembly instructions for the lib functions.
 
 #### Variable `extern` declaration goes in the lib header
 The lib code uses the variable defined in the client. The variable must be
