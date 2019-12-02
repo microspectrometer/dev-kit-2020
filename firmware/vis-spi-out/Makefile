@@ -21,6 +21,7 @@ CFLAGS_for_avr = -Isrc -I../lib/src \
 -mmcu=atmega328p
 LFLAGS_for_avr := -B ${atmega328_lib}
 #
+
 #=====[ Unit Test Framework Paths ]=====
 path_tdd := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/
 path_unity  := ${path_tdd}mock-c/test/unity
@@ -33,11 +34,14 @@ mock-c_libs := Mock RecordedCall RecordedArg ReturnValues
 mock-c_libo := $(addsuffix .o,${mock-c_libs})
 mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
+
 # =====[ App ]=====
 app_libs := Example
 app_lib_tests := $(addprefix test_,${app_libs})
 app_lib_testo := $(addsuffix .o,${app_lib_tests})
 app_lib_testo := $(addprefix build/,${app_lib_testo})
+app_libo := $(addsuffix .o,${app_libs})
+app_libo := $(addprefix build/,${app_libo})
 
 #=====[ Unit Test Compiler and Linker flags ]=====
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
@@ -62,23 +66,27 @@ ifeq ($(compiler),fake)
 	LFLAGS := 
 endif
 
-# =====[ AVR and Unit Tests use the same *lib* object files ]=====
-# Targets `avr-target` and `unit-test` find these in the same location!
-# *clean* the builds out, therefore, when you switch between targets, or you get
-# a linker error.
-#
 # =====[ Build recipes ]=====
+# AVR and Unit Test builds use the same *lib* object file paths.
+# Clean vis-spi-out/build/ (;mca) when you switch between targets.
+#
+# Target `unit-test` ends up here:
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
-# Target `unit-test` ends up here:
-build/TestSuite.exe: test/test_runner.c ${unittest_o} ${app_lib_testo}
+build/TestSuite.exe: test/test_runner.c ${unittest_o} ${app_lib_testo} ${app_libo}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # lib tests #include "unity.h" and "Mock.h"
 ${app_lib_testo}: build/%.o: test/%.c
 	${compiler} $(CFLAGS) -c $^ -o $@
 #
+${app_libo}: build/%.o: src/%.c
+	${compiler} $(CFLAGS) -c $^ -o $@
+# LFLAGS is for avr-target to link against atmega328_lib
+# ${compiler} $(CFLAGS) -c $^ -o $@ $(LFLAGS)
+#
+# Target `avr-target` ends up here:
 build/%.elf: src/%.c
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
@@ -126,5 +134,6 @@ clean-all-builds:
 	rm -f build/${board-name}.elf
 	rm -f build/${board-name}.lst
 	rm -f build/${board-name}.map
-	rm -f build/TestSuite.exe
 	rm -f build/TestSuite-results.md
+	rm -f build/TestSuite.exe
+	rm -f ${app_lib_testo}
