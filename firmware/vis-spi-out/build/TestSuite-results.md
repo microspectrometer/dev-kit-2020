@@ -1,4 +1,5 @@
+test/test_runner.c:5:test_Can_build_test_suite:FAIL: Implement test.
 
 -----------------------
-0 Tests 0 Failures 0 Ignored 
-OK
+1 Tests 1 Failures 0 Ignored 
+FAIL
