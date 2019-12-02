@@ -70,6 +70,7 @@ endif
 # AVR and Unit Test builds use the same *lib* object file paths.
 # Clean vis-spi-out/build/ (;mca) when you switch between targets.
 #
+
 # Target `unit-test` ends up here:
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
@@ -85,9 +86,10 @@ ${app_libo}: build/%.o: src/%.c
 	${compiler} $(CFLAGS) -c $^ -o $@
 # LFLAGS is for avr-target to link against atmega328_lib
 # ${compiler} $(CFLAGS) -c $^ -o $@ $(LFLAGS)
-#
+
 # Target `avr-target` ends up here:
-build/%.elf: src/%.c
+# build/${board-name}.elf: src/%.c ${app_libo}
+build/%.elf: src/%.c ${app_libo}
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
@@ -137,3 +139,4 @@ clean-all-builds:
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
 	rm -f ${app_lib_testo}
+	rm -f ${app_libo}
