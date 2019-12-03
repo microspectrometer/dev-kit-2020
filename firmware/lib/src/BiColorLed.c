@@ -1,2 +1,2 @@
 #include "BiColorLed.h"
-void BiColorLedOn(bicolorled);
+void BiColorLedOn(bicolorled_n);

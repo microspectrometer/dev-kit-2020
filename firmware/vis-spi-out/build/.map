@@ -26,13 +26,13 @@ Discarded input sections
  .bss           0x00000000        0x0 ../lib/build/BiColorLed.o
  .text.BiColorLedOn
                 0x00000000       0x1c ../lib/build/BiColorLed.o
- .debug_info    0x00000000       0xc2 ../lib/build/BiColorLed.o
+ .debug_info    0x00000000       0xcd ../lib/build/BiColorLed.o
  .debug_abbrev  0x00000000       0x8a ../lib/build/BiColorLed.o
  .debug_aranges
                 0x00000000       0x20 ../lib/build/BiColorLed.o
  .debug_ranges  0x00000000       0x10 ../lib/build/BiColorLed.o
  .debug_line    0x00000000       0xad ../lib/build/BiColorLed.o
- .debug_str     0x00000000      0x166 ../lib/build/BiColorLed.o
+ .debug_str     0x00000000      0x175 ../lib/build/BiColorLed.o
  .comment       0x00000000       0x31 ../lib/build/BiColorLed.o
  .debug_frame   0x00000000       0x24 ../lib/build/BiColorLed.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -410,11 +410,11 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x7d4
+.debug_info     0x00000000      0x7df
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x18a build/vis-spi-out.o
- .debug_info    0x0000077e       0x56 build/Example.o
+ .debug_info    0x000005f4      0x195 build/vis-spi-out.o
+ .debug_info    0x00000789       0x56 build/Example.o
 
 .debug_abbrev   0x00000000      0x6e6
  *(.debug_abbrev)
@@ -433,12 +433,12 @@ END GROUP
  .debug_frame   0x00000000       0x34 build/vis-spi-out.o
  .debug_frame   0x00000034       0x34 build/Example.o
 
-.debug_str      0x00000000      0x381
+.debug_str      0x00000000      0x390
  *(.debug_str)
  .debug_str     0x00000000      0x208 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x16b build/vis-spi-out.o
-                                0x19f (size before relaxing)
- .debug_str     0x00000373        0xe build/Example.o
+ .debug_str     0x00000208      0x17a build/vis-spi-out.o
+                                0x1ae (size before relaxing)
+ .debug_str     0x00000382        0xe build/Example.o
                                  0xe6 (size before relaxing)
 
 .debug_loc      0x00000000       0x28
