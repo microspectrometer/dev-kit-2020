@@ -1,12 +1,21 @@
-// avr libs
-#include <avr/interrupt.h>      // defines macro ISR()
 // app libs
 #include "Example.h"
+// prj libs
+#include "BiColorLed.h"
+// hardware i/o definitions
+#include "Hardware.h"
+// globals
 
+void setup(void);
 static void loop(void);
 int main()
 {
+    setup();
     while(1) loop();
+}
+void setup(void)
+{
+    BiColorLedOn(led_0);
 }
 void loop(void)
 {

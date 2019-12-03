@@ -26,7 +26,7 @@ LFLAGS_for_avr := -B ${atmega328_lib}
 path_tdd := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/
 path_unity  := ${path_tdd}mock-c/test/unity
 path_mock-c := ${path_tdd}mock-c/
-#=====[ Unit Test Object Files ]=====
+#=====[ Unit Test runs on PC with Cygwin ]=====
 unity_libs  := unity
 unity_libo  := $(addsuffix .o,${unity_libs})
 unity_libo  := $(addprefix ${path_tdd}mock-c/build/,${unity_libo})
@@ -35,13 +35,18 @@ mock-c_libo := $(addsuffix .o,${mock-c_libs})
 mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
 
-# =====[ App ]=====
-app_libs := Example
-app_lib_tests := $(addprefix test_,${app_libs})
-app_lib_testo := $(addsuffix .o,${app_lib_tests})
-app_lib_testo := $(addprefix build/,${app_lib_testo})
-app_libo := $(addsuffix .o,${app_libs})
-app_libo := $(addprefix build/,${app_libo})
+# =====[ App runs on ${board-name} ]=====
+app_src := Example
+app_test := $(addprefix test_,${app_src})
+app_build_test := $(addsuffix .o,${app_test})
+app_build_test := $(addprefix build/,${app_build_test})
+app_build_src := $(addsuffix .o,${app_src})
+app_build_src := $(addprefix build/,${app_build_src})
+lib_src := BiColorLed
+lib_build_src := $(addsuffix .o,${lib_src})
+lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
+Hardware := ${lib_src}
+Hardware := $(addsuffix -Hardware.h,${lib_src})
 
 #=====[ Unit Test Compiler and Linker flags ]=====
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
@@ -75,21 +80,26 @@ endif
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
-build/TestSuite.exe: test/test_runner.c ${unittest_o} ${app_lib_testo} ${app_libo}
+build/TestSuite.exe: test/test_runner.c ${unittest_o} ${app_build_test} ${app_build_src}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # lib tests #include "unity.h" and "Mock.h"
-${app_lib_testo}: build/%.o: test/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@
+${app_build_test}: build/%.o: test/%.c test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
 #
-${app_libo}: build/%.o: src/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@
+${app_build_src}: build/%.o: src/%.c src/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
 # LFLAGS is for avr-target to link against atmega328_lib
 # ${compiler} $(CFLAGS) -c $^ -o $@ $(LFLAGS)
+${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
 
 # Target `avr-target` ends up here:
-# build/${board-name}.elf: src/%.c ${app_libo}
-build/%.elf: src/%.c ${app_libo}
+build/${board-name}.o: src/${board-name}.c src/${Hardware}
+	${compiler} $(CFLAGS) -c $< -o $@
+#
+# build/${board-name}.elf: src/%.c ${app_build_src}
+build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_build_src}
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
 		-Wl,-Map="build/$*.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
@@ -138,5 +148,6 @@ clean-all-builds:
 	rm -f build/${board-name}.map
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
-	rm -f ${app_lib_testo}
-	rm -f ${app_libo}
+	rm -f ${app_build_test}
+	rm -f ${app_build_src}
+	rm -f ${lib_build_src}
