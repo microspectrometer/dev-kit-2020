@@ -11,6 +11,8 @@ void NothingToTearDown(void){}
 
 // ---Libs under test---
 #include "test_Example.h"
+// ---Fake Hardware Definitions---
+#include "HardwareFake.h"
 
 /* ---Turn test suites on and off--- */
 bool Yep=true, Nope=false;

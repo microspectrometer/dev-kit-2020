@@ -26,7 +26,7 @@ LFLAGS_for_avr := -B ${atmega328_lib}
 path_tdd := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/
 path_unity  := ${path_tdd}mock-c/test/unity
 path_mock-c := ${path_tdd}mock-c/
-#=====[ Unit Test runs on PC with Cygwin ]=====
+#=====[ Unit Test Framework Files ]=====
 unity_libs  := unity
 unity_libo  := $(addsuffix .o,${unity_libs})
 unity_libo  := $(addprefix ${path_tdd}mock-c/build/,${unity_libo})
@@ -35,6 +35,7 @@ mock-c_libo := $(addsuffix .o,${mock-c_libs})
 mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
 
+#=====[ Unit Test runs on PC with Cygwin ]=====
 # =====[ App runs on ${board-name} ]=====
 app_src := Example
 app_test := $(addprefix test_,${app_src})
@@ -46,7 +47,9 @@ lib_src := BiColorLed
 lib_build_src := $(addsuffix .o,${lib_src})
 lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
 Hardware := ${lib_src}
-Hardware := $(addsuffix -Hardware.h,${lib_src})
+Hardware := $(addsuffix -Hardware.h,${Hardware})
+HardwareFake := ${lib_src}
+HardwareFake := $(addsuffix -HardwareFake.h,${HardwareFake})
 
 #=====[ Unit Test Compiler and Linker flags ]=====
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
@@ -80,10 +83,15 @@ endif
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
-build/TestSuite.exe: test/test_runner.c ${unittest_o} ${app_build_test} ${app_build_src}
+build/TestSuite.exe: build/test_runner.o ${unittest_o} \
+${app_build_test} ${app_build_src} ${lib_build_src}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
-# lib tests #include "unity.h" and "Mock.h"
+# translation units with tests must #include "unity.h" and "Mock.h"
+# tests use fake hardware definitions
+build/test_runner.o: test/test_runner.c ../lib/test/${HardwareFake} ../lib/test/HardwareFake.h
+	${compiler} $(CFLAGS) -c $< -o $@
+#
 ${app_build_test}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 #
@@ -101,7 +109,7 @@ build/${board-name}.o: src/${board-name}.c src/${Hardware}
 # build/${board-name}.elf: src/%.c ${app_build_src}
 build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_build_src}
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
-		-Wl,-Map="build/$*.map" -Wl,--gc-sections
+		-Wl,-Map="build/${board-name}.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
 	avr-size $@
 #
@@ -146,8 +154,10 @@ clean-all-builds:
 	rm -f build/${board-name}.elf
 	rm -f build/${board-name}.lst
 	rm -f build/${board-name}.map
+	rm -f build/${board-name}.o
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
+	rm -f build/test_runner.o
 	rm -f ${app_build_test}
 	rm -f ${app_build_src}
 	rm -f ${lib_build_src}
