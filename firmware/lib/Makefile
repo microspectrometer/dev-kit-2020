@@ -15,12 +15,14 @@ mock-c_libo := $(addsuffix .o,${mock-c_libs})
 mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
 #=====[ Unit Test runs on PC with Cygwin ]=====
-# lib_src := ReadWriteBits BiColorLed
-lib_src := BiColorLed
+# ---add hardware libs here to create dependency on fakes---
+hw_lib_src := BiColorLed
+HardwareFake := ${hw_lib_src}
+HardwareFake := $(addsuffix -HardwareFake.h,${HardwareFake})
+# ---add non-hardware libs here---
+lib_src := ${hw_lib_src} ReadWriteBits
 lib_build_src := $(addsuffix .o,${lib_src})
 lib_build_src := $(addprefix build/,${lib_build_src})
-HardwareFake := ${lib_src}
-HardwareFake := $(addsuffix -HardwareFake.h,${HardwareFake})
 lib_build_test := $(addsuffix .o,${lib_src})
 lib_build_test := $(addprefix build/test_,${lib_build_test})
 
@@ -49,11 +51,12 @@ build/TestSuite-results.md: build/TestSuite.exe
 build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_test} ${lib_build_src}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
-# translation units with tests must #include "unity.h" and "Mock.h"
-build/test_runner.o: test/test_runner.c
+# test translation units must #include "unity.h" and "Mock.h"
+# test_runner translation unit requires fake hardware definitions
+build/test_runner.o: test/test_runner.c test/${HardwareFake} test/HardwareFake.h
 	${compiler} $(CFLAGS) -c $< -o $@
-# tests depend on fake hardware definitions
-${lib_build_test}: build/%.o: test/%.c test/%.h test/${HardwareFake} test/HardwareFake.h
+# test translation units do not depend on fake hardware definitions
+${lib_build_test}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 ${lib_build_src}: build/%.o: src/%.c src/%.h

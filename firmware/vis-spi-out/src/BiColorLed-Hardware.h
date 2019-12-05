@@ -3,7 +3,9 @@
 #include <stdint.h>
 #include "BiColorLed.h"
 
-bicolorled_ptr BiColorLed_ddr = &DDRC; // controls if input or output
+bicolorled_ptr BiColorLed_ddr = &DDRC; // controls if pin is input or output
+bicolorled_ptr BiColorLed_port = &PORTC; // controls if pin outputs HIGH or LOW
 bicolorled_num led_0 = PINC0;
+bicolorled_num led_1 = PINC1;
 
 #endif // _BICOLORLED_HARDWARE_H

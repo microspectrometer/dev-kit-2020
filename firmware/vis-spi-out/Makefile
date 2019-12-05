@@ -43,13 +43,16 @@ app_build_test := $(addsuffix .o,${app_test})
 app_build_test := $(addprefix build/,${app_build_test})
 app_build_src := $(addsuffix .o,${app_src})
 app_build_src := $(addprefix build/,${app_build_src})
-lib_src := BiColorLed
+# ---add hardware libs here to add hardware dependencies to rule---
+hw_lib_src := BiColorLed
+Hardware := ${hw_lib_src}
+Hardware := $(addsuffix -Hardware.h,${Hardware})
+HardwareFake := ${hw_lib_src}
+HardwareFake := $(addsuffix -HardwareFake.h,${HardwareFake})
+# ---add non-hardware libs here---
+lib_src := ${hw_lib_src} ReadWriteBits
 lib_build_src := $(addsuffix .o,${lib_src})
 lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
-Hardware := ${lib_src}
-Hardware := $(addsuffix -Hardware.h,${Hardware})
-HardwareFake := ${lib_src}
-HardwareFake := $(addsuffix -HardwareFake.h,${HardwareFake})
 
 #=====[ Unit Test Compiler and Linker flags ]=====
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \

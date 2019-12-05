@@ -12,6 +12,8 @@
     - i.e., I could eliminate BiColorLed.o and it would make no
       difference to the linker when making `vis-spi-out.elf`
 - [ ] create a lib that has function definitions in its .c
+    - use `Spi` because next up in vis-spi-out setup() is
+      `SpiSlaveInit`
     - this lib has its own translation unit
     - the resulting .o file is needed by the linker
     - the compiler needs to know the values to use when it makes the
@@ -21,6 +23,9 @@
     - clean out test runner
 - [x] write a test
     - test needs its own fake hardware definitions
+- [x] go back to avr-target
+    - [x] check `sbi` is still used
+    - [x] use SetBit function and check `sbi` is still used
 
 # keyword const is required for avr-gcc optimal assembly 
 - avr-gcc needs a `const` variable passed to a function to use the
@@ -207,6 +212,122 @@ void example_function(void) {}
   9c:	08 95       	ret
 ```
 
+## avr-gcc outputs short assembly if all definitions are in headers
+- the main file calls an inline function
+- the inline function is in a lib header
+- the inline function sets a bit in an io register
+- the main file includes headers that define the bit and the io
+  register with const values
+- result: the main.c translation unit translates the inline call
+  as an `sbi` instruction
+
+### details
+- this is the *easy* case where all definitions are in headers:
+    - the inline function body is in a header
+        - `lib/src/BiColorLed.h`
+    - the hardware register and pin values are in a header
+        - `vis-spi-out/src/BiColorLed-Hardware.h`
+    - both headers are included by the main file
+        - `BiColorLed.h` is included directly
+        - `BiColorLed-Hardware.h` is included indirectly by
+          including `Hardware.h` which includes all the hardware
+          headers
+    - so the translation unit `main.c` contains all the
+      information needed to pick the `sbi` instruction for
+      `main.o`
+
+### example
+- here is the main file:
+
+```c
+// vis-spi-out/src/vis-spi-out.c (main.c)
+//
+#include "BiColorLed.h" // hardware const variables are extern
+#include "Hardware.h" // includes headers that const define hardware
+
+void setup(void);
+int main()
+{
+    setup();
+}
+void setup(void)
+{
+    BiColorLedOn(led_0);
+}
+```
+
+- the `Hardware` header:
+
+```c
+// vis-spi-out/src/Hardware.h
+//
+#include "BiColorLed-Hardware.h"
+```
+
+- the hardware definitions for BiColorLed on the `vis-spi-out`
+  board:
+
+```c
+// vis-spi-out/src/BiColorLed-Hardware.h
+//
+#include "BiColorLed.h"
+
+bicolorled_ptr BiColorLed_ddr = &DDRC; // controls if input or output
+bicolorled_num led_0 = PINC0;
+```
+
+- the definition of `BiColorLedOn` called by main:
+
+```c
+// lib/src/BiColorLed.h
+//
+#include "ReadWriteBits.h"
+
+typedef uint8_t const bicolorled_num; // i/o bit/pin number
+typedef uint8_t volatile * const bicolorled_ptr; // i/o reg address
+
+// I/O register definitions in Hardware.h for dependency on make target
+extern bicolorled_ptr BiColorLed_ddr;
+
+inline void BiColorLedOn(bicolorled_num led)
+{
+    /** BiColorLedOn behavior:\n 
+      * - sets bit in ddr\n 
+      * */
+    SetBit(BiColorLed_ddr, led);
+}
+```
+
+- and the definition of `SetBit` called by `BiColorLedOn`:
+
+```c
+// lib/src/ReadWriteBits.h
+//
+typedef uint8_t volatile * const register_address;
+typedef uint8_t const bit_index;
+inline void SetBit(register_address reg_addr, bit_index bit)
+{
+    *reg_addr |= 1<<bit;
+}
+```
+
+- and the final translated assembly output is still the
+  one-line `sbi` instruction:
+
+```assembly
+00000096 <main>:
+
+typedef uint8_t volatile * const register_address;
+typedef uint8_t const bit_index;
+inline void SetBit(register_address reg_addr, bit_index bit)
+{
+    *reg_addr |= 1<<bit;
+  96:	38 9a       	sbi	0x07, 0	; 7
+{
+    BiColorLedOn(led_0);
+}
+```
+
 # Makefile
 
 ## target rules
@@ -217,10 +338,78 @@ target: dependency
 	command
 ```
 
+- `target` is usually the file to be created
+- example: `build/test_runner.o` is the target and it is an
+  object file created by the compiler
+
+```make
+build/test_runner.o: test/test_runner.c test/${HardwareFake} test/HardwareFake.h
+	${compiler} $(CFLAGS) -c $< -o $@
+```
+
+- without a `command`, the `target` just lists prererequisites,
+  so it becomes a way of identifying one or more targets under
+  one name
+- example:
+    - run `make` at the command line with`$ make unit-test`
+    - this looks for the `unit-test` target in the Makefile
+    - the Makefile says `unit-test` depends on
+      `build/TestSuite-results.md`
+    - so `make` then looks for a rule to build
+      `build/TestSuite-results.md`
+    - the specific file name `build/TestSuite-results.md` does
+      not show up in the command line invocation of `make`
+
+```make
+unit-test: build/TestSuite-results.md
+```
+
+- similarly, a `target` without a `command` is a way of
+  identifying special targets that do not result in creating
+  files
+- this uses the `make` Built-In Target Name `.PHONY`
+- example:
+    - `clean` is not a file but it is still a target
+    - run `make` at the command line with `$ make clean`
+    - the Makefile rule for `clean` decides which particular
+      files are deleted 
+    - `clean` is a pre-requisite of `.PHONY`
+    - this means `$ make clean` runs regardless of whether a file
+      named `clean` exists
+
+```make
+.PHONY: clean
+clean:
+	rm -f build/TestSuite-results.md
+	rm -f build/TestSuite.exe
+	rm -f build/test_runner.o
+	rm -f ${lib_build_src}
+	rm -f ${lib_build_test}
+```
+
+
 - `dependency` is an optional space-separated list of
   dependencies
+    - make rebuilds the target if the timestamp on the target is
+      older than the timestamp on any of the dependencies
+    - make refuses to build the target if any depenendency does
+      not exist
+        - this is a good way to drive creation of source files
+          and all other required files:
+        - add the name to the appropriate list in the Makefile
+        - rebuild
+        - the build fails because of a missing file:
+            - source file
+            - source file header
+            - tests for source file
+            - test header that lists the tests
+            - hardware file the application depends on
+            - hardware-fake file the test-runner depends on
 - `command` is an optional list of commands, each one prefaced by
   a `tab` character
+    - if there is no command, then the `target: dependency`
+      syntax is a way to list the prerequisites of the target
+    - an example of such a list is `.PHONY: clean`
 
 ## pattern rules work on a list of file names
 - *target* uses `%` to extract the file name `stem`

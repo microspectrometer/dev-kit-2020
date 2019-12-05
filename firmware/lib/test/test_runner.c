@@ -11,6 +11,7 @@ void NothingToTearDown(void){}
 
 // ---Lists of tests---
 #include "test_BiColorLed.h"
+#include "test_ReadWriteBits.h"
 
 // ---Fake all hardware---
 #include "HardwareFake.h"
@@ -24,6 +25,7 @@ void BiColorLed(bool run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(BiColorLedOn_sets_bit_in_ddr);
+        RUN_TEST(BiColorLedGreen_clears_bit_in_port);
     }
 }
 void ReadWriteBits(bool run_test)
@@ -31,6 +33,8 @@ void ReadWriteBits(bool run_test)
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SetBit_sets_bit_in_register);
+        RUN_TEST(ClearBit_clears_bit_in_register);
     }
 }
 
