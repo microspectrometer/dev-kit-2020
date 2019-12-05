@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "BiColorLed.h"
 
-bicolorled_p BiColorLed_ddr = &DDRC; // controls if input or output
-bicolorled_n led_0 = PINC0;
+bicolorled_ptr BiColorLed_ddr = &DDRC; // controls if input or output
+bicolorled_num led_0 = PINC0;
 
 #endif // _BICOLORLED_HARDWARE_H
