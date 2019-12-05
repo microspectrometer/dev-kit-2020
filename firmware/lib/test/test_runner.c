@@ -26,10 +26,18 @@ void BiColorLed(bool run_test)
         RUN_TEST(BiColorLedOn_sets_bit_in_ddr);
     }
 }
+void ReadWriteBits(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    }
+}
 
 int main()
 {
     UNITY_BEGIN();
     BiColorLed(Yep);
+    ReadWriteBits(Yep);
     return UNITY_END();
 }

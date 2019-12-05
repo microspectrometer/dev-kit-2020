@@ -15,6 +15,7 @@ mock-c_libo := $(addsuffix .o,${mock-c_libs})
 mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
 #=====[ Unit Test runs on PC with Cygwin ]=====
+# lib_src := ReadWriteBits BiColorLed
 lib_src := BiColorLed
 lib_build_src := $(addsuffix .o,${lib_src})
 lib_build_src := $(addprefix build/,${lib_build_src})
@@ -45,11 +46,11 @@ endif
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
-build/TestSuite.exe: test/test_runner.o ${unittest_o} ${lib_build_test} ${lib_build_src}
+build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_test} ${lib_build_src}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # translation units with tests must #include "unity.h" and "Mock.h"
-test/test_runner.o: test/test_runner.c
+build/test_runner.o: test/test_runner.c
 	${compiler} $(CFLAGS) -c $< -o $@
 # tests depend on fake hardware definitions
 ${lib_build_test}: build/%.o: test/%.c test/%.h test/${HardwareFake} test/HardwareFake.h
@@ -63,8 +64,10 @@ ${lib_build_src}: build/%.o: src/%.c src/%.h
 .PHONY: clean-all-builds clean-TestSuite
 clean-TestSuite:
 	rm -f build/TestSuite.exe
+	rm -f build/test_runner.o
 clean-all-builds:
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
+	rm -f build/test_runner.o
 	rm -f ${lib_build_src}
 	rm -f ${lib_build_test}
