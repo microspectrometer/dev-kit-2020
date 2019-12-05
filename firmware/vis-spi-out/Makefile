@@ -88,11 +88,10 @@ ${app_build_test} ${app_build_src} ${lib_build_src}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # translation units with tests must #include "unity.h" and "Mock.h"
-# tests use fake hardware definitions
-build/test_runner.o: test/test_runner.c ../lib/test/${HardwareFake} ../lib/test/HardwareFake.h
+build/test_runner.o: test/test_runner.c
 	${compiler} $(CFLAGS) -c $< -o $@
-#
-${app_build_test}: build/%.o: test/%.c test/%.h
+# tests depend on fake hardware definitions
+${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/${HardwareFake} ../lib/test/HardwareFake.h
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 ${app_build_src}: build/%.o: src/%.c src/%.h

@@ -8,11 +8,14 @@ typedef uint8_t volatile * const bicolorled_ptr; // i/o reg address
 // I/O register definitions in Hardware.h for dependency on make target
 extern bicolorled_ptr BiColorLed_ddr;
 
-inline void BiColorLedOn(bicolorled_num led_name)
+inline void BiColorLedOn(bicolorled_num led)
 {
+    /** BiColorLedOn behavior:\n 
+      * - sets bit in ddr\n 
+      * */
     /* SetBit(BiColorLed_ddr, led_name); */
     // change!
-    *BiColorLed_ddr |= (uint8_t)(1<<led_name);
+    *BiColorLed_ddr |= (uint8_t)(1<<led);
 }
 
 #endif // _BICOLORLED_H

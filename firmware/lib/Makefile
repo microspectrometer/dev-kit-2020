@@ -49,11 +49,10 @@ build/TestSuite.exe: test/test_runner.o ${unittest_o} ${lib_build_test} ${lib_bu
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # translation units with tests must #include "unity.h" and "Mock.h"
-# tests use fake hardware definitions
-test/test_runner.o: test/test_runner.c test/${HardwareFake} test/HardwareFake.h
+test/test_runner.o: test/test_runner.c
 	${compiler} $(CFLAGS) -c $< -o $@
-#
-${lib_build_test}: build/%.o: test/%.c test/%.h
+# tests depend on fake hardware definitions
+${lib_build_test}: build/%.o: test/%.c test/%.h test/${HardwareFake} test/HardwareFake.h
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 ${lib_build_src}: build/%.o: src/%.c src/%.h

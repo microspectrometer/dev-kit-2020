@@ -4,7 +4,6 @@
 #include "BiColorLed.h"
 // hardware i/o definitions
 #include "Hardware.h"
-// globals
 
 void setup(void);
 static void loop(void);

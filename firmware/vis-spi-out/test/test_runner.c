@@ -9,9 +9,10 @@ Mock_s *mock; // record calls/args to mocked-out libs
 void NothingToSetUp(void){}
 void NothingToTearDown(void){}
 
-// ---Libs under test---
+// ---Lists of tests---
 #include "test_Example.h"
-// ---Fake Hardware Definitions---
+
+// ---Fake all hardware---
 #include "HardwareFake.h"
 
 /* ---Turn test suites on and off--- */

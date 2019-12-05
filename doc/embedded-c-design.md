@@ -1,36 +1,41 @@
 - [x] want to see definition of variables in a lib optimized correctly
     - BiColorLed is a lib
     - it uses a register and pins
-    - these are variables that the compiler needs to know the value of when
-      compiling to use the optimal instructions
+    - these are variables that the compiler needs to know the value of
+      when compiling to use the optimal instructions
 - well, that was useful but it did not prove what I need in general
     - BiColorLed is not its own translation unit
     - I do compile it separately, but:
     - all the function definitions are in the .h file
     - so the application includes those definitions and only a single
       translation unit is required
-    - i.e., I could eliminate BiColorLed.o and it would make no difference to
-      the linker when making `vis-spi-out.elf`
+    - i.e., I could eliminate BiColorLed.o and it would make no
+      difference to the linker when making `vis-spi-out.elf`
 - [ ] create a lib that has function definitions in its .c
     - this lib has its own translation unit
     - the resulting .o file is needed by the linker
-    - the compiler needs to know the values to use when it makes the translation
+    - the compiler needs to know the values to use when it makes the
+      translation
       unit
+- [x] clean Makefile for lib project
+    - clean out test runner
+- [x] write a test
+    - test needs its own fake hardware definitions
 
 # keyword const is required for avr-gcc optimal assembly 
-- avr-gcc needs a const variable passed to a function to use the optimal
-  assembly for that function
-- it is not sufficient for the function definition to declare a const input
-  argument
-- the variable passed must be const as well
+- avr-gcc needs a `const` variable passed to a function to use the
+  optimal assembly for that function
+- it is not sufficient for the function definition to declare a
+  `const` input argument
+- the variable passed must be `const` as well
 
-## example
+## const example
 - example: `BiColorLedOn(led_0)` takes variable `led_0`
-- if `led_0` is not `const`, then avr-gcc does not know at compile time if
-  `led_0` will change value, so it does not know if it is OK to use the `sbi`
-  instruction
+- if `led_0` is not `const`, then avr-gcc does not know at compile
+  time if `led_0` will change value, so it does not know if it is OK
+  to use the `sbi` instruction
 
-## example details
+## const example details
 - here is the function definition showing the arg is `const`:
 ```c
 // BiColorLed.h
@@ -95,34 +100,63 @@ uint8_t led_0 = 0;
 }
 ```
 
-## recommendation
+## const typedef recommendation
 - use `typedef` instead of remembering `const`
 - put `typedef` in library header
 - match type name with library name
 
-## recommendation example
+## const typedef recommendation example
 
 - define the type in the library header:
 
 ```c
-// BiColorLed.h
-typedef uint8_t const bicolorled;
+// lib/src/BiColorLed.h
+typedef uint8_t const bicolorled_num; // i/o bit/pin number
+typedef uint8_t volatile * const bicolorled_ptr; // i/o reg address
+// I/O register definitions are in Hardware.h
+// This makes hardware values depend on make target
+extern bicolorled_ptr BiColorLed_ddr;
 ```
 
 - define the variable using the type:
 
 ```c
-// main.c
-bicolorled led_0 = 0;
+// vis-spi-out/src/BiColorLed-Hardware.h
+#include "BiColorLed.h" // CFLAG -I../lib/src/ finds this header
+
+bicolorled_num led_0 = PINC0;
+bicolorled_ptr BiColorLed_ddr = &DDRC; // controls if input or output
+```
+
+- `Hardware.h` pulls all hardware definitions into one stream:
+
+```c
+// vis-spi-out/src/Hardware.h
+#include "BiColorLed-Hardware.h"
+```
+
+- main file includes `Hardware.h` which includes the lib hardware
+  definitions and each of those includes its respective lib header
+- therefore translation unit main.o has all of the hardware
+  definitions when it builds
+
+```c
+// vis-spi-out/src/vis-spi-out.c (the main.c)
+#include "Hardware.h"
+// now when main.c uses `led_0` and `BiColorLed_ddr`
+// `avr-gcc` translates from C to assembly using `sbi`
+// because the definitions:
+//      are `const`
+//      and are in a single translation unit
 ```
 
 # avr-gcc automatically inlines functions if they only call inline functions
-- avr-gcc tries to inline a function that calls inline functions, even if the
-  function is not inline or static
+- avr-gcc tries to inline a function that calls inline functions,
+  even if the function is not inline or static
 
 ## example
-- example: `setup` only calls `inline` functions, so the call to `setup` is
-  inlined even without the `inline` keyword
+- example: `setup` only calls `inline` functions, so the call to
+  `setup` is inlined even without the `inline` keyword
 
 ## example details
 - `main` calls `setup` and `loop`
@@ -183,31 +217,42 @@ target: dependency
 	command
 ```
 
-- `dependency` is an optional space-separated list of dependencies
-- `command` is an optional list of commands, each one prefaced by a `tab`
-  character
-
+- `dependency` is an optional space-separated list of
+  dependencies
+- `command` is an optional list of commands, each one prefaced by
+  a `tab` character
 
 ## pattern rules work on a list of file names
 - *target* uses `%` to extract the file name `stem`
-- think of the `stem` as the file name without its path or extension
+- `stem` is more general, but I just use `stem` as the file name
+  without its path or extension
 - extracting a `stem` is useful for working on a list of files
-- each *dependency* uses `%` to wrap the `stem` in the dependency path
+- `%` in the *target* identifies the `stem` from the file list
+    - this gives access to a file name without path and extension
+- each *dependency* uses `%` to access the stem
+    - this gives a way to wrap the `stem` in the dependency path
+      and with a different extension
 - each *command* uses `$*` to access the `stem`
+    - again, this gives a way to specify a different extension
 
 ## example
 
 ```make
-# make a list of object file names
+ # make a list of object file names
 lib_src := Led BiColorLed TriColorLed
 lib_build_src := $(addsuffix .o,${lib_src})
 lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
-# define a pattern rule to build these object files
+ # define a pattern rule to build these object files
 ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 	${compiler} $(CFLAGS) -c ../lib/src/$*.c -o $@
+ # *target* is specific to object files in ../lib/build/ and that
+ # match the names listed in lib_src
+ # *dependencies* are stem.c and stem.h
+ # *command* only compiles stem.c
 ```
 
-#### Automatic Variables
+## Automatic Variables
+
 <https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html>
 
 - `$@`
@@ -218,12 +263,28 @@ ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 - `$<`
     - name of first prerequisite
     - useful for listing header dependencies
-    - example: stem.o depends on stem.c and stem.h, but only compile stem.c
+    - example 1:
+    - stem.o depends on stem.c and stem.h, but only compile
+      stem.c to make stem.o
 
     ```make
     ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
         ${compiler} $(CFLAGS) -c $< -o $@
     ```
 
+    - example 2:
+    - `test_runner.o` depends on `test_runner.c,`
+      `HardwareFake.h,` and the `-HardwareFake.h` for every lib,
+      but only compile test_runner.c to make test_runner.o
+
+    ```make
+    lib_src := BiColorLed
+    HardwareFake := ${lib_src}
+    HardwareFake := $(addsuffix -HardwareFake.h,${HardwareFake})
+    test/test_runner.o: test/test_runner.c test/${HardwareFake} test/HardwareFake.h
+        ${compiler} $(CFLAGS) -c $< -o $@
+    ```
+
 - `$?`
-    - name of all prerequisites *newer than the target* with spaces between them
+    - name of all prerequisites *newer than the target* with
+      spaces between them

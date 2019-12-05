@@ -9,9 +9,10 @@ Mock_s *mock; // record calls/args to mocked-out libs
 void NothingToSetUp(void){}
 void NothingToTearDown(void){}
 
-// ---Libs under test---
+// ---Lists of tests---
 #include "test_BiColorLed.h"
-// ---Fake Hardware Definitions---
+
+// ---Fake all hardware---
 #include "HardwareFake.h"
 
 /* ---Turn test suites on and off--- */
@@ -22,7 +23,7 @@ void BiColorLed(bool run_test)
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(test_BiColorLedOn_sets_bit_in_ddr);
+        RUN_TEST(BiColorLedOn_sets_bit_in_ddr);
     }
 }
 
