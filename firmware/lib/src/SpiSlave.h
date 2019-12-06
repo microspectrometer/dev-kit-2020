@@ -13,15 +13,16 @@ extern spi_ptr Spi_port;
 // pin definitions in Hardware.h for dependency on make target
 extern spi_pin Spi_DataReady; // master-in, slave-out
 
-inline void SpiSlaveInit(void)
-{
-    /** SpiSlaveInit behavior:\n 
-      * - makes DataReady an output pin\n 
-      * - idles DataReady high\n 
-      * */
-    // DataReady pin idle high
-    SetBit(Spi_port, Spi_DataReady); // sbi	0x05, 1
-    // Set DataReady as an output pin
-    SetBit(Spi_ddr, Spi_DataReady); // sbi	0x04, 1
-}
+void SpiSlaveInit(void);
+/*inline void SpiSlaveInit(void) */
+/*{ */
+/*    /1** SpiSlaveInit behavior:\n */ 
+/*      * - makes DataReady an output pin\n */ 
+/*      * - idles DataReady high\n */ 
+/*      * *1/ */
+/*    // DataReady pin idle high */
+/*    SetBit(Spi_port, Spi_DataReady); // sbi	0x05, 1 */
+/*    // Set DataReady as an output pin */
+/*    SetBit(Spi_ddr, Spi_DataReady); // sbi	0x04, 1 */
+/*} */
 #endif // _SPISLAVE_H

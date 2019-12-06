@@ -43,18 +43,35 @@ app_build_test := $(addsuffix .o,${app_test})
 app_build_test := $(addprefix build/,${app_build_test})
 app_build_src := $(addsuffix .o,${app_src})
 app_build_src := $(addprefix build/,${app_build_src})
-# ---add hardware libs here to add hardware dependencies to rule---
+# ---add hardware libs here---
 hw_lib_src := BiColorLed SpiSlave
+# ---add non-hardware libs here---
+nonhw_lib_src := ReadWriteBits
+# hardware libs add hardware dependencies to rule
 Hardware := ${hw_lib_src}
 Hardware := $(addsuffix -Hardware.h,${Hardware})
 Hardware := $(addprefix src/,${Hardware})
+IncludeHardware := $(addprefix -include ,${Hardware})
 HardwareFakes := ${hw_lib_src}
 HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
 HardwareFakes := $(addprefix ../lib/test/,${HardwareFakes})
-# ---add non-hardware libs here---
-lib_src := ${hw_lib_src} ReadWriteBits
+lib_src := ${hw_lib_src} ${nonhw_lib_src}
 lib_build_src := $(addsuffix .o,${lib_src})
 lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
+# TODO##: avr-gcc uses a different build rule for hardware libs
+## hw_lib_build_src := $(addsuffix .o,${hw_lib_src})
+## hw_lib_build_src := $(addprefix ../lib/build/,${hw_lib_build_src})
+# avr-gcc uses different rules to build non-hardware lib and hardware lib objects
+# but gcc compiles non-hardware lib and hardware lib objects with one rule
+## ifeq ($(compiler), avr-gcc)
+## 	lib_src := ${nonhw_lib_src}
+## else
+## 	lib_src := ${hw_lib_src} ${nonhw_lib_src}
+## endif
+# avr-target finds hardware lib .c files in src/
+# those files include the hardware definitions and the ../lib/src .c file
+## ${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h ${Hardware}
+## 	${compiler} $(IncludeHardware) $(CFLAGS) -c $< -o $@
 
 #=====[ Unit Test Compiler and Linker flags ]=====
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
@@ -101,11 +118,10 @@ ${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${Har
 #
 ${app_build_src}: build/%.o: src/%.c src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
-# LFLAGS is for avr-target to link against atmega328_lib
-# ${compiler} $(CFLAGS) -c $^ -o $@ $(LFLAGS)
+# unit-tests find both non-hardware lib and hardware lib .c files in ../lib/src
+# avr-target only finds non-hardware lib .c files in ../lib/src
 ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
-
 # Target `avr-target` ends up here:
 build/${board-name}.o: src/${board-name}.c ${Hardware}
 	${compiler} $(CFLAGS) -c $< -o $@
