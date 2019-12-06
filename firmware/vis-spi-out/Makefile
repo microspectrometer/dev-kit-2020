@@ -44,7 +44,8 @@ app_build_test := $(addprefix build/,${app_build_test})
 app_build_src := $(addsuffix .o,${app_src})
 app_build_src := $(addprefix build/,${app_build_src})
 # ---add hardware libs here---
-hw_lib_src := BiColorLed SpiSlave
+# hw_lib_src := BiColorLed SpiSlave
+hw_lib_src := BiColorLed
 # ---add non-hardware libs here---
 nonhw_lib_src := ReadWriteBits
 # hardware libs add hardware dependencies to rule
@@ -106,7 +107,7 @@ build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
 build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${app_build_test} ${app_build_src} ${lib_build_src}
+${app_build_test} ${app_build_src} ${lib_build_src} ../lib/build/SpiSlave.o
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # translation units with tests must #include "unity.h" and "Mock.h"
@@ -118,8 +119,13 @@ ${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${Har
 #
 ${app_build_src}: build/%.o: src/%.c src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
-# unit-tests find both non-hardware lib and hardware lib .c files in ../lib/src
-# avr-target only finds non-hardware lib .c files in ../lib/src
+# unit-tests build libs without any Hardware definitions
+../lib/build/SpiSlave.o: ../lib/src/SpiSlave.c ../lib/src/SpiSlave.h
+	${compiler} $(CFLAGS) -c $< -o $@
+# avr-target builds lib with lib-Hardware.h definitions
+build/SpiSlave.o: ../lib/src/SpiSlave.c ../lib/src/SpiSlave.h src/SpiSlave-Hardware.h
+	${compiler} -include src/SpiSlave-Hardware.h $(CFLAGS) -c $< -o $@
+# both targets find non-hardware lib .c files in ../lib/src
 ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # Target `avr-target` ends up here:
@@ -127,7 +133,7 @@ build/${board-name}.o: src/${board-name}.c ${Hardware}
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 # build/${board-name}.elf: src/%.c ${app_build_src}
-build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_build_src}
+build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_build_src} build/SpiSlave.o
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
 		-Wl,-Map="build/${board-name}.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
