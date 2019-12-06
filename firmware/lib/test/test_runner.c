@@ -12,6 +12,7 @@ void NothingToTearDown(void){}
 // ---Lists of tests---
 #include "test_BiColorLed.h"
 #include "test_ReadWriteBits.h"
+#include "test_SpiSlave.h"
 
 // ---Fake all hardware---
 #include "HardwareFake.h"
@@ -37,11 +38,21 @@ void ReadWriteBits(bool run_test)
         RUN_TEST(ClearBit_clears_bit_in_register);
     }
 }
+void SpiSlave(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SpiSlaveInit_makes_DataReady_an_output_pin);
+    }
+}
 
 int main()
 {
     UNITY_BEGIN();
-    BiColorLed(Yep);
-    ReadWriteBits(Yep);
+    BiColorLed(Nope);
+    ReadWriteBits(Nope);
+    SpiSlave(Yep);
+    RUN_TEST(SpiSlaveInit_idles_DataReady_high);
     return UNITY_END();
 }

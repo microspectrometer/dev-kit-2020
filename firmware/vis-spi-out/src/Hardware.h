@@ -5,5 +5,6 @@
 #include <avr/io.h> // includes iom328p.h for hardware i/o values
 // assign hardware i/o values to Chromation libs
 #include "BiColorLed-Hardware.h"
+#include "SpiSlave-Hardware.h"
 
 #endif // _HARDWARE_H

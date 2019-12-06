@@ -11,14 +11,6 @@
       translation unit is required
     - i.e., I could eliminate BiColorLed.o and it would make no
       difference to the linker when making `vis-spi-out.elf`
-- [ ] create a lib that has function definitions in its .c
-    - use `Spi` because next up in vis-spi-out setup() is
-      `SpiSlaveInit`
-    - this lib has its own translation unit
-    - the resulting .o file is needed by the linker
-    - the compiler needs to know the values to use when it makes the
-      translation
-      unit
 - [x] clean Makefile for lib project
     - clean out test runner
 - [x] write a test
@@ -26,6 +18,21 @@
 - [x] go back to avr-target
     - [x] check `sbi` is still used
     - [x] use SetBit function and check `sbi` is still used
+    - [x] same for ClearBit function and check `cbi`
+- [ ] create a lib that has function definitions in its .c
+    - use `Spi` because next up in vis-spi-out setup() is
+      `SpiSlaveInit`
+    - this lib has its own translation unit
+    - the resulting .o file is needed by the linker
+    - the compiler needs to know the values to use when it makes the translation
+      unit
+    - this is where I decide how to proceed for testing
+    - so far I can test what I need without fakes
+    - the need for fakes and the hiding of values forces me to work out exactly
+      how to use macros for faking depending on the target
+    - [x] first make the function inline in the header to get everything working
+      as usual with the unit tests and with the assembly output
+    - [ ] now move the function body into the .c
 
 # keyword const is required for avr-gcc optimal assembly 
 - avr-gcc needs a `const` variable passed to a function to use the
@@ -155,9 +162,11 @@ bicolorled_ptr BiColorLed_ddr = &DDRC; // controls if input or output
 //      and are in a single translation unit
 ```
 
-# avr-gcc automatically inlines functions if they only call inline functions
+# avr-gcc might automatically inlines functions if they only call inline functions
 - avr-gcc tries to inline a function that calls inline functions,
   even if the function is not inline or static
+- if the function has many calls, `avr-gcc` may decide not to inline it
+- in this case, making the function `static` makes `avr-gcc` inline it again
 
 ## example
 - example: `setup` only calls `inline` functions, so the call to
@@ -172,6 +181,9 @@ bicolorled_ptr BiColorLed_ddr = &DDRC; // controls if input or output
 - it is *not* because:
     - `setup` is `static`
     - `loop` is called in a `while` loop
+- however, after adding more inline calls in `setup`, `avr-gcc` turned `setup`
+  into a function call
+- now making setup `static` caused `avr-gcc` to inline it again
 
 ```c
 // main.c
@@ -477,3 +489,132 @@ ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 - `$?`
     - name of all prerequisites *newer than the target* with
       spaces between them
+
+# Procedure To Make A New Lib
+- open `firmware/lib/Makefile`
+- add lib name to space-separated list `hw_lib_src`
+- example adding lib `SpiSlave`
+
+```make
+hw_lib_src := BiColorLed SpiSlave
+```
+
+- try building the test either for real with `;mktgc` or fake with `;mkf`
+- the build fails
+- make reports which files are missing:
+
+```bash
+|| make: *** No rule to make target 'SpiSlave-HardwareFake.h', needed by 'build/test_runner.o'.  Stop.
+```
+
+- create the file
+- a `-HardwareFake.h` goes in firmware/lib/test/
+- try building the test again
+- make reports which files are missing:
+
+```bash
+|| make: *** No rule to make target 'test/test_SpiSlave.c', needed by 'build/test_SpiSlave.o'.  Stop.
+```
+
+- create the file
+- a `test_lib.c` goes in firmware/lib/test/
+
+- try building the test again
+- make reports which files are missing:
+
+```bash
+|| make: *** No rule to make target 'test/test_SpiSlave.h', needed by 'build/test_SpiSlave.o'.  Stop.
+```
+
+- create a header file by making a throwaway function in the `.c` and then
+  `;fh` on the function to generate a header with the function declaration
+
+```c
+// test/test_SpiSlave.c
+void SpiSlavePlaceholder(void){}
+```
+
+- this makes a `test_lib.h` in firmware/lib/test/
+- it also automatically includes the header in the c file
+- remember to manually add `#include "unity.h"` to the `.c` file, you will
+  need it later when you write the first test
+
+- try building the test again
+- make reports which files are missing:
+
+```bash
+|| make: *** No rule to make target 'src/SpiSlave.c', needed by 'build/SpiSlave.o'.  Stop.
+```
+
+- again, make the `.c` file with a placeholder function and use `;fh` to
+  auto-generate the header
+
+- the test should build now
+- erase the placeholder functions
+- write the first test in the `test_lib.c` file with `ttt` to get
+  `TEST_FAIL_MESSAGE("Implement test.");`
+- `;fh` to list the test in the header for visibility to the `test_runner`
+- `;yt` to add the `RUN_TEST` call to the `test_runner`
+
+- the first test calls a function from the lib
+- put the function in the lib
+- the function uses hardware
+- declare the registers and pins `extern` meaning the lib translation unit
+  builds without defining these values
+    - this is no problem if the function body is `inline` in the `.h`
+    - but if the function body is in the `.c` we need clever macros to make
+      the real hardware definitions visible when building for the avr-target
+
+- when the test passes, clean the build and rebuild for avr-target
+    - `vis-spi-out` also has a unit-test target, but it is not affected
+      unless it's tests call the lib just added
+- the build fails because the hardware is undefined
+- for example:
+
+```bash
+|| build/vis-spi-out.o: In function `SpiSlaveInit':
+/home/Mike/chromation/dev-kit-mike/firmware/lib/src/SpiSlave.h|23| undefined reference to `Spi_port'
+```
+
+- the Makefile catches this if we remember to add it!
+- this goes in the `vis-spi-out/Makefile`
+
+```make
+hw_lib_src := BiColorLed SpiSlave
+```
+
+- now the unit-test target for `vis-spi-out` expects to find
+  `../lib/test/SpiSlave-HardwareFake.h`
+- and the avr-target for `vis-spi-out` expects to find
+  `src/SpiSlave-Hardware.h`
+
+```bash
+- || make: *** No rule to make target 'src/SpiSlave-Hardware.h', needed by 'build/vis-spi-out.o'.  Stop.
+```
+
+- create `firmware/vis-spi-out/src/SpiSlave-Hardware.h`
+- each translation unit compiles correctly again, and the build once again
+  fails for undefined references
+- put the real definitions in `src/SpiSlave-Hardware.h`
+
+```c
+#ifndef _SPISLAVE_HARDWARE_H
+#define _SPISLAVE_HARDWARE_H
+#include <stdint.h>
+#include "SpiSlave.h"
+
+spi_ptr Spi_ddr = &DDRB; // controls if pin is input or output
+spi_ptr Spi_port = &PORTB; // controls if pin outputs HIGH or LOW
+
+#endif // _SPISLAVE_HARDWARE_H
+```
+
+- add the `#include` to the `Hardware.h` header:
+
+```c
+// src/Hardware.h
+//
+#include "SpiSlave-Hardware.h"
+```
+
+

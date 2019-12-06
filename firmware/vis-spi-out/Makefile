@@ -44,11 +44,13 @@ app_build_test := $(addprefix build/,${app_build_test})
 app_build_src := $(addsuffix .o,${app_src})
 app_build_src := $(addprefix build/,${app_build_src})
 # ---add hardware libs here to add hardware dependencies to rule---
-hw_lib_src := BiColorLed
+hw_lib_src := BiColorLed SpiSlave
 Hardware := ${hw_lib_src}
 Hardware := $(addsuffix -Hardware.h,${Hardware})
-HardwareFake := ${hw_lib_src}
-HardwareFake := $(addsuffix -HardwareFake.h,${HardwareFake})
+Hardware := $(addprefix src/,${Hardware})
+HardwareFakes := ${hw_lib_src}
+HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
+HardwareFakes := $(addprefix ../lib/test/,${HardwareFakes})
 # ---add non-hardware libs here---
 lib_src := ${hw_lib_src} ReadWriteBits
 lib_build_src := $(addsuffix .o,${lib_src})
@@ -94,7 +96,7 @@ ${app_build_test} ${app_build_src} ${lib_build_src}
 build/test_runner.o: test/test_runner.c
 	${compiler} $(CFLAGS) -c $< -o $@
 # tests depend on fake hardware definitions
-${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/${HardwareFake} ../lib/test/HardwareFake.h
+${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${HardwareFakes}
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 ${app_build_src}: build/%.o: src/%.c src/%.h
@@ -105,7 +107,7 @@ ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 
 # Target `avr-target` ends up here:
-build/${board-name}.o: src/${board-name}.c src/${Hardware}
+build/${board-name}.o: src/${board-name}.c ${Hardware}
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 # build/${board-name}.elf: src/%.c ${app_build_src}
