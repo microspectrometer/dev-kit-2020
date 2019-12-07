@@ -1036,3 +1036,36 @@ build/SpiSlave.o: ../lib/src/SpiSlave.c ../lib/src/SpiSlave.h src/SpiSlave-Hardw
   ac:	21 9a       	sbi	0x04, 1	; 4
   ae:	08 95       	ret
 ```
+
+### new problem when trying with BiColorLed
+- vis-spi-out.c calls `BiColorLedOn(led_0)`
+- this is an inline function
+- so the compiler copies the source code to vis-spi-out.c
+- vis-spi-out.c used to include BiColorLed-Hardware.h
+- so it could translate the copied source code correctly
+- but after the *single compilation unit* fix, BiColorLed is
+  built with BiColorLed-Hardware.h
+- it's a hardware library
+- so it gets built with the hardware header
+- but now tow translation units are built with the same hardware
+  header
+- the hardware header defines values
+- the values are defined twice
+- just change all hardware values to macros and these problems go
+  away
+- no, it's not obvious how to make registers in libraries macros
+- I tried this on BiColorLed and it was a mess
+- so back to the hardware header multiple define problem
+- I can only include the hardware header once
+- otherwise the linker ends up with two objects files that each
+  claim to have the definitions for the registers and pins
+- I'm stuck with either:
+1. make function inline by putting it in lib .h,
+    - but then that hardware lib does not get built with the
+      hardware-header, and vis-spi-out does (because vis-spi-out
+      needs the hardware)
+2. put function in lib .c
+    - then lib is built with included hardware-header and
+      vis-spi-out is not built with this header
+- So a lib does 1 or 2. Not both. If one lib does both, I need to
+  split it into two libs.

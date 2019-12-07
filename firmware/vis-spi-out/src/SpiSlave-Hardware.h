@@ -1,6 +1,7 @@
 #ifndef _SPISLAVE_HARDWARE_H
 #define _SPISLAVE_HARDWARE_H
 #include <stdint.h>
+#include <avr/io.h> // includes iom328p.h for hardware i/o values
 #include "SpiSlave.h"
 
 spi_ptr Spi_ddr = &DDRB; // controls if pin is input or output

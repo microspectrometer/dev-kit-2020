@@ -1,6 +1,7 @@
 #ifndef _BICOLORLED_HARDWARE_H
 #define _BICOLORLED_HARDWARE_H
 #include <stdint.h>
+#include <avr/io.h> // includes iom328p.h for hardware i/o values
 #include "BiColorLed.h"
 
 bicolorled_ptr BiColorLed_ddr = &DDRC; // controls if pin is input or output
