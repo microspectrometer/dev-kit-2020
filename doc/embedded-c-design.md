@@ -46,12 +46,36 @@
         - and this means removing the include from the
           `Hardware.h` file
         - no, I did it with a simple `-include` flag
-    - [ ] add `ifeq endif`
+    - [x] add `ifeq endif`
         - see if you can make the SpiSlave.o build to the same
           location instead of having two separate build targets
         - can I get back to a clean division of libraries into
           space-separated lists without a rule for each library
-    - [ ] finish writing SpiSlaveInit
+        - yes
+        - there are three groups of libs now:
+        - hw_lib_src
+            - functions in this lib need hw defs
+            - functions are not inline
+            - so lib translation unit needs the hw def
+            - avr-gcc builds with -inline lib-Hardware.h
+        - inlhw_lib_src
+            - functions in this lib also need hw defs
+            - but functions are inline
+            - so lib translation unit does not need the hw def
+            - the main() file needs the hw def
+            - avr-gcc builds lib without -inline lib-Hardware.h
+            - main() file includes Hardware.h which includes the
+              lib-Hardware.h
+        - nonhw_lib_src
+            - functions in this lib do not need hw defs
+            - functions might be inline or not, whatever
+            - avr-gcc builds lib without -inline lib-Hardware.h
+            - main() file includes Hardware.h
+            - Hardware.h makes no mention of this lib
+    - [x] finish writing SpiSlaveInit
+    - [ ] add unit tests for SpiSlaveInit
+        - cli and sei build well with avr-gcc
+        - do these cause problems when unit testing?
     - [ ] split common Spi stuff from SpiSlave into a Spi lib
 
 # keyword const is required for avr-gcc optimal assembly 
