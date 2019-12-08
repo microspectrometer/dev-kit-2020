@@ -15,8 +15,16 @@ avr-target: build/${board-name}.elf build/${board-name}.lst
 # atmega328_lib has the .o and .a lib files and the spec file.
 atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
 #
+AvrHeaders := interrupt io
+AvrHeaders := $(addsuffix .h,${AvrHeaders})
+FakeAvrHeaders := ${AvrHeaders}
+AvrHeaders := $(addprefix avr/,${AvrHeaders})
+IncludeAvrHeaders := $(addprefix -include,${AvrHeaders})
+FakeAvrHeaders := $(addprefix ../test/FakeAvr/,${FakeAvrHeaders})
+IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
+
 #=====[ AVR Compiler and Linker flags ]=====
-CFLAGS_for_avr = -Isrc -I../lib/src \
+CFLAGS_for_avr = -Isrc -I../lib/src ${IncludeAvrHeaders} \
 -g -Wall -Wextra -pedantic -Winline -Wno-pointer-sign\
 -O3 -ffunction-sections -fdata-sections -fshort-enums \
 -mmcu=atmega328p
@@ -103,7 +111,7 @@ build/TestSuite-results.md: build/TestSuite.exe
 # ${app_build_test} ${app_build_src} ${lib_build_src} ../lib/build/SpiSlave.o
 # 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${app_build_test} ${app_build_src} ${nonhw_lib_build_src} ${hw_lib_build_src} ../lib/build/SpiSlave.o
+${app_build_test} ${app_build_src} ${nonhw_lib_build_src} ${hw_lib_build_src}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # translation units with tests must #include "unity.h" and "Mock.h"
@@ -130,7 +138,7 @@ ${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardw
 	${compiler} -include src/$*-Hardware.h $(CFLAGS) -c $< -o $@
 else
 ${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
-	${compiler} $(CFLAGS) -c $< -o $@
+	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
 endif
 # ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 # 	${compiler} $(CFLAGS) -c $< -o $@

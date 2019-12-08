@@ -1,5 +1,6 @@
 #include "SpiSlave.h"
-#include <avr/interrupt.h> // defines macros `sei()` and `cli()`
+// avr headers included by Makefile:
+// <avr/interrupt.h> defines macros `sei()` and `cli()`
 
 static uint8_t ReadSpiDataRegister(void) { return *Spi_spdr; }
 static uint8_t ReadSpiStatusRegister(void) { return *Spi_spsr; }

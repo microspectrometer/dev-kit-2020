@@ -41,3 +41,21 @@ void SpiSlaveInit_idles_DataReady_high(void)
         "Expect DataReady to idle high."
         );
 }
+void SpiSlaveInit_makes_Miso_an_output_pin(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_ddr = 0x00;
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Spi_Miso,
+        *Spi_ddr,
+        "Cannot run test: must start with ddr bit clear!"
+        );
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_Miso,
+        *Spi_ddr,
+        "Expect Miso to be an output."
+        );
+}

@@ -72,6 +72,37 @@
             - avr-gcc builds lib without -inline lib-Hardware.h
             - main() file includes Hardware.h
             - Hardware.h makes no mention of this lib
+    - [ ] fix avr header problem
+        - SpiSlave is a hardware lib
+        - it needs avr/interrupt.h
+        - avr-gcc knows where to find this file
+        - gcc does not know (and even if it did, we don't want to
+          use the real def)
+        - two ways to fix this:
+            1. -include avr/interrupt.h for avr-target only
+            2. macro:
+                - use ifdef conditional preprocessor in
+                  SpiSlave.c to select whether to include real
+                  avr/interrupt.h or fake version
+                - build rule adds a -Dmacro to define the macro
+                  to indicate test build or avr-gcc build
+        - option 2 is better to make clear to someone reading the
+          source code what's happening and which libs need which
+          avr headers, and it keeps the Makefile simple
+        - option 1 is simpler and keeps the source code cleaner
+          (is putting conditional includes in the source helpful
+          or just noise?)
+        - I went with option 1
+        - the Makefile for vis-spi-out shows how to do this
+        - but now I need the test/FakeAvrInclude/interrupt.h to
+          macro define the functions to stub out
+        - this should go in the ../lib/test folder
+        - ok, done
+        - I think this works in general
+        - I think I can use this with reg and pin values as well,
+          using the #define trick
+        - check out /home/Mike/chromation/dev-kit-mike/firmware/lib/test/FakeAvr/interrupt.h
+        - need to sleep, return here tomorrow
     - [x] finish writing SpiSlaveInit
     - [ ] add unit tests for SpiSlaveInit
         - cli and sei build well with avr-gcc

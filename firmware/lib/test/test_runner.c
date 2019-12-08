@@ -54,5 +54,6 @@ int main()
     ReadWriteBits(Nope);
     SpiSlave(Yep);
     RUN_TEST(SpiSlaveInit_idles_DataReady_high);
+    RUN_TEST(SpiSlaveInit_makes_Miso_an_output_pin);
     return UNITY_END();
 }
