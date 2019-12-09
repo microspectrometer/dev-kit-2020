@@ -118,9 +118,9 @@
 
 ## const example
 - example: `BiColorLedOn(led_0)` takes variable `led_0`
-- if `led_0` is not `const`, then avr-gcc does not know at compile
-  time if `led_0` will change value, so it does not know if it is OK
-  to use the `sbi` instruction
+- if `led_0` is not `const`, then avr-gcc does not know at
+  compile time if `led_0` will change value, so it does not know
+  if it is OK to use the `sbi` instruction
 
 ## const example details
 - here is the function definition showing the arg is `const`:
@@ -301,7 +301,7 @@ void example_function(void) {}
   9c:	08 95       	ret
 ```
 
-## avr-gcc outputs short assembly if all definitions are in headers
+# avr-gcc outputs short assembly if all definitions are in headers
 - the main file calls an inline function
 - the inline function is in a lib header
 - the inline function sets a bit in an io register
@@ -310,7 +310,7 @@ void example_function(void) {}
 - result: the main.c translation unit translates the inline call
   as an `sbi` instruction
 
-### details
+## details
 - this is the *easy* case where all definitions are in headers:
     - the inline function body is in a header
         - `lib/src/BiColorLed.h`
@@ -325,7 +325,7 @@ void example_function(void) {}
       information needed to pick the `sbi` instruction for
       `main.o`
 
-### example
+## example
 - here is the main file:
 
 ```c
@@ -580,6 +580,7 @@ ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
       spaces between them
 
 # Procedure To Make A New Lib
+# assume function *is* `inline`
 
 ## Add lib name to lib/Makefile
 - open `firmware/lib/Makefile`
@@ -675,6 +676,29 @@ void SpiSlavePlaceholder(void){}
     - and fail because the variables are undeclared
 - declare the registers and pins `extern` meaning the lib
   translation unit builds without defining these values
+
+## if lib reg and pin vals are extern how is assembly optimized?
+- `extern` registers and pins works for `inline` functions
+  because the main.c translation unit has the definitions
+- it does not matter that the lib.c translation unit is missing
+  definitions because main.o does not link with lib.o
+
+### details
+- main.elf
+    - main.c includes the lib header
+    - main.c includes definitions of registers and pins
+    - the main.c translation unit has the values to substitute
+      for register and pin variables used in the inline function
+      in lib.h
+    - the main.c translation unit does not have to compile with
+      symbols for linking with lib.o
+- TestSuite.exe
+    - the lib.c translation unit does not have the definitions
+    - but the linker does not need lib.o when building the .elf
+      from main.o
+    - lib.o is only used by the `test_runner` and for testing
+      purposes it does not matter if the lib translation unit has
+      the definitions
 
 ## test passes but that's not enough
 - now the build passes because the variables are defined
@@ -839,34 +863,299 @@ lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
 }
 ```
 
-## check translation
-
-### translation for `inline` body in the `.h`
+## check translation for `inline` body in the `.h`
 - translation to single instructions should be no problem if the
   function body is `inline` in the `.h`
 - if `avr-gcc` fails to use single instructions:
     - make sure the variables are `const`
 
-### translation for body in the `.c`
+# but if you decide not to `inline` the function
+- lib needs to build with:
+    - actual hardware definitions for avr
+    - fake definitions for unit-test
+- "single compilation unit" solution:
+    - build rule uses `-include` to include hardware headers for
+      avr builds
+
+## check translation when lib is used in avr-target
+- the procedure for making the lib is similar to `inline` version
+- obviously, drop the check for `inline`
+- still check translated assembly uses the correct instructions
+- for avr-target, the lib translation unit needs to know the reg
+  and pin values to compile with optimal assembly
+- for unit-tests, it's OK for the values to remain as symbols
+  undefined until linking
+
+## how are reg and pin variables and avr function macros defined?
+
+### avr-gcc lib-object rule uses -include for reg and pin variables
+- reg and pin variables are still declared extern
+- so how can `avr-gcc` possibly select the correct instructions?
+- the Makefile handles including the definitions in the
+  translation unit when compiling with `avr-gcc`
+- the `lib/Makefile` only uses `gcc` so it is not affected
+- the Makefiles that have builds for both `avr-gcc` and `gcc`
+  list the libs separately
+- this is to differentiate between two kinds of hardware libs:
+    - hardware libs that need the definitions
+        - without the definitions the compiler creates symbols
+          for the linker to resolve when linking to create the
+          `.elf`, which means the compiler cannot optimize the
+          instructions
+    - hardware libs that do not need the definitions
+        - all of the hardware dependencies are inside of `inline`
+          function bodies
+        - the lib object file is ignored when linking to create
+          the `.elf`
+        - the main.c translation unit includes the definitions
+          and it includes the lib header
+
+### gcc lib-object rule uses -include to fake avr function macros
+- avr function macros are macros defined in avr headers
+    - avr-gcc knows where these header files are
+    - gcc does not know where these header files are
+- an example is `avr/interrupt.h` which defines `cli()` and
+  `sei()`
+- since these are macros:
+    - when compiling with `avr-gcc`, the header can be included
+      in different translation units without the
+      multiple-definition problem that happens when the header
+      defines variables or functions
+    - when compiling with `gcc`, the macro function is easily
+      stubbed out by a `#define`
+
+### details: lib Makefile is not affected
+- the `lib/Makefile` is unaffected because it never uses
+  `avr-gcc`
+- in fact, all of its libs are compiled the same way
+- below we see all of the libs end up in the same list of lib
+  objects:
+    - `lib/build/lib.o`
+    - `lib/build/test_lib.o`
+- the only reason the libs are separated as hardware and
+  non-hardware is to generate a list of pre-requisites for the
+  hardware fakes
+    - `lib/test/lib-HardwareFake.h`
+- the lists of fakes and object files are defined:
+```make
+ # lib/Makefile
+ #
+ # ---add hardware libs here to create dependency on fakes---
+hw_lib_src := BiColorLed SpiSlave
+HardwareFakes := ${hw_lib_src}
+HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
+HardwareFakes := $(addprefix test/,${HardwareFakes})
+ # ---add non-hardware libs here---
+lib_src := ${hw_lib_src} ReadWriteBits
+lib_build_src := $(addsuffix .o,${lib_src})
+lib_build_src := $(addprefix build/,${lib_build_src})
+lib_build_test := $(addsuffix .o,${lib_src})
+lib_build_test := $(addprefix build/test_,${lib_build_test})
+```
+
+- the hardware fakes are pre-requisites for `test_runner.o`:
+
+```make
+ # lib/Makefile
+ #
+ # test_runner translation unit requires fake hardware definitions
+build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes}
+```
+
+- the lib-objects are all linked with `test_runner.o`:
+
+```make
+ # lib/Makefile
+ #
+build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_test} ${lib_build_src}
+```
+
+- and the lib-object build rule is the same for all libs:
+
+```make
+ # lib/Makefile
+${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
+	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
+```
+
+- the one unexplained bit is pre-requisitie `FakeAvrHeaders` and
+  compile flag `IncludeFakeAvrHeaders`
+- `IncludeFakeAvrHeaders` is a `-include` flag for each
+  fake of an avr header file
+    - these fake header files just contain stubs of function-like
+      macros defined in the avr headers
+    - the stubs effectively make `gcc` ignore the macros
+- `FakeAvrHeaders` is a list of fake AVR header names
+    - this is a pre-requisite to the lib object to make sure the
+      lib object is rebuilt if any fake avr header file is
+      updated or created
+
+### details: vis-spi-out Makefile is complicated
+
+#### libs separate into three lists
+- the `vis-spi-out/Makefile` is affected since it includes rules
+  for compiling with `avr-gcc`
+- there are three kinds of libs:
+    - `hw` (hardware) libs 
+    - `inlhw` (inline hardware) libs
+    - `nonhw` (non-hardware) libs
+
+#### `hw` and `inlhw` form a list for pre-requisites
+- `hw` libs and `inlhw` libs form a list of `-Hardware.h`
+  pre-requisites (`src/lib-Hardware.h`) for building the main
+  object file
+- `hw` libs and `inlhw` libs form a list of `-HardwareFake.h`
+   pre-requisites (`../lib/test/lib-HardwareFake.h`) for the test
+   object files
+
+#### `hw` lib-objects build rules depend on compiler
+
+#### `hw` build rules for avr-gcc
+- `hw` libs form a list of lib-objects with the build rule to
+  *include the hardware definition in the translation unit* when
+  compiling with `avr-gcc`:
+
+    - this is done with the flag `-include src/$*-Hardware.h`
+
+    ```make
+    ${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
+        ${compiler} -include src/$*-Hardware.h $(CFLAGS) -c $< -o $@
+    ```
+
+#### `hw` build rules for gcc
+- that same list of `hw` lib-objects does *not* include the
+  hardware definition when compiling with `gcc`, but does include
+  *fake AVR macro definitions*
+
+   - the `-include` flag for AVR and fake AVR macro definitions
+     is yet another list:
+
+    ```make
+    AvrHeaders := interrupt io
+    AvrHeaders := $(addsuffix .h,${AvrHeaders})
+    FakeAvrHeaders := ${AvrHeaders}
+    FakeAvrHeaders := $(addprefix ../test/FakeAvr/,${FakeAvrHeaders})
+    IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
+    ```
+
+    - and here is the build rule for `gcc` showing the fakes are
+      used:
+
+    ```make
+    ${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+        ${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
+    ```
+
+#### check compiler to resolve conflicting build rules
+- `make` does not allow conflicting rules for the same target
+- this is handled by checking which compiler is used, as shown
+  in the examples below
+
+#### `inlhw` and `nonhw` build rules do not depend on compiler
+- `inlhw` and `nonhw` libs form a list of lib-objects with the
+  same build rule
+
+    - group them into a list:
+
+    ```make
+    nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits
+    ```
+
+    - create the list of lib-ojects:
+
+    ```make
+    nonhw_lib_build_src := $(addsuffix .o,${nonhw_lib_src})
+    nonhw_lib_build_src := $(addprefix ../lib/build/,${nonhw_lib_build_src})
+    ```
+
+- here is the build rule:
+
+```make
+${nonhw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+```
+
+### examples from vis-spi-out Makefile
+- the example below shows how three libs, one for each type, form
+  the lists for pre-requisites and compiler-dependent build
+  rules
+- the examples also cover the three compiler cases:
+    - `avr-gcc` compiles libs for linking to make the `.elf`
+    - `gcc` compiles libs for linking to make the `TestSuite.exe`
+      for `vis-spi-out` unit-tests
+    - `gcc` compiles libs for linking to make the `TestSuite.exe`
+      for `lib` unit-tests
+
+#### three libs each representing a different case
+- `SpiSlave` has function definitions with hardware dependencies
+  and these functions are *not* inline
+- `BiColorLed` has has function definitions with hardware
+  dependencies but all of these functions are `inline`
+- `ReadWriteBits` does not have hardware dependencies
+    - it has inline functions
+    - these functions are not defined with hardware dependencies
+    - but these functions are usually called with hardware
+      dependencies as the input arguments
+    - in effect, these functions *do* have hardware dependencies
+      after inlining because the caller inlines the function with
+      the hardware dependencies
+
+```make
+ # vis-spi-out/Makefile
+ #
+ # ---add hardware libs here that do not put inline in .h---
+ #  avr-gcc builds these with hardware defs via -include lib-Hardware.h
+hw_lib_src := SpiSlave
+ # ---add hardware libs here that put inline in .h---
+ #  avr-gcc builds these libs without needing hardware defs
+inlhw_lib_src := BiColorLed
+ # ---add nonhardware libs here---
+nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits
+```
+
+#### when `avr-gcc` compiles `SpiSlave`
+
+#### when `avr-gcc` compiles `BiColorLed`
+
+#### when `avr-gcc` compiles `ReadWriteBits`
+
+#### when `gcc` compiles `SpiSlave` for unit-tests in `vis-spi-out`
+
+#### when `gcc` compiles `BiColorLed` for unit-tests in `vis-spi-out`
+
+#### when `gcc` compiles `ReadWriteBits` for unit-tests in `vis-spi-out`
+
+#### when `gcc` compiles `SpiSlave` for unit-tests in `lib`
+
+#### when `gcc` compiles `BiColorLed` for unit-tests in `lib`
+
+#### when `gcc` compiles `ReadWriteBits` for unit-tests in `lib`
+
+## why not make all lib functions `inline`
+- I don't know
+- it would certainly make this all a lot simpler
+
+## translation for body in the `.c`
 - function uses hardware but does not need to be `inline`
     - example `SpiSlaveInit` does not need to be `inline`
     - but the functions it calls should still be `inline`
     - and the instructions should translate to single
       instructions
 - `SpiSlaveInit` function body is in the `.c`
-- two options:
-    1. clever macros
-        - this is the technique for stubbing functions without
-          using function pointers
-    2. single compilation unit
-        - this avoids macros
-            - no -Dmacro in build recipe
-            - no `#ifdef` in lib source code
-        - just add `-include ` flag when building the hardware
-          libs for the avr-target
-            - use flag to include the -Hardware.h files
-            - do *not* include those files in the Hardware.h that
-              is included in the main.c translation unit
+
+### two options
+1. clever macros
+    - this is the technique for stubbing functions without
+      using function pointers
+2. single compilation unit
+    - this avoids macros
+        - no -Dmacro in build recipe
+        - no `#ifdef` in lib source code
+    - just add `-include ` flag when building the hardware
+      libs for the avr-target
+        - use flag to include the -Hardware.h files
+        - do *not* include those files in the Hardware.h that
+          is included in the main.c translation unit
 
 ### clever macros
 - make all hardware definitions macros
@@ -878,7 +1167,7 @@ lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
 - for simple case of single real/fake, build target defines a
   test macro with -Dmacro
 
-### single compilation unit
+### single compilation unit - first failed attempt
 - ~build for avr-target does *not* compile the
   `../lib/src/BlahLibName.c`~
 - ~instead, the libs build for the avr-target by compiling
@@ -886,16 +1175,128 @@ src/BlahLibName.c~
     - this file is a short .c with no code except #include
       statements to include the ../lib/src/BlahLibName.c, avr/io,
       and the src/BlahLibName-Hardware.h file
-
 - ...try that again...
-- build for avr-target is identical to build for unit-test
-  except:
-    - compile with flag `-include src/SpiSlave-Hardware.h`
-    - target is `build/SpiSlave.o` instead of
-      `../lib/build/SpiSlave.o`
-    - need to build for a different target or `make` complains
-      about overriding target
+
+## single compilation unit
+- let the build target handle which headers to include
+- target is still `../lib/build/SpiSlave.o`
+    - avoid `make` complaints about overriding target by putting
+      the build for `SpiSlave.o` in an if-else that checks if the
+      compiler is avr-gcc
+- build for avr-target and unit-test are similar except for the
+  `-include` flag
+- below I go through each case to show the `-include` flag
+
+### build for lib tests in `../lib/test`
+- two goals:
+    1. stub function-like macros from avr headers
+    2. include HardwareFake headers as pre-requisities for
+       `test_runner` object file but let `test_runner.c` include
+       the files if it needs them
+
+- so to unit-test a lib in `../lib/src`:
+
+1. compile each lib-object with flag `-include
+  ../test/FakeAvr/interrupt.h`
+    - now the lib compilation unit has stubbed definitions for
+      function-like macros like `cli()` and `sei()`
+    - if the lib does not use those macros, no harm done
+2. compile the `test_runner.o` object with `HardwareFakes` in the
+   pre-requisite list
+    - this is a convenience to force `make` to rebuild
+      `test_runner.o` after edits to a `HardwareFake` header
+
+- update the `lib/Makefile` to include fake avr macros:
+
+```make
+ # lib/Makefile
+ # 
+ # ---stub function-like macros in avr headers---
+AvrHeaders := interrupt io
+AvrHeaders := $(addsuffix .h,${AvrHeaders})
+FakeAvrHeaders := ${AvrHeaders}
+FakeAvrHeaders := $(addprefix test/FakeAvr/,${FakeAvrHeaders})
+IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
+```
+
+- use `-include` to include the stubs in the `lib` translation
+  units
+
+```make
+ # stub macros for lib translation units that include function-like avr macros
+${lib_build_src}: build/%.o: src/%.c src/%.h
+	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
+```
+
+- list `HardwareFakes` as a requirement but let `test_runner.c`
+  include the ones it needs (do not use a `-include` flag here)
+- similarly, list the `FakeAvrHeaders` as a requirement
+    - (so do not use the `-include` flag or `make` thinks it
+      needs a target named `-includetest/FakeAvr/blah`)
+
+```make
+ # test_runner translation unit requires fake hardware definitions exist
+build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes} ${FakeAvrHeaders}
+	${compiler} $(CFLAGS) -c $< -o $@
+```
+
+### there is no build for `../lib` tests in `vis-spi-out/test`
+- the `vis-spi-out` test suite does not test code in `../lib/src`
+- this code is already tested in `../lib/test/`
+
+### build for local lib tests in `vis-spi-out/test`
+- the `vis-spi-out` test suite tests libs that are local to
+  `vis-spi-out`
+- `vis-spi-out` has local libs because it is impossible to
+  test functions defined in the main() file
+    - I can test by copy-paste, but then I have no guarantee
+      the version in the test is the same version in the
+      main() file
+- so anything I want to test has to go in a separate file
+- lib `Example` is an example of such a local lib
+- it's a toy example, so I don't know yet which headers I
+  need to include via the `-include` flag
+- all I know so far is I want the tests to include:
+
+1. `../lib/test/{lib}-HardwareFake`
+    - these headers define fake values for the registers and
+      pins in any `../lib/src` libs that the test depends on
+2. `../test/FakeAvr/{avrmacros}.h`
+    - these headers stub the function-like macros from the
+      avr includes
+
+### build for avr-target includes -Hardware.h
+- compile with flag `-include src/SpiSlave-Hardware.h`
 - now the lib compilation unit has the hardware info
+
+### example build for local lib tests in `vis-spi-out/test`
+- make the list of local libs: `app_src`
+- create lists of object files for the tests: `app_build_test`
+- create lists of object files for the source: `app_build_src`
+
+```make
+ # vis-spi-out/Makefile
+ #
+app_src := Example
+app_test := $(addprefix test_,${app_src})
+app_build_test := $(addsuffix .o,${app_test})
+app_build_test := $(addprefix build/,${app_build_test})
+app_build_src := $(addsuffix .o,${app_src})
+app_build_src := $(addprefix build/,${app_build_src})
+```
+
+- define the rules for object files listed in `app_build_test`
+  and `app_build_src`
+
+```make
+ # vis-spi-out/Makefile
+ #
+${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${HardwareFakes} ${IncludeFakeAvrHeaders}
+	${compiler} $(CFLAGS) -c $< -o $@
+ #
+${app_build_src}: build/%.o: src/%.c src/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+```
 
 ### example translation for a single compilation unit
 

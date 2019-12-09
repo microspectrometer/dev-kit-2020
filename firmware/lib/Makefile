@@ -26,7 +26,12 @@ lib_build_src := $(addsuffix .o,${lib_src})
 lib_build_src := $(addprefix build/,${lib_build_src})
 lib_build_test := $(addsuffix .o,${lib_src})
 lib_build_test := $(addprefix build/test_,${lib_build_test})
-
+# ---stub function-like macros in avr headers---
+AvrHeaders := interrupt io
+AvrHeaders := $(addsuffix .h,${AvrHeaders})
+FakeAvrHeaders := ${AvrHeaders}
+FakeAvrHeaders := $(addprefix test/FakeAvr/,${FakeAvrHeaders})
+IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
 #=====[ Unit Test Compiler and Linker flags ]=====
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
 	-I${path_mock-c}include -I${path_unity} \
@@ -53,15 +58,15 @@ build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_test} ${lib_b
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # test translation units must #include "unity.h" and "Mock.h"
-# test_runner translation unit requires fake hardware definitions
-build/test_runner.o: test/test_runner.c  test/HardwareFake.h ${HardwareFakes}
+# test_runner translation unit requires fake hardware definitions exist
+build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes}
 	${compiler} $(CFLAGS) -c $< -o $@
 # test translation units do not depend on fake hardware definitions
 ${lib_build_test}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
-#
-${lib_build_src}: build/%.o: src/%.c src/%.h
-	${compiler} $(CFLAGS) -c $< -o $@
+# stub macros for lib translation units that include function-like avr macros
+${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
+	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
 
 # ;mca clean-all-builds
 # ;mct clean-TestSuite (to force a rebuild)

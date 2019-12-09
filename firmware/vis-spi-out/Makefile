@@ -118,7 +118,7 @@ ${app_build_test} ${app_build_src} ${nonhw_lib_build_src} ${hw_lib_build_src}
 build/test_runner.o: test/test_runner.c
 	${compiler} $(CFLAGS) -c $< -o $@
 # tests depend on fake hardware definitions
-${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${HardwareFakes}
+${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${HardwareFakes} ${IncludeFakeAvrHeaders}
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 ${app_build_src}: build/%.o: src/%.c src/%.h
