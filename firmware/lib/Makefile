@@ -34,6 +34,7 @@ FakeAvrHeaders := $(addprefix test/FakeAvr/,${FakeAvrHeaders})
 IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
 #=====[ Unit Test Compiler and Linker flags ]=====
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
+	-DSPISLAVE_FAKED \
 	-I${path_mock-c}include -I${path_unity} \
 	-Isrc -Itest \
 	-g -Wall -Wextra -pedantic -Winline
@@ -54,7 +55,7 @@ endif
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
-build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_test} ${lib_build_src}
+build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_test} ${lib_build_src} build/SpiSlave_faked.o
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # test translation units must #include "unity.h" and "Mock.h"
@@ -67,6 +68,9 @@ ${lib_build_test}: build/%.o: test/%.c test/%.h
 # stub macros for lib translation units that include function-like avr macros
 ${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
 	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
+# fake functions
+build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
 
 # ;mca clean-all-builds
 # ;mct clean-TestSuite (to force a rebuild)
@@ -80,3 +84,4 @@ clean-all-builds:
 	rm -f build/test_runner.o
 	rm -f ${lib_build_src}
 	rm -f ${lib_build_test}
+	rm -f build/SpiSlave_faked.o

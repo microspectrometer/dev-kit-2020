@@ -8,6 +8,9 @@ Mock_s *mock; // record calls/args to mocked-out libs
 // ---Define an empty setup/teardown for pointing to---
 void NothingToSetUp(void){}
 void NothingToTearDown(void){}
+/* ---Define a setup/teardown for writing call history--- */
+void SetUp_Mock(void) { mock = Mock_new(); }
+void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 
 // ---Lists of tests---
 #include "test_BiColorLed.h"
@@ -42,8 +45,12 @@ void SpiSlave(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
         RUN_TEST(SpiSlaveInit_makes_DataReady_an_output_pin);
+        RUN_TEST(SpiSlaveInit_idles_DataReady_high);
+        RUN_TEST(SpiSlaveInit_makes_Miso_an_output_pin);
+        RUN_TEST(SpiSlaveInit_enables_SPI);
+        RUN_TEST(SpiSlaveInit_enables_SPI_interrupt);
     }
 }
 
@@ -53,9 +60,6 @@ int main()
     BiColorLed(Nope);
     ReadWriteBits(Nope);
     SpiSlave(Yep);
-    RUN_TEST(SpiSlaveInit_idles_DataReady_high);
-    RUN_TEST(SpiSlaveInit_makes_Miso_an_output_pin);
-    RUN_TEST(SpiSlaveInit_enables_SPI);
-    RUN_TEST(SpiSlaveInit_enables_SPI_interrupt);
+    setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

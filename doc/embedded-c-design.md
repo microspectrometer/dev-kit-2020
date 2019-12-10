@@ -109,8 +109,17 @@
         - do these cause problems when unit testing?
         - yes
         - so I stub them to ignore them in testing
-        - how do I test that a lib .c function calls a static
-          function?
+    - how do I test that a lib .c function calls a static
+      function?
+        - everything was going great with setting this up
+        - but I can't figure out why `AssertCall` is returning
+          `false` when it should *clearly* be returning true
+        - come back to this by inserting print statements all
+          the fuck over `AssertCall`, rebuilding, and remaking
+          the tests to find out where things are fucking up
+        - OK, I still don't know why it failed
+        - but I fixed it by replacing the `==` comparison with a
+          `g_strcmp0` comparison
     - [ ] split common Spi stuff from SpiSlave into a Spi lib
 
 # keyword const is required for avr-gcc optimal assembly 
@@ -1554,3 +1563,219 @@ build/SpiSlave.o: ../lib/src/SpiSlave.c ../lib/src/SpiSlave.h src/SpiSlave-Hardw
 - if one lib has some functions that need to be inline and some
   functions that need to be *not* inline, then split it into two
   libs
+
+# unit test libs using -DMacro to define fakes
+
+## concept
+- want to test `InitSpiSlave` in lib `SpiSlave`
+    - most functionality is encapsulated in a one-liner that
+      manipulates a bit in a hardware register
+    - just check the hardware register
+- but there is too much stuff in the function `EnableSpiInterrupt`
+    - so I only want to check the function calls
+      `EnableSpiInterrupt`
+    - I don't want to check all the hardware registers it
+      manipulates, or test whether it calls avr function-like
+      macros
+- I'll make smaller tests for the functions inside
+  `EnableSpiInterrupt`
+
+## details
+- add to `lib/Makefile`:
+    - CFLAGS: `-DSPISLAVE_FAKED`
+    - TestSuite.exe links against `build/SpiSlave_faked.o`
+    - add target:
+        - `build/SpiSlave_faked.o`
+    - target pre-requisites:
+        - `test/SpiSlave_faked.c`
+        - `test/SpiSlave_faked.h`
+    - target command:
+        - compile `test/SpiSlave_faked.c`
+        - output `build/SpiSlave_faked.o`
+- create `faked` files:
+    - `lib/test/SpiSlave_faked.h`
+    - `lib/test/SpiSlave_faked.c`
+
+## example `SpiSlave_faked.h`
+
+```c
+// test/SpiSlave_faked.h
+//
+#ifndef _SPISLAVE_FAKED_H
+#define _SPISLAVE_FAKED_H
+
+#ifdef SPISLAVE_FAKED
+#define EnableSpiInterrupt EnableSpiInterrupt_fake
+#endif
+
+#endif // _SPISLAVE_FAKED_H
+```
+
+## example `SpiSlave_faked.c`
+
+- if the fake is just a stub, it's a simple empty function
+- but if I am testing that the function is called, I need the
+  fake to record itself
+- that's what "mock" is for
+- I used to put this mock stuff in its own file `mock_SpiSlave`
+- then I switched to putting it in the `test_SpiSlave` file
+- now it conveniently sits in this `SpiSlave_faked` file
+- here is the simple example of faking a function that takes no
+  arguments and returns nothing
+
+```c
+// test/SpiSlave_faked.c
+//
+#include "Mock.h" // record call history in "mock"
+/* =====[ Mock EnableSpiInterrupt() ]===== */
+static RecordedCall * Record_EnableSpiInterrupt(void)
+{ // Define call recorded when func-under-test calls mocked function.
+    char const *call_name = "EnableSpiInterrupt";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void EnableSpiInterrupt_fake(void)
+{
+    RecordActualCall(mock, Record_EnableSpiInterrupt());
+}
+```
+
+- by including "Mock.h", the `SpiSlave_faked.c` file is declaring
+  the "mock" as an `extern` (a global defined in another
+  translation unit) of type `Mock_s`
+- so I am free to use "mock" all I want in this file and the
+  linker will resolve it's actual memory location later
+- in fact, "mock" is on the heap, so the `test_runner` is
+  creating and destroying "mock" for each test where "mock" is
+  used
+
+## example `SpiSlave.c`
+
+- include `SpiSlave_faked.h` *before* including `SpiSlave.h`
+    - if any faked functions are mentioned in the header, this
+      appends their names with `_fake` in the header too
+- put the include for `_faked` inside `#ifdef`
+    - this way the Makefile for the avr-target can ignore the
+      fact that the unit-test target needs this `_faked` header
+    - otherwise avr-gcc complains it cannot find file
+      `SpiSlave_faked.h`
+    - I thought the preprocessor would ignore this `#include`
+      because the targets built with avr-gcc do not include the
+      `-DSPISLAVE_FAKED` in its CFLAGS, but unfortunately that is
+      not the case
+
+```c
+// src/SpiSlave.c
+//
+#ifdef SPISLAVE_FAKED
+#include "SpiSlave_faked.h"
+#endif
+#include "SpiSlave.h"
+```
+
+- define EnableSpiInterrupt using `#ifndef` to select the `real`
+  version if the macro `SPISLAVE_FAKED` is not defined by the
+  CFLAGS in the `lib/Makefile`
+
+```c
+// src/SpiSlave.c
+//
+#ifndef SPISLAVE_FAKED
+static void EnableSpiInterrupt(void)
+{
+    cli(); // cli
+    ReadSpiStatusRegister(); // in	r24, 0x2d
+    ReadSpiDataRegister(); // in	r24, 0x2e
+    SetBit(Spi_spcr, Spi_InterruptEnable);
+    sei(); // sei
+}
+#else
+void EnableSpiInterrupt(void);
+#endif
+```
+
+- building the unit-tests results in the `_fake` version of the
+  function being called
+- this means the `static` functions called by the real function
+  are not used
+- this triggers the `-Wunused-function` warning
+- eliminate this nuisance warning by making the `static`
+  functions `static inline` functions
+
+```c
+// src/SpiSlave.c
+//
+// ---Private Functions---
+static inline uint8_t ReadSpiDataRegister(void) { return *Spi_spdr; }
+static inline uint8_t ReadSpiStatusRegister(void) { return *Spi_spsr; }
+static void EnableSpiModule(void) { SetBit(Spi_spcr, Spi_Enable); }
+```
+
+- `EnableSpiInterrupt` is the only function that calls
+  `ReadSpiDataRegister` and `ReadSpiStatusRegister`, so I made
+  those `inline` to kill the warning
+- `EnableSpiModule` is called whether or not I fake
+  `EnableSpiInterrupt`, so there is no reason to make it `inline`
+- in this instance, `inline` has no impact other than to suppress
+  the `-Wunused-function` warning
+
+## example: `test_SpiSlave.c`
+
+- the test translation unit does not know about the
+  `SpiSlave_faked.h` file
+- as far any test knows, `SpiSlaveInit` calls
+  `EnableSpiInterrupt`
+- in reality:
+    - `SpiSlave_faked.h` renames the function
+      `EnableSpiInterrupt_fake`
+    - `SpiSlave_faked.c` defines the `_fake` version to record
+      call name `EnableSpiInterrupt` in the call history
+- the test includes `Mock.h` because the "mock" object is needed
+  to record and play back the call history
+
+```c
+#include "unity.h"
+#include "test_SpiSlave.h"
+#include "SpiSlave.h"
+#include "Mock.h" // record call history in "mock"
+```
+
+- simple hardware tests do not need to look at the "mock" object:
+
+```c
+void SpiSlaveInit_enables_SPI(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_spcr = 0x00;
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Spi_Enable,
+        *Spi_spcr,
+        "Cannot run test: must start with bit clear!"
+        );
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_Enable,
+        *Spi_spcr,
+        "Expect bit 6 HIGH to enable SPI module."
+        );
+}
+```
+
+- but "mock" is used when testing if `SpiSlaveInit` calls `EnableSpiInterrupt`
+
+```c
+void SpiSlaveInit_enables_SPI_interrupt(void)
+{
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Test ]===== */
+    /* PrintAllCalls(mock); */
+    uint16_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "EnableSpiInterrupt"),
+        "Expect SpiSlaveInit enables the SPI interrupt."
+        );
+}
+```

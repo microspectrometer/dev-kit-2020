@@ -19,7 +19,7 @@ void setup(void)
     BiColorLedOn(led_1); // sbi	0x07, 1
     BiColorLedGreen(led_0); // cbi	0x08, 0
     BiColorLedGreen(led_1); // cbi	0x08, 1
-    SpiSlaveInit();
+    SpiSlaveInit(); // call	0xaa	; 0xaa <SpiSlaveInit>
 }
 void loop(void)
 {

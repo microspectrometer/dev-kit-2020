@@ -1,6 +1,7 @@
 #include "unity.h"
 #include "test_SpiSlave.h"
 #include "SpiSlave.h"
+#include "Mock.h" // record call history in "mock"
 
 void SpiSlaveInit_makes_DataReady_an_output_pin(void)
 {
@@ -79,5 +80,14 @@ void SpiSlaveInit_enables_SPI(void)
 }
 void SpiSlaveInit_enables_SPI_interrupt(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Test ]===== */
+    /* PrintAllCalls(mock); */
+    // check SpiSlaveInit calls `EnableSpiInterrupt`
+    uint16_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "EnableSpiInterrupt"),
+        "Expect SpiSlaveInit enables the SPI interrupt."
+        );
 }
