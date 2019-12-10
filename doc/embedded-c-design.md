@@ -72,7 +72,7 @@
             - avr-gcc builds lib without -inline lib-Hardware.h
             - main() file includes Hardware.h
             - Hardware.h makes no mention of this lib
-    - [ ] fix avr header problem
+    - [x] fix avr header problem
         - SpiSlave is a hardware lib
         - it needs avr/interrupt.h
         - avr-gcc knows where to find this file
@@ -107,6 +107,10 @@
     - [ ] add unit tests for SpiSlaveInit
         - cli and sei build well with avr-gcc
         - do these cause problems when unit testing?
+        - yes
+        - so I stub them to ignore them in testing
+        - how do I test that a lib .c function calls a static
+          function?
     - [ ] split common Spi stuff from SpiSlave into a Spi lib
 
 # keyword const is required for avr-gcc optimal assembly 
@@ -1493,7 +1497,8 @@ build/SpiSlave.o: ../lib/src/SpiSlave.c ../lib/src/SpiSlave.h src/SpiSlave-Hardw
   ae:	08 95       	ret
 ```
 
-### new problem when trying with BiColorLed
+## new problem when building BiColorLed.o like SpiSlave.o
+### hardware values are defined twice
 - vis-spi-out.c calls `BiColorLedOn(led_0)`
 - this is an inline function
 - so the compiler copies the source code to vis-spi-out.c
@@ -1503,25 +1508,49 @@ build/SpiSlave.o: ../lib/src/SpiSlave.c ../lib/src/SpiSlave.h src/SpiSlave-Hardw
   built with BiColorLed-Hardware.h
 - it's a hardware library
 - so it gets built with the hardware header
-- but now tow translation units are built with the same hardware
+- but now two translation units are built with the same hardware
   header
 - the hardware header defines values
 - the values are defined twice
-- just change all hardware values to macros and these problems go
-  away
-- no, it's not obvious how to make registers in libraries macros
-- I tried this on BiColorLed and it was a mess
-- so back to the hardware header multiple define problem
-- I can only include the hardware header once
-- otherwise the linker ends up with two objects files that each
-  claim to have the definitions for the registers and pins
-- I'm stuck with either:
-1. make function inline by putting it in lib .h,
-    - but then that hardware lib does not get built with the
-      hardware-header, and vis-spi-out does (because vis-spi-out
-      needs the hardware)
-2. put function in lib .c
-    - then lib is built with included hardware-header and
-      vis-spi-out is not built with this header
-- So a lib does 1 or 2. Not both. If one lib does both, I need to
-  split it into two libs.
+
+### use macros instead of variables? no
+- I tried changing all hardware values in BiColorLed to macros
+  and it was a mess
+- but it's not obvious how to make registers in libraries macros
+
+### a hardware definition is owned by one and only one unit
+- I am back to the hardware header multiple define problem
+    - I can only include the hardware header once
+    - otherwise the linker ends up with two objects files that
+      each claim to have the definitions for the registers and
+      pins
+- takeaway:
+    - a single executable must never have more than one
+      translation unit that needs the hardware definitions
+- right now I have two units that need it, but BiColorLed.o does
+  not *really* need it, I was just copying how I built SpiSlave.o
+- vis-spi-out.o is the only object file that *really* needs the
+  hardware definitions
+- if I make the function inline by putting it in lib .h, I can
+  make the variables extern in the lib .h and that hardware lib
+  does not get built with the hardware-header
+- vis-spi-out.o is built with the hardware header
+- but if I put the function body in lib .c
+- then the lib must be built with the hardware-header included,
+  otherwise the object file will not have optimal code
+- and that means vis-spi-out.o *cannot* be built with the
+  hardware-header (or I have a multiple definition error)
+
+### split a lib in two if it needs both inline and not inline
+- the two options for a hardware lib are:
+    - define lib with inline function bodies in the header and
+      build the lib object file without including the hardware
+      header (the translation unit that calls the inline
+      functions is the unit that gets to include the hardware
+      header), example: BiColorLed.o
+    - or define lib without inline functions bodies in the header
+      and build the lib object file with the hardware header
+      included, example: SpiSlave.o
+- if one lib has some functions that need to be inline and some
+  functions that need to be *not* inline, then split it into two
+  libs

@@ -59,3 +59,25 @@ void SpiSlaveInit_makes_Miso_an_output_pin(void)
         "Expect Miso to be an output."
         );
 }
+void SpiSlaveInit_enables_SPI(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_spcr = 0x00;
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Spi_Enable,
+        *Spi_spcr,
+        "Cannot run test: must start with bit clear!"
+        );
+    /* =====[ Operate ]===== */
+    SpiSlaveInit();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_Enable,
+        *Spi_spcr,
+        "Expect bit 6 HIGH to enable SPI module."
+        );
+}
+void SpiSlaveInit_enables_SPI_interrupt(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}
