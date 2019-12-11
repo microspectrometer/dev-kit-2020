@@ -276,6 +276,286 @@ text|   data|    bss|    dec|    hex|filename
 
 ## unit-test `QueueInit`
 - [ ] leave off here
+    - do not try to optimize QueueInit
+    - just add test coverage to it
+
+### create test suite
+
+- create a function that runs all tests of the `Queue` lib
+
+```c
+// test/test_runner.c
+// 
+void Queue(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(test_QueueInit_sets_buffer_length);
+    }
+}
+```
+
+- include `test_Queue.h` to declare the test names
+
+```c
+// test/test_runner.c
+// 
+// ---Lists of tests---
+#include "test_BiColorLed.h"
+#include "test_ReadWriteBits.h"
+#include "test_SpiSlave.h"
+#include "test_Queue.h"
+```
+
+## troubleshoot seg fault when running TestSuite.exe
+
+- run gdb
+
+```bash
+$ cd chromation/dev-kit-mike/firmware/lib/build
+$ gdb -q TestSuite.exe
+```
+
+- find the code causing the segfault:
+    - run the code
+    - list the code where it crashes
+
+```gdb
+(gdb) r
+(gdb) list
+```
+
+- as expected, `QueueInit` is causing problems
+- set a breakpoint at the function that is causing trouble
+
+```gdb
+(gdb) b QueueInit
+```
+
+- view source and assembly in split view while entering commands
+- run to the breakpoint
+
+```gdb
+(gdb) layout split
+(gdb) r
+```
+
+- the code is
+
+```c
+volatile Queue_s * pq = &Queue;
+```
+
+- the assembly is
+
+```asm
+<QueueInit+18>      lea    -0x44e7(%rip),%rax
+```
+
+- instruction `lea` is Load Effective Address
+- `lea` loads the effective address of %rax into %rip
+- what value is in %rax?
+
+```gdb
+(gdb) info registers rax
+rax            0x5      5
+```
+
+- compare this with the working version of `TestSuite.exe` from
+  the ref-dev-kit-mike folder
+- the surrounding code is identical
+- the only difference is the first line of code in the function (where the breakpoint is set)
+
+```asm
+<QueueInit+18>      lea    0x1c3a7(%rip),%rax
+```
+
+- what value is in %rax?
+
+```gdb
+(gdb) info registers rax
+rax            0x5      5
+```
+
+- so `rax` has the same value as before
+- and `rip` seems like it is just the instruction address
+
+- and the only difference between the two is the hex value
+- in the bad version the value is -0x44e7
+- in the good version the value is 0x1c3a7
+
+- step each program one instruction with `s` and look at the
+  values of `rax` again:
+
+```gdb
+(gdb) s
+```
+- good program:
+```gdb
+rax            0x1004213c0      4299297728
+```
+- bad program:
+```gdb
+rax            0x1004012a2      4299166370
+```
+
+- both programs are still running!
+- so setting `pq = &Queue` was *not* the problem
+- `Queue` becomes a problem the moment I try to write to its
+  memory
+- next line of code is
+
+```
+pq->buffer = pqmem;
+```
+
+- step again: `s`
+- this is the line that causes the seg fault
+
+- `pqmem` is the first arg passed to `QueueInit`
+- here is the declaration:
+```c
+volatile Queue_s * QueueInit(
+    volatile uint8_t * buffer, // SPI FIFO Rx Buffer
+    uint16_t const size_of_buffer_in_bytes // Max length of Spi Rx Queue
+    );
+```
+- `pqmem` is the address of the buffer created by the caller
+- `pq` is a pointer to the `Queue_s` named `Queue`
+    - the `Queue` is allocated in `Queue.o`
+- `pq->buffer` is the value of element `buffer` in the struct
+  `pq` points to
+- the `buffer` element is a pointer to a byte:
+
+```c
+struct Queue_s {
+    volatile uint8_t * buffer; // address of SPI FIFO Rx Buffer
+    volatile uint8_t head; // index buffer at head for Push
+    volatile uint8_t tail; // index buffer at tail for Pop
+    volatile uint16_t length; // number of bytes waiting to be read
+    volatile uint16_t max_length; // maximum number of bytes the queue can hold
+};
+```
+- good program:
+```gdb
+(gdb) p pq
+$2 = (volatile Queue_s *) 0x1004213c0 <Queue>
+(gdb) p pq->buffer
+$3 = (volatile uint8_t *) 0xffffcb19 "\221\022\200\001"
+(gdb) p *pqmem
+$4 = 145 '\221'
+(gdb) p *(pq->buffer)
+$5 = 145 '\221'
+```
+- bad program:
+```gdb
+(gdb) p pq
+$1 = (volatile Queue_s *) 0x1004012a2 <Queue>
+(gdb) p pq->buffer
+$2 = (volatile uint8_t *) 0x20ec8348e5894855 <error: Cannot access memory at address 0x20ec8348e5894855>
+(gdb) p *pqmem
+$3 = 145 '\221'
+(gdb) p *(pq->buffer)
+Cannot access memory at address 0x20ec8348e5894855
+(gdb)
+```
+
+- the arg, `pqmem`, is the same in both programs
+- so `pq->buffer` becomes an invalid memory address
+- why?
+- well, `pq` is a pointer to `Queue`
+- `Queue` is defined in `Queue.o`
+- look at value of `Queue`:
+- good program:
+```gdb
+(gdb) p Queue
+$6 = {buffer = 0xffffcb19 "\221\022\200\001", head = 0 '\000',
+  tail = 0 '\000', length = 0, max_length = 0}
+```
+- bad program:
+```gdb
+(gdb) p Queue
+$4 = {
+  buffer = 0x20ec8348e5894855 <error: Cannot access memory at address 0x20ec8348e5894855>, head = 137 '\211', tail = 200 '\310',
+  length = 17800, max_length = 32784}
+```
+
+- this is *really* weird
+- according to the good program, `Queue` should have 0 `length`
+  and 0 `max_length` because those values are not assigned yet
+  (assigning `max_length` is the next line of source code)
+- but somehow the bad program has huge values for these two
+  variables
+
+- the problem is how `Queue` is allocated
+- look at `Queue` before execution even starts:
+- good program
+```gdb
+$ gdb -q TestSuite.exe
+Reading symbols from TestSuite.exe...done.
+(gdb) p Queue
+$1 = {buffer = 0x0, head = 0 '\000', tail = 0 '\000', length = 0,
+  max_length = 0}
+```
+- bad program
+```gdb
+$ gdb -q TestSuite.exe
+Reading symbols from TestSuite.exe...done.
+(gdb) p Queue
+$1 = {void (_Bool)} 0x1004012a2 <Queue>
+```
+- how is the bad program getting the wrong definition of `Queue`?
+- ah fuck -- I named a test suite `Queue`
+```c
+void Queue(bool run_test)
+{
+    // ...
+}
+```
+
+- the names are conflicting
+- how did the compiler not catch that with an error or warning of
+  some sort!
+- fix: rename all test suites with suffix `_tests` to prevent
+  this kind of namespace problem from happening again
+- example:
+
+```c
+void Queue_tests(bool run_test)
+```
+
+## Queue abstract data type makes testing boot-strappish
+
+### need QueueLength and QueuePush to test QueueInit
+- Queue is an abstract data type
+- that means I cannot access members of Queue struct without
+  a Queue method
+- so I cannot manually put data in the Queue, I have to
+  QueuePush
+- and I cannot check Queue contents or Queue length, I need
+  QueuePop and QueueLength
+
+### need QueueInit to test QueuePush, QueuePop, QueueLength
+- these methods operate on a Queue
+- I need to initialize a Queue first
+
+### start with empty tests
+- use test names to list functionality
+- create empty tests like this:
+
+```c
+void QueueInit_assigns_input_buffer_as_Queue_buffer(void)
+{ TEST_PASS(); }
+void QueueInit_size_input_is_the_maximum_Queue_length(void)
+{ TEST_PASS(); }
+void QueueInit_initializes_Queue_with_length_0(void)
+{ TEST_PASS(); }
+```
+
+- the first two will probably remain empty
+- but when I have `QueueLength` I can check for `length_0`
+
 
 # keyword const is required for avr-gcc optimal assembly 
 - avr-gcc needs a `const` variable passed to a function to use the

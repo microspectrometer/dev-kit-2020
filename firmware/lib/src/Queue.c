@@ -1,3 +1,4 @@
+/** \file */
 #include "Queue.h"
 // Define a Queue struct for accessing the SPI FIFO Rx Buffer.
 struct Queue_s {
@@ -12,11 +13,13 @@ volatile Queue_s Queue;
 // ---API---
 volatile Queue_s * QueueInit(volatile uint8_t * pqmem, uint16_t const mem_size)
 {
-    /** Initialize the global Queue:\n 
-     * - use array `spi_rx_buffer` as the queue's buffer\n 
-     * - `size_of_spi_rx_buffer_in_bytes` is the max length of the queue in bytes\n 
-     * - empty the queue\n 
-     * */
+    /** QueueInit behavior:\n 
+      * - returns a pointer to a Queue struct\n 
+      * - memory for Queue struct is allocated in Queue object file\n 
+      * - assigns input buffer as Queue buffer\n 
+      * - size input is the maximum Queue length\n 
+      * - initializes Queue with length 0\n 
+      * */
     // Create a pointer to the global Queue.
     volatile Queue_s * pq = &Queue;
     // Assign Queue to access the array

@@ -55,7 +55,7 @@ endif
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
-build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_test} ${lib_build_src} build/SpiSlave_faked.o
+build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_src} ${lib_build_test} build/SpiSlave_faked.o
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # test translation units must #include "unity.h" and "Mock.h"
