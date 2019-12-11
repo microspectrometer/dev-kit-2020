@@ -118,7 +118,7 @@ void QueueLength_does_not_decrease_below_zero(void)
     // Assert Queue length is still 0
     TEST_ASSERT_EQUAL_UINT16(0, QueueLength(SpiFifo));
 }
-void QueuePush_writes_to_byte_to_Queue_buffer(void)
+void QueuePush_writes_byte_to_Queue_buffer(void)
 {
     /* =====[ Setup ]===== */
     volatile uint8_t spi_rx_buffer[max_length_of_queue];
@@ -127,4 +127,76 @@ void QueuePush_writes_to_byte_to_Queue_buffer(void)
     QueuePush(SpiFifo, 0xAB);
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_UINT8(0xAB, spi_rx_buffer[0]);
+}
+void QueuePush_writes_next_byte_to_address_after_previous_write(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    /* =====[ Operate ]===== */
+    QueuePush(SpiFifo, 0xAB);
+    QueuePush(SpiFifo, 0xCD);
+    TEST_ASSERT_EQUAL_UINT8(0xAB, spi_rx_buffer[0]);
+    TEST_ASSERT_EQUAL_UINT8(0xCD, spi_rx_buffer[1]);
+}
+void QueuePush_does_not_write_byte_if_Queue_is_full(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // Fill the queue
+    uint8_t bytes_pushed=0;
+    while(bytes_pushed < max_length_of_queue)
+    {
+        QueuePush(SpiFifo, 0xCD);
+        bytes_pushed++;
+    }
+    // Assert the Length is at its max value.
+    TEST_ASSERT_EQUAL_UINT16(max_length_of_queue, QueueLength(SpiFifo));
+    /* =====[ Operate ]===== */
+    // Try another push.
+    QueuePush(SpiFifo, 0xEF);
+    /* =====[ Test ]===== */
+    // Assert no values were overwritten.
+    bytes_pushed=0;
+    while(bytes_pushed < max_length_of_queue)
+    {
+        TEST_ASSERT_EQUAL_UINT8(0xCD, spi_rx_buffer[0]);
+        bytes_pushed++;
+    }
+}
+void QueuePush_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_full(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // Fill the queue
+    uint8_t bytes_pushed=0;
+    while(bytes_pushed < max_length_of_queue)
+    {
+        QueuePush(SpiFifo, 0xCD);
+        bytes_pushed++;
+    }
+    // Assert the Queue is full
+    TEST_ASSERT_TRUE(QueueIsFull(SpiFifo));
+    // Assert the head is pointing at the last byte index in the Queue.
+    TEST_ASSERT_EQUAL_UINT16(max_length_of_queue, QueueLength(SpiFifo));
+    // Empty the queue
+    uint8_t bytes_popped=0;
+    while(bytes_popped < max_length_of_queue)
+    {
+        QueuePop(SpiFifo);
+        bytes_popped++;
+    }
+    // Assert the Queue is empty.
+    TEST_ASSERT_TRUE(QueueIsEmpty(SpiFifo));
+    /* =====[ Operate ]===== */
+    // Put more data on the Queue. `head` should wrap around.
+    QueuePush(SpiFifo, 33);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_MESSAGE(
+        33, spi_rx_buffer[0],
+        "Failed to overwrite byte 0! "
+        "Head should wrap around when it reaches the end of the array."
+        );
 }

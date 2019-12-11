@@ -89,15 +89,18 @@ void Run_QueuePush_tests(bool run_test)
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(QueuePush_writes_to_byte_to_Queue_buffer);
+        RUN_TEST(QueuePush_writes_byte_to_Queue_buffer);
+        RUN_TEST(QueuePush_writes_next_byte_to_address_after_previous_write);
+        RUN_TEST(QueuePush_does_not_write_byte_if_Queue_is_full);
+        RUN_TEST(QueuePush_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_full);
     }
 }
 void Queue_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_QueueInit_tests(Nope);
-        Run_QueueLength_tests(Nope);
+        Run_QueueInit_tests(Yep);
+        Run_QueueLength_tests(Yep);
         Run_QueuePush_tests(Yep);
     }
 }

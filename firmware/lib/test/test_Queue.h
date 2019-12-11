@@ -13,6 +13,9 @@ void QueueLength_increments_after_a_push(void);
 void QueueLength_does_not_increase_beyond_max_length(void);
 void QueueLength_decrements_after_a_pop(void);
 void QueueLength_does_not_decrease_below_zero(void);
-void QueuePush_writes_to_byte_to_Queue_buffer(void);
+void QueuePush_writes_byte_to_Queue_buffer(void);
+void QueuePush_writes_next_byte_to_address_after_previous_write(void);
+void QueuePush_does_not_write_byte_if_Queue_is_full(void);
+void QueuePush_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_full(void);
 
 #endif // _TEST_QUEUE_H

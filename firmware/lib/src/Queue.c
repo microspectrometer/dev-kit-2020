@@ -11,7 +11,10 @@ struct Queue_s {
 // Define Queue and allocate static memory.
 volatile Queue_s Queue;
 // ---API---
-volatile Queue_s * QueueInit(volatile uint8_t * buffer, uint16_t const buffer_size_in_bytes)
+volatile Queue_s * QueueInit(
+    volatile uint8_t * buffer,
+    uint16_t const buffer_size_in_bytes
+    )
 { //! Return a pointer to the global Queue
     /** QueueInit behavior:\n 
       * - returns a pointer to a Queue struct\n 
@@ -44,8 +47,17 @@ uint16_t QueueLength(volatile Queue_s * pq)
 
     return pq->length;
 }
-void QueuePush(volatile Queue_s * pq, uint8_t data)
-{ // Push data onto the Queue
+void QueuePush(
+    volatile Queue_s * pq,
+    uint8_t data
+    )
+{ //! Push data onto the Queue
+    /** QueuePush behavior:\n 
+      * - writes byte to Queue buffer\n 
+      * - writes next byte to address after previous write\n 
+      * - does not write byte if Queue is full\n 
+      * - hits end of buffer and wraps around if Queue is not full\n 
+      * */
     if (QueueIsFull(pq)) return;
     // wrap head to beginning of buffer when it reaches the end of the buffer
     if (pq->head >= pq->max_length) pq->head = 0;
