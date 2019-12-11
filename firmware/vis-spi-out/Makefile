@@ -20,7 +20,7 @@ AvrHeaders := $(addsuffix .h,${AvrHeaders})
 FakeAvrHeaders := ${AvrHeaders}
 AvrHeaders := $(addprefix avr/,${AvrHeaders})
 IncludeAvrHeaders := $(addprefix -include,${AvrHeaders})
-FakeAvrHeaders := $(addprefix ../test/FakeAvr/,${FakeAvrHeaders})
+FakeAvrHeaders := $(addprefix ../lib/test/FakeAvr/,${FakeAvrHeaders})
 IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
 
 #=====[ AVR Compiler and Linker flags ]=====
@@ -59,7 +59,7 @@ hw_lib_src := SpiSlave
 #  avr-gcc builds these libs without needing hardware defs
 inlhw_lib_src := BiColorLed
 # ---add nonhardware libs here---
-nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits
+nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits Queue
 # hardware libs add hardware file pre-requisites to the rule
 Hardware := ${hw_lib_src} ${inlhw_lib_src}
 HardwareFakes := ${Hardware}
@@ -118,7 +118,7 @@ ${app_build_test} ${app_build_src} ${nonhw_lib_build_src} ${hw_lib_build_src}
 build/test_runner.o: test/test_runner.c
 	${compiler} $(CFLAGS) -c $< -o $@
 # tests depend on fake hardware definitions
-${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${HardwareFakes} ${IncludeFakeAvrHeaders}
+${app_build_test}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${HardwareFakes} ${FakeAvrHeaders}
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 ${app_build_src}: build/%.o: src/%.c src/%.h

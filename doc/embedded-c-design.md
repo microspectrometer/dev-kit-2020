@@ -101,26 +101,181 @@
         - I think this works in general
         - I think I can use this with reg and pin values as well,
           using the #define trick
-        - check out /home/Mike/chromation/dev-kit-mike/firmware/lib/test/FakeAvr/interrupt.h
+        - check out
+          /home/Mike/chromation/dev-kit-mike/firmware/lib/test/FakeAvr/interrupt.h
         - need to sleep, return here tomorrow
     - [x] finish writing SpiSlaveInit
-    - [ ] add unit tests for SpiSlaveInit
+    - [x] add unit tests for SpiSlaveInit
         - cli and sei build well with avr-gcc
         - do these cause problems when unit testing?
         - yes
         - so I stub them to ignore them in testing
-    - how do I test that a lib .c function calls a static
-      function?
-        - everything was going great with setting this up
-        - but I can't figure out why `AssertCall` is returning
-          `false` when it should *clearly* be returning true
-        - come back to this by inserting print statements all
-          the fuck over `AssertCall`, rebuilding, and remaking
-          the tests to find out where things are fucking up
-        - OK, I still don't know why it failed
-        - but I fixed it by replacing the `==` comparison with a
-          `g_strcmp0` comparison
-    - [ ] split common Spi stuff from SpiSlave into a Spi lib
+- [x] how do I test that a lib .c function calls a static
+  function?
+    - everything was going great with setting this up
+    - but I can't figure out why `AssertCall` is returning
+      `false` when it should *clearly* be returning true
+    - come back to this by inserting print statements all
+      the fuck over `AssertCall`, rebuilding, and remaking
+      the tests to find out where things are fucking up
+    - OK, I still don't know why it failed
+    - but I fixed it by replacing the `==` comparison with a
+      `g_strcmp0` comparison
+- [ ] move more code from old vis-spi-out to new vis-spi-out
+    - right now, avr-gcc build is 202 bytes
+
+    ```bash
+    $ date | clip
+    Tue, Dec 10, 2019 11:58:42 PM
+    $ avr-size.exe vis-spi-out/build/vis-spi-out.elf | clip
+    text | data|bss|dec|hex|filename
+    202  | 0   |0  |202|ca |vis-spi-out/build/vis-spi-out.elf
+    ```
+
+    - copy in code
+    - set up lib calls
+    - set up tests
+    - check build size does not suddenly jump
+    - exercise everything figured out so far
+    - [ ] am I encountering new cases?
+
+- [ ] split common Spi stuff from SpiSlave into a Spi lib
+
+# Add a lib
+- add a line of code in `vis-spi-out` that requires lib `Queue`
+
+## add lib Queue
+- this is a non-hardware lib
+
+### Edit lib list in `lib/Makefile` and add the files make needs
+```make
+ # lib/Makefile
+ #
+ # ---add non-hardware libs here---
+lib_src := ${hw_lib_src} ReadWriteBits Queue
+```
+
+#### add file `test_Queue.c`
+- rebuild with ;mktgc
+
+```bash
+make: *** No rule to make target 'test/test_Queue.c', needed by 'build/test_Queue.o'.  Stop.
+```
+
+- create `lib/test/test_Queue.c`
+
+```bash
+$ touch test/test_Queue.c
+```
+
+#### add file `test_Queue.h`
+- rebuild with ;mktgc
+
+```bash
+make: *** No rule to make target 'test/test_Queue.h', needed by 'build/test_Queue.o'.  Stop.
+```
+
+- create `lib/test/test_Queue.h` by creating a placeholder
+  function in `test_Queue.c` and using `fh` to generate a header
+  file with the prototype
+
+#### add file `Queue.c`
+- rebuild with ;mktgc
+
+```bash
+make: *** No rule to make target 'src/Queue.c', needed by 'build/Queue.o'.  Stop.
+```
+
+- create `lib/src/Queue.c` and rebuild
+
+#### add file `Queue.h`
+
+```bash
+make: *** No rule to make target 'src/Queue.h', needed by 'build/Queue.o'.  Stop.
+```
+
+- create `lib/src/Queue.h` by creating a placeholder
+  function in `Queue.c` and using `fh` to generate a header
+  file with the prototype
+
+- `lib/Makefile` unit-test build succeeds
+
+### Edit lib list in `vis-spi-out/Makefile`
+
+```make
+ # vis-spi-out/Makefile
+ #
+ # ---add nonhardware libs here---
+nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits Queue
+```
+
+- rebuild with ;mktgc
+- build is OK, no files to add
+
+## add function body for `QueueInit` to `Queue.c`
+
+### Check impact on program size and try to optimize
+- build with ;mka
+- check program size
+
+#### adds 60 bytes of program and 10+buffer-size bytes of data
+- now build `vis-spi-out.elf` with ;mka
+- look at increase in program size: `text`
+- look at increase in data: `bss`
+
+- before adding `SpiFifo = QueueInit(...)`
+
+```bash
+Tue, Dec 10, 2019 11:58:42 PM
+text|   data|    bss|    dec|    hex|filename
+202 |   0   |    0  |    202|    ca |build/vis-spi-out.elf
+```
+
+- after adding `SpiFifo = QueueInit(...)`
+
+```bash
+Wed, Dec 11, 2019 12:48:34 AM
+text|   data|    bss|    dec|    hex|filename
+262 |   0   |     15|    277|    115|build/vis-spi-out.elf
+```
+
+- FIFO buffer size is 5 bytes (only stores 4 bytes)
+- this is four of the 15 bytes in `bss`
+- FIFO buffer size does not affect `text`
+- so I increased the buffer size to 11 bytes (stores 10 bytes)
+
+```bash
+Wed, Dec 11, 2019 12:56:43 AM
+text|   data|    bss|    dec|    hex|filename
+ 262|      0|     21|    283|    11b|build/vis-spi-out.elf
+```
+
+#### nothing to optimize
+
+- what are the 60 bytes of new instructions for this one
+  `QueueInit` call?
+
+- well, making it `inline` by moving it to the header with
+  keyword `inline` succeeds in inlining the function call
+- but the code size actually grows by eight bytes:
+
+```bash
+Wed, Dec 11, 2019  1:05:27 AM
+text|   data|    bss|    dec|    hex|filename
+ 270|      0|     21|    291|    123|build/vis-spi-out.elf
+```
+
+- ok, this just is what it is
+- nothing to be gained by inline
+- no hardware register information will help pick faster
+  instructions
+
+### Check vis-spi-out unit-test build again
+- ;mktgc
+- vis-spi-out unit-test build is still OK
+
+## unit-test `QueueInit`
+- [ ] leave off here
 
 # keyword const is required for avr-gcc optimal assembly 
 - avr-gcc needs a `const` variable passed to a function to use the

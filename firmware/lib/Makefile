@@ -21,7 +21,7 @@ HardwareFakes := ${hw_lib_src}
 HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
 HardwareFakes := $(addprefix test/,${HardwareFakes})
 # ---add non-hardware libs here---
-lib_src := ${hw_lib_src} ReadWriteBits
+lib_src := ${hw_lib_src} ReadWriteBits Queue
 lib_build_src := $(addsuffix .o,${lib_src})
 lib_build_src := $(addprefix build/,${lib_build_src})
 lib_build_test := $(addsuffix .o,${lib_src})
