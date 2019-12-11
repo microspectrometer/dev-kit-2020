@@ -9,5 +9,10 @@ void QueueInit_memory_for_Queue_struct_is_allocated_in_Queue_object_file(void);
 void QueueInit_assigns_input_buffer_as_Queue_buffer(void);
 void QueueInit_size_input_is_the_maximum_Queue_length(void);
 void QueueInit_initializes_Queue_with_length_0(void);
+void QueueLength_increments_after_a_push(void);
+void QueueLength_does_not_increase_beyond_max_length(void);
+void QueueLength_decrements_after_a_pop(void);
+void QueueLength_does_not_decrease_below_zero(void);
+void QueuePush_writes_to_byte_to_Queue_buffer(void);
 
 #endif // _TEST_QUEUE_H

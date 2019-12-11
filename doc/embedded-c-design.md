@@ -555,6 +555,26 @@ void QueueInit_initializes_Queue_with_length_0(void)
 
 - the first two will probably remain empty
 - but when I have `QueueLength` I can check for `length_0`
+- and here it is:
+```c
+void QueueInit_initializes_Queue_with_length_0(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    /* =====[ Operate ]===== */
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT16(0, QueueLength(SpiFifo));
+}
+```
+
+## Queue methods `inline` or not
+- `QueueInit` is not `inline`
+- what about the rest?
+- I cannot make them `inline` in the header without exposing the
+  `Queue_s` data type
+- start with these *not* `inline`, then see if a switch to
+  `inline` decreases instruction count in `vis-spi-out.elf`
 
 
 # keyword const is required for avr-gcc optimal assembly 

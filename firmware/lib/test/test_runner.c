@@ -61,7 +61,7 @@ void SpiSlave_tests(bool run_test)
         Run_SpiSlaveInit_tests(Yep);
     }
 }
-void Queue_tests(bool run_test)
+void Run_QueueInit_tests(bool run_test)
 {
     if (run_test)
     {
@@ -71,6 +71,34 @@ void Queue_tests(bool run_test)
         RUN_TEST(QueueInit_assigns_input_buffer_as_Queue_buffer);
         RUN_TEST(QueueInit_size_input_is_the_maximum_Queue_length);
         RUN_TEST(QueueInit_initializes_Queue_with_length_0);
+    }
+}
+void Run_QueueLength_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(QueueLength_increments_after_a_push);
+        RUN_TEST(QueueLength_does_not_increase_beyond_max_length);
+        RUN_TEST(QueueLength_decrements_after_a_pop);
+        RUN_TEST(QueueLength_does_not_decrease_below_zero);
+    }
+}
+void Run_QueuePush_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(QueuePush_writes_to_byte_to_Queue_buffer);
+    }
+}
+void Queue_tests(bool run_test)
+{
+    if (run_test)
+    {
+        Run_QueueInit_tests(Nope);
+        Run_QueueLength_tests(Nope);
+        Run_QueuePush_tests(Yep);
     }
 }
 
