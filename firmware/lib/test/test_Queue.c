@@ -200,3 +200,36 @@ void QueuePush_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_full(void)
         "Head should wrap around when it reaches the end of the array."
         );
 }
+void QueuePop_reads_oldest_byte_in_Queue(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // Fill the queue
+    QueuePush(SpiFifo, 0xAB);
+    QueuePush(SpiFifo, 0xCD);
+    /* =====[ Operate ]===== */
+    uint8_t byte_0 = QueuePop(SpiFifo);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_UINT8(0xAB, byte_0);
+}
+void QueuePop_removes_oldest_byte_from_Queue(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // Fill the queue
+    QueuePush(SpiFifo, 0xAB); // oldest byte in Queue
+    QueuePush(SpiFifo, 0xCD); // next-oldest byte in Queue
+    /* =====[ Operate ]===== */
+    uint8_t byte_0 = QueuePop(SpiFifo);
+    /* =====[ Test ]===== */
+    // Assert the oldest byte is read.
+    TEST_ASSERT_EQUAL_UINT8(0xAB, byte_0);
+    /* =====[ Operate ]===== */
+    uint8_t byte_1 = QueuePop(SpiFifo);
+    /* =====[ Test ]===== */
+    // Assert the next-oldest byte is read.
+    // This implies the oldest byte was removed on the previous pop.
+    TEST_ASSERT_EQUAL_UINT8(0xCD, byte_1);
+}

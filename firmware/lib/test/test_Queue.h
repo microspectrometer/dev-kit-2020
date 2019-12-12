@@ -17,5 +17,7 @@ void QueuePush_writes_byte_to_Queue_buffer(void);
 void QueuePush_writes_next_byte_to_address_after_previous_write(void);
 void QueuePush_does_not_write_byte_if_Queue_is_full(void);
 void QueuePush_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_full(void);
+void QueuePop_reads_oldest_byte_in_Queue(void);
+void QueuePop_removes_oldest_byte_from_Queue(void);
 
 #endif // _TEST_QUEUE_H

@@ -95,13 +95,23 @@ void Run_QueuePush_tests(bool run_test)
         RUN_TEST(QueuePush_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_full);
     }
 }
+void Run_QueuePop_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(QueuePop_reads_oldest_byte_in_Queue);
+        RUN_TEST(QueuePop_removes_oldest_byte_from_Queue);
+    }
+}
 void Queue_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_QueueInit_tests(Yep);
-        Run_QueueLength_tests(Yep);
-        Run_QueuePush_tests(Yep);
+        Run_QueueInit_tests(Nope);
+        Run_QueueLength_tests(Nope);
+        Run_QueuePush_tests(Nope);
+        Run_QueuePop_tests(Yep);
     }
 }
 
