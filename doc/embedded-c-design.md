@@ -2382,3 +2382,45 @@ void SpiSlaveInit_enables_SPI_interrupt(void)
         );
 }
 ```
+
+# Safely butcher my project
+- I am about to butcher my project
+- first commit all changes as usual
+- now here is the method to reset:
+
+## Work I do now is throwaway
+Whether staged or unstaged, any changes will be lost after the
+reset.
+
+## Check hash for sanity check
+Record the hash of the last commit:
+
+```bash
+$ git log | grep commit -m 1
+commit a79386030aaa50d8928a18fc6929248cdf9d92d9
+```
+Or get the hash in the clipboard using Vim shortcut `;Gh`.
+
+Use this hash to verify Git did expected reset.
+
+## Make any changes
+- edit Makefile
+- edit code
+- rebuild
+- but don't make any changes to the repo that I want to keep
+
+## Reset
+Here is the reset. This discards any changes made since last
+commit:
+
+```bash
+$ git reset --hard HEAD
+Press ENTER or type command to continue
+HEAD is now at 9ef51af Merged in rainbots/dev-kit-mike (pull request #3)
+```
+
+The `HEAD` is the last commit. The last commit is the default for
+`git reset --hard`. I explicitly include `HEAD` as a reminder
+that I'm reverting to the working state pointed to by `HEAD`.
+
+
