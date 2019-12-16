@@ -585,6 +585,145 @@ void QueueInit_initializes_Queue_with_length_0(void)
   renaming the tests
     - say what the test is really testing
     - do not mistake internal details for functionality
+- use documentation to check that tests are all there
+    - ;DU updates Doxygen
+    - ;DV view Doxygen in browser
+    - functions without links have no docstrings
+    - functions without docstrings have no tests
+
+## Check size of .elf has not changed
+- I do not expect a change because I have only changed lib Queue,
+  so as long as I am not calling any more functions, the .elf
+  should not be affected
+- last size check:
+
+```bash
+Wed, Dec 11, 2019 12:56:43 AM
+text|   data|    bss|    dec|    hex|filename
+ 262|      0|     21|    283|    11b|build/vis-spi-out.elf
+```
+
+- build `vis-spi-out.elf` with ;mka
+- look at increase in program size: `text`
+- look at increase in data: `bss`
+- check size again:
+```bash
+Mon, Dec 16, 2019  1:43:17 PM
+$ avr-size.exe build/vis-spi-out.elf | clip
+   text	   data	    bss	    dec	    hex	filename
+    262	      0	     21	    283	    11b	build/vis-spi-out.elf
+```
+
+- actually, calculate size again after commenting out the dummy
+  functions in `loop()`:
+
+```c
+void loop(void)
+{
+    /* example_function(); */
+    /* example_inline_function(); */
+}
+```
+```bash
+$ date | clip
+Mon, Dec 16, 2019  1:48:17 PM
+$ avr-size.exe build/vis-spi-out.elf | clip
+   text	   data	    bss	    dec	    hex	filename
+    256	      0	     21	    277	    115	build/vis-spi-out.elf
+```
+
+## Use Queue lib in vis-spi-out.c
+- Use Queue lib:
+- check queue for commands to execute
+
+```c
+// src/vis-spi-out.c
+//
+void loop(void)
+{
+    /* example_function(); */
+    /* example_inline_function(); */
+    // Idle until a command is received from the SPI Master.
+    while (QueueIsEmpty(SpiFifo));
+```
+```bash
+Mon, Dec 16, 2019  1:51:48 PM
+   text	   data	    bss	    dec	    hex	filename
+    284	      0	     21	    305	    131	build/vis-spi-out.elf
+```
+
+- program size increased by (284-256=) 28 bytes
+- increase is from:
+    - making the function call once
+    - including function definition now that it is used
+
+- call to `QueueIsEmpty`:
+
+```asm
+call	0xec	; 0xec <QueueIsEmpty>
+lds	r24, 0x0100	; 0x800100 <__data_end>
+lds	r25, 0x0101	; 0x800101 <__data_end+0x1>
+rjmp	.-14     	; 0xc6 <main+0x20>
+```
+
+- definition of `QueueIsEmpty`:
+
+```asm
+movw	r30, r24
+ldd	r18, Z+4	; 0x04
+ldd	r19, Z+5	; 0x05
+ldi	r24, 0x01	; 1
+or	r18, r19
+breq	.+2      	; 0xfa <QueueIsEmpty+0xe>
+ldi	r24, 0x00	; 0
+ldi	r24, 0x00	; 0
+ret
+```
+
+- how slow is this check?
+- this alone might make performance sluggish
+
+## Compare run time cost with and without inline
+- how long does it take to check if the Queue is empty?
+- it takes 24 cycles without inline
+- and the clock is 10MHz
+- then each check for Queue empty takes 2.4µs
+    - `24*(1/10.0e6) = 2.4e-6`
+- I don't think this is a show-stopper:
+    - response time to command is about 400x faster than a
+      typical exposure
+        - take 1ms as a typical exposure time
+        - `(1.0e-3)/(2.4e-6)= 416.666667`
+    - best case, optimizing this will be something like a 4x
+      speedup
+
+### Calculate without inline
+- total cycle time *without inline* is:
+- call time + execution time = 24 cycles
+    - call time is 10 cycles:
+        - call 4
+        - lds 2
+        - lds 2
+        - rjmp 2
+    - execution time is 14 cycles:
+        - movw 1
+        - ldd  2
+        - ldd  2
+        - ldi  1
+        - or   1
+        - breq 2
+        - ldi 1
+        - ret 4
+
+### Calculate *with inline*
+- change Queue to inline
+- [ ] confirm Queue is inlined
+- [ ] calculate number of cycles:
+- call time + execution time = cycles
+    - call time is cycles:
+    - execution time is cycles:
+
+
 
 # keyword const is required for avr-gcc optimal assembly 
 - avr-gcc needs a `const` variable passed to a function to use the

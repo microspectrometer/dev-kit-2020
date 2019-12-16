@@ -128,5 +128,14 @@ bool QueueIsEmpty(volatile Queue_s * pq)
       * */
     if (pq->length == 0) return true;
     return false;
+    // ---AVR Assembly---
+    // movw	r30, r24
+    // ldd	r18, Z+4	; 0x04
+    // ldd	r19, Z+5	; 0x05
+    // ldi	r24, 0x01	; 1
+    // or	r18, r19
+    // breq	.+2      	; 0xfa <QueueIsEmpty+0xe>
+    // ldi	r24, 0x00	; 0
+    // ret
 }
 

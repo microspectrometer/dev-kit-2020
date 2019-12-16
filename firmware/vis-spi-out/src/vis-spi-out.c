@@ -40,7 +40,13 @@ void setup(void)
 }
 void loop(void)
 {
-    // Loop forever acting on commands from the SPI Master.
-    example_function();
-    example_inline_function();
+    /* example_function(); */
+    /* example_inline_function(); */
+    // Idle until a command is received from the SPI Master.
+    while (QueueIsEmpty(SpiFifo));
+    // ---Assembly---
+        // call	0xec	; 0xec <QueueIsEmpty>
+        // lds	r24, 0x0100	; 0x800100 <__data_end>
+        // lds	r25, 0x0101	; 0x800101 <__data_end+0x1>
+        // rjmp	.-14     	; 0xc6 <main+0x20>
 }
