@@ -575,7 +575,16 @@ void QueueInit_initializes_Queue_with_length_0(void)
   `Queue_s` data type
 - start with these *not* `inline`, then see if a switch to
   `inline` decreases instruction count in `vis-spi-out.elf`
-
+- write tests for QueueMethods
+    - [x] QueueLength
+    - [x] QueuePush
+    - [x] QueuePop
+    - [x] QueueIsFull
+    - [x] QueueIsEmpty
+- really what I'm doing is writing better documentation by
+  renaming the tests
+    - say what the test is really testing
+    - do not mistake internal details for functionality
 
 # keyword const is required for avr-gcc optimal assembly 
 - avr-gcc needs a `const` variable passed to a function to use the

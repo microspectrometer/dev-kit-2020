@@ -9,7 +9,7 @@ unit-test: build/TestSuite-results.md
 #
 # Vim ;mka builds avr target using avr-gcc
 # Vim ;fa downloads .elf to microcontroller
-avr-target: build/${board-name}.elf build/${board-name}.lst
+avr-target: build/${board-name}.elf build/${board-name}.avra
 
 #=====[ AVR library from AtmelStudio installation ]=====
 # atmega328_lib has the .o and .a lib files and the spec file.
@@ -154,10 +154,10 @@ build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${nonhw_lib_buil
 # avr-size writes a summary to stdout with the size of each section.
 	avr-size $@
 #
-# Convert .elf to .lst for disassembly.
+# Convert .elf to .avra for disassembly (avra: AVR version of lst).
 #  -h: list space used by each section
 #  -S: output the binary with source code
-build/%.lst: build/%.elf
+build/%.avra: build/%.elf
 	avr-objdump -h -S $^ > $@
 
 #--------------------------------------------------------------
@@ -193,7 +193,7 @@ display_target_voltage:
 .PHONY: clean-all-builds
 clean-all-builds:
 	rm -f build/${board-name}.elf
-	rm -f build/${board-name}.lst
+	rm -f build/${board-name}.avra
 	rm -f build/${board-name}.map
 	rm -f build/${board-name}.o
 	rm -f build/TestSuite-results.md
