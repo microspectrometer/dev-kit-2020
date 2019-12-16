@@ -25,5 +25,12 @@ inline void BiColorLedGreen(bicolorled_num led)
       * */
     ClearBit(BiColorLed_port, led);
 }
+inline void BiColorLedRed(bicolorled_num led)
+{
+    /** BiColorLedRed behavior:\n 
+      * - sets bit in port\n 
+      * */
+    SetBit(BiColorLed_port, led);
+}
 
 #endif // _BICOLORLED_H

@@ -1,0 +1,66 @@
+000000a6 <main>:
+inline void SetBit(register_address reg_addr, bit_index bit)
+{
+    /** SetBit behavior:\n 
+      * - sets bit in register\n 
+      * */
+    *reg_addr |= 1<<bit;
+  a6:	38 9a       	sbi	0x07, 0	; 7
+  a8:	39 9a       	sbi	0x07, 1	; 7
+inline void ClearBit(register_address reg_addr, bit_index bit)
+{
+    /** ClearBit behavior:\n 
+      * - clears bit in register\n 
+      * */
+    *reg_addr &= ~(1<<bit);
+  aa:	40 98       	cbi	0x08, 0	; 8
+  ac:	41 98       	cbi	0x08, 1	; 8
+    BiColorLedOn(led_0); // sbi	0x07, 0
+    BiColorLedOn(led_1); // sbi	0x07, 1
+    BiColorLedGreen(led_0); // cbi	0x08, 0
+    BiColorLedGreen(led_1); // cbi	0x08, 1
+    // Configure as SPI slave, interrupts run `ISR(SPI_STC_vect)`
+    SpiSlaveInit(); // call	0xaa	; 0xaa <SpiSlaveInit>
+  ae:	0e 94 78 00 	call	0xf0	; 0xf0 <SpiSlaveInit>
+      * - initializes Queue with length 0\n 
+      * */
+    // Create a pointer to the global Queue.
+    volatile Queue_s * pq = &Queue;
+    // Assign Queue to access the array
+    pq->buffer = buffer;
+  b2:	82 e0       	ldi	r24, 0x02	; 2
+  b4:	91 e0       	ldi	r25, 0x01	; 1
+  b6:	90 93 0e 01 	sts	0x010E, r25	; 0x80010e <Queue+0x1>
+  ba:	80 93 0d 01 	sts	0x010D, r24	; 0x80010d <Queue>
+    // Store array size (this is the maximum length of the Queue)
+    pq->max_length = buffer_size_in_bytes;
+  be:	8b e0       	ldi	r24, 0x0B	; 11
+  c0:	90 e0       	ldi	r25, 0x00	; 0
+  c2:	90 93 14 01 	sts	0x0114, r25	; 0x800114 <Queue+0x7>
+  c6:	80 93 13 01 	sts	0x0113, r24	; 0x800113 <Queue+0x6>
+    // Empty the Rx Buffer: by setting head/tail index to first byte
+    pq->head = 0;
+  ca:	10 92 0f 01 	sts	0x010F, r1	; 0x80010f <Queue+0x2>
+    pq->tail = 0;
+  ce:	10 92 10 01 	sts	0x0110, r1	; 0x800110 <Queue+0x3>
+    // queue length is 0
+    pq->length = 0;
+  d2:	10 92 12 01 	sts	0x0112, r1	; 0x800112 <Queue+0x5>
+  d6:	10 92 11 01 	sts	0x0111, r1	; 0x800111 <Queue+0x4>
+    // Queue incoming SPI bytes in a FIFO buffer.
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+  da:	8d e0       	ldi	r24, 0x0D	; 13
+  dc:	91 e0       	ldi	r25, 0x01	; 1
+  de:	90 93 01 01 	sts	0x0101, r25	; 0x800101 <__data_end+0x1>
+  e2:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__data_end>
+{ //! Return true if Queue is empty
+    /** QueueIsEmpty behavior:\n 
+      * - returns true if Queue is empty\n 
+      * - returns false if Queue is not empty\n 
+      * */
+    if (pq->length == 0) return true;
+  e6:	80 91 11 01 	lds	r24, 0x0111	; 0x800111 <Queue+0x4>
+  ea:	90 91 12 01 	lds	r25, 0x0112	; 0x800112 <Queue+0x5>
+  ee:	fb cf       	rjmp	.-10     	; 0xe6 <main+0x40>
+
+

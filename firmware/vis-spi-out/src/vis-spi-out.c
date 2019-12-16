@@ -44,6 +44,8 @@ void loop(void)
     /* example_inline_function(); */
     // Idle until a command is received from the SPI Master.
     while (QueueIsEmpty(SpiFifo));
+    // placeholder for some code to execute after while loop
+    BiColorLedRed(led_0); // sbi	0x08, 0
     // ---Assembly---
         // call	0xec	; 0xec <QueueIsEmpty>
         // lds	r24, 0x0100	; 0x800100 <__data_end>

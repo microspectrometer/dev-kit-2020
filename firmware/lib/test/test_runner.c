@@ -144,7 +144,7 @@ int main()
     BiColorLed_tests(Nope);
     ReadWriteBits_tests(Nope);
     SpiSlave_tests(Nope);
-    Queue_tests(Nope);
+    Queue_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

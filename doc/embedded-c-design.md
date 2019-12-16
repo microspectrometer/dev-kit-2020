@@ -683,7 +683,7 @@ ret
 - how slow is this check?
 - this alone might make performance sluggish
 
-## Compare run time cost with and without inline
+## Run time cost to check Queue empty without inline
 - how long does it take to check if the Queue is empty?
 - it takes 24 cycles without inline
 - and the clock is 10MHz
@@ -719,10 +719,11 @@ ret
 
 ### Calculate *with inline*
 - there is no call, so call time is 0 cycles
-- execution time is 6 cycles:
-    - lds 2
-    - lds 2
-    - rjmp 2
+- execution time is 7 cycles:
+    - ldd 2
+    - ldd 2
+    - or 1
+    - breq 2
 
 #### quick inline plan
 - commit any changes because the inline work is throwaway
@@ -842,6 +843,103 @@ inline void ClearBit(register_address reg_addr, bit_index bit)
     - lds 2
     - lds 2
     - rjmp 2
+
+#### of course the actual use is in a loop
+- the assembly looks weird because there is no loop
+- I am basically trusting the compiler to identify the section
+  for me by prefacing it with the relevant C code
+- I can do better by giving the loop something to execute if it
+  ever exits:
+
+```c
+    while (QueueIsEmpty(SpiFifo));
+        BiColorLedRed(led_0); // sbi	0x08, 0
+```
+
+- the resulting code is *very* similar
+- instead of an `rjmp` there is a `breq` which is also 2 cycles
+- and to decide whether to branch, there is an `or`
+    - the processor checks to see if it breaks out of the loop
+    - `or` two registers
+
+```asm
+ldd	r24, Z+4	; 0x04
+ldd	r25, Z+5	; 0x05
+or	r24, r25
+breq	.-8      	; 0xe8 <main+0x42>
+```
+
+
+## But Queue calls are also made in the ISR so make it inline
+- the Queue needs to be snappy because it is also called in the
+  ISR
+
+```c
+// src/vis-spi-out.c
+//
+ISR(SPI_STC_vect)
+{
+    if (QueueIsFull(SpiFifo)) DEBUG_LedsShowError(); // TODO: add error handler
+    else
+    {
+        QueuePush(SpiFifo, *Spi_spdr); // "client" must pop data from SpiFifo queue
+    }
+}
+```
+
+- I like my abstract datatype, but I have to sacrifice clean code
+  for speed
+- [x] Save existing `Queue` lib as `Queue_slow`
+- [x] Move code from `Queue.c` to `Queue.h`:
+    - goal is to make `inline` possible via `#include` in the
+      `vis-spi-out.c` translation unit
+    - move function bodies into `.h` with keyword `inline`
+    - move function declarations into `.c`
+    - but leave the allocation of memory for globals in
+      `Queue.c`
+    - this way if `Queue.h` is included in more than one file,
+      there is not a multiple definition error
+    - the only global defined in `Queue.o` is the singleton
+      `Queue_s` Queue
+- [x] Confirm this *proper* way to inline results in the exact
+  same outcome as the quick-and-dirty inline via `#include` .c
+    - size is 272 bytes
+    - [x] diff the two .avra files
+    - the code is identical except for the choice of addresses
+      for the globals in static memory
+    - in terms of instructions, the code is identical
+    - example:
+
+- include .c file to make a giant translation unit kludge:
+```asm
+    pq->buffer = buffer;
+  b2:	8a e0       	ldi	r24, 0x0A	; 10
+  b4:	91 e0       	ldi	r25, 0x01	; 1
+  b6:	90 93 01 01 	sts	0x0101, r25	; 0x800101 <__data_end+0x1>
+  ba:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__data_end>
+    // Store array size (this is the maximum length of the Queue)
+    pq->max_length = buffer_size_in_bytes;
+  be:	8b e0       	ldi	r24, 0x0B	; 11
+  c0:	90 e0       	ldi	r25, 0x00	; 0
+  c2:	90 93 07 01 	sts	0x0107, r25	; 0x800107 <__data_end+0x7>
+  c6:	80 93 06 01 	sts	0x0106, r24	; 0x800106 <__data_end+0x6>
+```
+
+- move function body to Queue.h and declare Queue global defined
+  in Queue.c as extern in Queue.h:
+```asm
+    pq->buffer = buffer;
+  b2:	82 e0       	ldi	r24, 0x02	; 2
+  b4:	91 e0       	ldi	r25, 0x01	; 1
+  b6:	90 93 0e 01 	sts	0x010E, r25	; 0x80010e <Queue+0x1>
+  ba:	80 93 0d 01 	sts	0x010D, r24	; 0x80010d <Queue>
+    // Store array size (this is the maximum length of the Queue)
+    pq->max_length = buffer_size_in_bytes;
+  be:	8b e0       	ldi	r24, 0x0B	; 11
+  c0:	90 e0       	ldi	r25, 0x00	; 0
+  c2:	90 93 14 01 	sts	0x0114, r25	; 0x800114 <Queue+0x7>
+  c6:	80 93 13 01 	sts	0x0113, r24	; 0x800113 <Queue+0x6>
+```
 
 # keyword const is required for avr-gcc optimal assembly 
 - avr-gcc needs a `const` variable passed to a function to use the

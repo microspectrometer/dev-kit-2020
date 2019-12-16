@@ -1,8 +1,5 @@
-#ifndef _QUEUE_H
-#define _QUEUE_H
-#include <stdint.h>     // uint8_t
-#include <stdbool.h>    // bool, true, false
-typedef struct Queue_s Queue_s;
+/** \file */
+#include "Queue_slow.h"
 // Define a Queue struct for accessing the SPI FIFO Rx Buffer.
 //! Queue uses a byte array as a circular buffer.
 /** A *queue* is a byte array with data (head, tail) and methods
@@ -42,9 +39,10 @@ struct Queue_s {
      * */
     volatile uint16_t max_length;
 };
-extern volatile Queue_s Queue;
+// Define Queue and allocate static memory.
+volatile Queue_s Queue;
 // ---API---
-inline volatile Queue_s * QueueInit(
+volatile Queue_s * QueueInit(
     volatile uint8_t * buffer,
     uint16_t const buffer_size_in_bytes
     )
@@ -69,7 +67,7 @@ inline volatile Queue_s * QueueInit(
     pq->length = 0;
     return pq;
 }
-inline uint16_t QueueLength(volatile Queue_s * pq)
+uint16_t QueueLength(volatile Queue_s * pq)
 { //! Return length of Queue
     /** QueueLength behavior:\n 
       * - increments after a push\n 
@@ -77,44 +75,10 @@ inline uint16_t QueueLength(volatile Queue_s * pq)
       * - decrements after a pop\n 
       * - does not decrease below zero\n 
       * */
+
     return pq->length;
 }
-inline bool QueueIsFull(volatile Queue_s * pq)
-{ //! Return true if Queue is full
-    /** QueueIsFull behavior:\n 
-      * - returns true if Queue is full\n 
-      * - returns false if Queue is not full\n 
-      * */
-    if (pq->length >= pq->max_length) return true;
-    return false;
-}
-inline bool QueueIsEmpty(volatile Queue_s * pq)
-{ //! Return true if Queue is empty
-    /** QueueIsEmpty behavior:\n 
-      * - returns true if Queue is empty\n 
-      * - returns false if Queue is not empty\n 
-      * */
-    if (pq->length == 0) return true;
-    return false;
-    // ---AVR Assembly: 7 cycles with inline---
-    // ldd	r24, Z+4	; 0x04
-    // ldd	r25, Z+5	; 0x05
-    // or	r24, r25
-    // breq	.-8      	; 0xe8 <main+0x42>
-    //
-    // ---AVR Assembly: 24 cycles without inline---
-    // 10 cycles to call
-    // 14 cycles to execute
-    // movw	r30, r24
-    // ldd	r18, Z+4	; 0x04
-    // ldd	r19, Z+5	; 0x05
-    // ldi	r24, 0x01	; 1
-    // or	r18, r19
-    // breq	.+2      	; 0xfa <QueueIsEmpty+0xe>
-    // ldi	r24, 0x00	; 0
-    // ret
-}
-inline void QueuePush(
+void QueuePush(
     volatile Queue_s * pq,
     uint8_t data
     )
@@ -131,7 +95,7 @@ inline void QueuePush(
     pq->buffer[pq->head++] = data;
     pq->length++;
 }
-inline uint8_t QueuePop(volatile Queue_s *pq)
+uint8_t QueuePop(volatile Queue_s *pq)
 { //! Pop data from the Queue
     /** QueuePop behavior:\n 
       * - removes oldest byte from Queue\n 
@@ -147,5 +111,31 @@ inline uint8_t QueuePop(volatile Queue_s *pq)
     // Return the byte. Remove byte from Queue by advancing "tail".
     return pq->buffer[pq->tail++];
 }
+bool QueueIsFull(volatile Queue_s * pq)
+{ //! Return true if Queue is full
+    /** QueueIsFull behavior:\n 
+      * - returns true if Queue is full\n 
+      * - returns false if Queue is not full\n 
+      * */
+    if (pq->length >= pq->max_length) return true;
+    return false;
+}
+bool QueueIsEmpty(volatile Queue_s * pq)
+{ //! Return true if Queue is empty
+    /** QueueIsEmpty behavior:\n 
+      * - returns true if Queue is empty\n 
+      * - returns false if Queue is not empty\n 
+      * */
+    if (pq->length == 0) return true;
+    return false;
+    // ---AVR Assembly---
+    // movw	r30, r24
+    // ldd	r18, Z+4	; 0x04
+    // ldd	r19, Z+5	; 0x05
+    // ldi	r24, 0x01	; 1
+    // or	r18, r19
+    // breq	.+2      	; 0xfa <QueueIsEmpty+0xe>
+    // ldi	r24, 0x00	; 0
+    // ret
+}
 
-#endif // _QUEUE_H
