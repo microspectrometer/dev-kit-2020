@@ -17,7 +17,14 @@ void QueuePush_writes_byte_to_Queue_buffer(void);
 void QueuePush_writes_next_byte_to_address_after_previous_write(void);
 void QueuePush_does_not_write_byte_if_Queue_is_full(void);
 void QueuePush_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_full(void);
-void QueuePop_reads_oldest_byte_in_Queue(void);
 void QueuePop_removes_oldest_byte_from_Queue(void);
+void QueuePop_returns_oldest_byte(void);
+void QueuePop_returns_0_if_Queue_is_empty(void);
+void QueuePop_does_not_remove_any_bytes_if_Queue_is_empty(void);
+void QueuePop_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_empty(void);
+void QueueIsFull_returns_true_if_Queue_is_full(void);
+void QueueIsFull_returns_false_if_Queue_is_not_full(void);
+void QueueIsEmpty_returns_true_if_Queue_is_empty(void);
+void QueueIsEmpty_returns_false_if_Queue_is_not_empty(void);
 
 #endif // _TEST_QUEUE_H

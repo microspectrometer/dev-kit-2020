@@ -96,10 +96,13 @@ void QueuePush(
     pq->length++;
 }
 uint8_t QueuePop(volatile Queue_s *pq)
-{ //! Pop data off of the Queue
+{ //! Pop data from the Queue
     /** QueuePop behavior:\n 
-      * - reads oldest byte in Queue\n 
       * - removes oldest byte from Queue\n 
+      * - returns oldest byte\n 
+      * - does not remove any bytes if Queue is empty\n 
+      * - returns 0 if Queue is empty\n 
+      * - hits end of buffer and wraps around if Queue is not empty\n 
       * */
     if (QueueIsEmpty(pq)) return 0;
     // wrap tail to beginning of buffer when it reaches the end of the buffer
@@ -109,12 +112,20 @@ uint8_t QueuePop(volatile Queue_s *pq)
     return pq->buffer[pq->tail++];
 }
 bool QueueIsFull(volatile Queue_s * pq)
-{ // Return true if Queue is full
+{ //! Return true if Queue is full
+    /** QueueIsFull behavior:\n 
+      * - returns true if Queue is full\n 
+      * - returns false if Queue is not full\n 
+      * */
     if (pq->length >= pq->max_length) return true;
     return false;
 }
 bool QueueIsEmpty(volatile Queue_s * pq)
-{ // Return true if Queue is empty
+{ //! Return true if Queue is empty
+    /** QueueIsEmpty behavior:\n 
+      * - returns true if Queue is empty\n 
+      * - returns false if Queue is not empty\n 
+      * */
     if (pq->length == 0) return true;
     return false;
 }

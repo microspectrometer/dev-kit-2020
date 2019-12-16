@@ -100,18 +100,41 @@ void Run_QueuePop_tests(bool run_test)
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(QueuePop_reads_oldest_byte_in_Queue);
         RUN_TEST(QueuePop_removes_oldest_byte_from_Queue);
+        RUN_TEST(QueuePop_returns_oldest_byte);
+        RUN_TEST(QueuePop_does_not_remove_any_bytes_if_Queue_is_empty);
+        RUN_TEST(QueuePop_returns_0_if_Queue_is_empty);
+        RUN_TEST(QueuePop_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_empty);
+    }
+}
+void Run_QueueIsFull_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(QueueIsFull_returns_true_if_Queue_is_full);
+        RUN_TEST(QueueIsFull_returns_false_if_Queue_is_not_full);
+    }
+}
+void Run_QueueIsEmpty_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(QueueIsEmpty_returns_true_if_Queue_is_empty);
+        RUN_TEST(QueueIsEmpty_returns_false_if_Queue_is_not_empty);
     }
 }
 void Queue_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_QueueInit_tests(Nope);
-        Run_QueueLength_tests(Nope);
-        Run_QueuePush_tests(Nope);
+        Run_QueueInit_tests(Yep);
+        Run_QueueLength_tests(Yep);
+        Run_QueuePush_tests(Yep);
         Run_QueuePop_tests(Yep);
+        Run_QueueIsFull_tests(Yep);
+        Run_QueueIsEmpty_tests(Yep);
     }
 }
 
@@ -121,7 +144,7 @@ int main()
     BiColorLed_tests(Nope);
     ReadWriteBits_tests(Nope);
     SpiSlave_tests(Nope);
-    Queue_tests(Yep);
+    Queue_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }
