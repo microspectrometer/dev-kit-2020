@@ -689,13 +689,15 @@ ret
 - and the clock is 10MHz
 - then each check for Queue empty takes 2.4µs
     - `24*(1/10.0e6) = 2.4e-6`
+- with inline, it takes 6 cycles
+- then each check for Queue empty takes 0.6µs
+    - `6*(1/10.0e6) = 6.0e-7`
 - I don't think this is a show-stopper:
     - response time to command is about 400x faster than a
       typical exposure
         - take 1ms as a typical exposure time
         - `(1.0e-3)/(2.4e-6)= 416.666667`
-    - best case, optimizing this will be something like a 4x
-      speedup
+    - optimizing is only a 4x speedup
 
 ### Calculate without inline
 - total cycle time *without inline* is:
@@ -716,14 +718,130 @@ ret
         - ret 4
 
 ### Calculate *with inline*
-- change Queue to inline
-- [ ] confirm Queue is inlined
-- [ ] calculate number of cycles:
-- call time + execution time = cycles
-    - call time is cycles:
-    - execution time is cycles:
+- there is no call, so call time is 0 cycles
+- execution time is 6 cycles:
+    - lds 2
+    - lds 2
+    - rjmp 2
 
+#### quick inline plan
+- commit any changes because the inline work is throwaway
+- do not add the word `inline`
+- `avr-gcc` does `inline` automatically as long as all source
+  code in `Queue.c` is in the same translation unit as
+  `vis-spi-out.c`
+- git reset to HEAD after the inline test:
 
+```bash
+$ git reset --hard HEAD
+```
+
+#### inline Queue with include .c
+- delete lib from list of libs in Makefile
+- rebuild: build should fail for undefined references
+- change `.h` in `#include "Queue.h"` to `.c` in `vis-spi-out.c`
+- rebuild
+- last check build size was 284 bytes
+- build size shrinks to 272 bytes
+
+#### inspect disassembly
+- look at .avra to see what changed
+    - the compiler automatically inlined everything Queue does
+- entire `main` is below
+- I split it up at:
+    - the call to SpiSlaveInit since that marks the start of
+      Queue code
+    - the check for Queue empty
+
+```asm
+000000a6 <main>:
+inline void SetBit(register_address reg_addr, bit_index bit)
+{
+    /** SetBit behavior:\n 
+      * - sets bit in register\n 
+      * */
+    *reg_addr |= 1<<bit;
+  a6:	38 9a       	sbi	0x07, 0	; 7
+  a8:	39 9a       	sbi	0x07, 1	; 7
+inline void ClearBit(register_address reg_addr, bit_index bit)
+{
+    /** ClearBit behavior:\n 
+      * - clears bit in register\n 
+      * */
+    *reg_addr &= ~(1<<bit);
+  aa:	40 98       	cbi	0x08, 0	; 8
+  ac:	41 98       	cbi	0x08, 1	; 8
+    BiColorLedOn(led_0); // sbi	0x07, 0
+    BiColorLedOn(led_1); // sbi	0x07, 1
+    BiColorLedGreen(led_0); // cbi	0x08, 0
+    BiColorLedGreen(led_1); // cbi	0x08, 1
+    // Configure as SPI slave, interrupts run `ISR(SPI_STC_vect)`
+    SpiSlaveInit(); // call	0xaa	; 0xaa <SpiSlaveInit>
+  ae:	0e 94 78 00 	call	0xf0	; 0xf0 <SpiSlaveInit>
+```
+
+- inline Queue code starts here:
+```asm
+      * - initializes Queue with length 0\n 
+      * */
+    // Create a pointer to the global Queue.
+    volatile Queue_s * pq = &Queue;
+    // Assign Queue to access the array
+    pq->buffer = buffer;
+  b2:	8a e0       	ldi	r24, 0x0A	; 10
+  b4:	91 e0       	ldi	r25, 0x01	; 1
+  b6:	90 93 01 01 	sts	0x0101, r25	; 0x800101 <__data_end+0x1>
+  ba:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__data_end>
+    // Store array size (this is the maximum length of the Queue)
+    pq->max_length = buffer_size_in_bytes;
+  be:	8b e0       	ldi	r24, 0x0B	; 11
+  c0:	90 e0       	ldi	r25, 0x00	; 0
+  c2:	90 93 07 01 	sts	0x0107, r25	; 0x800107 <__data_end+0x7>
+  c6:	80 93 06 01 	sts	0x0106, r24	; 0x800106 <__data_end+0x6>
+    // Empty the Rx Buffer: by setting head/tail index to first byte
+    pq->head = 0;
+  ca:	10 92 02 01 	sts	0x0102, r1	; 0x800102 <__data_end+0x2>
+    pq->tail = 0;
+  ce:	10 92 03 01 	sts	0x0103, r1	; 0x800103 <__data_end+0x3>
+    // queue length is 0
+    pq->length = 0;
+  d2:	10 92 05 01 	sts	0x0105, r1	; 0x800105 <__data_end+0x5>
+  d6:	10 92 04 01 	sts	0x0104, r1	; 0x800104 <__data_end+0x4>
+    // Queue incoming SPI bytes in a FIFO buffer.
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+  da:	80 e0       	ldi	r24, 0x00	; 0
+  dc:	91 e0       	ldi	r25, 0x01	; 1
+  de:	90 93 09 01 	sts	0x0109, r25	; 0x800109 <SpiFifo+0x1>
+  e2:	80 93 08 01 	sts	0x0108, r24	; 0x800108 <SpiFifo>
+```
+
+- check if Queue is empty starts here:
+```
+{ //! Return true if Queue is empty
+    /** QueueIsEmpty behavior:\n 
+      * - returns true if Queue is empty\n 
+      * - returns false if Queue is not empty\n 
+      * */
+    if (pq->length == 0) return true;
+  e6:	80 91 04 01 	lds	r24, 0x0104	; 0x800104 <__data_end+0x4>
+  ea:	90 91 05 01 	lds	r25, 0x0105	; 0x800105 <__data_end+0x5>
+  ee:	fb cf       	rjmp	.-10     	; 0xe6 <main+0x40>
+```
+
+#### confirm Queue is inlined
+- I did not have to add `inline`
+- by putting all Queue code in the same translation unit as the caller
+  `vis-spi-out.c`, avr-gcc did the inline for me
+- the code size reduction of 12 bytes is from eliminating the two calls
+- but more importantly, the execution time to check the Queue is much
+  shorter
+
+#### calculate number of cycles
+- there is no call, so call time is 0 cycles
+- execution time is 6 cycles:
+    - lds 2
+    - lds 2
+    - rjmp 2
 
 # keyword const is required for avr-gcc optimal assembly 
 - avr-gcc needs a `const` variable passed to a function to use the
@@ -2395,13 +2513,20 @@ reset.
 ## Check hash for sanity check
 Record the hash of the last commit:
 
+Get the last hash into the clipboard using Vim shortcut `;Gh`. Or
+display any number of previous hashes:
+
 ```bash
-$ git log | grep commit -m 1
+$ git log | grep commit -m 2
+commit 58961ae2c5e17dd5d2520a76df0f829f51a448ed
 commit a79386030aaa50d8928a18fc6929248cdf9d92d9
 ```
-Or get the hash in the clipboard using Vim shortcut `;Gh`.
 
-Use this hash to verify Git did expected reset.
+- Use this hash to verify Git did expected reset:
+- Paste the expected HEAD hash
+- Do the reset
+- Paste the actual HEAD hash on the next line
+- they should be identical
 
 ## Make any changes
 - edit Makefile
