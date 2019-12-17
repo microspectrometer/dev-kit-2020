@@ -38,17 +38,54 @@ void setup(void)
     // Initialize linear array configuration globals
     //
 }
+// ---Global Flags---
+volatile bool byte_received = false;
+volatile bool ERROR_byte_lost = false;
 void loop(void)
 {
     /* example_function(); */
     /* example_inline_function(); */
-    // Idle until a command is received from the SPI Master.
-    while (QueueIsEmpty(SpiFifo));
-    // placeholder for some code to execute after while loop
-    BiColorLedRed(led_0); // sbi	0x08, 0
-    // ---Assembly---
-        // call	0xec	; 0xec <QueueIsEmpty>
-        // lds	r24, 0x0100	; 0x800100 <__data_end>
-        // lds	r25, 0x0101	; 0x800101 <__data_end+0x1>
-        // rjmp	.-14     	; 0xc6 <main+0x20>
+    //
+    // Catch errors
+    if (ERROR_byte_lost)
+    {
+        // TODO: replace with an error handler
+        BiColorLedRed(led_0);
+    }
+    else if (QueueIsFull(SpiFifo))
+    {
+        // TODO: replace with an error handler
+        BiColorLedRed(led_0);
+    }
+    // Idle until a byte is received from the SPI Master.
+    while (!byte_received);
+    // Execute the command.
+    byte_received = false;
+    /* SensorCmd* SensorCmdFn = LookupSensorCmd(*Spi_spdr); */
+    /* if (SensorCmdFn == NULL) ReplyCommandInvalid(); */
+    /* else SensorCmdFn(); */
+    // Why buffer the byte? This makes sense in mid-execution of
+    // a command, not when first receiving a command.
+    /* // Buffer the received byte in the queue */
+    QueuePush(SpiFifo, *Spi_spdr);
+    /* // Process the Queue */
+    /* if (!QueueIsEmpty(SpiFifo)) */
+    /* { */
+    /*     // Pop the command and execute it. */
+    /*     // placeholder for some code to execute */
+    /*     BiColorLedGreen(led_0); // cbi	0x08, 0 */
+    /* } */
+}
+ISR(SPI_STC_vect)
+{
+    if (byte_received)
+    {
+        // Another transfer finished before reading previous byte
+        ERROR_byte_lost = true;
+    }
+    else
+    {
+        // Set flag: received byte over SPI
+        byte_received = true;
+    }
 }

@@ -1,3 +1,4 @@
+# train of thought
 - [x] want to see definition of variables in a lib optimized correctly
     - BiColorLed is a lib
     - it uses a register and pins
@@ -121,25 +122,341 @@
     - OK, I still don't know why it failed
     - but I fixed it by replacing the `==` comparison with a
       `g_strcmp0` comparison
-- [ ] move more code from old vis-spi-out to new vis-spi-out
-    - right now, avr-gcc build is 202 bytes
-
-    ```bash
-    $ date | clip
-    Tue, Dec 10, 2019 11:58:42 PM
-    $ avr-size.exe vis-spi-out/build/vis-spi-out.elf | clip
-    text | data|bss|dec|hex|filename
-    202  | 0   |0  |202|ca |vis-spi-out/build/vis-spi-out.elf
-    ```
-
-    - copy in code
-    - set up lib calls
-    - set up tests
-    - check build size does not suddenly jump
-    - exercise everything figured out so far
-    - [ ] am I encountering new cases?
-
 - [ ] split common Spi stuff from SpiSlave into a Spi lib
+- [ ] am I encountering new cases? not yet
+
+# move more code from old vis-spi-out to new vis-spi-out
+
+## 2019-12-13
+- right now, avr-gcc build is 202 bytes
+
+```bash
+$ date | clip
+Tue, Dec 10, 2019 11:58:42 PM
+$ avr-size.exe vis-spi-out/build/vis-spi-out.elf | clip
+text | data|bss|dec|hex|filename
+202  | 0   |0  |202|ca |vis-spi-out/build/vis-spi-out.elf
+```
+- copy in code
+- set up lib calls
+- set up tests
+- check build size does not suddenly jump
+- exercise everything figured out so far
+- add a lib
+
+## 2019-12-14
+- right now, avr-gcc build is 284 bytes
+
+```bash
+$ date | clip
+Tue, Dec 17, 2019 12:14:11 AM
+$ avr-size.exe build/vis-spi-out.elf | clip
+   text	   data	    bss	    dec	    hex	filename
+    284	      0	     21	    305	    131	build/vis-spi-out.elf
+```
+
+- next up for code to move is:
+### [x] `ISR(SPI_STC_vect)`
+- add code, check size increase, check assembly
+
+```bash
+Tue, Dec 17, 2019 12:25:54 AM
+text	   data	    bss	    dec	    hex	filename
+ 434	      2	     21	    457	    1c9	build/vis-spi-out.elf
+```
+
+- wow, size jumped up 150 bytes from 284 to 434 bytes
+- why?
+
+#### try just adding the interrupt
+
+```asm
+ISR(SPI_STC_vect)
+{
+  fc:	1f 92       	push	r1
+  fe:	0f 92       	push	r0
+ 100:	0f b6       	in	r0, 0x3f	; 63
+ 102:	0f 92       	push	r0
+ 104:	11 24       	eor	r1, r1
+ 106:	0f 90       	pop	r0
+ 108:	0f be       	out	0x3f, r0	; 63
+ 10a:	0f 90       	pop	r0
+ 10c:	1f 90       	pop	r1
+ 10e:	18 95       	reti
+```
+
+- size increases 20 bytes from 284 to 304 bytes
+
+#### try adding the call to QueueIsFull
+
+```asm
+ISR(SPI_STC_vect)
+{
+  fc:	1f 92       	push	r1
+  fe:	0f 92       	push	r0
+ 100:	0f b6       	in	r0, 0x3f	; 63
+ 102:	0f 92       	push	r0
+ 104:	11 24       	eor	r1, r1
+ 106:	2f 93       	push	r18
+ 108:	3f 93       	push	r19
+ 10a:	8f 93       	push	r24
+ 10c:	9f 93       	push	r25
+ 10e:	ef 93       	push	r30
+ 110:	ff 93       	push	r31
+    // ISR triggers when a SPI transfer completes.
+    if (QueueIsFull(SpiFifo))
+ 112:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <__data_end>
+ 116:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <__data_end+0x1>
+{ //! Return true if Queue is full
+    /** QueueIsFull behavior:\n 
+      * - returns true if Queue is full\n 
+      * - returns false if Queue is not full\n 
+      * */
+    if (pq->length >= pq->max_length) return true;
+ 11a:	24 81       	ldd	r18, Z+4	; 0x04
+ 11c:	35 81       	ldd	r19, Z+5	; 0x05
+ 11e:	86 81       	ldd	r24, Z+6	; 0x06
+ 120:	97 81       	ldd	r25, Z+7	; 0x07
+ 122:	28 17       	cp	r18, r24
+ 124:	39 07       	cpc	r19, r25
+ 126:	08 f0       	brcs	.+2      	; 0x12a <__vector_17+0x2e>
+ 128:	40 9a       	sbi	0x08, 0	; 8
+ 12a:	ff 91       	pop	r31
+ 12c:	ef 91       	pop	r30
+ 12e:	9f 91       	pop	r25
+ 130:	8f 91       	pop	r24
+ 132:	3f 91       	pop	r19
+ 134:	2f 91       	pop	r18
+ 136:	0f 90       	pop	r0
+ 138:	0f be       	out	0x3f, r0	; 63
+ 13a:	0f 90       	pop	r0
+ 13c:	1f 90       	pop	r1
+ 13e:	18 95       	reti
+```
+
+- size increases 48 bytes from 304 to 352 bytes
+
+#### try adding the call to QueuePush
+
+```asm
+ISR(SPI_STC_vect)
+{
+  fc:	1f 92       	push	r1
+  fe:	0f 92       	push	r0
+ 100:	0f b6       	in	r0, 0x3f	; 63
+ 102:	0f 92       	push	r0
+ 104:	11 24       	eor	r1, r1
+ 106:	2f 93       	push	r18
+ 108:	3f 93       	push	r19
+ 10a:	4f 93       	push	r20
+ 10c:	8f 93       	push	r24
+ 10e:	9f 93       	push	r25
+ 110:	af 93       	push	r26
+ 112:	bf 93       	push	r27
+ 114:	ef 93       	push	r30
+ 116:	ff 93       	push	r31
+    // ISR triggers when a SPI transfer completes.
+    if (QueueIsFull(SpiFifo))
+ 118:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <__data_end>
+ 11c:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <__data_end+0x1>
+{ //! Return true if Queue is full
+    /** QueueIsFull behavior:\n 
+      * - returns true if Queue is full\n 
+      * - returns false if Queue is not full\n 
+      * */
+    if (pq->length >= pq->max_length) return true;
+ 120:	24 81       	ldd	r18, Z+4	; 0x04
+ 122:	35 81       	ldd	r19, Z+5	; 0x05
+ 124:	86 81       	ldd	r24, Z+6	; 0x06
+ 126:	97 81       	ldd	r25, Z+7	; 0x07
+ 128:	28 17       	cp	r18, r24
+ 12a:	39 07       	cpc	r19, r25
+ 12c:	78 f0       	brcs	.+30     	; 0x14c <__vector_17+0x50>
+ 12e:	40 9a       	sbi	0x08, 0	; 8
+ 130:	ff 91       	pop	r31
+ 132:	ef 91       	pop	r30
+ 134:	bf 91       	pop	r27
+ 136:	af 91       	pop	r26
+ 138:	9f 91       	pop	r25
+ 13a:	8f 91       	pop	r24
+ 13c:	4f 91       	pop	r20
+ 13e:	3f 91       	pop	r19
+ 140:	2f 91       	pop	r18
+ 142:	0f 90       	pop	r0
+ 144:	0f be       	out	0x3f, r0	; 63
+ 146:	0f 90       	pop	r0
+ 148:	1f 90       	pop	r1
+ 14a:	18 95       	reti
+    else
+    {
+        // Buffer the received byte in the queue
+        QueuePush(SpiFifo, *Spi_spdr);
+ 14c:	a0 91 00 01 	lds	r26, 0x0100	; 0x800100 <Spi_spdr>
+ 150:	b0 91 01 01 	lds	r27, 0x0101	; 0x800101 <Spi_spdr+0x1>
+ 154:	4c 91       	ld	r20, X
+ 156:	24 81       	ldd	r18, Z+4	; 0x04
+ 158:	35 81       	ldd	r19, Z+5	; 0x05
+ 15a:	86 81       	ldd	r24, Z+6	; 0x06
+ 15c:	97 81       	ldd	r25, Z+7	; 0x07
+ 15e:	28 17       	cp	r18, r24
+ 160:	39 07       	cpc	r19, r25
+ 162:	30 f7       	brcc	.-52     	; 0x130 <__vector_17+0x34>
+      * - does not write byte if Queue is full\n 
+      * - hits end of buffer and wraps around if Queue is not full\n 
+      * */
+    if (QueueIsFull(pq)) return;
+    // wrap head to beginning of buffer when it reaches the end of the buffer
+    if (pq->head >= pq->max_length) pq->head = 0;
+ 164:	82 81       	ldd	r24, Z+2	; 0x02
+ 166:	26 81       	ldd	r18, Z+6	; 0x06
+ 168:	37 81       	ldd	r19, Z+7	; 0x07
+ 16a:	90 e0       	ldi	r25, 0x00	; 0
+ 16c:	82 17       	cp	r24, r18
+ 16e:	93 07       	cpc	r25, r19
+ 170:	08 f0       	brcs	.+2      	; 0x174 <__vector_17+0x78>
+ 172:	12 82       	std	Z+2, r1	; 0x02
+    pq->buffer[pq->head++] = data;
+ 174:	a0 81       	ld	r26, Z
+ 176:	b1 81       	ldd	r27, Z+1	; 0x01
+ 178:	82 81       	ldd	r24, Z+2	; 0x02
+ 17a:	91 e0       	ldi	r25, 0x01	; 1
+ 17c:	98 0f       	add	r25, r24
+ 17e:	92 83       	std	Z+2, r25	; 0x02
+ 180:	a8 0f       	add	r26, r24
+ 182:	b1 1d       	adc	r27, r1
+ 184:	4c 93       	st	X, r20
+    pq->length++;
+ 186:	84 81       	ldd	r24, Z+4	; 0x04
+ 188:	95 81       	ldd	r25, Z+5	; 0x05
+ 18a:	01 96       	adiw	r24, 0x01	; 1
+ 18c:	95 83       	std	Z+5, r25	; 0x05
+ 18e:	84 83       	std	Z+4, r24	; 0x04
+        // Non-ISR code must pop this byte from SpiFifo queue,
+        // even if it does not need it.
+    }
+}
+ 190:	cf cf       	rjmp	.-98     	; 0x130 <__vector_17+0x34>
+```
+
+- size increases 82 bytes from 352 to 343 bytes
+- it looks like the more members of the global Queue struct
+  that a call accesses, the more working space the ISR needs,
+  so it has *many* more registers to stash and unstash
+- and a Push is an expensive operation because it hits several
+  members of the struct
+- ideally I would not do a Push in the ISR, but I cannot
+  think of any alternative
+- so the ISR is a beast
+- even with Queue inlined, it takes time to run the ISR
+  because of the setup and teardown to handle all the values:
+  the data, the head, the tail, the length, etc.
+
+### [ ] how costly is having QueuePush in the ISR?
+- how costly is this?
+    - how many cycles is the ISR?
+    - what are the different scenarios when the ISR is triggered
+        - what is the processor doing while this runs?
+        - sometimes it *knows* it is waiting on a transfer, so it
+          just sits in a blocking loop
+        - othertimes it is acting on the last received command
+          while it is receiving more data for the command
+        - and sometimes it is writing and not waiting for any
+          data, but the interrupt triggers on both writes and
+          reads
+        - it might be faster to have a *SPI read* flag:
+            - ISR checks the flag
+            - it decides whether to queue the data
+            - if *SPI read* is clear, do not push onto queue
+            - if *SPI read* is set, push onto queue
+        - it's more data to work with
+        - but in the case of sending a frame of data, the write
+          should go faster if the ISR is not pushing onto the
+          stack
+        - alternatively, the ISR can just set flags
+        - and then the code checks flags in a round-robin and
+          acts on the flags
+        - actually, thinking of it this way, if there is nothing
+          I can do about the Queue being full, there is no help
+          in checking it in the ISR
+        - right now I only check it because I can and I want to
+          set an LED red
+        - that is a real waste of time
+
+- OK, the ISR is shorter
+    - total code size does not change
+    - actually it grew a few bytes because I changed from a red
+      LED to an `ERROR_flag`
+    - so the overhead of setup/teardown actually must not have
+      been too bad
+    - the real issue is run-time: want to get *out* of the ISR as
+      quick as possible
+- [ ] compare the cycle time of the shorter ISR below with the
+  original ISR above
+    - if it's about the same, the code is much simpler without
+      the flags
+    - this may be something I table and come back to later
+
+```asm
+ISR(SPI_STC_vect)
+{
+ 160:	1f 92       	push	r1
+ 162:	0f 92       	push	r0
+ 164:	0f b6       	in	r0, 0x3f	; 63
+ 166:	0f 92       	push	r0
+ 168:	11 24       	eor	r1, r1
+ 16a:	8f 93       	push	r24
+    if (byte_received)
+ 16c:	80 91 03 01 	lds	r24, 0x0103	; 0x800103 <byte_received>
+ 170:	81 11       	cpse	r24, r1
+ 172:	09 c0       	rjmp	.+18     	; 0x186 <__vector_17+0x26>
+        ERROR_byte_lost = true;
+    }
+    else
+    {
+        // Set flag: received byte over SPI
+        byte_received = true;
+ 174:	81 e0       	ldi	r24, 0x01	; 1
+ 176:	80 93 03 01 	sts	0x0103, r24	; 0x800103 <byte_received>
+    }
+}
+ 17a:	8f 91       	pop	r24
+ 17c:	0f 90       	pop	r0
+ 17e:	0f be       	out	0x3f, r0	; 63
+ 180:	0f 90       	pop	r0
+ 182:	1f 90       	pop	r1
+ 184:	18 95       	reti
+ISR(SPI_STC_vect)
+{
+    if (byte_received)
+    {
+        // Another transfer finished before reading previous byte
+        ERROR_byte_lost = true;
+ 186:	81 e0       	ldi	r24, 0x01	; 1
+ 188:	80 93 02 01 	sts	0x0102, r24	; 0x800102 <__data_end>
+    else
+    {
+        // Set flag: received byte over SPI
+        byte_received = true;
+    }
+}
+ 18c:	8f 91       	pop	r24
+ 18e:	0f 90       	pop	r0
+ 190:	0f be       	out	0x3f, r0	; 63
+ 192:	0f 90       	pop	r0
+ 194:	1f 90       	pop	r1
+ 196:	18 95       	reti
+```
+
+### [ ] unit test BiColorLedRed
+- I added it to the code without testing it
+
+### [ ] lib `UartSpi`
+- this lib is low-level hardware, needs to be fast!
+- inline everything
+
+### [ ] lib `Lis`
+- this lib is low-level hardware, needs to be fast!
+- inline everything
 
 # Add a lib
 - add a line of code in `vis-spi-out` that requires lib `Queue`
@@ -275,7 +592,7 @@ text|   data|    bss|    dec|    hex|filename
 - vis-spi-out unit-test build is still OK
 
 ## unit-test `QueueInit`
-- [ ] leave off here
+- [x] leave off here
     - do not try to optimize QueueInit
     - just add test coverage to it
 
