@@ -31,6 +31,7 @@ void BiColorLed_tests(bool run_test)
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(BiColorLedOn_sets_bit_in_ddr);
         RUN_TEST(BiColorLedGreen_clears_bit_in_port);
+        RUN_TEST(BiColorLedRed_sets_bit_in_port);
     }
 }
 void ReadWriteBits_tests(bool run_test)
@@ -141,10 +142,10 @@ void Queue_tests(bool run_test)
 int main()
 {
     UNITY_BEGIN();
-    BiColorLed_tests(Nope);
+    BiColorLed_tests(Yep);
     ReadWriteBits_tests(Nope);
     SpiSlave_tests(Nope);
-    Queue_tests(Yep);
+    Queue_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

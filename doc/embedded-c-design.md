@@ -811,8 +811,11 @@ Total number of instructions: 35
 - keeping the code simpler is not worth adding 10ms of overhead
   to send a frame
 
-### [ ] unit test BiColorLedRed
+### [x] unit test BiColorLedRed
 - I added it to the code without testing it
+
+### [ ] LookupSensorCmd
+- jump table
 
 ### [ ] lib `UartSpi`
 - this lib is low-level hardware, needs to be fast!
@@ -821,8 +824,6 @@ Total number of instructions: 35
 ### [ ] lib `Lis`
 - this lib is low-level hardware, needs to be fast!
 - inline everything
-
-### [ ] LookupSensorCmd
 
 # Add a lib
 - add a line of code in `vis-spi-out` that requires lib `Queue`

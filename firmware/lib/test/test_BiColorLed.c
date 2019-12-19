@@ -32,3 +32,18 @@ void BiColorLedGreen_clears_bit_in_port(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_LOW(led, *BiColorLed_port);
 }
+void BiColorLedRed_sets_bit_in_port(void)
+{
+    /* =====[ Setup ]===== */
+    *BiColorLed_port = 0x00;
+    bicolorled_num led = 0;
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        led,
+        *BiColorLed_port,
+        "Cannot run test: must start with port led bit clear!"
+        );
+    /* =====[ Operate ]===== */
+    BiColorLedRed(led);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(led, *BiColorLed_port);
+}
