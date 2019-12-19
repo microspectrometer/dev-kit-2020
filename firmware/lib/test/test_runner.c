@@ -142,9 +142,9 @@ void Queue_tests(bool run_test)
 int main()
 {
     UNITY_BEGIN();
-    BiColorLed_tests(Yep);
+    BiColorLed_tests(Nope);
     ReadWriteBits_tests(Nope);
-    SpiSlave_tests(Nope);
+    SpiSlave_tests(Yep);
     Queue_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();

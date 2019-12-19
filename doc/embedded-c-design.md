@@ -814,8 +814,55 @@ Total number of instructions: 35
 ### [x] unit test BiColorLedRed
 - I added it to the code without testing it
 
+### [ ] Replace listening_for_SPIM with Enable/DisableInterrupt
+- instead of checking the flag in the ISR
+- just disable the interrupt when writing a frame and clear the
+  interrupt flag manually
+- clearing the flag manually is *much* faster than executing the
+  ISR just to clear the flag!
+- EnableSpiInterrupt is private
+- [ ] make EnableSpiInterrupt public
+- [ ] create DisableSpiInterrupt
+- [ ] make all of these functions inline:
+    - EnableSpiInterrupt
+    - DisableSpiInterrupt
+    - ClearSpiInterruptFlag
+
 ### [ ] LookupSensorCmd
 - jump table
+- no reason to define different types of jump table function
+  pointers
+- make a header-only lib called `Cmd`
+
+```c
+// firmware/lib/src/Cmd.h
+//
+#ifndef _CMD_H
+#define _CMD_H
+typedef void (Cmd)(void);
+#endif // _CMD_H
+```
+
+- `Cmd` does not show up in list of libs in Makefile
+- `Cmd.h` is in `lib/src` directory, so `-I../lib/src` enables
+  `vis-spi-out.c` to pick up the `Cmd` typedef with
+  `#include "Cmd.h"`
+- Example:
+
+```c
+// firmware/src/vis-spi-out.c
+//
+#include "Cmd.h"
+//...
+void loop(void)
+{
+    //...
+    Cmd* DoSensorCmd = LookupSensorCmd(*Spi_spdr);
+    if (DoSensorCmd == NULL) ReplyCommandInvalid();
+    else DoSensorCmd();
+    //...
+}
+```
 
 ### [ ] lib `UartSpi`
 - this lib is low-level hardware, needs to be fast!
@@ -3297,6 +3344,8 @@ Record the hash of the last commit:
 
 Get the last hash into the clipboard using Vim shortcut `;Gh`. Or
 display any number of previous hashes:
+
+4e14d1bdb352edaacefdd4412000802a629136c3
 
 ```bash
 $ git log | grep commit -m 2

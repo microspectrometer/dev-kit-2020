@@ -4,6 +4,8 @@
 // prj libs
 #include "BiColorLed.h"
 #include "SpiSlave.h"
+#include "Cmd.h"
+#include <stdlib.h> // defines NULL
 // hardware i/o definitions
 #include "Hardware.h"
 #include "Queue.h"
@@ -39,19 +41,6 @@ void setup(void)
     // Initialize linear array configuration globals
     //
 }
-// ---Global Flags---
-/** Clear flag before writing a frame.
- *  Set flag again after writing a frame.
- *  - writing bytes over SPI triggers the SPI ISR
- *  - value received in SPDR is garbage on a write
- *  - if flag is clear, ISR does not push garbage byte onto the
- *  Queue
- *  - two benefits:
- *    - ISR execution time is cut in half
- *    - eliminates QueuePop (to toss garbage byte) after each
- *    write
- * */
-volatile bool listening_for_SPIM = true;
 void loop(void)
 {
     /* example_function(); */
@@ -66,12 +55,30 @@ void loop(void)
     // Idle until a command is received
     while (QueueIsEmpty(SpiFifo));
     // Execute the command.
-    /* SensorCmd* SensorCmdFn = LookupSensorCmd(*Spi_spdr); */
-    /* if (SensorCmdFn == NULL) ReplyCommandInvalid(); */
-    /* else SensorCmdFn(); */
+    Cmd* DoSensorCmd = LookupSensorCmd(*Spi_spdr);
+    if (SensorCmdFn == NULL) ReplyCommandInvalid();
+    else DoSensorCmd();
+    DoSensorCmd();
 }
 ISR(SPI_STC_vect)
 {
-    // Push data onto Queue when listening for SPI Master.
-    if (listening_for_SPIM) QueuePush(SpiFifo, *Spi_spdr);
+    QueuePush(SpiFifo, *Spi_spdr);
 }
+Cmd* LookupSensorCmd(cmd const key)
+{
+    /** Look up command and return a pointer to the function
+     *  that does the command.
+     *  - input key is defined in the USBProtocol
+     *  - bob
+     * */
+    // pf is an array of pointers to SensorCmd functions
+    // pf lives in static memory, not on the `LookupSensorCmd` stack frame
+    static Cmd* const pf[] = {
+        NULL,
+        };
+    // Return func ptr. Prevent attempts at out-of-bounds access.
+    if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
+    // Out of bounds keys return a NULL pointer.
+    else return NULL; // error
+}
+
