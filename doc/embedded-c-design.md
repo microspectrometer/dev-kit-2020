@@ -144,7 +144,7 @@ text | data|bss|dec|hex|filename
 - exercise everything figured out so far
 - add a lib
 
-## 2019-12-14
+## 2019-12-14 through 2019-12-18
 - right now, avr-gcc build is 284 bytes
 
 ```bash
@@ -156,6 +156,7 @@ $ avr-size.exe build/vis-spi-out.elf | clip
 ```
 
 - next up for code to move is:
+
 ### [x] `ISR(SPI_STC_vect)`
 - add code, check size increase, check assembly
 
@@ -169,6 +170,10 @@ text	   data	    bss	    dec	    hex	filename
 - why?
 
 #### try just adding the interrupt
+
+- calculate time for empty ISR routine:
+    - Total number of cycles: 19
+    - Total number of instructions: 10
 
 ```asm
 ISR(SPI_STC_vect)
@@ -188,6 +193,10 @@ ISR(SPI_STC_vect)
 - size increases 20 bytes from 284 to 304 bytes
 
 #### try adding the call to QueueIsFull
+
+- calculate time for ISR routine with call to QueueIsFull :
+    - Total number of cycles: 61
+    - Total number of instructions: 32
 
 ```asm
 ISR(SPI_STC_vect)
@@ -237,6 +246,10 @@ ISR(SPI_STC_vect)
 - size increases 48 bytes from 304 to 352 bytes
 
 #### try adding the call to QueuePush
+
+- calculate time for ISR routine with two Queue calls:
+    - Total number of cycles: 130
+    - Total number of instructions: 71
 
 ```asm
 ISR(SPI_STC_vect)
@@ -351,50 +364,61 @@ ISR(SPI_STC_vect)
   because of the setup and teardown to handle all the values:
   the data, the head, the tail, the length, etc.
 
-### [ ] how costly is having QueuePush in the ISR?
-- how costly is this?
-    - how many cycles is the ISR?
-    - what are the different scenarios when the ISR is triggered
-        - what is the processor doing while this runs?
-        - sometimes it *knows* it is waiting on a transfer, so it
-          just sits in a blocking loop
-        - othertimes it is acting on the last received command
-          while it is receiving more data for the command
-        - and sometimes it is writing and not waiting for any
-          data, but the interrupt triggers on both writes and
-          reads
-        - it might be faster to have a *SPI read* flag:
-            - ISR checks the flag
-            - it decides whether to queue the data
-            - if *SPI read* is clear, do not push onto queue
-            - if *SPI read* is set, push onto queue
-        - it's more data to work with
-        - but in the case of sending a frame of data, the write
-          should go faster if the ISR is not pushing onto the
-          stack
-        - alternatively, the ISR can just set flags
-        - and then the code checks flags in a round-robin and
-          acts on the flags
-        - actually, thinking of it this way, if there is nothing
-          I can do about the Queue being full, there is no help
-          in checking it in the ISR
-        - right now I only check it because I can and I want to
-          set an LED red
-        - that is a real waste of time
+### [x] how costly is having QueuePush in the ISR?
+- how many cycles is the ISR with QueuePush?
+    - copy .avra code into a buffer
+    - `;avrt` to calculate time in cycles
+- 19 cycles:
+    - ISR with no calls (empty)
+- 61 cycles:
+    - ISR with a call to `QueueIsFull`
+- 130 cycles:
+    - ISR with a calls to:
+        - `QueueIsFull`
+        - `QueuePush`
+- so:
+    - call to `QueueIsFull` is an additional 42 cycles
+    - call to `QueuePush` is an additional 69 cycles
 
-- OK, the ISR is shorter
-    - total code size does not change
-    - actually it grew a few bytes because I changed from a red
-      LED to an `ERROR_flag`
-    - so the overhead of setup/teardown actually must not have
-      been too bad
-    - the real issue is run-time: want to get *out* of the ISR as
-      quick as possible
-- [ ] compare the cycle time of the shorter ISR below with the
-  original ISR above
-    - if it's about the same, the code is much simpler without
-      the flags
-    - this may be something I table and come back to later
+### list different scenarios when the ISR is triggered
+- what is the processor doing while this runs?
+- it *knows* it is waiting on a transfer:
+    - just sit in a blocking loop
+- it is still busy with the last received command when:
+    - more data is sent for the last command
+    - a new command is sent
+- it is writing and not waiting for any data
+    - the interrupt triggers on both writes and reads
+
+### explore flags for speed up
+- is it faster to have a *SPI read* flag?
+- at a minimum I should eliminate the call to `QueueIsFull`
+- `QueuePush` will handle the case that the `QueueIsFull`
+
+### idea 1: ISR checks the flag to decide whether to queue the data
+- decision:
+    - if *SPI read* is clear, do not push onto queue
+    - if *SPI read* is set, push onto queue
+- expect speed up for frame writes:
+    - it's more data to work with
+    - but in the case of sending a frame of data, the write
+      should go faster if the ISR is not pushing onto the
+      stack
+    - this is probably the big hit causing sluggishness
+    - the wasted ISR calls during the writes
+
+### idea 2: ISR just sets flags
+- main loop checks flags in a round-robin and acts on the flags
+- actually, thinking of it this way, if there is nothing
+  I can do about the Queue being full, there is no help
+  in checking it in the ISR
+- right now I only check it because I can and I want to
+  set an LED red
+- that is a real waste of time
+- I should only call QueueIsFull when there is something
+  actionable to be done about a full Queue
+
+### Assembly for flags-only in ISR
 
 ```asm
 ISR(SPI_STC_vect)
@@ -447,6 +471,346 @@ ISR(SPI_STC_vect)
  196:	18 95       	reti
 ```
 
+### Using flags makes the ISR shorter and faster
+- calculate time for ISR routine with flags instead of Queue
+  calls:
+    - Total number of cycles: 49
+    - Total number of instructions: 25
+- the ISR is shorter and faster
+- but total code size does not change
+    - total code size actually grew a few bytes because I changed
+      from:
+        - a red LED as an error handler placeholder
+    - to:
+        - setting an `ERROR_flag`
+
+### takeaways so far: move out QueueIsFull
+- the overhead of ISR setup/teardown to make space for making
+  Queue calls is no different than the overhead in calling
+  these functions outside the ISR
+- the real issue, therefore, is speed, not overall code size
+- get *out* of the ISR as quick as possible by avoiding calls
+- at a minimum eliminate the call to QueueIsFull in the ISR
+- flags are a way to eliminate the call to QueuePush
+- but flags make the code more complicated
+- try using flags for speed ups to branch around calls instead of
+  eliminating calls in the ISR
+
+### checking `byte_received` flag is slower than checking `QueueIsEmpty`
+- main loop with call to QueueIsEmpty:
+```c
+    // Idle until a command is received
+    while (QueueIsEmpty(SpiFifo));
+```
+- Total number of cycles: 9
+- Total number of instructions: 5
+```asm
+ldd	r24, Z+4	; 0x04
+ldd	r25, Z+5	; 0x05
+or	r24, r25
+breq	.-8      	; 0x100 <main+0x5a>
+rjmp	.-34     	; 0xe8 <main+0x42>
+```
+
+- try checking a `byte_received` flag instead of checking if the
+  Queue is empty
+- main loop with flag:
+```c
+    while (!byte_received);
+    // Clear flag.
+    byte_received = false;
+```
+- Total number of cycles: 7
+- Total number of instructions: 4
+```asm
+ lds	r24, 0x0102	; 0x800102 <__data_end>
+ and	r24, r24
+ breq	.-8      	; 0xf8 <main+0x52>
+ sts	0x0102, r1	; 0x800102 <__data_end>
+```
+
+### takeaway: do not use a `byte_received` flag
+- the flag cuts two cycles off the while loop, but it adds some
+  cycles to the ISR to set this flag!
+- that is the **opposite** of what I'm trying to do
+- I want faster ISR code at the expense of slower non-ISR code
+
+### idea 3: QueuePush is only call in ISR and depends on flag
+- only call is QueuePush
+- and it is only called if the flag is set
+- the flag indicates the processor is in a state where it is
+  expecting data from the master
+
+#### what is the speed difference
+- difference between executing the ISR when:
+    - the flag *is set*: QueuePush is called
+    - vs:
+    - the flag *is not set*: QueuePush is skipped
+
+#### C code without any flags to check in ISR
+
+```c
+ISR(SPI_STC_vect)
+{
+    QueuePush(SpiFifo, *Spi_spdr);
+}
+```
+
+#### Assembly code without any flags to check in ISR
+
+```asm
+ISR(SPI_STC_vect)
+{
+ 10a:	1f 92       	push	r1
+ 10c:	0f 92       	push	r0
+ 10e:	0f b6       	in	r0, 0x3f	; 63
+ 110:	0f 92       	push	r0
+ 112:	11 24       	eor	r1, r1
+ 114:	2f 93       	push	r18
+ 116:	3f 93       	push	r19
+ 118:	4f 93       	push	r20
+ 11a:	8f 93       	push	r24
+ 11c:	9f 93       	push	r25
+ 11e:	af 93       	push	r26
+ 120:	bf 93       	push	r27
+ 122:	ef 93       	push	r30
+ 124:	ff 93       	push	r31
+    QueuePush(SpiFifo, *Spi_spdr); // "client" must pop data from SpiFifo queue
+ 126:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <Spi_spdr>
+ 12a:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <Spi_spdr+0x1>
+ 12e:	40 81       	ld	r20, Z
+ 130:	e0 91 02 01 	lds	r30, 0x0102	; 0x800102 <__data_end>
+ 134:	f0 91 03 01 	lds	r31, 0x0103	; 0x800103 <__data_end+0x1>
+{ //! Return true if Queue is full
+    /** QueueIsFull behavior:\n 
+      * - returns true if Queue is full\n 
+      * - returns false if Queue is not full\n 
+      * */
+    if (pq->length >= pq->max_length) return true;
+ 138:	24 81       	ldd	r18, Z+4	; 0x04
+ 13a:	35 81       	ldd	r19, Z+5	; 0x05
+ 13c:	86 81       	ldd	r24, Z+6	; 0x06
+ 13e:	97 81       	ldd	r25, Z+7	; 0x07
+ 140:	28 17       	cp	r18, r24
+ 142:	39 07       	cpc	r19, r25
+ 144:	a8 f4       	brcc	.+42     	; 0x170 <__vector_17+0x66>
+      * - does not write byte if Queue is full\n 
+      * - hits end of buffer and wraps around if Queue is not full\n 
+      * */
+    if (QueueIsFull(pq)) return;
+    // wrap head to beginning of buffer when it reaches the end of the buffer
+    if (pq->head >= pq->max_length) pq->head = 0;
+ 146:	82 81       	ldd	r24, Z+2	; 0x02
+ 148:	26 81       	ldd	r18, Z+6	; 0x06
+ 14a:	37 81       	ldd	r19, Z+7	; 0x07
+ 14c:	90 e0       	ldi	r25, 0x00	; 0
+ 14e:	82 17       	cp	r24, r18
+ 150:	93 07       	cpc	r25, r19
+ 152:	e0 f4       	brcc	.+56     	; 0x18c <__vector_17+0x82>
+    pq->buffer[pq->head++] = data;
+ 154:	a0 81       	ld	r26, Z
+ 156:	b1 81       	ldd	r27, Z+1	; 0x01
+ 158:	82 81       	ldd	r24, Z+2	; 0x02
+ 15a:	91 e0       	ldi	r25, 0x01	; 1
+ 15c:	98 0f       	add	r25, r24
+ 15e:	92 83       	std	Z+2, r25	; 0x02
+ 160:	a8 0f       	add	r26, r24
+ 162:	b1 1d       	adc	r27, r1
+ 164:	4c 93       	st	X, r20
+    pq->length++;
+ 166:	84 81       	ldd	r24, Z+4	; 0x04
+ 168:	95 81       	ldd	r25, Z+5	; 0x05
+ 16a:	01 96       	adiw	r24, 0x01	; 1
+ 16c:	95 83       	std	Z+5, r25	; 0x05
+ 16e:	84 83       	std	Z+4, r24	; 0x04
+}
+ 170:	ff 91       	pop	r31
+ 172:	ef 91       	pop	r30
+ 174:	bf 91       	pop	r27
+ 176:	af 91       	pop	r26
+ 178:	9f 91       	pop	r25
+ 17a:	8f 91       	pop	r24
+ 17c:	4f 91       	pop	r20
+ 17e:	3f 91       	pop	r19
+ 180:	2f 91       	pop	r18
+ 182:	0f 90       	pop	r0
+ 184:	0f be       	out	0x3f, r0	; 63
+ 186:	0f 90       	pop	r0
+ 188:	1f 90       	pop	r1
+ 18a:	18 95       	reti
+      * - does not write byte if Queue is full\n 
+      * - hits end of buffer and wraps around if Queue is not full\n 
+      * */
+    if (QueueIsFull(pq)) return;
+    // wrap head to beginning of buffer when it reaches the end of the buffer
+    if (pq->head >= pq->max_length) pq->head = 0;
+ 18c:	12 82       	std	Z+2, r1	; 0x02
+ 18e:	e2 cf       	rjmp	.-60     	; 0x154 <__vector_17+0x4a>
+```
+
+#### calculate time for this ISR routine
+- Total number of cycles: 116
+- Total number of instructions: 63
+
+#### C code with flag to check before QueuePush
+
+```c
+volatile bool listening = true;
+// ...
+ISR(SPI_STC_vect)
+{
+    // Push data onto Queue when listening for SPI Master.
+    if (listening) QueuePush(SpiFifo, *Spi_spdr);
+}
+```
+
+#### Assembly code with flag to check before QueuePush
+```asm
+ISR(SPI_STC_vect)
+{
+ 10a:	1f 92       	push	r1
+ 10c:	0f 92       	push	r0
+ 10e:	0f b6       	in	r0, 0x3f	; 63
+ 110:	0f 92       	push	r0
+ 112:	11 24       	eor	r1, r1
+ 114:	2f 93       	push	r18
+ 116:	3f 93       	push	r19
+ 118:	4f 93       	push	r20
+ 11a:	8f 93       	push	r24
+ 11c:	9f 93       	push	r25
+ 11e:	af 93       	push	r26
+ 120:	bf 93       	push	r27
+ 122:	ef 93       	push	r30
+ 124:	ff 93       	push	r31
+    // Push data onto Queue when listening for SPI Master.
+    if (listening) QueuePush(SpiFifo, *Spi_spdr);
+ 126:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__data_start>
+ 12a:	88 23       	and	r24, r24
+ 12c:	81 f0       	breq	.+32     	; 0x14e <__vector_17+0x44>
+ 12e:	e0 91 01 01 	lds	r30, 0x0101	; 0x800101 <Spi_spdr>
+ 132:	f0 91 02 01 	lds	r31, 0x0102	; 0x800102 <Spi_spdr+0x1>
+ 136:	40 81       	ld	r20, Z
+ 138:	e0 91 04 01 	lds	r30, 0x0104	; 0x800104 <__data_end>
+ 13c:	f0 91 05 01 	lds	r31, 0x0105	; 0x800105 <__data_end+0x1>
+{ //! Return true if Queue is full
+    /** QueueIsFull behavior:\n 
+      * - returns true if Queue is full\n 
+      * - returns false if Queue is not full\n 
+      * */
+    if (pq->length >= pq->max_length) return true;
+ 140:	24 81       	ldd	r18, Z+4	; 0x04
+ 142:	35 81       	ldd	r19, Z+5	; 0x05
+ 144:	86 81       	ldd	r24, Z+6	; 0x06
+ 146:	97 81       	ldd	r25, Z+7	; 0x07
+ 148:	28 17       	cp	r18, r24
+ 14a:	39 07       	cpc	r19, r25
+ 14c:	70 f0       	brcs	.+28     	; 0x16a <__vector_17+0x60>
+}
+ 14e:	ff 91       	pop	r31
+ 150:	ef 91       	pop	r30
+ 152:	bf 91       	pop	r27
+ 154:	af 91       	pop	r26
+ 156:	9f 91       	pop	r25
+ 158:	8f 91       	pop	r24
+ 15a:	4f 91       	pop	r20
+ 15c:	3f 91       	pop	r19
+ 15e:	2f 91       	pop	r18
+ 160:	0f 90       	pop	r0
+ 162:	0f be       	out	0x3f, r0	; 63
+ 164:	0f 90       	pop	r0
+ 166:	1f 90       	pop	r1
+ 168:	18 95       	reti
+      * - does not write byte if Queue is full\n 
+      * - hits end of buffer and wraps around if Queue is not full\n 
+      * */
+    if (QueueIsFull(pq)) return;
+    // wrap head to beginning of buffer when it reaches the end of the buffer
+    if (pq->head >= pq->max_length) pq->head = 0;
+ 16a:	82 81       	ldd	r24, Z+2	; 0x02
+ 16c:	26 81       	ldd	r18, Z+6	; 0x06
+ 16e:	37 81       	ldd	r19, Z+7	; 0x07
+ 170:	90 e0       	ldi	r25, 0x00	; 0
+ 172:	82 17       	cp	r24, r18
+ 174:	93 07       	cpc	r25, r19
+ 176:	08 f0       	brcs	.+2      	; 0x17a <__vector_17+0x70>
+ 178:	12 82       	std	Z+2, r1	; 0x02
+    pq->buffer[pq->head++] = data;
+ 17a:	a0 81       	ld	r26, Z
+ 17c:	b1 81       	ldd	r27, Z+1	; 0x01
+ 17e:	82 81       	ldd	r24, Z+2	; 0x02
+ 180:	91 e0       	ldi	r25, 0x01	; 1
+ 182:	98 0f       	add	r25, r24
+ 184:	92 83       	std	Z+2, r25	; 0x02
+ 186:	a8 0f       	add	r26, r24
+ 188:	b1 1d       	adc	r27, r1
+ 18a:	4c 93       	st	X, r20
+    pq->length++;
+ 18c:	84 81       	ldd	r24, Z+4	; 0x04
+ 18e:	95 81       	ldd	r25, Z+5	; 0x05
+ 190:	01 96       	adiw	r24, 0x01	; 1
+ 192:	95 83       	std	Z+5, r25	; 0x05
+ 194:	84 83       	std	Z+4, r24	; 0x04
+ 196:	db cf       	rjmp	.-74     	; 0x14e <__vector_17+0x44>
+
+```
+
+#### calculate time for this ISR routine
+- Total number of cycles: 121
+- Total number of instructions: 66
+
+#### slow down when listening is negligible
+- 116 cycles: *always* push onto Queue, no flag
+- 121 cycles: check for `listening` flag before pushing
+
+#### code skipped if `listening` flag is not set
+
+```asm
+  lds	r30, 0x0101	; 0x800101 <Spi_spdr>
+  lds	r31, 0x0102	; 0x800102 <Spi_spdr+0x1>
+  ld	r20, Z
+  lds	r30, 0x0104	; 0x800104 <__data_end>
+  lds	r31, 0x0105	; 0x800105 <__data_end+0x1>
+  ldd	r18, Z+4	; 0x04
+  ldd	r19, Z+5	; 0x05
+  ldd	r24, Z+6	; 0x06
+  ldd	r25, Z+7	; 0x07
+  cp	r18, r24
+  cpc	r19, r25
+  brcs	.+28     	; 0x16a <__vector_17+0x60>
+```
+
+#### skipping QueuePush saves 61 cycles!
+Total number of cycles: 61
+Total number of instructions: 35
+
+- How much time does this save?
+- Reduce 121 cycles to 61 cycles
+- at 10MHz, this saves 6.1µs
+    - `61*1/10.0e6= 6.1e-6`
+- for comparison, ref-dev-kit-mike code is 151 cycles:
+    - 91 cycles for the ISR
+    - plus 60 cycles for a call to QueuePush
+
+#### time savings justifies the added complexity
+- flag is *clear* when writing a frame
+- a frame is 784 bytes
+- that is 784 times that 6.1µs is saved
+- then the time wasted in the ISR is 4.782ms
+    - `6.1e-6*784 = 0.004782`
+- but the client has to pop the garbage byte off the Queue
+- assume that also takes 6.1µs
+- then time per byte sent is 12.2µs
+- and the total time saved in sending a frame is 9.565ms
+    - `12.2e-6*784 = 0.009565` 
+- that is almost 10ms
+- compared with a 1ms exposure time, plus the time to actually
+  send the data, shaving off 10ms is *just* long enough to make a
+  noticeable decrease in the snappiness of a live response
+- this speed-up is worth dealing with the state introduced by the
+  flag
+- keeping the code simpler is not worth adding 10ms of overhead
+  to send a frame
+
 ### [ ] unit test BiColorLedRed
 - I added it to the code without testing it
 
@@ -457,6 +821,8 @@ ISR(SPI_STC_vect)
 ### [ ] lib `Lis`
 - this lib is low-level hardware, needs to be fast!
 - inline everything
+
+### [ ] LookupSensorCmd
 
 # Add a lib
 - add a line of code in `vis-spi-out` that requires lib `Queue`

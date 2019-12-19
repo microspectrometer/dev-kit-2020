@@ -159,6 +159,9 @@ build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${nonhw_lib_buil
 #  -S: output the binary with source code
 build/%.avra: build/%.elf
 	avr-objdump -h -S $^ > $@
+# Add avr-nm output. This lists size of each function!
+# avr-nm 
+# Also try using these on object files instead of final .elf
 
 #--------------------------------------------------------------
 # ;fa or ;mfa

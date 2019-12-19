@@ -1,3 +1,4 @@
+/** \file */
 // app libs
 #include "Example.h"
 // prj libs
@@ -39,53 +40,38 @@ void setup(void)
     //
 }
 // ---Global Flags---
-volatile bool byte_received = false;
-volatile bool ERROR_byte_lost = false;
+/** Clear flag before writing a frame.
+ *  Set flag again after writing a frame.
+ *  - writing bytes over SPI triggers the SPI ISR
+ *  - value received in SPDR is garbage on a write
+ *  - if flag is clear, ISR does not push garbage byte onto the
+ *  Queue
+ *  - two benefits:
+ *    - ISR execution time is cut in half
+ *    - eliminates QueuePop (to toss garbage byte) after each
+ *    write
+ * */
+volatile bool listening_for_SPIM = true;
 void loop(void)
 {
     /* example_function(); */
     /* example_inline_function(); */
     //
     // Catch errors
-    if (ERROR_byte_lost)
+    if (QueueIsFull(SpiFifo))
     {
         // TODO: replace with an error handler
         BiColorLedRed(led_0);
     }
-    else if (QueueIsFull(SpiFifo))
-    {
-        // TODO: replace with an error handler
-        BiColorLedRed(led_0);
-    }
-    // Idle until a byte is received from the SPI Master.
-    while (!byte_received);
+    // Idle until a command is received
+    while (QueueIsEmpty(SpiFifo));
     // Execute the command.
-    byte_received = false;
     /* SensorCmd* SensorCmdFn = LookupSensorCmd(*Spi_spdr); */
     /* if (SensorCmdFn == NULL) ReplyCommandInvalid(); */
     /* else SensorCmdFn(); */
-    // Why buffer the byte? This makes sense in mid-execution of
-    // a command, not when first receiving a command.
-    /* // Buffer the received byte in the queue */
-    QueuePush(SpiFifo, *Spi_spdr);
-    /* // Process the Queue */
-    /* if (!QueueIsEmpty(SpiFifo)) */
-    /* { */
-    /*     // Pop the command and execute it. */
-    /*     // placeholder for some code to execute */
-    /*     BiColorLedGreen(led_0); // cbi	0x08, 0 */
-    /* } */
 }
 ISR(SPI_STC_vect)
 {
-    if (byte_received)
-    {
-        // Another transfer finished before reading previous byte
-        ERROR_byte_lost = true;
-    }
-    else
-    {
-        // Set flag: received byte over SPI
-        byte_received = true;
-    }
+    // Push data onto Queue when listening for SPI Master.
+    if (listening_for_SPIM) QueuePush(SpiFifo, *Spi_spdr);
 }
