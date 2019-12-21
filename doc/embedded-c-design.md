@@ -127,6 +127,88 @@
 
 # move more code from old vis-spi-out to new vis-spi-out
 
+# why not make all lib functions `inline`
+- making everything `inline` makes this all a lot simpler
+
+## messy case actually not messy
+- I thought I found one case where `inline` makes things messy
+- lib `SpiSlave` function `EnableSpiInterrupt` calls AVR macros
+  `sei` and `cli`
+- therefore `EnableSpiInterrupt` should not be `inline`!
+- why not?
+- the macros `sei` and `cli` are defined in `avr/interrupt.h`
+- it's cleaner to include `avr/interrupt.h` via the Makefile:
+    - if target is test, build rule uses fake version
+    - if target is AVR, build rule uses real version
+    - the list of used AVR libs goes in the Makefile, it does not
+      have to appear anywhere else
+- but that only works if the call to `sei` and `cli` is in the
+  `.c` file
+- if those calls happen in the `.h` file, the compiler encounters
+  `sei` and `cli` before it has the definition
+- But I was wrong about this being a reason *not* to inline.
+  There is a simple fix for this problem.
+- Add `${IncludeFakeAvrHeaders}` to the build target for the main
+  object file (or whichever file Make complains about):
+
+```make
+build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes}
+	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
+```
+
+- This puts a `-include` flag with the fake header path
+- the `-include` flag:
+
+> processes the file as if "#include "file"" appeared as the
+> first line of the primary source file.
+
+- In the end, I decided not to set up `EnableSpiInterrupt` for
+  `inline`. The function is only called at the end of the frame
+  write, not on each byte transmission like
+  `ClearSpiInterruptFlag` is, so the cost of the `call` is
+  minimal
+- If I decide to `inline` it later, just move it to the header
+  and go back to the `#ifndef SPISLAVE_FAKED ... #else` form (so
+  that the tests can still fake the function):
+
+```c
+#ifndef SPISLAVE_FAKED
+inline void EnableSpiInterrupt(void)
+{
+    // ... function body
+}
+#else
+void EnableSpiInterrupt(void);
+#endif
+```
+
+## I am confused about -Hardware.h header
+- `SpiSlave-Hardware.h` is not included in `Hardware.h`
+- [x] is `avr-gcc` somehow picking up these definitions for the
+  `inline` functions when it builds `vis-spi-out.o`?
+    - I don't see how this could possibly happen
+    - I think if I want `inline` functions in `SpiSlave`, then I
+      need to make `SpiSlave-Hardware.h` part of the translation
+      unit with `vis-spi-out.c`
+    - come back to this *after* `UartSpi` is set up for dev
+    - ok, `UartSpi` is set up, now look at `.avra` and try to
+      find `Spi_spdr` -- is it loaded from mem?
+    - Yes, check it out. SPDR is 0x2E and SPSR is 0x2D.
+    - The values are hard-coded into the assembly, not loaded
+      from memory.
+
+```asm
+inline uint8_t ReadSpiStatusRegister(void) { return *Spi_spsr; }
+ 1b8:	8d b5       	in	r24, 0x2d	; 45
+inline uint8_t ReadSpiDataRegister(void) { return *Spi_spdr; }
+ 1ba:	8e b5       	in	r24, 0x2e	; 46
+```
+
+- [ ] how is this possible?
+    - `vis-spi-out.o` does not have the hardware file in its
+      translation unit
+    - how does it fill in the hardware values?
+
 ## 2019-12-13
 - right now, avr-gcc build is 202 bytes
 
@@ -820,15 +902,19 @@ Total number of instructions: 35
   interrupt flag manually
 - clearing the flag manually is *much* faster than executing the
   ISR just to clear the flag!
-- EnableSpiInterrupt is private
-- [ ] make EnableSpiInterrupt public
-- [ ] create DisableSpiInterrupt
-- [ ] make all of these functions inline:
-    - EnableSpiInterrupt
-    - DisableSpiInterrupt
-    - ClearSpiInterruptFlag
+- `EnableSpiInterrupt` is private
+- [x] make `EnableSpiInterrupt` public
+- [x] create `DisableSpiInterrupt`
+    - do not write a unit test
+    - this is low-level assembly
+- [x] make all of these functions inline:
+    - `EnableSpiInterrupt`
+    - `DisableSpiInterrupt`
+    - `ClearSpiInterruptFlag`
+        - `ReadSpiStatusRegister`
+        - `ReadSpiDataRegister`
 
-### [ ] LookupSensorCmd
+### [x] LookupSensorCmd
 - jump table
 - no reason to define different types of jump table function
   pointers
