@@ -18,6 +18,7 @@ volatile uint8_t spi_rx_buffer[max_length_of_queue];
 
 static void setup(void);
 static void loop(void);
+static Cmd* LookupSensorCmd(cmd const);
 int main()
 {
     setup();
@@ -56,9 +57,9 @@ void loop(void)
     while (QueueIsEmpty(SpiFifo));
     // Execute the command.
     Cmd* DoSensorCmd = LookupSensorCmd(*Spi_spdr);
-    if (SensorCmdFn == NULL) ReplyCommandInvalid();
+    /* if (DoSensorCmd == NULL) ReplyCommandInvalid(); */
+    if (DoSensorCmd == NULL) DisableSpiInterrupt();
     else DoSensorCmd();
-    DoSensorCmd();
 }
 ISR(SPI_STC_vect)
 {
@@ -66,17 +67,17 @@ ISR(SPI_STC_vect)
 }
 Cmd* LookupSensorCmd(cmd const key)
 {
-    /** Look up command and return a pointer to the function
-     *  that does the command.
-     *  - input key is defined in the USBProtocol
-     *  - bob
+    /** Return a pointer to the function that does command
+     * identified by input `key`.
+     *  - input `key` is defined in the USBProtocol
+     *  - return `NULL` if `key` is not in the lookup table
      * */
     // pf is an array of pointers to SensorCmd functions
-    // pf lives in static memory, not on the `LookupSensorCmd` stack frame
+    // pf is in static memory, not in the stack frame
     static Cmd* const pf[] = {
         NULL,
         };
-    // Return func ptr. Prevent attempts at out-of-bounds access.
+    // Return func ptr. 
     if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
     // Out of bounds keys return a NULL pointer.
     else return NULL; // error

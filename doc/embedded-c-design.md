@@ -925,14 +925,18 @@ Total number of instructions: 35
 //
 #ifndef _CMD_H
 #define _CMD_H
+//! Functions in the command look up table are type `Cmd`.
 typedef void (Cmd)(void);
+//! Keys in the command look up table are type `cmd`.
+typedef uint8_t cmd;
 #endif // _CMD_H
 ```
 
-- `Cmd` does not show up in list of libs in Makefile
-- `Cmd.h` is in `lib/src` directory, so `-I../lib/src` enables
-  `vis-spi-out.c` to pick up the `Cmd` typedef with
-  `#include "Cmd.h"`
+- `Cmd` does not show up in list of libs in Makefile, so how does
+  it get picked up in the project?
+    - `Cmd.h` is in `lib/src` directory
+    - `-I../lib/src` enables `vis-spi-out.c` to pick up the `Cmd`
+      typedef with `#include "Cmd.h"`
 - Example:
 
 ```c
