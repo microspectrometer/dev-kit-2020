@@ -958,6 +958,28 @@ void loop(void)
 - this lib is low-level hardware, needs to be fast!
 - inline everything
 
+# Hardware files
+## simple case: hardware only in `inline` functions in header
+- Example: lib `UartSpi`
+- three files:
+- `lib/src/UartSpi.h`
+    - `typedef` for ports, pins, bits
+    - `extern` for hardware symbols: ports, pins, bits
+    - function declarations
+    - inline function bodies
+    - many functions include this file
+- `vis-spi-out/src/UartSpi-Hardware.h`
+    - define hardware ports, pins, bits
+    - use *real* AVR values
+    - this file is included via `#include` in `vis-spi-out/src/Hardware.h`
+    - `vis-spi-out.c` includes `Hardware.h`
+- `lib/test/UartSpi-HardwareFake.h`
+    - define hardware ports, pins, bits
+    - use *fake* values
+    - define *fake* values in this file with keyword `static`
+    - this file is included via `#include` in `lib/test/HardwareFake.h`
+    - `test_runner.c` includes `HardwareFake.h`
+
 ### [ ] lib `Lis`
 - this lib is low-level hardware, needs to be fast!
 - inline everything
@@ -2256,24 +2278,24 @@ hw_lib_src := BiColorLed SpiSlave
 || make: *** No rule to make target 'test/SpiSlave-HardwareFake.h', needed by 'build/test_runner.o'.  Stop.
 ```
 
-## create a -HardwareFake.h in lib/test/
-- create the file
-- a `-HardwareFake.h` goes in firmware/lib/test/
-- the missing dependency is fixed
-
-- try building the test again
+## Create a -HardwareFake.h in lib/test/
+- create the file:
+    - a `-HardwareFake.h` goes in `firmware/lib/test/`
+    - the missing dependency is fixed
+- try building the test again with `;mkf`
 - make reports which files are missing:
 
 ```bash
 || make: *** No rule to make target 'test/test_SpiSlave.c', needed by 'build/test_SpiSlave.o'.  Stop.
 ```
 
-## create a `test_BlahLibName.c` in lib/test/
-- create the file
-- the `test_BlahLibName.c` goes in firmware/lib/test/
+## Create a `test_BlahLibName.c` in lib/test/
+- the `test_BlahLibName.c` goes in `firmware/lib/test/`
+- create the file:
+    - make the `.c` file with a placeholder function
+    - use `;fh` to auto-generate the header
 - the missing dependency is fixed
-
-- try building the test again
+- try building the test again with `;mkf`
 - make reports which files are missing:
 
 ```bash
@@ -2303,14 +2325,33 @@ void SpiSlavePlaceholder(void){}
 || make: *** No rule to make target 'src/SpiSlave.c', needed by 'build/SpiSlave.o'.  Stop.
 ```
 
-## create a `BlahLibName.c` and `BlahLibName.h` in lib/src/
-- again, make the `.c` file with a placeholder function and use `;fh` to
-  auto-generate the header
-
-- the test should build now
+## Create a `BlahLibName.c` and `BlahLibName.h` in lib/src/
+- the `BlahLibName.c` goes in firmware/lib/src/
+- create the file:
+    - make the `.c` file with a placeholder function
+    - use `;fh` to auto-generate the header
+- the missing dependency is fixed
+- try building the test again with `;mkf`
+- this should succeed
 - erase the placeholder functions
+- the empty test runner should build now with `;mktgc`
 
-## write the first test in `test_BlahLibName.c`
+## Create an empty test suite
+Start with an empty test suite:
+
+```c
+// test/test_runner.c
+//
+void UartSpi_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    }
+}
+```
+
+## Write the first test in `test_BlahLibName.c`
 - write the first test in the `test_BlahLibName.c` file
     - `ttt` in insert mode in the function body to get
       `TEST_FAIL_MESSAGE("Implement test.");`
@@ -2318,7 +2359,7 @@ void SpiSlavePlaceholder(void){}
   `test_runner`
 - `;yt` to add the `RUN_TEST` call to the `test_runner`
 
-## add to the test to drive writing code in the lib
+## Add a call to the test to drive writing code in the lib
 - test calls the function under test
     - build fails, so put the function in the lib
     - silence warnings about unused arguments with the
@@ -2767,26 +2808,31 @@ nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits
 ```
 
 #### when `avr-gcc` compiles `SpiSlave`
+-
 
 #### when `avr-gcc` compiles `BiColorLed`
+-
 
 #### when `avr-gcc` compiles `ReadWriteBits`
+-
 
 #### when `gcc` compiles `SpiSlave` for unit-tests in `vis-spi-out`
+-
 
 #### when `gcc` compiles `BiColorLed` for unit-tests in `vis-spi-out`
+-
 
 #### when `gcc` compiles `ReadWriteBits` for unit-tests in `vis-spi-out`
+-
 
 #### when `gcc` compiles `SpiSlave` for unit-tests in `lib`
+-
 
 #### when `gcc` compiles `BiColorLed` for unit-tests in `lib`
+-
 
 #### when `gcc` compiles `ReadWriteBits` for unit-tests in `lib`
-
-## why not make all lib functions `inline`
-- I don't know
-- it would certainly make this all a lot simpler
+-
 
 ## translation for body in the `.c`
 - function uses hardware but does not need to be `inline`

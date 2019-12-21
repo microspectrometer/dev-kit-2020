@@ -16,7 +16,7 @@ mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
 #=====[ Unit Test runs on PC with Cygwin ]=====
 # ---add hardware libs here to create dependency on fakes---
-hw_lib_src := BiColorLed SpiSlave
+hw_lib_src := BiColorLed SpiSlave UartSpi
 HardwareFakes := ${hw_lib_src}
 HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
 HardwareFakes := $(addprefix test/,${HardwareFakes})
@@ -61,7 +61,7 @@ build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_src} ${lib_bu
 # test translation units must #include "unity.h" and "Mock.h"
 # test_runner translation unit requires fake hardware definitions exist
 build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes}
-	${compiler} $(CFLAGS) -c $< -o $@
+	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
 # test translation units do not depend on fake hardware definitions
 ${lib_build_test}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@

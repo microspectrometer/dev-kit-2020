@@ -3,5 +3,6 @@
 // assign fake hardware i/o values to Chromation libs
 #include "BiColorLed-HardwareFake.h"
 #include "SpiSlave-HardwareFake.h"
+#include "UartSpi-HardwareFake.h"
 
 #endif // _HARDWAREFAKE_H

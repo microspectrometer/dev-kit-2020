@@ -57,7 +57,7 @@ app_build_src := $(addprefix build/,${app_build_src})
 hw_lib_src := SpiSlave
 # ---add hardware libs here that put inline in .h---
 #  avr-gcc builds these libs without needing hardware defs
-inlhw_lib_src := BiColorLed
+inlhw_lib_src := BiColorLed UartSpi
 # ---add nonhardware libs here---
 nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits Queue
 # hardware libs add hardware file pre-requisites to the rule

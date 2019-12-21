@@ -17,6 +17,7 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 #include "test_ReadWriteBits.h"
 #include "test_SpiSlave.h"
 #include "test_Queue.h"
+#include "test_UartSpi.h"
 
 // ---Fake all hardware---
 #include "HardwareFake.h"
@@ -138,14 +139,23 @@ void Queue_tests(bool run_test)
         Run_QueueIsEmpty_tests(Yep);
     }
 }
+void UartSpi_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    }
+}
 
 int main()
 {
     UNITY_BEGIN();
     BiColorLed_tests(Nope);
     ReadWriteBits_tests(Nope);
-    SpiSlave_tests(Yep);
+    SpiSlave_tests(Nope);
     Queue_tests(Nope);
+    UartSpi_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(UartSpiInit_loads_0_into_baud_rate_register);
     return UNITY_END();
 }

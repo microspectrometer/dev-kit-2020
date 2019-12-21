@@ -6,6 +6,7 @@
 // ${inlhw_lib_src} libs have inline functions so add those defs
 // here for inclusion in the main() translation unit
 #include "BiColorLed-Hardware.h"
+/* #include "UartSpi-Hardware.h" */
 // ${hw_lib_src} libs need the hardware defs in their own
 // translation units so I cannot include those defs here:
 // "SpiSlave-Hardware.h"

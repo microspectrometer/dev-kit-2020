@@ -4,6 +4,7 @@
 // prj libs
 #include "BiColorLed.h"
 #include "SpiSlave.h"
+#include "UartSpi.h"
 #include "Cmd.h"
 #include <stdlib.h> // defines NULL
 // hardware i/o definitions
@@ -36,7 +37,7 @@ void setup(void)
     // Queue incoming SPI bytes in a FIFO buffer.
     SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
     // Talk to ADC with SPI interface using UART SPIM
-    //
+    UartSpiInit();
     // Power up the linear array and drive with a 50kHz clock
     //
     // Initialize linear array configuration globals
