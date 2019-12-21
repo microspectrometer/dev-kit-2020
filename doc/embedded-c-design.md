@@ -983,6 +983,11 @@ void loop(void)
 ### [ ] lib `Lis`
 - this lib is low-level hardware, needs to be fast!
 - inline everything
+- actually, it seems I can treat this the same way as SpiSlave
+- so I can inline what I want
+- but I can also leave other functions private
+- and miraculously, both vis-spi-out.o and UartSpi.o are picking
+  up the hardware definitions in their translation units
 
 # Add a lib
 - add a line of code in `vis-spi-out` that requires lib `Queue`

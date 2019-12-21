@@ -1,6 +1,7 @@
 #ifndef _UARTSPI_H
 #define _UARTSPI_H
 #include <stdint.h>
+#include "ReadWriteBits.h"
 //---Hardware types: register addresses, pin numbers, bit numbers---
 typedef uint8_t volatile * const uspi_ptr; // i/o reg address
 typedef uint16_t volatile * const uspi_ptr16; // i/o reg address
@@ -32,6 +33,7 @@ extern uspi_bit UartSpi_UDORD0; // clear: MSB first (Data Order)
 extern uspi_bit UartSpi_UDRE0; // (DataRegEmtpy) is set on Tx done
 extern uspi_bit UartSpi_RXC0; // (RxComplete) is set on Rx done
 
+// ---API---
 void UartSpiInit(void);
 
 #endif // _UARTSPI_H

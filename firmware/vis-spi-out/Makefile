@@ -54,10 +54,10 @@ app_build_src := $(addsuffix .o,${app_src})
 app_build_src := $(addprefix build/,${app_build_src})
 # ---add hardware libs here that do not put inline in .h---
 #  avr-gcc builds these with hardware defs via -include lib-Hardware.h
-hw_lib_src := SpiSlave
+hw_lib_src := SpiSlave UartSpi
 # ---add hardware libs here that put inline in .h---
 #  avr-gcc builds these libs without needing hardware defs
-inlhw_lib_src := BiColorLed UartSpi
+inlhw_lib_src := BiColorLed
 # ---add nonhardware libs here---
 nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits Queue
 # hardware libs add hardware file pre-requisites to the rule
@@ -74,6 +74,9 @@ hw_lib_build_src := $(addsuffix .o,${hw_lib_src})
 hw_lib_build_src := $(addprefix ../lib/build/,${hw_lib_build_src})
 nonhw_lib_build_src := $(addsuffix .o,${nonhw_lib_src})
 nonhw_lib_build_src := $(addprefix ../lib/build/,${nonhw_lib_build_src})
+lib_headers := ${hw_lib_src} ${inlhw_lib_src} ${nonhw_lib_src}
+lib_headers := $(addsuffix .h,${lib_headers})
+lib_headers := $(addprefix ../lib/src/,${lib_headers})
 
 #=====[ Unit Test Compiler and Linker flags ]=====
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
@@ -143,7 +146,7 @@ endif
 # ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 # 	${compiler} $(CFLAGS) -c $< -o $@
 # Target `avr-target` ends up here:
-build/${board-name}.o: src/${board-name}.c ${Hardware}
+build/${board-name}.o: src/${board-name}.c ${Hardware} ${lib_headers}
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 # build/${board-name}.elf: src/%.c ${app_build_src}

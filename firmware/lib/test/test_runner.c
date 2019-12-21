@@ -144,6 +144,7 @@ void UartSpi_tests(bool run_test)
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(UartSpiInit_clocks_SPI_bus_at_5MHz);
     }
 }
 
@@ -156,6 +157,6 @@ int main()
     Queue_tests(Nope);
     UartSpi_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(UartSpiInit_loads_0_into_baud_rate_register);
+    RUN_TEST(UartSpiInit_sets_Sck_as_an_output);
     return UNITY_END();
 }
