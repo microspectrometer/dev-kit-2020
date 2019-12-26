@@ -16,7 +16,7 @@ mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
 #=====[ Unit Test runs on PC with Cygwin ]=====
 # ---add hardware libs here to create dependency on fakes---
-hw_lib_src := BiColorLed SpiSlave UartSpi
+hw_lib_src := BiColorLed SpiSlave UartSpi Lis
 HardwareFakes := ${hw_lib_src}
 HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
 HardwareFakes := $(addprefix test/,${HardwareFakes})

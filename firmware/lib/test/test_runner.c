@@ -18,6 +18,7 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 #include "test_SpiSlave.h"
 #include "test_Queue.h"
 #include "test_UartSpi.h"
+#include "test_Lis.h"
 
 // ---Fake all hardware---
 #include "HardwareFake.h"
@@ -145,6 +146,21 @@ void UartSpi_tests(bool run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(UartSpiInit_clocks_SPI_bus_at_5MHz);
+        RUN_TEST(UartSpiInit_sets_Sck_as_an_output);
+        RUN_TEST(UartSpiInit_sets_AdcConv_to_idle_low);
+        RUN_TEST(UartSpiInit_sets_AdcConv_as_an_output);
+        RUN_TEST(UartSpiInit_enables_the_UART_in_Master_SPI_Mode);
+        RUN_TEST(UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1);
+        RUN_TEST(UartSpiInit_cfgs_SPI_to_transfer_MSB_first);
+        RUN_TEST(UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior);
+    }
+}
+void Lis_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(LisInit_sets_PixSelect_as_an_output);
     }
 }
 
@@ -155,14 +171,8 @@ int main()
     ReadWriteBits_tests(Nope);
     SpiSlave_tests(Nope);
     Queue_tests(Nope);
-    UartSpi_tests(Yep);
+    UartSpi_tests(Nope);
+    Lis_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(UartSpiInit_sets_Sck_as_an_output);
-    RUN_TEST(UartSpiInit_sets_AdcConv_to_idle_low);
-    RUN_TEST(UartSpiInit_sets_AdcConv_as_an_output);
-    RUN_TEST(UartSpiInit_enables_the_UART_in_Master_SPI_Mode);
-    RUN_TEST(UartSpiInit_uses_SPI_data_mode_CPOL_1_CPHA_1);
-    RUN_TEST(UartSpiInit_cfgs_SPI_to_transfer_MSB_first);
-    RUN_TEST(UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior);
     return UNITY_END();
 }

@@ -9,7 +9,7 @@ typedef uint8_t const uspi_pin; // bit index into i/o reg for an i/o pin
 typedef uint8_t const uspi_bit; // bit index into i/o reg
 // Register address, pin number, and bit definitions depend on compiler:
     // "gcc" uses test/HardwareFake.h
-    // "avr-gcc" uses src/Hardware.h
+    // "avr-gcc" uses src/UartSpi-Hardware.h
 // ---Registers---
 extern uspi_ptr UartSpi_ddr;
 extern uspi_ptr UartSpi_port;

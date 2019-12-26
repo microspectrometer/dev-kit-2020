@@ -4,5 +4,6 @@
 #include "BiColorLed-HardwareFake.h"
 #include "SpiSlave-HardwareFake.h"
 #include "UartSpi-HardwareFake.h"
+#include "Lis-HardwareFake.h"
 
 #endif // _HARDWAREFAKE_H

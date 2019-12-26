@@ -954,9 +954,49 @@ void loop(void)
 }
 ```
 
-### [ ] lib `UartSpi`
+### [x] lib `UartSpi`
 - this lib is low-level hardware, needs to be fast!
-- inline everything
+- inline ~everything~ almost everything
+- it seems I can treat this the same way as SpiSlave
+    - [ ] how is this happening?
+    - I can inline what I want
+    - I can also leave other functions private
+    - *miraculously, both vis-spi-out.o and UartSpi.o are picking
+      up the hardware definitions in their translation units*
+
+#### [x] `UartSpiInit` is tested and assembly optimization is good
+- see TiddlyWiki
+- the added code is optimized
+- adding `UartSpiInit`
+    - consumes an additional 76 bytes of program memory:
+    - 37 instructions
+    - 66 cycles
+
+- before adding `UartSpiInit`:
+- [x] check size: 462 bytes
+    - Total number of cycles: 347
+    - Total number of instructions: 180
+
+```bash
+$ date | clip
+Thu, Dec 26, 2019  9:46:15 AM
+$ avr-size.exe build/vis-spi-out.elf | clip
+   text	   data	    bss	    dec	    hex	filename
+    462	      2	     21	    485	    1e5	build/vis-spi-out.elf
+```
+
+- after adding `UartSpiInit`:
+- [x] check size: 538 bytes
+    - Total number of cycles: 413
+    - Total number of instructions: 217
+
+```bash
+$ date | clip
+Mon, Dec 23, 2019 10:33:12 AM
+$ avr-size.exe build/vis-spi-out.elf | clip
+   text	   data	    bss	    dec	    hex	filename
+    538	      2	     21	    561	    231	build/vis-spi-out.elf
+```
 
 # Hardware files
 ## simple case: hardware only in `inline` functions in header
@@ -983,11 +1023,21 @@ void loop(void)
 ### [ ] lib `Lis`
 - this lib is low-level hardware, needs to be fast!
 - inline everything
-- actually, it seems I can treat this the same way as SpiSlave
-- so I can inline what I want
-- but I can also leave other functions private
-- and miraculously, both vis-spi-out.o and UartSpi.o are picking
-  up the hardware definitions in their translation units
+
+#### [ ] LisInit
+- add call to in src/vis-spi-out.c
+- build for avr-target is broken:
+
+```bash
+src/vis-spi-out.c|42 col 5| warning: implicit declaration of function 'LisInit' [-Wimplicit-function-declaration]
+```
+
+- add lib name to `lib/Makefile`:
+
+```make
+ # lib/Makefile
+hw_lib_src := BiColorLed SpiSlave UartSpi Lis
+```
 
 # Add a lib
 - add a line of code in `vis-spi-out` that requires lib `Queue`

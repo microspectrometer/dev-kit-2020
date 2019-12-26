@@ -39,6 +39,7 @@ void setup(void)
     // Talk to ADC with SPI interface using UART SPIM
     UartSpiInit();
     // Power up the linear array and drive with a 50kHz clock
+    LisInit();
     //
     // Initialize linear array configuration globals
     //
@@ -59,6 +60,7 @@ void loop(void)
     // Execute the command.
     Cmd* DoSensorCmd = LookupSensorCmd(*Spi_spdr);
     /* if (DoSensorCmd == NULL) ReplyCommandInvalid(); */
+    // placeholder to test code (replace with above line)
     if (DoSensorCmd == NULL) DisableSpiInterrupt();
     else DoSensorCmd();
 }
