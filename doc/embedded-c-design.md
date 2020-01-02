@@ -113,16 +113,33 @@
         - so I stub them to ignore them in testing
 - [x] how do I test that a lib .c function calls a static
   function?
-    - everything was going great with setting this up
-    - but I can't figure out why `AssertCall` is returning
+    - do not
+    - treat `static` the way the compiler does: `inline` the function
+    - so instead of checking for a call, just directly test for what the
+      function does
+    - this makes the test name better
+    - which makes the function docstring better with ;xdc
+    - but it *is* possible to check if a static function is called by faking the
+      function
+    - the function is static in the arv-target build
+    - but the function is not static in the test build
+    - switching between the two definitions is done with macros:
+        - `#ifndef LIBNAME_FAKED` surrounds the real definition
+        - `#ifdef LIBNAME_FAKED` surrounds the include for the `_faked.h`
+        - always include the real `.h`
+        - include flag `-DLIBNAME_FAKED` in the `Makefile` `CFLAGS_for_cygwin`
+        - recipe for `_faked.o`
+        - target build links against `_faked.o`
+    - I can't figure out why `AssertCall` is returning
       `false` when it should *clearly* be returning true
-    - come back to this by inserting print statements all
-      the fuck over `AssertCall`, rebuilding, and remaking
-      the tests to find out where things are fucking up
-    - OK, I still don't know why it failed
-    - but I fixed it by replacing the `==` comparison with a
+    - I fixed that problem by replacing the `==` comparison with a
       `g_strcmp0` comparison
 - [ ] split common Spi stuff from SpiSlave into a Spi lib
+- [x] why is there a `-DSPISLAVE_FAKED` in the Makefile when the other hardware
+  libs do not need a `-DLIBNAME_FAKED`?
+    - because I "unit test libs using -DMacro to define fakes"
+    - it is to test with a faked version of `EnableSpiInterrupt`
+    - the fake records itself in `mock`
 - [ ] am I encountering new cases? not yet
 
 # move more code from old vis-spi-out to new vis-spi-out
