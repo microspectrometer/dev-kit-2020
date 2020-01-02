@@ -54,7 +54,7 @@ app_build_src := $(addsuffix .o,${app_src})
 app_build_src := $(addprefix build/,${app_build_src})
 # ---add hardware libs here that do not put inline in .h---
 #  avr-gcc builds these with hardware defs via -include lib-Hardware.h
-hw_lib_src := SpiSlave UartSpi
+hw_lib_src := SpiSlave UartSpi Lis
 # ---add hardware libs here that put inline in .h---
 #  avr-gcc builds these libs without needing hardware defs
 inlhw_lib_src := BiColorLed

@@ -174,5 +174,16 @@ int main()
     UartSpi_tests(Nope);
     Lis_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(LisInit_idles_PixSelect_low);
+    RUN_TEST(LisInit_sets_Rst_as_an_output);
+    RUN_TEST(LisInit_idles_Rst_low);
+    RUN_TEST(LisInit_sets_Sync_as_an_input);
+    RUN_TEST(LisInit_sets_Clk_as_an_output);
+    RUN_TEST(LisInit_resets_PWM_timer_at_top);
+    RUN_TEST(LisInit_PWM_timer_top_is_OCR0A);
+    RUN_TEST(LisInit_PWM_timer_is_clocked_by_CPU_with_no_prescaling);
+    RUN_TEST(LisInit_sets_PWM_frequency_at_50kHz);
+    RUN_TEST(LisInit_sets_PWM_duty_cycle_to_50_percent);
+    RUN_TEST(LisInit_outputs_the_PWM_clock_on_pin_Clk);
     return UNITY_END();
 }

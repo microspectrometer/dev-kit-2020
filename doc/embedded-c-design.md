@@ -1023,8 +1023,15 @@ $ avr-size.exe build/vis-spi-out.elf | clip
 ### [ ] lib `Lis`
 - this lib is low-level hardware, needs to be fast!
 - inline everything
+- LisInit is done.
+    - everything is static so it inlines
+    - only call is LisInit, which happens in setup
+    - no functions made inline in Lis header yet
+    - expect this will change soon
 
-#### [ ] LisInit
+#### [x] LisInit
+
+##### Setup
 - add call to in src/vis-spi-out.c
 - build for avr-target is broken:
 
@@ -1038,6 +1045,210 @@ src/vis-spi-out.c|42 col 5| warning: implicit declaration of function 'LisInit' 
  # lib/Makefile
 hw_lib_src := BiColorLed SpiSlave UartSpi Lis
 ```
+
+- follow instructions in TiddlyWiki for lib `UartSpi`
+- then add headers
+    - Lis.h
+    - Lis-Hardware.h
+    - Lis-HardwareFake.h
+    - [ ] where is this step documented?
+- get a failing unit test
+
+Size before adding `LisInit`:
+
+```bash
+$ date | clip
+Thu, Jan  2, 2020  8:52:37 AM
+$ avr-size.exe build/vis-spi-out.elf | clip
+   text	   data	    bss	    dec	    hex	filename
+    538	      2	     21	    561	    231	build/vis-spi-out.elf
+```
+
+##### First static function call
+Add `LisInit` with one static function call:
+
+```c
+// Lis.c
+//
+static void SetPixSelectAsOutput(void)
+{
+    SetBit(Lis_ddr2, Lis_PixSelect);
+}
+void LisInit(void)
+{
+    SetPixSelectAsOutput();
+}
+//
+
+Get passing test.
+
+Add call to application.
+
+```c
+// vis-spi-out.c
+//
+void setup(void)
+{
+    // ...
+    LisInit();
+    // ...
+}
+```
+
+Check code size.
+
+```bash
+$ date | clip
+Thu, Jan  2, 2020  8:55:52 AM
+$ avr-size.exe build/vis-spi-out.elf | clip
+   text	   data	    bss	    dec	    hex	filename
+    546	      2	     21	    569	    239	build/vis-spi-out.elf
+```
+
+Check that static function call is:
+
+- `inline`
+- uses a direct bit-access instruction
+
+```avra
+vis-spi-out.avra:
+
+000000a6 <main>:
+    ...
+    LisInit();
+  call	0x21a	; 0x21a <LisInit>
+
+0000021a <LisInit>:
+  sbi	0x04, 0	; 4
+  ret
+```
+
+Code size increase of 8 bytes makes sense:
+
+- Total number of cycles: 10
+- Total number of instructions: 3
+
+##### Add more calls
+
+```date-and-size
+Thu, Jan  2, 2020  9:55:26 AM
+   text	   data	    bss	    dec	    hex	filename
+    546	      2	     21	    569	    239	build/vis-spi-out.elf
+```
+
+As expected, adding a call that does `cbi` only added two byes to mem:
+
+```date-and-size
+Thu, Jan  2, 2020 11:02:51 AM
+   text	   data	    bss	    dec	    hex	filename
+    548	      2	     21	    571	    23b	build/vis-spi-out.elf
+```
+
+```avra
+cbi	0x05, 0	; 5
+```
+
+- Total number of cycles: 2
+- Total number of instructions: 1
+
+##### Add more calls
+
+Before
+
+```date-and-size
+Thu, Jan  2, 2020 11:15:09 AM
+   text	   data	    bss	    dec	    hex	filename
+    548	      2	     21	    571	    23b	build/vis-spi-out.elf
+```
+
+```avra
+sbi	0x0a, 5	; 10
+```
+
+- Total number of cycles: 2
+- Total number of instructions: 1
+
+After
+
+```date-and-size
+Thu, Jan  2, 2020 11:33:06 AM
+   text	   data	    bss	    dec	    hex	filename
+    550	      2	     21	    573	    23d	build/vis-spi-out.elf
+```
+
+##### Add more calls
+
+Before
+```date-and-size
+Thu, Jan  2, 2020 11:37:27 AM
+   text	   data	    bss	    dec	    hex	filename
+    550	      2	     21	    573	    23d	build/vis-spi-out.elf
+```
+
+Add
+
+```avra
+sbi	0x0a, 6	; 10
+```
+
+- Total number of cycles: 2
+- Total number of instructions: 1
+
+After
+
+```date-and-size
+Thu, Jan  2, 2020 11:47:46 AM
+   text	   data	    bss	    dec	    hex	filename
+    552	      2	     21	    575	    23f	build/vis-spi-out.elf
+```
+
+##### Add more calls
+
+Before
+
+```date-and-size
+Thu, Jan  2, 2020 11:48:33 AM
+   text	   data	    bss	    dec	    hex	filename
+    552	      2	     21	    575	    23f	build/vis-spi-out.elf
+```
+
+Add
+
+```avra
+cbi	0x0b, 6	; 11
+```
+
+- Total number of cycles: 2
+- Total number of instructions: 1
+
+After
+
+```date-and-size
+Thu, Jan  2, 2020 11:56:34 AM
+   text	   data	    bss	    dec	    hex	filename
+    554	      2	     21	    577	    241	build/vis-spi-out.elf
+```
+
+##### Finished LisInit
+
+Before
+
+```date-and-size
+Thu, Jan  2, 2020 11:57:03 AM
+   text	   data	    bss	    dec	    hex	filename
+    554	      2	     21	    577	    241	build/vis-spi-out.elf
+```
+
+After
+
+```date-and-size
+Thu, Jan  2, 2020  3:36:58 PM
+   text	   data	    bss	    dec	    hex	filename
+    612	      2	     21	    635	    27b	build/vis-spi-out.elf
+```
+
+All calls checked for `inline` and optimal instruction choice. The 58 byte
+increase is correct.
 
 # Add a lib
 - add a line of code in `vis-spi-out` that requires lib `Queue`

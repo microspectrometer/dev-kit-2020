@@ -134,6 +134,8 @@ void UartSpiInit(void)
       * - cfgs SPI to transfer MSB first\n 
       * - gives SPI control over Miso and Mosi pin behavior\n 
       * */
+    // ---Expected Assembly---
+    // call	0x1d0	; 0x1d0 <UartSpiInit>
     RunSpiAt5Mhz();
     SetSckAsOutput();
     AdcConvIdleLow();

@@ -5,6 +5,7 @@
 #include "BiColorLed.h"
 #include "SpiSlave.h"
 #include "UartSpi.h"
+#include "Lis.h"
 #include "Cmd.h"
 #include <stdlib.h> // defines NULL
 // hardware i/o definitions

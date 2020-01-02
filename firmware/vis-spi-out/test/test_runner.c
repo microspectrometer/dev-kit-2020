@@ -33,5 +33,6 @@ int main(void)
 {
     UNITY_BEGIN();
     ExampleTestSuite(Yep);
+    RUN_TEST(LisInit_sets_Sync_as_an_input);
     return UNITY_END();
 }
