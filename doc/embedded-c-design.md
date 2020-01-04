@@ -221,10 +221,82 @@ inline uint8_t ReadSpiDataRegister(void) { return *Spi_spdr; }
  1ba:	8e b5       	in	r24, 0x2e	; 46
 ```
 
-- [ ] how is this possible?
+- [x] how is this possible?
     - `vis-spi-out.o` does not have the hardware file in its
       translation unit
     - how does it fill in the hardware values?
+    - here is what is happening
+    - These functions are *not* called from within `vis-spi-out.o`.
+    - These functions are called from within `SpiSlaveInit` in `SpiSlave.o`.
+    - `SpiSlave.o` is built with `-include src/SpiSlave-Hardware.h`
+    - proof:
+
+I put `ClearSpiInterruptFlag()` as the first call in `main()` in
+`vis-spi-out.c`:
+```c
+void setup(void)
+{
+    ClearSpiInterruptFlag();
+```
+
+This translates to:
+
+```avra
+000000a6 <main>:
+inline uint8_t ReadSpiStatusRegister(void) { return *Spi_SPSR; }
+  a6:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <Spi_SPSR>
+  aa:	f0 91 01 01 	lds	r31, 0x0101	; 0x800101 <Spi_SPSR+0x1>
+  ae:	80 81       	ld	r24, Z
+inline uint8_t ReadSpiDataRegister(void) { return *Spi_SPDR; }
+  b0:	c0 91 02 01 	lds	r28, 0x0102	; 0x800102 <Spi_SPDR>
+  b4:	d0 91 03 01 	lds	r29, 0x0103	; 0x800103 <Spi_SPDR+0x1>
+  b8:	88 81       	ld	r24, Y
+```
+
+Later on, when that same function is called from within `SpiSlaveInit()`,
+defined in `SpiSlave.c`, the correct instructions are used:
+
+```c
+// vis-spi-out.c
+    SpiSlaveInit(); // call	0xaa	; 0xaa <SpiSlaveInit>
+```
+
+```avra
+inline uint8_t ReadSpiStatusRegister(void) { return *Spi_SPSR; }
+ 1ea:	8d b5       	in	r24, 0x2d	; 45
+inline uint8_t ReadSpiDataRegister(void) { return *Spi_SPDR; }
+ 1ec:	8e b5       	in	r24, 0x2e	; 46
+```
+
+This means if I want optimized instructions, the hardware defs need to go with
+one object file. The bonehead way to do this is to *always* include hardware
+defs with the main application, never with the lib object files, but then all of
+the functions need to be inline.
+
+The only other choice is to always make a call to the lib. This works great for
+long calls. The instructions dwarf the call overhead.
+
+Where I pay a price here is for short calls, like reading a register. I want to
+do this *fast*, so why make a call. It should be inline. But I have to make the
+call to pick up the hardware defs.
+
+- [x] try Makefile with two includes, should fail, try anyway
+
+```Makefile
+ # vis-spi-out/Makefile
+${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
+	${compiler} -include src/$*-Hardware.h $(CFLAGS) -c $< -o $@
+```
+
+- yep, doesn't work.
+- every hardware def has a *multiple definition* error:
+
+```bash
+multiple definition of `Spi_SPDR'
+```
+
+- [ ] OK, tomorrow, every function definition goes in the header, and the
+  Hardware libs are only included with the application
 
 ## 2019-12-13
 - right now, avr-gcc build is 202 bytes
@@ -913,13 +985,150 @@ Total number of instructions: 35
 ### [x] unit test BiColorLedRed
 - I added it to the code without testing it
 
-### [ ] Replace listening_for_SPIM with Enable/DisableInterrupt
+### [ ] Add function `ReplyCommandInvalid`
+- [ ] fix `loop` (use this function instead of placeholder)
+- [ ] add this function
+- [ ] hmm.... calls `WriteSpiMaster`
+    - logically part of lib `SpiSlave`
+    - but `WriteSpiMaster` uses lib `Queue`
+    - what happens if I make this an `inline` function in `SpiSlave.h`
+        - name it `SpiSlaveTx` (because the SpiSlave is transmitting to the
+          SpiMaster)
+    - what do I *think* will happen?
+    - register accesses I care about are either:
+        - directly bit-accessible
+        - accessible as registers without adding 0x20 to the address
+    - all of these register accesses are for lib SpiSlave
+    - lib Queue has no such register accesses
+    - lib Queue is just a data object
+
+
+### [ ] unit test SpiSlaveTx
+
+Before adding new code:
+
+```date-and-size
+Thu, Jan  2, 2020  6:30:58 PM
+   text	   data	    bss	    dec	    hex	filename
+    612	      2	     21	    635	    27b	build/vis-spi-out.elf
+```
+
+After adding code that writes to `SPDR`:
+
+```date-and-size
+Fri, Jan  3, 2020  5:30:44 PM
+   text	   data	    bss	    dec	    hex	filename
+    626	      2	     21	    649	    289	build/vis-spi-out.elf
+```
+
+- created `asmwolf.vim` to make a nice .avra and .avra diff color scheme
+- [x] make `greywolf.vim`
+    - badwolf with a lighter background to indicate when C file is RO
+
+- lib code (WIP)
+
+```c
+// SpiSlave.h
+//
+for (byte_index = 0; byte_index < nbytes; byte_index++)
+{
+    *Spi_SPDR = input_buffer[byte_index];
+}
+```
+
+- app code (placeholder)
+
+```c
+// vis-spi-out.c
+//
+uint8_t const input_buffer[] = {0x0A, 0x1B, 0x2C};
+uint16_t nbytes = 3;
+SpiSlaveTx(input_buffer, nbytes);
+```
+
+- assembly for the above is split
+- first the values are stored in working registers
+
+```avra
+  f6:	8a e0       	ldi	r24, 0x0A	; 10
+  f8:	f8 2e       	mov	r15, r24
+  fa:	0b e1       	ldi	r16, 0x1B	; 27
+  fc:	1c e2       	ldi	r17, 0x2C	; 44
+```
+
+- later the values are loaded into `SPDR`
+
+```avra
+ 12c:	f8 82       	st	Y, r15
+ 12e:	08 83       	st	Y, r16
+ 130:	18 83       	st	Y, r17
+```
+
+- Total number of cycles: 10
+- Total number of instructions: 7
+
+The important point is that the function is inline (no call).
+
+- [ ] are the instructions optimized?
+    - SPDR is 0x2E
+    - so it is possible to do:
+
+    ```avra
+    ; say r24 has the value to send
+    out	0x2e, r24
+    ```
+
+    - so why isn't `avr-gcc` doing this?
+    - is it because getting the value to send *into* `r24` takes work?
+    - no something is wrong
+    - here is the code and some analysis:
+
+    - `lds` (Load direct from SRAM) is 2 cycles
+    - load SRAM addresses `0x0100` and `0x0101` into `Y`
+
+    ```avra
+      ee:	lds	r28, 0x0100	; 0x800100 <Spi_SPDR>
+      f2:	lds	r29, 0x0101	; 0x800101 <Spi_SPDR+0x1>
+    ```
+
+    - `ldi` (Load immediate) is 1 cycle
+    - loads literal into register
+
+    ```avra
+      f6:	ldi	r15, 0x0A	; 10
+      f8:	ldi	r16, 0x1B	; 27
+      fa:	ldi	r17, 0x2C	; 44
+    ```
+
+    - `st` (Store indirect) is 2 cycles
+    - stores the register value at the address stored in `Y`
+
+    ```avra
+     12c:	st	Y, r15
+     12e:	st	Y, r16
+     130:	st	Y, r17
+    ```
+
+    - I am writing these values to some random spot in SRAM?
+    - that means I am failing to write to `SPDR` register `0x2e`
+
+- [ ] why isn't `*SPDR = 0x0A` translating to something like:
+    - `ldi	r15,0x0a`
+    - `out	0x2e,r15`
+- I think the issue is that `SpiSlave.o` gets the hardware def, but the function
+  is inlined in `vis-spi-out.o` and that code misses the def
+    - [ ] test this theory
+    - but how did it get the defs for `SpiSlaveInit`?
+
+Add more code.
+
+### [x] Replace `listening_for_SPIM` with Enable/DisableInterrupt
 - instead of checking the flag in the ISR
-- just disable the interrupt when writing a frame and clear the
-  interrupt flag manually
-- clearing the flag manually is *much* faster than executing the
-  ISR just to clear the flag!
-- `EnableSpiInterrupt` is private
+- [ ] disable the interrupt when writing a frame
+- [ ] clear the interrupt flag manually
+    - i.e., instead of running the ISR to clear the flag
+    - manual-clear is *much* faster than executing the ISR to clear the flag!
+- ~`EnableSpiInterrupt` is private~
 - [x] make `EnableSpiInterrupt` public
 - [x] create `DisableSpiInterrupt`
     - do not write a unit test

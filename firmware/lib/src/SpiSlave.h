@@ -13,9 +13,9 @@ typedef uint8_t const spi_bit; // bit index into i/o reg
 // ---Registers---
 extern spi_ptr Spi_ddr;
 extern spi_ptr Spi_port;
-extern spi_ptr Spi_spcr;
-extern spi_ptr Spi_spdr;
-extern spi_ptr Spi_spsr;
+extern spi_ptr Spi_SPCR;
+extern spi_ptr Spi_SPDR;
+extern spi_ptr Spi_SPSR;
 // ---Pins---
 extern spi_pin Spi_DataReady; // slave signal DR to master
 extern spi_pin Spi_Miso; // master-in, slave-out
@@ -26,8 +26,16 @@ extern spi_bit Spi_InterruptEnable;
 void SpiSlaveInit(void);
 void DisableSpiInterrupt(void);
 void EnableSpiInterrupt(void);
-inline uint8_t ReadSpiStatusRegister(void) { return *Spi_spsr; }
-inline uint8_t ReadSpiDataRegister(void) { return *Spi_spdr; }
+inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
+{
+    uint16_t byte_index;
+    for (byte_index = 0; byte_index < nbytes; byte_index++)
+    {
+        *Spi_SPDR = input_buffer[byte_index];
+    }
+}
+inline uint8_t ReadSpiStatusRegister(void) { return *Spi_SPSR; }
+inline uint8_t ReadSpiDataRegister(void) { return *Spi_SPDR; }
 inline void ClearSpiInterruptFlag(void)
 {
     /** Manually clear SPI interrupt flag by first reading the

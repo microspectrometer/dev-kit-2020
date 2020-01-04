@@ -12,9 +12,9 @@ static uint8_t volatile fake_SPSR;
 // ---Registers---
 spi_ptr Spi_ddr  = &fake_ddr;
 spi_ptr Spi_port = &fake_port;
-spi_ptr Spi_spcr = &fake_SPCR; // SPI control register
-spi_ptr Spi_spdr = &fake_SPDR; // SPI data register
-spi_ptr Spi_spsr = &fake_SPSR; // SPI status register
+spi_ptr Spi_SPCR = &fake_SPCR; // SPI control register
+spi_ptr Spi_SPDR = &fake_SPDR; // SPI data register
+spi_ptr Spi_SPSR = &fake_SPSR; // SPI status register
 // ---Pins---
 spi_pin Spi_DataReady = 1;
 spi_pin Spi_Miso = 4;    // master-in,  slave-out

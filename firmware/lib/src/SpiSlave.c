@@ -12,7 +12,7 @@ static void EnableSpiModule(void)
     /** Set SPE bit in SPCR (SPI Control Register) to enable SPI.
      * This bit must be set to enable any SPI operations.
       * */
-    SetBit(Spi_spcr, Spi_Enable);
+    SetBit(Spi_SPCR, Spi_Enable);
     // ---Expected Assembly---
     // in r24, 0x2c;
     // ori r24, 0x40;
@@ -41,6 +41,7 @@ void SpiSlaveInit(void)
     // Enable interrupts for robust SPI communication
     EnableSpiInterrupt();
 }
+void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes);
 uint8_t ReadSpiStatusRegister(void);
 uint8_t ReadSpiDataRegister(void);
 void ClearSpiInterruptFlag(void);
@@ -54,7 +55,7 @@ void DisableSpiInterrupt(void)
      *   register, then accessing the SPI data register\n 
      * */
     // Disable the "transfer complete" interrupt
-    ClearBit(Spi_spcr, Spi_InterruptEnable);
+    ClearBit(Spi_SPCR, Spi_InterruptEnable);
     // ---Expected Assembly---
     // in	r24, 0x2c	; 44
     // andi	r24, 0x7F	; 127
@@ -82,7 +83,7 @@ void EnableSpiInterrupt(void)
     // Clear SPI interrupt flag (SPIF) before enabling interrupt
     ClearSpiInterruptFlag();
     // Enable the "transfer complete" interrupt
-    SetBit(Spi_spcr, Spi_InterruptEnable);
+    SetBit(Spi_SPCR, Spi_InterruptEnable);
     // ---Expected Assembly---
     // in r24, 0x2c; 
     // ori r24, 0x80;

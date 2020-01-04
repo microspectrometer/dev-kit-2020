@@ -59,15 +59,25 @@ void loop(void)
     // Idle until a command is received
     while (QueueIsEmpty(SpiFifo));
     // Execute the command.
-    Cmd* DoSensorCmd = LookupSensorCmd(*Spi_spdr);
+    Cmd* DoSensorCmd = LookupSensorCmd(*Spi_SPDR);
     /* if (DoSensorCmd == NULL) ReplyCommandInvalid(); */
     // placeholder to test code (replace with above line)
-    if (DoSensorCmd == NULL) DisableSpiInterrupt();
+    /* if (DoSensorCmd == NULL) DisableSpiInterrupt(); */
+    // placeholder to test code (replace with above line)
+    if (DoSensorCmd == NULL)
+    {
+        DisableSpiInterrupt();
+        uint8_t const input_buffer[] = {0x0A, 0x1B, 0x2C};
+        uint16_t nbytes = 3;
+        SpiSlaveTx(input_buffer, nbytes);
+    }
+    uint8_t garbage = ReadSpiDataRegister();
+    if (garbage==0x2c) BiColorLedRed(led_0);
     else DoSensorCmd();
 }
 ISR(SPI_STC_vect)
 {
-    QueuePush(SpiFifo, *Spi_spdr);
+    QueuePush(SpiFifo, *Spi_SPDR);
 }
 Cmd* LookupSensorCmd(cmd const key)
 {

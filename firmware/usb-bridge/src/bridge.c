@@ -74,7 +74,7 @@ static uint16_t ReadSensor_Implementation(uint8_t *read_buffer, uint16_t nbytes)
     {
         SpiMasterWaitForSlaveReady();
         MacroSpiMasterWrite(slave_ignore);      // transfer byte
-        *(read_buffer++) = *Spi_spdr;  // store byte
+        *(read_buffer++) = *Spi_SPDR;  // store byte
         num_bytes_read++;
         SpiMasterWaitForSlaveReadyReset(); // added 2019-10-23
     }

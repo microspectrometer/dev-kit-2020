@@ -21,5 +21,5 @@ volatile bool listening_for_SPIM = true;
 ISR(SPI_STC_vect)
 {
     // Push data onto Queue when listening for SPI Master.
-    if (listening_for_SPIM) QueuePush(SpiFifo, *Spi_spdr);
+    if (listening_for_SPIM) QueuePush(SpiFifo, *Spi_SPDR);
 }

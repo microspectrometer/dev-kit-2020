@@ -63,10 +63,10 @@ void SpiSlaveInit_makes_Miso_an_output_pin(void)
 void SpiSlaveInit_enables_SPI(void)
 {
     /* =====[ Setup ]===== */
-    *Spi_spcr = 0x00;
+    *Spi_SPCR = 0x00;
     TEST_ASSERT_BIT_LOW_MESSAGE(
         Spi_Enable,
-        *Spi_spcr,
+        *Spi_SPCR,
         "Cannot run test: must start with bit clear!"
         );
     /* =====[ Operate ]===== */
@@ -74,7 +74,7 @@ void SpiSlaveInit_enables_SPI(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         Spi_Enable,
-        *Spi_spcr,
+        *Spi_SPCR,
         "Expect bit 6 HIGH to enable SPI module."
         );
 }
@@ -90,4 +90,18 @@ void SpiSlaveInit_enables_SPI_interrupt(void)
         AssertCall(mock, call_n, "EnableSpiInterrupt"),
         "Expect SpiSlaveInit enables the SPI interrupt."
         );
+}
+
+void SpiSlaveTx_loads_SPI_data_register_with_bytes_from_input_buffer(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t const input_buffer[] = {0x00, 0x01, 0x02};
+    uint16_t nbytes = (uint16_t)sizeof(input_buffer);
+    /* printf("sizeof(input_buffer)=%zu\n",sizeof(input_buffer)); */
+    /* printf("nbytes=%d\n",nbytes); */
+    /* =====[ Operate ]===== */
+    SpiSlaveTx(input_buffer, nbytes);
+    /* =====[ Test ]===== */
+    // TODO: test value of *all* bytes sent, not just the last
+    TEST_ASSERT_EQUAL_UINT8(input_buffer[nbytes-1], *Spi_SPDR);
 }

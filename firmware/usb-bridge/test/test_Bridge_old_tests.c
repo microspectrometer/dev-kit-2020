@@ -545,7 +545,7 @@ void SpiMasterWriteByte_sends_one_byte_to_SpiSlave(void)
     /* Fake the SPI interrupt flag in the SPI status register. */
     /* Start test with SPIF set so that `SpiMasterWriteN` sees */
     /* the transmission is done when it checks this flag. */
-    SetBit(Spi_spsr, Spi_InterruptFlag);
+    SetBit(Spi_SPSR, Spi_InterruptFlag);
 
     /* =====[ Fake the registers. ]===== */
     /* Fake the `Spi_port`. */

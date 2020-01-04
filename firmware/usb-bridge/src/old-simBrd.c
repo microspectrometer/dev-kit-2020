@@ -707,10 +707,10 @@ void AutoExpose(void)
     uint8_t nticks[2];
     MacroSpiMasterWaitForResponse();
     MacroSpiMasterWrite(slave_ignore);      // transfer msb
-    nticks[0] = *Spi_spdr;               // store msb
+    nticks[0] = *Spi_SPDR;               // store msb
     MacroSpiMasterWaitForResponse();
     MacroSpiMasterWrite(slave_ignore);      // transfer lsb
-    nticks[1] = *Spi_spdr;               // store lsb
+    nticks[1] = *Spi_SPDR;               // store lsb
     // Debug: echo the bytes back.
     UsbWrite(nticks, 2);
 }
