@@ -22,10 +22,10 @@ HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
 HardwareFakes := $(addprefix test/,${HardwareFakes})
 # ---add non-hardware libs here---
 lib_src := ${hw_lib_src} ReadWriteBits Queue
-lib_build_src := $(addsuffix .o,${lib_src})
-lib_build_src := $(addprefix build/,${lib_build_src})
-lib_build_test := $(addsuffix .o,${lib_src})
-lib_build_test := $(addprefix build/test_,${lib_build_test})
+lib_o := $(addsuffix .o,${lib_src})
+lib_o := $(addprefix build/,${lib_o})
+test_lib_o := $(addsuffix .o,${lib_src})
+test_lib_o := $(addprefix build/test_,${test_lib_o})
 # ---stub function-like macros in avr headers---
 AvrHeaders := interrupt io
 AvrHeaders := $(addsuffix .h,${AvrHeaders})
@@ -55,7 +55,7 @@ endif
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
-build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_src} ${lib_build_test} build/SpiSlave_faked.o
+build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_o} ${test_lib_o} build/SpiSlave_faked.o
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # test translation units must #include "unity.h" and "Mock.h"
@@ -63,10 +63,10 @@ build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_src} ${lib_bu
 build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes}
 	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
 # test translation units do not depend on fake hardware definitions
-${lib_build_test}: build/%.o: test/%.c test/%.h
+${test_lib_o}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # stub macros for lib translation units that include function-like avr macros
-${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
+${lib_o}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
 	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
 # fake functions
 build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
@@ -82,6 +82,6 @@ clean-all-builds:
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
 	rm -f build/test_runner.o
-	rm -f ${lib_build_src}
-	rm -f ${lib_build_test}
+	rm -f ${lib_o}
+	rm -f ${test_lib_o}
 	rm -f build/SpiSlave_faked.o

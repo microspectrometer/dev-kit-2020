@@ -69,12 +69,12 @@ Hardware := $(addprefix src/,${Hardware})
 HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
 HardwareFakes := $(addprefix ../lib/test/,${HardwareFakes})
 # lib_src := ${hw_lib_src} ${nonhw_lib_src}
-# lib_build_src := $(addsuffix .o,${lib_src})
-# lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
-hw_lib_build_src := $(addsuffix .o,${hw_lib_src})
-hw_lib_build_src := $(addprefix ../lib/build/,${hw_lib_build_src})
-nonhw_lib_build_src := $(addsuffix .o,${nonhw_lib_src})
-nonhw_lib_build_src := $(addprefix ../lib/build/,${nonhw_lib_build_src})
+# lib_o := $(addsuffix .o,${lib_src})
+# lib_o := $(addprefix ../lib/build/,${lib_o})
+hw_lib_o := $(addsuffix .o,${hw_lib_src})
+hw_lib_o := $(addprefix ../lib/build/,${hw_lib_o})
+nonhw_lib_o := $(addsuffix .o,${nonhw_lib_src})
+nonhw_lib_o := $(addprefix ../lib/build/,${nonhw_lib_o})
 lib_headers := ${hw_lib_src} ${inlhw_lib_src} ${nonhw_lib_src}
 lib_headers := $(addsuffix .h,${lib_headers})
 lib_headers := $(addprefix ../lib/src/,${lib_headers})
@@ -112,10 +112,10 @@ build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 #
 # build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-# ${app_build_test} ${app_build_src} ${lib_build_src} ../lib/build/SpiSlave.o
+# ${app_build_test} ${app_build_src} ${lib_o} ../lib/build/SpiSlave.o
 # 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${app_build_test} ${app_build_src} ${nonhw_lib_build_src} ${hw_lib_build_src}
+${app_build_test} ${app_build_src} ${nonhw_lib_o} ${hw_lib_o}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 #
 # translation units with tests must #include "unity.h" and "Mock.h"
@@ -135,24 +135,24 @@ ifeq (0,1)
 build/SpiSlave.o: ../lib/src/SpiSlave.c ../lib/src/SpiSlave.h src/SpiSlave-Hardware.h
 	${compiler} -include src/SpiSlave-Hardware.h $(CFLAGS) -c $< -o $@
 endif
-${nonhw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+${nonhw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 ifeq ($(compiler),avr-gcc)
-${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
+${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
 	${compiler} -include src/$*-Hardware.h $(CFLAGS) -c $< -o $@
 else
-${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
 endif
-# ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+# ${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 # 	${compiler} $(CFLAGS) -c $< -o $@
 # Target `avr-target` ends up here:
 build/${board-name}.o: src/${board-name}.c ${Hardware} ${lib_headers}
 	${compiler} $(CFLAGS) -c $< -o $@
 #
 # build/${board-name}.elf: src/%.c ${app_build_src}
-# build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_build_src} ../lib/build/SpiSlave.o
-build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${nonhw_lib_build_src} ${hw_lib_build_src}
+# build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_o} ../lib/build/SpiSlave.o
+build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${nonhw_lib_o} ${hw_lib_o}
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
 		-Wl,-Map="build/${board-name}.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
@@ -208,8 +208,8 @@ clean-all-builds:
 	rm -f build/test_runner.o
 	rm -f ${app_build_test}
 	rm -f ${app_build_src}
-	# rm -f ${lib_build_src}
-	rm -f ${hw_lib_build_src}
-	rm -f ${nonhw_lib_build_src}
+	# rm -f ${lib_o}
+	rm -f ${hw_lib_o}
+	rm -f ${nonhw_lib_o}
 	rm -f build/SpiSlave.o
 	rm -f ../lib/build/SpiSlave.o
