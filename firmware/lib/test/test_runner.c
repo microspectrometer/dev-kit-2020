@@ -191,8 +191,8 @@ int main()
     ReadWriteBits_tests(Nope);
     Queue_tests(Nope);
     UartSpi_tests(Nope);
-    Lis_tests(Nope);
-    SpiSlave_tests(Yep);
+    Lis_tests(Yep);
+    SpiSlave_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

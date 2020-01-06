@@ -311,7 +311,7 @@ call to pick up the hardware defs.
 
 ```Makefile
  # vis-spi-out/Makefile
-${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
+${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
 	${compiler} -include src/$*-Hardware.h $(CFLAGS) -c $< -o $@
 ```
 
@@ -323,28 +323,116 @@ multiple definition of `Spi_SPDR'
 
 # [ ] inline all lib functions
 - Every function definition goes in the header
-- -Hardware.h headers are only included with the application
-- branch `clean/inline-all-lib-funcs`
+- `-Hardware.h` headers are only included with the application
+    - do this via `vis-spi-out/src/Hardware.h`
+- [x] create branch `clean/inline-all-lib-funcs`
 - plan is to merge this back with `clean-master` later
 
-## [ ] edit `vis-spi-out/Makefile`
+## [x] inline `Lis`
+- checklist:
+- [x] edit `vis-spi-out/Makefile`:
+    - move lib from `hw_lib_src` to `inlhw_lib_src`
+- [x] add `#include "lib-Hardware.h"` to
+  `vis-spi-out/src/Hardware.h`
+- move all functions from `lib.c` to `lib.h`:
+    - remove `static` keyword from private functions
+    - create prototypes in `lib.c` for all functions
+- [x] avr-target builds
+- [x] code size did not change or decreased slightly
+- [x] unit-test target builds
+    - turn on tests for the affected lib
+
+## [x] inline `SpiSlave`
+- checklist:
+- [x] edit `vis-spi-out/Makefile`:
+    - move lib from `hw_lib_src` to `inlhw_lib_src`
+- [x] add `#include "lib-Hardware.h"` to
+  `vis-spi-out/src/Hardware.h`
+- move all functions from `lib.c` to `lib.h`:
+    - remove `static` keyword from private functions
+    - create prototypes in `lib.c` for all functions
+- [x] avr-target builds
+- [x] code size did not change or decreased slightly
+- [x] unit-test target builds
+    - turn on tests for the affected lib
+
+
+## [x] edit `vis-spi-out/Makefile`
 - list libs to edit
 - simplify structure: everything becomes like `BiColorLed`
+
+Before moving `Lis`
+
+```date-and-size
+Mon, Jan  6, 2020 11:04:36 AM
+   text	   data	    bss	    dec	    hex	filename
+    648	      2	     21	    671	    29f	build/vis-spi-out.elf
+```
+
 - move lib `Lis` from `hw_lib_src` to `inlhw_lib_src`
 - add `#include "Lis-Hardware.h"` to `vis-spi-out/src/Hardware.h`
 - move all functions from `Lis.c` to `Lis.h`:
-- `static` functions become `inline` in .h and do not need
-  prototypes in `Lis.c`
-    - they are private, no one else refers to them by address,
-      not even tests, so there is no danger of a missing symbol
-    - i.e., they do not need to be in memory anywhere, they are
-      like macros -- after the compile step, there is no trace of
-      their existence except for the assembly code they turn into
-- non `static` functions become `inline` in .h and get prototypes
-  in `.c`
-    - this is not really necessary
-    - but why not
-    - it has no impact on the final code size
+- remove `static` keyword from private functions
+    - there is no *call* symbol
+    - the function is `inline`, so `static` has no meaning:
+        - `static` means the function name is unique to this lib,
+          so even if another translation unit has the same
+          function name, the compiler treats them as different
+          symbols
+        - `inline` says eliminate the symbol altogether
+- the compiler warns if `static` is not removed:
+- Example: `gcc` to output `-o build/test_runner.o`
+
+```bash
+src/Lis.h|157 col 5| warning: ‘Pin_LisPixSelect_SetOutput’ is static but used in inline function ‘LisInit’ which is not static
+```
+
+- similarly, `static` cannot be used in the prototype:
+- Example: `gcc` to output `-o build/Lis.o`
+
+```bash
+src/Lis.c|4 col 13| warning: ‘Pin_LisPixSelect_SetOutput’ declared ‘static’ but never defined [-Wunused-function]
+```
+
+- create prototypes for all functions in the `.c` file
+- this is to prevent linker errors
+- it does not increase code size (because these symbols are never
+  used, i.e., the functions are never called)
+- Example: for `-o build/TestSuite.exe` if there is no prototype,
+  then you get a linker error when building the `TestSuite` with
+  `gcc`:
+
+```bash
+|| build/Lis.o: In function `LisInit':
+src/Lis.h|157| undefined reference to `Pin_LisPixSelect_SetOutput'
+src/Lis.h|157| (.text+0x9): relocation truncated to fit: R_X86_64_PC32 against undefined symbol `Pin_LisPixSelect_SetOutput'
+src/Lis.h|157| undefined reference to `Pin_LisPixSelect_SetOutput'
+```
+
+- Interestingly, `avr-gcc` does not throw any linker error when
+  building the `.elf`: `-o build/vis-spi-out.elf`
+- so `static` keyword is dropped in `.h`, `inline` is added in
+  `.h`, nothing has a keyword in `.c`
+- if any keyword were to be added, add `extern inline` to the
+  prototype as described here:
+  <https://gustedt.wordpress.com/2010/11/29/myth-and-reality-about-inline-in-c99/>
+    - this is not required
+    - I do not do it
+
+After moving `Lis`
+
+```date-and-size
+Mon, Jan  6, 2020 11:05:50 AM
+   text	   data	    bss	    dec	    hex	filename
+    642	      2	     21	    665	    299	build/vis-spi-out.elf
+```
+
+As expected, code size reduced slightly because the `call` to
+`LisInit` is eliminated.
+
+## [x] no change required in `lib/Makefile`
+- there is nothing to change!
+- just make sure the tests still run for the chagned 
 
 # [ ] what can I do to use the GPIO registers in lib Queue
 
@@ -2698,8 +2786,8 @@ clean:
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
 	rm -f build/test_runner.o
-	rm -f ${lib_build_src}
-	rm -f ${lib_build_test}
+	rm -f ${lib_o}
+	rm -f ${test_lib_o}
 ```
 
 ### dependency
@@ -2746,10 +2834,10 @@ clean:
 ```make
  # make a list of object file names
 lib_src := Led BiColorLed TriColorLed
-lib_build_src := $(addsuffix .o,${lib_src})
-lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
+lib_o := $(addsuffix .o,${lib_src})
+lib_o := $(addprefix ../lib/build/,${lib_o})
  # define a pattern rule to build these object files
-${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 	${compiler} $(CFLAGS) -c ../lib/src/$*.c -o $@
  # *target* is specific to object files in ../lib/build/ and that
  # match the names listed in lib_src
@@ -2774,7 +2862,7 @@ ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
       stem.c to make stem.o
 
     ```make
-    ${lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+    ${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
         ${compiler} $(CFLAGS) -c $< -o $@
     ```
 
@@ -3051,7 +3139,7 @@ build/${board-name}.o: src/${board-name}.c ${Hardware}
   Chromation `lib` object files
 
 ```make
-build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_build_src}
+build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_o}
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS)
 ```
 
@@ -3060,8 +3148,8 @@ build/${board-name}.elf: build/${board-name}.o ${app_build_src} ${lib_build_src}
 ```make
 hw_lib_src := BiColorLed SpiSlave
 lib_src := ${hw_lib_src} ReadWriteBits
-lib_build_src := $(addsuffix .o,${lib_src})
-lib_build_src := $(addprefix ../lib/build/,${lib_build_src})
+lib_o := $(addsuffix .o,${lib_src})
+lib_o := $(addprefix ../lib/build/,${lib_o})
 ```
 
 - *but that object file is just a formality*
@@ -3183,10 +3271,10 @@ HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
 HardwareFakes := $(addprefix test/,${HardwareFakes})
  # ---add non-hardware libs here---
 lib_src := ${hw_lib_src} ReadWriteBits
-lib_build_src := $(addsuffix .o,${lib_src})
-lib_build_src := $(addprefix build/,${lib_build_src})
-lib_build_test := $(addsuffix .o,${lib_src})
-lib_build_test := $(addprefix build/test_,${lib_build_test})
+lib_o := $(addsuffix .o,${lib_src})
+lib_o := $(addprefix build/,${lib_o})
+test_lib_o := $(addsuffix .o,${lib_src})
+test_lib_o := $(addprefix build/test_,${test_lib_o})
 ```
 
 - the hardware fakes are pre-requisites for `test_runner.o`:
@@ -3203,14 +3291,14 @@ build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes}
 ```make
  # lib/Makefile
  #
-build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_build_test} ${lib_build_src}
+build/TestSuite.exe: build/test_runner.o ${unittest_o} ${test_lib_o} ${lib_o}
 ```
 
 - and the lib-object build rule is the same for all libs:
 
 ```make
  # lib/Makefile
-${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
+${lib_o}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
 	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
 ```
 
@@ -3227,8 +3315,12 @@ ${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
       updated or created
 
 ### details: vis-spi-out Makefile is complicated
+- No, this is too important, I am rethinking it. See level-1
+  headings:
+    - `libs separate into two lists`
+    - `two types of libs`
 
-#### libs separate into three lists
+# [ ] libs separate into two lists
 - the `vis-spi-out/Makefile` is affected since it includes rules
   for compiling with `avr-gcc`
 - there are three kinds of libs:
@@ -3236,7 +3328,7 @@ ${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
     - `inlhw` (inline hardware) libs
     - `nonhw` (non-hardware) libs
 
-#### `hw` and `inlhw` form a list for pre-requisites
+## `hw` and `inlhw` form a list for pre-requisites
 - `hw` libs and `inlhw` libs form a list of `-Hardware.h`
   pre-requisites (`src/lib-Hardware.h`) for building the main
   object file
@@ -3244,9 +3336,9 @@ ${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
    pre-requisites (`../lib/test/lib-HardwareFake.h`) for the test
    object files
 
-#### `hw` lib-objects build rules depend on compiler
+## `hw` lib-objects build rules depend on compiler
 
-#### `hw` build rules for avr-gcc
+### `hw` build rules for avr-gcc
 - `hw` libs form a list of lib-objects with the build rule to
   *include the hardware definition in the translation unit* when
   compiling with `avr-gcc`:
@@ -3254,11 +3346,11 @@ ${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
     - this is done with the flag `-include src/$*-Hardware.h`
 
     ```make
-    ${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
+    ${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
         ${compiler} -include src/$*-Hardware.h $(CFLAGS) -c $< -o $@
     ```
 
-#### `hw` build rules for gcc
+## `hw` build rules for gcc
 - that same list of `hw` lib-objects does *not* include the
   hardware definition when compiling with `gcc`, but does include
   *fake AVR macro definitions*
@@ -3278,16 +3370,16 @@ ${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
       used:
 
     ```make
-    ${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+    ${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
         ${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
     ```
 
-#### check compiler to resolve conflicting build rules
+## check compiler to resolve conflicting build rules
 - `make` does not allow conflicting rules for the same target
 - this is handled by checking which compiler is used, as shown
   in the examples below
 
-#### `inlhw` and `nonhw` build rules do not depend on compiler
+## `inlhw` and `nonhw` build rules do not depend on compiler
 - `inlhw` and `nonhw` libs form a list of lib-objects with the
   same build rule
 
@@ -3300,18 +3392,18 @@ ${lib_build_src}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
     - create the list of lib-ojects:
 
     ```make
-    nonhw_lib_build_src := $(addsuffix .o,${nonhw_lib_src})
-    nonhw_lib_build_src := $(addprefix ../lib/build/,${nonhw_lib_build_src})
+    nonhw_lib_o := $(addsuffix .o,${nonhw_lib_src})
+    nonhw_lib_o := $(addprefix ../lib/build/,${nonhw_lib_o})
     ```
 
 - here is the build rule:
 
 ```make
-${nonhw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+${nonhw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 ```
 
-### examples from vis-spi-out Makefile
+## examples from vis-spi-out Makefile
 - the example below shows how three libs, one for each type, form
   the lists for pre-requisites and compiler-dependent build
   rules
@@ -3322,7 +3414,7 @@ ${nonhw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
     - `gcc` compiles libs for linking to make the `TestSuite.exe`
       for `lib` unit-tests
 
-# two types of libs
+# [ ] two types of libs
 - `BiColorLed` has has function definitions with hardware
   dependencies but all of these functions are `inline`
 - `ReadWriteBits` does not have hardware dependencies
@@ -3473,7 +3565,7 @@ IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
 
 ```make
  # stub macros for lib translation units that include function-like avr macros
-${lib_build_src}: build/%.o: src/%.c src/%.h
+${lib_o}: build/%.o: src/%.c src/%.h
 	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
 ```
 
