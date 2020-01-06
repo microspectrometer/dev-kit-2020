@@ -327,6 +327,25 @@ multiple definition of `Spi_SPDR'
 - branch `clean/inline-all-lib-funcs`
 - plan is to merge this back with `clean-master` later
 
+## [ ] edit `vis-spi-out/Makefile`
+- list libs to edit
+- simplify structure: everything becomes like `BiColorLed`
+- move lib `Lis` from `hw_lib_src` to `inlhw_lib_src`
+- add `#include "Lis-Hardware.h"` to `vis-spi-out/src/Hardware.h`
+- move all functions from `Lis.c` to `Lis.h`:
+- `static` functions become `inline` in .h and do not need
+  prototypes in `Lis.c`
+    - they are private, no one else refers to them by address,
+      not even tests, so there is no danger of a missing symbol
+    - i.e., they do not need to be in memory anywhere, they are
+      like macros -- after the compile step, there is no trace of
+      their existence except for the assembly code they turn into
+- non `static` functions become `inline` in .h and get prototypes
+  in `.c`
+    - this is not really necessary
+    - but why not
+    - it has no impact on the final code size
+
 # [ ] what can I do to use the GPIO registers in lib Queue
 
 ## 2019-12-13
@@ -3303,9 +3322,7 @@ ${nonhw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
     - `gcc` compiles libs for linking to make the `TestSuite.exe`
       for `lib` unit-tests
 
-#### three libs each representing a different case
-- `SpiSlave` has function definitions with hardware dependencies
-  and these functions are *not* inline
+# two types of libs
 - `BiColorLed` has has function definitions with hardware
   dependencies but all of these functions are `inline`
 - `ReadWriteBits` does not have hardware dependencies
@@ -3316,6 +3333,16 @@ ${nonhw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
     - in effect, these functions *do* have hardware dependencies
       after inlining because the caller inlines the function with
       the hardware dependencies
+- I use to have `Lis`, `SpiSlave`, and `UartSpi` as a third type
+  of lib
+- this third type of lib has function definitions:
+    - with hardware dependencies
+    - but *not* inline
+- example: `SpiSlaveInit`, `UartSpiInit`
+- this third type of lib does not work in practice
+- the hardware definitions are used by the `Init` function, but
+  also used by functions that need to be inline
+- i.e., both `lib.o` and `main.o` need the hardware definitions
 
 ```make
  # vis-spi-out/Makefile

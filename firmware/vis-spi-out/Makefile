@@ -53,11 +53,12 @@ app_build_test := $(addprefix build/,${app_build_test})
 app_build_src := $(addsuffix .o,${app_src})
 app_build_src := $(addprefix build/,${app_build_src})
 # ---add hardware libs here that do not put inline in .h---
+#  TODO: this type of lib GOES AWAY! All shall be inline!
 #  avr-gcc builds these with hardware defs via -include lib-Hardware.h
-hw_lib_src := SpiSlave UartSpi Lis
+hw_lib_src := SpiSlave UartSpi
 # ---add hardware libs here that put inline in .h---
 #  avr-gcc builds these libs without needing hardware defs
-inlhw_lib_src := BiColorLed
+inlhw_lib_src := BiColorLed Lis
 # ---add nonhardware libs here---
 nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits Queue
 # hardware libs add hardware file pre-requisites to the rule
