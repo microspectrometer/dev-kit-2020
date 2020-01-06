@@ -1,4 +1,7 @@
-/** \file */
+/** \file Lis.c
+ * # API
+ * void LisInit(void);\n 
+ * */
 #include "Lis.h"
 // ---Private---
 void Pin_LisPixSelect_SetOutput(void);

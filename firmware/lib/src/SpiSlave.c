@@ -1,4 +1,13 @@
-/** \file */
+/** \file SpiSlave.c
+ * # API
+ * void SpiSlaveInit(void);\n 
+ * void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes);\n 
+ * uint8_t ReadSpiStatusRegister(void);\n 
+ * uint8_t ReadSpiDataRegister(void);\n 
+ * void ClearSpiInterruptFlag(void);\n 
+ * void DisableSpiInterrupt(void);\n 
+ * void EnableSpiInterrupt(void);\n 
+ * */
 #ifdef SPISLAVE_FAKED
 #include "SpiSlave_faked.h"
 #endif
@@ -6,92 +15,18 @@
 // avr headers included by Makefile:
 // <avr/interrupt.h> defines macros `sei()` and `cli()`
 
-// ---Private Functions---
-static void EnableSpiModule(void)
-{
-    /** Set SPE bit in SPCR (SPI Control Register) to enable SPI.
-     * This bit must be set to enable any SPI operations.
-      * */
-    SetBit(Spi_SPCR, Spi_Enable);
-    // ---Expected Assembly---
-    // in r24, 0x2c;
-    // ori r24, 0x40;
-    // out 0x2c, r24
-    // This is three instructions because SPCR is outside the
-    // address range for using `sbi`.
-}
+// ---Private---
+void EnableSpiModule(void);
 
 // ---API---
-void SpiSlaveInit(void)
-{
-    /** SpiSlaveInit behavior:\n 
-      * - makes DataReady an output pin\n 
-      * - idles DataReady high\n 
-      * - makes Miso an output pin\n 
-      * - enables SPI\n 
-      * - enables SPI interrupt\n 
-      * */
-    // DataReady pin idle high
-    SetBit(Spi_port, Spi_DataReady); // sbi	0x05, 1
-    // Set DataReady as an output pin
-    SetBit(Spi_ddr, Spi_DataReady); // sbi	0x04, 1
-    // Set Miso as an an output pin
-    SetBit(Spi_ddr, Spi_Miso); // sbi	0x04, 4
-    EnableSpiModule();
-    // Enable interrupts for robust SPI communication
-    EnableSpiInterrupt();
-}
+void SpiSlaveInit(void);
 void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes);
 uint8_t ReadSpiStatusRegister(void);
 uint8_t ReadSpiDataRegister(void);
 void ClearSpiInterruptFlag(void);
-void DisableSpiInterrupt(void)
-{
-    /** Clear SPIE bit in SPCR to disable the SPI ISR:\n 
-     * - bit SPIF in register SPSR is still set when a serial
-     *   transfer completes\n 
-     * - clear SPIF manually by calling ClearSpiInterruptFlag\n 
-     *   - SPIF is cleared by first reading the SPI status
-     *   register, then accessing the SPI data register\n 
-     * */
-    // Disable the "transfer complete" interrupt
-    ClearBit(Spi_SPCR, Spi_InterruptEnable);
-    // ---Expected Assembly---
-    // in	r24, 0x2c	; 44
-    // andi	r24, 0x7F	; 127
-    // out	0x2c, r24	; 44
-    // This is three instructions because SPCR is outside the
-    // address range for using `cbi`.
-}
+void DisableSpiInterrupt(void);
 
 // ---API functions with fakes for unit tests---
 #ifndef SPISLAVE_FAKED
-void EnableSpiInterrupt(void)
-{
-    /** Set SPIE bit in SPCR to execute the SPI ISR when:\n 
-     * - the Global Interrupt Enable bit is set in SREG\n 
-     * - bit SPIF in register SPSR is set\n 
-     *   - bit SPIF in register SPSR is set when a serial
-     *     transfer completes\n 
-     *   - SPIF is cleared when executing the SPI ISR\n 
-     *   - alternatively, SPIF is cleared by first reading the
-     *     SPI status register, then accessing the SPI data
-     *     register\n 
-     * */
-    // Global interrupt disable
-    cli(); // cli
-    // Clear SPI interrupt flag (SPIF) before enabling interrupt
-    ClearSpiInterruptFlag();
-    // Enable the "transfer complete" interrupt
-    SetBit(Spi_SPCR, Spi_InterruptEnable);
-    // ---Expected Assembly---
-    // in r24, 0x2c; 
-    // ori r24, 0x80;
-    // out 0x2c, r24
-    // This is three instructions because SPCR is outside the
-    // address range for using `sbi`.
-    //
-    // Global interrupt enable
-    sei(); // sei
-}
+void EnableSpiInterrupt(void);
 #endif

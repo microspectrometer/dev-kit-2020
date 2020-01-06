@@ -146,6 +146,49 @@
 
 # why not make all lib functions `inline`
 - making everything `inline` makes this all a lot simpler
+- but there are two drawbacks:
+
+1. no more `static` functions
+- major: namespace conflicts
+    - common function names like `PinClk_SetOutput` now need the
+      lib name somewhere like `PinLisClk_SetOutput` to avoid name
+      conflicts with other libs that have clock pins that are
+      outputs
+- minor: functions are exposed
+    - rely on user to respect comment `---Private---`
+    - Doxygen .h no longer adequate for short list of API calls
+    - Add `API` doc to `.c` file
+    - Example:
+
+```c
+// (First line of file)
+/** \file SpiSlave.c
+ * # ---API---
+ * void SpiSlaveInit(void);\n 
+ * void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes);\n 
+ * uint8_t ReadSpiStatusRegister(void);\n 
+ * uint8_t ReadSpiDataRegister(void);\n 
+ * void ClearSpiInterruptFlag(void);\n 
+ * void DisableSpiInterrupt(void);\n 
+ * void EnableSpiInterrupt(void);\n 
+ * */
+```
+- This is better than nothing, but far from perfect:
+    - I have to manually populate this list
+- I might be better off writing a script that scrapes the project
+  for the `API` functions and makes a pretty output
+
+2. order of function definitions must avoid "implicit
+   declarations"
+- usually declaration is in `.h`
+- then calls always come `after` the declaration
+- but now declaration is in `.c`
+- so other translation units do not get a declaration, just a
+  definition
+- so if one `inline` calls another `inline`, the caller
+  definition has to come *after*
+- cannot fix this with `extern` declarations either
+- otherwise compiler throws "implicit declaration" error
 
 ## messy case actually not messy
 - I thought I found one case where `inline` makes things messy
@@ -321,7 +364,7 @@ ${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
 multiple definition of `Spi_SPDR'
 ```
 
-# [ ] inline all lib functions
+# [x] inline all lib functions
 - Every function definition goes in the header
 - `-Hardware.h` headers are only included with the application
     - do this via `vis-spi-out/src/Hardware.h`
@@ -343,19 +386,82 @@ multiple definition of `Spi_SPDR'
     - turn on tests for the affected lib
 
 ## [x] inline `SpiSlave`
+Before
+
+```date-and-size
+Mon, Jan  6, 2020  2:38:27 PM
+   text	   data	    bss	    dec	    hex	filename
+    642	      2	     21	    665	    299	build/vis-spi-out.elf
+```
+
 - checklist:
 - [x] edit `vis-spi-out/Makefile`:
     - move lib from `hw_lib_src` to `inlhw_lib_src`
 - [x] add `#include "lib-Hardware.h"` to
   `vis-spi-out/src/Hardware.h`
+
+After
+
+```date-and-size
+Mon, Jan  6, 2020  2:41:54 PM
+   text	   data	    bss	    dec	    hex	filename
+    770	     14	     21	    805	    325	build/vis-spi-out.elf
+```
+
 - move all functions from `lib.c` to `lib.h`:
     - remove `static` keyword from private functions
     - create prototypes in `lib.c` for all functions
+
+- [x] build avr-target
+- [x] code size did not change or decreased slightly
+
+
+```date-and-size
+Mon, Jan  6, 2020  3:10:07 PM
+   text	   data	    bss	    dec	    hex	filename
+    610	      0	     21	    631	    277	build/vis-spi-out.elf
+```
+
+- [x] build unit-test target
+    - turn on tests for the affected lib
+
+## [x] inline `UartSpi`
+Before
+
+```date-and-size
+Mon, Jan  6, 2020  3:10:07 PM
+   text	   data	    bss	    dec	    hex	filename
+    610	      0	     21	    631	    277	build/vis-spi-out.elf
+```
+- checklist:
+- [x] edit `vis-spi-out/Makefile`:
+    - move lib from `hw_lib_src` to `inlhw_lib_src`
+- [x] add `#include "lib-Hardware.h"` to
+  `vis-spi-out/src/Hardware.h`
+- [ ] move all functions from `lib.c` to `lib.h`:
+    - remove `static` keyword from private functions
+    - create prototypes in `lib.c` for all functions
+
+After Hardware.h change, but before move
+
+```date-and-size
+Mon, Jan  6, 2020  4:42:31 PM
+   text	   data	    bss	    dec	    hex	filename
+    812	     20	     21	    853	    355	build/vis-spi-out.elf
+```
+
+After move (where are the extra 14 bytes from?)
+
+```date-and-size
+Mon, Jan  6, 2020  4:48:38 PM
+   text	   data	    bss	    dec	    hex	filename
+    624	      0	     21	    645	    285	build/vis-spi-out.elf
+```
+
 - [x] avr-target builds
 - [x] code size did not change or decreased slightly
 - [x] unit-test target builds
     - turn on tests for the affected lib
-
 
 ## [x] edit `vis-spi-out/Makefile`
 - list libs to edit

@@ -69,7 +69,7 @@ void SpiSlave_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_SpiSlaveInit_tests(Nope);
+        Run_SpiSlaveInit_tests(Yep);
         Run_SpiSlaveTx_tests(Yep);
     }
 }
@@ -190,8 +190,8 @@ int main()
     BiColorLed_tests(Nope);
     ReadWriteBits_tests(Nope);
     Queue_tests(Nope);
-    UartSpi_tests(Nope);
-    Lis_tests(Yep);
+    UartSpi_tests(Yep);
+    Lis_tests(Nope);
     SpiSlave_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();

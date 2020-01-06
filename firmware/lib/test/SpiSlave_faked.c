@@ -1,3 +1,4 @@
+#include "SpiSlave_faked.h"
 #include "Mock.h" // record call history in "mock"
 // What is "mock"?
     // `faked` calls record themselves in `mock`

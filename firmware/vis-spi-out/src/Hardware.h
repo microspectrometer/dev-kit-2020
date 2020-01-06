@@ -11,10 +11,7 @@
 // here for inclusion in the main() translation unit
 #include "BiColorLed-Hardware.h"
 #include "Lis-Hardware.h"
-// ${hw_lib_src} libs need the hardware defs in their own
-// translation units so I cannot include those defs here:
-// do not #include "SpiSlave-Hardware.h"
-// do not #include "UartSpi-Hardware.h"
-// vis-spi-out.c still picks up the hardware definitions (somehow)
+#include "SpiSlave-Hardware.h"
+#include "UartSpi-Hardware.h"
 
 #endif // _HARDWARE_H
