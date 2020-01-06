@@ -201,31 +201,58 @@ void EnableSpiInterrupt(void);
 
 ## I am confused about -Hardware.h header
 - `SpiSlave-Hardware.h` is not included in `Hardware.h`
-- [x] is `avr-gcc` somehow picking up these definitions for the
-  `inline` functions when it builds `vis-spi-out.o`?
-    - I don't see how this could possibly happen
-    - I think if I want `inline` functions in `SpiSlave`, then I
-      need to make `SpiSlave-Hardware.h` part of the translation
-      unit with `vis-spi-out.c`
-    - come back to this *after* `UartSpi` is set up for dev
-    - ok, `UartSpi` is set up, now look at `.avra` and try to
-      find `Spi_spdr` -- is it loaded from mem?
+
+### [x] `avr-gcc` can always `inline` but not always optimize
+- define all lib functions `inline`
+- build `main.o` with `lib-Hardware.h`
+- do not build `lib.o` with `lib-Hardware.h`
+
+#### Details
+- if a function is defined in a header:
+    - any `.c` file that includes the header *sees* the definition
+    - the `.o` built from that `.c` file will `inline` instead of `call`
+- so `inline` is not the problem
+- both the application and lib `.c` files will `inline` the call
+- but if register addresses are in header file `-Hardware.h`, then only one `.c`
+  file can include the header
+    - if more than one `.c` file includes it, there is a multiple definition
+      error when the `.o` files are linked
+- if a lib contains calls that:
+    - are frequently made from the application
+    - rely on knowledge of the register address for picking the best instruction
+- then the lib cannot be built with the `-Hardware.h`
+- the application must be built with `-Hardware.h`
+- if the lib then puts *any* function definitions in its `.c` file and those
+  definitions need register values, the lib `.o` will not be optimized for that
+  function call
+- on the other hand, if the application calls the lib functions only once (like
+  in a `setup()`), then it's OK to leave the function definitions in `.c` and
+  build the lib with `-Hardware.h`
+- but that scenario never happens
+- I originally setup `SpiSlave` and `UartSpi` this way
+    - look at `.avra` and try to find `Spi_spdr` -- is it loaded from mem?
     - Yes, check it out. SPDR is 0x2E and SPSR is 0x2D.
     - The values are hard-coded into the assembly, not loaded
       from memory.
 
-```asm
-inline uint8_t ReadSpiStatusRegister(void) { return *Spi_spsr; }
- 1b8:	8d b5       	in	r24, 0x2d	; 45
-inline uint8_t ReadSpiDataRegister(void) { return *Spi_spdr; }
- 1ba:	8e b5       	in	r24, 0x2e	; 46
-```
+    ```asm
+    inline uint8_t ReadSpiStatusRegister(void) { return *Spi_spsr; }
+     1b8:	8d b5       	in	r24, 0x2d	; 45
+    inline uint8_t ReadSpiDataRegister(void) { return *Spi_spdr; }
+     1ba:	8e b5       	in	r24, 0x2e	; 46
+    ```
 
-- [x] how is this possible?
-    - `vis-spi-out.o` does not have the hardware file in its
-      translation unit
-    - how does it fill in the hardware values?
-    - here is what is happening
+    - so main.c can call an `Init` function in lib.c
+    - and that's compiles as a `call`
+    - but the `Init` calls `inline` functions
+    - ''avr-gcc'' inlines the functions
+    - and ''avr-gcc'' uses the best instructions
+- but I immediately ran into the problem that I needed to call those functions
+  again in `main.c`, but `main.c` does not have the hardware definitions, so
+  ''avr-gcc'' does not choose the best instructions
+- `vis-spi-out.o` does not have the hardware file in its translation unit
+    - it cannot fill in the hardware values
+- Here is what is happening
     - These functions are *not* called from within `vis-spi-out.o`.
     - These functions are called from within `SpiSlaveInit` in `SpiSlave.o`.
     - `SpiSlave.o` is built with `-include src/SpiSlave-Hardware.h`
@@ -280,7 +307,7 @@ Where I pay a price here is for short calls, like reading a register. I want to
 do this *fast*, so why make a call. It should be inline. But I have to make the
 call to pick up the hardware defs.
 
-- [x] try Makefile with two includes, should fail, try anyway
+### [x] linker error if lib.c and main.c both include -Hardware.h
 
 ```Makefile
  # vis-spi-out/Makefile
@@ -288,15 +315,19 @@ ${hw_lib_build_src}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardw
 	${compiler} -include src/$*-Hardware.h $(CFLAGS) -c $< -o $@
 ```
 
-- yep, doesn't work.
 - every hardware def has a *multiple definition* error:
 
 ```bash
 multiple definition of `Spi_SPDR'
 ```
 
-- [ ] OK, tomorrow, every function definition goes in the header, and the
-  Hardware libs are only included with the application
+# [ ] inline all lib functions
+- Every function definition goes in the header
+- -Hardware.h headers are only included with the application
+- branch `clean/inline-all-lib-funcs`
+- plan is to merge this back with `clean-master` later
+
+# [ ] what can I do to use the GPIO registers in lib Queue
 
 ## 2019-12-13
 - right now, avr-gcc build is 202 bytes
