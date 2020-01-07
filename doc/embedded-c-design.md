@@ -298,10 +298,106 @@ and the solution I use to each problem.
   also used by functions that need to be inline
 - i.e., both `lib.o` and `main.o` need the hardware definitions
 
-# the `-include` flag
+# Use the `-include` flag for AVR headers like `<avr/io.h>`
+This is a way for me to tell the compiler to include a file:
+
+- without having to know its exact path
+- without having to pollute the source code with `#include`
+
+This makes it convenient to use the real AVR headers for the
+board target and fake AVR headers for test targets, because all
+of the work is done in the Makefile.
+
+This is how I include the AVR headers. Since I do the AVR headers
+that way, I do the Fake AVR headers the same way for symmetry.
+
+I know exactly where the fakes are because I made them, so I
+could have done the fakes with the usual `-I` flag. What's nice
+about `-include` is I don't need to pollute the source files with
+these includes.
+
+From the `gcc` documentation about the `-include` flag:
 
 > processes the file as if "#include "file"" appeared as the
 > first line of the primary source file.
+
+The directory search is slightly different. It makes no
+difference for my purposes. I specify the fake header locations
+relative to the Makefile.
+
+> Process file as if "#include "file"" appeared as the first line
+> of the primary source file.  However, the first directory
+> searched for file is the preprocessor's working directory
+> instead of the directory containing the main source file.  If
+> not found there, it is searched for in the remainder of the
+> "#include "..."" search chain as normal.
+>
+> If multiple -include options are given, the files are included
+> in the order they appear on the command line.
+
+The one minor downside is I don't think I can trigger a rebuild
+if I update the `avr-gcc` tool and pick up updated AVR headers.
+If I ever do such an update, remember to clean-all (`;mca`)
+before the build.
+
+# Flag -include uses "#include "..."" search chain
+Fold `man-gcc.man` by `indent` and see section `Options
+Controlling the Kind of Output`
+
+Use `-v` to print header search paths.
+
+> -v  Print (on standard error output) the commands executed to
+>     run the stages of compilation.  Also print the version
+>     number of the compiler driver program and of the
+>     preprocessor and the compiler proper.
+
+Example:
+
+```make
+build/${board-name}.o: src/${board-name}.c ${Hardware} ${lib_headers}
+	${compiler} $(CFLAGS) -v -c $< -o $@
+```
+
+This performs the usual compile, but the output is verbose.
+Buried in the Quickfix window is this info:
+
+```bash
+|| #include "..." search starts here:
+|| #include <...> search starts here:
+||  src
+||  ../lib/src
+||  c:\program files (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\../lib/gcc/avr/5.4.0/include
+||  c:\program files (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\../lib/gcc/avr/5.4.0/include-fixed
+||  c:\program files (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\../lib/gcc/avr/5.4.0/../../../../avr/include
+|| End of search list.
+```
+
+None of these exist as paths I can get to. They are fake paths
+coming from the avr-gcc.exe via the `-B` flag.
+
+# AVR headers like `<avr/io.h>` are found via -B in LFLAGS
+Fold `man-gcc.man` by `indent` and see section `Options for
+Directory Search`.
+
+See section `-Bprefix`.
+
+Note I do not have to add a path for the `AvrHeaders`. `LFAGS`
+uses `-B` to add:
+
+```make
+atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
+```
+
+This tells `avr-gcc`:
+
+> where to find executables, libraries, include files, and data
+> files of the compiler itself.
+
+# Unit-test headers are included with -I in CFLAGS
+Fold `man-gcc.man` by `indent` and see section `Options for
+Directory Search`.
+
+`CFLAGS` use `-I` to add include paths.
 
 # `avr-gcc` can always `inline` but not always optimize
 - define all lib functions `inline`
@@ -634,7 +730,7 @@ Mon, Jan  6, 2020  4:48:38 PM
 - [x] unit-test target builds
     - turn on tests for the affected lib
 
-# [ ] clean Makefile variables after all the inlining
+# [x] clean Makefile variables after all the inlining
 
 ## [x] clean `vis-spi-out/Makefile`
 
@@ -777,7 +873,40 @@ IncludeFakeAvrHeaders:
 
 
 
-## [ ] clean `lib/Makefile`
+## [x] clean `lib/Makefile`
+
+```Makefile-variables
+hwlib:
+- BiColorLed
+- SpiSlave
+- UartSpi
+- Lis
+nohwlib:
+- ReadWriteBits
+- Queue
+HardwareFakes:
+- test/BiColorLed-HardwareFake.h
+- test/SpiSlave-HardwareFake.h
+- test/UartSpi-HardwareFake.h
+- test/Lis-HardwareFake.h
+lib_o:
+- build/BiColorLed.o
+- build/SpiSlave.o
+- build/UartSpi.o
+- build/Lis.o
+- build/ReadWriteBits.o
+- build/Queue.o
+lib_headers:
+- src/BiColorLed.h
+- src/SpiSlave.h
+- src/UartSpi.h
+- src/Lis.h
+- src/ReadWriteBits.h
+- src/Queue.h
+IncludeFakeAvrHeaders:
+- -includetest/FakeAvr/interrupt.h
+- -includetest/FakeAvr/io.h
+```
 
 ## 2019-12-13
 - right now, avr-gcc build is 202 bytes

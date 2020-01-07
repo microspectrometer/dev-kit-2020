@@ -1,6 +1,10 @@
 # board-name: the PCB that uses this firmware{{{
 board-name := vis-spi-out
-# board-name: the "avr-target" source `.c` file with main()
+# board-name shows up as:
+# - the main() `.c` file for the "avr-target"
+# - the EAGLE .sch and .brd files
+# - the Fusion360 model
+# - the MacroFab/PCB:NG project
 # }}}
 # =====[ Build targets ]=====
 # ---"unit-test" runs on PC with Cygwin---{{{
@@ -67,14 +71,12 @@ unittest_o  := ${unity_libo} ${mock-c_libo}
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 \
 	-I/usr/lib/glib-2.0/include \
 	-I${path_mock-c}include -I${path_unity} \
-	-I../lib/src -Isrc ${IncludeFakeAvrHeaders} \
-	-Itest -I../lib/test \
+	-Isrc -I../lib/src \
+	-Itest -I../lib/test ${IncludeFakeAvrHeaders} \
 	-g -Wall -Wextra -pedantic -Winline
 # }}}
 # LFLAGS{{{
 LFLAGS_for_cygwin = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
-# -I../lib/test includes the project libs `test` folder.
-#    This picks up the headers for project lib mocks and the hardware-dependency fakes.
 # }}}
 # =====[ Use compiler to pick which flags to use ]=====
 # avr-gcc{{{
@@ -154,21 +156,19 @@ clean-all-builds:
 # ;mktgc - "unit-test" target: `TestSuite-results.md`{{{
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
-# build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-# ${test_app_o} ${app_o} ${lib_o} ../lib/build/SpiSlave.o
-# 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${test_app_o} ${app_o} ${lib_o}
+${lib_o} ${test_app_o} ${app_o}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
-# translation units with tests must #include "unity.h" and "Mock.h"
-build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFakes}
+# test-runner rebuilds if fake hardware definitions change
+build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFakes} ${lib_headers}
 	${compiler} $(CFLAGS) -c $< -o $@
-# tests depend on fake hardware definitions
-${test_app_o}: build/%.o: test/%.c test/%.h ../lib/test/HardwareFake.h ${HardwareFakes} ${FakeAvrHeaders}
+# unit-test translation units must #include "unity.h" and "Mock.h"
+${test_app_o}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 ${app_o}: build/%.o: src/%.c src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
-${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+# For tests: stub function-like macros used in libs in FakeAvrHeaders
+${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h ${FakeAvrHeaders}
 	${compiler} $(CFLAGS) -c $< -o $@
 # }}}
 # ;mka - "avr-target": `vis-spi-out.elf`{{{
@@ -250,3 +250,4 @@ print_vars:
 	echo - ${IncludeFakeAvrHeaders}
 	echo
 # }}}
+# vim:set fdm=marker:

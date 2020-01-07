@@ -1,12 +1,27 @@
+# =====[ Build targets ]=====
+# ---"unit-test" runs on PC with Cygwin---{{{
 # Vim ;mktgc builds unit-test target using gcc
 unit-test: build/TestSuite-results.md
-# .md opens in new bottom Vim window
-
-#=====[ Unit Test Framework Paths ]=====
+# Vim opens .md opens in new bottom window
+# }}}
+#=====[ hardware library fake ]=====
+# AVR headers{{{
+# FakeAvrHeaders stub the AVR function-like-macros, e.g., cli()
+FakeAvrHeaders := interrupt io
+FakeAvrHeaders := $(addsuffix .h,${FakeAvrHeaders})
+FakeAvrHeaders := $(addprefix test/FakeAvr/,${FakeAvrHeaders})
+IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
+# Hardware definitions for registers and bits:
+# /cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/avr/iom328p.h
+# `AvrHeaders` are in the same folder.
+# }}}
+#=====[ "unit-test" library (from ThrowTheSwitch and Chromation) ]=====
+# Paths{{{
 path_tdd := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/
 path_unity  := ${path_tdd}mock-c/test/unity
 path_mock-c := ${path_tdd}mock-c/
-#=====[ Unit Test Framework Files ]=====
+# }}}
+# Pre-compiled object files{{{
 unity_libs  := unity
 unity_libo  := $(addsuffix .o,${unity_libs})
 unity_libo  := $(addprefix ${path_tdd}mock-c/build/,${unity_libo})
@@ -14,70 +29,70 @@ mock-c_libs := Mock RecordedCall RecordedArg ReturnValues
 mock-c_libo := $(addsuffix .o,${mock-c_libs})
 mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
-#=====[ Unit Test runs on PC with Cygwin ]=====
-# ---add hardware libs here to create dependency on fakes---
-hw_lib_src := BiColorLed SpiSlave UartSpi Lis
-HardwareFakes := ${hw_lib_src}
-HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
-HardwareFakes := $(addprefix test/,${HardwareFakes})
-# ---add non-hardware libs here---
-lib_src := ${hw_lib_src} ReadWriteBits Queue
-lib_o := $(addsuffix .o,${lib_src})
-lib_o := $(addprefix build/,${lib_o})
-test_lib_o := $(addsuffix .o,${lib_src})
-test_lib_o := $(addprefix build/test_,${test_lib_o})
-# ---stub function-like macros in avr headers---
-AvrHeaders := interrupt io
-AvrHeaders := $(addsuffix .h,${AvrHeaders})
-FakeAvrHeaders := ${AvrHeaders}
-FakeAvrHeaders := $(addprefix test/FakeAvr/,${FakeAvrHeaders})
-IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
-#=====[ Unit Test Compiler and Linker flags ]=====
-CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
+# }}}
+#=====[ "unit-test" Compiler and Linker flags ]=====
+# CFLAGS{{{
+# Compile hwlib obj files with FakeAvrHeaders for unit tests.
+CFLAGS_for_cygwin = -I/usr/include/glib-2.0 \
+	-I/usr/lib/glib-2.0/include \
 	-DSPISLAVE_FAKED \
 	-I${path_mock-c}include -I${path_unity} \
-	-Isrc -Itest \
+	-Isrc \
+	-Itest ${IncludeFakeAvrHeaders} \
 	-g -Wall -Wextra -pedantic -Winline
+# }}}
+# LFLAGS{{{
 LFLAGS_for_cygwin = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
-# -I../lib/test includes the project libs `test` folder.
-#    This picks up the headers for project lib mocks and the hardware-dependency fakes.
-#
+# }}}
 # =====[ Use compiler to pick which flags to use ]=====
+# no compiler, just print build rules{{{
 ifeq ($(compiler),fake)
 	CFLAGS := 
 	LFLAGS := 
+# }}}
+# gcc/clang{{{
 else
 	CFLAGS := $(CFLAGS_for_cygwin)
 	LFLAGS := $(LFLAGS_for_cygwin)
 endif
-
-# Target `unit-test` ends up here:
-build/TestSuite-results.md: build/TestSuite.exe
-	$^ > $@
-#
-build/TestSuite.exe: build/test_runner.o ${unittest_o} ${lib_o} ${test_lib_o} build/SpiSlave_faked.o
-	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
-#
-# test translation units must #include "unity.h" and "Mock.h"
-# test_runner translation unit requires fake hardware definitions exist
-build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes}
-	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
-# test translation units do not depend on fake hardware definitions
-${test_lib_o}: build/%.o: test/%.c test/%.h
-	${compiler} $(CFLAGS) -c $< -o $@
-# stub macros for lib translation units that include function-like avr macros
-${lib_o}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
-	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
-# fake functions
-build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
-	${compiler} $(CFLAGS) -c $< -o $@
-
-# ;mca clean-all-builds
-# ;mct clean-TestSuite (to force a rebuild)
-.PHONY: clean-all-builds clean-TestSuite
+# }}}
+# =====[ Libs ]=====
+# Add hardware libs here{{{
+# Hardware libs depend on AVR headers (register/bit definitions, macros, etc.).
+# List separate from non-hardware libs to generate libname-Harware.h pre-reqs.
+hwlib := BiColorLed SpiSlave UartSpi Lis
+# }}}
+# Add non-hardware libs here{{{
+# Non-hardware libs do not depend on AVR headers.
+nohwlib := ReadWriteBits Queue
+# }}}
+# Group libs into build *pre-requisites*{{{
+# Hardware libs add libname-HardwareFake.h file pre-requisites to build rules.
+HardwareFakes := ${hwlib}
+HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
+HardwareFakes := $(addprefix test/,${HardwareFakes})
+# }}}
+# Group libs into *.o build targets* and *lib headers*{{{
+all_libs := ${hwlib} ${nohwlib}
+lib_o := $(addsuffix .o,${all_libs})
+lib_o := $(addprefix build/,${lib_o})
+test_lib_o := $(addsuffix .o,${all_libs})
+test_lib_o := $(addprefix build/test_,${test_lib_o})
+lib_headers := $(addsuffix .h,${all_libs})
+lib_headers := $(addprefix src/,${lib_headers})
+# }}}
+# =====[ Build recipes ]=====
+# ;mct - `:make clean-TestSuite` (to force a rebuild){{{
+.PHONY: clean-TestSuite
 clean-TestSuite:
 	rm -f build/TestSuite.exe
 	rm -f build/test_runner.o
+# }}}
+# ;mca - remember to clean all builds when switching build targets{{{
+# "avr-target" and "unit-test" builds share same *lib* object file paths,
+# but avr-gcc and gcc object files are obviously not compatible.
+# ;mca - `:make clean-all-builds`{{{
+.PHONY: clean-all-builds
 clean-all-builds:
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
@@ -85,3 +100,48 @@ clean-all-builds:
 	rm -f ${lib_o}
 	rm -f ${test_lib_o}
 	rm -f build/SpiSlave_faked.o
+# }}}
+# }}}
+# ;mktgc - "unit-test" target: `TestSuite-results.md`{{{
+build/TestSuite-results.md: build/TestSuite.exe
+	$^ > $@
+build/TestSuite.exe: build/test_runner.o ${unittest_o} \
+${lib_o} ${test_lib_o} build/SpiSlave_faked.o
+	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
+# test-runner rebuilds if fake hardware definitions change
+build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes} ${lib_headers}
+	${compiler} $(CFLAGS) -c $< -o $@
+# unit-test translation units must #include "unity.h" and "Mock.h"
+${test_lib_o}: build/%.o: test/%.c test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+# fake functions
+build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+# For tests: stub function-like macros used in libs in FakeAvrHeaders
+${lib_o}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
+	${compiler} $(CFLAGS) -c $< -o $@
+# }}}
+# =====[ Check Makefile variables ]=====
+# ;mpv - paste variables into documentation{{{
+.PHONY: print_vars
+print_vars:
+	echo hwlib:
+	echo - ${hwlib}
+	echo
+	echo nohwlib:
+	echo - ${nohwlib}
+	echo
+	echo HardwareFakes:
+	echo - ${HardwareFakes}
+	echo
+	echo lib_o:
+	echo - ${lib_o}
+	echo
+	echo lib_headers:
+	echo - ${lib_headers}
+	echo
+	echo IncludeFakeAvrHeaders:
+	echo - ${IncludeFakeAvrHeaders}
+	echo
+# }}}
+# vim:set fdm=marker:

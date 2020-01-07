@@ -187,12 +187,12 @@ void Lis_tests(bool run_test)
 int main()
 {
     UNITY_BEGIN();
-    BiColorLed_tests(Nope);
-    ReadWriteBits_tests(Nope);
-    Queue_tests(Nope);
+    BiColorLed_tests(Yep);
+    ReadWriteBits_tests(Yep);
+    Queue_tests(Yep);
     UartSpi_tests(Yep);
-    Lis_tests(Nope);
-    SpiSlave_tests(Nope);
+    Lis_tests(Yep);
+    SpiSlave_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }
