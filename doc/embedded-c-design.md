@@ -1761,8 +1761,97 @@ cpi	r24, 0xFC	; 252
 breq	.+6      	; 0x1ea <main+0x144>
 ```
 
+## erase placeholder
+- before erasing placeholder
+
+```date-and-size
+Tue, Jan  7, 2020  4:15:42 PM
+   text	   data	    bss	    dec	    hex	filename
+    624	      0	     21	    645	    285	build/vis-spi-out.elf
+```
+
+- after erasing placeholder
+
+```date-and-size
+Tue, Jan  7, 2020  4:19:54 PM
+   text	   data	    bss	    dec	    hex	filename
+    604	      0	     21	    625	    271	build/vis-spi-out.elf
+```
+
+## QueuePop in loop() or not?
+- change arg `*SPDR`
+
+```c
+Cmd* DoSensorCmd = LookupSensorCmd(*Spi_SPDR);
+```
+
+```avra
+in	r24, 0x2e	; 46
+```
+
+- to `QueuePop(SpiFifo))`
+
+```c
+Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo));
+```
+
+```avra
+ldd	r24, Z+3	; 0x03
+ldd	r18, Z+6	; 0x06
+ldd	r19, Z+7	; 0x07
+ldi	r25, 0x00	; 0
+cp	r24, r18
+cpc	r25, r19
+brcs	.+2      	; 0x1e2 <main+0x13c>
+std	Z+3, r1	; 0x03
+ldd	r24, Z+4	; 0x04
+ldd	r25, Z+5	; 0x05
+sbiw	r24, 0x01	; 1
+std	Z+5, r25	; 0x05
+std	Z+4, r24	; 0x04
+ld	r24, Z
+ldd	r25, Z+1	; 0x01
+ldd	r18, Z+3	; 0x03
+ldi	r19, 0x01	; 1
+add	r19, r18
+std	Z+3, r19	; 0x03
+movw	r30, r24
+add	r30, r18
+adc	r31, r1
+ld	r24, Z
+```
+
+- after changing arg size increases 52 bytes
+
+```date-and-size
+Tue, Jan  7, 2020  4:21:53 PM
+   text	   data	    bss	    dec	    hex	filename
+    656	      0	     21	    677	    2a5	build/vis-spi-out.elf
+```
+
+- so calling `QueuePop` instead of the direct read from `SPDR`
+  adds:
+    - 52 bytes of mem
+    - Total number of cycles: 38
+    - Total number of instructions: 23
+
+- takeaway: every call to `QueuePop` adds 52 bytes to mem size
+
 ## return to task of unit-testing `SpiSlaveTx`
 
+```date-and-size
+Tue, Jan  7, 2020  4:47:21 PM
+   text	   data	    bss	    dec	    hex	filename
+    604	      0	     21	    625	    271	build/vis-spi-out.elf
+```
+
+- [ ] write `SpiSlaveTxByte`
+    - sends just one byte
+    - `inline` call in `SpiSlaveTx`
+    - gives me a call to fake to test all bytes are sent by
+      `SpiSlaveTx`
+    - will also help in application as shorthand for sending one
+      byte
 
 # [ ] Replace `listening_for_SPIM` with Enable/DisableInterrupt
 - [x] delete `listening_for_SPIM`

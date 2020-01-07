@@ -59,11 +59,12 @@ void loop(void)
     // Idle until a command is received
     while (QueueIsEmpty(SpiFifo));
     // Execute the command.
+    // TODO: Read SPDR directly?
     Cmd* DoSensorCmd = LookupSensorCmd(*Spi_SPDR);
+    // TODO: Or pop here? Consumes 52 bytes, 38 cycles.
+    /* Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo)); */
     /* if (DoSensorCmd == NULL) ReplyCommandInvalid(); */
-    // placeholder to test code (replace with above line)
-    /* if (DoSensorCmd == NULL) DisableSpiInterrupt(); */
-    // placeholder to test code (replace with above line)
+    // placeholder to test SpiSlaveTx (replace with above line when done)
     if (DoSensorCmd == NULL)
     {
         DisableSpiInterrupt();
@@ -71,12 +72,13 @@ void loop(void)
         uint16_t nbytes = 3;
         SpiSlaveTx(input_buffer, nbytes);
     }
-    uint8_t garbage = ReadSpiDataRegister();
-    if (garbage==0xFC) BiColorLedRed(led_0);
     else DoSensorCmd();
 }
 ISR(SPI_STC_vect)
 {
+    // TODO: add GPIOR flag to check if listening?
+    // Skipping QueuePush saves 61 out of 116 cycles.
+    // Or enable/disable SpiInterrupt?
     QueuePush(SpiFifo, *Spi_SPDR);
 }
 Cmd* LookupSensorCmd(cmd const key)

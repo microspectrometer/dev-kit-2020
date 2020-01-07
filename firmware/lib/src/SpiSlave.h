@@ -57,6 +57,9 @@ inline void DisableSpiInterrupt(void)
 }
 inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
 {
+    /** SpiSlaveTx behavior:\n 
+      * - loads SPI data register with bytes from input buffer\n 
+      * */
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes; byte_index++)
     {
