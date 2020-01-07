@@ -540,6 +540,156 @@ As expected, code size reduced slightly because the `call` to
 - there is nothing to change!
 - just make sure the tests still run for the chagned 
 
+# [ ] clean Makefile variables after all the inlining
+
+## [x] clean `vis-spi-out/Makefile`
+
+### Old variables
+
+```make
+hw_lib_src :=
+inlhw_lib_src := BiColorLed SpiSlave UartSpi Lis
+Hardware := ${inlhw_lib_src}
+HardwareFakes := ${Hardware}
+hw_lib_o := $(addsuffix .o,${hw_lib_src})
+nonhw_lib_o := $(addsuffix .o,${nonhw_lib_src})
+lib_headers := ${hw_lib_src} ${inlhw_lib_src} ${nonhw_lib_src}
+```
+
+### Intermediate output of `;mpv` while rewriting...
+
+```Makefile-variables
+hwlib:
+- BiColorLed SpiSlave UartSpi Lis
+nohwlib:
+- ReadWriteBits Queue
+Hardware:
+- src/BiColorLed-Hardware.h
+- src/SpiSlave-Hardware.h
+- src/UartSpi-Hardware.h
+- src/Lis-Hardware.h
+HardwareFakes:
+- ../lib/test/BiColorLed-HardwareFake.h
+- ../lib/test/SpiSlave-HardwareFake.h
+- ../lib/test/UartSpi-HardwareFake.h
+- ../lib/test/Lis-HardwareFake.h
+hw_lib_o:
+- ../lib/build/BiColorLed.o
+- ../lib/build/SpiSlave.o
+- ../lib/build/UartSpi.o
+- ../lib/build/Lis.o
+nonhw_lib_o:
+- ../lib/build/ReadWriteBits.o
+- ../lib/build/Queue.o
+lib_headers:
+- ../lib/src/BiColorLed.h
+- ../lib/src/SpiSlave.h
+- ../lib/src/UartSpi.h
+- ../lib/src/Lis.h
+- ../lib/src/ReadWriteBits.h
+- ../lib/src/Queue.h
+IncludeAvrHeaders:
+- -includeavr/interrupt.h
+- -includeavr/io.h
+IncludeFakeAvrHeaders:
+- -include../lib/test/FakeAvr/interrupt.h
+- -include../lib/test/FakeAvr/io.h
+```
+
+### Final new variables
+- app libs (separated because of path):
+
+```make
+applib := Example
+test_app := $(addprefix test_,${applib})
+test_app_o := $(addsuffix .o,${test_app})
+test_app_o := $(addprefix build/,${test_app_o})
+app_o := $(addsuffix .o,${applib})
+app_o := $(addprefix build/,${app_o})
+```
+
+- hardware libs:
+
+```make
+hwlib := BiColorLed SpiSlave UartSpi Lis
+```
+
+- non-hardware libs:
+
+```make
+nohwlib := ReadWriteBits Queue
+```
+
+- group hw and nohw libs to make pre-reqs:
+
+```make
+Hardware := ${hwlib}
+HardwareFakes := ${Hardware}
+Hardware := $(addsuffix -Hardware.h,${Hardware})
+Hardware := $(addprefix src/,${Hardware})
+HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
+HardwareFakes := $(addprefix ../lib/test/,${HardwareFakes})
+```
+
+- group hw and nohw libs to make build targets and header
+  names
+
+```make
+all_libs := ${hwlib} ${nohwlib}
+lib_o := $(addsuffix .o,${all_libs})
+lib_o := $(addprefix ../lib/build/,${lib_o})
+lib_headers := $(addsuffix .h,${all_libs})
+lib_headers := $(addprefix ../lib/src/,${lib_headers})
+```
+
+### Final output
+
+```Makefile-variables
+hwlib:
+- BiColorLed SpiSlave UartSpi Lis
+nohwlib:
+- ReadWriteBits Queue
+Hardware:
+- src/BiColorLed-Hardware.h
+- src/SpiSlave-Hardware.h
+- src/UartSpi-Hardware.h
+- src/Lis-Hardware.h
+HardwareFakes:
+- ../lib/test/BiColorLed-HardwareFake.h
+- ../lib/test/SpiSlave-HardwareFake.h
+- ../lib/test/UartSpi-HardwareFake.h
+- ../lib/test/Lis-HardwareFake.h
+lib_o:
+- ../lib/build/BiColorLed.o
+- ../lib/build/SpiSlave.o
+- ../lib/build/UartSpi.o
+- ../lib/build/Lis.o
+- ../lib/build/ReadWriteBits.o
+- ../lib/build/Queue.o
+lib_headers:
+- ../lib/src/BiColorLed.h
+- ../lib/src/SpiSlave.h
+- ../lib/src/UartSpi.h
+- ../lib/src/Lis.h
+- ../lib/src/ReadWriteBits.h
+- ../lib/src/Queue.h
+IncludeAvrHeaders:
+- -includeavr/interrupt.h
+- -includeavr/io.h
+IncludeFakeAvrHeaders:
+- -include../lib/test/FakeAvr/interrupt.h
+- -include../lib/test/FakeAvr/io.h
+```
+
+
+
+## [ ] clean `lib/Makefile`
+
+```make
+hw_lib_src := BiColorLed SpiSlave UartSpi Lis
+HardwareFakes := ${hw_lib_src}
+```
+
 # [ ] what can I do to use the GPIO registers in lib Queue
 
 ## 2019-12-13
