@@ -1,4 +1,67 @@
-# train of thought
+# Safely butcher my project
+- I am about to butcher my project
+- first commit all changes as usual
+- I can branch, or I can do a reset
+
+## 1. checkout throwaway branch
+
+```bash
+git checkout -b experiment
+```
+
+- abandon experiment and return to good code:
+
+```bash
+git checkout clean-master
+```
+
+## 2. stay on master branch and do a reset
+
+### Work I do now is throwaway
+Whether staged or unstaged, any changes will be lost after the
+reset.
+
+### Check hash for sanity check
+Record the hash of the last commit:
+
+Get the last hash into the clipboard using Vim shortcut `;Gh`. Or
+display any number of previous hashes:
+
+4e14d1bdb352edaacefdd4412000802a629136c3
+
+```bash
+$ git log | grep commit -m 2
+commit 58961ae2c5e17dd5d2520a76df0f829f51a448ed
+commit a79386030aaa50d8928a18fc6929248cdf9d92d9
+```
+
+- Use this hash to verify Git did expected reset:
+- Paste the expected HEAD hash
+- Do the reset
+- Paste the actual HEAD hash on the next line
+- they should be identical
+
+### Make any changes
+- edit Makefile
+- edit code
+- rebuild
+- but don't make any changes to the repo that I want to keep
+
+### Reset
+Here is the reset. This discards any changes made since last
+commit:
+
+```bash
+$ git reset --hard HEAD
+Press ENTER or type command to continue
+HEAD is now at 9ef51af Merged in rainbots/dev-kit-mike (pull request #3)
+```
+
+The `HEAD` is the last commit. The last commit is the default for
+`git reset --hard`. I explicitly include `HEAD` as a reminder
+that I'm reverting to the working state pointed to by `HEAD`.
+
+# Train of thought
 - [x] want to see definition of variables in a lib optimized correctly
     - BiColorLed is a lib
     - it uses a register and pins
@@ -134,31 +197,71 @@
       `false` when it should *clearly* be returning true
     - I fixed that problem by replacing the `==` comparison with a
       `g_strcmp0` comparison
-- [ ] split common Spi stuff from SpiSlave into a Spi lib
 - [x] why is there a `-DSPISLAVE_FAKED` in the Makefile when the other hardware
   libs do not need a `-DLIBNAME_FAKED`?
     - because I "unit test libs using -DMacro to define fakes"
     - it is to test with a faked version of `EnableSpiInterrupt`
     - the fake records itself in `mock`
-- [ ] am I encountering new cases? not yet
 
-# move more code from old vis-spi-out to new vis-spi-out
+# [ ] split common Spi stuff from SpiSlave into a Spi lib
 
-# why not make all lib functions `inline`
-- making everything `inline` makes this all a lot simpler
-- but there are two drawbacks:
+# [ ] move more code from old vis-spi-out to new vis-spi-out
 
-1. no more `static` functions
-- major: namespace conflicts
-    - common function names like `PinClk_SetOutput` now need the
-      lib name somewhere like `PinLisClk_SetOutput` to avoid name
-      conflicts with other libs that have clock pins that are
-      outputs
-- minor: functions are exposed
-    - rely on user to respect comment `---Private---`
-    - Doxygen .h no longer adequate for short list of API calls
-    - Add `API` doc to `.c` file
-    - Example:
+# [ ] what can I do to use the GPIO registers in lib Queue
+
+# embedded C on old micros: make all lib functions `inline`
+- making everything `inline` is the only practical option
+- in other words, after splitting the application up into libs,
+  *every* function in those libs is `inline`:
+    - the function body is placed in the `header`
+    - the function prototype is placed in the `.c`
+
+## why `inline`?
+- two goals lead to the need for `inline`:
+1. splitting code up into multile `.c` files creates multiple
+   translation units
+2. unit-testing hardware-dependent-code without a million
+   `#ifdef` statements polluting the code means replacing vendor
+   hardware macros with `const` variables
+    - [ ] come back to this
+    - once I've inlined, this problem actually goes away
+    - just treat the `io` vendor headers like the other vendor
+      headers: create a fake header for tests
+    - I think this would eliminate a ton of header files
+
+## two drawbacks to inlining everything
+
+### 1. no more `static` functions
+The compiler inlines `static` functions within a translation
+unit. But that only generates optimized assembly if the
+translation unit sees the hardware definitions.
+
+The lib functions need to be `inline` in a different translation
+unit. In this case, the `static` lib function is still inlined,
+but the assembly cannot be optimized.
+
+So the functions cannot remain `static` in the lib. They become
+`inline`.
+
+Here are three problems with losing `static` for lib functions,
+and the solution I use to each problem.
+
+1. namespace conflicts:
+- solution: longer function names
+- a function name that might occur in different libs
+    - Example: `PinClk_SetOutput`
+- now needs the *lib* name somewhere in its name, like:
+    - Example: `PinLisClk_SetOutput`
+2. functions are exposed:
+- solution: documentation!
+- rely on user to respect comment `---Private---`
+- user should not consider `Private` functions as part of the API
+3. API is not "self-documenting":
+- solution: manually list API calls under `\file` tag in `.c`
+- the `.h` file is no longer adequate for viewing a short list of
+  API calls
+- Add `API` doc to `.c` file
+- Example:
 
 ```c
 // (First line of file)
@@ -173,13 +276,11 @@
  * void EnableSpiInterrupt(void);\n 
  * */
 ```
-- This is better than nothing, but far from perfect:
-    - I have to manually populate this list
-- I might be better off writing a script that scrapes the project
-  for the `API` functions and makes a pretty output
 
-2. order of function definitions must avoid "implicit
-   declarations"
+- [ ] write a script that scrapes the project for the `API`
+  functions and makes a pretty output
+
+### 2. order function definitions to avoid "implicit declarations"
 - usually declaration is in `.h`
 - then calls always come `after` the declaration
 - but now declaration is in `.c`
@@ -190,90 +291,52 @@
 - cannot fix this with `extern` declarations either
 - otherwise compiler throws "implicit declaration" error
 
-## messy case actually not messy
-- I thought I found one case where `inline` makes things messy
-- lib `SpiSlave` function `EnableSpiInterrupt` calls AVR macros
-  `sei` and `cli`
-- therefore `EnableSpiInterrupt` should not be `inline`!
-- why not?
-- the macros `sei` and `cli` are defined in `avr/interrupt.h`
-- it's cleaner to include `avr/interrupt.h` via the Makefile:
-    - if target is test, build rule uses fake version
-    - if target is AVR, build rule uses real version
-    - the list of used AVR libs goes in the Makefile, it does not
-      have to appear anywhere else
-- but that only works if the call to `sei` and `cli` is in the
-  `.c` file
-- if those calls happen in the `.h` file, the compiler encounters
-  `sei` and `cli` before it has the definition
-- But I was wrong about this being a reason *not* to inline.
-  There is a simple fix for this problem.
-- Add `${IncludeFakeAvrHeaders}` to the build target for the main
-  object file (or whichever file Make complains about):
 
-```make
-build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes}
-	${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
-```
+- I tried 
+- this third type of lib does not work in practice
+- the hardware definitions are used by the `Init` function, but
+  also used by functions that need to be inline
+- i.e., both `lib.o` and `main.o` need the hardware definitions
 
-- This puts a `-include` flag with the fake header path
-- the `-include` flag:
+# the `-include` flag
 
 > processes the file as if "#include "file"" appeared as the
 > first line of the primary source file.
 
-- In the end, I decided not to set up `EnableSpiInterrupt` for
-  `inline`. The function is only called at the end of the frame
-  write, not on each byte transmission like
-  `ClearSpiInterruptFlag` is, so the cost of the `call` is
-  minimal
-- If I decide to `inline` it later, just move it to the header
-  and go back to the `#ifndef SPISLAVE_FAKED ... #else` form (so
-  that the tests can still fake the function):
-
-```c
-#ifndef SPISLAVE_FAKED
-inline void EnableSpiInterrupt(void)
-{
-    // ... function body
-}
-#else
-void EnableSpiInterrupt(void);
-#endif
-```
-
-## I am confused about -Hardware.h header
-- `SpiSlave-Hardware.h` is not included in `Hardware.h`
-
-### [x] `avr-gcc` can always `inline` but not always optimize
+# `avr-gcc` can always `inline` but not always optimize
 - define all lib functions `inline`
 - build `main.o` with `lib-Hardware.h`
 - do not build `lib.o` with `lib-Hardware.h`
 
-#### Details
+## `inline` is not the problem
 - if a function is defined in a header:
-    - any `.c` file that includes the header *sees* the definition
-    - the `.o` built from that `.c` file will `inline` instead of `call`
+    - any `.c` file that includes the header *sees* the
+      definition
+    - the `.o` built from that `.c` file will `inline` instead of
+      `call`
 - so `inline` is not the problem
 - both the application and lib `.c` files will `inline` the call
-- but if register addresses are in header file `-Hardware.h`, then only one `.c`
-  file can include the header
-    - if more than one `.c` file includes it, there is a multiple definition
-      error when the `.o` files are linked
+- but if register addresses are in header file `-Hardware.h`,
+  then only one `.c` file can include the header
+    - if more than one `.c` file includes it, there is a multiple
+      definition error when the `.o` files are linked
 - if a lib contains calls that:
     - are frequently made from the application
-    - rely on knowledge of the register address for picking the best instruction
+    - rely on knowledge of the register address for picking the
+      best instruction
 - then the lib cannot be built with the `-Hardware.h`
 - the application must be built with `-Hardware.h`
-- if the lib then puts *any* function definitions in its `.c` file and those
-  definitions need register values, the lib `.o` will not be optimized for that
-  function call
-- on the other hand, if the application calls the lib functions only once (like
-  in a `setup()`), then it's OK to leave the function definitions in `.c` and
-  build the lib with `-Hardware.h`
+- if the lib then puts *any* function definitions in its `.c`
+  file and those definitions need register values, the lib `.o`
+  will not be optimized for that function call
+- on the other hand, if the application calls the lib functions
+  only once (like in a `setup()`), then it's OK to leave the
+  function definitions in `.c` and build the lib with
+  `-Hardware.h`
 - but that scenario never happens
 - I originally setup `SpiSlave` and `UartSpi` this way
-    - look at `.avra` and try to find `Spi_spdr` -- is it loaded from mem?
+    - look at `.avra` and try to find `Spi_spdr` -- is it loaded
+      from mem?
     - Yes, check it out. SPDR is 0x2E and SPSR is 0x2D.
     - The values are hard-coded into the assembly, not loaded
       from memory.
@@ -290,19 +353,27 @@ void EnableSpiInterrupt(void);
     - but the `Init` calls `inline` functions
     - ''avr-gcc'' inlines the functions
     - and ''avr-gcc'' uses the best instructions
-- but I immediately ran into the problem that I needed to call those functions
-  again in `main.c`, but `main.c` does not have the hardware definitions, so
-  ''avr-gcc'' does not choose the best instructions
-- `vis-spi-out.o` does not have the hardware file in its translation unit
+
+## problem is translation unit missing hardware definitions
+- but I immediately ran into the problem that I needed to call
+  those functions again in `main.c`, but `main.c` does not have
+  the hardware definitions, so ''avr-gcc'' does not choose the
+  best instructions
+- `vis-spi-out.o` does not have the hardware file in its
+  translation unit
     - it cannot fill in the hardware values
 - Here is what is happening
-    - These functions are *not* called from within `vis-spi-out.o`.
-    - These functions are called from within `SpiSlaveInit` in `SpiSlave.o`.
-    - `SpiSlave.o` is built with `-include src/SpiSlave-Hardware.h`
+    - These functions are *not* called from within
+      `vis-spi-out.o`.
+    - These functions are called from within `SpiSlaveInit` in
+      `SpiSlave.o`.
+    - `SpiSlave.o` is built with `-include
+      src/SpiSlave-Hardware.h`
     - proof:
 
 I put `ClearSpiInterruptFlag()` as the first call in `main()` in
 `vis-spi-out.c`:
+
 ```c
 void setup(void)
 {
@@ -323,8 +394,9 @@ inline uint8_t ReadSpiDataRegister(void) { return *Spi_SPDR; }
   b8:	88 81       	ld	r24, Y
 ```
 
-Later on, when that same function is called from within `SpiSlaveInit()`,
-defined in `SpiSlave.c`, the correct instructions are used:
+Later on, when that same function is called from within
+`SpiSlaveInit()`, defined in `SpiSlave.c`, the correct
+instructions are used:
 
 ```c
 // vis-spi-out.c
@@ -338,19 +410,22 @@ inline uint8_t ReadSpiDataRegister(void) { return *Spi_SPDR; }
  1ec:	8e b5       	in	r24, 0x2e	; 46
 ```
 
-This means if I want optimized instructions, the hardware defs need to go with
-one object file. The bonehead way to do this is to *always* include hardware
-defs with the main application, never with the lib object files, but then all of
-the functions need to be inline.
+This means if I want optimized instructions, the hardware defs
+need to go with one object file. The bonehead way to do this is
+to *always* include hardware defs with the main application,
+never with the lib object files, but then all of the functions
+need to be inline.
 
-The only other choice is to always make a call to the lib. This works great for
-long calls. The instructions dwarf the call overhead.
+The only other choice is to always make a call to the lib. This
+works great for long calls. The instructions dwarf the call
+overhead.
 
-Where I pay a price here is for short calls, like reading a register. I want to
-do this *fast*, so why make a call. It should be inline. But I have to make the
-call to pick up the hardware defs.
+Where I pay a price here is for short calls, like reading a
+register. I want to do this *fast*, so why make a call. It should
+be inline. But I have to make the call to pick up the hardware
+defs.
 
-### [x] linker error if lib.c and main.c both include -Hardware.h
+## linker error if lib.c and main.c both include -Hardware.h
 
 ```Makefile
  # vis-spi-out/Makefile
@@ -364,6 +439,8 @@ ${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
 multiple definition of `Spi_SPDR'
 ```
 
+# ---Completed Tasks---
+
 # [x] inline all lib functions
 - Every function definition goes in the header
 - `-Hardware.h` headers are only included with the application
@@ -371,97 +448,22 @@ multiple definition of `Spi_SPDR'
 - [x] create branch `clean/inline-all-lib-funcs`
 - plan is to merge this back with `clean-master` later
 
-## [x] inline `Lis`
+## [x] make a checklist
 - checklist:
-- [x] edit `vis-spi-out/Makefile`:
+- [ ] edit `vis-spi-out/Makefile`:
     - move lib from `hw_lib_src` to `inlhw_lib_src`
-- [x] add `#include "lib-Hardware.h"` to
+- [ ] add `#include "lib-Hardware.h"` to
   `vis-spi-out/src/Hardware.h`
 - move all functions from `lib.c` to `lib.h`:
     - remove `static` keyword from private functions
     - create prototypes in `lib.c` for all functions
-- [x] avr-target builds
-- [x] code size did not change or decreased slightly
-- [x] unit-test target builds
+- [ ] avr-target builds
+- [ ] code size did not change or decreased slightly
+- [ ] unit-test target builds
     - turn on tests for the affected lib
 
-## [x] inline `SpiSlave`
-Before
-
-```date-and-size
-Mon, Jan  6, 2020  2:38:27 PM
-   text	   data	    bss	    dec	    hex	filename
-    642	      2	     21	    665	    299	build/vis-spi-out.elf
-```
-
-- checklist:
-- [x] edit `vis-spi-out/Makefile`:
-    - move lib from `hw_lib_src` to `inlhw_lib_src`
-- [x] add `#include "lib-Hardware.h"` to
-  `vis-spi-out/src/Hardware.h`
-
-After
-
-```date-and-size
-Mon, Jan  6, 2020  2:41:54 PM
-   text	   data	    bss	    dec	    hex	filename
-    770	     14	     21	    805	    325	build/vis-spi-out.elf
-```
-
-- move all functions from `lib.c` to `lib.h`:
-    - remove `static` keyword from private functions
-    - create prototypes in `lib.c` for all functions
-
-- [x] build avr-target
-- [x] code size did not change or decreased slightly
-
-
-```date-and-size
-Mon, Jan  6, 2020  3:10:07 PM
-   text	   data	    bss	    dec	    hex	filename
-    610	      0	     21	    631	    277	build/vis-spi-out.elf
-```
-
-- [x] build unit-test target
-    - turn on tests for the affected lib
-
-## [x] inline `UartSpi`
-Before
-
-```date-and-size
-Mon, Jan  6, 2020  3:10:07 PM
-   text	   data	    bss	    dec	    hex	filename
-    610	      0	     21	    631	    277	build/vis-spi-out.elf
-```
-- checklist:
-- [x] edit `vis-spi-out/Makefile`:
-    - move lib from `hw_lib_src` to `inlhw_lib_src`
-- [x] add `#include "lib-Hardware.h"` to
-  `vis-spi-out/src/Hardware.h`
-- [ ] move all functions from `lib.c` to `lib.h`:
-    - remove `static` keyword from private functions
-    - create prototypes in `lib.c` for all functions
-
-After Hardware.h change, but before move
-
-```date-and-size
-Mon, Jan  6, 2020  4:42:31 PM
-   text	   data	    bss	    dec	    hex	filename
-    812	     20	     21	    853	    355	build/vis-spi-out.elf
-```
-
-After move (where are the extra 14 bytes from?)
-
-```date-and-size
-Mon, Jan  6, 2020  4:48:38 PM
-   text	   data	    bss	    dec	    hex	filename
-    624	      0	     21	    645	    285	build/vis-spi-out.elf
-```
-
-- [x] avr-target builds
-- [x] code size did not change or decreased slightly
-- [x] unit-test target builds
-    - turn on tests for the affected lib
+## [x] make `;ds` shortcut to paste time-stamped flash size
+- record flash size before starting `inline` work
 
 ## [x] edit `vis-spi-out/Makefile`
 - list libs to edit
@@ -539,6 +541,98 @@ As expected, code size reduced slightly because the `call` to
 ## [x] no change required in `lib/Makefile`
 - there is nothing to change!
 - just make sure the tests still run for the chagned 
+
+## [x] inline `Lis`
+- checklist:
+- [x] edit `vis-spi-out/Makefile`:
+    - move lib from `hw_lib_src` to `inlhw_lib_src`
+- [x] add `#include "lib-Hardware.h"` to
+  `vis-spi-out/src/Hardware.h`
+- move all functions from `lib.c` to `lib.h`:
+    - remove `static` keyword from private functions
+    - create prototypes in `lib.c` for all functions
+- [x] avr-target builds
+- [x] code size did not change or decreased slightly
+- [x] unit-test target builds
+    - turn on tests for the affected lib
+
+## [x] inline `SpiSlave`
+Before
+
+```date-and-size
+Mon, Jan  6, 2020  2:38:27 PM
+   text	   data	    bss	    dec	    hex	filename
+    642	      2	     21	    665	    299	build/vis-spi-out.elf
+```
+
+- checklist:
+- [x] edit `vis-spi-out/Makefile`:
+    - move lib from `hw_lib_src` to `inlhw_lib_src`
+- [x] add `#include "lib-Hardware.h"` to
+  `vis-spi-out/src/Hardware.h`
+
+After
+
+```date-and-size
+Mon, Jan  6, 2020  2:41:54 PM
+   text	   data	    bss	    dec	    hex	filename
+    770	     14	     21	    805	    325	build/vis-spi-out.elf
+```
+
+- move all functions from `lib.c` to `lib.h`:
+    - remove `static` keyword from private functions
+    - create prototypes in `lib.c` for all functions
+
+- [x] build avr-target
+- [x] code size did not change or decreased slightly
+
+
+```date-and-size
+Mon, Jan  6, 2020  3:10:07 PM
+   text	   data	    bss	    dec	    hex	filename
+    610	      0	     21	    631	    277	build/vis-spi-out.elf
+```
+
+- [x] build unit-test target
+    - turn on tests for the affected lib
+
+## [x] inline `UartSpi`
+Before
+
+```date-and-size
+Mon, Jan  6, 2020  3:10:07 PM
+   text	   data	    bss	    dec	    hex	filename
+    610	      0	     21	    631	    277	build/vis-spi-out.elf
+```
+- checklist:
+- [x] edit `vis-spi-out/Makefile`:
+    - move lib from `hw_lib_src` to `inlhw_lib_src`
+- [x] add `#include "lib-Hardware.h"` to
+  `vis-spi-out/src/Hardware.h`
+- [x] move all functions from `lib.c` to `lib.h`:
+    - remove `static` keyword from private functions
+    - create prototypes in `lib.c` for all functions
+
+After Hardware.h change, but before move
+
+```date-and-size
+Mon, Jan  6, 2020  4:42:31 PM
+   text	   data	    bss	    dec	    hex	filename
+    812	     20	     21	    853	    355	build/vis-spi-out.elf
+```
+
+After move (where are the extra 14 bytes from?)
+
+```date-and-size
+Mon, Jan  6, 2020  4:48:38 PM
+   text	   data	    bss	    dec	    hex	filename
+    624	      0	     21	    645	    285	build/vis-spi-out.elf
+```
+
+- [x] avr-target builds
+- [x] code size did not change or decreased slightly
+- [x] unit-test target builds
+    - turn on tests for the affected lib
 
 # [ ] clean Makefile variables after all the inlining
 
@@ -684,13 +778,6 @@ IncludeFakeAvrHeaders:
 
 
 ## [ ] clean `lib/Makefile`
-
-```make
-hw_lib_src := BiColorLed SpiSlave UartSpi Lis
-HardwareFakes := ${hw_lib_src}
-```
-
-# [ ] what can I do to use the GPIO registers in lib Queue
 
 ## 2019-12-13
 - right now, avr-gcc build is 202 bytes
@@ -3576,163 +3663,94 @@ ${lib_o}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
     - `libs separate into two lists`
     - `two types of libs`
 
-# [ ] libs separate into two lists
-- the `vis-spi-out/Makefile` is affected since it includes rules
-  for compiling with `avr-gcc`
-- there are three kinds of libs:
+# libs separate into two or three lists
+- there are three kinds of libs as far as Makefile variables are
+  concerned:
+    - `app` (application) libs
     - `hw` (hardware) libs 
-    - `inlhw` (inline hardware) libs
-    - `nonhw` (non-hardware) libs
+    - `nohw` (non-hardware) libs
 
-## `hw` and `inlhw` form a list for pre-requisites
-- `hw` libs and `inlhw` libs form a list of `-Hardware.h`
-  pre-requisites (`src/lib-Hardware.h`) for building the main
-  object file
-- `hw` libs and `inlhw` libs form a list of `-HardwareFake.h`
-   pre-requisites (`../lib/test/lib-HardwareFake.h`) for the test
-   object files
+- `applib` libs are listed separately because their path is in the
+  *application* folder while the other two lib types are in the
+  *lib* folder
+- app libs contain application code that I want to unit test
+    - application contains code that is not in the libs
+    - I cannot unit test the file that contains `main()`
+    - so I put most of it in application libs for testing
+- `hwlib` and `nohwlib` libs need to be separated because the
+  `hwlib` libs have Hardware headers that I list as
+  pre-requisites in the build rules:
+    - I edit either the `libname-Hardware.h` file or the
+      `libname-HardwareFake.h` file
+    - I want this edit to trigger a rebuild of whatever the obj
+      file that depends on this file
+        - the board-name obj file depends on `libname-Hardware.h`
+        - the `test_runner` obj file depends on
+          `libname-HardwareFake.h`
+    - so I make these files pre-requisites
 
-## `hw` lib-objects build rules depend on compiler
-
-### `hw` build rules for avr-gcc
-- `hw` libs form a list of lib-objects with the build rule to
-  *include the hardware definition in the translation unit* when
-  compiling with `avr-gcc`:
-
-    - this is done with the flag `-include src/$*-Hardware.h`
-
-    ```make
-    ${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h src/%-Hardware.h
-        ${compiler} -include src/$*-Hardware.h $(CFLAGS) -c $< -o $@
-    ```
-
-## `hw` build rules for gcc
-- that same list of `hw` lib-objects does *not* include the
-  hardware definition when compiling with `gcc`, but does include
-  *fake AVR macro definitions*
-
-   - the `-include` flag for AVR and fake AVR macro definitions
-     is yet another list:
-
-    ```make
-    AvrHeaders := interrupt io
-    AvrHeaders := $(addsuffix .h,${AvrHeaders})
-    FakeAvrHeaders := ${AvrHeaders}
-    FakeAvrHeaders := $(addprefix ../test/FakeAvr/,${FakeAvrHeaders})
-    IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
-    ```
-
-    - and here is the build rule for `gcc` showing the fakes are
-      used:
-
-    ```make
-    ${hw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
-        ${compiler} ${IncludeFakeAvrHeaders} $(CFLAGS) -c $< -o $@
-    ```
-
-## check compiler to resolve conflicting build rules
-- `make` does not allow conflicting rules for the same target
-- this is handled by checking which compiler is used, as shown
-  in the examples below
-
-## `inlhw` and `nonhw` build rules do not depend on compiler
-- `inlhw` and `nonhw` libs form a list of lib-objects with the
-  same build rule
-
-    - group them into a list:
-
-    ```make
-    nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits
-    ```
-
-    - create the list of lib-ojects:
-
-    ```make
-    nonhw_lib_o := $(addsuffix .o,${nonhw_lib_src})
-    nonhw_lib_o := $(addprefix ../lib/build/,${nonhw_lib_o})
-    ```
-
-- here is the build rule:
+# Examples lib lists
+- application libs:
 
 ```make
-${nonhw_lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
-	${compiler} $(CFLAGS) -c $< -o $@
+applib := Example
+test_app := $(addprefix test_,${applib})
+test_app_o := $(addsuffix .o,${test_app})
+test_app_o := $(addprefix build/,${test_app_o})
+app_o := $(addsuffix .o,${applib})
+app_o := $(addprefix build/,${app_o})
 ```
 
-## examples from vis-spi-out Makefile
-- the example below shows how three libs, one for each type, form
-  the lists for pre-requisites and compiler-dependent build
-  rules
-- the examples also cover the three compiler cases:
-    - `avr-gcc` compiles libs for linking to make the `.elf`
-    - `gcc` compiles libs for linking to make the `TestSuite.exe`
-      for `vis-spi-out` unit-tests
-    - `gcc` compiles libs for linking to make the `TestSuite.exe`
-      for `lib` unit-tests
+- hardware libs:
 
-# [ ] two types of libs
-- `BiColorLed` has has function definitions with hardware
-  dependencies but all of these functions are `inline`
+```make
+hwlib := BiColorLed SpiSlave UartSpi Lis
+```
+
+- non-hardware libs:
+
+```make
+nohwlib := ReadWriteBits Queue
+```
+
+- group hw and nohw libs to make pre-reqs:
+
+```make
+Hardware := ${hwlib}
+HardwareFakes := ${Hardware}
+Hardware := $(addsuffix -Hardware.h,${Hardware})
+Hardware := $(addprefix src/,${Hardware})
+HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
+HardwareFakes := $(addprefix ../lib/test/,${HardwareFakes})
+```
+
+- group hw and nohw libs to make build targets and header
+  names
+
+```make
+all_libs := ${hwlib} ${nohwlib}
+lib_o := $(addsuffix .o,${all_libs})
+lib_o := $(addprefix ../lib/build/,${lib_o})
+lib_headers := $(addsuffix .h,${all_libs})
+lib_headers := $(addprefix ../lib/src/,${lib_headers})
+```
+
+
+
+# non-hardware libs do not have hardware dependencies
 - `ReadWriteBits` does not have hardware dependencies
     - it has inline functions
     - these functions are not defined with hardware dependencies
-    - but these functions are usually called with hardware
-      dependencies as the input arguments
+- but these functions are usually called with hardware
+  dependencies as the input arguments
     - in effect, these functions *do* have hardware dependencies
       after inlining because the caller inlines the function with
       the hardware dependencies
-- I use to have `Lis`, `SpiSlave`, and `UartSpi` as a third type
-  of lib
-- this third type of lib has function definitions:
-    - with hardware dependencies
-    - but *not* inline
-- example: `SpiSlaveInit`, `UartSpiInit`
-- this third type of lib does not work in practice
-- the hardware definitions are used by the `Init` function, but
-  also used by functions that need to be inline
-- i.e., both `lib.o` and `main.o` need the hardware definitions
+    - but from the perspective of Makefile concerns, there are no
+      hardware dependencies
 
-```make
- # vis-spi-out/Makefile
- #
- # ---add hardware libs here that do not put inline in .h---
- #  avr-gcc builds these with hardware defs via -include lib-Hardware.h
-hw_lib_src := SpiSlave
- # ---add hardware libs here that put inline in .h---
- #  avr-gcc builds these libs without needing hardware defs
-inlhw_lib_src := BiColorLed
- # ---add nonhardware libs here---
-nonhw_lib_src := ${inlhw_lib_src} ReadWriteBits
-```
-
-#### when `avr-gcc` compiles `SpiSlave`
--
-
-#### when `avr-gcc` compiles `BiColorLed`
--
-
-#### when `avr-gcc` compiles `ReadWriteBits`
--
-
-#### when `gcc` compiles `SpiSlave` for unit-tests in `vis-spi-out`
--
-
-#### when `gcc` compiles `BiColorLed` for unit-tests in `vis-spi-out`
--
-
-#### when `gcc` compiles `ReadWriteBits` for unit-tests in `vis-spi-out`
--
-
-#### when `gcc` compiles `SpiSlave` for unit-tests in `lib`
--
-
-#### when `gcc` compiles `BiColorLed` for unit-tests in `lib`
--
-
-#### when `gcc` compiles `ReadWriteBits` for unit-tests in `lib`
--
-
-## translation for body in the `.c`
+# do not do this
+## optimize assembly with function body in lib `.c`
 - function uses hardware but does not need to be `inline`
     - example `SpiSlaveInit` does not need to be `inline`
     - but the functions it calls should still be `inline`
@@ -4363,54 +4381,4 @@ void SpiSlaveInit_enables_SPI_interrupt(void)
         );
 }
 ```
-
-# Safely butcher my project
-- I am about to butcher my project
-- first commit all changes as usual
-- now here is the method to reset:
-
-## Work I do now is throwaway
-Whether staged or unstaged, any changes will be lost after the
-reset.
-
-## Check hash for sanity check
-Record the hash of the last commit:
-
-Get the last hash into the clipboard using Vim shortcut `;Gh`. Or
-display any number of previous hashes:
-
-4e14d1bdb352edaacefdd4412000802a629136c3
-
-```bash
-$ git log | grep commit -m 2
-commit 58961ae2c5e17dd5d2520a76df0f829f51a448ed
-commit a79386030aaa50d8928a18fc6929248cdf9d92d9
-```
-
-- Use this hash to verify Git did expected reset:
-- Paste the expected HEAD hash
-- Do the reset
-- Paste the actual HEAD hash on the next line
-- they should be identical
-
-## Make any changes
-- edit Makefile
-- edit code
-- rebuild
-- but don't make any changes to the repo that I want to keep
-
-## Reset
-Here is the reset. This discards any changes made since last
-commit:
-
-```bash
-$ git reset --hard HEAD
-Press ENTER or type command to continue
-HEAD is now at 9ef51af Merged in rainbots/dev-kit-mike (pull request #3)
-```
-
-The `HEAD` is the last commit. The last commit is the default for
-`git reset --hard`. I explicitly include `HEAD` as a reminder
-that I'm reverting to the working state pointed to by `HEAD`.
-
 
