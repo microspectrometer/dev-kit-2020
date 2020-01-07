@@ -63,8 +63,18 @@ inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
         *Spi_SPDR = input_buffer[byte_index];
     }
 }
-inline uint8_t ReadSpiStatusRegister(void) { return *Spi_SPSR; }
-inline uint8_t ReadSpiDataRegister(void) { return *Spi_SPDR; }
+inline uint8_t ReadSpiStatusRegister(void)
+{
+    return *Spi_SPSR;
+    // ---Expected Assembly---
+    // in	r24, 0x2d	; 45
+}
+inline uint8_t ReadSpiDataRegister(void)
+{
+    return *Spi_SPDR;
+    // ---Expected Assembly---
+    // in	r24, 0x2e	; 46
+}
 inline void ClearSpiInterruptFlag(void)
 {
     /** Manually clear SPI interrupt flag by first reading the

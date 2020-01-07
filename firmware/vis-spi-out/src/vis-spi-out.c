@@ -67,12 +67,12 @@ void loop(void)
     if (DoSensorCmd == NULL)
     {
         DisableSpiInterrupt();
-        uint8_t const input_buffer[] = {0x0A, 0x1B, 0x2C};
+        uint8_t const input_buffer[] = {0xFA, 0xFB, 0xFC};
         uint16_t nbytes = 3;
         SpiSlaveTx(input_buffer, nbytes);
     }
     uint8_t garbage = ReadSpiDataRegister();
-    if (garbage==0x2c) BiColorLedRed(led_0);
+    if (garbage==0xFC) BiColorLedRed(led_0);
     else DoSensorCmd();
 }
 ISR(SPI_STC_vect)

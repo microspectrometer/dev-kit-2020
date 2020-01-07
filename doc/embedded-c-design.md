@@ -537,6 +537,9 @@ multiple definition of `Spi_SPDR'
 
 # ---Completed Tasks---
 
+# [x] make `;ds` shortcut to paste time-stamped flash size
+- record flash size before altering project in any way
+
 # [x] inline all lib functions
 - Every function definition goes in the header
 - `-Hardware.h` headers are only included with the application
@@ -546,20 +549,17 @@ multiple definition of `Spi_SPDR'
 
 ## [x] make a checklist
 - checklist:
-- [ ] edit `vis-spi-out/Makefile`:
+- [-] edit `vis-spi-out/Makefile`:
     - move lib from `hw_lib_src` to `inlhw_lib_src`
-- [ ] add `#include "lib-Hardware.h"` to
+- [-] add `#include "lib-Hardware.h"` to
   `vis-spi-out/src/Hardware.h`
 - move all functions from `lib.c` to `lib.h`:
     - remove `static` keyword from private functions
     - create prototypes in `lib.c` for all functions
-- [ ] avr-target builds
-- [ ] code size did not change or decreased slightly
-- [ ] unit-test target builds
+- [-] avr-target builds
+- [-] code size did not change or decreased slightly
+- [-] unit-test target builds
     - turn on tests for the affected lib
-
-## [x] make `;ds` shortcut to paste time-stamped flash size
-- record flash size before starting `inline` work
 
 ## [x] edit `vis-spi-out/Makefile`
 - list libs to edit
@@ -1595,7 +1595,7 @@ Total number of instructions: 35
 ### [x] unit test BiColorLedRed
 - I added it to the code without testing it
 
-### [ ] Add function `ReplyCommandInvalid`
+# [ ] Add function `ReplyCommandInvalid`
 - [ ] fix `loop` (use this function instead of placeholder)
 - [ ] add this function
 - [ ] hmm.... calls `WriteSpiMaster`
@@ -1613,9 +1613,9 @@ Total number of instructions: 35
     - lib Queue is just a data object
 
 
-### [ ] unit test SpiSlaveTx
+# [-] unit test SpiSlaveTx
 
-Before adding new code:
+## Code size before adding new code is 612 bytes
 
 ```date-and-size
 Thu, Jan  2, 2020  6:30:58 PM
@@ -1623,7 +1623,7 @@ Thu, Jan  2, 2020  6:30:58 PM
     612	      2	     21	    635	    27b	build/vis-spi-out.elf
 ```
 
-After adding code that writes to `SPDR`:
+## After adding code that writes to `SPDR` size is 626 bytes
 
 ```date-and-size
 Fri, Jan  3, 2020  5:30:44 PM
@@ -1631,11 +1631,7 @@ Fri, Jan  3, 2020  5:30:44 PM
     626	      2	     21	    649	    289	build/vis-spi-out.elf
 ```
 
-- created `asmwolf.vim` to make a nice .avra and .avra diff color scheme
-- [x] make `greywolf.vim`
-    - badwolf with a lighter background to indicate when C file is RO
-
-- lib code (WIP)
+## SpiSlaveTx lib code (WIP)
 
 ```c
 // SpiSlave.h
@@ -1646,7 +1642,7 @@ for (byte_index = 0; byte_index < nbytes; byte_index++)
 }
 ```
 
-- app code (placeholder)
+## vis-spi-out code (placeholder)
 
 ```c
 // vis-spi-out.c
@@ -1656,7 +1652,7 @@ uint16_t nbytes = 3;
 SpiSlaveTx(input_buffer, nbytes);
 ```
 
-- assembly for the above is split
+## assembly is split in two parts
 - first the values are stored in working registers
 
 ```avra
@@ -1677,67 +1673,105 @@ SpiSlaveTx(input_buffer, nbytes);
 - Total number of cycles: 10
 - Total number of instructions: 7
 
-The important point is that the function is inline (no call).
+## assembly is `inline` (no call), but not optimized
 
-- [ ] are the instructions optimized?
-    - SPDR is 0x2E
-    - so it is possible to do:
+- [x] Why aren't the instructions optimized?
 
-    ```avra
-    ; say r24 has the value to send
-    out	0x2e, r24
-    ```
+- `SPDR` is `0x2E`
+- so it is possible to do:
 
-    - so why isn't `avr-gcc` doing this?
-    - is it because getting the value to send *into* `r24` takes work?
-    - no something is wrong
-    - here is the code and some analysis:
+```avra
+; say r24 has the value to send
+out	0x2e, r24
+```
 
-    - `lds` (Load direct from SRAM) is 2 cycles
-    - load SRAM addresses `0x0100` and `0x0101` into `Y`
+- so why isn't `avr-gcc` doing this?
+- is `st` faster?
+- no, something is wrong
+- here is the code and some analysis:
 
-    ```avra
-      ee:	lds	r28, 0x0100	; 0x800100 <Spi_SPDR>
-      f2:	lds	r29, 0x0101	; 0x800101 <Spi_SPDR+0x1>
-    ```
+## fail: expect direct write to `SPDR`, but writes to mem
+- `lds` (Load direct from SRAM) is 2 cycles
+- load SRAM addresses `0x0100` and `0x0101` into `Y`
 
-    - `ldi` (Load immediate) is 1 cycle
-    - loads literal into register
+```avra
+  ee:	lds	r28, 0x0100	; 0x800100 <Spi_SPDR>
+  f2:	lds	r29, 0x0101	; 0x800101 <Spi_SPDR+0x1>
+```
 
-    ```avra
-      f6:	ldi	r15, 0x0A	; 10
-      f8:	ldi	r16, 0x1B	; 27
-      fa:	ldi	r17, 0x2C	; 44
-    ```
+- `ldi` (Load immediate) is 1 cycle
+- loads literal into register
 
-    - `st` (Store indirect) is 2 cycles
-    - stores the register value at the address stored in `Y`
+```avra
+  f6:	ldi	r15, 0x0A	; 10
+  f8:	ldi	r16, 0x1B	; 27
+  fa:	ldi	r17, 0x2C	; 44
+```
 
-    ```avra
-     12c:	st	Y, r15
-     12e:	st	Y, r16
-     130:	st	Y, r17
-    ```
+- `st` (Store indirect) is 2 cycles
+- stores the register value at the address stored in `Y`
 
-    - I am writing these values to some random spot in SRAM?
-    - that means I am failing to write to `SPDR` register `0x2e`
+```avra
+ 12c:	st	Y, r15
+ 12e:	st	Y, r16
+ 130:	st	Y, r17
+```
 
-- [ ] why isn't `*SPDR = 0x0A` translating to something like:
+- I am writing these values to some random spot in SRAM?
+- that means I am failing to write to `SPDR` register `0x2e`
+
+- [x] why isn't `*SPDR = 0x0A` translating to something like:
     - `ldi	r15,0x0a`
     - `out	0x2e,r15`
-- I think the issue is that `SpiSlave.o` gets the hardware def, but the function
-  is inlined in `vis-spi-out.o` and that code misses the def
-    - [ ] test this theory
-    - but how did it get the defs for `SpiSlaveInit`?
 
-Add more code.
+## solution: inline all lib functions
+- I think the issue is that `SpiSlave.o` gets the hardware def,
+  but the function is inlined in `vis-spi-out.o` and that code
+  misses the def
+    - [x] test this theory
+    - the defs for `SpiSlaveInit` work because `SpiSlave.o` gets
+      the hardware def
+    - `SpiSlaveInit` is optimized
+    - `vis-spi-out.o` just calls `SpiSlaveInit`
+- see completed task `inline all lib functions`
+- build `vis-spi-out.o` with hardware defs 
 
-### [x] Replace `listening_for_SPIM` with Enable/DisableInterrupt
+# ---Pending Tasks---
+
+# [ ] unit test SpiSlaveTx
+- fixed issue about optimized lib code
+
+## here is the placeholder for testing the fix
+- this shows correct use of `SPDR` with the `in` instruction
+
+```c
+uint8_t garbage = ReadSpiDataRegister();
+```
+
+```avra
+in	r24, 0x2e	; 46
+```
+
+```c
+    if (garbage==0xFC) BiColorLedRed(led_0);
+```
+
+```avra
+cpi	r24, 0xFC	; 252
+breq	.+6      	; 0x1ea <main+0x144>
+```
+
+## return to task of unit-testing `SpiSlaveTx`
+
+
+# [ ] Replace `listening_for_SPIM` with Enable/DisableInterrupt
+- [x] delete `listening_for_SPIM`
 - instead of checking the flag in the ISR
 - [ ] disable the interrupt when writing a frame
 - [ ] clear the interrupt flag manually
     - i.e., instead of running the ISR to clear the flag
-    - manual-clear is *much* faster than executing the ISR to clear the flag!
+    - manual-clear is *much* faster than executing the ISR to
+      clear the flag!
 - ~`EnableSpiInterrupt` is private~
 - [x] make `EnableSpiInterrupt` public
 - [x] create `DisableSpiInterrupt`
@@ -4510,4 +4544,11 @@ void SpiSlaveInit_enables_SPI_interrupt(void)
         );
 }
 ```
+
+# Colorschemes for diff, avra, and read-only C
+- created `asmwolf.vim` to make a nice .avra and .avra diff color
+  scheme
+- [x] make `greywolf.vim`
+    - badwolf with a lighter background to indicate when C file
+      is RO
 
