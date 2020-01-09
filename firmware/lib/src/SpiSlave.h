@@ -22,12 +22,13 @@ extern spi_pin Spi_Miso; // master-in, slave-out
 // ---Bits---
 extern spi_bit Spi_Enable;
 extern spi_bit Spi_InterruptEnable;
+
 // ---Private---
-inline void EnableSpiModule(void)
+inline void _EnableSpiModule(void)
 {
     /** Set SPE bit in SPCR (SPI Control Register) to enable SPI.
      * This bit must be set to enable any SPI operations.
-      * */
+     * */
     SetBit(Spi_SPCR, Spi_Enable);
     // ---Expected Assembly---
     // in r24, 0x2c;
@@ -36,7 +37,39 @@ inline void EnableSpiModule(void)
     // This is three instructions because SPCR is outside the
     // address range for using `sbi`.
 }
-// ---API---
+inline void _SignalDataReady(void)
+{
+    /** Pin **Data Ready** is normally high.
+     *  Drive **Data Ready** LOW to signal to the SPI Master that
+     *  next byte of data is ready.
+     * */
+    ClearBit(Spi_port, Spi_DataReady);
+}
+
+// ---API (Go to the Doxygen documentation of this file)---
+/** \file SpiSlave.h
+ * # API
+ * void SpiSlaveInit(void);\n 
+ * void SpiSlaveTxByte(uint8_t input_byte);\n 
+ * void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes);\n 
+ * uint8_t ReadSpiStatusRegister(void);\n 
+ * uint8_t ReadSpiDataRegister(void);\n 
+ * void ClearSpiInterruptFlag(void);\n 
+ * void DisableSpiInterrupt(void);\n 
+ * void EnableSpiInterrupt(void);\n 
+ * */
+inline void SpiSlaveTxByte(uint8_t input_byte)
+{
+    /** SpiSlaveTxByte behavior:\n 
+      * - loads SPI data register with input byte\n 
+      * - drives DataReady LOW to signal data is ready\n 
+      * */
+    *Spi_SPDR = input_byte;
+    _SignalDataReady();
+    // ---Expected Assembly---
+    // out	0x2e, r23	; 46
+    // cbi	0x05, 1	; 5
+}
 inline void DisableSpiInterrupt(void)
 {
     /** Clear SPIE bit in SPCR to disable the SPI ISR:\n 
@@ -54,17 +87,6 @@ inline void DisableSpiInterrupt(void)
     // out	0x2c, r24	; 44
     // This is three instructions because SPCR is outside the
     // address range for using `cbi`.
-}
-inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
-{
-    /** SpiSlaveTx behavior:\n 
-      * - loads SPI data register with bytes from input buffer\n 
-      * */
-    uint16_t byte_index;
-    for (byte_index = 0; byte_index < nbytes; byte_index++)
-    {
-        *Spi_SPDR = input_buffer[byte_index];
-    }
 }
 inline uint8_t ReadSpiStatusRegister(void)
 {
@@ -86,10 +108,6 @@ inline void ClearSpiInterruptFlag(void)
     ReadSpiStatusRegister(); // in	r24, 0x2d
     ReadSpiDataRegister(); // in	r24, 0x2e
 }
-// ---API functions with fakes for unit tests---
-#ifdef SPISLAVE_FAKED
-void EnableSpiInterrupt(void);
-#else
 inline void EnableSpiInterrupt(void)
 {
     /** Set SPIE bit in SPCR to execute the SPI ISR when:\n 
@@ -118,6 +136,13 @@ inline void EnableSpiInterrupt(void)
     // Global interrupt enable
     sei(); // sei
 }
+
+// ---API functions that call fakes when testing---
+#ifdef SPISLAVE_FAKED
+#include "SpiSlave_faked.h" // declare fakes
+// Call fakes by renaming faked calls with _fake suffix.
+#define EnableSpiInterrupt EnableSpiInterrupt_fake
+#define SpiSlaveTxByte SpiSlaveTxByte_fake
 #endif
 inline void SpiSlaveInit(void)
 {
@@ -134,8 +159,25 @@ inline void SpiSlaveInit(void)
     SetBit(Spi_ddr, Spi_DataReady); // sbi	0x04, 1
     // Set Miso as an an output pin
     SetBit(Spi_ddr, Spi_Miso); // sbi	0x04, 4
-    EnableSpiModule();
+    _EnableSpiModule();
     // Enable interrupts for robust SPI communication
     EnableSpiInterrupt();
 }
+inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
+{
+    /** SpiSlaveTx behavior:\n 
+      * - loads SPI data register with bytes from input buffer\n 
+      * */
+    uint16_t byte_index;
+    for (byte_index = 0; byte_index < nbytes; byte_index++)
+    {
+        *Spi_SPDR = input_buffer[byte_index];
+    }
+}
+#ifdef SPISLAVE_FAKED
+// Remove `_fake` suffix from function names.
+#undef EnableSpiInterrupt
+#undef SpiSlaveTxByte
+#endif
+
 #endif // _SPISLAVE_H

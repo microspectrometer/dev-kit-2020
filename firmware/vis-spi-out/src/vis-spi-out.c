@@ -68,6 +68,7 @@ void loop(void)
     if (DoSensorCmd == NULL)
     {
         DisableSpiInterrupt();
+        SpiSlaveTxByte(0xAB);
         uint8_t const input_buffer[] = {0xFA, 0xFB, 0xFC};
         uint16_t nbytes = 3;
         SpiSlaveTx(input_buffer, nbytes);

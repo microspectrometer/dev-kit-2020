@@ -1,3 +1,51 @@
+# Example SPI transmission
+See /home/Mike/chromation/ref-dev-kit-mike/doc/spi.md
+
+- if the Sensor is initiating, the Sensor drives Data Ready low
+- Bridge drives Slave Select low
+- Bridge firmware writes a byte to its SPI Data Register
+    - the AVR SPI module handles clocking SCK while driving MOSI and sampling
+      MISO
+- On each rising edge of SCK:
+    - signal on MOSI shifts into the LSB of the Sensor SPI Data Register
+    - signal on MISO shifts into the LSB of the Bridge SPI Data Register
+- On each falling edge of SCK:
+    - drive MOSI with the MSB in the Bridge SPI Data Register
+    - drive MISO with the MSB in the Sensor SPI Data Register
+- Bridge continues clocking SCK until all eight bits are swapped between Bridge
+  and Sensor SPI Data Registers
+- Before the transmission, the SPI Data Registers look like this:
+    - Master: byte M
+    - Slave:  byte S
+- After the transmission, the SPI Data Registers are swapped:
+    - Master: byte S
+    - Slave:  byte M
+- At this point the transmission is complete:
+    - the Sensor enters a SPI interrupt routine to read the SPI Data Register
+    - the Sensor drives Data Ready high
+    - the Bridge drives Slave Select high
+    - the Bridge reads the SPI Data Register
+
+# functions, .h, .c, compiler, and linker
+- typical C project setup:
+    - one .c file defines the function and declares it in its .h
+    - the other .c file includes that .h and calls the function
+- how does including a .h let one .c file call functions from
+  another .c file?
+- compiler takes each .c and outputs a .o
+- linker links the two .o files
+- what is in each .o file?
+- .o has symbols for functions and variables
+    - I'll call the symbols for functions *function symbols*
+- .o built from .c has the definitions of the function symbols
+- say another .c file calls those functions
+- the .o built from that .c references the symbols, but does not
+  have the definitions of the symbols
+- the declaration in the .h is enough to make the .o
+- the .o builds with a placeholder
+- the linker looks for the symbol definition and inserts it at
+  the placeholder
+
 # Safely butcher my project
 - I am about to butcher my project
 - first commit all changes as usual
@@ -174,7 +222,8 @@ that I'm reverting to the working state pointed to by `HEAD`.
         - do these cause problems when unit testing?
         - yes
         - so I stub them to ignore them in testing
-- [x] how do I test that a lib .c function calls a static
+
+# [x] how do I test that a lib .c function calls a static
   function?
     - do not
     - treat `static` the way the compiler does: `inline` the function
@@ -184,7 +233,7 @@ that I'm reverting to the working state pointed to by `HEAD`.
     - which makes the function docstring better with ;xdc
     - but it *is* possible to check if a static function is called by faking the
       function
-    - the function is static in the arv-target build
+    - the function is static in the avr-target build
     - but the function is not static in the test build
     - switching between the two definitions is done with macros:
         - `#ifndef LIBNAME_FAKED` surrounds the real definition
@@ -193,15 +242,179 @@ that I'm reverting to the working state pointed to by `HEAD`.
         - include flag `-DLIBNAME_FAKED` in the `Makefile` `CFLAGS_for_cygwin`
         - recipe for `_faked.o`
         - target build links against `_faked.o`
-    - I can't figure out why `AssertCall` is returning
-      `false` when it should *clearly* be returning true
-    - I fixed that problem by replacing the `==` comparison with a
-      `g_strcmp0` comparison
-- [x] why is there a `-DSPISLAVE_FAKED` in the Makefile when the other hardware
-  libs do not need a `-DLIBNAME_FAKED`?
-    - because I "unit test libs using -DMacro to define fakes"
+
+# use `g_strcmp0` instead of `==`
+- `AssertCall` was returning `false` when it should *clearly* be
+  returning true
+- I fixed that problem by replacing the `==` comparison with a
+  `g_strcmp0` comparison
+
+# Makefile has `-DLBINAME_FAKED` for each lib with fakes
+- [x] why is there a `-DSPISLAVE_FAKED` in the Makefile when the
+  other hardware libs do not need a `-DLIBNAME_FAKED`?
+- because I "unit test libs using -DMacro to define fakes"
     - it is to test with a faked version of `EnableSpiInterrupt`
     - the fake records itself in `mock`
+
+# [ ] how do I test the real version of a faked function?
+- SpiSlaveTxByte is faked
+- SpiSlaveTxByte also needs test coverage
+- building with `DSPISLAVE_FAKED` causes a chain of events.
+- consider builds of `SpiSlave.o` and `test_SpiSlave.o`
+  separately
+
+## build `test_SpiSlave.o`
+- always references symbol `SpiSlaveTxByte`
+- never references symbol `SpiSlaveTxByte_fake`
+
+### Details
+- when `SpiSlaveTxByte` is the *function under test*, it is not
+  renamed with `_fake` suffix
+- when `SpiSlaveTxByte` is called by a `SpiSlave.c` function,
+  that function calls the `_fake` version because `SpiSlave.c` is
+  compiled with `-DSPISLAVE_FAKED`
+- the trouble is now we cannot test `SpiSlaveTxByte` because it
+  is not defined anywhere
+- How this works:
+- `test_SpiSlave.c` includes `SpiSlave.h`
+- with `-DSPISLAVE_FAKED`, this gives `test_SpiSlave.c` the
+  prototype for `SpiSlaveTxByte()` but no definition:
+
+```c
+// src/SpiSlave.h
+#ifdef SPISLAVE_FAKED
+void SpiSlaveTxByte(uint8_t input_byte);
+#else
+inline void SpiSlaveTxByte(uint8_t input_byte)
+{ // real def ...
+#endif
+```
+
+- Wherever `test_SpiSlave.c` encounters a call to
+  `SpiSlaveTxByte`, it recognizes the function
+- but there is no definition for the function in `test_SpiSlave.c`
+- so `test_SpiSlave.o` is built expecting a definition for the
+  symbol `SpiSlaveTxByte`
+- this *would* come from `SpiSlave.o`, but it does not contain
+  this symbol!
+
+## build `SpiSlave_faked.o`
+- always defines symbol `SpiSlaveTxByte_fake`
+
+## build `SpiSlave.o`
+- depends on flag `-DSPISLAVE_FAKED`
+    - ;mktgc builds with flag `-DSPISLAVE_FAKED`
+- when built with flag `-DSPISLAVE_FAKED`:
+    - references symbol `SpiSlaveTxByte_fake`
+    - executable must link against `SpiSlave_faked.o`
+- when built without flag `-DSPISLAVE_FAKED`:
+    - defines symbol `SpiSlaveTxByte`
+    - references symbol `SpiSlaveTxByte`
+
+### Details
+- `src/SpiSlave.c` includes `src/SpiSlave.h`
+- but with `-DSPISLAVE_FAKED`, `src/SpiSlave.c` *first*
+  includes `test/SpiSlave_faked.h`
+
+```c
+#ifdef SPISLAVE_FAKED
+#include "SpiSlave_faked.h"
+#endif
+#include "SpiSlave.h"
+```
+
+- and `test/SpiSlave_faked.h` renames the function:
+
+```c
+#define SpiSlaveTxByte SpiSlaveTxByte_fake
+```
+
+- so Makefile flag `-DSPISLAVE_FAKED` causes `SpiSlave.o` to
+  build with `SpiSlave.h` altered
+- like with `test_SpiSlave.o`, this gives `src/SpiSlave.c` the
+  prototype for `SpiSlaveTxByte()` instead of the `inline`
+  definition:
+
+```c
+// src/SpiSlave.h
+#ifdef SPISLAVE_FAKED
+void SpiSlaveTxByte(uint8_t input_byte);
+#else
+inline void SpiSlaveTxByte(uint8_t input_byte)
+{ // real def ...
+#endif
+```
+
+- but unlike `test_SpiSlave.o`, the prototype is renamed by
+  `test/SpiSlave_faked.h` to have the `_fake` suffix
+- with the rename, `src/SpiSlave.h` becomes this:
+
+```c
+// src/SpiSlave.h
+#ifdef SPISLAVE_FAKED
+void SpiSlaveTxByte_fake(uint8_t input_byte);
+#else
+// ...
+```
+
+- with flag `-DSPISLAVE_FAKED`, `src/SpiSlave.c` has no mention
+  of `SpiSlaveTxByte`
+
+```c
+#ifndef SPISLAVE_FAKED
+void SpiSlaveTxByte(uint8_t input_byte);
+void EnableSpiInterrupt(void);
+#endif
+```
+
+- instead, `SpiSlave.o` builds with references to
+  `SpiSlaveTxByte_fake`
+- the definition of `SpiSlaveTxByte_fake` is in
+  `test/SpiSlave_faked.c`
+- `test/test_SpiSlave.c` only includes `SpiSlave.h`
+- **it never references the `_fake` symbols**
+- How does build `;mktgc` know about `test/SpiSlave_faked.c`?
+- the recipe for `TestSuite.exe` links against `SpiSlave_faked.o`
+
+```make
+build/TestSuite.exe: build/test_runner.o ${unittest_o} \
+${lib_o} ${test_lib_o} build/SpiSlave_faked.o
+	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
+```
+
+- and `SpiSlave_faked.o` is built from `test/SpiSlave_faked.c`
+
+```make
+build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+```
+
+- `test/SpiSlave_faked.c` includes `test/SpiSlave_faked.h`
+- this lets `test/SpiSlave_faked.c` define `SpiSlaveTxByte`, and
+  `test/SpiSlave_faked.h` renames it with the `_fake` suffix
+
+# Test the real version of a faked function
+- from the above, the problem is that `SpiSlaveTxByte` is not
+  defined
+- to test `SpiSlaveTxByte`, I need the test to link against a
+  `.o` that defines the symbol
+- right now, `SpiSlave.o` *only* defines `SpiSlaveTxByte` if
+  `-DSPISLAVE_FAKED` is false
+- change this so that `SpiSlave.o` *always* defines
+  `SpiSlaveTxByte`
+- but for functions in `SpiSlave.o` that depend on
+  `SpiSlaveTxByte`, `#define` with the `_fake` *in the header*
+  (because those functions are defined in the header like all lib
+  functions), and then `#undef` before the end of the header
+- this way `SpiSlave.o` still contains a definition for
+  `SpiSlaveTxByte` while functions that depend on
+  `SpiSlaveTxByte` will instead of depend on
+  `SpiSlaveTxByte_fake` during unit tests
+- `SpiSlave_faked.h` declares the fakes
+- `SpiSlave_faked.c` defines the fakes
+- `TestSuite.exe` links against `SpiSlave_faked.o`, so the linker
+  fills in the placeholders for `SpiSlaveTxByte_fake` in the
+  `SpiSlave` functions that call `SpiSlaveTxByte_fake`
 
 # [ ] split common Spi stuff from SpiSlave into a Spi lib
 
@@ -4361,6 +4574,7 @@ build/SpiSlave.o: ../lib/src/SpiSlave.c ../lib/src/SpiSlave.h src/SpiSlave-Hardw
 ```
 
 ## new problem when building BiColorLed.o like SpiSlave.o
+
 ### hardware values are defined twice
 - vis-spi-out.c calls `BiColorLedOn(led_0)`
 - this is an inline function

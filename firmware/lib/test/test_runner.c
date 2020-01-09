@@ -57,20 +57,47 @@ void Run_SpiSlaveInit_tests(bool run_test)
         RUN_TEST(SpiSlaveInit_enables_SPI_interrupt);
     }
 }
-void Run_SpiSlaveTx_tests(bool run_test)
+void Run_EnableSpiInterrupt_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(SpiSlaveTx_loads_SPI_data_register_with_bytes_from_input_buffer);
+    }
+}
+void Run_SpiSlaveTx_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster);
+    }
+}
+void Run_SpiSlaveTxByte_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SpiSlaveTxByte_loads_SPI_data_register_with_input_byte);
+        RUN_TEST(SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready);
+    }
+}
+void Check_SpiSlave_plumbing_for_fakes(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(SpiSlave_faked_calls_are_still_available_for_testing);
     }
 }
 void SpiSlave_tests(bool run_test)
 {
     if (run_test)
     {
+        Check_SpiSlave_plumbing_for_fakes(Yep);
         Run_SpiSlaveInit_tests(Nope);
-        Run_SpiSlaveTx_tests(Yep);
+        Run_EnableSpiInterrupt_tests(Nope);
+        Run_SpiSlaveTx_tests(Nope);
+        Run_SpiSlaveTxByte_tests(Nope);
     }
 }
 void Run_QueueInit_tests(bool run_test)
