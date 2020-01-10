@@ -2058,13 +2058,14 @@ Tue, Jan  7, 2020  4:47:21 PM
     604	      0	     21	    625	    271	build/vis-spi-out.elf
 ```
 
-- [ ] write `SpiSlaveTxByte`
+- [x] write `SpiSlaveTxByte`
     - sends just one byte
     - `inline` call in `SpiSlaveTx`
     - gives me a call to fake to test all bytes are sent by
       `SpiSlaveTx`
     - will also help in application as shorthand for sending one
       byte
+- [ ] review protocol
 
 # [ ] Replace `listening_for_SPIM` with Enable/DisableInterrupt
 - [x] delete `listening_for_SPIM`

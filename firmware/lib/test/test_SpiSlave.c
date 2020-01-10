@@ -114,12 +114,22 @@ void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
     /*     ); */
 }
 
+void SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte(void)
+{
+    /* =====[ Operate ]===== */
+    SpiSlaveTxByte(0xFF);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(
+        *Flags,
+        listening
+        )
+}
 void SpiSlaveTxByte_loads_SPI_data_register_with_input_byte(void)
 {
     /* =====[ Setup ]===== */
     uint8_t input_byte = 0xAB;
     /* =====[ Operate ]===== */
-    /* SpiSlaveTxByte(input_byte); */
+    SpiSlaveTxByte(input_byte);
     /* =====[ Test ]===== */
     // TODO: test value of *all* bytes sent, not just the last
     TEST_ASSERT_EQUAL_UINT8(input_byte, *Spi_SPDR);
@@ -134,11 +144,14 @@ void SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready(void)
         "Cannot run test: must start with DataReady HIGH!"
         );
     /* =====[ Operate ]===== */
-    /* SpiSlaveTxByte(0xFF); */
+    SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_port);
 }
-
+void SpiSlaveTxByte_waits_until_SPI_transfer_is_done(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}
 void SpiSlave_faked_calls_are_still_available_for_testing(void)
 {
     printf("SpiSlave_faked_calls_are_still_available_for_testing:\n");

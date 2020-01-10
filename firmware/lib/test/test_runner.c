@@ -77,6 +77,7 @@ void Run_SpiSlaveTxByte_tests(bool run_test)
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte);
         RUN_TEST(SpiSlaveTxByte_loads_SPI_data_register_with_input_byte);
         RUN_TEST(SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready);
     }
@@ -93,11 +94,11 @@ void SpiSlave_tests(bool run_test)
 {
     if (run_test)
     {
-        Check_SpiSlave_plumbing_for_fakes(Yep);
+        Check_SpiSlave_plumbing_for_fakes(Nope);
         Run_SpiSlaveInit_tests(Nope);
         Run_EnableSpiInterrupt_tests(Nope);
+        Run_SpiSlaveTxByte_tests(Yep);
         Run_SpiSlaveTx_tests(Nope);
-        Run_SpiSlaveTxByte_tests(Nope);
     }
 }
 void Run_QueueInit_tests(bool run_test)
