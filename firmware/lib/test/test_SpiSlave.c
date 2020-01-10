@@ -119,10 +119,10 @@ void SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte(void)
     /* =====[ Operate ]===== */
     SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
-    TEST_ASSERT_BIT_LOW(
-        *Flags,
-        listening
-        )
+    /* TEST_ASSERT_BIT_LOW( */
+    /*     *SpiFlags, */
+    /*     listening */
+    /*     ) */
 }
 void SpiSlaveTxByte_loads_SPI_data_register_with_input_byte(void)
 {

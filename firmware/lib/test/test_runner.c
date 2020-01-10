@@ -15,6 +15,7 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 // ---Lists of tests---
 #include "test_BiColorLed.h"
 #include "test_ReadWriteBits.h"
+#include "test_Flag.h"
 #include "test_SpiSlave.h"
 #include "test_Queue.h"
 #include "test_UartSpi.h"
@@ -43,6 +44,14 @@ void ReadWriteBits_tests(bool run_test)
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(SetBit_sets_bit_in_register);
         RUN_TEST(ClearBit_clears_bit_in_register);
+    }
+}
+void Flag_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(test_Flag);
     }
 }
 void Run_SpiSlaveInit_tests(bool run_test)
@@ -220,7 +229,8 @@ int main()
     Queue_tests(Nope);
     UartSpi_tests(Nope);
     Lis_tests(Nope);
-    SpiSlave_tests(Yep);
+    Flag_tests(Yep);
+    SpiSlave_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }
