@@ -8,9 +8,10 @@ typedef uint8_t const flag_bit; // bit index into i/o reg
     // "gcc" uses test/HardwareFake.h
     // "avr-gcc" uses src/Hardware.h
 // ---Registers---
-extern flag_reg Flag_SpiFlags; // GPIOR0
+extern flag_reg Flag_SpiFlags; // reg GPIOR0
 // ---Bits---
-extern flag_bit Flag_SlaveRx; // GPIOR00
+extern flag_bit Flag_SlaveRx; // bit GPIOR00
+extern flag_bit Flag_TransferDone; // bit GPIOR01
 
 // ---Throwaway function to test plumbing---
 void Flag(void);

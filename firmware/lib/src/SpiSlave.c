@@ -4,7 +4,10 @@
 
 // ---Private---
 void _SignalDataReady(void);
+void _SignalDataNotReady(void);
 void _EnableSpiModule(void);
+void _SpiSlave_StopRxQueue(void);
+bool _TransferIsDone(void);
 
 // ---API---
 void SpiSlaveInit(void);

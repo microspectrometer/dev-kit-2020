@@ -1,7 +1,9 @@
 #ifndef _SPISLAVE_H
 #define _SPISLAVE_H
 #include <stdint.h>
+#include <stdbool.h>
 #include "ReadWriteBits.h"
+#include "Flag.h"
 //---Hardware types: register addresses, pin numbers, bit numbers---
 typedef uint8_t volatile * const spi_ptr; // i/o reg address
 typedef uint8_t const spi_pin; // bit index of i/o reg for i/o pin
@@ -23,6 +25,7 @@ extern spi_pin Spi_Miso; // master-in, slave-out
 extern spi_bit Spi_Enable;
 extern spi_bit Spi_InterruptEnable;
 
+#include "SpiSlave_faked.h" // declare fakes
 // ---Private---
 inline void _EnableSpiModule(void)
 {
@@ -39,11 +42,36 @@ inline void _EnableSpiModule(void)
 }
 inline void _SignalDataReady(void)
 {
-    /** Pin **Data Ready** is normally high.
-     *  Drive **Data Ready** LOW to signal to the SPI Master that
-     *  next byte of data is ready.
+    /** Drive **Data Ready** LOW\n 
+     *  - Pin **Data Ready** is normally high.\n 
+     *  - Drive **Data Ready** LOW to signal to the SPI Master
+     *  that next byte of data is ready.
      * */
     ClearBit(Spi_port, Spi_DataReady);
+}
+inline void _SignalDataNotReady(void)
+{
+    //! Drive **Data Ready** HIGH
+    SetBit(Spi_port, Spi_DataReady);
+}
+inline void _SpiSlave_StopRxQueue(void)
+{
+    //! Clear `Flag_SlaveRx`
+    /** SPI ISR checks `Flag_SlaveRx` to decide whether to Queue
+     *  the byte received from the SPI master:\n 
+     *  - flag is **set**: store SPI data register in the Queue\n
+     *  - flag is **clear**: do not store SPI data register in
+     *  the Queue
+     * */
+    ClearBit(Flag_SpiFlags, Flag_SlaveRx);
+}
+inline bool _TransferIsDone(void)
+{
+    /** _TransferIsDone behavior:\n 
+      * - returns true when ISR sets Flag TransferIsDone\n 
+      * - returns false until ISR sets Flag TransferIsDone\n 
+      * */
+    return BitIsSet(Flag_SpiFlags, Flag_TransferDone);
 }
 
 // ---API (Go to the Doxygen documentation of this file)---
@@ -58,18 +86,30 @@ inline void _SignalDataReady(void)
  * void DisableSpiInterrupt(void);\n 
  * void EnableSpiInterrupt(void);\n 
  * */
+#ifdef SPISLAVE_FAKED
+#define _TransferIsDone _TransferIsDone_fake
+#endif
 inline void SpiSlaveTxByte(uint8_t input_byte)
 {
+    //! Transmit a byte and ignore byte received.
     /** SpiSlaveTxByte behavior:\n 
       * - loads SPI data register with input byte\n 
+      * - tells SPI ISR to stop queuing rx byte\n 
       * - drives DataReady LOW to signal data is ready\n 
       * */
     *Spi_SPDR = input_byte;
-    _SignalDataReady();
     // ---Expected Assembly---
     // out	0x2e, r23	; 46
+    _SpiSlave_StopRxQueue();
+    _SignalDataReady();
+    // ---Expected Assembly---
     // cbi	0x05, 1	; 5
+    while (!_TransferIsDone());
+    _SignalDataNotReady();
 }
+#ifdef SPISLAVE_FAKED
+#undef _TransferIsDone
+#endif
 inline void DisableSpiInterrupt(void)
 {
     /** Clear SPIE bit in SPCR to disable the SPI ISR:\n 
@@ -139,7 +179,6 @@ inline void EnableSpiInterrupt(void)
 
 // ---API functions that call fakes when testing---
 #ifdef SPISLAVE_FAKED
-#include "SpiSlave_faked.h" // declare fakes
 // Call fakes by renaming faked calls with _fake suffix.
 #define EnableSpiInterrupt EnableSpiInterrupt_fake
 #define SpiSlaveTxByte SpiSlaveTxByte_fake

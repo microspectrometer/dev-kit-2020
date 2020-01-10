@@ -44,6 +44,10 @@ void ReadWriteBits_tests(bool run_test)
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(SetBit_sets_bit_in_register);
         RUN_TEST(ClearBit_clears_bit_in_register);
+        RUN_TEST(BitIsSet_returns_true_if_bit_is_set);
+        RUN_TEST(BitIsSet_returns_false_if_bit_is_clear);
+        RUN_TEST(BitIsClear_returns_true_if_bit_is_clear);
+        RUN_TEST(BitIsClear_returns_false_if_bit_is_set);
     }
 }
 void Flag_tests(bool run_test)
@@ -85,10 +89,12 @@ void Run_SpiSlaveTxByte_tests(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte);
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
         RUN_TEST(SpiSlaveTxByte_loads_SPI_data_register_with_input_byte);
+        RUN_TEST(SpiSlaveTxByte_tells_SPI_ISR_to_stop_queuing_rx_byte);
         RUN_TEST(SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready);
+        RUN_TEST(SpiSlaveTxByte_waits_until_SPI_transfer_is_done);
+        RUN_TEST(SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master);
     }
 }
 void Check_SpiSlave_plumbing_for_fakes(bool run_test)
@@ -108,6 +114,9 @@ void SpiSlave_tests(bool run_test)
         Run_EnableSpiInterrupt_tests(Nope);
         Run_SpiSlaveTxByte_tests(Yep);
         Run_SpiSlaveTx_tests(Nope);
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone);
+        RUN_TEST(TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone);
     }
 }
 void Run_QueueInit_tests(bool run_test)
@@ -229,8 +238,8 @@ int main()
     Queue_tests(Nope);
     UartSpi_tests(Nope);
     Lis_tests(Nope);
-    Flag_tests(Yep);
-    SpiSlave_tests(Nope);
+    Flag_tests(Nope);
+    SpiSlave_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

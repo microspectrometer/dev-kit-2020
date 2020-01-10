@@ -2065,7 +2065,17 @@ Tue, Jan  7, 2020  4:47:21 PM
       `SpiSlaveTx`
     - will also help in application as shorthand for sending one
       byte
-- [ ] review protocol
+- [x] review protocol
+- [x] faking calls made by functions that are faked
+- writing last test for `SpiSlaveTxByte`, but realizing:
+    - [ ] maybe ISR should drive `DataReady` high?
+    - [ ] if not, then I need to write fakes:
+        - `_SignalDataReady_fake`
+        - `_SignalDataNotReady_fake`
+        - test by checking `_fake` is called rather than checking
+          the value of `DataReady`
+        - then separately test the real functions by checking the
+          value of `DataReady`
 
 # [ ] Replace `listening_for_SPIM` with Enable/DisableInterrupt
 - [x] delete `listening_for_SPIM`

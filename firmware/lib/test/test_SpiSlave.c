@@ -1,7 +1,24 @@
 #include "unity.h"
 #include "test_SpiSlave.h"
 #include "SpiSlave.h"
+#include "ReadWriteBits.h"
 #include "Mock.h" // record call history in "mock"
+
+void TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone(void)
+{
+    /* =====[ Setup ]===== */
+    SetBit(Flag_SpiFlags, Flag_TransferDone);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE(_TransferIsDone());
+    /* TEST_FAIL_MESSAGE("Implement test."); */
+}
+void TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone(void)
+{
+    /* =====[ Setup ]===== */
+    ClearBit(Flag_SpiFlags, Flag_TransferDone);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_FALSE(_TransferIsDone());
+}
 
 void SpiSlaveInit_makes_DataReady_an_output_pin(void)
 {
@@ -114,16 +131,6 @@ void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
     /*     ); */
 }
 
-void SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte(void)
-{
-    /* =====[ Operate ]===== */
-    SpiSlaveTxByte(0xFF);
-    /* =====[ Test ]===== */
-    /* TEST_ASSERT_BIT_LOW( */
-    /*     *SpiFlags, */
-    /*     listening */
-    /*     ) */
-}
 void SpiSlaveTxByte_loads_SPI_data_register_with_input_byte(void)
 {
     /* =====[ Setup ]===== */
@@ -131,8 +138,21 @@ void SpiSlaveTxByte_loads_SPI_data_register_with_input_byte(void)
     /* =====[ Operate ]===== */
     SpiSlaveTxByte(input_byte);
     /* =====[ Test ]===== */
-    // TODO: test value of *all* bytes sent, not just the last
     TEST_ASSERT_EQUAL_UINT8(input_byte, *Spi_SPDR);
+}
+void SpiSlaveTxByte_tells_SPI_ISR_to_stop_queuing_rx_byte(void)
+{
+    /* =====[ Setup ]===== */
+    SetBit(Flag_SpiFlags,Flag_SlaveRx);
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Flag_SlaveRx,
+        *Flag_SpiFlags,
+        "Cannot run test: must start with bit set!"
+        );
+    /* =====[ Operate ]===== */
+    SpiSlaveTxByte(0xFF);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(Flag_SlaveRx, *Flag_SpiFlags);
 }
 void SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready(void)
 {
@@ -150,8 +170,35 @@ void SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready(void)
 }
 void SpiSlaveTxByte_waits_until_SPI_transfer_is_done(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    /* =====[ Setup ]===== */
+    ClearBit(Flag_SpiFlags,Flag_TransferDone);
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Flag_TransferDone,
+        *Flag_SpiFlags,
+        "Cannot run test: must start with bit clear!"
+        );
+    /* =====[ Operate ]===== */
+    SpiSlaveTxByte(0xFF);
+    /* =====[ Test ]===== */
+    /* PrintAllCalls(mock); */
+    TEST_ASSERT_TRUE(AssertCall(mock, 1, "_TransferIsDone"));
+    TEST_ASSERT_BIT_HIGH(Flag_TransferDone, *Flag_SpiFlags);
 }
+void SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_port = 0x00;
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Spi_DataReady,
+        *Spi_port,
+        "Cannot run test: must start with DataReady LOW!"
+        );
+    /* =====[ Operate ]===== */
+    SpiSlaveTxByte(0xFF);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Spi_DataReady, *Spi_port);
+}
+
 void SpiSlave_faked_calls_are_still_available_for_testing(void)
 {
     printf("SpiSlave_faked_calls_are_still_available_for_testing:\n");

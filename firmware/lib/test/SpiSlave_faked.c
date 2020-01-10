@@ -28,6 +28,8 @@
   * */
 #include "SpiSlave_faked.h"
 #include "Mock.h" // record call history in "mock"
+#include "ReadWriteBits.h"
+#include "Flag.h"
 
 /* =====[ Mock SpiSlaveTxByte() ]===== */
 static RecordedCall * Record_SpiSlaveTxByte(uint8_t arg1)
@@ -64,3 +66,25 @@ void EnableSpiInterrupt_fake(void)
     RecordActualCall(mock, Record_EnableSpiInterrupt());
 }
 
+/* =====[ Mock _TransferIsDone_fake ]===== */
+static RecordedCall * Record__TransferIsDone(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "_TransferIsDone";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+bool _TransferIsDone_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  */
+    RecordActualCall(mock, Record__TransferIsDone());
+    /** Fake sets `Flag_TransferDone` to fake the SPI ISR setting
+     *  this flag.
+     * */
+    SetBit(Flag_SpiFlags, Flag_TransferDone);
+    /** Fake always returns true:\n 
+     *  - Prevents test suite from hanging forever.
+     * */
+    return true;
+}
