@@ -21,7 +21,7 @@ void SpiSlave_faked_calls_are_still_available_for_testing(void)
         );
     uint16_t call_n = 1;
     TEST_ASSERT_TRUE_MESSAGE(
-        AssertCall(mock, call_n, "EnableSpiInterrupt"),
+        AssertCall(mock, call_n, "ClearSpiInterruptFlag"),
         "Expect SpiSlaveInit calls fake which records call name."
         );
 }
@@ -187,23 +187,25 @@ void EnableSpiInterrupt_consumes_6_cycles(void)
 void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
 {
     /* =====[ Setup ]===== */
-    uint8_t const input_buffer[] = {0x00, 0x01, 0x02};
+    uint8_t input_buffer[] = {0xA0, 0xB1, 0xC2};
     uint16_t nbytes = (uint16_t)sizeof(input_buffer);
     /* printf("sizeof(input_buffer)=%zu\n",sizeof(input_buffer)); */
     /* printf("nbytes=%d\n",nbytes); */
     /* =====[ Operate ]===== */
     SpiSlaveTx(input_buffer, nbytes);
     /* =====[ Test ]===== */
-    PrintAllCalls(mock);
-    // TODO: test value of *all* bytes sent, not just the last
+    /* PrintAllCalls(mock); */
+    uint16_t arg_n = 1; uint8_t *p_argval = input_buffer;
     uint16_t call_n = 1;
-    TEST_ASSERT_TRUE(
-        AssertCall(mock, call_n, "SpiSlaveTxByte")
-        );
-    /* uint16_t arg_n = 1; uint8_t arg_val = input_buffer[1]; */
-    /* TEST_ASSERT_TRUE( */
-    /*     AssertArg(mock, call_n, arg_n, &nbytes_sent), */
-    /*     ); */
+    while (call_n <= nbytes)
+    {
+        TEST_ASSERT_TRUE(
+            AssertCall(mock, call_n, "SpiSlaveTxByte")
+            );
+        TEST_ASSERT_TRUE(
+            AssertArg(mock, call_n++, arg_n, p_argval++)
+            );
+    }
 }
 
 /* =====[ SpiSlaveTxByte ]===== */

@@ -44,7 +44,7 @@ static RecordedCall * Record_SpiSlaveTxByte(uint8_t arg1)
 { // Define **what is recorded** when fake is called.
     char const *call_name = "SpiSlaveTxByte";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
-    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
     *((uint8_t *)record_of_arg1->pArg) = arg1;
     // Store the arg records in the call record.
     RecordArg(record_of_this_call, record_of_arg1);

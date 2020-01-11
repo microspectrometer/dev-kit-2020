@@ -203,7 +203,6 @@ inline void EnableSpiInterrupt(void)
 #ifdef SPISLAVE_FAKED
 // Call fakes by renaming faked calls with _fake suffix.
 #define EnableSpiInterrupt EnableSpiInterrupt_fake
-#define SpiSlaveTxByte SpiSlaveTxByte_fake
 #endif
 inline void SpiSlaveInit(void)
 {
@@ -224,20 +223,26 @@ inline void SpiSlaveInit(void)
     // Enable interrupts for robust SPI communication
     EnableSpiInterrupt();
 }
+#ifdef SPISLAVE_FAKED
+// Remove `_fake` suffix from function names.
+#undef EnableSpiInterrupt
+#endif
+#ifdef SPISLAVE_FAKED
+#define SpiSlaveTxByte SpiSlaveTxByte_fake
+#endif
 inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
 {
     /** SpiSlaveTx behavior:\n 
-      * - loads SPI data register with bytes from input buffer\n 
+      * - sends nbytes of input buffer to SpiMaster\n 
       * */
     uint16_t byte_index;
     for (byte_index = 0; byte_index < nbytes; byte_index++)
     {
-        *Spi_SPDR = input_buffer[byte_index];
+        SpiSlaveTxByte(input_buffer[byte_index]);
     }
 }
 #ifdef SPISLAVE_FAKED
 // Remove `_fake` suffix from function names.
-#undef EnableSpiInterrupt
 #undef SpiSlaveTxByte
 #endif
 

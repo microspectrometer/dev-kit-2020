@@ -2074,6 +2074,7 @@ Tue, Jan  7, 2020  4:47:21 PM
       the value of `DataReady`
     - then separately test the real functions by checking the
       value of `DataReady`
+- [ ] 'Unit test `SpiSlaveTx`'
 - [ ] maybe ISR should drive `DataReady` high?
     - analyze assembly code to pick the right approach
 

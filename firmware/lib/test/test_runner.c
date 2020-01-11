@@ -135,12 +135,11 @@ void SpiSlave_tests(bool run_test)
     {
         Check_SpiSlave_plumbing_for_fakes(Nope);
         Run_SpiSlaveInit_tests(Nope);
-        Run_EnableSpiInterrupt_tests(Yep);
+        Run_EnableSpiInterrupt_tests(Nope);
         Run__SignalDataReady_tests(Nope);
         Run__TransferIsDone_tests(Nope);
         Run_SpiSlaveTxByte_tests(Nope);
-        Run_SpiSlaveTx_tests(Nope);
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        Run_SpiSlaveTx_tests(Yep);
     }
 }
 
