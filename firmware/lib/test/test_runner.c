@@ -26,7 +26,7 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 
 /* ---Turn test suites on and off--- */
 bool Yep=true, Nope=false;
-//
+
 void BiColorLed_tests(bool run_test)
 {
     if (run_test)
@@ -37,6 +37,7 @@ void BiColorLed_tests(bool run_test)
         RUN_TEST(BiColorLedRed_sets_bit_in_port);
     }
 }
+
 void ReadWriteBits_tests(bool run_test)
 {
     if (run_test)
@@ -50,12 +51,40 @@ void ReadWriteBits_tests(bool run_test)
         RUN_TEST(BitIsClear_returns_false_if_bit_is_set);
     }
 }
+
 void Flag_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(test_Flag);
+    }
+}
+
+/* =====[ SpiSlave_tests ]===== */
+void Check_SpiSlave_plumbing_for_fakes(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(SpiSlave_faked_calls_are_still_available_for_testing);
+    }
+}
+void Run__SignalDataReady_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SignalDataReady_drives_DataReady_LOW);
+    }
+}
+void Run__TransferIsDone_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone);
+        RUN_TEST(TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone);
     }
 }
 void Run_SpiSlaveInit_tests(bool run_test)
@@ -77,24 +106,6 @@ void Run_EnableSpiInterrupt_tests(bool run_test)
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
     }
 }
-void Run__TransferIsDone_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone);
-        RUN_TEST(TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone);
-    }
-}
-
-void Run_SpiSlaveTx_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
-        RUN_TEST(SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster);
-    }
-}
 void Run_SpiSlaveTxByte_tests(bool run_test)
 {
     if (run_test)
@@ -107,12 +118,12 @@ void Run_SpiSlaveTxByte_tests(bool run_test)
         RUN_TEST(SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master);
     }
 }
-void Check_SpiSlave_plumbing_for_fakes(bool run_test)
+void Run_SpiSlaveTx_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
-        RUN_TEST(SpiSlave_faked_calls_are_still_available_for_testing);
+        RUN_TEST(SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster);
     }
 }
 void SpiSlave_tests(bool run_test)
@@ -121,13 +132,16 @@ void SpiSlave_tests(bool run_test)
     {
         Check_SpiSlave_plumbing_for_fakes(Nope);
         Run_SpiSlaveInit_tests(Nope);
-        Run_EnableSpiInterrupt_tests(Nope);
+        Run_EnableSpiInterrupt_tests(Yep);
+        Run__SignalDataReady_tests(Yep);
         Run__TransferIsDone_tests(Nope);
-        Run_SpiSlaveTxByte_tests(Yep);
+        Run_SpiSlaveTxByte_tests(Nope);
         Run_SpiSlaveTx_tests(Nope);
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
     }
 }
+
+/* =====[ Queue_tests ]===== */
 void Run_QueueInit_tests(bool run_test)
 {
     if (run_test)
@@ -204,6 +218,7 @@ void Queue_tests(bool run_test)
         Run_QueueIsEmpty_tests(Yep);
     }
 }
+
 void UartSpi_tests(bool run_test)
 {
     if (run_test)
@@ -219,6 +234,7 @@ void UartSpi_tests(bool run_test)
         RUN_TEST(UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior);
     }
 }
+
 void Lis_tests(bool run_test)
 {
     if (run_test)

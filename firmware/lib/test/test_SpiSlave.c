@@ -4,6 +4,45 @@
 #include "SpiSlave.h"
 #include "ReadWriteBits.h"
 
+/* =====[ Check_SpiSlave_plumbing_for_fakes ]===== */
+void SpiSlave_faked_calls_are_still_available_for_testing(void)
+{
+    printf("SpiSlave_faked_calls_are_still_available_for_testing:\n");
+    /* =====[ Operate and Test]===== */
+    EnableSpiInterrupt();
+    printf(
+        "- Able to test real version of `EnableSpiInterrupt`.\n"
+        );
+    /* =====[ Operate and Test ]===== */
+    SpiSlaveInit();
+    printf(
+        "- And calling `SpiSlaveInit` calls "
+        "`EnableSpiInterrupt_fake`:\n"
+        );
+    uint16_t call_n = 1;
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, call_n, "EnableSpiInterrupt"),
+        "Expect SpiSlaveInit calls fake which records call name."
+        );
+}
+
+/* =====[ _SignalDataReady ]===== */
+void SignalDataReady_drives_DataReady_LOW(void)
+{
+    /* =====[ Setup ]===== */
+    SetBit(Spi_port, Spi_DataReady);
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_DataReady,
+        *Spi_port,
+        "Cannot run test: must start with DataReady HIGH!"
+        );
+    /* =====[ Operate ]===== */
+    _SignalDataReady();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_port);
+}
+
+/* =====[ _TransferIsDone ]===== */
 void TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone(void)
 {
     /* =====[ Setup ]===== */
@@ -20,6 +59,7 @@ void TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone(void)
     TEST_ASSERT_FALSE(_TransferIsDone());
 }
 
+/* =====[ SpiSlaveInit ]===== */
 void SpiSlaveInit_makes_DataReady_an_output_pin(void)
 {
     /* =====[ Setup ]===== */
@@ -109,6 +149,7 @@ void SpiSlaveInit_enables_SPI_interrupt(void)
         );
 }
 
+/* =====[ SpiSlaveTx ]===== */
 void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
 {
     /* =====[ Setup ]===== */
@@ -131,6 +172,7 @@ void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
     /*     ); */
 }
 
+/* =====[ SpiSlaveTxByte ]===== */
 void SpiSlaveTxByte_loads_SPI_data_register_with_input_byte(void)
 {
     /* =====[ Setup ]===== */
@@ -202,23 +244,3 @@ void SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master(void)
     TEST_ASSERT_BIT_HIGH(Spi_DataReady, *Spi_port);
 }
 
-void SpiSlave_faked_calls_are_still_available_for_testing(void)
-{
-    printf("SpiSlave_faked_calls_are_still_available_for_testing:\n");
-    /* =====[ Operate and Test]===== */
-    EnableSpiInterrupt();
-    printf(
-        "- Able to test real version of `EnableSpiInterrupt`.\n"
-        );
-    /* =====[ Operate and Test ]===== */
-    SpiSlaveInit();
-    printf(
-        "- And calling `SpiSlaveInit` calls "
-        "`EnableSpiInterrupt_fake`:\n"
-        );
-    uint16_t call_n = 1;
-    TEST_ASSERT_TRUE_MESSAGE(
-        AssertCall(mock, call_n, "EnableSpiInterrupt"),
-        "Expect SpiSlaveInit calls fake which records call name."
-        );
-}

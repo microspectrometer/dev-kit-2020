@@ -42,11 +42,17 @@ inline void _EnableSpiModule(void)
 }
 inline void _SignalDataReady(void)
 {
-    /** Drive **Data Ready** LOW\n 
-     *  - Pin **Data Ready** is normally high.\n 
-     *  - Drive **Data Ready** LOW to signal to the SPI Master
-     *  that next byte of data is ready.
-     * */
+    /** _SignalDataReady behavior:\n 
+      * - drives DataReady LOW\n 
+      * */
+    /** SPI Slave outputs signal **Data Ready**.\n 
+      * - **Data Ready** LOW signals next byte of data is
+      *   ready.\n
+      * - SPI Master waits for **Data Ready** LOW before reading
+      *   a byte from the SPI Slave.\n
+      * - SPI Slave drives **Data Ready** HIGH after each byte of
+      *   SPI transfer.
+      * */
     ClearBit(Spi_port, Spi_DataReady);
 }
 inline void _SignalDataNotReady(void)
