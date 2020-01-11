@@ -67,7 +67,7 @@ inline void _SpiSlave_StopRxQueue(void)
 }
 inline bool _TransferIsDone(void)
 {
-    /** _TransferIsDone behavior:\n 
+    /** TransferIsDone behavior:\n 
       * - returns true when ISR sets Flag TransferIsDone\n 
       * - returns false until ISR sets Flag TransferIsDone\n 
       * */
@@ -88,14 +88,17 @@ inline bool _TransferIsDone(void)
  * */
 #ifdef SPISLAVE_FAKED
 #define _TransferIsDone _TransferIsDone_fake
+#define _SignalDataReady _SignalDataReady_fake
 #endif
 inline void SpiSlaveTxByte(uint8_t input_byte)
 {
     //! Transmit a byte and ignore byte received.
     /** SpiSlaveTxByte behavior:\n 
       * - loads SPI data register with input byte\n 
-      * - tells SPI ISR to stop queuing rx byte\n 
+      * - tells SPI ISR to ignore rx byte\n 
       * - drives DataReady LOW to signal data is ready\n 
+      * - waits until SPI transfer is done\n 
+      * - drives DataReady HIGH to sync with Master\n 
       * */
     *Spi_SPDR = input_byte;
     // ---Expected Assembly---
@@ -109,6 +112,7 @@ inline void SpiSlaveTxByte(uint8_t input_byte)
 }
 #ifdef SPISLAVE_FAKED
 #undef _TransferIsDone
+#undef _SignalDataReady
 #endif
 inline void DisableSpiInterrupt(void)
 {

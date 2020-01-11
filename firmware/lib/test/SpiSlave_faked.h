@@ -5,6 +5,7 @@
 
 // ---Private functions faked for testing---
 bool _TransferIsDone_fake(void);
+void _SignalDataReady_fake(void);
 
 // ---API functions faked for testing---
 void SpiSlaveTxByte_fake(uint8_t input_byte);

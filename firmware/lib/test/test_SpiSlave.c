@@ -1,8 +1,8 @@
 #include "unity.h"
+#include "Mock.h" // record call history in "mock"
 #include "test_SpiSlave.h"
 #include "SpiSlave.h"
 #include "ReadWriteBits.h"
-#include "Mock.h" // record call history in "mock"
 
 void TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone(void)
 {
@@ -140,7 +140,7 @@ void SpiSlaveTxByte_loads_SPI_data_register_with_input_byte(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_UINT8(input_byte, *Spi_SPDR);
 }
-void SpiSlaveTxByte_tells_SPI_ISR_to_stop_queuing_rx_byte(void)
+void SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte(void)
 {
     /* =====[ Setup ]===== */
     SetBit(Flag_SpiFlags,Flag_SlaveRx);
@@ -166,7 +166,9 @@ void SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready(void)
     /* =====[ Operate ]===== */
     SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
-    TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_port);
+    /* TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_port); */
+    uint16_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "_SignalDataReady"));
 }
 void SpiSlaveTxByte_waits_until_SPI_transfer_is_done(void)
 {
@@ -181,7 +183,8 @@ void SpiSlaveTxByte_waits_until_SPI_transfer_is_done(void)
     SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
     /* PrintAllCalls(mock); */
-    TEST_ASSERT_TRUE(AssertCall(mock, 1, "_TransferIsDone"));
+    uint16_t call_n = 2;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "_TransferIsDone"));
     TEST_ASSERT_BIT_HIGH(Flag_TransferDone, *Flag_SpiFlags);
 }
 void SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master(void)

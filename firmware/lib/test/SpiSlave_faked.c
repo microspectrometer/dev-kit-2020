@@ -66,7 +66,7 @@ void EnableSpiInterrupt_fake(void)
     RecordActualCall(mock, Record_EnableSpiInterrupt());
 }
 
-/* =====[ Mock _TransferIsDone_fake ]===== */
+/* =====[ Mock _TransferIsDone() ]===== */
 static RecordedCall * Record__TransferIsDone(void)
 { // Define **what is recorded** when fake is called.
     char const *call_name = "_TransferIsDone";
@@ -87,4 +87,19 @@ bool _TransferIsDone_fake(void)
      *  - Prevents test suite from hanging forever.
      * */
     return true;
+}
+
+/* =====[ Mock _SignalDataReady() ]===== */
+static RecordedCall * Record__SignalDataReady(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "_SignalDataReady";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void _SignalDataReady_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  */
+    RecordActualCall(mock, Record__SignalDataReady());
 }

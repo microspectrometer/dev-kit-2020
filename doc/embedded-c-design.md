@@ -2068,14 +2068,23 @@ Tue, Jan  7, 2020  4:47:21 PM
 - [x] review protocol
 - [x] faking calls made by functions that are faked
 - writing last test for `SpiSlaveTxByte`, but realizing:
-    - [ ] maybe ISR should drive `DataReady` high?
-    - [ ] if not, then I need to write fakes:
-        - `_SignalDataReady_fake`
-        - `_SignalDataNotReady_fake`
-        - test by checking `_fake` is called rather than checking
-          the value of `DataReady`
-        - then separately test the real functions by checking the
-          value of `DataReady`
+- [ ] write fakes: (see TestSuite)
+    - [ ] 'Unit test `_SignalDataReady_fake`'
+    - [ ] 'Unit test `_SignalDataNotReady_fake`'
+    - test by checking `_fake` is called rather than checking
+      the value of `DataReady`
+    - then separately test the real functions by checking the
+      value of `DataReady`
+- [ ] maybe ISR should drive `DataReady` high?
+    - analyze assembly code to pick the right approach
+
+# [ ] build `avr-target` to determine `Flag` or not to `Flag`
+    - [ ] does assembly for lib `Flag` use right instructions?
+    - [ ] is checking the flag in the ISR the way to go, or am I
+      better off disabling the interrupt as I'd originally
+      planned? If I disable the interrupt, do I do it in every
+      call to SpiSlaveTxByte? Might that cause a slow down?
+      Analyze the code for the overhead in this.
 
 # [ ] Replace `listening_for_SPIM` with Enable/DisableInterrupt
 - [x] delete `listening_for_SPIM`
