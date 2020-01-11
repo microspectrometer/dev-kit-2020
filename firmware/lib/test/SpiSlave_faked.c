@@ -21,9 +21,17 @@
   * ```
   * setUp = SetUp_Mock; tearDown = TearDown_Mock;
   * ```
-  * For any `test` with `mock` defined, view all calls made:
+  * For any `test` with `mock` defined:\n 
+  * View all calls made (not an assertion, but helpful for debug)
   * ```
   * PrintAllCalls(mock);
+  * ```
+  * Assert a specific call is made
+  * ```
+  * uint16_t call_n = 1;
+  * TEST_ASSERT_TRUE(
+  *     AssertCall(mock, call_n, "_SignalDataReady")
+  *     );
   * ```
   * */
 #include "SpiSlave_faked.h"
@@ -102,4 +110,19 @@ void _SignalDataReady_fake(void)
    *  - call name
    *  */
     RecordActualCall(mock, Record__SignalDataReady());
+}
+
+/* =====[ Mock ClearSpiInterruptFlag() ]===== */
+static RecordedCall * Record_ClearSpiInterruptFlag(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "ClearSpiInterruptFlag";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void ClearSpiInterruptFlag_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  */
+    RecordActualCall(mock, Record_ClearSpiInterruptFlag());
 }

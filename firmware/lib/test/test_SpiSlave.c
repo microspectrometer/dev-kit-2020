@@ -149,6 +149,40 @@ void SpiSlaveInit_enables_SPI_interrupt(void)
         );
 }
 
+/* =====[ EnableSpiInterrupt ]===== */
+void EnableSpiInterrupt_clears_SPI_interrupt_flag(void)
+{
+    /* =====[ Operate ]===== */
+    EnableSpiInterrupt();
+    /* =====[ Test ]===== */
+    uint16_t call_n = 1;
+    TEST_ASSERT_TRUE(
+        AssertCall(mock, call_n, "ClearSpiInterruptFlag")
+        );
+}
+void EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt(void)
+{
+    /* =====[ Setup ]===== */
+    ClearBit(Spi_SPCR, Spi_InterruptEnable);
+    /* =====[ Operate ]===== */
+    EnableSpiInterrupt();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Spi_InterruptEnable, *Spi_SPCR);
+}
+void EnableSpiInterrupt_consumes_6_cycles(void)
+{
+    TEST_PASS();
+    // ---Expected Assembly---
+    // cli
+    // in	r24, 0x2d	; 45
+    // in	r24, 0x2e	; 46
+    // in	r24, 0x2c	; 44
+    // ori	r24, 0x80	; 128
+    // out	0x2c, r24	; 44
+    // Total number of cycles: 6
+    // Total number of instructions: 6
+}
+
 /* =====[ SpiSlaveTx ]===== */
 void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
 {

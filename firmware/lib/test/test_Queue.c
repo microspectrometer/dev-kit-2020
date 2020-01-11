@@ -40,9 +40,13 @@ void QueueInit_memory_for_Queue_struct_is_allocated_in_Queue_object_file(void)
     TEST_PASS();
 }
 void QueueInit_assigns_input_buffer_as_Queue_buffer(void)
-{ TEST_PASS(); }
+{
+    TEST_PASS();
+}
 void QueueInit_size_input_is_the_maximum_Queue_length(void)
-{ TEST_PASS(); }
+{
+    TEST_PASS();
+}
 void QueueInit_initializes_Queue_with_length_0(void)
 {
     /* =====[ Setup ]===== */

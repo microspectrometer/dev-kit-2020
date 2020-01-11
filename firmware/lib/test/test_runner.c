@@ -103,7 +103,10 @@ void Run_EnableSpiInterrupt_tests(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(EnableSpiInterrupt_clears_SPI_interrupt_flag);
+        RUN_TEST(EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt);
+        RUN_TEST(EnableSpiInterrupt_consumes_6_cycles);
     }
 }
 void Run_SpiSlaveTxByte_tests(bool run_test)
@@ -133,7 +136,7 @@ void SpiSlave_tests(bool run_test)
         Check_SpiSlave_plumbing_for_fakes(Nope);
         Run_SpiSlaveInit_tests(Nope);
         Run_EnableSpiInterrupt_tests(Yep);
-        Run__SignalDataReady_tests(Yep);
+        Run__SignalDataReady_tests(Nope);
         Run__TransferIsDone_tests(Nope);
         Run_SpiSlaveTxByte_tests(Nope);
         Run_SpiSlaveTx_tests(Nope);

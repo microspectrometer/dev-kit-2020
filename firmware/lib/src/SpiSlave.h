@@ -158,8 +158,16 @@ inline void ClearSpiInterruptFlag(void)
     ReadSpiStatusRegister(); // in	r24, 0x2d
     ReadSpiDataRegister(); // in	r24, 0x2e
 }
+#ifdef SPISLAVE_FAKED
+#define ClearSpiInterruptFlag ClearSpiInterruptFlag_fake
+#endif
 inline void EnableSpiInterrupt(void)
 {
+    /** EnableSpiInterrupt behavior:\n 
+      * - clears SPI interrupt flag\n 
+      * - enables SPI transfer complete interrupt\n 
+      * - consumes 6 cycles\n 
+      * */
     /** Set SPIE bit in SPCR to execute the SPI ISR when:\n 
      * - the Global Interrupt Enable bit is set in SREG\n 
      * - bit SPIF in register SPSR is set\n 
@@ -186,6 +194,10 @@ inline void EnableSpiInterrupt(void)
     // Global interrupt enable
     sei(); // sei
 }
+#ifdef SPISLAVE_FAKED
+#undef ClearSpiInterruptFlag
+#endif
+
 
 // ---API functions that call fakes when testing---
 #ifdef SPISLAVE_FAKED

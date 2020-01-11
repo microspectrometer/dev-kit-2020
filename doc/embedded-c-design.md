@@ -2068,9 +2068,8 @@ Tue, Jan  7, 2020  4:47:21 PM
 - [x] review protocol
 - [x] faking calls made by functions that are faked
 - writing last test for `SpiSlaveTxByte`, but realizing:
-- [ ] write fakes: (see TestSuite)
-    - [ ] 'Unit test `_SignalDataReady_fake`'
-    - [ ] 'Unit test `_SignalDataNotReady_fake`'
+- [x] write fakes: (see TestSuite)
+    - [-] 'Unit test `_SignalDataReady_fake`'
     - test by checking `_fake` is called rather than checking
       the value of `DataReady`
     - then separately test the real functions by checking the
