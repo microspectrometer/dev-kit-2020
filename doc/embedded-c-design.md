@@ -2207,11 +2207,102 @@ out	0x2e, r24
 
 # ---Pending Tasks---
 
-# [ ] Add macros for fakes
-    - goal: reduce number of lines, make faking simpler
-    - goal: do not forget to include lib_faked.h
-    - goal: do not forget to wrap include lib_faked.h in ifdef
-      macro
+# [x] Decided I cannot simplify macros for faking
+- goal: reduce number of lines, make faking simpler
+- goal: do not forget to include `lib_faked.h`
+- goal: do not forget to wrap include `lib_faked.h` in ifdef
+  macro
+
+These goals are not achievable.
+
+## Macro body cannot include macro directives
+Unfortunately, macro bodies cannot include macro directives,
+i.e., it contain the text for other `#` macro stuff:
+
+```c
+#define SpiSlave_fake(func) #define func func_fake
+```
+
+The appearance of `#` and `##` in a macro body has a purpose.
+Using it for any other reason results in an error:
+
+```bash
+test/SpiSlave_faked.h|6 col 27| error: '#' is not followed by a macro parameter
+||  #define SpiSlave_fake(func) #define func func_fake
+||                            ^
+```
+
+## `#` in a macro body means stringify
+The single `#` in a macro means "use as macro arg and convert
+what follows `#` as a string literal." Example from <https://www.geeksforgeeks.org/interesting-facts-preprocessors-c/>:
+
+```c
+#include <stdio.h>
+// `#` adds quotes around `a` to make it a string
+#define Stringify(a) #a
+int main()
+{
+    // aString is changed to "aString"
+    printf("%s", Stringify(GeeksQuiz));
+}
+```
+
+## `##` in a macro body means concatenate
+
+This concatenates `_fake` on the end of a function name.
+
+```c
+#define FAKE(func) func##_fake
+```
+
+## Macro body can include other macros like in `fff.h`
+Right now the definition of the function-under-test is sandwiched
+like this:
+
+```c
+#ifdef SPISLAVE_FAKED
+// Call fakes by renaming faked calls with _fake suffix.
+#define EnableSpiInterrupt EnableSpiInterrupt_fake
+#endif
+inline void SpiSlaveInit(void)
+{
+    // body including call to `EnableSpiInterrupt`
+}
+#ifdef SPISLAVE_FAKED
+// Remove `_fake` suffix from function names.
+#undef EnableSpiInterrupt
+#endif
+```
+
+The `#ifdef SPISLAVE_FAKED` cannot be eliminated.
+So the number of lines cannot be reduced.
+
+I can make the faking line a little easier to read.
+
+```c
+// test/SpiSlave_faked.h
+//
+#define FAKE(func) func##_fake
+```
+
+Now the preamble becomes:
+```c
+// src/SpiSlave.h
+//
+#ifdef SPISLAVE_FAKED
+// Call fakes by renaming faked calls with _fake suffix.
+#define EnableSpiInterrupt FAKE(EnableSpiInterrupt)
+#endif
+```
+
+But there's not much else I can do. Is this extra indirection
+more readable or less readable?
+
+- Pro: easier to find where the FAKE() is used when searching the
+  project by limiting FAKE(funcname) to where it's used
+- Con: a little more annoying to search the project (can't just
+  `Ctrl-\s` or `Ctrl-\g` or `;w]` on `funcname_fake` to search
+  for it or jump to its definition)
 
 # [ ] Call lib `Flag` from avr-target
 - wrote lib `SpiSlave` using lib `Flag`
