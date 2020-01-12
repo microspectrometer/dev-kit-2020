@@ -256,166 +256,6 @@ that I'm reverting to the working state pointed to by `HEAD`.
     - it is to test with a faked version of `EnableSpiInterrupt`
     - the fake records itself in `mock`
 
-# [ ] how do I test the real version of a faked function?
-- SpiSlaveTxByte is faked
-- SpiSlaveTxByte also needs test coverage
-- building with `DSPISLAVE_FAKED` causes a chain of events.
-- consider builds of `SpiSlave.o` and `test_SpiSlave.o`
-  separately
-
-## build `test_SpiSlave.o`
-- always references symbol `SpiSlaveTxByte`
-- never references symbol `SpiSlaveTxByte_fake`
-
-### Details
-- when `SpiSlaveTxByte` is the *function under test*, it is not
-  renamed with `_fake` suffix
-- when `SpiSlaveTxByte` is called by a `SpiSlave.c` function,
-  that function calls the `_fake` version because `SpiSlave.c` is
-  compiled with `-DSPISLAVE_FAKED`
-- the trouble is now we cannot test `SpiSlaveTxByte` because it
-  is not defined anywhere
-- How this works:
-- `test_SpiSlave.c` includes `SpiSlave.h`
-- with `-DSPISLAVE_FAKED`, this gives `test_SpiSlave.c` the
-  prototype for `SpiSlaveTxByte()` but no definition:
-
-```c
-// src/SpiSlave.h
-#ifdef SPISLAVE_FAKED
-void SpiSlaveTxByte(uint8_t input_byte);
-#else
-inline void SpiSlaveTxByte(uint8_t input_byte)
-{ // real def ...
-#endif
-```
-
-- Wherever `test_SpiSlave.c` encounters a call to
-  `SpiSlaveTxByte`, it recognizes the function
-- but there is no definition for the function in `test_SpiSlave.c`
-- so `test_SpiSlave.o` is built expecting a definition for the
-  symbol `SpiSlaveTxByte`
-- this *would* come from `SpiSlave.o`, but it does not contain
-  this symbol!
-
-## build `SpiSlave_faked.o`
-- always defines symbol `SpiSlaveTxByte_fake`
-
-## build `SpiSlave.o`
-- depends on flag `-DSPISLAVE_FAKED`
-    - ;mktgc builds with flag `-DSPISLAVE_FAKED`
-- when built with flag `-DSPISLAVE_FAKED`:
-    - references symbol `SpiSlaveTxByte_fake`
-    - executable must link against `SpiSlave_faked.o`
-- when built without flag `-DSPISLAVE_FAKED`:
-    - defines symbol `SpiSlaveTxByte`
-    - references symbol `SpiSlaveTxByte`
-
-### Details
-- `src/SpiSlave.c` includes `src/SpiSlave.h`
-- but with `-DSPISLAVE_FAKED`, `src/SpiSlave.c` *first*
-  includes `test/SpiSlave_faked.h`
-
-```c
-#ifdef SPISLAVE_FAKED
-#include "SpiSlave_faked.h"
-#endif
-#include "SpiSlave.h"
-```
-
-- and `test/SpiSlave_faked.h` renames the function:
-
-```c
-#define SpiSlaveTxByte SpiSlaveTxByte_fake
-```
-
-- so Makefile flag `-DSPISLAVE_FAKED` causes `SpiSlave.o` to
-  build with `SpiSlave.h` altered
-- like with `test_SpiSlave.o`, this gives `src/SpiSlave.c` the
-  prototype for `SpiSlaveTxByte()` instead of the `inline`
-  definition:
-
-```c
-// src/SpiSlave.h
-#ifdef SPISLAVE_FAKED
-void SpiSlaveTxByte(uint8_t input_byte);
-#else
-inline void SpiSlaveTxByte(uint8_t input_byte)
-{ // real def ...
-#endif
-```
-
-- but unlike `test_SpiSlave.o`, the prototype is renamed by
-  `test/SpiSlave_faked.h` to have the `_fake` suffix
-- with the rename, `src/SpiSlave.h` becomes this:
-
-```c
-// src/SpiSlave.h
-#ifdef SPISLAVE_FAKED
-void SpiSlaveTxByte_fake(uint8_t input_byte);
-#else
-// ...
-```
-
-- with flag `-DSPISLAVE_FAKED`, `src/SpiSlave.c` has no mention
-  of `SpiSlaveTxByte`
-
-```c
-#ifndef SPISLAVE_FAKED
-void SpiSlaveTxByte(uint8_t input_byte);
-void EnableSpiInterrupt(void);
-#endif
-```
-
-- instead, `SpiSlave.o` builds with references to
-  `SpiSlaveTxByte_fake`
-- the definition of `SpiSlaveTxByte_fake` is in
-  `test/SpiSlave_faked.c`
-- `test/test_SpiSlave.c` only includes `SpiSlave.h`
-- **it never references the `_fake` symbols**
-- How does build `;mktgc` know about `test/SpiSlave_faked.c`?
-- the recipe for `TestSuite.exe` links against `SpiSlave_faked.o`
-
-```make
-build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${lib_o} ${test_lib_o} build/SpiSlave_faked.o
-	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
-```
-
-- and `SpiSlave_faked.o` is built from `test/SpiSlave_faked.c`
-
-```make
-build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
-	${compiler} $(CFLAGS) -c $< -o $@
-```
-
-- `test/SpiSlave_faked.c` includes `test/SpiSlave_faked.h`
-- this lets `test/SpiSlave_faked.c` define `SpiSlaveTxByte`, and
-  `test/SpiSlave_faked.h` renames it with the `_fake` suffix
-
-# Test the real version of a faked function
-- from the above, the problem is that `SpiSlaveTxByte` is not
-  defined
-- to test `SpiSlaveTxByte`, I need the test to link against a
-  `.o` that defines the symbol
-- right now, `SpiSlave.o` *only* defines `SpiSlaveTxByte` if
-  `-DSPISLAVE_FAKED` is false
-- change this so that `SpiSlave.o` *always* defines
-  `SpiSlaveTxByte`
-- but for functions in `SpiSlave.o` that depend on
-  `SpiSlaveTxByte`, `#define` with the `_fake` *in the header*
-  (because those functions are defined in the header like all lib
-  functions), and then `#undef` before the end of the header
-- this way `SpiSlave.o` still contains a definition for
-  `SpiSlaveTxByte` while functions that depend on
-  `SpiSlaveTxByte` will instead of depend on
-  `SpiSlaveTxByte_fake` during unit tests
-- `SpiSlave_faked.h` declares the fakes
-- `SpiSlave_faked.c` defines the fakes
-- `TestSuite.exe` links against `SpiSlave_faked.o`, so the linker
-  fills in the placeholders for `SpiSlaveTxByte_fake` in the
-  `SpiSlave` functions that call `SpiSlaveTxByte_fake`
-
 # [ ] split common Spi stuff from SpiSlave into a Spi lib
 
 # [ ] move more code from old vis-spi-out to new vis-spi-out
@@ -442,7 +282,7 @@ build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
       headers: create a fake header for tests
     - I think this would eliminate a ton of header files
 
-## two drawbacks to inlining everything
+## three drawbacks to inlining everything
 
 ### 1. no more `static` functions
 The compiler inlines `static` functions within a translation
@@ -510,6 +350,80 @@ and the solution I use to each problem.
 - the hardware definitions are used by the `Init` function, but
   also used by functions that need to be inline
 - i.e., both `lib.o` and `main.o` need the hardware definitions
+
+### 3. compiler errors are misleading about source of error
+Example:
+
+```bash
+|| build/vis-spi-out.o: In function `SetBit':
+/home/Mike/chromation/dev-kit-mike/firmware/lib/src/ReadWriteBits.h|14| undefined reference to `Flag_SpiFlags'
+```
+
+Line 14 of `ReadWriteBits.h` describes how to **set a bit** in a
+register. It does not reference `Flag_SpiFlags` specifically.
+
+I think because `ReadWriteBits.h` defines `SetBit` as an `inline`
+function, the compiler cannot introspect exactly where the
+problem is.
+
+Solution: two ways around this
+
+1. (documented in Chromation notebook) use `:vimgrep` to find
+   pattern `SetBit(Flag_SpiFlags` in any `.c` or `.h` file in the
+   `firmware/lib/` folder
+
+```vim
+" in directory `chromation/dev-kit-mike/firmware/`
+vimgrep /SetBit(Flag_SpiFlags/ lib/**/*.[ch]
+```
+
+This method is great because it finds these exact occurrences. In
+this case it occurred four times. The results are available in
+the Quickfix window:
+
+```vim
+lib/test/SpiSlave_faked.c|93 col 5| SetBit(Flag_SpiFlags, Flag_TransferDone);
+lib/test/test_Flag.c|8 col 5| SetBit(Flag_SpiFlags, Flag_SlaveRx);
+lib/test/test_SpiSlave.c|49 col 5| SetBit(Flag_SpiFlags, Flag_TransferDone);
+lib/test/test_SpiSlave.c|224 col 5| SetBit(Flag_SpiFlags,Flag_SlaveRx);
+```
+
+Jump to results:
+
+- with Quickfix window open:
+    - :cwin or :copen to open the Quickfix window
+    - put cursor on line in Quickfix window and press enter
+- without opening Quickfix window:
+    - jump to next/previous match with `<Alt-/>` and `<Alt-?>`
+
+2. use `cscope` to find occurrences of `Flag_SpiFlags`
+
+```vim
+" in directory `chromation/dev-kit-mike/firmware/`
+cscope find s Flag_SpiFlags
+```
+
+Vim does this search faster, but the search is not as precise in
+finding the line of code causing the compiler error. Now there
+are 14 results.
+
+```vim
+lib/src/Flag.h|11| <<global>> extern flag_reg Flag_SpiFlags;
+lib/test/Flag-HardwareFake.h|8| <<global>> flag_reg Flag_SpiFlags = &fake_SpiFlags;
+lib/src/SpiSlave.h|72| <<_SpiSlave_StopRxQueue>> ClearBit(Flag_SpiFlags, Flag_SlaveRx);
+lib/src/SpiSlave.h|80| <<_TransferIsDone>> return BitIsSet(Flag_SpiFlags, Flag_TransferDone);
+lib/test/SpiSlave_faked.c|93| <<_TransferIsDone_fake>> SetBit(Flag_SpiFlags, Flag_TransferDone);
+lib/test/test_Flag.c|8| <<test_Flag>> SetBit(Flag_SpiFlags, Flag_SlaveRx);
+lib/test/test_SpiSlave.c|49| <<TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone>> SetBit(Flag_SpiFlags, Flag_TransferDone);
+lib/test/test_SpiSlave.c|57| <<TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone>> ClearBit(Flag_SpiFlags, Flag_TransferDone);
+lib/test/test_SpiSlave.c|224| <<SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte>> SetBit(Flag_SpiFlags,Flag_SlaveRx);
+lib/test/test_SpiSlave.c|227| <<SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte>> *Flag_SpiFlags,
+lib/test/test_SpiSlave.c|233| <<SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte>> TEST_ASSERT_BIT_LOW(Flag_SlaveRx, *Flag_SpiFlags);
+lib/test/test_SpiSlave.c|254| <<SpiSlaveTxByte_waits_until_SPI_transfer_is_done>> ClearBit(Flag_SpiFlags,Flag_TransferDone);
+lib/test/test_SpiSlave.c|257| <<SpiSlaveTxByte_waits_until_SPI_transfer_is_done>> *Flag_SpiFlags,
+lib/test/test_SpiSlave.c|266| <<SpiSlaveTxByte_waits_until_SPI_transfer_is_done>> TEST_ASSERT_BIT_HIGH(Flag_TransferDone, *Flag_SpiFlags);
+```
+
 
 # Use the `-include` flag for AVR headers like `<avr/io.h>`
 This is a way for me to tell the compiler to include a file:
@@ -750,6 +664,282 @@ multiple definition of `Spi_SPDR'
 
 # ---Completed Tasks---
 
+# [x] Add lib `Flag` to vis-spi-out `avr-target`
+Not suprisingly, the `;mka` build fails if I do nothing to add
+lib `Flag` to the `vis-spi-out` project. But the compiler error
+message is *strange*:
+
+```bash
+|| build/vis-spi-out.o: In function `SetBit':
+/home/Mike/chromation/dev-kit-mike/firmware/lib/src/ReadWriteBits.h|14| undefined reference to `Flag_SpiFlags'
+```
+
+It turns out the error has nothing to do with file
+`ReadWriteBits.h` or even with a call to `SetBit`.
+
+Initially I thought maybe it was a call to `SetBit` in lib
+`SpiSlave` to set a bit in the `Flag_SpiFlags` register. So first
+I grep to find actual source of error:
+
+```vim
+vimgrep /SetBit(Flag_SpiFlags/ lib/**/*.[ch]
+```
+
+The search results are *strange*:
+
+```vim
+lib/test/SpiSlave_faked.c|93 col 5| SetBit(Flag_SpiFlags, Flag_TransferDone);
+lib/test/test_Flag.c|8 col 5| SetBit(Flag_SpiFlags, Flag_SlaveRx);
+lib/test/test_SpiSlave.c|49 col 5| SetBit(Flag_SpiFlags, Flag_TransferDone);
+lib/test/test_SpiSlave.c|224 col 5| SetBit(Flag_SpiFlags,Flag_SlaveRx);
+```
+
+This makes no sense because `;mka` does not look at `lib/test/`
+files.
+
+The preface "In function `SetBit`:" is a red-herring in the
+compiler message.
+
+`;mka` looks at `lib/src/` files, so grep without `SetBit`, and
+only look in `lib/src/`:
+
+```vim
+vimgrep /Flag_SpiFlags/ lib/src/*.[ch]
+```
+
+Results:
+
+```bash
+lib/src/Flag.h|11 col 17| extern flag_reg Flag_SpiFlags; // reg GPIOR0
+lib/src/SpiSlave.h|74 col 14| ClearBit(Flag_SpiFlags, Flag_SlaveRx);
+lib/src/SpiSlave.h|82 col 21| return BitIsSet(Flag_SpiFlags, Flag_TransferDone);
+```
+
+The undefined reference must be caused by `SpiSlave.h`, the
+compiler just doesn't know how to tell me this, probably because
+of all the `inline` stuff.
+
+The proof is that adding `Flag` to the `vis-spi-out` project
+fixes the problem.
+
+I have not added lib `Flag` to the `vis-spi-out/Makefile` yet.
+Now I add it.
+
+First I add it to the list of `hwlib` in the `Makefile`. The
+compiler tells me `src/Flag-Hardware.h` does not exist. I create
+it with `:!touch` and I am back to the previous undefined
+reference error.
+
+Now put the definitions in `src/Flag-Hardware.h`. The build still
+fails with the undefined reference error because there is no
+mechanism in place to automatically include
+`src/Flag-Hardware.h`, just a mechanism to demand its existence.
+
+Lastly, add `#include Flag-Hardware.h` to file `src/Hardware.h`
+
+`board-name.o` has `src/Hardware.h` in its pre-requisites forcing
+a rebuild.
+
+Now `;mka` builds without error.
+
+# [x] Add lib `Flag` to vis-spi-out `unit-test` target
+- it just builds, I didn't have to do any extra work
+
+# [x] figure out how to test the real version of a faked function
+- SpiSlaveTxByte is faked
+- SpiSlaveTxByte also needs test coverage
+
+## Problem summary: define `SpiSlaveTxByte` even when faking
+- the problem is that `SpiSlaveTxByte` is not defined
+    - this is illustrated in the details below
+- to test `SpiSlaveTxByte`, I need the test to link against a
+  `.o` that defines the symbol
+- right now, `SpiSlave.o` *only* defines `SpiSlaveTxByte` if
+  `-DSPISLAVE_FAKED` is false
+
+## Solution: `SpiSlave.o` always defines `SpiSlaveTxByte`
+- change this so that `SpiSlave.o` *always* defines
+  `SpiSlaveTxByte`
+- but for functions in `SpiSlave.o` that depend on
+  `SpiSlaveTxByte`:
+    - `#define` `func` as `func_fake` *in the header*
+    - (in the *header* because all lib functions are defined in
+      the header to make them `inline` for assembly optimization
+      reasons)
+    - `#undef` `func`
+    - wrap the function that depends on `func` with the `#define`
+      and `#undef`
+    - to make this easy, I made a macro
+- this way `SpiSlave.o` still contains a definition for
+  `SpiSlaveTxByte` while functions that depend on
+  `SpiSlaveTxByte` will instead depend on
+  `SpiSlaveTxByte_fake` during unit tests
+- `SpiSlave_faked.h` declares the fakes
+- `SpiSlave_faked.c` defines the fakes
+- `TestSuite.exe` links against `SpiSlave_faked.o`, so the linker
+  fills in the placeholders for `SpiSlaveTxByte_fake` in the
+  `SpiSlave` functions that call `SpiSlaveTxByte_fake`
+
+## ;mka needs `#include lib_faked.h` wrapped in `#ifdef -LIB_FAKED`
+
+Error building output `-o build/vis-spi-out.o`:
+
+```bash
+In file included from src/vis-spi-out.c|6| 
+/home/Mike/chromation/dev-kit-mike/firmware/lib/src/SpiSlave.h|29 col 45| fatal error: SpiSlave_faked.h: No such file or directory
+|| compilation terminated.
+```
+
+Add conditional macro to `SpiSlave.h`:
+
+```c
+// lib/src/SpiSlave.h
+// 
+#ifdef SPISLAVE_FAKED
+#include "SpiSlave_faked.h" // declare fakes
+#endif
+```
+
+This prevents `SpiSlave.h` from including `SpiSlave_faked.h` when
+building for `avr-target`.
+
+
+
+## Details finding the solution
+- building with `DSPISLAVE_FAKED` causes a chain of events.
+- consider builds of `SpiSlave.o` and `test_SpiSlave.o`
+  separately
+
+## build `test_SpiSlave.o`
+- always references symbol `SpiSlaveTxByte`
+- never references symbol `SpiSlaveTxByte_fake`
+
+### Details
+- when `SpiSlaveTxByte` is the *function under test*, it is not
+  renamed with `_fake` suffix
+- when `SpiSlaveTxByte` is called by a `SpiSlave.c` function,
+  that function calls the `_fake` version because `SpiSlave.c` is
+  compiled with `-DSPISLAVE_FAKED`
+- the trouble is now we cannot test `SpiSlaveTxByte` because it
+  is not defined anywhere
+- How this works:
+- `test_SpiSlave.c` includes `SpiSlave.h`
+- with `-DSPISLAVE_FAKED`, this gives `test_SpiSlave.c` the
+  prototype for `SpiSlaveTxByte()` but no definition:
+
+```c
+// src/SpiSlave.h
+#ifdef SPISLAVE_FAKED
+void SpiSlaveTxByte(uint8_t input_byte);
+#else
+inline void SpiSlaveTxByte(uint8_t input_byte)
+{ // real def ...
+#endif
+```
+
+- Wherever `test_SpiSlave.c` encounters a call to
+  `SpiSlaveTxByte`, it recognizes the function
+- but there is no definition for the function in `test_SpiSlave.c`
+- so `test_SpiSlave.o` is built expecting a definition for the
+  symbol `SpiSlaveTxByte`
+- this *would* come from `SpiSlave.o`, but it does not contain
+  this symbol!
+
+## build `SpiSlave_faked.o`
+- always defines symbol `SpiSlaveTxByte_fake`
+
+## build `SpiSlave.o`
+- depends on flag `-DSPISLAVE_FAKED`
+    - ;mktgc builds with flag `-DSPISLAVE_FAKED`
+- when built with flag `-DSPISLAVE_FAKED`:
+    - references symbol `SpiSlaveTxByte_fake`
+    - executable must link against `SpiSlave_faked.o`
+- when built without flag `-DSPISLAVE_FAKED`:
+    - defines symbol `SpiSlaveTxByte`
+    - references symbol `SpiSlaveTxByte`
+
+### Details
+- `src/SpiSlave.c` includes `src/SpiSlave.h`
+- but with `-DSPISLAVE_FAKED`, `src/SpiSlave.c` *first*
+  includes `test/SpiSlave_faked.h`
+
+```c
+#ifdef SPISLAVE_FAKED
+#include "SpiSlave_faked.h"
+#endif
+#include "SpiSlave.h"
+```
+
+- and `test/SpiSlave_faked.h` renames the function:
+
+```c
+#define SpiSlaveTxByte SpiSlaveTxByte_fake
+```
+
+- so Makefile flag `-DSPISLAVE_FAKED` causes `SpiSlave.o` to
+  build with `SpiSlave.h` altered
+- like with `test_SpiSlave.o`, this gives `src/SpiSlave.c` the
+  prototype for `SpiSlaveTxByte()` instead of the `inline`
+  definition:
+
+```c
+// src/SpiSlave.h
+#ifdef SPISLAVE_FAKED
+void SpiSlaveTxByte(uint8_t input_byte);
+#else
+inline void SpiSlaveTxByte(uint8_t input_byte)
+{ // real def ...
+#endif
+```
+
+- but unlike `test_SpiSlave.o`, the prototype is renamed by
+  `test/SpiSlave_faked.h` to have the `_fake` suffix
+- with the rename, `src/SpiSlave.h` becomes this:
+
+```c
+// src/SpiSlave.h
+#ifdef SPISLAVE_FAKED
+void SpiSlaveTxByte_fake(uint8_t input_byte);
+#else
+// ...
+```
+
+- with flag `-DSPISLAVE_FAKED`, `src/SpiSlave.c` has no mention
+  of `SpiSlaveTxByte`
+
+```c
+#ifndef SPISLAVE_FAKED
+void SpiSlaveTxByte(uint8_t input_byte);
+void EnableSpiInterrupt(void);
+#endif
+```
+
+- instead, `SpiSlave.o` builds with references to
+  `SpiSlaveTxByte_fake`
+- the definition of `SpiSlaveTxByte_fake` is in
+  `test/SpiSlave_faked.c`
+- `test/test_SpiSlave.c` only includes `SpiSlave.h`
+- **it never references the `_fake` symbols**
+- How does build `;mktgc` know about `test/SpiSlave_faked.c`?
+- the recipe for `TestSuite.exe` links against `SpiSlave_faked.o`
+
+```make
+build/TestSuite.exe: build/test_runner.o ${unittest_o} \
+${lib_o} ${test_lib_o} build/SpiSlave_faked.o
+	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
+```
+
+- and `SpiSlave_faked.o` is built from `test/SpiSlave_faked.c`
+
+```make
+build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+```
+
+- `test/SpiSlave_faked.c` includes `test/SpiSlave_faked.h`
+- this lets `test/SpiSlave_faked.c` define `SpiSlaveTxByte`, and
+  `test/SpiSlave_faked.h` renames it with the `_fake` suffix
+
 # [x] make `;ds` shortcut to paste time-stamped flash size
 - record flash size before altering project in any way
 
@@ -946,6 +1136,72 @@ Mon, Jan  6, 2020  4:48:38 PM
 # [x] clean Makefile variables after all the inlining
 
 ## [x] clean `vis-spi-out/Makefile`
+
+# [x] unit test SpiSlaveTx
+- fixed issue about optimized lib code
+
+## here is the placeholder for testing the fix
+- this shows correct use of `SPDR` with the `in` instruction
+
+```c
+uint8_t garbage = ReadSpiDataRegister();
+```
+
+```avra
+in	r24, 0x2e	; 46
+```
+
+```c
+    if (garbage==0xFC) BiColorLedRed(led_0);
+```
+
+```avra
+cpi	r24, 0xFC	; 252
+breq	.+6      	; 0x1ea <main+0x144>
+```
+
+## erase placeholder
+- before erasing placeholder
+
+```date-and-size
+Tue, Jan  7, 2020  4:15:42 PM
+   text	   data	    bss	    dec	    hex	filename
+    624	      0	     21	    645	    285	build/vis-spi-out.elf
+```
+
+- after erasing placeholder
+
+```date-and-size
+Tue, Jan  7, 2020  4:19:54 PM
+   text	   data	    bss	    dec	    hex	filename
+    604	      0	     21	    625	    271	build/vis-spi-out.elf
+```
+
+## return to task of unit-testing `SpiSlaveTx`
+
+```date-and-size
+Tue, Jan  7, 2020  4:47:21 PM
+   text	   data	    bss	    dec	    hex	filename
+    604	      0	     21	    625	    271	build/vis-spi-out.elf
+```
+
+- [x] write `SpiSlaveTxByte`
+    - sends just one byte
+    - `inline` call in `SpiSlaveTx`
+    - gives me a call to fake to test all bytes are sent by
+      `SpiSlaveTx`
+    - will also help in application as shorthand for sending one
+      byte
+- [x] review protocol
+- [x] faking calls made by functions that are faked
+- writing last test for `SpiSlaveTxByte`, but realizing:
+- [x] write fakes: (see TestSuite)
+    - [-] 'Unit test `_SignalDataReady_fake`'
+    - test by checking `_fake` is called rather than checking
+      the value of `DataReady`
+    - then separately test the real functions by checking the
+      value of `DataReady`
+- [x] 'Unit test `SpiSlaveTx`'
 
 ### Old variables
 
@@ -1951,47 +2207,18 @@ out	0x2e, r24
 
 # ---Pending Tasks---
 
-# [ ] unit test SpiSlaveTx
-- fixed issue about optimized lib code
+# [ ] Add macros for fakes
+    - goal: reduce number of lines, make faking simpler
+    - goal: do not forget to include lib_faked.h
+    - goal: do not forget to wrap include lib_faked.h in ifdef
+      macro
 
-## here is the placeholder for testing the fix
-- this shows correct use of `SPDR` with the `in` instruction
+# [ ] Call lib `Flag` from avr-target
+- wrote lib `SpiSlave` using lib `Flag`
+- try `Flag` in avr-target
+- is code optimized for `GPIOR0`?
 
-```c
-uint8_t garbage = ReadSpiDataRegister();
-```
-
-```avra
-in	r24, 0x2e	; 46
-```
-
-```c
-    if (garbage==0xFC) BiColorLedRed(led_0);
-```
-
-```avra
-cpi	r24, 0xFC	; 252
-breq	.+6      	; 0x1ea <main+0x144>
-```
-
-## erase placeholder
-- before erasing placeholder
-
-```date-and-size
-Tue, Jan  7, 2020  4:15:42 PM
-   text	   data	    bss	    dec	    hex	filename
-    624	      0	     21	    645	    285	build/vis-spi-out.elf
-```
-
-- after erasing placeholder
-
-```date-and-size
-Tue, Jan  7, 2020  4:19:54 PM
-   text	   data	    bss	    dec	    hex	filename
-    604	      0	     21	    625	    271	build/vis-spi-out.elf
-```
-
-## QueuePop in loop() or not?
+# [ ] QueuePop in loop() or not?
 - change arg `*SPDR`
 
 ```c
@@ -2050,32 +2277,8 @@ Tue, Jan  7, 2020  4:21:53 PM
 
 - takeaway: every call to `QueuePop` adds 52 bytes to mem size
 
-## return to task of unit-testing `SpiSlaveTx`
-
-```date-and-size
-Tue, Jan  7, 2020  4:47:21 PM
-   text	   data	    bss	    dec	    hex	filename
-    604	      0	     21	    625	    271	build/vis-spi-out.elf
-```
-
-- [x] write `SpiSlaveTxByte`
-    - sends just one byte
-    - `inline` call in `SpiSlaveTx`
-    - gives me a call to fake to test all bytes are sent by
-      `SpiSlaveTx`
-    - will also help in application as shorthand for sending one
-      byte
-- [x] review protocol
-- [x] faking calls made by functions that are faked
-- writing last test for `SpiSlaveTxByte`, but realizing:
-- [x] write fakes: (see TestSuite)
-    - [-] 'Unit test `_SignalDataReady_fake`'
-    - test by checking `_fake` is called rather than checking
-      the value of `DataReady`
-    - then separately test the real functions by checking the
-      value of `DataReady`
-- [ ] 'Unit test `SpiSlaveTx`'
-- [ ] maybe ISR should drive `DataReady` high?
+# [ ] maybe ISR should drive `DataReady` high?
+    - I have `SpiSlaveTxByte` driving `DataReady` high
     - analyze assembly code to pick the right approach
 
 # [ ] build `avr-target` to determine `Flag` or not to `Flag`

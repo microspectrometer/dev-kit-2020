@@ -25,7 +25,9 @@ extern spi_pin Spi_Miso; // master-in, slave-out
 extern spi_bit Spi_Enable;
 extern spi_bit Spi_InterruptEnable;
 
+#ifdef SPISLAVE_FAKED
 #include "SpiSlave_faked.h" // declare fakes
+#endif
 // ---Private---
 inline void _EnableSpiModule(void)
 {

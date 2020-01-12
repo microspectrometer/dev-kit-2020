@@ -57,17 +57,26 @@ void loop(void)
         BiColorLedRed(led_0);
     }
     // Idle until a command is received
+    /** TODO: QueueIsEmpty vs _TransferIsDone\n 
+      * are these functionally equivalent?\n 
+      * compare avra -- is _TransferIsDone much faster?\n 
+      * Maybe Queue can use lib Flag?
+      * */
     while (QueueIsEmpty(SpiFifo));
+    /* while (!_TransferIsDone()); */
     // Execute the command.
-    // TODO: Read SPDR directly?
-    Cmd* DoSensorCmd = LookupSensorCmd(*Spi_SPDR);
-    // TODO: Or pop here? Consumes 52 bytes, 38 cycles.
-    /* Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo)); */
+    /** TODO: Read SPDR directly or QueuePop the byte?\n 
+      * QueuePop consumes 52 bytes, 38 cycles.\n 
+      * Have to pop for the case where there is older data on
+      * the Queue, right?
+      * */
+    /* Cmd* DoSensorCmd = LookupSensorCmd(*Spi_SPDR); */
+    Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo));
     /* if (DoSensorCmd == NULL) ReplyCommandInvalid(); */
     // placeholder to test SpiSlaveTx (replace with above line when done)
     if (DoSensorCmd == NULL)
     {
-        DisableSpiInterrupt();
+        /* DisableSpiInterrupt(); */
         SpiSlaveTxByte(0xAB);
         uint8_t const input_buffer[] = {0xFA, 0xFB, 0xFC};
         uint16_t nbytes = 3;

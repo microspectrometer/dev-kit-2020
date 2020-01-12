@@ -13,5 +13,6 @@
 #include "Lis-Hardware.h"
 #include "SpiSlave-Hardware.h"
 #include "UartSpi-Hardware.h"
+#include "Flag-Hardware.h"
 
 #endif // _HARDWARE_H

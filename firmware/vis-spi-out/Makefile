@@ -110,7 +110,7 @@ app_o := $(addprefix build/,${app_o})
 # Add hardware libs here{{{
 # Hardware libs depend on AVR headers (register/bit definitions, macros, etc.).
 # List separate from non-hardware libs to generate libname-Harware.h pre-reqs.
-hwlib := BiColorLed SpiSlave UartSpi Lis
+hwlib := BiColorLed SpiSlave UartSpi Lis Flag
 # }}}
 # Add non-hardware libs here{{{
 # Non-hardware libs do not depend on AVR headers.
@@ -173,7 +173,7 @@ ${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h ${FakeAvrHeaders}
 # }}}
 # ;mka - "avr-target": `vis-spi-out.elf`{{{
 # `vis-spi-out.o`{{{
-build/${board-name}.o: src/${board-name}.c ${Hardware} ${lib_headers}
+build/${board-name}.o: src/${board-name}.c src/Hardware.h ${Hardware} ${lib_headers}
 	${compiler} $(CFLAGS) -c $< -o $@
 # }}}
 # `vis-spi-out.elf`{{{
