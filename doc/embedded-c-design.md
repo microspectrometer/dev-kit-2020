@@ -256,11 +256,74 @@ that I'm reverting to the working state pointed to by `HEAD`.
     - it is to test with a faked version of `EnableSpiInterrupt`
     - the fake records itself in `mock`
 
-# [ ] split common Spi stuff from SpiSlave into a Spi lib
+# [x] _TransferIsDone vs QueueIsEmpty
+The test is using these as a while loop condition. Which while
+loop checks the condition faster?
 
-# [ ] move more code from old vis-spi-out to new vis-spi-out
+Both are inline calls, the speed difference is from the type of
+memory accessed. `_TransferIsDone` checks a bit in a register
+with direct-bit access. `QueueIsEmpty` checks values in memory.
 
-# [ ] what can I do to use the GPIO registers in lib Queue
+`QueueIsEmpty` has to be slower. The question is whether the
+memory access is so slow compared to a direct-bit access that it
+impacts performance.
+
+The check using `_TransferIsDone` takes 4 cycles. Surprisingly,
+the check for `QueueIsEmpty` only takes 7 cycles. I expected this
+to be *much* slower since calls to `QueuePop` and `QueuePush`
+take 38 cycles.
+
+## Each iteration on `QueueIsEmpty(SpiFifo)` takes 7 cycles
+`loop()` waits for the Queue to be *not* empty:
+
+```c
+while (QueueIsEmpty(SpiFifo));
+// ---Expected Assembly---
+//  1d6:	ldd	r24, Z+4	; 0x04
+//  1d8:	ldd	r25, Z+5	; 0x05
+//  1da:	or	r24, r25
+//  1dc:	breq	.-8      	; 0x1d6 <main+0x130>
+// Total number of cycles: 7
+// Total number of instructions: 4
+// ---Expected Assembly---
+```
+
+```date-and-size
+Sun, Jan 12, 2020  1:55:54 AM
+   text	   data	    bss	    dec	    hex	filename
+    706	      0	     21	    727	    2d7	build/vis-spi-out.elf
+```
+
+Each check of `QueueIsEmpty` consumes 7 cycles. Not bad.
+
+## Each iteration on `_TransferIsDone()` takes 4 cycles
+I'm not sure yet if this flag carries the same info, but assume I
+set the flag up logically so it does. How long does it take?
+
+```c
+while (!_TransferIsDone());
+    // ---Expected Assembly---
+    //  1d6:	sbis	0x1e, 1	; 30
+    //  1d8:	rjmp	.-4      	; 0x1d6 <main+0x130>
+    // Total number of cycles: 4
+    // Total number of instructions: 2
+```
+
+```date-and-size
+Sun, Jan 12, 2020  1:55:12 AM
+   text	   data	    bss	    dec	    hex	filename
+    702	      0	     21	    723	    2d3	build/vis-spi-out.elf
+```
+
+Each check of `TransferIsDone` consumes 4 cycles. Not that much
+of a difference.
+
+## Only a 4 byte difference between the two
+I'm confident I'm comparing the correct lines of code:
+
+- in both cases, the while loop jumps back to `0x1d6`
+- the total code sized only decreased by four bytes going from
+  `QueueIsEmpty` to `TransferIsDone`
 
 # embedded C on old micros: make all lib functions `inline`
 - making everything `inline` is the only practical option
@@ -663,6 +726,12 @@ multiple definition of `Spi_SPDR'
 ```
 
 # ---Completed Tasks---
+# [x] Assembly for lib `Flag` uses direct-bit access instructions
+
+# [x] Call lib `Flag` from avr-target
+- wrote lib `SpiSlave` using lib `Flag`
+- try `Flag` in avr-target
+- is code optimized for `GPIOR0`? yes
 
 # [x] Add lib `Flag` to vis-spi-out `avr-target`
 Not suprisingly, the `;mka` build fails if I do nothing to add
@@ -744,6 +813,130 @@ Now `;mka` builds without error.
 
 # [x] Add lib `Flag` to vis-spi-out `unit-test` target
 - it just builds, I didn't have to do any extra work
+
+# [x] unit test SpiSlaveTx
+
+## Code size before adding new code is 612 bytes
+
+```date-and-size
+Thu, Jan  2, 2020  6:30:58 PM
+   text	   data	    bss	    dec	    hex	filename
+    612	      2	     21	    635	    27b	build/vis-spi-out.elf
+```
+
+## After adding code that writes to `SPDR` size is 626 bytes
+
+```date-and-size
+Fri, Jan  3, 2020  5:30:44 PM
+   text	   data	    bss	    dec	    hex	filename
+    626	      2	     21	    649	    289	build/vis-spi-out.elf
+```
+
+## SpiSlaveTx lib code (WIP)
+
+```c
+// SpiSlave.h
+//
+for (byte_index = 0; byte_index < nbytes; byte_index++)
+{
+    *Spi_SPDR = input_buffer[byte_index];
+}
+```
+
+## vis-spi-out code (placeholder)
+
+```c
+// vis-spi-out.c
+//
+uint8_t const input_buffer[] = {0x0A, 0x1B, 0x2C};
+uint16_t nbytes = 3;
+SpiSlaveTx(input_buffer, nbytes);
+```
+
+## assembly is split in two parts
+- first the values are stored in working registers
+
+```avra
+  f6:	8a e0       	ldi	r24, 0x0A	; 10
+  f8:	f8 2e       	mov	r15, r24
+  fa:	0b e1       	ldi	r16, 0x1B	; 27
+  fc:	1c e2       	ldi	r17, 0x2C	; 44
+```
+
+- later the values are loaded into `SPDR`
+
+```avra
+ 12c:	f8 82       	st	Y, r15
+ 12e:	08 83       	st	Y, r16
+ 130:	18 83       	st	Y, r17
+```
+
+- Total number of cycles: 10
+- Total number of instructions: 7
+
+## assembly is `inline` (no call), but not optimized
+
+- [x] Why aren't the instructions optimized?
+
+- `SPDR` is `0x2E`
+- so it is possible to do:
+
+```avra
+; say r24 has the value to send
+out	0x2e, r24
+```
+
+- so why isn't `avr-gcc` doing this?
+- is `st` faster?
+- no, something is wrong
+- here is the code and some analysis:
+
+## fail: expect direct write to `SPDR`, but writes to mem
+- `lds` (Load direct from SRAM) is 2 cycles
+- load SRAM addresses `0x0100` and `0x0101` into `Y`
+
+```avra
+  ee:	lds	r28, 0x0100	; 0x800100 <Spi_SPDR>
+  f2:	lds	r29, 0x0101	; 0x800101 <Spi_SPDR+0x1>
+```
+
+- `ldi` (Load immediate) is 1 cycle
+- loads literal into register
+
+```avra
+  f6:	ldi	r15, 0x0A	; 10
+  f8:	ldi	r16, 0x1B	; 27
+  fa:	ldi	r17, 0x2C	; 44
+```
+
+- `st` (Store indirect) is 2 cycles
+- stores the register value at the address stored in `Y`
+
+```avra
+ 12c:	st	Y, r15
+ 12e:	st	Y, r16
+ 130:	st	Y, r17
+```
+
+- I am writing these values to some random spot in SRAM?
+- that means I am failing to write to `SPDR` register `0x2e`
+
+- [x] why isn't `*SPDR = 0x0A` translating to something like:
+    - `ldi	r15,0x0a`
+    - `out	0x2e,r15`
+
+## solution: inline all lib functions
+- I think the issue is that `SpiSlave.o` gets the hardware def,
+  but the function is inlined in `vis-spi-out.o` and that code
+  misses the def
+    - [x] test this theory
+    - the defs for `SpiSlaveInit` work because `SpiSlave.o` gets
+      the hardware def
+    - `SpiSlaveInit` is optimized
+    - `vis-spi-out.o` just calls `SpiSlaveInit`
+- see completed task `inline all lib functions`
+- build `vis-spi-out.o` with hardware defs 
+
 
 # [x] figure out how to test the real version of a faked function
 - SpiSlaveTxByte is faked
@@ -939,6 +1132,8 @@ build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
 - `test/SpiSlave_faked.c` includes `test/SpiSlave_faked.h`
 - this lets `test/SpiSlave_faked.c` define `SpiSlaveTxByte`, and
   `test/SpiSlave_faked.h` renames it with the `_fake` suffix
+
+# [x] unit test BiColorLedRed
 
 # [x] make `;ds` shortcut to paste time-stamped flash size
 - record flash size before altering project in any way
@@ -1136,6 +1331,41 @@ Mon, Jan  6, 2020  4:48:38 PM
 # [x] clean Makefile variables after all the inlining
 
 ## [x] clean `vis-spi-out/Makefile`
+
+## [x] clean `lib/Makefile`
+
+```Makefile-variables
+hwlib:
+- BiColorLed
+- SpiSlave
+- UartSpi
+- Lis
+nohwlib:
+- ReadWriteBits
+- Queue
+HardwareFakes:
+- test/BiColorLed-HardwareFake.h
+- test/SpiSlave-HardwareFake.h
+- test/UartSpi-HardwareFake.h
+- test/Lis-HardwareFake.h
+lib_o:
+- build/BiColorLed.o
+- build/SpiSlave.o
+- build/UartSpi.o
+- build/Lis.o
+- build/ReadWriteBits.o
+- build/Queue.o
+lib_headers:
+- src/BiColorLed.h
+- src/SpiSlave.h
+- src/UartSpi.h
+- src/Lis.h
+- src/ReadWriteBits.h
+- src/Queue.h
+IncludeFakeAvrHeaders:
+- -includetest/FakeAvr/interrupt.h
+- -includetest/FakeAvr/io.h
+```
 
 # [x] unit test SpiSlaveTx
 - fixed issue about optimized lib code
@@ -1341,41 +1571,6 @@ IncludeFakeAvrHeaders:
 ```
 
 
-
-## [x] clean `lib/Makefile`
-
-```Makefile-variables
-hwlib:
-- BiColorLed
-- SpiSlave
-- UartSpi
-- Lis
-nohwlib:
-- ReadWriteBits
-- Queue
-HardwareFakes:
-- test/BiColorLed-HardwareFake.h
-- test/SpiSlave-HardwareFake.h
-- test/UartSpi-HardwareFake.h
-- test/Lis-HardwareFake.h
-lib_o:
-- build/BiColorLed.o
-- build/SpiSlave.o
-- build/UartSpi.o
-- build/Lis.o
-- build/ReadWriteBits.o
-- build/Queue.o
-lib_headers:
-- src/BiColorLed.h
-- src/SpiSlave.h
-- src/UartSpi.h
-- src/Lis.h
-- src/ReadWriteBits.h
-- src/Queue.h
-IncludeFakeAvrHeaders:
-- -includetest/FakeAvr/interrupt.h
-- -includetest/FakeAvr/io.h
-```
 
 ## 2019-12-13
 - right now, avr-gcc build is 202 bytes
@@ -2061,8 +2256,7 @@ Total number of instructions: 35
 - keeping the code simpler is not worth adding 10ms of overhead
   to send a frame
 
-### [x] unit test BiColorLedRed
-- I added it to the code without testing it
+# ---Pending Tasks---
 
 # [ ] Add function `ReplyCommandInvalid`
 - [ ] fix `loop` (use this function instead of placeholder)
@@ -2071,8 +2265,8 @@ Total number of instructions: 35
     - logically part of lib `SpiSlave`
     - but `WriteSpiMaster` uses lib `Queue`
     - what happens if I make this an `inline` function in `SpiSlave.h`
-        - name it `SpiSlaveTx` (because the SpiSlave is transmitting to the
-          SpiMaster)
+        - name it `SpiSlaveTx` (because the SpiSlave is
+          transmitting to the SpiMaster)
     - what do I *think* will happen?
     - register accesses I care about are either:
         - directly bit-accessible
@@ -2081,131 +2275,6 @@ Total number of instructions: 35
     - lib Queue has no such register accesses
     - lib Queue is just a data object
 
-
-# [-] unit test SpiSlaveTx
-
-## Code size before adding new code is 612 bytes
-
-```date-and-size
-Thu, Jan  2, 2020  6:30:58 PM
-   text	   data	    bss	    dec	    hex	filename
-    612	      2	     21	    635	    27b	build/vis-spi-out.elf
-```
-
-## After adding code that writes to `SPDR` size is 626 bytes
-
-```date-and-size
-Fri, Jan  3, 2020  5:30:44 PM
-   text	   data	    bss	    dec	    hex	filename
-    626	      2	     21	    649	    289	build/vis-spi-out.elf
-```
-
-## SpiSlaveTx lib code (WIP)
-
-```c
-// SpiSlave.h
-//
-for (byte_index = 0; byte_index < nbytes; byte_index++)
-{
-    *Spi_SPDR = input_buffer[byte_index];
-}
-```
-
-## vis-spi-out code (placeholder)
-
-```c
-// vis-spi-out.c
-//
-uint8_t const input_buffer[] = {0x0A, 0x1B, 0x2C};
-uint16_t nbytes = 3;
-SpiSlaveTx(input_buffer, nbytes);
-```
-
-## assembly is split in two parts
-- first the values are stored in working registers
-
-```avra
-  f6:	8a e0       	ldi	r24, 0x0A	; 10
-  f8:	f8 2e       	mov	r15, r24
-  fa:	0b e1       	ldi	r16, 0x1B	; 27
-  fc:	1c e2       	ldi	r17, 0x2C	; 44
-```
-
-- later the values are loaded into `SPDR`
-
-```avra
- 12c:	f8 82       	st	Y, r15
- 12e:	08 83       	st	Y, r16
- 130:	18 83       	st	Y, r17
-```
-
-- Total number of cycles: 10
-- Total number of instructions: 7
-
-## assembly is `inline` (no call), but not optimized
-
-- [x] Why aren't the instructions optimized?
-
-- `SPDR` is `0x2E`
-- so it is possible to do:
-
-```avra
-; say r24 has the value to send
-out	0x2e, r24
-```
-
-- so why isn't `avr-gcc` doing this?
-- is `st` faster?
-- no, something is wrong
-- here is the code and some analysis:
-
-## fail: expect direct write to `SPDR`, but writes to mem
-- `lds` (Load direct from SRAM) is 2 cycles
-- load SRAM addresses `0x0100` and `0x0101` into `Y`
-
-```avra
-  ee:	lds	r28, 0x0100	; 0x800100 <Spi_SPDR>
-  f2:	lds	r29, 0x0101	; 0x800101 <Spi_SPDR+0x1>
-```
-
-- `ldi` (Load immediate) is 1 cycle
-- loads literal into register
-
-```avra
-  f6:	ldi	r15, 0x0A	; 10
-  f8:	ldi	r16, 0x1B	; 27
-  fa:	ldi	r17, 0x2C	; 44
-```
-
-- `st` (Store indirect) is 2 cycles
-- stores the register value at the address stored in `Y`
-
-```avra
- 12c:	st	Y, r15
- 12e:	st	Y, r16
- 130:	st	Y, r17
-```
-
-- I am writing these values to some random spot in SRAM?
-- that means I am failing to write to `SPDR` register `0x2e`
-
-- [x] why isn't `*SPDR = 0x0A` translating to something like:
-    - `ldi	r15,0x0a`
-    - `out	0x2e,r15`
-
-## solution: inline all lib functions
-- I think the issue is that `SpiSlave.o` gets the hardware def,
-  but the function is inlined in `vis-spi-out.o` and that code
-  misses the def
-    - [x] test this theory
-    - the defs for `SpiSlaveInit` work because `SpiSlave.o` gets
-      the hardware def
-    - `SpiSlaveInit` is optimized
-    - `vis-spi-out.o` just calls `SpiSlaveInit`
-- see completed task `inline all lib functions`
-- build `vis-spi-out.o` with hardware defs 
-
-# ---Pending Tasks---
 
 # [x] Decided I cannot simplify macros for faking
 - goal: reduce number of lines, make faking simpler
@@ -2304,11 +2373,6 @@ more readable or less readable?
   `Ctrl-\s` or `Ctrl-\g` or `;w]` on `funcname_fake` to search
   for it or jump to its definition)
 
-# [ ] Call lib `Flag` from avr-target
-- wrote lib `SpiSlave` using lib `Flag`
-- try `Flag` in avr-target
-- is code optimized for `GPIOR0`?
-
 # [ ] QueuePop in loop() or not?
 - change arg `*SPDR`
 
@@ -2368,17 +2432,8 @@ Tue, Jan  7, 2020  4:21:53 PM
 
 - takeaway: every call to `QueuePop` adds 52 bytes to mem size
 
-# [ ] maybe ISR should drive `DataReady` high?
-    - I have `SpiSlaveTxByte` driving `DataReady` high
-    - analyze assembly code to pick the right approach
 
-# [ ] build `avr-target` to determine `Flag` or not to `Flag`
-    - [ ] does assembly for lib `Flag` use right instructions?
-    - [ ] is checking the flag in the ISR the way to go, or am I
-      better off disabling the interrupt as I'd originally
-      planned? If I disable the interrupt, do I do it in every
-      call to SpiSlaveTxByte? Might that cause a slow down?
-      Analyze the code for the overhead in this.
+# [ ] Decide between SPI Flags or disabling SPI interrupt
 
 # [ ] Replace `listening_for_SPIM` with Enable/DisableInterrupt
 - [x] delete `listening_for_SPIM`
