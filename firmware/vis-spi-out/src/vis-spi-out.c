@@ -48,27 +48,15 @@ void loop(void)
     /* example_inline_function(); */
     //
     // Catch errors
-    if (QueueIsFull(SpiFifo))
+    if (QueueIsFull(SpiFifo)) // 7 cycles
     {
         // TODO: replace with an error handler
         BiColorLedRed(led_0);
     }
     // Idle until a command is received
-    /** TODO: QueueIsEmpty vs _TransferIsDone\n 
-      * are these functionally equivalent?\n 
-      * compare avra -- is _TransferIsDone much faster?\n 
-      * Maybe Queue can use lib Flag?
-      * */
-    while (QueueIsEmpty(SpiFifo));
-    /* while (!_TransferIsDone()); */
+    while (QueueIsEmpty(SpiFifo)); 5 cycles
     // Execute the command.
-    /** TODO: Read SPDR directly or QueuePop the byte?\n 
-      * QueuePop consumes 52 bytes, 38 cycles.\n 
-      * Have to pop for the case where there is older data on
-      * the Queue, right?
-      * */
-    /* Cmd* DoSensorCmd = LookupSensorCmd(*Spi_SPDR); */
-    Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo));
+    Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo)); // 38 cycles
     /* if (DoSensorCmd == NULL) ReplyCommandInvalid(); */
     // placeholder to test SpiSlaveTx (replace with above line when done)
     if (DoSensorCmd == NULL)
@@ -82,12 +70,9 @@ void loop(void)
 }
 ISR(SPI_STC_vect)
 {
-    // TODO: add GPIOR flag to check if listening?
-    // Skipping QueuePush saves 61 out of 116 cycles.
-    // Or enable/disable SpiInterrupt?
-    if (
+    //! Interrupt disabled during during `SpiSlaveTxByte`.
+    //! Interrupt enabled all other times.
     QueuePush(SpiFifo, *Spi_SPDR);
-    // TODO: SetBit(Flag_SpiFlags, Flag_TransferDone);
 }
 Cmd* LookupSensorCmd(cmd const key)
 {

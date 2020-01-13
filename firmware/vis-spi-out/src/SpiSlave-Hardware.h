@@ -13,6 +13,7 @@ spi_ptr Spi_SPSR = &SPSR;  // SPI status register
 spi_pin Spi_DataReady = PB1; // slave signal DR to master
 spi_pin Spi_Miso = PB4;    // master-in,  slave-out
 // ---Bits---
-spi_bit Spi_Enable = SPE;
+spi_bit Spi_Enable          = SPE;
 spi_bit Spi_InterruptEnable = SPIE;
+spi_bit Spi_InterruptFlag   = SPIF;
 #endif // _SPISLAVE_HARDWARE_H

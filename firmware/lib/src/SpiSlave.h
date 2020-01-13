@@ -24,6 +24,7 @@ extern spi_pin Spi_Miso; // master-in, slave-out
 // ---Bits---
 extern spi_bit Spi_Enable;
 extern spi_bit Spi_InterruptEnable;
+extern spi_bit Spi_InterruptFlag;
 
 #ifdef SPISLAVE_FAKED
 #include "SpiSlave_faked.h" // declare fakes
@@ -79,6 +80,8 @@ inline void _SpiSlave_StopRxQueue(void)
     // ---Expected Assembly---
     //  cbi	0x1e, 0	; 30
 }
+// TODO: Delete _TransferIsDone from project.
+// Replaced by _SpiTransferIsDone.
 inline bool _TransferIsDone(void)
 {
     /** TransferIsDone behavior:\n 
@@ -93,52 +96,23 @@ inline bool _TransferIsDone(void)
     //  sbis	0x1e, 1	; 30
     //  rjmp	.-4      	; 0x206 <main+0x160>
 }
+inline bool _SpiTransferIsDone(void)
+{
+    return BitIsSet(Spi_SPSR, Spi_InterruptFlag);
+}
 
 // ---API (Go to the Doxygen documentation of this file)---
 /** \file SpiSlave.h
  * # API
- * void SpiSlaveInit(void);\n 
- * void SpiSlaveTxByte(uint8_t input_byte);\n 
- * void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes);\n 
+ * void DisableSpiInterrupt(void);\n 
  * uint8_t ReadSpiStatusRegister(void);\n 
  * uint8_t ReadSpiDataRegister(void);\n 
  * void ClearSpiInterruptFlag(void);\n 
- * void DisableSpiInterrupt(void);\n 
  * void EnableSpiInterrupt(void);\n 
+ * void SpiSlaveInit(void);\n 
+ * void SpiSlaveTxByte(uint8_t input_byte);\n 
+ * void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes);\n 
  * */
-#ifdef SPISLAVE_FAKED
-#define _TransferIsDone _TransferIsDone_fake
-#define _SignalDataReady _SignalDataReady_fake
-#endif
-inline void SpiSlaveTxByte(uint8_t input_byte)
-{
-    //! Transmit a byte and ignore byte received.
-    /** SpiSlaveTxByte behavior:\n 
-      * - loads SPI data register with input byte\n 
-      * - tells SPI ISR to ignore rx byte\n 
-      * - drives DataReady LOW to signal data is ready\n 
-      * - waits until SPI transfer is done\n 
-      * - drives DataReady HIGH to sync with Master\n 
-      * */
-    *Spi_SPDR = input_byte;
-    // ---Expected Assembly---
-    // out	0x2e, r23	; 46
-    _SpiSlave_StopRxQueue();
-    _SignalDataReady();
-    // ---Expected Assembly---
-    // cbi	0x05, 1	; 5
-    // TODO: ClearBit(Flag_SpiFlags, Flag_TransferDone);
-    while (!_TransferIsDone()); // Flag set in ISR
-    // ---Expected Assembly---
-    //  206:	sbis	0x1e, 1	; 30
-    //  208:	rjmp	.-4      	; 0x206 <main+0x160>
-    _SignalDataNotReady();
-    // TODO: SetBit(Flag_SpiFlags, Flag_SlaveRx);
-}
-#ifdef SPISLAVE_FAKED
-#undef _TransferIsDone
-#undef _SignalDataReady
-#endif
 inline void DisableSpiInterrupt(void)
 {
     /** Clear SPIE bit in SPCR to disable the SPI ISR:\n 
@@ -177,6 +151,8 @@ inline void ClearSpiInterruptFlag(void)
     ReadSpiStatusRegister(); // in	r24, 0x2d
     ReadSpiDataRegister(); // in	r24, 0x2e
 }
+// ---API functions that call fakes when testing---
+//
 #ifdef SPISLAVE_FAKED
 #define ClearSpiInterruptFlag ClearSpiInterruptFlag_fake
 #endif
@@ -217,8 +193,6 @@ inline void EnableSpiInterrupt(void)
 #undef ClearSpiInterruptFlag
 #endif
 
-
-// ---API functions that call fakes when testing---
 #ifdef SPISLAVE_FAKED
 // Call fakes by renaming faked calls with _fake suffix.
 #define EnableSpiInterrupt EnableSpiInterrupt_fake
@@ -246,6 +220,60 @@ inline void SpiSlaveInit(void)
 // Remove `_fake` suffix from function names.
 #undef EnableSpiInterrupt
 #endif
+
+#ifdef SPISLAVE_FAKED
+#define _SpiTransferIsDone _SpiTransferIsDone_fake
+#define _SignalDataReady _SignalDataReady_fake
+#endif
+inline void SpiSlaveTxByte(uint8_t input_byte)
+{
+    //! TODO: revise unit tests and this docstring
+    //! Transmit a byte and ignore byte received.
+    /** SpiSlaveTxByte behavior:\n 
+      * - loads SPI data register with input byte\n 
+      * - tells SPI ISR to ignore rx byte\n 
+      * - drives DataReady LOW to signal data is ready\n 
+      * - waits until SPI transfer is done\n 
+      * - drives DataReady HIGH to sync with Master\n 
+      * */
+    *Spi_SPDR = input_byte;
+    // ---Expected Assembly---
+    // out	0x2e, r23	; 46
+    /* _SpiSlave_StopRxQueue(); */
+    // ISR-SPEEDUP-TODO:
+    DisableSpiInterrupt();
+    // ---Expected Assembly---
+    // in	r24, 0x2c	; 44
+    // andi	r24, 0x7F	; 127
+    // out	0x2c, r24	; 44
+    _SignalDataReady();
+    // ---Expected Assembly---
+    // cbi	0x05, 1	; 5
+    // Wait for a byte from the SPI Master.
+    while ( !_SpiTransferIsDone() ); // Check SPI interrupt flag
+    // ---Expected Assembly---
+    // Total number of cycles: 5
+    // in	r0, 0x2d
+    // sbrs	r0, 7
+    // rjmp	.-6
+    _SignalDataNotReady();
+    // ISR-SPEEDUP-TODO:
+    EnableSpiInterrupt(); // This also resets SPI interrupt flag
+    // ---Expected Assembly---
+    // Total number of cycles: 7
+    // cli
+    // in	r24, 0x2d
+    // in	r24, 0x2e
+    // in	r24, 0x2c
+    // ori	r24, 0x80
+    // out	0x2c, r24
+    // sei
+}
+#ifdef SPISLAVE_FAKED
+#undef _SpiTransferIsDone
+#undef _SignalDataReady
+#endif
+
 #ifdef SPISLAVE_FAKED
 #define SpiSlaveTxByte SpiSlaveTxByte_fake
 #endif

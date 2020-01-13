@@ -726,6 +726,39 @@ multiple definition of `Spi_SPDR'
 ```
 
 # ---Completed Tasks---
+# [x] Decide between SPI Flags or disabling SPI interrupt
+
+- [x] generate code for both ways
+    - [x] generate base code
+    - [x] analyze base code
+    - [x] generate code for speedup with flags
+        - [x] made FLAG-SPEEDUP-TODO in `vis-spi-out.c` and
+          `SpiSlave.h`
+        - [x] write the TODO code
+    - [x] generate code for speedup with disabling interrupt
+- [x] analyze code for both ways
+
+# [x] Replace `listening_for_SPIM` with Enable/DisableInterrupt
+- [x] delete `listening_for_SPIM`
+- instead of checking the flag in the ISR
+- [x] disable the interrupt ~when writing a frame~ on every
+  `SpiSlaveTxByte`
+- [x] clear the interrupt flag manually
+    - i.e., instead of running the ISR to clear the flag
+    - manual-clear is *much* faster than executing the ISR to
+      clear the flag!
+- ~`EnableSpiInterrupt` is private~
+- [x] make `EnableSpiInterrupt` public
+- [x] create `DisableSpiInterrupt`
+    - do not write a unit test
+    - this is low-level assembly
+- [x] make all of these functions inline:
+    - `EnableSpiInterrupt`
+    - `DisableSpiInterrupt`
+    - `ClearSpiInterruptFlag`
+        - `ReadSpiStatusRegister`
+        - `ReadSpiDataRegister`
+
 # [x] Assembly for lib `Flag` uses direct-bit access instructions
 
 # [x] Call lib `Flag` from avr-target
@@ -1941,20 +1974,17 @@ ISR(SPI_STC_vect)
 - try using flags for speed ups to branch around calls instead of
   eliminating calls in the ISR
 
-### checking `byte_received` flag is slower than checking `QueueIsEmpty`
+### Checking `QueueIsEmpty` is pretty fast
 - main loop with call to QueueIsEmpty:
 ```c
     // Idle until a command is received
     while (QueueIsEmpty(SpiFifo));
-```
-- Total number of cycles: 9
-- Total number of instructions: 5
-```asm
-ldd	r24, Z+4	; 0x04
-ldd	r25, Z+5	; 0x05
-or	r24, r25
-breq	.-8      	; 0x100 <main+0x5a>
-rjmp	.-34     	; 0xe8 <main+0x42>
+    // ---Expected Assembly---
+    //  1c4:	ldd	r24, Z+4	; 0x04
+    //  1c6:	and	r24, r24
+    //  1c8:	breq	.-6      	; 0x1c4 <main+0x11e>
+    // Total number of cycles: 5
+    // Total number of instructions: 3
 ```
 
 - try checking a `byte_received` flag instead of checking if the
@@ -1965,20 +1995,16 @@ rjmp	.-34     	; 0xe8 <main+0x42>
     // Clear flag.
     byte_received = false;
 ```
+
 - Total number of cycles: 7
 - Total number of instructions: 4
+
 ```asm
  lds	r24, 0x0102	; 0x800102 <__data_end>
  and	r24, r24
  breq	.-8      	; 0xf8 <main+0x52>
  sts	0x0102, r1	; 0x800102 <__data_end>
 ```
-
-### takeaway: do not use a `byte_received` flag
-- the flag cuts two cycles off the while loop, but it adds some
-  cycles to the ISR to set this flag!
-- that is the **opposite** of what I'm trying to do
-- I want faster ISR code at the expense of slower non-ISR code
 
 ### idea 3: QueuePush is only call in ISR and depends on flag
 - only call is QueuePush
@@ -2373,7 +2399,12 @@ more readable or less readable?
   `Ctrl-\s` or `Ctrl-\g` or `;w]` on `funcname_fake` to search
   for it or jump to its definition)
 
-# [ ] QueuePop in loop() or not?
+# [x] Use QueuePop in loop()
+This is much slower than simply reading `*SPDR`, but it is
+necessary to deal with the case that the `ISR` pushed data on a
+Queue that is not empty. If the Queue was always empty, I
+wouldn't need it.
+
 - change arg `*SPDR`
 
 ```c
@@ -2432,31 +2463,6 @@ Tue, Jan  7, 2020  4:21:53 PM
 
 - takeaway: every call to `QueuePop` adds 52 bytes to mem size
 
-
-# [ ] Decide between SPI Flags or disabling SPI interrupt
-
-- [ ] generate code for both ways
-- [ ] analyze code for both ways
-
-# [ ] Replace `listening_for_SPIM` with Enable/DisableInterrupt
-- [x] delete `listening_for_SPIM`
-- instead of checking the flag in the ISR
-- [ ] disable the interrupt when writing a frame
-- [ ] clear the interrupt flag manually
-    - i.e., instead of running the ISR to clear the flag
-    - manual-clear is *much* faster than executing the ISR to
-      clear the flag!
-- ~`EnableSpiInterrupt` is private~
-- [x] make `EnableSpiInterrupt` public
-- [x] create `DisableSpiInterrupt`
-    - do not write a unit test
-    - this is low-level assembly
-- [x] make all of these functions inline:
-    - `EnableSpiInterrupt`
-    - `DisableSpiInterrupt`
-    - `ClearSpiInterruptFlag`
-        - `ReadSpiStatusRegister`
-        - `ReadSpiDataRegister`
 
 ### [x] LookupSensorCmd
 - jump table
