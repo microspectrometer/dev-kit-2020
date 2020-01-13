@@ -56,11 +56,15 @@ inline void _SignalDataReady(void)
       *   SPI transfer.
       * */
     ClearBit(Spi_port, Spi_DataReady);
+    // ---Expected Assembly---
+    //  cbi	0x05, 1	; 5
 }
 inline void _SignalDataNotReady(void)
 {
     //! Drive **Data Ready** HIGH
     SetBit(Spi_port, Spi_DataReady);
+    // ---Expected Assembly---
+    //  sbi	0x05, 1	; 5
 }
 inline void _SpiSlave_StopRxQueue(void)
 {
@@ -72,6 +76,8 @@ inline void _SpiSlave_StopRxQueue(void)
      *  the Queue
      * */
     ClearBit(Flag_SpiFlags, Flag_SlaveRx);
+    // ---Expected Assembly---
+    //  cbi	0x1e, 0	; 30
 }
 inline bool _TransferIsDone(void)
 {
@@ -80,6 +86,12 @@ inline bool _TransferIsDone(void)
       * - returns false until ISR sets Flag TransferIsDone\n 
       * */
     return BitIsSet(Flag_SpiFlags, Flag_TransferDone);
+    // ---Expected Assembly---
+    // Used as the condition in a blocking while loop:
+    //      while (!_TransferIsDone());
+    // Expected assembly for the while loop is:
+    //  sbis	0x1e, 1	; 30
+    //  rjmp	.-4      	; 0x206 <main+0x160>
 }
 
 // ---API (Go to the Doxygen documentation of this file)---
@@ -115,8 +127,13 @@ inline void SpiSlaveTxByte(uint8_t input_byte)
     _SignalDataReady();
     // ---Expected Assembly---
     // cbi	0x05, 1	; 5
-    while (!_TransferIsDone());
+    // TODO: ClearBit(Flag_SpiFlags, Flag_TransferDone);
+    while (!_TransferIsDone()); // Flag set in ISR
+    // ---Expected Assembly---
+    //  206:	sbis	0x1e, 1	; 30
+    //  208:	rjmp	.-4      	; 0x206 <main+0x160>
     _SignalDataNotReady();
+    // TODO: SetBit(Flag_SpiFlags, Flag_SlaveRx);
 }
 #ifdef SPISLAVE_FAKED
 #undef _TransferIsDone

@@ -85,7 +85,9 @@ ISR(SPI_STC_vect)
     // TODO: add GPIOR flag to check if listening?
     // Skipping QueuePush saves 61 out of 116 cycles.
     // Or enable/disable SpiInterrupt?
+    if (
     QueuePush(SpiFifo, *Spi_SPDR);
+    // TODO: SetBit(Flag_SpiFlags, Flag_TransferDone);
 }
 Cmd* LookupSensorCmd(cmd const key)
 {
