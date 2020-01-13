@@ -137,8 +137,9 @@ void SpiSlave_tests(bool run_test)
         Run_SpiSlaveInit_tests(Nope);
         Run_EnableSpiInterrupt_tests(Nope);
         Run__SignalDataReady_tests(Nope);
+        // TODO: delete _TransferIsDone
         Run__TransferIsDone_tests(Nope);
-        Run_SpiSlaveTxByte_tests(Nope);
+        Run_SpiSlaveTxByte_tests(Yep);
         Run_SpiSlaveTx_tests(Yep);
     }
 }
@@ -262,11 +263,11 @@ int main()
     UNITY_BEGIN();
     BiColorLed_tests(Nope);
     ReadWriteBits_tests(Nope);
-    Queue_tests(Yep);
+    Queue_tests(Nope);
     UartSpi_tests(Nope);
     Lis_tests(Nope);
     Flag_tests(Nope);
-    SpiSlave_tests(Nope);
+    SpiSlave_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

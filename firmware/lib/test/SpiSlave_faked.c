@@ -74,23 +74,19 @@ void EnableSpiInterrupt_fake(void)
     RecordActualCall(mock, Record_EnableSpiInterrupt());
 }
 
-/* =====[ Mock _TransferIsDone() ]===== */
-static RecordedCall * Record__TransferIsDone(void)
+/* =====[ Mock _SpiTransferIsDone() ]===== */
+static RecordedCall * Record__SpiTransferIsDone(void)
 { // Define **what is recorded** when fake is called.
-    char const *call_name = "_TransferIsDone";
+    char const *call_name = "_SpiTransferIsDone";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
     return record_of_this_call;
 }
-bool _TransferIsDone_fake(void)
+bool _SpiTransferIsDone_fake(void)
 { //! Fake records calls made by **function under test**.
   /** Record:\n 
    *  - call name
    *  */
-    RecordActualCall(mock, Record__TransferIsDone());
-    /** Fake sets `Flag_TransferDone` to fake the SPI ISR setting
-     *  this flag.
-     * */
-    SetBit(Flag_SpiFlags, Flag_TransferDone);
+    RecordActualCall(mock, Record__SpiTransferIsDone());
     /** Fake always returns true:\n 
      *  - Prevents test suite from hanging forever.
      * */
