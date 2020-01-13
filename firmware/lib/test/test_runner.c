@@ -262,11 +262,11 @@ int main()
     UNITY_BEGIN();
     BiColorLed_tests(Nope);
     ReadWriteBits_tests(Nope);
-    Queue_tests(Nope);
+    Queue_tests(Yep);
     UartSpi_tests(Nope);
     Lis_tests(Nope);
     Flag_tests(Nope);
-    SpiSlave_tests(Yep);
+    SpiSlave_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

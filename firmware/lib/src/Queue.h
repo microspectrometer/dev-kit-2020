@@ -36,11 +36,11 @@ struct Queue_s {
       * */
     volatile uint8_t tail;
     /** *length* is the number of unread bytes in the queue */
-    volatile uint16_t length;
+    volatile uint8_t length;
     /** *max_length* is the maximum number of bytes the queue can hold\n 
      * - max_length is set by the user
      * */
-    volatile uint16_t max_length;
+    volatile uint8_t max_length;
 };
 extern volatile Queue_s Queue;
 // ---API---
