@@ -2435,6 +2435,9 @@ Tue, Jan  7, 2020  4:21:53 PM
 
 # [ ] Decide between SPI Flags or disabling SPI interrupt
 
+- [ ] generate code for both ways
+- [ ] analyze code for both ways
+
 # [ ] Replace `listening_for_SPIM` with Enable/DisableInterrupt
 - [x] delete `listening_for_SPIM`
 - instead of checking the flag in the ISR

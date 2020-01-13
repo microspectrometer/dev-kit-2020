@@ -20,6 +20,7 @@ volatile uint8_t spi_rx_buffer[max_length_of_queue];
 
 static void setup(void);
 static void loop(void);
+static void IndicatorLEDsOn(void);
 static Cmd* LookupSensorCmd(cmd const);
 int main()
 {
@@ -28,13 +29,9 @@ int main()
 }
 void setup(void)
 {
-    // Initialize PCB indicator LEDs
-    BiColorLedOn(led_0); // sbi	0x07, 0
-    BiColorLedOn(led_1); // sbi	0x07, 1
-    BiColorLedGreen(led_0); // cbi	0x08, 0
-    BiColorLedGreen(led_1); // cbi	0x08, 1
+    IndicatorLEDsOn();
     // Configure as SPI slave, interrupts run `ISR(SPI_STC_vect)`
-    SpiSlaveInit(); // call	0xaa	; 0xaa <SpiSlaveInit>
+    SpiSlaveInit();
     // Queue incoming SPI bytes in a FIFO buffer.
     SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
     // Talk to ADC with SPI interface using UART SPIM
@@ -77,7 +74,6 @@ void loop(void)
     if (DoSensorCmd == NULL)
     {
         /* DisableSpiInterrupt(); */
-        SpiSlaveTxByte(0xAB);
         uint8_t const input_buffer[] = {0xFA, 0xFB, 0xFC};
         uint16_t nbytes = 3;
         SpiSlaveTx(input_buffer, nbytes);
@@ -107,5 +103,13 @@ Cmd* LookupSensorCmd(cmd const key)
     if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
     // Out of bounds keys return a NULL pointer.
     else return NULL; // error
+}
+void IndicatorLEDsOn(void)
+{
+    //! Initialize PCB indicator LEDs
+    BiColorLedOn(led_0); // sbi	0x07, 0
+    BiColorLedOn(led_1); // sbi	0x07, 1
+    BiColorLedGreen(led_0); // cbi	0x08, 0
+    BiColorLedGreen(led_1); // cbi	0x08, 1
 }
 
