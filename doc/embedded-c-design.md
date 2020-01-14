@@ -2283,6 +2283,15 @@ Total number of instructions: 35
   to send a frame
 
 # ---Pending Tasks---
+# [x] Fix unit tests of SpiSlaveTxByte to reflect use of interrupt disable/enable
+
+# [x] Erase old _TransferIsDone tests and any occurence of this function
+
+# [x] Go erase the ISR-SPEEDUP-TODO: comments
+
+# [x] Set up tests for the faked functions in SpiSlave
+
+# [x] Write the tests for the faked functions in SpiSlave
 
 # [ ] Add function `ReplyCommandInvalid`
 - [ ] fix `loop` (use this function instead of placeholder)

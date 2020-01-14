@@ -7,9 +7,6 @@ void _SignalDataReady(void);
 void _SignalDataNotReady(void);
 void _EnableSpiModule(void);
 void _SpiSlave_StopRxQueue(void);
-// TODO: Delete _TransferIsDone from project.
-// Replaced by _SpiTransferIsDone.
-bool _TransferIsDone(void);
 bool _SpiTransferIsDone(void);
 
 // ---API---

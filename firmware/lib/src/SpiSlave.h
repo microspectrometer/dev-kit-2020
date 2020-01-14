@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "ReadWriteBits.h"
-#include "Flag.h"
 //---Hardware types: register addresses, pin numbers, bit numbers---
 typedef uint8_t volatile * const spi_ptr; // i/o reg address
 typedef uint8_t const spi_pin; // bit index of i/o reg for i/o pin
@@ -62,42 +61,17 @@ inline void _SignalDataReady(void)
 }
 inline void _SignalDataNotReady(void)
 {
-    //! Drive **Data Ready** HIGH
+    //! Drive **Data Ready** HIGH.
     SetBit(Spi_port, Spi_DataReady);
     // ---Expected Assembly---
     //  sbi	0x05, 1	; 5
 }
-inline void _SpiSlave_StopRxQueue(void)
-{
-    //! Clear `Flag_SlaveRx`
-    /** SPI ISR checks `Flag_SlaveRx` to decide whether to Queue
-     *  the byte received from the SPI master:\n 
-     *  - flag is **set**: store SPI data register in the Queue\n
-     *  - flag is **clear**: do not store SPI data register in
-     *  the Queue
-     * */
-    ClearBit(Flag_SpiFlags, Flag_SlaveRx);
-    // ---Expected Assembly---
-    //  cbi	0x1e, 0	; 30
-}
-// TODO: Delete _TransferIsDone from project.
-// Replaced by _SpiTransferIsDone.
-inline bool _TransferIsDone(void)
-{
-    /** TransferIsDone behavior:\n 
-      * - returns true when ISR sets Flag TransferIsDone\n 
-      * - returns false until ISR sets Flag TransferIsDone\n 
-      * */
-    return BitIsSet(Flag_SpiFlags, Flag_TransferDone);
-    // ---Expected Assembly---
-    // Used as the condition in a blocking while loop:
-    //      while (!_TransferIsDone());
-    // Expected assembly for the while loop is:
-    //  sbis	0x1e, 1	; 30
-    //  rjmp	.-4      	; 0x206 <main+0x160>
-}
 inline bool _SpiTransferIsDone(void)
 {
+    /** _SpiTransferIsDone behavior:\n 
+      * - returns true if the SPI Interrupt Flag is set\n 
+      * - returns false if the SPI Interrupt Flag is clear\n 
+      * */
     return BitIsSet(Spi_SPSR, Spi_InterruptFlag);
 }
 
@@ -115,13 +89,18 @@ inline bool _SpiTransferIsDone(void)
  * */
 inline void DisableSpiInterrupt(void)
 {
-    /** Clear SPIE bit in SPCR to disable the SPI ISR:\n 
-     * - bit SPIF in register SPSR is still set when a serial
-     *   transfer completes\n 
-     * - clear SPIF manually by calling ClearSpiInterruptFlag\n 
-     *   - SPIF is cleared by first reading the SPI status
-     *   register, then accessing the SPI data register\n 
-     * */
+    //! Clear `SPIE` bit in `SPCR` to disable the SPI ISR.
+    /** DisableSpiInterrupt behavior:\n 
+      * - clears the SPI Interrupt Enable bit\n 
+      * */
+    /** Note:\n 
+      * - Even with the SPI ISR disabled, interrupt flag bit
+      * `SPIF` in register `SPSR` is still set when a serial
+      * transfer completes.\n 
+      * - Check the flag by calling `_SpiTransferIsDone()`\n 
+      * - Clear `SPIF` manually by calling
+      *   `ClearSpiInterruptFlag()`\n 
+      * */
     // Disable the "transfer complete" interrupt
     ClearBit(Spi_SPCR, Spi_InterruptEnable);
     // ---Expected Assembly---
@@ -145,9 +124,12 @@ inline uint8_t ReadSpiDataRegister(void)
 }
 inline void ClearSpiInterruptFlag(void)
 {
-    /** Manually clear SPI interrupt flag by first reading the
-     * SPI status register, then reading the SPI data register.
-     * */
+    //! Manually clear SPI interrupt flag.
+    /** ClearSpiInterruptFlag behavior:\n 
+      * - first reads SPI status register\n 
+      * - then reads SPI data register\n 
+      * */
+
     ReadSpiStatusRegister(); // in	r24, 0x2d
     ReadSpiDataRegister(); // in	r24, 0x2e
 }
@@ -224,23 +206,23 @@ inline void SpiSlaveInit(void)
 #ifdef SPISLAVE_FAKED
 #define _SpiTransferIsDone _SpiTransferIsDone_fake
 #define _SignalDataReady _SignalDataReady_fake
+#define DisableSpiInterrupt DisableSpiInterrupt_fake
 #endif
 inline void SpiSlaveTxByte(uint8_t input_byte)
 {
-    //! TODO: revise unit tests and this docstring
     //! Transmit a byte and ignore byte received.
     /** SpiSlaveTxByte behavior:\n 
       * - loads SPI data register with input byte\n 
-      * - tells SPI ISR to ignore rx byte\n 
+      * - disables SPI ISR before signaling data ready\n 
       * - drives DataReady LOW to signal data is ready\n 
       * - waits until SPI transfer is done\n 
-      * - drives DataReady HIGH to sync with Master\n 
+      * - drives DataReady HIGH immediately after SPI transfer
+      *   finishes\n 
+      * - enables SPI ISR after transfer\n 
       * */
     *Spi_SPDR = input_byte;
     // ---Expected Assembly---
     // out	0x2e, r23	; 46
-    /* _SpiSlave_StopRxQueue(); */
-    // ISR-SPEEDUP-TODO:
     DisableSpiInterrupt();
     // ---Expected Assembly---
     // in	r24, 0x2c	; 44
@@ -257,8 +239,8 @@ inline void SpiSlaveTxByte(uint8_t input_byte)
     // sbrs	r0, 7
     // rjmp	.-6
     _SignalDataNotReady();
-    // ISR-SPEEDUP-TODO:
-    EnableSpiInterrupt(); // This also resets SPI interrupt flag
+    // Re-enable interrupt and reset (clear) SPI interrupt flag
+    EnableSpiInterrupt();
     // ---Expected Assembly---
     // Total number of cycles: 7
     // cli
@@ -272,6 +254,7 @@ inline void SpiSlaveTxByte(uint8_t input_byte)
 #ifdef SPISLAVE_FAKED
 #undef _SpiTransferIsDone
 #undef _SignalDataReady
+#undef DisableSpiInterrupt
 #endif
 
 #ifdef SPISLAVE_FAKED

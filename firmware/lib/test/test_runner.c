@@ -78,13 +78,40 @@ void Run__SignalDataReady_tests(bool run_test)
         RUN_TEST(SignalDataReady_drives_DataReady_LOW);
     }
 }
-void Run__TransferIsDone_tests(bool run_test)
+void Run_ClearSpiInterruptFlag_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone);
-        RUN_TEST(TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone);
+        RUN_TEST(ClearSpiInterruptFlag_first_reads_SPI_status_register);
+        RUN_TEST(ClearSpiInterruptFlag_then_reads_SPI_data_register);
+    }
+}
+void Run__SpiTransferIsDone_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SpiTransferIsDone_returns_true_if_the_SPI_Interrupt_Flag_is_set);
+        RUN_TEST(SpiTransferIsDone_returns_false_if_the_SPI_Interrupt_Flag_is_clear);
+    }
+}
+void Run_DisableSpiInterrupt_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(DisableSpiInterrupt_clears_the_SPI_Interrupt_Enable_bit);
+    }
+}
+void Run_EnableSpiInterrupt_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(EnableSpiInterrupt_clears_SPI_interrupt_flag);
+        RUN_TEST(EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt);
+        RUN_TEST(EnableSpiInterrupt_consumes_6_cycles);
     }
 }
 void Run_SpiSlaveInit_tests(bool run_test)
@@ -99,26 +126,17 @@ void Run_SpiSlaveInit_tests(bool run_test)
         RUN_TEST(SpiSlaveInit_enables_SPI_interrupt);
     }
 }
-void Run_EnableSpiInterrupt_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
-        RUN_TEST(EnableSpiInterrupt_clears_SPI_interrupt_flag);
-        RUN_TEST(EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt);
-        RUN_TEST(EnableSpiInterrupt_consumes_6_cycles);
-    }
-}
 void Run_SpiSlaveTxByte_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
         RUN_TEST(SpiSlaveTxByte_loads_SPI_data_register_with_input_byte);
-        RUN_TEST(SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte);
+        RUN_TEST(SpiSlaveTxByte_disables_SPI_ISR_before_signaling_data_ready);
         RUN_TEST(SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready);
         RUN_TEST(SpiSlaveTxByte_waits_until_SPI_transfer_is_done);
-        RUN_TEST(SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master);
+        RUN_TEST(SpiSlaveTxByte_drives_DataReady_HIGH_immediately_after_SPI_transfer_finishes);
+        RUN_TEST(SpiSlaveTxByte_enables_SPI_ISR_after_transfer);
     }
 }
 void Run_SpiSlaveTx_tests(bool run_test)
@@ -133,12 +151,13 @@ void SpiSlave_tests(bool run_test)
 {
     if (run_test)
     {
-        Check_SpiSlave_plumbing_for_fakes(Nope);
-        Run_SpiSlaveInit_tests(Nope);
-        Run_EnableSpiInterrupt_tests(Nope);
-        Run__SignalDataReady_tests(Nope);
-        // TODO: delete _TransferIsDone
-        Run__TransferIsDone_tests(Nope);
+        Check_SpiSlave_plumbing_for_fakes(Yep);
+        Run_ClearSpiInterruptFlag_tests(Yep);
+        Run__SpiTransferIsDone_tests(Yep);
+        Run_DisableSpiInterrupt_tests(Yep);
+        Run_EnableSpiInterrupt_tests(Yep);
+        Run_SpiSlaveInit_tests(Yep);
+        Run__SignalDataReady_tests(Yep);
         Run_SpiSlaveTxByte_tests(Yep);
         Run_SpiSlaveTx_tests(Yep);
     }
@@ -267,7 +286,7 @@ int main()
     UartSpi_tests(Nope);
     Lis_tests(Nope);
     Flag_tests(Nope);
-    SpiSlave_tests(Yep);
+    SpiSlave_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

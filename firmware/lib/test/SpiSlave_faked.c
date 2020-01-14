@@ -37,7 +37,7 @@
 #include "SpiSlave_faked.h"
 #include "Mock.h" // record call history in "mock"
 #include "ReadWriteBits.h"
-#include "Flag.h"
+#include "SpiSlave.h"
 
 /* =====[ Mock SpiSlaveTxByte() ]===== */
 static RecordedCall * Record_SpiSlaveTxByte(uint8_t arg1)
@@ -87,6 +87,9 @@ bool _SpiTransferIsDone_fake(void)
    *  - call name
    *  */
     RecordActualCall(mock, Record__SpiTransferIsDone());
+    /** Fake sets SPI Interrupt Flag bit in SPI Status Register.
+     * */
+    SetBit(Spi_SPSR, Spi_InterruptFlag);
     /** Fake always returns true:\n 
      *  - Prevents test suite from hanging forever.
      * */
@@ -106,6 +109,21 @@ void _SignalDataReady_fake(void)
    *  - call name
    *  */
     RecordActualCall(mock, Record__SignalDataReady());
+}
+
+/* =====[ Mock DisableSpiInterrupt() ]===== */
+static RecordedCall * Record_DisableSpiInterrupt(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "DisableSpiInterrupt";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void DisableSpiInterrupt_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  */
+    RecordActualCall(mock, Record_DisableSpiInterrupt());
 }
 
 /* =====[ Mock ClearSpiInterruptFlag() ]===== */

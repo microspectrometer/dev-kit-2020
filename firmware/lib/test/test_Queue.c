@@ -1,23 +1,33 @@
+/** \file
+  * *Queue tests are coupled*\n 
+  * Testing one **Queue** method requires calling other **Queue**
+  * methods.
+  * Lib **Queue** design intent is that data in a `Queue_s` is
+  * only accessible through the **Queue** methods.
+  * The `Queue_s` is intended to be an abstract data type, but it
+  * is exposed in `Queue.h` to make `inline` possible in the
+  * application's translation unit.
+  *
+  * *Empty tests are for generating function doc strings*\n 
+  * - Empty tests contain one line: `TEST_PASS();`\n 
+  * - Tests start as empty.\n 
+  * - If the test is useful, write it using the necessary
+  *   **Queue** methods when they are available.
+  * */
 #include "unity.h"
 #include "test_Queue.h"
 #include "Queue.h"
-// ---Queue tests are coupled---
-// Testing one Queue method requires calling other Queue methods.
-// Data in a queue_s is only accessible through the Queue methods
-// because Queue is an abstract data type.
-// ---Queue tests are empty---
-// Empty tests are for generating function doc strings.
-// Tests start as empty. If the test is useful, write it using the
-// necessary Queue methods when they are availalbe.
 
-// ---Queue memory---
-// Allocate static memory for the queue object
+/** ---Queue memory---\n 
+  * This test unit allocates static memory for the queue object.
+  * */
 volatile Queue_s * SpiFifo;
-// Define maximum size (bytes) of the queue's buffer
+/** *Define maximum size (bytes) of the queue's buffer*\n 
+  * Memory for the buffer (`spi_rx_buffer`) is allocated on the
+  * stack (`spi_rx_buffer` is a local variable in each test).
+  * This eliminates the need for buffer setup/teardown code.
+  * */
 #define max_length_of_queue 5 // bytes
-// Memory for the buffer (spi_rx_buffer) is allocated on the stack
-// (it is local to each test). This eliminates the need for
-// buffer setup/teardown code.
 
 void QueueInit_returns_a_pointer_to_a_Queue_struct(void)
 {

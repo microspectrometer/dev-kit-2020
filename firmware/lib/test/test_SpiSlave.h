@@ -7,9 +7,16 @@ void SpiSlave_faked_calls_are_still_available_for_testing(void);
 /* =====[ _SignalDataReady ]===== */
 void SignalDataReady_drives_DataReady_LOW(void);
 
-/* =====[ _TransferIsDone ]===== */
-void TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone(void);
-void TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone(void);
+/* =====[ ClearSpiInterruptFlag ]===== */
+void ClearSpiInterruptFlag_first_reads_SPI_status_register(void);
+void ClearSpiInterruptFlag_then_reads_SPI_data_register(void);
+
+/* =====[ _SpiTransferIsDone ]===== */
+void SpiTransferIsDone_returns_true_if_the_SPI_Interrupt_Flag_is_set(void);
+void SpiTransferIsDone_returns_false_if_the_SPI_Interrupt_Flag_is_clear(void);
+
+/* =====[ DisableSpiInterrupt ]===== */
+void DisableSpiInterrupt_clears_the_SPI_Interrupt_Enable_bit(void);
 
 /* =====[ SpiSlaveInit ]===== */
 void SpiSlaveInit_makes_DataReady_an_output_pin(void);
@@ -23,10 +30,11 @@ void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void);
 
 /* =====[ SpiSlaveTxByte ]===== */
 void SpiSlaveTxByte_loads_SPI_data_register_with_input_byte(void);
-void SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte(void);
+void SpiSlaveTxByte_disables_SPI_ISR_before_signaling_data_ready(void);
 void SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready(void);
 void SpiSlaveTxByte_waits_until_SPI_transfer_is_done(void);
-void SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master(void);
+void SpiSlaveTxByte_drives_DataReady_HIGH_immediately_after_SPI_transfer_finishes(void);
+void SpiSlaveTxByte_enables_SPI_ISR_after_transfer(void);
 void EnableSpiInterrupt_clears_SPI_interrupt_flag(void);
 void EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt(void);
 void EnableSpiInterrupt_consumes_6_cycles(void);

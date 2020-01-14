@@ -1,3 +1,7 @@
+/** \file
+  * *Empty tests are for generating function doc strings*\n 
+  * Empty tests contain one line: `TEST_PASS();`
+  * */
 #include "unity.h"
 #include "Mock.h" // record call history in "mock"
 #include "test_SpiSlave.h"
@@ -11,17 +15,19 @@ void SpiSlave_faked_calls_are_still_available_for_testing(void)
     /* =====[ Operate and Test]===== */
     EnableSpiInterrupt();
     printf(
-        "- Able to test real version of `EnableSpiInterrupt`.\n"
+        "1. Tests are able to call "
+        "real version of `EnableSpiInterrupt` "
+        "(compiler successfully outputs `test_SpiSlave.o`).\n"
         );
     /* =====[ Operate and Test ]===== */
     SpiSlaveInit();
     printf(
-        "- And calling `SpiSlaveInit` calls "
-        "`EnableSpiInterrupt_fake`:\n"
+        "2. When tests call `SpiSlaveInit`, it calls "
+        "`EnableSpiInterrupt_fake` (the fake records the call):\n"
         );
-    uint16_t call_n = 1;
+    uint16_t call_n = 2;
     TEST_ASSERT_TRUE_MESSAGE(
-        AssertCall(mock, call_n, "ClearSpiInterruptFlag"),
+        AssertCall(mock, call_n, "EnableSpiInterrupt"),
         "Expect SpiSlaveInit calls fake which records call name."
         );
 }
@@ -42,21 +48,80 @@ void SignalDataReady_drives_DataReady_LOW(void)
     TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_port);
 }
 
-/* =====[ _TransferIsDone ]===== */
-void TransferIsDone_returns_true_when_ISR_sets_Flag_TransferIsDone(void)
+/* =====[ ClearSpiInterruptFlag ]===== */
+void ClearSpiInterruptFlag_first_reads_SPI_status_register(void)
 {
-    /* =====[ Setup ]===== */
-    SetBit(Flag_SpiFlags, Flag_TransferDone);
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_TRUE(_TransferIsDone());
-    /* TEST_FAIL_MESSAGE("Implement test."); */
+    TEST_PASS();
 }
-void TransferIsDone_returns_false_until_ISR_sets_Flag_TransferIsDone(void)
+void ClearSpiInterruptFlag_then_reads_SPI_data_register(void)
+{
+    TEST_PASS();
+}
+
+/* =====[ _SpiTransferIsDone ]===== */
+void SpiTransferIsDone_returns_true_if_the_SPI_Interrupt_Flag_is_set(void)
 {
     /* =====[ Setup ]===== */
-    ClearBit(Flag_SpiFlags, Flag_TransferDone);
+    SetBit(Spi_SPSR, Spi_InterruptFlag);
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_FALSE(_TransferIsDone());
+    TEST_ASSERT_TRUE(_SpiTransferIsDone());
+}
+void SpiTransferIsDone_returns_false_if_the_SPI_Interrupt_Flag_is_clear(void)
+{
+    /* =====[ Setup ]===== */
+    ClearBit(Spi_SPSR, Spi_InterruptFlag);
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_FALSE(_SpiTransferIsDone());
+}
+
+/* =====[ DisableSpiInterrupt ]===== */
+void DisableSpiInterrupt_clears_the_SPI_Interrupt_Enable_bit(void)
+{
+    /* =====[ Setup ]===== */
+    SetBit(Spi_SPCR, Spi_InterruptEnable);
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Spi_InterruptEnable,
+        *Spi_SPCR,
+        "Cannot run test: must start with bit HIGH!"
+        );
+    /* =====[ Operate ]===== */
+    DisableSpiInterrupt();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(Spi_InterruptEnable, *Spi_SPCR);
+}
+
+/* =====[ EnableSpiInterrupt ]===== */
+void EnableSpiInterrupt_clears_SPI_interrupt_flag(void)
+{
+    /* =====[ Operate ]===== */
+    EnableSpiInterrupt();
+    /* =====[ Test ]===== */
+    uint16_t call_n = 1;
+    TEST_ASSERT_TRUE(
+        AssertCall(mock, call_n, "ClearSpiInterruptFlag")
+        );
+}
+void EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt(void)
+{
+    /* =====[ Setup ]===== */
+    ClearBit(Spi_SPCR, Spi_InterruptEnable);
+    /* =====[ Operate ]===== */
+    EnableSpiInterrupt();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Spi_InterruptEnable, *Spi_SPCR);
+}
+void EnableSpiInterrupt_consumes_6_cycles(void)
+{
+    TEST_PASS();
+    // ---Expected Assembly---
+    // cli
+    // in	r24, 0x2d	; 45
+    // in	r24, 0x2e	; 46
+    // in	r24, 0x2c	; 44
+    // ori	r24, 0x80	; 128
+    // out	0x2c, r24	; 44
+    // Total number of cycles: 6
+    // Total number of instructions: 6
 }
 
 /* =====[ SpiSlaveInit ]===== */
@@ -149,40 +214,6 @@ void SpiSlaveInit_enables_SPI_interrupt(void)
         );
 }
 
-/* =====[ EnableSpiInterrupt ]===== */
-void EnableSpiInterrupt_clears_SPI_interrupt_flag(void)
-{
-    /* =====[ Operate ]===== */
-    EnableSpiInterrupt();
-    /* =====[ Test ]===== */
-    uint16_t call_n = 1;
-    TEST_ASSERT_TRUE(
-        AssertCall(mock, call_n, "ClearSpiInterruptFlag")
-        );
-}
-void EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt(void)
-{
-    /* =====[ Setup ]===== */
-    ClearBit(Spi_SPCR, Spi_InterruptEnable);
-    /* =====[ Operate ]===== */
-    EnableSpiInterrupt();
-    /* =====[ Test ]===== */
-    TEST_ASSERT_BIT_HIGH(Spi_InterruptEnable, *Spi_SPCR);
-}
-void EnableSpiInterrupt_consumes_6_cycles(void)
-{
-    TEST_PASS();
-    // ---Expected Assembly---
-    // cli
-    // in	r24, 0x2d	; 45
-    // in	r24, 0x2e	; 46
-    // in	r24, 0x2c	; 44
-    // ori	r24, 0x80	; 128
-    // out	0x2c, r24	; 44
-    // Total number of cycles: 6
-    // Total number of instructions: 6
-}
-
 /* =====[ SpiSlaveTx ]===== */
 void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
 {
@@ -218,19 +249,14 @@ void SpiSlaveTxByte_loads_SPI_data_register_with_input_byte(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_UINT8(input_byte, *Spi_SPDR);
 }
-void SpiSlaveTxByte_tells_SPI_ISR_to_ignore_rx_byte(void)
+void SpiSlaveTxByte_disables_SPI_ISR_before_signaling_data_ready(void)
 {
-    /* =====[ Setup ]===== */
-    SetBit(Flag_SpiFlags,Flag_SlaveRx);
-    TEST_ASSERT_BIT_HIGH_MESSAGE(
-        Flag_SlaveRx,
-        *Flag_SpiFlags,
-        "Cannot run test: must start with bit set!"
-        );
     /* =====[ Operate ]===== */
     SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
-    TEST_ASSERT_BIT_LOW(Flag_SlaveRx, *Flag_SpiFlags);
+    uint16_t call_n = 1;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n++, "DisableSpiInterrupt"));
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "_SignalDataReady"));
 }
 void SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready(void)
 {
@@ -245,27 +271,27 @@ void SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready(void)
     SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
     /* TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_port); */
-    uint16_t call_n = 1;
+    uint16_t call_n = 2;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "_SignalDataReady"));
 }
 void SpiSlaveTxByte_waits_until_SPI_transfer_is_done(void)
 {
     /* =====[ Setup ]===== */
-    ClearBit(Flag_SpiFlags,Flag_TransferDone);
+    ClearBit(Spi_SPSR, Spi_InterruptFlag);
     TEST_ASSERT_BIT_LOW_MESSAGE(
-        Flag_TransferDone,
-        *Flag_SpiFlags,
+        Spi_InterruptFlag,
+        *Spi_SPSR,
         "Cannot run test: must start with bit clear!"
         );
     /* =====[ Operate ]===== */
     SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
     /* PrintAllCalls(mock); */
-    uint16_t call_n = 2;
-    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "_TransferIsDone"));
-    TEST_ASSERT_BIT_HIGH(Flag_TransferDone, *Flag_SpiFlags);
+    uint16_t call_n = 3;
+    TEST_ASSERT_TRUE(AssertCall(mock, call_n, "_SpiTransferIsDone"));
+    TEST_ASSERT_BIT_HIGH(Spi_InterruptFlag, *Spi_SPSR);
 }
-void SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master(void)
+void SpiSlaveTxByte_drives_DataReady_HIGH_immediately_after_SPI_transfer_finishes(void)
 {
     /* =====[ Setup ]===== */
     *Spi_port = 0x00;
@@ -279,4 +305,17 @@ void SpiSlaveTxByte_drives_DataReady_HIGH_to_sync_with_Master(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(Spi_DataReady, *Spi_port);
 }
-
+void SpiSlaveTxByte_enables_SPI_ISR_after_transfer(void)
+{
+    /* =====[ Setup ]===== */
+    ClearBit(Spi_SPCR, Spi_InterruptEnable);
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Spi_InterruptEnable,
+        *Spi_SPCR,
+        "Cannot run test: must start with bit clear!"
+        );
+    /* =====[ Operate ]===== */
+    SpiSlaveTxByte(0xFF);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH(Spi_InterruptEnable, *Spi_SPCR);
+}
