@@ -1,3 +1,4 @@
+/** \file BiColorLed.h */
 #ifndef _BICOLORLED_H
 #define _BICOLORLED_H
 #include <stdint.h>
@@ -10,6 +11,7 @@ typedef uint8_t volatile * const bicolorled_ptr; // i/o reg address
 extern bicolorled_ptr BiColorLed_ddr;
 extern bicolorled_ptr BiColorLed_port;
 
+// ---API---
 inline void BiColorLedOn(bicolorled_num led)
 {
     /** BiColorLedOn behavior:\n 
@@ -17,7 +19,6 @@ inline void BiColorLedOn(bicolorled_num led)
       * */
     SetBit(BiColorLed_ddr, led);
 }
-
 inline void BiColorLedGreen(bicolorled_num led)
 {
     /** BiColorLedGreen behavior:\n 

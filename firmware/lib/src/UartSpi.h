@@ -156,6 +156,11 @@ inline void SpiMasterCfg(void)
     GiveSpiControlOverMisoAndMosiPins();
 }
 // ---API---
+/** \file UartSpi.h
+ * # API
+ * void UartSpiInit(void);\n 
+ * void StartAdcReadout(void);\n 
+ * */
 inline void UartSpiInit(void)
 {
     /** UartSpiInit behavior:\n 

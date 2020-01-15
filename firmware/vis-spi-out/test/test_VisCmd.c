@@ -15,6 +15,10 @@ void ReplyCommandInvalid_transmits_one_byte_over_SPI(void)
 }
 void ReplyCommandInvalid_sends_byte_INVALID_CMD(void)
 {
+    /** ReplyCommandInvalid behavior:\n 
+      * - transmits one byte over SPI\n 
+      * - sends byte INVALID CMD\n 
+      * */
     /* =====[ Operate ]===== */
     ReplyCommandInvalid();
     uint16_t call_n = 1;

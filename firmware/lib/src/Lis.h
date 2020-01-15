@@ -142,6 +142,10 @@ inline void LisClkOn(void)
     // out	0x24, r24	; 36
 }
 // ---API---
+/** \file Lis.h
+ * # API
+ * void LisInit(void);\n 
+ * */
 inline void LisInit(void)
 {
     /** LisInit behavior:\n 

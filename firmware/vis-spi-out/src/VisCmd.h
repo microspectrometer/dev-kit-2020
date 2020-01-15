@@ -1,3 +1,8 @@
+// ---API (Go to the Doxygen documentation of this file)---
+/** \file VisCmd.h
+ * # API
+ * void ReplyCommandInvalid(void);\n 
+ * */
 #ifndef _VISCMD_H
 #define _VISCMD_H
 #include "SpiSlave.h"

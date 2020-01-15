@@ -1,8 +1,3 @@
-/** \file UartSpi.c
- * # API
- * void UartSpiInit(void);\n 
- * void StartAdcReadout(void);\n 
- * */
 #include "UartSpi.h"
 // ---Private---
 void RunSpiAt5Mhz(void);
