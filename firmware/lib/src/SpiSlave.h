@@ -272,7 +272,6 @@ inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
     }
 }
 #ifdef SPISLAVE_FAKED
-// Remove `_fake` suffix from function names.
 #undef SpiSlaveTxByte
 #endif
 

@@ -70,6 +70,7 @@ unittest_o  := ${unity_libo} ${mock-c_libo}
 # Compile hwlib obj files with FakeAvrHeaders for unit tests.
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 \
 	-I/usr/lib/glib-2.0/include \
+	-DUSE_FAKES \
 	-I${path_mock-c}include -I${path_unity} \
 	-Isrc -I../lib/src \
 	-Itest -I../lib/test ${IncludeFakeAvrHeaders} \
@@ -100,7 +101,7 @@ endif
 # Add app libs here{{{
 # App libs are application code with test coverage.
 # List separate from other libs because path is different.
-applib := Example
+applib := Example VisCmd
 test_app := $(addprefix test_,${applib})
 test_app_o := $(addsuffix .o,${test_app})
 test_app_o := $(addprefix build/,${test_app_o})
@@ -157,7 +158,7 @@ clean-all-builds:
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${lib_o} ${test_app_o} ${app_o}
+${lib_o} ${test_app_o} ${app_o} ../lib/build/SpiSlave_faked.o
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 # test-runner rebuilds if fake hardware definitions change
 build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFakes} ${lib_headers}

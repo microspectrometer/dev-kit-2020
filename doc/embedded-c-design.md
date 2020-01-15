@@ -2294,22 +2294,31 @@ Total number of instructions: 35
 # [x] Write the tests for the faked functions in SpiSlave
 
 # [ ] Add function `ReplyCommandInvalid`
-- [ ] fix `loop` (use this function instead of placeholder)
-- [ ] add this function
-- [ ] hmm.... calls `WriteSpiMaster`
+- [x] rewrite `WriteSpiMaster`
+    - hmm.... `ReplyCommandInvalid` calls `WriteSpiMaster`
     - logically part of lib `SpiSlave`
     - but `WriteSpiMaster` uses lib `Queue`
-    - what happens if I make this an `inline` function in `SpiSlave.h`
-        - name it `SpiSlaveTx` (because the SpiSlave is
-          transmitting to the SpiMaster)
-    - what do I *think* will happen?
-    - register accesses I care about are either:
-        - directly bit-accessible
-        - accessible as registers without adding 0x20 to the address
-    - all of these register accesses are for lib SpiSlave
-    - lib Queue has no such register accesses
-    - lib Queue is just a data object
+    - turns out when I rewrote it as `SpiSlaveTxByte`, I didn't
+      need to use `Queue` at all
+        - this was just to wait for SPI transfer to finish and to
+          clean the garbage byte from the Queue
+        - I optimized the SPI transfer time for SlaveTx by
+          waiting disabling the SPI interrupt for transfer
+        - that eliminated the garbage byte getting onto the Queue
+        - and it eliminated the ability to check the Queue as an
+          indicator of SPI transfer done
+        - check SPI interrupt flag instead (this is also better
+          since it allows for the possibility of doing
+          transmissions even if the Queue is not empty)
+- [ ] add this function
+    - [x] start by setting up a test of the function in
+      `vis-spi-out/test/test_runner.c`
+        - call lib `VisCmd.h`
+        - tests are `VisCmd_tests`
+        - all of the commands that run on the `Vis` board go here
+    - [ ] try function in application and look assembly
 
+# [ ] fix `loop` (use `ReplyCommandInvalid` instead of placeholder)
 
 # [x] Decided I cannot simplify macros for faking
 - goal: reduce number of lines, make faking simpler

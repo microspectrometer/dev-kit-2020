@@ -11,6 +11,8 @@
 // hardware i/o definitions
 #include "Hardware.h"
 #include "Queue.h"
+// Python-to-Firmware communication
+#include "StatusCodes.h"
 
 // Allocate memory for the FIFO SPI Buffer
 volatile Queue_s * SpiFifo;
@@ -54,19 +56,20 @@ void loop(void)
         BiColorLedRed(led_0);
     }
     // Idle until a command is received
-    while (QueueIsEmpty(SpiFifo)); 5 cycles
+    while (QueueIsEmpty(SpiFifo)); // 5 cycles
     // Execute the command.
     Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo)); // 38 cycles
     /* if (DoSensorCmd == NULL) ReplyCommandInvalid(); */
+    /* else DoSensorCmd(); */
+    DoSensorCmd();
     // placeholder to test SpiSlaveTx (replace with above line when done)
-    if (DoSensorCmd == NULL)
-    {
-        /* DisableSpiInterrupt(); */
-        uint8_t const input_buffer[] = {0xFA, 0xFB, 0xFC};
-        uint16_t nbytes = 3;
-        SpiSlaveTx(input_buffer, nbytes);
-    }
-    else DoSensorCmd();
+    /* if (DoSensorCmd == NULL) */
+    /* { */
+    /*     DisableSpiInterrupt(); */
+    /*     uint8_t const input_buffer[] = {0xFA, 0xFB, 0xFC}; */
+    /*     uint16_t nbytes = 3; */
+    /*     SpiSlaveTx(input_buffer, nbytes); */
+    /* } */
 }
 ISR(SPI_STC_vect)
 {
