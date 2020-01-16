@@ -3,6 +3,12 @@
 #include "test_VisCmd.h"
 #include "VisCmd.h"
 
+/* ---Global Queue--- */
+#include "Queue.h"          // VisCmd accesses the Spi Rx Buffer
+extern volatile Queue_s * SpiFifo;
+#define max_length_of_queue 5 // bytes
+
+/* =====[ ReplyCommandInvalid ]===== */
 void ReplyCommandInvalid_transmits_one_byte_over_SPI(void)
 {
     /* =====[ Operate ]===== */
@@ -28,9 +34,28 @@ void ReplyCommandInvalid_sends_byte_INVALID_CMD(void)
         );
     uint8_t arg_n = 1; status_code byte = INVALID_CMD;
     TEST_ASSERT_TRUE(
-        AssertArg(mock, call_n, arg_n, &byte)
+        AssertArg(mock, call_n, arg_n, (uint8_t *)&byte)
         );
-
 }
 
-/* SetSensorConfig */
+/* =====[ SetSensorConfig ]===== */
+void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void)
+{
+    /* =====[ Setup ]===== */
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // Fake placing three bytes in the queue.
+    QueuePush(SpiFifo, BINNING_OFF);
+    QueuePush(SpiFifo, GAIN_5X);
+    QueuePush(SpiFifo, ALL_ROWS_ACTIVE);
+    /* =====[ Operate ]===== */
+    SetSensorConfig();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_HEX8(BINNING_OFF, binning);
+    TEST_ASSERT_EQUAL_HEX8(GAIN_5X, gain);
+    TEST_ASSERT_EQUAL_HEX8(ALL_ROWS_ACTIVE, active_rows);
+}
+void SetSensorConfig_replies_msg_status_error_if_binning_is_invalid(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}

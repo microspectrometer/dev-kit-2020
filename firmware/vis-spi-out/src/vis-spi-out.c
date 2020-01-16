@@ -11,9 +11,11 @@
 // hardware i/o definitions
 #include "Hardware.h"
 #include "Queue.h"
-// Python-to-Firmware communication
+// Python-to-Firmware communication status codes
 #include "StatusCodes.h"
 #include "VisCmd.h"
+// LIS-770i configuration
+#include "LisConfigs.h"
 
 // Allocate memory for the FIFO SPI Buffer
 volatile Queue_s * SpiFifo;

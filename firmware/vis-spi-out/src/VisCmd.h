@@ -7,6 +7,7 @@
 #define _VISCMD_H
 #include "SpiSlave.h"
 #include "StatusCode.h"
+#include "LisConfig.h"
 
 #ifdef USE_FAKES
 #include "SpiSlave_faked.h" // declare fakes
@@ -23,5 +24,14 @@ inline void ReplyCommandInvalid(void)
 #undef SpiSlaveTxByte
 #endif
 inline void NullCommand(void){}
+inline void SetSensorConfig(void)
+{
+    /** SetSensorConfig behavior:\n 
+      * - receives three bytes of config from Bridge\n 
+      * */
+    binning = BINNING_OFF;
+    gain = GAIN_5X;
+    active_rows = ALL_ROWS_ACTIVE;
+}
 
 #endif // _VISCMD_H

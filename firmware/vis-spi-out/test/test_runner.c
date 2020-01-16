@@ -2,8 +2,17 @@
 // ---Unit Test Framework---
 #include <unity.h>
 #include <Mock.h>
-// Python-to-Firmware communication
+// Python-to-Firmware communication status codes
 #include "StatusCodes.h"
+// LIS-770i configuration
+#include "LisConfigs.h"
+
+/* ---Global Queue--- */
+#include "Queue.h"          // VisCmd accesses the Spi Rx Buffer
+// SpiFifo must be global in main application for linking against
+// extern declarations in other translation units
+volatile Queue_s * SpiFifo;
+
 // ---Test Framework requires runner to define setup/teardown/mock pointers---
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock; // record calls/args to mocked-out libs
@@ -34,13 +43,32 @@ void Example_tests(bool run_test)
         RUN_TEST(test_Can_call_inline_function_defined_in_app_lib);
     }
 }
-void VisCmd_tests(bool run_test)
+
+/* =====[ VisCmd_tests ]===== */
+void Run_ReplyCommandInvalid_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
         RUN_TEST(ReplyCommandInvalid_transmits_one_byte_over_SPI);
         RUN_TEST(ReplyCommandInvalid_sends_byte_INVALID_CMD);
+    }
+}
+void Run_SetSensorConfig_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(SetSensorConfig_receives_three_bytes_of_config_from_Bridge);
+    }
+}
+void VisCmd_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        Run_ReplyCommandInvalid_tests(Nope);
+        Run_SetSensorConfig_tests(Yep);
     }
 }
 

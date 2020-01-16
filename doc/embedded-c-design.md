@@ -2284,6 +2284,20 @@ Total number of instructions: 35
 
 # ---Pending Tasks---
 
+# [ ] Write SetSensorConfig
+- sensor config is three bytes
+- these bytes are globals
+- don't use `LisHardware` and `LisHardwareFake` otherwise I have
+  to duplicate the definitions
+- it's nice to keep this separate anyway
+- so put config stuff in `LisConfig` and `LisConfigs`, mirroring
+  the idea of `StatusCode` and `StatusCodes` -- declare in the
+  singular, define in the plural
+- [x] `LisConfig.h` owns the config declarations
+- [x] `LisConfigs.h` owns the definitions
+    - define as `const` so that `main()` translation unit loads
+      the globals into working registers (check this)
+
 # [x] Fix unit tests of SpiSlaveTxByte to reflect use of interrupt disable/enable
 
 # [x] Erase old _TransferIsDone tests and any occurence of this function
