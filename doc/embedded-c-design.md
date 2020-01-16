@@ -2283,6 +2283,7 @@ Total number of instructions: 35
   to send a frame
 
 # ---Pending Tasks---
+
 # [x] Fix unit tests of SpiSlaveTxByte to reflect use of interrupt disable/enable
 
 # [x] Erase old _TransferIsDone tests and any occurence of this function
@@ -2293,7 +2294,7 @@ Total number of instructions: 35
 
 # [x] Write the tests for the faked functions in SpiSlave
 
-# [ ] Add function `ReplyCommandInvalid`
+# [x] Add function `ReplyCommandInvalid`
 - [x] rewrite `WriteSpiMaster`
     - hmm.... `ReplyCommandInvalid` calls `WriteSpiMaster`
     - logically part of lib `SpiSlave`
@@ -2310,15 +2311,16 @@ Total number of instructions: 35
         - check SPI interrupt flag instead (this is also better
           since it allows for the possibility of doing
           transmissions even if the Queue is not empty)
-- [ ] add this function
+- [x] add this function
     - [x] start by setting up a test of the function in
       `vis-spi-out/test/test_runner.c`
         - call lib `VisCmd.h`
         - tests are `VisCmd_tests`
         - all of the commands that run on the `Vis` board go here
-    - [ ] try function in application and look assembly
+    - [x] try function in application and look at assembly
+    - see Tiddler: "Add function `ReplyCommandInvalid`"
 
-# [ ] fix `loop` (use `ReplyCommandInvalid` instead of placeholder)
+# [x] fix `loop` (use `ReplyCommandInvalid` instead of placeholder)
 
 # [x] Decided I cannot simplify macros for faking
 - goal: reduce number of lines, make faking simpler
@@ -2526,11 +2528,25 @@ void loop(void)
 - this lib is low-level hardware, needs to be fast!
 - inline ~everything~ almost everything
 - it seems I can treat this the same way as SpiSlave
-    - [ ] how is this happening?
+    - [x] how is this happening?
     - I can inline what I want
     - I can also leave other functions private
     - *miraculously, both vis-spi-out.o and UartSpi.o are picking
       up the hardware definitions in their translation units*
+    - no -- I figured out what is going on
+    - only one translation unit can have the definitions
+    - the moment I needed to call those other functions from that
+      lib and have them `inline` in the application, I saw the
+      flaw in all this
+    - the hardware definitions only get to be part of one
+      translation unit, otherwise it's a multiple definition
+      error
+    - if I wanted to avoid inlining everything, I could split
+      libs into a private lib and a public lib, but that gets
+      real messy
+    - and there's really not much down-side to inlining
+      everything
+    - it at least keeps the flow consistent as I add code
 
 #### [x] `UartSpiInit` is tested and assembly optimization is good
 - see TiddlyWiki
@@ -2588,7 +2604,7 @@ $ avr-size.exe build/vis-spi-out.elf | clip
     - this file is included via `#include` in `lib/test/HardwareFake.h`
     - `test_runner.c` includes `HardwareFake.h`
 
-### [ ] lib `Lis`
+### [x] lib `Lis`
 - this lib is low-level hardware, needs to be fast!
 - inline everything
 - LisInit is done.

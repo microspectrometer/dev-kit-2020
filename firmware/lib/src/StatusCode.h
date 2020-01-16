@@ -13,7 +13,7 @@
 #include "stdint.h"
 
 //! Status codes are type `status_code`.
-typedef uint8_t status_code;
+typedef uint8_t const status_code;
 
 extern status_code INVALID_CMD;
 

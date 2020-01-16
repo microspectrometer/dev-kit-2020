@@ -13,6 +13,7 @@
 #include "Queue.h"
 // Python-to-Firmware communication
 #include "StatusCodes.h"
+#include "VisCmd.h"
 
 // Allocate memory for the FIFO SPI Buffer
 volatile Queue_s * SpiFifo;
@@ -59,9 +60,8 @@ void loop(void)
     while (QueueIsEmpty(SpiFifo)); // 5 cycles
     // Execute the command.
     Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo)); // 38 cycles
-    /* if (DoSensorCmd == NULL) ReplyCommandInvalid(); */
-    /* else DoSensorCmd(); */
-    DoSensorCmd();
+    if (DoSensorCmd == NULL) ReplyCommandInvalid();
+    else DoSensorCmd();
     // placeholder to test SpiSlaveTx (replace with above line when done)
     /* if (DoSensorCmd == NULL) */
     /* { */
