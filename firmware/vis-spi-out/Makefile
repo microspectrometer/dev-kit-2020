@@ -161,7 +161,7 @@ build/TestSuite.exe: build/test_runner.o ${unittest_o} \
 ${lib_o} ${test_app_o} ${app_o} ../lib/build/SpiSlave_faked.o
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 # test-runner rebuilds if fake hardware definitions change
-build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFakes} ${lib_headers}
+build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFakes} ${lib_headers} ../lib/src/StatusCode.h ../lib/src/StatusCodes.h ../lib/src/LisConfig.h ../lib/src/LisConfigs.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # unit-test translation units must #include "unity.h" and "Mock.h"
 ${test_app_o}: build/%.o: test/%.c test/%.h
@@ -177,7 +177,7 @@ ${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h ${FakeAvrHeaders}
 # }}}
 # ;mka - "avr-target": `vis-spi-out.elf`{{{
 # `vis-spi-out.o`{{{
-build/${board-name}.o: src/${board-name}.c src/Hardware.h ${Hardware} ${lib_headers}
+build/${board-name}.o: src/${board-name}.c src/Hardware.h ${Hardware} ${lib_headers} ../lib/src/StatusCode.h ../lib/src/StatusCodes.h ../lib/src/LisConfig.h ../lib/src/LisConfigs.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # }}}
 # `vis-spi-out.elf`{{{
