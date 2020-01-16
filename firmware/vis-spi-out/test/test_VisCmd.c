@@ -29,5 +29,8 @@ void ReplyCommandInvalid_sends_byte_INVALID_CMD(void)
     uint8_t arg_n = 1; status_code byte = INVALID_CMD;
     TEST_ASSERT_TRUE(
         AssertArg(mock, call_n, arg_n, &byte)
-        ); 
+        );
+
 }
+
+/* SetSensorConfig */

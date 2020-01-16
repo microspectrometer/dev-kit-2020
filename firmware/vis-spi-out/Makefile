@@ -166,6 +166,9 @@ build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFak
 # unit-test translation units must #include "unity.h" and "Mock.h"
 ${test_app_o}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
+# fake functions
+../lib/build/SpiSlave_faked.o: ../lib/build/%.o: ../lib/test/%.c ../lib/test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
 ${app_o}: build/%.o: src/%.c src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # For tests: stub function-like macros used in libs in FakeAvrHeaders

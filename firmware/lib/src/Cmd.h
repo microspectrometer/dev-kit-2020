@@ -20,7 +20,7 @@
 #define _CMD_H
 
 //! Keys in the command lookup table are type `cmd`.
-typedef uint8_t cmd;
+typedef uint8_t const cmd;
 //! Functions in the command lookup table are type `Cmd`.
 typedef void (Cmd)(void);
 
