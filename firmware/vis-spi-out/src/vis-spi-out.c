@@ -62,14 +62,6 @@ void loop(void)
     Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo)); // 38 cycles
     if (DoSensorCmd == NULL) ReplyCommandInvalid();
     else DoSensorCmd();
-    // placeholder to test SpiSlaveTx (replace with above line when done)
-    /* if (DoSensorCmd == NULL) */
-    /* { */
-    /*     DisableSpiInterrupt(); */
-    /*     uint8_t const input_buffer[] = {0xFA, 0xFB, 0xFC}; */
-    /*     uint16_t nbytes = 3; */
-    /*     SpiSlaveTx(input_buffer, nbytes); */
-    /* } */
 }
 ISR(SPI_STC_vect)
 {
@@ -87,6 +79,8 @@ Cmd* LookupSensorCmd(cmd const key)
     // pf is an array of pointers to SensorCmd functions
     // pf is in static memory, not in the stack frame
     static Cmd* const pf[] = {
+        NullCommand,
+        NULL,
         NULL,
         };
     // Return func ptr. 

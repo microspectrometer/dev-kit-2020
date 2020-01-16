@@ -22,5 +22,6 @@ inline void ReplyCommandInvalid(void)
 #ifdef USE_FAKES
 #undef SpiSlaveTxByte
 #endif
+inline void NullCommand(void){}
 
 #endif // _VISCMD_H
