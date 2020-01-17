@@ -60,6 +60,7 @@ void Run_SetSensorConfig_tests(bool run_test)
     {
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
         RUN_TEST(SetSensorConfig_receives_three_bytes_of_config_from_Bridge);
+        RUN_TEST(SetSensorConfig_replies_msg_status_error_if_binning_is_invalid);
     }
 }
 void VisCmd_tests(bool run_test)

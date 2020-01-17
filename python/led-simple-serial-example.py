@@ -1011,8 +1011,8 @@ if __name__ == '__main__':
         )
 
     # Find the spectrometer by its serial number.
-    sernum='093101' # Sean's Bridge
-    # sernum='091103' # Mike's Bridge
+    # sernum='093101' # Sean's Bridge
+    sernum='091103' # Mike's Bridge
 
     # USB open/close is handled by `pyserial` context manager in serialutil.py
     with usb.open_spectrometer(sernum) as kit:
