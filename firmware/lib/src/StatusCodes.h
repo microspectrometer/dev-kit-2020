@@ -16,6 +16,8 @@
 #define _STATUSCODES_H
 #include "StatusCode.h"
 
+status_code OK = 0x00;
+status_code ERROR = 0x01;
 status_code INVALID_CMD = 0x02;
 
 #endif // _STATUSCODES_H

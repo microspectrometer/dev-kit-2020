@@ -15,6 +15,8 @@
 //! Status codes are type `status_code`.
 typedef uint8_t const status_code;
 
+extern status_code OK;
+extern status_code ERROR;
 extern status_code INVALID_CMD;
 
 #endif // _STATUSCODE_H
