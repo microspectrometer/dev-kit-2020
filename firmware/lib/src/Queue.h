@@ -96,13 +96,14 @@ inline bool QueueIsEmpty(volatile Queue_s * pq)
       * */
     if (pq->length == 0) return true;
     return false;
-    // ---AVR Assembly: 7 cycles with inline---
-    // ldd	r24, Z+4	; 0x04
-    // ldd	r25, Z+5	; 0x05
-    // or	r24, r25
-    // breq	.-8      	; 0xe8 <main+0x42>
+    // ---Expected Assembly---
+    //  1b0:	ldd	r24, Z+4	; 0x04
+    //  1b2:	and	r24, r24
+    //  1b4:	breq	.-6      	; 0x1b0 <main+0x10a>
+    // Total number of cycles: 5
+    // Total number of instructions: 3
     //
-    // ---AVR Assembly: 24 cycles without inline---
+    // ---24 cycles without inline---
     // 10 cycles to call
     // 14 cycles to execute
     // movw	r30, r24
@@ -143,9 +144,35 @@ inline uint8_t QueuePop(volatile Queue_s *pq)
     if (QueueIsEmpty(pq)) return 0;
     // wrap tail to beginning of buffer when it reaches the end of the buffer
     if (pq->tail >= pq->max_length) pq->tail = 0;
+    // ---Expected Assembly---
+    //  1bc:	ldd	r25, Z+3	; 0x03
+    //  1be:	ldd	r24, Z+5	; 0x05
+    //  1c0:	cp	r25, r24
+    //  1c2:	brcs	.+2      	; 0x1c6 <main+0x120>
+    //  1c4:	std	Z+3, r1	; 0x03
+    // Total number of cycles: 9
+    // Total number of instructions: 5
     pq->length--;
+    // ---Expected Assembly---
+    //  1c6:	ldd	r24, Z+4	; 0x04
+    //  1c8:	subi	r24, 0x01	; 1
+    //  1ca:	std	Z+4, r24	; 0x04
+    // Total number of cycles: 5
+    // Total number of instructions: 3
     // Return the byte. Remove byte from Queue by advancing "tail".
     return pq->buffer[pq->tail++];
+    // ---Expected Assembly---
+    //  1cc:	ld	r26, Z
+    //  1ce:	ldd	r27, Z+1	; 0x01
+    //  1d0:	ldd	r24, Z+3	; 0x03
+    //  1d2:	ldi	r25, 0x01	; 1
+    //  1d4:	add	r25, r24
+    //  1d6:	std	Z+3, r25	; 0x03
+    //  1d8:	add	r26, r24
+    //  1da:	adc	r27, r1
+    //  1dc:	ld	r24, X
+    // Total number of cycles: 14
+    // Total number of instructions: 9
 }
 
 #endif // _QUEUE_H

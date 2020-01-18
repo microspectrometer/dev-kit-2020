@@ -26,7 +26,6 @@ volatile uint8_t spi_rx_buffer[max_length_of_queue];
 static void setup(void);
 static void loop(void);
 static void IndicatorLEDsOn(void);
-static Cmd* LookupSensorCmd(cmd const);
 int main()
 {
     setup();
@@ -49,9 +48,6 @@ void setup(void)
 }
 void loop(void)
 {
-    /* example_function(); */
-    /* example_inline_function(); */
-    //
     // Catch errors
     if (QueueIsFull(SpiFifo)) // 7 cycles
     {
@@ -61,40 +57,32 @@ void loop(void)
     // Idle until a command is received
     while (QueueIsEmpty(SpiFifo)); // 5 cycles
     // Execute the command.
-    Cmd* DoSensorCmd = LookupSensorCmd(QueuePop(SpiFifo)); // 38 cycles
-    if (DoSensorCmd == NULL) ReplyCommandInvalid();
-    else DoSensorCmd();
+    switch(QueuePop(SpiFifo))
+    {
+        case 0: NullCommand(); break;
+        case 8: SetSensorConfig(); break;
+        default: ReplyCommandInvalid(); break;
+        // ---Expected Assembly---
+        // Context:
+        // 1. 0x19e is the start of loop()
+        // 2. QueuePop puts `cmd` byte in r24
+        // Handle case 0:
+        //  1de:	and	r24, r24; `cmd` is in r24
+        //  1e0:	breq	.-68     	; 0x19e <main+0xf8>
+        // Handle case 8:
+        //  1e2:	cpi	r24, 0x08	; 8
+        //  1e4:	breq	.+34     	; 0x208 <main+0x162>
+        // Default case:
+        //  1e6:	out	0x2e, r19	; 46
+        // Total number of cycles: 7
+        // Total number of instructions: 5
+    }
 }
 ISR(SPI_STC_vect)
 {
     //! Interrupt disabled during during `SpiSlaveTxByte`.
     //! Interrupt enabled all other times.
     QueuePush(SpiFifo, *Spi_SPDR);
-}
-Cmd* LookupSensorCmd(cmd const key)
-{
-    /** Return a pointer to the function that does command
-     * identified by input `key`.
-     *  - input `key` is defined in the USBProtocol
-     *  - return `NULL` if `key` is not in the lookup table
-     * */
-    // pf is an array of pointers to SensorCmd functions
-    // pf is in static memory, not in the stack frame
-    static Cmd* const pf[] = {
-        NullCommand,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        SetSensorConfig,
-        };
-    // Return func ptr. 
-    if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
-    // Out of bounds keys return a NULL pointer.
-    else return NULL; // error
 }
 void IndicatorLEDsOn(void)
 {
@@ -104,4 +92,3 @@ void IndicatorLEDsOn(void)
     BiColorLedGreen(led_0); // cbi	0x08, 0
     BiColorLedGreen(led_1); // cbi	0x08, 1
 }
-

@@ -15,6 +15,10 @@
  *  with the command's name:\n 
  *    - the **key** name is the command name with a `_key` suffix
  *    - the **function** name is simply the command name
+ *
+ *  TODO: command lookup table replaced by switch-case block.
+ *  Datatypes `cmd` and `Cmd` are not used. Delete this file and
+ *  move the documentation somewhere else.
  * */
 #ifndef _CMD_H
 #define _CMD_H
