@@ -59,7 +59,7 @@ inline void SetSensorConfig(void)
     active_rows = QueuePop(SpiFifo);
     // Reply with error if any config value is invalid
     // TODO: replace with LisConfigIsValid(binning, gain, active_rows)
-    if ( !LisConfigIsValid(binning, gain, active_rows) )
+    if ( !LisConfigIsValid() )
     {
         SpiSlaveTxByte(ERROR);
         return;

@@ -168,7 +168,7 @@ inline void LisInit(void)
     LisClkFreq50kHz();
     LisClkOn();
 }
-inline bool LisConfigIsValid(lis_cfg binning, lis_cfg gain, lis_cfg active_rows)
+inline bool LisConfigIsValid(void)
 {
     /** LisConfigIsValid behavior:\n 
       * - returns false if binning is invalid\n 

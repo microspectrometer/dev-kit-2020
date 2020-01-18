@@ -303,8 +303,8 @@ void Lis_tests(bool run_test)
     if (run_test)
     {
         Run_LisInit_tests(Nope);
-        Run_LisConfigIsValid_tests(Nope);
-        Run_LisWriteConfig_tests(Yep);
+        Run_LisConfigIsValid_tests(Yep);
+        Run_LisWriteConfig_tests(Nope);
     }
 }
 
