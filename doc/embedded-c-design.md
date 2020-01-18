@@ -2283,6 +2283,12 @@ Total number of instructions: 35
   to send a frame
 
 # ---Pending Tasks---
+# [ ] Fix lib `Queue`
+- Why is the `Queue.c` translation unit responsible for defining
+  the global `Queue_s`. This should happen in the `main()`
+  translation unit. The lib should define the Queue as `extern`.
+  Fixing this may result in some speed-up in the code. It would
+  also be less confusing.
 
 # [ ] Write SetSensorConfig
 - sensor config is three bytes
@@ -2297,6 +2303,81 @@ Total number of instructions: 35
 - [x] `LisConfigs.h` owns the definitions
     - define as `const` so that `main()` translation unit loads
       the globals into working registers (check this)
+- [ ] requires Lis function `LisWriteConfig`
+- [ ] first build for avr to test moving if() conditional to
+  `Lis` lib as `LisConfigIsValid()`
+    - size is 654 bytes
+
+    ```date-and-size
+    Fri, Jan 17, 2020  8:11:32 PM
+       text	   data	    bss	    dec	    hex	filename
+        654	      6	     22	    682	    2aa	build/vis-spi-out.elf
+    ```
+    - interestingly, `NullCommand` is a call, it is not being
+      inlined.
+    - I think this is because I am passing it as a function
+      pointer
+    - that means *every* command is a call
+    - I'm OK with this overhead
+    - it's just the one call
+    - and it makes the .avra more readable
+    - I still need to define the commands as inline in `VisCmd.h`
+      so that the compiler can build them as part of the
+      `main()` translation unit for optimization
+    - add more `NULL` entries to get index 8 for
+      `SetSensorConfig`
+    - wow, padding entries with `NULL` to get index to 8 has no
+      effect on code size, though it eats up 12 bytes of data
+
+    ```date-and-size
+    Fri, Jan 17, 2020  8:13:55 PM
+       text	   data	    bss	    dec	    hex	filename
+        654	     18	     22	    694	    2b6	build/vis-spi-out.elf
+    ```
+
+    - make the eighth entry `SetSensorConfig`
+    - holy shit the program size jumps considerably:
+
+    ```date-and-size
+    Fri, Jan 17, 2020  8:16:06 PM
+       text	   data	    bss	    dec	    hex	filename
+       1192	     38	     22	   1252	    4e4	build/vis-spi-out.elf
+    ```
+    
+    - Total number of cycles: 379
+    - Total number of instructions: 234
+    - there are a lot of instructions in this call
+    - and it takes 37.9µs to execute, and that is before I've
+      even incorporated the part that actually writes the config
+      to the LIS
+    
+    - Where is the 234 instructions coming from?
+    - the three QueuePops that get inlined in `SetSensorConfig`
+      consume:
+    - Total number of cycles: 111
+    - Total number of instructions: 67
+
+    - No, the real cause of the problem is that `SpiSlaveTxByte`
+      is not being inlined correctly
+    - Because the command definition is not inlined in `main()`,
+      I am getting stuck with the compiled version for `VisCmd.o`
+    - I am *not* getting any benefits of defining the commands as
+      `inline`
+    - Takeaway: I cannot use the jump table
+    - The moment I use the command byte to return a function
+      pointer, I'm doomed to use the definition in `VisCmd.o`
+    - What's wrong with a switch() setup?
+    - Alternatively, I could make `VisCmd` a header-only lib.
+    - Then I put the declarations in the main translation unit
+    - And I only build `VisCmd.o` for testing
+    - This is a more confusing build, and what is the benefit?
+      Why is a look-up table preferable to a simple switch-case?
+    - Branch and try switch-case
+
+
+
+
+
 
 # [x] Fix unit tests of SpiSlaveTxByte to reflect use of interrupt disable/enable
 

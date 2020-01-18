@@ -84,6 +84,12 @@ Cmd* LookupSensorCmd(cmd const key)
         NullCommand,
         NULL,
         NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        SetSensorConfig,
         };
     // Return func ptr. 
     if (key < sizeof(pf)/sizeof(*pf)) return pf[key];
