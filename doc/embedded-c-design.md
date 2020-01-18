@@ -726,6 +726,134 @@ multiple definition of `Spi_SPDR'
 ```
 
 # ---Completed Tasks---
+# [x] Replace look-up table with switch-case
+
+- size is 654 bytes
+
+```date-and-size
+Fri, Jan 17, 2020  8:11:32 PM
+   text	   data	    bss	    dec	    hex	filename
+    654	      6	     22	    682	    2aa	build/vis-spi-out.elf
+```
+- interestingly, `NullCommand` is a call, it is not being
+  inlined.
+- I think this is because I am passing it as a function
+  pointer
+- that means *every* command is a call
+- I'm OK with this overhead
+- it's just the one call
+- and it makes the .avra more readable
+- I still need to define the commands as inline in `VisCmd.h`
+  so that the compiler can build them as part of the
+  `main()` translation unit for optimization
+- add more `NULL` entries to get index 8 for
+  `SetSensorConfig`
+- wow, padding entries with `NULL` to get index to 8 has no
+  effect on code size, though it eats up 12 bytes of data
+
+```date-and-size
+Fri, Jan 17, 2020  8:13:55 PM
+   text	   data	    bss	    dec	    hex	filename
+    654	     18	     22	    694	    2b6	build/vis-spi-out.elf
+```
+
+- make the eighth entry `SetSensorConfig`
+- holy shit the program size jumps considerably:
+
+```date-and-size
+Fri, Jan 17, 2020  8:16:06 PM
+   text	   data	    bss	    dec	    hex	filename
+   1192	     38	     22	   1252	    4e4	build/vis-spi-out.elf
+```
+
+- Total number of cycles: 379
+- Total number of instructions: 234
+- there are a lot of instructions in this call
+- and it takes 37.9µs to execute, and that is before I've
+  even incorporated the part that actually writes the config
+  to the LIS
+
+- Where is the 234 instructions coming from?
+- the three QueuePops that get inlined in `SetSensorConfig`
+  consume:
+- Total number of cycles: 111
+- Total number of instructions: 67
+
+- No, the real cause of the problem is that `SpiSlaveTxByte`
+  is not being inlined correctly
+- Because the command definition is not inlined in `main()`,
+  I am getting stuck with the compiled version for `VisCmd.o`
+- I am *not* getting any benefits of defining the commands as
+  `inline`
+- Takeaway: I cannot use the jump table
+- The moment I use the command byte to return a function
+  pointer, I'm doomed to use the definition in `VisCmd.o`
+- What's wrong with a switch() setup?
+- Alternatively, I could make `VisCmd` a header-only lib.
+- Then I put the declarations in the main translation unit
+- And I only build `VisCmd.o` for testing
+- This is a more confusing build, and what is the benefit?
+  Why is a look-up table preferable to a simple switch-case?
+- Branch and try switch-case
+
+```date-and-size
+Fri, Jan 17, 2020 11:54:07 PM
+   text	   data	    bss	    dec	    hex	filename
+    836	      0	     22	    858	    35a	build/vis-spi-out.elf
+```
+
+- promising:
+    - the program memory is 356 bytes smaller
+    - data memory dropped to 0?
+
+# [x] Fix unit tests of SpiSlaveTxByte to reflect use of interrupt disable/enable
+
+# [x] Erase old _TransferIsDone tests and any occurence of this function
+
+# [x] Go erase the ISR-SPEEDUP-TODO: comments
+
+# [x] Set up tests for the faked functions in SpiSlave
+
+# [x] Write the tests for the faked functions in SpiSlave
+
+# [x] Add function `ReplyCommandInvalid`
+
+- [x] rewrite `WriteSpiMaster`
+    - hmm.... `ReplyCommandInvalid` calls `WriteSpiMaster`
+    - logically part of lib `SpiSlave`
+    - but `WriteSpiMaster` uses lib `Queue`
+    - turns out when I rewrote it as `SpiSlaveTxByte`, I didn't
+      need to use `Queue` at all
+        - this was just to wait for SPI transfer to finish and to
+          clean the garbage byte from the Queue
+        - I optimized the SPI transfer time for SlaveTx by
+          waiting disabling the SPI interrupt for transfer
+        - that eliminated the garbage byte getting onto the Queue
+        - and it eliminated the ability to check the Queue as an
+          indicator of SPI transfer done
+        - check SPI interrupt flag instead (this is also better
+          since it allows for the possibility of doing
+          transmissions even if the Queue is not empty)
+- [x] add this function
+    - [x] start by setting up a test of the function in
+      `vis-spi-out/test/test_runner.c`
+        - call lib `VisCmd.h`
+        - tests are `VisCmd_tests`
+        - all of the commands that run on the `Vis` board go here
+    - [x] try function in application and look at assembly
+    - see Tiddler: "Add function `ReplyCommandInvalid`"
+
+# [x] fix `loop` (use `ReplyCommandInvalid` instead of placeholder)
+
+# [x] Decided I cannot simplify macros for faking
+
+- goal: reduce number of lines, make faking simpler
+- goal: do not forget to include `lib_faked.h`
+- goal: do not forget to wrap include `lib_faked.h` in ifdef
+  macro
+
+These goals are not achievable.
+
 # [x] Decide between SPI Flags or disabling SPI interrupt
 
 - [x] generate code for both ways
@@ -2251,6 +2379,7 @@ ISR(SPI_STC_vect)
 ```
 
 #### skipping QueuePush saves 61 cycles!
+
 Total number of cycles: 61
 Total number of instructions: 35
 
@@ -2263,6 +2392,7 @@ Total number of instructions: 35
     - plus 60 cycles for a call to QueuePush
 
 #### time savings justifies the added complexity
+
 - flag is *clear* when writing a frame
 - a frame is 784 bytes
 - that is 784 times that 6.1µs is saved
@@ -2283,7 +2413,9 @@ Total number of instructions: 35
   to send a frame
 
 # ---Pending Tasks---
-# [ ] Fix lib `Queue`
+
+# [ ] Fix lib `Queue` - should define Queue as `extern`
+
 - Why is the `Queue.c` translation unit responsible for defining
   the global `Queue_s`. This should happen in the `main()`
   translation unit. The lib should define the Queue as `extern`.
@@ -2291,6 +2423,7 @@ Total number of instructions: 35
   also be less confusing.
 
 # [ ] Write SetSensorConfig
+
 - sensor config is three bytes
 - these bytes are globals
 - don't use `LisHardware` and `LisHardwareFake` otherwise I have
@@ -2307,133 +2440,18 @@ Total number of instructions: 35
 - [ ] first build for avr to test moving if() conditional to
   `Lis` lib as `LisConfigIsValid()`
 
-# [x] Replace look-up table with switch-case
-
-- size is 654 bytes
+- before the move:
 
 ```date-and-size
-Fri, Jan 17, 2020  8:11:32 PM
-   text	   data	    bss	    dec	    hex	filename
-    654	      6	     22	    682	    2aa	build/vis-spi-out.elf
-```
-- interestingly, `NullCommand` is a call, it is not being
-  inlined.
-- I think this is because I am passing it as a function
-  pointer
-- that means *every* command is a call
-- I'm OK with this overhead
-- it's just the one call
-- and it makes the .avra more readable
-- I still need to define the commands as inline in `VisCmd.h`
-  so that the compiler can build them as part of the
-  `main()` translation unit for optimization
-- add more `NULL` entries to get index 8 for
-  `SetSensorConfig`
-- wow, padding entries with `NULL` to get index to 8 has no
-  effect on code size, though it eats up 12 bytes of data
-
-```date-and-size
-Fri, Jan 17, 2020  8:13:55 PM
-   text	   data	    bss	    dec	    hex	filename
-    654	     18	     22	    694	    2b6	build/vis-spi-out.elf
-```
-
-- make the eighth entry `SetSensorConfig`
-- holy shit the program size jumps considerably:
-
-```date-and-size
-Fri, Jan 17, 2020  8:16:06 PM
-   text	   data	    bss	    dec	    hex	filename
-   1192	     38	     22	   1252	    4e4	build/vis-spi-out.elf
-```
-
-- Total number of cycles: 379
-- Total number of instructions: 234
-- there are a lot of instructions in this call
-- and it takes 37.9µs to execute, and that is before I've
-  even incorporated the part that actually writes the config
-  to the LIS
-
-- Where is the 234 instructions coming from?
-- the three QueuePops that get inlined in `SetSensorConfig`
-  consume:
-- Total number of cycles: 111
-- Total number of instructions: 67
-
-- No, the real cause of the problem is that `SpiSlaveTxByte`
-  is not being inlined correctly
-- Because the command definition is not inlined in `main()`,
-  I am getting stuck with the compiled version for `VisCmd.o`
-- I am *not* getting any benefits of defining the commands as
-  `inline`
-- Takeaway: I cannot use the jump table
-- The moment I use the command byte to return a function
-  pointer, I'm doomed to use the definition in `VisCmd.o`
-- What's wrong with a switch() setup?
-- Alternatively, I could make `VisCmd` a header-only lib.
-- Then I put the declarations in the main translation unit
-- And I only build `VisCmd.o` for testing
-- This is a more confusing build, and what is the benefit?
-  Why is a look-up table preferable to a simple switch-case?
-- Branch and try switch-case
-
-```date-and-size
-Fri, Jan 17, 2020 11:54:07 PM
+Sat, Jan 18, 2020  1:41:40 AM
    text	   data	    bss	    dec	    hex	filename
     836	      0	     22	    858	    35a	build/vis-spi-out.elf
 ```
 
-- promising:
-    - the program memory is 356 bytes smaller
-    - data memory dropped to 0?
 
-# [x] Fix unit tests of SpiSlaveTxByte to reflect use of interrupt disable/enable
-
-# [x] Erase old _TransferIsDone tests and any occurence of this function
-
-# [x] Go erase the ISR-SPEEDUP-TODO: comments
-
-# [x] Set up tests for the faked functions in SpiSlave
-
-# [x] Write the tests for the faked functions in SpiSlave
-
-# [x] Add function `ReplyCommandInvalid`
-- [x] rewrite `WriteSpiMaster`
-    - hmm.... `ReplyCommandInvalid` calls `WriteSpiMaster`
-    - logically part of lib `SpiSlave`
-    - but `WriteSpiMaster` uses lib `Queue`
-    - turns out when I rewrote it as `SpiSlaveTxByte`, I didn't
-      need to use `Queue` at all
-        - this was just to wait for SPI transfer to finish and to
-          clean the garbage byte from the Queue
-        - I optimized the SPI transfer time for SlaveTx by
-          waiting disabling the SPI interrupt for transfer
-        - that eliminated the garbage byte getting onto the Queue
-        - and it eliminated the ability to check the Queue as an
-          indicator of SPI transfer done
-        - check SPI interrupt flag instead (this is also better
-          since it allows for the possibility of doing
-          transmissions even if the Queue is not empty)
-- [x] add this function
-    - [x] start by setting up a test of the function in
-      `vis-spi-out/test/test_runner.c`
-        - call lib `VisCmd.h`
-        - tests are `VisCmd_tests`
-        - all of the commands that run on the `Vis` board go here
-    - [x] try function in application and look at assembly
-    - see Tiddler: "Add function `ReplyCommandInvalid`"
-
-# [x] fix `loop` (use `ReplyCommandInvalid` instead of placeholder)
-
-# [x] Decided I cannot simplify macros for faking
-- goal: reduce number of lines, make faking simpler
-- goal: do not forget to include `lib_faked.h`
-- goal: do not forget to wrap include `lib_faked.h` in ifdef
-  macro
-
-These goals are not achievable.
 
 ## Macro body cannot include macro directives
+
 Unfortunately, macro bodies cannot include macro directives,
 i.e., it contain the text for other `#` macro stuff:
 
