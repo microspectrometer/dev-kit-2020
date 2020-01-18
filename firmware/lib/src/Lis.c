@@ -13,3 +13,4 @@ void LisClkFreq50kHz(void);
 void LisClkOn(void);
 // ---API---
 void LisInit(void);
+bool LisConfigIsValid(lis_cfg binning, lis_cfg gain, lis_cfg active_rows);

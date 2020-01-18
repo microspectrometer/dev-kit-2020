@@ -2448,6 +2448,26 @@ Sat, Jan 18, 2020  1:41:40 AM
     836	      0	     22	    858	    35a	build/vis-spi-out.elf
 ```
 
+- after the move:
+
+```date-and-size
+Sat, Jan 18, 2020  1:54:45 AM
+   text	   data	    bss	    dec	    hex	filename
+    836	      0	     22	    858	    35a	build/vis-spi-out.elf
+```
+
+- Great, no change!
+- unit-test `LisConfigIsValid`
+
+```date-and-size
+Sat, Jan 18, 2020  2:29:53 AM
+   text	   data	    bss	    dec	    hex	filename
+    836	      0	     22	    858	    35a	build/vis-spi-out.elf
+```
+
+- still no change
+
+
 
 
 ## Macro body cannot include macro directives

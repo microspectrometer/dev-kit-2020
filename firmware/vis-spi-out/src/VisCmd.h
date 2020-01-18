@@ -9,6 +9,7 @@
 #define _VISCMD_H
 #include "SpiSlave.h"
 #include "StatusCode.h"
+#include "Lis.h"
 #include "LisConfig.h"
 #include "Queue.h"
 
@@ -58,11 +59,7 @@ inline void SetSensorConfig(void)
     active_rows = QueuePop(SpiFifo);
     // Reply with error if any config value is invalid
     // TODO: replace with LisConfigIsValid(binning, gain, active_rows)
-    if (
-            ((binning != BINNING_OFF) && (binning != BINNING_ON))
-        ||  ((gain != GAIN_1X) && (gain != GAIN_2X5) && (gain != GAIN_4X) && (gain != GAIN_5X))
-        ||  ((active_rows & 0xE0) != 0x00)
-       )
+    if ( !LisConfigIsValid(binning, gain, active_rows) )
     {
         SpiSlaveTxByte(ERROR);
         return;

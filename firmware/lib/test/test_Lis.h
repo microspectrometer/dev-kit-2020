@@ -13,5 +13,9 @@ void LisInit_resets_PWM_timer_at_top(void);
 void LisInit_PWM_timer_top_is_OCR0A(void);
 void LisInit_PWM_timer_is_clocked_by_CPU_with_no_prescaling(void);
 void LisInit_outputs_the_PWM_clock_on_pin_Clk(void);
+void LisConfigIsValid_returns_false_if_binning_is_invalid(void);
+void LisConfigIsValid_returns_false_if_gain_is_invalid(void);
+void LisConfigIsValid_returns_false_if_active_rows_is_invalid(void);
+void LisConfigIsValid_returns_true_if_config_is_valid(void);
 
 #endif // _TEST_LIS_H

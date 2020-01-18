@@ -2,6 +2,7 @@
 #define _LIS_H
 #include <stdint.h>
 #include "ReadWriteBits.h"
+#include "LisConfig.h"
 //---Hardware types: register addresses, pin numbers, bit numbers---
 typedef uint8_t volatile * const lis_ptr; // i/o reg address
 typedef uint8_t const lis_pin; // bit index into i/o reg for an i/o pin
@@ -166,6 +167,43 @@ inline void LisInit(void)
     Pin_LisSync_SetInput();
     LisClkFreq50kHz();
     LisClkOn();
+}
+inline bool LisConfigIsValid(lis_cfg binning, lis_cfg gain, lis_cfg active_rows)
+{
+    /** LisConfigIsValid behavior:\n 
+      * - returns false if binning is invalid\n 
+      * - returns false if gain is invalid\n 
+      * - returns false if active rows is invalid\n 
+      * - returns true if config is valid\n 
+      * */
+    return
+        (
+            (binning == BINNING_OFF) || (binning == BINNING_ON)
+        )
+        &&
+        (
+            (gain == GAIN_1X)  ||
+            (gain == GAIN_2X5) ||
+            (gain == GAIN_4X)  ||
+            (gain == GAIN_5X)
+        )
+        &&
+        (
+            (active_rows & 0xE0) == 0x00
+        );
+    /* return */
+        /* ( */
+        /*     (binning != BINNING_OFF) && (binning != BINNING_ON) */
+        /* ) || */
+        /* ( */
+        /*     (gain != GAIN_1X) && */
+        /*     (gain != GAIN_2X5) && */
+        /*     (gain != GAIN_4X) && */
+        /*     (gain != GAIN_5X) */
+        /* ) || */  
+        /* ( */
+        /*     (active_rows & 0xE0) != 0x00 */
+        /* ); */
 }
 
 #endif // _LIS_H

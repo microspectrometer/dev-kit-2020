@@ -184,3 +184,55 @@ void LisInit_outputs_the_PWM_clock_on_pin_Clk(void)
     TEST_ASSERT_BIT_LOW(Lis_COM0B0, *Lis_TCCR0A);
     TEST_ASSERT_BIT_HIGH(Lis_COM0B1, *Lis_TCCR0A);
 }
+void LisConfigIsValid_returns_false_if_binning_is_invalid(void)
+{
+    /* =====[ Setup ]===== */
+    // Fake some config values.
+    binning = 0xFF;
+    gain = GAIN_1X;
+    active_rows = ALL_ROWS_ACTIVE;
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        !LisConfigIsValid(binning, gain, active_rows),
+        "Binning is invalid: expect `LisConfigIsValid` returns false."
+        );
+}
+void LisConfigIsValid_returns_false_if_gain_is_invalid(void)
+{
+    /* =====[ Setup ]===== */
+    // Fake some config values.
+    binning = BINNING_ON;
+    gain = 0xFF;
+    active_rows = ALL_ROWS_ACTIVE;
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        !LisConfigIsValid(binning, gain, active_rows),
+        "Gain is invalid: expect `LisConfigIsValid` returns false."
+        );
+}
+void LisConfigIsValid_returns_false_if_active_rows_is_invalid(void)
+{
+    /* =====[ Setup ]===== */
+    // Fake some config values.
+    binning = BINNING_OFF;
+    gain = GAIN_2X5;
+    active_rows = 0xFF;
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        !LisConfigIsValid(binning, gain, active_rows),
+        "Rows is invalid: expect `LisConfigIsValid` returns false."
+        );
+}
+void LisConfigIsValid_returns_true_if_config_is_valid(void)
+{
+    /* =====[ Setup ]===== */
+    // Fake some config values.
+    binning = BINNING_OFF;
+    gain = GAIN_2X5;
+    active_rows = ALL_ROWS_ACTIVE;
+    /* =====[ Operate and Test ]===== */
+    TEST_ASSERT_TRUE_MESSAGE(
+        LisConfigIsValid(binning, gain, active_rows),
+        "Config is valid: expect `LisConfigIsValid` returns true."
+        );
+}

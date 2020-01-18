@@ -2,6 +2,10 @@
 // ---Unit Test Framework---
 #include "unity.h"
 #include "Mock.h"
+// Python-to-Firmware communication status codes
+#include "StatusCodes.h"
+// LIS-770i configuration
+#include "LisConfigs.h"
 // ---Test Framework requires runner to define setup/teardown/mock pointers---
 void (*setUp)(void); void (*tearDown)(void);
 Mock_s *mock; // record calls/args to mocked-out libs
@@ -257,7 +261,7 @@ void UartSpi_tests(bool run_test)
     }
 }
 
-void Lis_tests(bool run_test)
+void Run_LisInit_tests(bool run_test)
 {
     if (run_test)
     {
@@ -276,6 +280,25 @@ void Lis_tests(bool run_test)
         RUN_TEST(LisInit_outputs_the_PWM_clock_on_pin_Clk);
     }
 }
+void Run_LisConfigIsValid_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(LisConfigIsValid_returns_false_if_binning_is_invalid);
+        RUN_TEST(LisConfigIsValid_returns_false_if_gain_is_invalid);
+        RUN_TEST(LisConfigIsValid_returns_false_if_active_rows_is_invalid);
+        RUN_TEST(LisConfigIsValid_returns_true_if_config_is_valid);
+    }
+}
+void Lis_tests(bool run_test)
+{
+    if (run_test)
+    {
+        Run_LisInit_tests(Nope);
+        Run_LisConfigIsValid_tests(Yep);
+    }
+}
 
 int main()
 {
@@ -284,7 +307,7 @@ int main()
     ReadWriteBits_tests(Nope);
     Queue_tests(Nope);
     UartSpi_tests(Nope);
-    Lis_tests(Nope);
+    Lis_tests(Yep);
     Flag_tests(Nope);
     SpiSlave_tests(Nope);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
