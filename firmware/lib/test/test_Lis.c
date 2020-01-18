@@ -1,6 +1,8 @@
 #include "unity.h"
 #include "test_Lis.h"
 #include "Lis.h"
+
+/* =====[ LisInit ]===== */
 void LisInit_sets_PixSelect_as_an_output(void)
 {
     /* =====[ Setup ]===== */
@@ -184,6 +186,8 @@ void LisInit_outputs_the_PWM_clock_on_pin_Clk(void)
     TEST_ASSERT_BIT_LOW(Lis_COM0B0, *Lis_TCCR0A);
     TEST_ASSERT_BIT_HIGH(Lis_COM0B1, *Lis_TCCR0A);
 }
+
+/* =====[ LisConfigIsValid ]===== */
 void LisConfigIsValid_returns_false_if_binning_is_invalid(void)
 {
     /* =====[ Setup ]===== */
@@ -236,3 +240,9 @@ void LisConfigIsValid_returns_true_if_config_is_valid(void)
         "Config is valid: expect `LisConfigIsValid` returns true."
         );
 }
+
+/* =====[ LisWriteConfig ]===== */
+void LisWriteConfig_converts_config_to_28bit_sequence(void){}
+void LisWriteConfig_enters_LIS_programming_mode(void){}
+void LisWriteConfig_writes_28bits_to_LIS_setup_register(void){}
+void LisWriteConfig_exits_LIS_programming_mode(void){}

@@ -291,12 +291,20 @@ void Run_LisConfigIsValid_tests(bool run_test)
         RUN_TEST(LisConfigIsValid_returns_true_if_config_is_valid);
     }
 }
+void Run_LisWriteConfig_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    }
+}
 void Lis_tests(bool run_test)
 {
     if (run_test)
     {
         Run_LisInit_tests(Nope);
-        Run_LisConfigIsValid_tests(Yep);
+        Run_LisConfigIsValid_tests(Nope);
+        Run_LisWriteConfig_tests(Yep);
     }
 }
 
