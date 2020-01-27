@@ -295,7 +295,28 @@ void Run_LisWriteConfig_tests(bool run_test)
 {
     if (run_test)
     {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(LisWriteConfig_converts_config_to_28bit_sequence);
+    }
+}
+void Run__ConfigAs28bits_tests(bool run_test)
+{
+    if (run_test)
+    {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(ConfigAs28bits_writes_config_as_little_endian_ie_binning_is_config_byte0_bit0);
+        RUN_TEST(ConfigAs28bits_sets_config_byte0_bit0_if_BINNING_ON);
+        RUN_TEST(ConfigAs28bits_clears_config_byte0_bit0_if_BINNING_OFF);
+        RUN_TEST(ConfigAs28bits_byte0_bit1_clear_and_bit2_clear_if_GAIN_1X);
+        RUN_TEST(ConfigAs28bits_byte0_bit1_clear_and_bit2_set_if_GAIN_2X5);
+        RUN_TEST(ConfigAs28bits_byte0_bit1_set_and_bit2_clear_if_GAIN_4X);
+        RUN_TEST(ConfigAs28bits_byte0_bit1_set_and_bit2_set_if_GAIN_5X);
+        RUN_TEST(ConfigAs28bits_bit3_to_bit27_set_if_ALL_ROWS_ACTIVE);
+        RUN_TEST(ConfigAs28bits_b3b8b13b18b23_set_if_ROW_1_ACTIVE);
+        RUN_TEST(ConfigAs28bits_b4b9b14b19b24_set_if_ROW_2_ACTIVE);
+        RUN_TEST(ConfigAs28bits_b5b10b15b20b25_set_if_ROW_3_ACTIVE);
+        RUN_TEST(ConfigAs28bits_b6b11b16b21b26_set_if_ROW_4_ACTIVE);
+        RUN_TEST(ConfigAs28bits_b7b12b17b22b27_set_if_ROW_5_ACTIVE);
     }
 }
 void Lis_tests(bool run_test)
@@ -303,8 +324,9 @@ void Lis_tests(bool run_test)
     if (run_test)
     {
         Run_LisInit_tests(Nope);
-        Run_LisConfigIsValid_tests(Yep);
-        Run_LisWriteConfig_tests(Nope);
+        Run_LisConfigIsValid_tests(Nope);
+        Run_LisWriteConfig_tests(Yep);
+        Run__ConfigAs28bits_tests(Nope);
     }
 }
 

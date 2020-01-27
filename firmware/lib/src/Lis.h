@@ -142,6 +142,90 @@ inline void LisClkOn(void)
     // ori	r24, 0x20	; 32
     // out	0x24, r24	; 36
 }
+inline void _ConfigAs28bits(uint8_t *config)
+{
+    /** ConfigAs28bits behavior:\n 
+      * - writes config as little endian ie binning is config byte0 bit0\n 
+      * - sets config byte0 bit0 if BINNING ON\n 
+      * - clears config byte0 bit0 if BINNING OFF\n 
+      * - byte0 bit1 clear and bit2 clear if GAIN 1X\n 
+      * - byte0 bit1 clear and bit2 set if GAIN 2X5\n 
+      * - byte0 bit1 set and bit2 clear if GAIN 4X\n 
+      * - byte0 bit1 set and bit2 set if GAIN 5X\n 
+      * - bit3 to bit27 set if ALL ROWS ACTIVE\n 
+      * - b3b8b13b18b23 set if ROW 1 ACTIVE\n 
+      * - b4b9b14b19b24 set if ROW 2 ACTIVE\n 
+      * - b5b10b15b20b25 set if ROW 3 ACTIVE\n 
+      * - b6b11b16b21b26 set if ROW 4 ACTIVE\n 
+      * - b7b12b17b22b27 set if ROW 5 ACTIVE\n 
+      * */
+    // Clear all bits in array at input address `config`.
+    config[0]=0x00; config[1]=0x00; config[2]=0x00; config[3]=0x00;
+    // binning is bit 0 of byte 0
+    uint8_t bit = 0;
+    if (BINNING_ON == binning) config[0] |= 1<<(bit++);
+    else bit++;
+    // bit 1 of byte 0 is datasheet "gain bit G2"
+    // bit 2 of byte 0 is datasheet "gain bit G1"
+    // {G2,G1}: {0,0} 1x; {0,1} 2.5x; {1,0} 4x; {1,1} 5x
+    if      (GAIN_2X5 == gain) { bit++; config[0] |= 1<<(bit++); }
+    else if (GAIN_4X == gain)  { config[0] |= 1<<(bit++); bit++; }
+    else if (GAIN_5X == gain)  { config[0] |= 1<<(bit++); config[0] |= 1<<(bit++); }
+    else { bit++; bit++; }
+    // bit 3 to 27 are pixel groups P25 to P1 to select active rows
+    // Example with binning_on and gain1x
+    // ----3----  ----2----  ----1----  ----0-(---) // byte
+    // 7654 3210  7654 3210  7654 3210  7654 3(210) // bit
+    // xxxx 1111  1111 1111  1111 1111  1111 1(001) // all rows on
+    // xxxx 0000  1000 0100  0010 0001  0000 1(001) // row 1 (or 5?)
+    // xxxx 0001  0000 1000  0100 0010  0001 0(001) // row 2 (or 4?)
+    // xxxx 0010  0001 0000  1000 0100  0010 0(001) // row 3
+    // xxxx 0100  0010 0001  0000 1000  0100 0(001) // row 4 (or 2?)
+    // xxxx 1000  0100 0010  0001 0000  1000 0(001) // row 5 (or 1?)
+    uint8_t const row1 = 0; uint8_t const row1_mask[] = {0x00,0x84,0x21,0x08};
+    uint8_t const row2 = 1; uint8_t const row2_mask[] = {0x01,0x08,0x42,0x10};
+    uint8_t const row3 = 2; uint8_t const row3_mask[] = {0x02,0x10,0x84,0x20};
+    uint8_t const row4 = 3; uint8_t const row4_mask[] = {0x04,0x21,0x08,0x40};
+    uint8_t const row5 = 4; uint8_t const row5_mask[] = {0x08,0x42,0x10,0x80};
+    // byte orders are mirrored below because
+    // rowN_mask[] is big endian, but
+    // config[] is little endian
+    if (active_rows&(1<<row1))
+    {
+        config[0] |= row1_mask[3];
+        config[1] |= row1_mask[2];
+        config[2] |= row1_mask[1];
+        config[3] |= row1_mask[0];
+    }
+    if (active_rows&(1<<row2))
+    {
+        config[0] |= row2_mask[3];
+        config[1] |= row2_mask[2];
+        config[2] |= row2_mask[1];
+        config[3] |= row2_mask[0];
+    }
+    if (active_rows&(1<<row3))
+    {
+        config[0] |= row3_mask[3];
+        config[1] |= row3_mask[2];
+        config[2] |= row3_mask[1];
+        config[3] |= row3_mask[0];
+    }
+    if (active_rows&(1<<row4))
+    {
+        config[0] |= row4_mask[3];
+        config[1] |= row4_mask[2];
+        config[2] |= row4_mask[1];
+        config[3] |= row4_mask[0];
+    }
+    if (active_rows&(1<<row5))
+    {
+        config[0] |= row5_mask[3];
+        config[1] |= row5_mask[2];
+        config[2] |= row5_mask[1];
+        config[3] |= row5_mask[0];
+    }
+}
 // ---API---
 /** \file Lis.h
  * # API
@@ -205,5 +289,7 @@ inline bool LisConfigIsValid(void)
         /*     (active_rows & 0xE0) != 0x00 */
         /* ); */
 }
-
+inline void LisWriteConfig(void)
+{
+}
 #endif // _LIS_H

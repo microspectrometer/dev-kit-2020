@@ -23,6 +23,9 @@ lis_cfg_val GAIN_4X = 0x04;
 lis_cfg_val GAIN_5X = 0x05;
 lis_cfg_val ALL_ROWS_ACTIVE = 0x1F;   // 0b00011111 : all five rows
 lis_cfg_val ONLY_ROW_1_ACTIVE = 0x01; // 0b00000001
-
+lis_cfg_val ONLY_ROW_2_ACTIVE = 0x02; // 0b00000010
+lis_cfg_val ONLY_ROW_3_ACTIVE = 0x04; // 0b00000100
+lis_cfg_val ONLY_ROW_4_ACTIVE = 0x08; // 0b00001000
+lis_cfg_val ONLY_ROW_5_ACTIVE = 0x10; // 0b00010000
 
 #endif // _LISCONFIGS_H

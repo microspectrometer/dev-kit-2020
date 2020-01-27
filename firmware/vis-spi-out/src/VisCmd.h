@@ -64,7 +64,7 @@ inline void SetSensorConfig(void)
         SpiSlaveTxByte(ERROR);
         return;
     }
-    /* LisWriteConfig(binning, gain, active_rows); */
+    /* LisWriteConfig(); */
     SpiSlaveTxByte(OK);
 }
 #ifdef USE_FAKES

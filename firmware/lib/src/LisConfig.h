@@ -23,6 +23,10 @@ extern lis_cfg_val GAIN_4X;
 extern lis_cfg_val GAIN_5X;
 extern lis_cfg_val ALL_ROWS_ACTIVE;
 extern lis_cfg_val ONLY_ROW_1_ACTIVE;
+extern lis_cfg_val ONLY_ROW_2_ACTIVE;
+extern lis_cfg_val ONLY_ROW_3_ACTIVE;
+extern lis_cfg_val ONLY_ROW_4_ACTIVE;
+extern lis_cfg_val ONLY_ROW_5_ACTIVE;
 
 #endif // _LISCONFIG_H
 

@@ -11,6 +11,8 @@ void PwmTimerTopIsOCR0A(void);
 void PwmTimerClockedByCpu_NoPrescaling(void);
 void LisClkFreq50kHz(void);
 void LisClkOn(void);
+void _ConfigAs28bits(uint8_t *config);
 // ---API---
 void LisInit(void);
 bool LisConfigIsValid(void);
+void LisWriteConfig(void);
