@@ -110,6 +110,7 @@ The `HEAD` is the last commit. The last commit is the default for
 that I'm reverting to the working state pointed to by `HEAD`.
 
 # Train of thought
+
 - [x] want to see definition of variables in a lib optimized correctly
     - BiColorLed is a lib
     - it uses a register and pins
@@ -224,6 +225,7 @@ that I'm reverting to the working state pointed to by `HEAD`.
         - so I stub them to ignore them in testing
 
 # [x] how do I test that a lib .c function calls a static
+
   function?
     - do not
     - treat `static` the way the compiler does: `inline` the function
@@ -244,12 +246,14 @@ that I'm reverting to the working state pointed to by `HEAD`.
         - target build links against `_faked.o`
 
 # use `g_strcmp0` instead of `==`
+
 - `AssertCall` was returning `false` when it should *clearly* be
   returning true
 - I fixed that problem by replacing the `==` comparison with a
   `g_strcmp0` comparison
 
 # Makefile has `-DLBINAME_FAKED` for each lib with fakes
+
 - [x] why is there a `-DSPISLAVE_FAKED` in the Makefile when the
   other hardware libs do not need a `-DLIBNAME_FAKED`?
 - because I "unit test libs using -DMacro to define fakes"
@@ -257,6 +261,7 @@ that I'm reverting to the working state pointed to by `HEAD`.
     - the fake records itself in `mock`
 
 # [x] _TransferIsDone vs QueueIsEmpty
+
 The test is using these as a while loop condition. Which while
 loop checks the condition faster?
 
@@ -274,6 +279,7 @@ to be *much* slower since calls to `QueuePop` and `QueuePush`
 take 38 cycles.
 
 ## Each iteration on `QueueIsEmpty(SpiFifo)` takes 7 cycles
+
 `loop()` waits for the Queue to be *not* empty:
 
 ```c
@@ -297,6 +303,7 @@ Sun, Jan 12, 2020  1:55:54 AM
 Each check of `QueueIsEmpty` consumes 7 cycles. Not bad.
 
 ## Each iteration on `_TransferIsDone()` takes 4 cycles
+
 I'm not sure yet if this flag carries the same info, but assume I
 set the flag up logically so it does. How long does it take?
 
@@ -319,6 +326,7 @@ Each check of `TransferIsDone` consumes 4 cycles. Not that much
 of a difference.
 
 ## Only a 4 byte difference between the two
+
 I'm confident I'm comparing the correct lines of code:
 
 - in both cases, the while loop jumps back to `0x1d6`
@@ -326,6 +334,7 @@ I'm confident I'm comparing the correct lines of code:
   `QueueIsEmpty` to `TransferIsDone`
 
 # embedded C on old micros: make all lib functions `inline`
+
 - making everything `inline` is the only practical option
 - in other words, after splitting the application up into libs,
   *every* function in those libs is `inline`:
@@ -333,6 +342,7 @@ I'm confident I'm comparing the correct lines of code:
     - the function prototype is placed in the `.c`
 
 ## why `inline`?
+
 - two goals lead to the need for `inline`:
 1. splitting code up into multile `.c` files creates multiple
    translation units
@@ -348,6 +358,7 @@ I'm confident I'm comparing the correct lines of code:
 ## three drawbacks to inlining everything
 
 ### 1. no more `static` functions
+
 The compiler inlines `static` functions within a translation
 unit. But that only generates optimized assembly if the
 translation unit sees the hardware definitions.
@@ -397,6 +408,7 @@ and the solution I use to each problem.
   functions and makes a pretty output
 
 ### 2. order function definitions to avoid "implicit declarations"
+
 - usually declaration is in `.h`
 - then calls always come `after` the declaration
 - but now declaration is in `.c`
@@ -415,6 +427,7 @@ and the solution I use to each problem.
 - i.e., both `lib.o` and `main.o` need the hardware definitions
 
 ### 3. compiler errors are misleading about source of error
+
 Example:
 
 ```bash
@@ -489,6 +502,7 @@ lib/test/test_SpiSlave.c|266| <<SpiSlaveTxByte_waits_until_SPI_transfer_is_done>
 
 
 # Use the `-include` flag for AVR headers like `<avr/io.h>`
+
 This is a way for me to tell the compiler to include a file:
 
 - without having to know its exact path
@@ -531,6 +545,7 @@ If I ever do such an update, remember to clean-all (`;mca`)
 before the build.
 
 # Flag -include uses "#include "..."" search chain
+
 Fold `man-gcc.man` by `indent` and see section `Options
 Controlling the Kind of Output`
 
@@ -566,6 +581,7 @@ None of these exist as paths I can get to. They are fake paths
 coming from the avr-gcc.exe via the `-B` flag.
 
 # AVR headers like `<avr/io.h>` are found via -B in LFLAGS
+
 Fold `man-gcc.man` by `indent` and see section `Options for
 Directory Search`.
 
@@ -584,17 +600,20 @@ This tells `avr-gcc`:
 > files of the compiler itself.
 
 # Unit-test headers are included with -I in CFLAGS
+
 Fold `man-gcc.man` by `indent` and see section `Options for
 Directory Search`.
 
 `CFLAGS` use `-I` to add include paths.
 
 # `avr-gcc` can always `inline` but not always optimize
+
 - define all lib functions `inline`
 - build `main.o` with `lib-Hardware.h`
 - do not build `lib.o` with `lib-Hardware.h`
 
 ## `inline` is not the problem
+
 - if a function is defined in a header:
     - any `.c` file that includes the header *sees* the
       definition
@@ -641,6 +660,7 @@ Directory Search`.
     - and ''avr-gcc'' uses the best instructions
 
 ## problem is translation unit missing hardware definitions
+
 - but I immediately ran into the problem that I needed to call
   those functions again in `main.c`, but `main.c` does not have
   the hardware definitions, so ''avr-gcc'' does not choose the
@@ -726,6 +746,42 @@ multiple definition of `Spi_SPDR'
 ```
 
 # ---Completed Tasks---
+
+# [x] Unit test `LisConfigIsValid`
+
+- [x] first build for avr to test moving if() conditional to
+  `Lis` lib as `LisConfigIsValid()`
+
+- before the move:
+
+```date-and-size
+Sat, Jan 18, 2020  1:41:40 AM
+   text	   data	    bss	    dec	    hex	filename
+    836	      0	     22	    858	    35a	build/vis-spi-out.elf
+```
+
+- after the move:
+
+```date-and-size
+Sat, Jan 18, 2020  1:54:45 AM
+   text	   data	    bss	    dec	    hex	filename
+    836	      0	     22	    858	    35a	build/vis-spi-out.elf
+```
+
+- Great, no change!
+- unit-test `LisConfigIsValid`
+
+```date-and-size
+Sat, Jan 18, 2020  2:29:53 AM
+   text	   data	    bss	    dec	    hex	filename
+    836	      0	     22	    858	    35a	build/vis-spi-out.elf
+```
+
+- still no change
+
+
+
+
 # [x] Replace look-up table with switch-case
 
 - size is 654 bytes
@@ -1971,6 +2027,7 @@ ISR(SPI_STC_vect)
   the data, the head, the tail, the length, etc.
 
 ### [x] how costly is having QueuePush in the ISR?
+
 - how many cycles is the ISR with QueuePush?
     - copy .avra code into a buffer
     - `;avrt` to calculate time in cycles
@@ -1987,6 +2044,7 @@ ISR(SPI_STC_vect)
     - call to `QueuePush` is an additional 69 cycles
 
 ### list different scenarios when the ISR is triggered
+
 - what is the processor doing while this runs?
 - it *knows* it is waiting on a transfer:
     - just sit in a blocking loop
@@ -1997,11 +2055,13 @@ ISR(SPI_STC_vect)
     - the interrupt triggers on both writes and reads
 
 ### explore flags for speed up
+
 - is it faster to have a *SPI read* flag?
 - at a minimum I should eliminate the call to `QueueIsFull`
 - `QueuePush` will handle the case that the `QueueIsFull`
 
 ### idea 1: ISR checks the flag to decide whether to queue the data
+
 - decision:
     - if *SPI read* is clear, do not push onto queue
     - if *SPI read* is set, push onto queue
@@ -2014,6 +2074,7 @@ ISR(SPI_STC_vect)
     - the wasted ISR calls during the writes
 
 ### idea 2: ISR just sets flags
+
 - main loop checks flags in a round-robin and acts on the flags
 - actually, thinking of it this way, if there is nothing
   I can do about the Queue being full, there is no help
@@ -2078,6 +2139,7 @@ ISR(SPI_STC_vect)
 ```
 
 ### Using flags makes the ISR shorter and faster
+
 - calculate time for ISR routine with flags instead of Queue
   calls:
     - Total number of cycles: 49
@@ -2091,6 +2153,7 @@ ISR(SPI_STC_vect)
         - setting an `ERROR_flag`
 
 ### takeaways so far: move out QueueIsFull
+
 - the overhead of ISR setup/teardown to make space for making
   Queue calls is no different than the overhead in calling
   these functions outside the ISR
@@ -2103,6 +2166,7 @@ ISR(SPI_STC_vect)
   eliminating calls in the ISR
 
 ### Checking `QueueIsEmpty` is pretty fast
+
 - main loop with call to QueueIsEmpty:
 ```c
     // Idle until a command is received
@@ -2135,12 +2199,14 @@ ISR(SPI_STC_vect)
 ```
 
 ### idea 3: QueuePush is only call in ISR and depends on flag
+
 - only call is QueuePush
 - and it is only called if the flag is set
 - the flag indicates the processor is in a state where it is
   expecting data from the master
 
 #### what is the speed difference
+
 - difference between executing the ISR when:
     - the flag *is set*: QueuePush is called
     - vs:
@@ -2248,6 +2314,7 @@ ISR(SPI_STC_vect)
 ```
 
 #### calculate time for this ISR routine
+
 - Total number of cycles: 116
 - Total number of instructions: 63
 
@@ -2264,6 +2331,7 @@ ISR(SPI_STC_vect)
 ```
 
 #### Assembly code with flag to check before QueuePush
+
 ```asm
 ISR(SPI_STC_vect)
 {
@@ -2354,10 +2422,12 @@ ISR(SPI_STC_vect)
 ```
 
 #### calculate time for this ISR routine
+
 - Total number of cycles: 121
 - Total number of instructions: 66
 
 #### slow down when listening is negligible
+
 - 116 cycles: *always* push onto Queue, no flag
 - 121 cycles: check for `listening` flag before pushing
 
@@ -2378,7 +2448,7 @@ ISR(SPI_STC_vect)
   brcs	.+28     	; 0x16a <__vector_17+0x60>
 ```
 
-#### skipping QueuePush saves 61 cycles!
+### skipping QueuePush saves 61 cycles!
 
 Total number of cycles: 61
 Total number of instructions: 35
@@ -2391,7 +2461,7 @@ Total number of instructions: 35
     - 91 cycles for the ISR
     - plus 60 cycles for a call to QueuePush
 
-#### time savings justifies the added complexity
+### time savings justifies the added complexity
 
 - flag is *clear* when writing a frame
 - a frame is 784 bytes
@@ -2437,38 +2507,8 @@ Total number of instructions: 35
     - define as `const` so that `main()` translation unit loads
       the globals into working registers (check this)
 - [ ] requires Lis function `LisWriteConfig`
-- [ ] first build for avr to test moving if() conditional to
-  `Lis` lib as `LisConfigIsValid()`
 
-- before the move:
-
-```date-and-size
-Sat, Jan 18, 2020  1:41:40 AM
-   text	   data	    bss	    dec	    hex	filename
-    836	      0	     22	    858	    35a	build/vis-spi-out.elf
-```
-
-- after the move:
-
-```date-and-size
-Sat, Jan 18, 2020  1:54:45 AM
-   text	   data	    bss	    dec	    hex	filename
-    836	      0	     22	    858	    35a	build/vis-spi-out.elf
-```
-
-- Great, no change!
-- unit-test `LisConfigIsValid`
-
-```date-and-size
-Sat, Jan 18, 2020  2:29:53 AM
-   text	   data	    bss	    dec	    hex	filename
-    836	      0	     22	    858	    35a	build/vis-spi-out.elf
-```
-
-- still no change
-
-
-
+# [ ] Unit test `LisWriteConfig`
 
 ## Macro body cannot include macro directives
 
