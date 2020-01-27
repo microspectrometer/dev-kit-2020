@@ -35,7 +35,7 @@ unittest_o  := ${unity_libo} ${mock-c_libo}
 # Compile hwlib obj files with FakeAvrHeaders for unit tests.
 CFLAGS_for_cygwin = -I/usr/include/glib-2.0 \
 	-I/usr/lib/glib-2.0/include \
-	-DSPISLAVE_FAKED \
+	-DUSE_FAKES \
 	-I${path_mock-c}include -I${path_unity} \
 	-Isrc \
 	-Itest ${IncludeFakeAvrHeaders} \
@@ -80,6 +80,10 @@ test_lib_o := $(addsuffix .o,${all_libs})
 test_lib_o := $(addprefix build/test_,${test_lib_o})
 lib_headers := $(addsuffix .h,${all_libs})
 lib_headers := $(addprefix src/,${lib_headers})
+# List libs that USE_FAKES in tests
+lib_faked := SpiSlave Lis
+lib_faked_o := $(addsuffix _faked.o,${lib_faked})
+lib_faked_o := $(addprefix build/,${lib_faked_o})
 # }}}
 # =====[ Build recipes ]=====
 # ;mct - `:make clean-TestSuite` (to force a rebuild){{{
@@ -99,14 +103,14 @@ clean-all-builds:
 	rm -f build/test_runner.o
 	rm -f ${lib_o}
 	rm -f ${test_lib_o}
-	rm -f build/SpiSlave_faked.o
+	rm -f ${lib_faked_o}
 # }}}
 # }}}
 # ;mktgc - "unit-test" target: `TestSuite-results.md`{{{
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${lib_o} ${test_lib_o} build/SpiSlave_faked.o
+${lib_o} ${test_lib_o} ${lib_faked_o}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 # test-runner rebuilds if fake hardware definitions change
 build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes} ${lib_headers}
@@ -115,7 +119,7 @@ build/test_runner.o: test/test_runner.c test/HardwareFake.h ${HardwareFakes} ${l
 ${test_lib_o}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # fake functions
-build/SpiSlave_faked.o: build/%.o: test/%.c test/%.h
+${lib_faked_o}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # For tests: stub function-like macros used in libs in FakeAvrHeaders
 ${lib_o}: build/%.o: src/%.c src/%.h ${FakeAvrHeaders}
@@ -136,6 +140,9 @@ print_vars:
 	echo
 	echo lib_o:
 	echo - ${lib_o}
+	echo
+	echo lib_faked_o:
+	echo - ${lib_faked_o}
 	echo
 	echo lib_headers:
 	echo - ${lib_headers}

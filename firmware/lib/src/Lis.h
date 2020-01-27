@@ -3,6 +3,9 @@
 #include <stdint.h>
 #include "ReadWriteBits.h"
 #include "LisConfig.h"
+#ifdef USE_FAKES
+#include "Lis_faked.h" // declare fakes
+#endif
 //---Hardware types: register addresses, pin numbers, bit numbers---
 typedef uint8_t volatile * const lis_ptr; // i/o reg address
 typedef uint8_t const lis_pin; // bit index into i/o reg for an i/o pin
@@ -289,7 +292,16 @@ inline bool LisConfigIsValid(void)
         /*     (active_rows & 0xE0) != 0x00 */
         /* ); */
 }
+
+#ifdef USE_FAKES
+#define _ConfigAs28bits _ConfigAs28bits_fake
+#endif // USE_FAKES
 inline void LisWriteConfig(void)
 {
+    uint8_t config[4];
+    _ConfigAs28bits(config);
 }
+#ifdef USE_FAKES
+#undef _ConfigAs28bits
+#endif // USE_FAKES
 #endif // _LIS_H

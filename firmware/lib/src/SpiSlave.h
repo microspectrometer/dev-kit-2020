@@ -25,7 +25,7 @@ extern spi_bit Spi_Enable;
 extern spi_bit Spi_InterruptEnable;
 extern spi_bit Spi_InterruptFlag;
 
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 #include "SpiSlave_faked.h" // declare fakes
 #endif
 // ---Private---
@@ -135,7 +135,7 @@ inline void ClearSpiInterruptFlag(void)
 }
 // ---API functions that call fakes when testing---
 //
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 #define ClearSpiInterruptFlag ClearSpiInterruptFlag_fake
 #endif
 inline void EnableSpiInterrupt(void)
@@ -171,11 +171,11 @@ inline void EnableSpiInterrupt(void)
     // Global interrupt enable
     sei(); // sei
 }
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 #undef ClearSpiInterruptFlag
 #endif
 
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 // Call fakes by renaming faked calls with _fake suffix.
 #define EnableSpiInterrupt EnableSpiInterrupt_fake
 #endif
@@ -198,12 +198,12 @@ inline void SpiSlaveInit(void)
     // Enable interrupts for robust SPI communication
     EnableSpiInterrupt();
 }
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 // Remove `_fake` suffix from function names.
 #undef EnableSpiInterrupt
 #endif
 
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 #define _SpiTransferIsDone _SpiTransferIsDone_fake
 #define _SignalDataReady _SignalDataReady_fake
 #define DisableSpiInterrupt DisableSpiInterrupt_fake
@@ -251,13 +251,13 @@ inline void SpiSlaveTxByte(uint8_t input_byte)
     // out	0x2c, r24
     // sei
 }
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 #undef _SpiTransferIsDone
 #undef _SignalDataReady
 #undef DisableSpiInterrupt
 #endif
 
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 #define SpiSlaveTxByte SpiSlaveTxByte_fake
 #endif
 inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
@@ -271,7 +271,7 @@ inline void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes)
         SpiSlaveTxByte(input_buffer[byte_index]);
     }
 }
-#ifdef SPISLAVE_FAKED
+#ifdef USE_FAKES
 #undef SpiSlaveTxByte
 #endif
 
