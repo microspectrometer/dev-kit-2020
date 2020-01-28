@@ -115,6 +115,8 @@ inline void PwmTimerClockedByCpu_NoPrescaling(void)
 }
 inline void LisClkFreq50kHz(void)
 {
+    /** Pin LisClk outputs a 50kHz square wave.\n 
+     * */
     ResetPwmTimerAtTop();
     PwmTimerTopIsOCR0A();
     PwmTimerClockedByCpu_NoPrescaling();
@@ -132,6 +134,9 @@ inline void LisClkFreq50kHz(void)
 }
 inline void LisClkOn(void)
 {
+    /** Pin LisClk goes HIGH when Counter0 is 0.\n 
+     *  Pin LisClk goes LOW when Counter0 matches OCR0B.
+     * */
     ClearBit(Lis_TCCR0A, Lis_COM0B0);
     SetBit(Lis_TCCR0A, Lis_COM0B1);
     // ---Expected Assembly---
@@ -229,6 +234,96 @@ inline void _ConfigAs28bits(uint8_t *config)
         config[3] |= row5_mask[0];
     }
 }
+inline void _WaitForLisClkLow(void)
+{
+    /** WaitForLisClkLow behavior:\n 
+      * - clears flag PwmTimerMatchesOCF0B\n 
+      * - waits until flag PwmTimerMatchesOCF0B is set\n 
+      * */
+    // Clear flag that is set when Counter0 matches OCR0B
+    SetBit(Lis_TIFR0, Lis_OCF0B); // set bit to clear flag
+    // Wait for flag to set again
+    while(BitIsClear(Lis_TIFR0, Lis_OCF0B));
+}
+
+#ifdef USE_FAKES
+#define _WaitForLisClkLow _WaitForLisClkLow_fake
+#endif // USE_FAKES
+inline void _EnterLisProgrammingMode(void)
+{
+    /** EnterLisProgrammingMode behavior:\n 
+      * - waits for LisClk LOW\n 
+      * - asserts LisPixSelect to program Lis\n 
+      * */
+    _WaitForLisClkLow();
+    SetBit(Lis_port2, Lis_PixSelect);
+}
+#ifdef USE_FAKES
+#undef _WaitForLisClkLow
+#endif // USE_FAKES
+
+inline void _ExitLisProgrammingMode(void)
+{
+    /** ExitLisProgrammingMode behavior:\n 
+      * - outputs LOW on pin LisRst\n 
+      * - outputs LOW on pin LisPixSelect\n 
+      * */
+    ClearBit(Lis_port1, Lis_Rst);
+    ClearBit(Lis_port2, Lis_PixSelect);
+}
+
+#ifdef USE_FAKES
+#define _WaitForLisClkLow _WaitForLisClkLow_fake
+#define _WaitForLisClkHigh _WaitForLisClkHigh_fake
+#endif // USE_FAKES
+inline void _WriteLisConfigBit(uint8_t * config, uint8_t bit_index)
+{
+    /** **WriteLisConfigBit** writes one bit of the LIS 28-bit
+     * programming sequence.
+     *
+     * To **write one bit**:
+     * - output bit value on pin `Lis_Rst`
+     * - clock the LIS
+     *
+     * Input parameters:
+     * - `config` points to one of the four config bytes
+     * - `bit_index` is the bit to write (bit7:0) from the
+     *   `config` byte
+     * */
+    /** WriteLisConfigBit behavior:\n 
+      * - outputs bit on LisRst\n 
+      * - waits for LisClk HIGH\n 
+      * - waits for LisClk LOW\n 
+      * */
+    // Set up pin `Lis_Rst` with value to write
+    BitIsSet(config, bit_index) ?
+        SetBit(Lis_port1, Lis_Rst)
+        :
+        ClearBit(Lis_port1, Lis_Rst);
+    // Clock in the value
+    _WaitForLisClkHigh();
+    _WaitForLisClkLow();
+}
+#ifdef USE_FAKES
+#undef _WaitForLisClkLow
+#undef _WaitForLisClkHigh
+#endif // USE_FAKES
+inline void _Write28bitLisConfig(uint8_t const *config)
+{
+    (void)config;
+    /* // Write all bits in the first three bytes of config */
+    /* for (uint8_t cfg_byte_i = 0; cfg_byte_i < 3; cfg_byte_i++) */
+    /* { */
+    /*     for (uint8_t bit_i = 0; bit_i<8; bit_i++) */
+    /*     { */
+    /*         _WriteLisConfigBit(config, bit_i); */
+    /*     } */
+    /* } */
+    /* // Write first four bits of last byte of config */
+    /* uint8_t bit_i = 0; */
+    /* while(bit_i < 4) _WriteLisConfigBit(config, bit_i++); */
+}
+
 // ---API---
 /** \file Lis.h
  * # API
@@ -278,30 +373,34 @@ inline bool LisConfigIsValid(void)
         (
             (active_rows & 0xE0) == 0x00
         );
-    /* return */
-        /* ( */
-        /*     (binning != BINNING_OFF) && (binning != BINNING_ON) */
-        /* ) || */
-        /* ( */
-        /*     (gain != GAIN_1X) && */
-        /*     (gain != GAIN_2X5) && */
-        /*     (gain != GAIN_4X) && */
-        /*     (gain != GAIN_5X) */
-        /* ) || */  
-        /* ( */
-        /*     (active_rows & 0xE0) != 0x00 */
-        /* ); */
 }
 
 #ifdef USE_FAKES
 #define _ConfigAs28bits _ConfigAs28bits_fake
+#define _EnterLisProgrammingMode _EnterLisProgrammingMode_fake
+#define _Write28bitLisConfig _Write28bitLisConfig_fake
+#define _ExitLisProgrammingMode _ExitLisProgrammingMode_fake
 #endif // USE_FAKES
 inline void LisWriteConfig(void)
 {
-    uint8_t config[4];
+    /** LisWriteConfig behavior:\n 
+      * - converts config to 28bit sequence\n 
+      * - enters LIS programming mode\n 
+      * - writes 28bits to LIS setup register\n 
+      * - exits LIS programming mode\n 
+      * */
+    // Store global lis_cfg parameters as a 28-bit config
+    uint8_t config[4]; // memory for 28-bit config
     _ConfigAs28bits(config);
+    // Program LIS with 28-bit config
+    _EnterLisProgrammingMode();
+    _Write28bitLisConfig(config);
+    _ExitLisProgrammingMode();
 }
 #ifdef USE_FAKES
 #undef _ConfigAs28bits
+#undef _EnterLisProgrammingMode
+#undef _Write28bitLisConfig
+#undef _ExitLisProgrammingMode
 #endif // USE_FAKES
 #endif // _LIS_H

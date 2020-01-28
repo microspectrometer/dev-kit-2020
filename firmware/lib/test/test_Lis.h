@@ -21,9 +21,6 @@ void LisConfigIsValid_returns_false_if_gain_is_invalid(void);
 void LisConfigIsValid_returns_false_if_active_rows_is_invalid(void);
 void LisConfigIsValid_returns_true_if_config_is_valid(void);
 
-/* =====[ LisWriteConfig ]===== */
-void LisWriteConfig_converts_config_to_28bit_sequence(void);
-
 /* =====[ _ConfigAs28bits ]===== */
 void ConfigAs28bits_writes_config_as_little_endian_ie_binning_is_config_byte0_bit0(void);
 void ConfigAs28bits_sets_config_byte0_bit0_if_BINNING_ON(void);
@@ -38,5 +35,32 @@ void ConfigAs28bits_b4b9b14b19b24_set_if_ROW_2_ACTIVE(void);
 void ConfigAs28bits_b5b10b15b20b25_set_if_ROW_3_ACTIVE(void);
 void ConfigAs28bits_b6b11b16b21b26_set_if_ROW_4_ACTIVE(void);
 void ConfigAs28bits_b7b12b17b22b27_set_if_ROW_5_ACTIVE(void);
+
+/* =====[ LisWriteConfig ]===== */
+void LisWriteConfig_converts_config_to_28bit_sequence(void);
+void LisWriteConfig_enters_LIS_programming_mode(void);
+void LisWriteConfig_writes_28bits_to_LIS_setup_register(void);
+void LisWriteConfig_exits_LIS_programming_mode(void);
+
+/* =====[ _WaitForLisClkLow ]===== */
+void WaitForLisClkLow_clears_flag_PwmTimerMatchesOCF0B(void);
+void WaitForLisClkLow_waits_until_flag_PwmTimerMatchesOCF0B_is_set(void);
+
+/* =====[ _WaitForLisClkHigh ]===== */
+void WaitForLisClkHigh_clears_flag_PwmTimerMatchesOCF0A(void);
+void WaitForLisClkHigh_waits_until_flag_PwmTimerMatchesOCF0A_is_set(void);
+
+/* =====[ _EnterLisProgrammingMode ]===== */
+void EnterLisProgrammingMode_waits_for_LisClk_LOW(void);
+void EnterLisProgrammingMode_asserts_LisPixSelect_to_program_Lis(void);
+
+/* =====[ _ExitLisProgrammingMode ]===== */
+void ExitLisProgrammingMode_outputs_LOW_on_pin_LisRst(void);
+void ExitLisProgrammingMode_outputs_LOW_on_pin_LisPixSelect(void);
+
+/* =====[ _WriteLisConfigBit ]===== */
+void WriteLisConfigBit_outputs_bit_on_LisRst(void);
+void WriteLisConfigBit_waits_for_LisClk_HIGH(void);
+void WriteLisConfigBit_waits_for_LisClk_LOW(void);
 
 #endif // _TEST_LIS_H

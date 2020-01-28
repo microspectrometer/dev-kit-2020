@@ -58,3 +58,82 @@ void _ConfigAs28bits_fake(uint8_t * config)
     RecordActualCall(mock, Record__ConfigAs28bits(config));
 }
 
+/* =====[ Mock _WaitForLisClkLow() ]===== */
+static RecordedCall * Record__WaitForLisClkLow(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "_WaitForLisClkLow";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void _WaitForLisClkLow_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   * */
+    RecordActualCall(mock, Record__WaitForLisClkLow());
+}
+
+/* =====[ Mock _WaitForLisClkHigh() ]===== */
+static RecordedCall * Record__WaitForLisClkHigh(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "_WaitForLisClkHigh";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void _WaitForLisClkHigh_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   * */
+    RecordActualCall(mock, Record__WaitForLisClkHigh());
+}
+
+/* =====[ Mock _EnterLisProgrammingMode() ]===== */
+static RecordedCall * Record__EnterLisProgrammingMode(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "_EnterLisProgrammingMode";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void _EnterLisProgrammingMode_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   * */
+    RecordActualCall(mock, Record__EnterLisProgrammingMode());
+}
+
+/* =====[ Mock _Write28bitLisConfig() ]===== */
+static RecordedCall * Record__Write28bitLisConfig(uint8_t * arg1)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "_Write28bitLisConfig";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t **)record_of_arg1->pArg) = arg1;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void _Write28bitLisConfig_fake(uint8_t * config)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   *  - arg1
+   * */
+    RecordActualCall(mock, Record__Write28bitLisConfig(config));
+}
+
+/* =====[ Mock _ExitLisProgrammingMode() ]===== */
+static RecordedCall * Record__ExitLisProgrammingMode(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "_ExitLisProgrammingMode";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void _ExitLisProgrammingMode_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   * */
+    RecordActualCall(mock, Record__ExitLisProgrammingMode());
+}

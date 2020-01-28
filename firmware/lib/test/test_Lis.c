@@ -3,6 +3,21 @@
 #include "test_Lis.h"
 #include "Lis.h"
 
+/* =====[ Test Helpers ]===== */
+static void _AssertCall(uint16_t num, char * name)
+{
+    //! Assert call number **num** is named **name**.
+    // Put num and name in the message displayed if test fails
+    GString *message = g_string_new(NULL);
+    g_string_append_printf(message, "`%s` is not call %d", name, num);
+    // Perform the test
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, num, name),
+        message->str
+        );
+    // Free memory used by GString
+    g_string_free(message, true);
+}
 /* =====[ LisInit ]===== */
 void LisInit_sets_PixSelect_as_an_output(void)
 {
@@ -572,13 +587,168 @@ void LisWriteConfig_converts_config_to_28bit_sequence(void)
     /* =====[ Operate ]===== */
     LisWriteConfig();
     /* =====[ Test ]===== */
-    uint16_t call_n = 1;
-    TEST_ASSERT_TRUE_MESSAGE(
-        AssertCall(mock, call_n, "_ConfigAs28bits"),
-        "Expect call to `_ConfigAs28bits`."
+    _AssertCall(1, "_ConfigAs28bits");
+}
+void LisWriteConfig_enters_LIS_programming_mode(void)
+{
+    /* =====[ Operate ]===== */
+    LisWriteConfig();
+    /* =====[ Test ]===== */
+    _AssertCall(2, "_EnterLisProgrammingMode");
+}
+void LisWriteConfig_writes_28bits_to_LIS_setup_register(void)
+{
+    /* =====[ Operate ]===== */
+    LisWriteConfig();
+    /* =====[ Test ]===== */
+    _AssertCall(3, "_Write28bitLisConfig");
+}
+void LisWriteConfig_exits_LIS_programming_mode(void)
+{
+    /* =====[ Operate ]===== */
+    LisWriteConfig();
+    /* =====[ Test ]===== */
+    _AssertCall(4, "_ExitLisProgrammingMode");
+}
+
+/* =====[ _WaitForLisClkLow ]===== */
+void WaitForLisClkLow_clears_flag_PwmTimerMatchesOCF0B(void)
+{
+    /* =====[ Setup ]===== */
+    /** Note this is *not* how TIFR0 works, this is just for testing.
+      * The flag is cleared by setting its bit in TIFR0.
+      * I do not bother to simulate that mechanism.
+      * I test by treating TIFR0 like any other register.
+      * */
+    ClearBit(Lis_TIFR0, Lis_OCF0B);
+    TEST_ASSERT_BIT_LOW(Lis_OCF0B, *Lis_TIFR0);
+    /* =====[ Operate ]===== */
+    _WaitForLisClkLow();
+    /* =====[ Test ]===== */
+    // Clear flag by setting flag bit
+    // reg: TIFR0, bit: OCF0B
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Lis_OCF0B,
+        *Lis_TIFR0,
+        "Expect `_WaitForLisClkLow` clears flag by setting bit."
         );
 }
-void LisWriteConfig_enters_LIS_programming_mode(void){}
-void LisWriteConfig_writes_28bits_to_LIS_setup_register(void){}
-void LisWriteConfig_exits_LIS_programming_mode(void){}
+void WaitForLisClkLow_waits_until_flag_PwmTimerMatchesOCF0B_is_set(void)
+{
+    // Cannot fake setting flag after calling function under test
+    TEST_PASS();
+}
 
+/* =====[ _WaitForLisClkHigh ]===== */
+void WaitForLisClkHigh_clears_flag_PwmTimerMatchesOCF0A(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+void WaitForLisClkHigh_waits_until_flag_PwmTimerMatchesOCF0A_is_set(void)
+{
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+
+/* =====[ _EnterLisProgrammingMode ]===== */
+void EnterLisProgrammingMode_waits_for_LisClk_LOW(void)
+{
+    /* =====[ Operate ]===== */
+    _EnterLisProgrammingMode();
+    /* =====[ Test ]===== */
+    _AssertCall(1, "_WaitForLisClkLow");
+}
+void EnterLisProgrammingMode_asserts_LisPixSelect_to_program_Lis(void)
+{
+    /* =====[ Setup ]===== */
+    ClearBit(Lis_port2, Lis_PixSelect);
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Lis_PixSelect,
+        *Lis_port2,
+        "PixSelect must be LOW when the test starts."
+        );
+    /* =====[ Operate ]===== */
+    _EnterLisProgrammingMode();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Lis_PixSelect,
+        *Lis_port2,
+        "Expect `EnterLisProgrammingMode` drives LisPixSelect HIGH."
+        );
+}
+
+/* =====[ _WriteLisConfigBit ]===== */
+void WriteLisConfigBit_outputs_bit_on_LisRst(void)
+{
+    /* =====[ Setup ]===== */
+    uint8_t config_bytes[4];
+    config_bytes[0] = 0x01; // byte 0 bit 0 = 1
+    config_bytes[1] = 0x00; // byte 1 bit 0 = 0
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        0, config_bytes[0], "Test starts with byte0 bit0 = 1"
+        );
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        0, config_bytes[1], "Test starts with byte1 bit0 = 0"
+        );
+    /* =====[ Operate and Test ]===== */
+    uint8_t * config = config_bytes; uint8_t bit_index = 0;
+    _WriteLisConfigBit(config++, bit_index); // byte 0 bit 0
+    TEST_ASSERT_BIT_HIGH(Lis_Rst, *Lis_port1);
+    _WriteLisConfigBit(config, bit_index); // byte 1 bit 0
+    TEST_ASSERT_BIT_LOW(Lis_Rst, *Lis_port1);
+}
+void WriteLisConfigBit_waits_for_LisClk_HIGH(void)
+{
+    /* =====[ Operate ]===== */
+    uint8_t config[4]; uint8_t bit_index = 0;
+    _WriteLisConfigBit(config, bit_index);
+    /* =====[ Test ]===== */
+    _AssertCall(1, "_WaitForLisClkHigh");
+}
+void WriteLisConfigBit_waits_for_LisClk_LOW(void)
+{
+    /* =====[ Operate ]===== */
+    uint8_t config[4]; uint8_t bit_index = 0;
+    _WriteLisConfigBit(config, bit_index);
+    /* =====[ Test ]===== */
+    _AssertCall(2, "_WaitForLisClkLow");
+}
+
+/* =====[ _Write28bitLisConfig ]===== */
+
+/* =====[ _ExitLisProgrammingMode ]===== */
+void ExitLisProgrammingMode_outputs_LOW_on_pin_LisRst(void)
+{
+    /* =====[ Setup ]===== */
+    SetBit(Lis_port1, Lis_Rst);
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Lis_Rst,
+        *Lis_port1,
+        "Rst must be HIGH when the test starts."
+        );
+    /* =====[ Operate ]===== */
+    _ExitLisProgrammingMode();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Lis_Rst,
+        *Lis_port1,
+        "Expect `Lis_Rst` LOW."
+        );
+}
+void ExitLisProgrammingMode_outputs_LOW_on_pin_LisPixSelect(void)
+{
+    /* =====[ Setup ]===== */
+    SetBit(Lis_port2, Lis_PixSelect);
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        Lis_PixSelect,
+        *Lis_port2,
+        "PixSelect must be HIGH when the test starts."
+        );
+    /* =====[ Operate ]===== */
+    _ExitLisProgrammingMode();
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW_MESSAGE(
+        Lis_PixSelect,
+        *Lis_port2,
+        "Expect `Lis_PixSelect` LOW."
+        );
+}

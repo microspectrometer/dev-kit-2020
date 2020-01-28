@@ -291,14 +291,6 @@ void Run_LisConfigIsValid_tests(bool run_test)
         RUN_TEST(LisConfigIsValid_returns_true_if_config_is_valid);
     }
 }
-void Run_LisWriteConfig_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
-        RUN_TEST(LisWriteConfig_converts_config_to_28bit_sequence);
-    }
-}
 void Run__ConfigAs28bits_tests(bool run_test)
 {
     if (run_test)
@@ -319,14 +311,84 @@ void Run__ConfigAs28bits_tests(bool run_test)
         RUN_TEST(ConfigAs28bits_b7b12b17b22b27_set_if_ROW_5_ACTIVE);
     }
 }
+void Run__WaitForLisClkLow_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(WaitForLisClkLow_clears_flag_PwmTimerMatchesOCF0B);
+        RUN_TEST(WaitForLisClkLow_waits_until_flag_PwmTimerMatchesOCF0B_is_set);
+    }
+}
+void Run__WaitForLisClkHigh_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(WaitForLisClkHigh_clears_flag_PwmTimerMatchesOCF0A);
+        RUN_TEST(WaitForLisClkHigh_waits_until_flag_PwmTimerMatchesOCF0A_is_set);
+    }
+}
+void Run__EnterLisProgrammingMode_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(EnterLisProgrammingMode_waits_for_LisClk_LOW);
+        RUN_TEST(EnterLisProgrammingMode_asserts_LisPixSelect_to_program_Lis);
+    }
+}
+void Run__WriteLisConfigBit_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(WriteLisConfigBit_outputs_bit_on_LisRst);
+        RUN_TEST(WriteLisConfigBit_waits_for_LisClk_HIGH);
+        RUN_TEST(WriteLisConfigBit_waits_for_LisClk_LOW);
+    }
+}
+void Run__Write28bitLisConfig_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    }
+}
+void Run__ExitLisProgrammingMode_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(ExitLisProgrammingMode_outputs_LOW_on_pin_LisRst);
+        RUN_TEST(ExitLisProgrammingMode_outputs_LOW_on_pin_LisPixSelect);
+    }
+}
+void Run_LisWriteConfig_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(LisWriteConfig_converts_config_to_28bit_sequence);
+        RUN_TEST(LisWriteConfig_enters_LIS_programming_mode);
+        RUN_TEST(LisWriteConfig_writes_28bits_to_LIS_setup_register);
+        RUN_TEST(LisWriteConfig_exits_LIS_programming_mode);
+    }
+}
 void Lis_tests(bool run_test)
 {
     if (run_test)
     {
         Run_LisInit_tests(Nope);
         Run_LisConfigIsValid_tests(Nope);
-        Run_LisWriteConfig_tests(Yep);
         Run__ConfigAs28bits_tests(Nope);
+        Run__WaitForLisClkLow_tests(Nope);
+        Run__WaitForLisClkHigh_tests(Yep);
+        Run__EnterLisProgrammingMode_tests(Nope);
+        Run__WriteLisConfigBit_tests(Nope);
+        Run__Write28bitLisConfig_tests(Nope);
+        Run__ExitLisProgrammingMode_tests(Nope);
+        Run_LisWriteConfig_tests(Nope);
     }
 }
 
