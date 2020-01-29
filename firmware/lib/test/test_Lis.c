@@ -4,7 +4,7 @@
 #include "Lis.h"
 
 /* =====[ Test Helpers ]===== */
-static void _AssertCall(uint16_t num, char * name)
+static void _AssertCall(uint16_t num, char const * name)
 {
     //! Assert call number **num** is named **name**.
     // Put num and name in the message displayed if test fails
@@ -17,6 +17,57 @@ static void _AssertCall(uint16_t num, char * name)
         );
     // Free memory used by GString
     g_string_free(message, true);
+}
+static void _AssertArg(uint16_t call_n, uint8_t arg_n, void *pval)
+{
+    //! Assert value of arg number **arg_n** == (*pval)
+    /** Pass **address of arg** to parameter **pval**.\n
+      * **Pass arg same way, whether it is a value or a pointer.**
+      *
+      * Example: `CallWithTwoArgs(uint8_t *pbyte, uint8_t bit_num)`
+      *
+      * ```
+      * uint8_t byte = 0x0a;
+      * uint8_t *pbyte = &byte;
+      * uint8_t bit_num = 7;
+      * _AssertCall(1, "CallWithTwoArgs");
+      * _AssertArg(1,1, &pbyte);
+      * _AssertArg(1,2, &bit_num);
+      * ```
+      *
+      * The first _AssertArg checks a pointer to a byte.
+      * The second _AssertArg checks a byte.
+      *
+      * Both use the `&` prefix to pass the address.
+      *
+      * In the case of `&pbyte`, AssertArg() checks the pointer
+      * (pbyte), but the pre-test-result prints the value
+      * pointed to (byte).
+      *
+      * Example:
+      *
+      * ```
+      * // Call was `CallWithTwoArgs(pbyte, bit_num);`
+      * _AssertArg(1,2, &bit_num); // check arg2 equals 7
+      * _AssertArg(1,1, &pbyte); // check arg1 equals address of byte
+      * ```
+      *
+      * The AssertArg pre-test-result message prints the value
+      * recorded arg1 points to (0x0a).\n 
+      *
+      * Note that the test fails if arg1 does not equal pbyte,
+      * even if pbyte and arg1 happen to point to equal values.
+      * */
+    GString *msg = g_string_new(NULL);
+    g_string_printf(msg, "Expect different value for call %d arg %d.", call_n, arg_n);
+    // I cannot print the expected value without asking the
+    // caller to include the type as a string. Better to keep the
+    // arg list short. Call and arg number are good enough.
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertArg(mock, call_n, arg_n, pval),
+        msg->str
+        );
+    g_string_free(msg, true);
 }
 /* =====[ _setup_bit_val ]===== */
 enum bit_val {LOW, HIGH}; typedef enum bit_val bit_val;
@@ -799,6 +850,40 @@ void WriteLisConfigBit_waits_for_LisClk_LOW(void)
 }
 
 /* =====[ _Write28bitLisConfig ]===== */
+void Write28bitLisConfig_writes_28bits_starting_at_byte0_bit0_and_ending_at_byte3_bit3(void)
+{
+    uint8_t config_bytes[4];
+    config_bytes[0] = 0xac;
+    config_bytes[1] = 0xbd;
+    config_bytes[2] = 0xce;
+    config_bytes[3] = 0xdf;
+    /* =====[ Operate ]===== */
+    uint8_t * config = config_bytes;
+    _Write28bitLisConfig(config);
+    /* =====[ Test ]===== */
+    char const * call_name = "_WriteLisConfigBit";
+    uint16_t call_n = 1;
+    // Check first 24 bits
+    for (uint8_t byte_i = 0; byte_i<3; byte_i++)
+    {
+        for (uint8_t bit_i = 0; bit_i<8; bit_i++)
+        {
+            _AssertCall(call_n, call_name);
+            _AssertArg(call_n, 1, &config);
+            _AssertArg(call_n, 2, &bit_i);
+            call_n++;
+        }
+        config++;
+    }
+    // Check last four bits
+    for (uint8_t bit_i = 0; bit_i<4; bit_i++)
+    {
+        _AssertCall(call_n, call_name);
+        _AssertArg(call_n, 1, &config);
+        _AssertArg(call_n, 2, &bit_i);
+        call_n++;
+    }
+}
 
 /* =====[ _ExitLisProgrammingMode ]===== */
 void ExitLisProgrammingMode_outputs_LOW_on_pin_LisRst(void)
@@ -837,3 +922,4 @@ void ExitLisProgrammingMode_outputs_LOW_on_pin_LisPixSelect(void)
         "Expect `Lis_PixSelect` LOW."
         );
 }
+

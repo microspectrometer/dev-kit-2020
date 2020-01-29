@@ -63,4 +63,7 @@ void WriteLisConfigBit_outputs_bit_on_LisRst(void);
 void WriteLisConfigBit_waits_for_LisClk_HIGH(void);
 void WriteLisConfigBit_waits_for_LisClk_LOW(void);
 
+/* =====[ _Write28bitLisConfig ]===== */
+void Write28bitLisConfig_writes_28bits_starting_at_byte0_bit0_and_ending_at_byte3_bit3(void);
+
 #endif // _TEST_LIS_H

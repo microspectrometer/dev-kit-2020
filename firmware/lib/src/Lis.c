@@ -16,6 +16,7 @@ void _WaitForLisClkLow(void);
 void _WaitForLisClkHigh(void);
 void _EnterLisProgrammingMode(void);
 void _WriteLisConfigBit(uint8_t * config, uint8_t bit_index);
+void _Write28bitLisConfig(uint8_t const *config);
 void _ExitLisProgrammingMode(void);
 
 // ---API---

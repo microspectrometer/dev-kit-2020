@@ -352,7 +352,8 @@ void Run__Write28bitLisConfig_tests(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(Write28bitLisConfig_writes_28bits_starting_at_byte0_bit0_and_ending_at_byte3_bit3);
     }
 }
 void Run__ExitLisProgrammingMode_tests(bool run_test)
@@ -379,16 +380,16 @@ void Lis_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_LisInit_tests(Nope);
-        Run_LisConfigIsValid_tests(Nope);
-        Run__ConfigAs28bits_tests(Nope);
-        Run__WaitForLisClkLow_tests(Nope);
+        Run_LisInit_tests(Yep);
+        Run_LisConfigIsValid_tests(Yep);
+        Run__ConfigAs28bits_tests(Yep);
+        Run__WaitForLisClkLow_tests(Yep);
         Run__WaitForLisClkHigh_tests(Yep);
-        Run__EnterLisProgrammingMode_tests(Nope);
-        Run__WriteLisConfigBit_tests(Nope);
-        Run__Write28bitLisConfig_tests(Nope);
-        Run__ExitLisProgrammingMode_tests(Nope);
-        Run_LisWriteConfig_tests(Nope);
+        Run__EnterLisProgrammingMode_tests(Yep);
+        Run__WriteLisConfigBit_tests(Yep);
+        Run__Write28bitLisConfig_tests(Yep);
+        Run__ExitLisProgrammingMode_tests(Yep);
+        Run_LisWriteConfig_tests(Yep);
     }
 }
 

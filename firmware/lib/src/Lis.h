@@ -319,21 +319,31 @@ inline void _WriteLisConfigBit(uint8_t * config, uint8_t bit_index)
 #undef _WaitForLisClkLow
 #undef _WaitForLisClkHigh
 #endif // USE_FAKES
+
+#ifdef USE_FAKES
+#define _WriteLisConfigBit _WriteLisConfigBit_fake
+#endif // USE_FAKES
 inline void _Write28bitLisConfig(uint8_t const *config)
 {
-    (void)config;
-    /* // Write all bits in the first three bytes of config */
-    /* for (uint8_t cfg_byte_i = 0; cfg_byte_i < 3; cfg_byte_i++) */
-    /* { */
-    /*     for (uint8_t bit_i = 0; bit_i<8; bit_i++) */
-    /*     { */
-    /*         _WriteLisConfigBit(config, bit_i); */
-    /*     } */
-    /* } */
-    /* // Write first four bits of last byte of config */
-    /* uint8_t bit_i = 0; */
-    /* while(bit_i < 4) _WriteLisConfigBit(config, bit_i++); */
+    /** Write28bitLisConfig behavior:\n 
+      * - writes 28bits starting at byte0 bit0 and ending at byte3 bit3\n 
+      * */
+    // Write all bits in the first three bytes of config
+    for (uint8_t cfg_byte_i = 0; cfg_byte_i < 3; cfg_byte_i++)
+    {
+        for (uint8_t bit_i = 0; bit_i<8; bit_i++)
+        {
+            _WriteLisConfigBit(config, bit_i);
+        }
+        config++;
+    }
+    // Write first four bits of last byte of config
+    uint8_t bit_i = 0;
+    while(bit_i < 4) _WriteLisConfigBit(config, bit_i++);
 }
+#ifdef USE_FAKES
+#undef _WriteLisConfigBit
+#endif // USE_FAKES
 
 // ---API---
 /** \file Lis.h
