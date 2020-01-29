@@ -245,6 +245,17 @@ inline void _WaitForLisClkLow(void)
     // Wait for flag to set again
     while(BitIsClear(Lis_TIFR0, Lis_OCF0B));
 }
+inline void _WaitForLisClkHigh(void)
+{
+    /** WaitForLisClkHigh behavior:\n 
+      * - clears flag PwmTimerMatchesOCF0A\n 
+      * - waits until flag PwmTimerMatchesOCF0A is set\n 
+      * */
+    // Clear flag that is set when Counter0 matches OCR0A
+    SetBit(Lis_TIFR0, Lis_OCF0A);
+    // Wait for flag to set again
+    while(BitIsClear(Lis_TIFR0, Lis_OCF0A));
+}
 
 #ifdef USE_FAKES
 #define _WaitForLisClkLow _WaitForLisClkLow_fake

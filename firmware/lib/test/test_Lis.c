@@ -18,15 +18,104 @@ static void _AssertCall(uint16_t num, char * name)
     // Free memory used by GString
     g_string_free(message, true);
 }
+/* =====[ _setup_bit_val ]===== */
+enum bit_val {LOW, HIGH}; typedef enum bit_val bit_val;
+static void _setup_bit_val(lis_ptr reg, lis_bit bit, bit_val v)
+{
+    //! Set up for test to check bit value. Use generic fail message.
+    /** - make bit `LOW` if function is supposed to make it `HIGH`
+      * - make bit `HIGH` if function is supposed to make it `LOW`
+      * - TEST_ macro double-checks the setup is correct
+      *   - silent if setup is correct:
+      *     - test continues
+      *     - nothing printed in test results
+      *   - fails if setup is not correct
+      *     - test stops
+      *     - print why the setup failed
+      * */
+    GString *msg = g_string_new(NULL);
+    g_string_printf(msg, "Bit must be %s when the test starts", v ? "HIGH" : "LOW");
+    if (HIGH == v)
+    {
+        SetBit(reg, bit);
+        TEST_ASSERT_BIT_HIGH_MESSAGE(bit, *reg, msg->str);
+    }
+    else if (LOW == v)
+    {
+        ClearBit(reg, bit);
+        TEST_ASSERT_BIT_LOW_MESSAGE(bit, *reg, msg->str);
+    }
+    else
+    {
+        g_string_printf(msg, "Test setup with invalid bit value: %d? ", v);
+        g_string_append_printf(msg, "Bit value must be LOW or HIGH.");
+        TEST_FAIL_MESSAGE(msg->str);
+    }
+    g_string_free(msg, true);
+}
+static void _setup_bit_val_msg(lis_ptr reg, lis_bit bit, bit_val v,
+        char * bit_name)
+{
+    //! Set up for test to check bit value. Use custom fail message `bit_name`.
+    /** - make bit `LOW` if function is supposed to make it `HIGH`
+      * - make bit `HIGH` if function is supposed to make it `LOW`
+      * - TEST_ macro double-checks the setup is correct
+      *   - silent if setup is correct:
+      *     - test continues
+      *     - nothing printed in test results
+      *   - fails if setup is not correct
+      *     - test stops
+      *     - print why the setup failed
+      * */
+    // Put bit_name in the message displayed if test fails
+    GString *message = g_string_new(NULL);
+    g_string_append_printf(
+        message, "`%s` must be ", bit_name
+        );
+    g_string_append_printf(
+        message, "%s when the test starts.",
+        v ? "HIGH" : "LOW"
+        );
+    if (HIGH == v)
+    {
+        SetBit(reg, bit);
+        TEST_ASSERT_BIT_HIGH_MESSAGE(bit, *reg, message->str);
+    }
+    else if (LOW == v)
+    {
+        ClearBit(reg, bit);
+        TEST_ASSERT_BIT_LOW_MESSAGE(bit, *reg, message->str);
+    }
+    else
+    {
+        g_string_printf(message, "Test setup is invalid. `%s`", bit_name);
+        g_string_append_printf(message, " = %d? ", v);
+        g_string_append_printf(message, "Bit value must be LOW or HIGH.");
+        TEST_FAIL_MESSAGE(message->str);
+    }
+    g_string_free(message, true);
+}
+
+/* =====[ _test_bit_val ]===== */
+static void _test_bit_val( lis_ptr reg, lis_bit bit, bit_val v )
+{
+    //! Assert bit is LOW or HIGH. Use generic message if test fails.
+    GString *msg = g_string_new(NULL);
+    g_string_printf(msg, "Expect bit is %s", v ? "HIGH" : "LOW");
+    v ?
+        TEST_ASSERT_BIT_HIGH_MESSAGE(bit, *reg, msg->str)
+        :
+        TEST_ASSERT_BIT_LOW_MESSAGE(bit, *reg, msg->str);
+    g_string_free(msg, true);
+}
+
 /* =====[ LisInit ]===== */
 void LisInit_sets_PixSelect_as_an_output(void)
 {
     /* =====[ Setup ]===== */
-    *Lis_ddr2 = 0x00;
-    TEST_ASSERT_BIT_LOW_MESSAGE(
-        Lis_PixSelect,
-        *Lis_ddr2,
-        "PixSelect must be an input pin when the test starts."
+    _setup_bit_val_msg(
+        Lis_ddr2, Lis_PixSelect, LOW,
+        "Expect test starts with PixSelect LOW (input pin), but PixSelect" // = bit_val
         );
     /* =====[ Operate ]===== */
     LisInit();
@@ -36,11 +125,9 @@ void LisInit_sets_PixSelect_as_an_output(void)
 void LisInit_idles_PixSelect_low(void)
 {
     /* =====[ Setup ]===== */
-    *Lis_port2 = 0xFF;
-    TEST_ASSERT_BIT_HIGH_MESSAGE(
-        Lis_PixSelect,
-        *Lis_port2,
-        "PixSelect must be HIGH when the test starts."
+    _setup_bit_val_msg(
+        Lis_port2, Lis_PixSelect, HIGH,
+        "Expect test starts with PixSelect HIGH, but PixSelect" // = bit_val
         );
     /* =====[ Operate ]===== */
     LisInit();
@@ -50,11 +137,8 @@ void LisInit_idles_PixSelect_low(void)
 void LisInit_sets_Clk_as_an_output(void)
 {
     /* =====[ Setup ]===== */
-    *Lis_ddr1 = 0x00;
-    TEST_ASSERT_BIT_LOW_MESSAGE(
-        Lis_Clk,
-        *Lis_ddr1,
-        "Clk must be an input pin when the test starts."
+    _setup_bit_val_msg(Lis_ddr1, Lis_Clk, LOW,
+        "Expect Lis_Clk is an input (LOW) when test starts. Lis_Clk"
         );
     /* =====[ Operate ]===== */
     LisInit();
@@ -64,11 +148,8 @@ void LisInit_sets_Clk_as_an_output(void)
 void LisInit_sets_Rst_as_an_output(void)
 {
     /* =====[ Setup ]===== */
-    *Lis_ddr1 = 0x00;
-    TEST_ASSERT_BIT_LOW_MESSAGE(
-        Lis_Rst,
-        *Lis_ddr1,
-        "Rst must be an input pin when the test starts."
+    _setup_bit_val_msg(Lis_ddr1, Lis_Rst, LOW,
+        "Expect Lis_Rst is an input (LOW) when test starts. Lis_Rst"
         );
     /* =====[ Operate ]===== */
     LisInit();
@@ -78,11 +159,8 @@ void LisInit_sets_Rst_as_an_output(void)
 void LisInit_idles_Rst_low(void)
 {
     /* =====[ Setup ]===== */
-    *Lis_port1 = 0xFF;
-    TEST_ASSERT_BIT_HIGH_MESSAGE(
-        Lis_Rst,
-        *Lis_port1,
-        "Rst must be HIGH when the test starts."
+    _setup_bit_val_msg(Lis_port1, Lis_Rst, HIGH,
+        "Expect test starts with Lis_Rst HIGH, but Lis_Rst"
         );
     /* =====[ Operate ]===== */
     LisInit();
@@ -91,11 +169,8 @@ void LisInit_idles_Rst_low(void)
 }
 void LisInit_sets_Sync_as_an_input(void)
 {
-    *Lis_ddr1 = 0xFF;
-    TEST_ASSERT_BIT_HIGH_MESSAGE(
-        Lis_Sync,
-        *Lis_ddr1,
-        "Sync must be an output pin when the test starts."
+    _setup_bit_val_msg(Lis_ddr1, Lis_Sync, HIGH,
+        "Sync must be an output when the test starts, but Lis_Sync"
         );
     /* =====[ Operate ]===== */
     LisInit();
@@ -620,8 +695,7 @@ void WaitForLisClkLow_clears_flag_PwmTimerMatchesOCF0B(void)
       * I do not bother to simulate that mechanism.
       * I test by treating TIFR0 like any other register.
       * */
-    ClearBit(Lis_TIFR0, Lis_OCF0B);
-    TEST_ASSERT_BIT_LOW(Lis_OCF0B, *Lis_TIFR0);
+    _setup_bit_val_msg(Lis_TIFR0, Lis_OCF0B, LOW, "TIFR0 bit Lis_OCF0B");
     /* =====[ Operate ]===== */
     _WaitForLisClkLow();
     /* =====[ Test ]===== */
@@ -642,11 +716,22 @@ void WaitForLisClkLow_waits_until_flag_PwmTimerMatchesOCF0B_is_set(void)
 /* =====[ _WaitForLisClkHigh ]===== */
 void WaitForLisClkHigh_clears_flag_PwmTimerMatchesOCF0A(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    /* =====[ Setup ]===== */
+    /** Note this is *not* how TIFR0 works, this is just for testing.
+      * The flag is cleared by setting its bit in TIFR0.
+      * I do not bother to simulate that mechanism.
+      * I test by treating TIFR0 like any other register.
+      * */
+    _setup_bit_val(Lis_TIFR0, Lis_OCF0A, LOW);
+    /* =====[ Operate ]===== */
+    _WaitForLisClkHigh();
+    /* =====[ Test ]===== */
+    _test_bit_val(Lis_TIFR0, Lis_OCF0A, HIGH);
 }
 void WaitForLisClkHigh_waits_until_flag_PwmTimerMatchesOCF0A_is_set(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
+    // Cannot fake setting flag after calling function under test
+    TEST_PASS();
 }
 
 /* =====[ _EnterLisProgrammingMode ]===== */

@@ -13,6 +13,7 @@ void LisClkFreq50kHz(void);
 void LisClkOn(void);
 void _ConfigAs28bits(uint8_t *config);
 void _WaitForLisClkLow(void);
+void _WaitForLisClkHigh(void);
 void _EnterLisProgrammingMode(void);
 void _WriteLisConfigBit(uint8_t * config, uint8_t bit_index);
 void _ExitLisProgrammingMode(void);
