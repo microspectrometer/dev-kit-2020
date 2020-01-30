@@ -339,7 +339,7 @@ void LisConfigIsValid_returns_false_if_binning_is_invalid(void)
     active_rows = ALL_ROWS_ACTIVE;
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
-        !LisConfigIsValid(),
+        !LisConfigIsValid(binning, gain, active_rows),
         "Binning is invalid: expect `LisConfigIsValid` returns false."
         );
 }
@@ -352,7 +352,7 @@ void LisConfigIsValid_returns_false_if_gain_is_invalid(void)
     active_rows = ALL_ROWS_ACTIVE;
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
-        !LisConfigIsValid(),
+        !LisConfigIsValid(binning, gain, active_rows),
         "Gain is invalid: expect `LisConfigIsValid` returns false."
         );
 }
@@ -365,7 +365,7 @@ void LisConfigIsValid_returns_false_if_active_rows_is_invalid(void)
     active_rows = 0xFF;
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
-        !LisConfigIsValid(),
+        !LisConfigIsValid(binning, gain, active_rows),
         "Rows is invalid: expect `LisConfigIsValid` returns false."
         );
 }
@@ -378,7 +378,7 @@ void LisConfigIsValid_returns_true_if_config_is_valid(void)
     active_rows = ALL_ROWS_ACTIVE;
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_TRUE_MESSAGE(
-        LisConfigIsValid(),
+        LisConfigIsValid(binning, gain, active_rows),
         "Config is valid: expect `LisConfigIsValid` returns true."
         );
 }

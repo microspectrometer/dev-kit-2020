@@ -60,11 +60,14 @@ void Run_SetSensorConfig_tests(bool run_test)
     {
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
         RUN_TEST(SetSensorConfig_receives_three_bytes_of_config_from_Bridge);
+        RUN_TEST(SetSensorConfig_does_not_update_config_globals_if_config_is_invalid);
         RUN_TEST(SetSensorConfig_replies_ERROR_if_binning_is_invalid);
         RUN_TEST(SetSensorConfig_replies_ERROR_if_gain_is_invalid);
         RUN_TEST(SetSensorConfig_replies_ERROR_if_active_rows_is_invalid);
+        RUN_TEST(SetSensorConfig_does_not_program_LIS_770i_if_config_is_invalid);
+        RUN_TEST(SetSensorConfig_writes_valid_config_to_LIS_770i_programmable_setup_register);
         RUN_TEST(SetSensorConfig_replies_OK_if_all_config_values_are_valid);
-        RUN_TEST(SetSensorConfig_writes_config_to_LIS_770i_programmable_setup_register);
+        RUN_TEST(SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config);
     }
 }
 void VisCmd_tests(bool run_test)

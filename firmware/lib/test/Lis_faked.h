@@ -2,6 +2,9 @@
 #define _LIS_FAKED_H
 #include <stdint.h>
 
+// ---Public functions faked for testing---
+void LisWriteConfig_fake(void);
+
 // ---Private functions faked for testing---
 void _ConfigAs28bits_fake(uint8_t * config);
 void _EnterLisProgrammingMode_fake(void);

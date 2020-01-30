@@ -747,6 +747,24 @@ multiple definition of `Spi_SPDR'
 
 # ---Completed Tasks---
 
+# [x] Write SetSensorConfig
+
+- sensor config is three bytes
+- these bytes are globals
+- don't use `LisHardware` and `LisHardwareFake` otherwise I have
+  to duplicate the definitions
+- it's nice to keep this separate anyway
+- so put config stuff in `LisConfig` and `LisConfigs`, mirroring
+  the idea of `StatusCode` and `StatusCodes` -- declare in the
+  singular, define in the plural
+- [x] `LisConfig.h` owns the config declarations
+- [x] `LisConfigs.h` owns the definitions
+    - define as `const` so that `main()` translation unit loads
+      the globals into working registers (check this)
+- [x] requires Lis function `LisWriteConfig`
+
+# [x] Unit test `LisWriteConfig`
+
 # [x] Unit test `LisConfigIsValid`
 
 - [x] first build for avr to test moving if() conditional to
@@ -778,9 +796,6 @@ Sat, Jan 18, 2020  2:29:53 AM
 ```
 
 - still no change
-
-
-
 
 # [x] Replace look-up table with switch-case
 
@@ -2484,6 +2499,33 @@ Total number of instructions: 35
 
 # ---Pending Tasks---
 
+# [x] Check SetSensorConfig is optimized
+
+The program memory looks huge:
+
+```date-and-size
+Thu, Jan 30, 2020  2:43:20 PM
+   text	   data	    bss	    dec	    hex	filename
+   3356	      0	     22	   3378	    d32	build/vis-spi-out.elf
+```
+
+Last time I checked it was only 836 bytes:
+
+```date-and-size
+Sat, Jan 18, 2020  2:29:53 AM
+   text	   data	    bss	    dec	    hex	filename
+    836	      0	     22	    858	    35a	build/vis-spi-out.elf
+```
+
+What happened? It looks like it's the functionality added to
+`SetSensorConfig`. It starts at program address `2e2` and ends at `78a`. This block of code is:
+
+- Total number of cycles: 944
+- Total number of instructions: 594
+
+Mostly it's the conversion from three bytes to four bytes.
+See TiddlyWiki: `LisWriteConfig adds 2520 bytes to program memory`.
+
 # [ ] Fix lib `Queue` - should define Queue as `extern`
 
 - Why is the `Queue.c` translation unit responsible for defining
@@ -2492,25 +2534,7 @@ Total number of instructions: 35
   Fixing this may result in some speed-up in the code. It would
   also be less confusing.
 
-# [ ] Write SetSensorConfig
-
-- sensor config is three bytes
-- these bytes are globals
-- don't use `LisHardware` and `LisHardwareFake` otherwise I have
-  to duplicate the definitions
-- it's nice to keep this separate anyway
-- so put config stuff in `LisConfig` and `LisConfigs`, mirroring
-  the idea of `StatusCode` and `StatusCodes` -- declare in the
-  singular, define in the plural
-- [x] `LisConfig.h` owns the config declarations
-- [x] `LisConfigs.h` owns the definitions
-    - define as `const` so that `main()` translation unit loads
-      the globals into working registers (check this)
-- [ ] requires Lis function `LisWriteConfig`
-
-# [ ] Unit test `LisWriteConfig`
-
-## Macro body cannot include macro directives
+# Macro body cannot include macro directives
 
 Unfortunately, macro bodies cannot include macro directives,
 i.e., it contain the text for other `#` macro stuff:

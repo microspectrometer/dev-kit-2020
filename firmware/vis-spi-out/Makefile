@@ -132,6 +132,10 @@ lib_o := $(addsuffix .o,${all_libs})
 lib_o := $(addprefix ../lib/build/,${lib_o})
 lib_headers := $(addsuffix .h,${all_libs})
 lib_headers := $(addprefix ../lib/src/,${lib_headers})
+# List libs that USE_FAKES in tests
+lib_faked := SpiSlave Lis
+lib_faked_o := $(addsuffix _faked.o,${lib_faked})
+lib_faked_o := $(addprefix ../lib/build/,${lib_faked_o})
 # }}}
 # =====[ Build recipes ]=====
 # ;mca - remember to clean all builds when switching build targets{{{
@@ -150,15 +154,15 @@ clean-all-builds:
 	rm -f ${test_app_o}
 	rm -f ${app_o}
 	rm -f ${lib_o}
-	rm -f build/SpiSlave.o
-	rm -f ../lib/build/SpiSlave.o
+	rm -f ${lib_faked_o}
+	# rm -f build/SpiSlave.o
 # }}}
 # }}}
 # ;mktgc - "unit-test" target: `TestSuite-results.md`{{{
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
 build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${lib_o} ${test_app_o} ${app_o} ../lib/build/SpiSlave_faked.o
+${lib_o} ${test_app_o} ${app_o} ${lib_faked_o}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 # test-runner rebuilds if fake hardware definitions change
 build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFakes} ${lib_headers} ../lib/src/StatusCode.h ../lib/src/StatusCodes.h ../lib/src/LisConfig.h ../lib/src/LisConfigs.h
@@ -166,13 +170,13 @@ build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFak
 # unit-test translation units must #include "unity.h" and "Mock.h"
 ${test_app_o}: build/%.o: test/%.c test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
-# fake functions
-../lib/build/SpiSlave_faked.o: ../lib/build/%.o: ../lib/test/%.c ../lib/test/%.h
-	${compiler} $(CFLAGS) -c $< -o $@
 ${app_o}: build/%.o: src/%.c src/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # For tests: stub function-like macros used in libs in FakeAvrHeaders
 ${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h ${FakeAvrHeaders}
+	${compiler} $(CFLAGS) -c $< -o $@
+# fake functions
+${lib_faked_o}: ../lib/build/%.o: ../lib/test/%.c ../lib/test/%.h
 	${compiler} $(CFLAGS) -c $< -o $@
 # }}}
 # ;mka - "avr-target": `vis-spi-out.elf`{{{
@@ -243,6 +247,9 @@ print_vars:
 	echo
 	echo lib_o:
 	echo - ${lib_o}
+	echo
+	echo lib_faked_o:
+	echo - ${lib_faked_o}
 	echo
 	echo lib_headers:
 	echo - ${lib_headers}

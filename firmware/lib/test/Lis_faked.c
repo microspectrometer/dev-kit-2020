@@ -38,6 +38,21 @@
 #include "Mock.h" // record call history in "mock"
 #include "Lis.h"
 
+/* =====[ Mock LisWriteConfig ]===== */
+static RecordedCall * Record_LisWriteConfig(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "LisWriteConfig";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void LisWriteConfig_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   * */
+    RecordActualCall(mock, Record_LisWriteConfig());
+}
+
 /* =====[ Mock _ConfigAs28bits() ]===== */
 static RecordedCall * Record__ConfigAs28bits(uint8_t * arg1)
 { // Define **what is recorded** when fake is called.

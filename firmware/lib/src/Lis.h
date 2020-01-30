@@ -266,8 +266,16 @@ inline void _EnterLisProgrammingMode(void)
       * - waits for LisClk LOW\n 
       * - asserts LisPixSelect to program Lis\n 
       * */
+    // Total number of cycles: 8
+    // Total number of instructions: 4
     _WaitForLisClkLow();
+    // ---Expected Assembly---
+    //  708:	sbi	0x15, 2	; 21
+    //  70a:	sbis	0x15, 2	; 21
+    //  70c:	rjmp	.-4      	; 0x70a
     SetBit(Lis_port2, Lis_PixSelect);
+    // ---Expected Assembly---
+    //  70e:	sbi	0x05, 0	; 5
 }
 #ifdef USE_FAKES
 #undef _WaitForLisClkLow
@@ -279,15 +287,21 @@ inline void _ExitLisProgrammingMode(void)
       * - outputs LOW on pin LisRst\n 
       * - outputs LOW on pin LisPixSelect\n 
       * */
+    // Total number of cycles: 4
+    // Total number of instructions: 2
     ClearBit(Lis_port1, Lis_Rst);
+    // ---Expected Assembly---
+    //  788:	cbi	0x0b, 6	; 11
     ClearBit(Lis_port2, Lis_PixSelect);
+    // ---Expected Assembly---
+    //  78a:	cbi	0x05, 0	; 5
 }
 
 #ifdef USE_FAKES
 #define _WaitForLisClkLow _WaitForLisClkLow_fake
 #define _WaitForLisClkHigh _WaitForLisClkHigh_fake
 #endif // USE_FAKES
-inline void _WriteLisConfigBit(uint8_t * config, uint8_t bit_index)
+inline void _WriteLisConfigBit(uint8_t const * config, uint8_t bit_index)
 {
     /** **WriteLisConfigBit** writes one bit of the LIS 28-bit
      * programming sequence.
@@ -307,7 +321,7 @@ inline void _WriteLisConfigBit(uint8_t * config, uint8_t bit_index)
       * - waits for LisClk LOW\n 
       * */
     // Set up pin `Lis_Rst` with value to write
-    BitIsSet(config, bit_index) ?
+    BitIsSet((uint8_t *)config, bit_index) ?
         SetBit(Lis_port1, Lis_Rst)
         :
         ClearBit(Lis_port1, Lis_Rst);
@@ -371,7 +385,10 @@ inline void LisInit(void)
     LisClkFreq50kHz();
     LisClkOn();
 }
-inline bool LisConfigIsValid(void)
+inline bool LisConfigIsValid(
+    uint8_t binning,
+    uint8_t gain,
+    uint8_t active_rows)
 {
     /** LisConfigIsValid behavior:\n 
       * - returns false if binning is invalid\n 
