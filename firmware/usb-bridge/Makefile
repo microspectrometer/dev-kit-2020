@@ -1,218 +1,264 @@
+# board-name: the PCB that uses this firmware{{{
 board-name := usb-bridge
-
-# variable for my test output name that is stupidly coupled to my .vimrc
-test-output := build/TestSuite-results.md
-
-#=====[ Targets (the first target is the default target) ]=====
-# Build unit-test targets using Vim shortcuts starting with ;mkt
-unit-test: ${test-output}
-# Build avr targets using Vim shortcut ;mka
-# Create executable for uploading to the microcontroller. Eliminate unused code.
-# .elf is the executable to download to flash
-# .lst is the disassembly for analysis
-avr-target: build/${board-name}.elf build/${board-name}.lst
-
-
-#=====[ AVR library from AtmelStudio installation ]=====
-# atmega328_lib has the .o and .a lib files and the spec file.
+# board-name shows up as:
+# - the main() `.c` file for the "avr-target"
+# - the EAGLE .sch and .brd files
+# - the Fusion360 model
+# - the MacroFab/PCB:NG project
+# }}}
+# =====[ Build targets ]=====
+# ---"unit-test" runs on PC with Cygwin---{{{
+# Vim ;mktgc builds unit-test target using gcc
+unit-test: build/TestSuite-results.md
+# Vim opens .md opens in new bottom window
+# }}}
+# ---"avr-target" runs on ${board-name}---{{{
+# Vim ;mka builds avr target using avr-gcc
+# Download to flash:
+# Vim ;fa downloads .elf to microcontroller
+# Analyze:
+# Vim ;ds pastes memory usage with time-stamp
+# Disassembly:
+# Vim `:e build/vis-spi-out.avra` and select block to analyze
+# Vim: ;avrt measures cycles, ;avra extracts clean assembly
+avr-target: build/${board-name}.elf build/${board-name}.avra
+# }}}
+#=====[ "avr-target" library (from AtmelStudio installation) ]=====
+# atmega328_lib has the .o and .a lib files and the spec file.{{{
 atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
-
-#=====[ AVR Compiler and Linker flags ]=====
-CFLAGS_for_avr = -I../lib/src -Isrc \
+# }}}
+# AVR headers{{{
+AvrHeaders := interrupt io
+AvrHeaders := $(addsuffix .h,${AvrHeaders})
+FakeAvrHeaders := ${AvrHeaders}
+AvrHeaders := $(addprefix avr/,${AvrHeaders})
+IncludeAvrHeaders := $(addprefix -include,${AvrHeaders})
+FakeAvrHeaders := $(addprefix ../lib/test/FakeAvr/,${FakeAvrHeaders})
+IncludeFakeAvrHeaders := $(addprefix -include,${FakeAvrHeaders})
+# Hardware definitions for registers and bits:
+# /cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include/avr/iom328p.h
+# `AvrHeaders` are in the same folder.
+# }}}
+#=====[ "avr-target" Compiler and Linker flags ]=====
+# CFLAGS{{{
+# Compile hwlib obj files with AvrHeaders for avr-target.
+CFLAGS_for_avr = -Isrc -I../lib/src ${IncludeAvrHeaders} \
 -g -Wall -Wextra -pedantic -Winline -Wno-pointer-sign\
 -O3 -ffunction-sections -fdata-sections -fshort-enums \
 -mmcu=atmega328p
-#Used to be -O1, not sure why.
-#The avr ld.exe does not recognize any of these
-#LFLAGS = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+# }}}
+# LFLAGS{{{
 LFLAGS_for_avr := -B ${atmega328_lib}
-
-#=====[ Unit Test Compiler and Linker flags ]=====
-path_shared-lib_mock-c := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/mock-c/
-CFLAGS_for_cygwin = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include \
-	-I${path_shared-lib_mock-c}include -I${path_shared-lib_mock-c}test/unity \
-	-Iinclude -I../lib/src -Isrc \
-	-Itest -I../lib/test \
+# }}}
+#=====[ "unit-test" library (from ThrowTheSwitch and Chromation) ]=====
+# Paths{{{
+path_tdd := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/
+path_unity  := ${path_tdd}mock-c/test/unity
+path_mock-c := ${path_tdd}mock-c/
+# }}}
+# Pre-compiled object files{{{
+unity_libs  := unity
+unity_libo  := $(addsuffix .o,${unity_libs})
+unity_libo  := $(addprefix ${path_tdd}mock-c/build/,${unity_libo})
+mock-c_libs := Mock RecordedCall RecordedArg ReturnValues
+mock-c_libo := $(addsuffix .o,${mock-c_libs})
+mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
+unittest_o  := ${unity_libo} ${mock-c_libo}
+# }}}
+#=====[ "unit-test" Compiler and Linker flags ]=====
+# CFLAGS{{{
+# Compile hwlib obj files with FakeAvrHeaders for unit tests.
+CFLAGS_for_cygwin = -I/usr/include/glib-2.0 \
+	-I/usr/lib/glib-2.0/include \
+	-DUSE_FAKES \
+	-I${path_mock-c}include -I${path_unity} \
+	-Isrc -I../lib/src \
+	-Itest -I../lib/test ${IncludeFakeAvrHeaders} \
 	-g -Wall -Wextra -pedantic -Winline
+# }}}
+# LFLAGS{{{
 LFLAGS_for_cygwin = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
-# -Itest is "include folder `test`". This finds `test_runner.h` from `#include "test_runner.h"`
-# -I../lib/test includes the project libs `test` folder.
-#    This picks up the headers for project lib mocks and the hardware-dependency fakes.
-
+# }}}
 # =====[ Use compiler to pick which flags to use ]=====
+# avr-gcc{{{
 ifeq ($(compiler),avr-gcc)
 	CFLAGS := $(CFLAGS_for_avr)
 	LFLAGS := $(LFLAGS_for_avr)
+# }}}
+# gcc/clang{{{
 else
 	CFLAGS := $(CFLAGS_for_cygwin)
 	LFLAGS := $(LFLAGS_for_cygwin)
 endif
+# }}}
+# no compiler, just print build rules{{{
 ifeq ($(compiler),fake)
 	CFLAGS := 
 	LFLAGS := 
 endif
-
-
-# =====[ AVR and Unit Tests use the same *lib* object files ]=====
-# Targets `avr-target` and `unit-test` find these in the same location!
-# *clean* the builds out, therefore, when you switch between targets, or you get
-# a linker error.
-
-# TODO: fix special treatment of test_Spi.c
-#   For now, build and link test_Spi.c for mocking SpiSlave hardware calls.
-# List the project libs (for dependencies, not for testing):
-names-of-prj-libs := ReadWriteBits BiColorLed Ft1248 Usb Spi Lis Pwm
-# List the application libs (for unit testing and for dependencies):
-names-of-app-libs := Bridge
-# name convention for application lib tests
-name_app-libs-tested   := $(addprefix test_,${names-of-app-libs})
-# List project/application libs that are mocked out in application lib tests.
-mocked-prj-libs := Ft1248 Spi UartSpi Lis Pwm
-# name convention for mocked lib source files and object files
-name_prj-libs-mocked := $(addprefix mock_,${mocked-prj-libs})
-# List project libs that use mocks in their test.
-# names-of-libs-tested-with-mocks := Ft1248 Usb Spi UartSpi Lis
-names-of-libs-tested-with-mocks := Spi
-# name convention for project libs that use mocks in their tests
-name_libs-tested-with-mocks := $(addsuffix _MockUps,${names-of-libs-tested-with-mocks})
-name_libs-tested-with-mocks := $(addprefix test_,${name_libs-tested-with-mocks})
-
-# ---List object file prerequisites---
-# prerequisite *project libs*:
-obj_prj-libs := $(addsuffix .o,${names-of-prj-libs})
-obj_prj-libs := $(addprefix build/,${obj_prj-libs})
-# prerequisite *application libs*:
-obj_app-libs := $(addsuffix .o,${names-of-app-libs})
-obj_app-libs := $(addprefix build/,${obj_app-libs})
-# prerequisite application lib *tests*
-obj_app-libs-tested := $(addsuffix .o,${name_app-libs-tested})
-obj_app-libs-tested := $(addprefix build/,${obj_app-libs-tested})
-# prerequisite *mocked* project libs
-obj_prj-libs-mocked := $(addsuffix .o,${name_prj-libs-mocked})
-obj_prj-libs-mocked := $(addprefix build/,${obj_prj-libs-mocked})
-# prerequisite project libs that use mocks in their tests
-obj_libs-tested-with-mocks := $(addsuffix .o,${name_libs-tested-with-mocks})
-obj_libs-tested-with-mocks := $(addprefix build/,${obj_libs-tested-with-mocks})
-
-
-# ---Explicit rule for project lib *object files*---
-#  Needs LFLAGS to link against atmega328_lib when building object files with
-#  avr-gcc.
-#  obj_prj-libs used to be called obj_dev-libs
-${obj_prj-libs}: build/%.o: ../lib/src/%.c
-	${compiler} -c $^ -o $@ $(CFLAGS) $(LFLAGS)
-# ---Explicit rule for application lib *object files*---
-#  Needs LFLAGS to link against atmega328_lib
-${obj_app-libs}: build/%.o: src/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@ $(LFLAGS)
-# ---Explicit rule application lib test *object files*---
-${obj_app-libs-tested}: build/%.o: test/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@
-# ---Explicit rule for Spi because test_Spi.c contains the hardware fake---
-../lib/build/test_Spi.o: ../lib/test/test_Spi.c
-	${compiler} $(CFLAGS) -c $^ -o $@
-# ---Explicit rule for obj_prj-libs-mocked---
-${obj_prj-libs-mocked}: build/%.o: ../lib/test/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@
-# ---Explicit rule for object files for testing project libs with mocks---
-${obj_libs-tested-with-mocks}: build/%.o: ../lib/test/%.c
-	${compiler} $(CFLAGS) -c $^ -o $@
-
-#=====[ Unit Tests also have Test Framework Object Files ]=====
-# Behold my static library hack:
-# list object files for unit testing with shared lib `mock-c`
-mock-c-libs    := Mock RecordedCall RecordedArg ReturnValues
-mock-c-objects := $(addsuffix .o,${mock-c-libs})
-mock-c-objects := $(addprefix ${path_shared-lib_mock-c}build/,${mock-c-objects})
-obj_unity := ${path_shared-lib_mock-c}build/unity.o
-obj_shared-lib_mock-c := ${mock-c-objects} ${obj_unity}
-# TODO: add target to rebuild test framework to match the Cygwin compiler
-# For now, rebuild for the desired compiler with:
-#     ;nb mock-c
-#         open the test framework project
-#     ;mca
-#         clean all builds
-# Then, either:
-#     ;mkgc (build with gcc)
-#     or
-#     ;mkcl (build with clang)
-
-#=====[ Test Suite ]=====
-${test-output}: build/TestSuite.exe
+# }}}
+# =====[ Libs ]=====
+# Add app libs here{{{
+# App libs are application code with test coverage.
+# List separate from other libs because path is different.
+applib := Example
+test_app := $(addprefix test_,${applib})
+test_app_o := $(addsuffix .o,${test_app})
+test_app_o := $(addprefix build/,${test_app_o})
+app_o := $(addsuffix .o,${applib})
+app_o := $(addprefix build/,${app_o})
+# }}}
+# Add hardware libs here{{{
+# Hardware libs depend on AVR headers (register/bit definitions, macros, etc.).
+# List separate from non-hardware libs to generate libname-Harware.h pre-reqs.
+hwlib := BiColorLed
+# }}}
+# Add non-hardware libs here{{{
+# Non-hardware libs do not depend on AVR headers.
+nohwlib := ReadWriteBits
+# }}}
+# Group libs into build *pre-requisites*{{{
+# Hardware libs add libname-Hardware.h file pre-requisites to build rules.
+Hardware := ${hwlib}
+HardwareFakes := ${Hardware}
+Hardware := $(addsuffix -Hardware.h,${Hardware})
+Hardware := $(addprefix src/,${Hardware})
+HardwareFakes := $(addsuffix -HardwareFake.h,${HardwareFakes})
+HardwareFakes := $(addprefix ../lib/test/,${HardwareFakes})
+# }}}
+# Group libs into *.o build targets* and *lib headers*{{{
+all_libs := ${hwlib} ${nohwlib}
+lib_o := $(addsuffix .o,${all_libs})
+lib_o := $(addprefix ../lib/build/,${lib_o})
+lib_headers := $(addsuffix .h,${all_libs})
+lib_headers := $(addprefix ../lib/src/,${lib_headers})
+# List libs that USE_FAKES in tests
+lib_faked :=
+lib_faked_o := $(addsuffix _faked.o,${lib_faked})
+lib_faked_o := $(addprefix ../lib/build/,${lib_faked_o})
+# }}}
+# =====[ Build recipes ]=====
+# ;mca - remember to clean all builds when switching build targets{{{
+# "avr-target" and "unit-test" builds share same *lib* object file paths,
+# but avr-gcc and gcc object files are obviously not compatible.
+# ;mca - `:make clean-all-builds`{{{
+.PHONY: clean-all-builds
+clean-all-builds:
+	rm -f build/${board-name}.elf
+	rm -f build/${board-name}.avra
+	rm -f build/${board-name}.map
+	rm -f build/${board-name}.o
+	rm -f build/TestSuite-results.md
+	rm -f build/TestSuite.exe
+	rm -f build/test_runner.o
+	rm -f ${test_app_o}
+	rm -f ${app_o}
+	rm -f ${lib_o}
+	rm -f ${lib_faked_o}
+# }}}
+# }}}
+# ;mktgc - "unit-test" target: `TestSuite-results.md`{{{
+build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
-
-# [x] build the application lib object files.
-# [x] build the project lib object files.
-# TODO: [ ] *clean up* test_Spi and so it does not need special treatment here.
-# Right now, there is no object file group it neatly slots into.
-#
-# Target `unit-test` ends up here:
-test-runner := test/test_runner.c
-fake-avr-asm-macros := ../lib/test/fake/AvrAsmMacros.c
-build/TestSuite.exe: ${test-runner} ${fake-avr-asm-macros} \
-${obj_prj-libs} ${obj_app-libs} ${obj_app-libs-tested} ${obj_prj-libs-mocked} \
-../lib/build/test_Spi.o ${obj_libs-tested-with-mocks} \
-${obj_shared-lib_mock-c}
+build/TestSuite.exe: build/test_runner.o ${unittest_o} \
+${lib_o} ${test_app_o} ${app_o} ${lib_faked_o}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
-
-avr-asm-macros := src/AvrAsmMacros.c
-# Target `avr-target` ends up here:
-build/%.elf: ${obj_prj-libs} ${obj_app-libs} src/%.c ${avr-asm-macros}
+# test-runner rebuilds if fake hardware definitions change
+build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFakes} ${lib_headers} ../lib/src/StatusCode.h ../lib/src/StatusCodes.h ../lib/src/LisConfig.h ../lib/src/LisConfigs.h
+	${compiler} $(CFLAGS) -c $< -o $@
+# unit-test translation units must #include "unity.h" and "Mock.h"
+${test_app_o}: build/%.o: test/%.c test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+${app_o}: build/%.o: src/%.c src/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+# For tests: stub function-like macros used in libs in FakeAvrHeaders
+${lib_o}: ../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h ${FakeAvrHeaders}
+	${compiler} $(CFLAGS) -c $< -o $@
+# fake functions
+${lib_faked_o}: ../lib/build/%.o: ../lib/test/%.c ../lib/test/%.h
+	${compiler} $(CFLAGS) -c $< -o $@
+# }}}
+# ;mka - "avr-target": `vis-spi-out.elf`{{{
+# `usb-bridge.o`{{{
+build/${board-name}.o: src/${board-name}.c src/Hardware.h ${Hardware} ${lib_headers} ../lib/src/StatusCode.h ../lib/src/StatusCodes.h ../lib/src/LisConfig.h ../lib/src/LisConfigs.h
+	${compiler} $(CFLAGS) -c $< -o $@
+# }}}
+# `usb-bridge.elf`{{{
+build/${board-name}.elf: build/${board-name}.o ${app_o} ${lib_o}
 	avr-gcc $(CFLAGS) $^ -o $@ $(LFLAGS) \
-		-Wl,-Map="build/$*.map" -Wl,--gc-sections
+		-Wl,-Map="build/${board-name}.map" -Wl,--gc-sections
 # avr-size writes a summary to stdout with the size of each section.
 	avr-size $@
-#	# avr-size $@ > build/avr-size_usb-bridge.log
-#	# 	-I../lib/src \
-
-# Convert .elf to .lst for disassembly.
+# }}}
+# `usb-bridge.avra`{{{
+# generate .avra for disassembly analysis
+build/%.avra: build/%.elf
+	avr-objdump -h -S $^ > $@
+# .avra: AVR flavor of .lst and .asm
 #  -h: list space used by each section
 #  -S: output the binary with source code
-build/%.lst: build/%.elf
-	avr-objdump -h -S $^ > $@
-
-#--------------------------------------------------------------
-# ;fa or ;mfa
-# Get rid of --verbose to just display `Firmware check OK`
-# Add `avr-size blah.elf` to see how much memory is used.
+#}}}
+# TODO: run `avr-nm`{{{
+# avr-nm lists size of each function
+#}}}
+# TODO: analyze individual object files as well as final .elf{{{
+# }}}
+#}}}
+# =====[ AVR programmer ]=====
+# ;fa - download .elf to flash memory{{{
+# ;mfa - make "avr-target", then download .elf to flash memory
 .PHONY: download_flash
 download_flash: build/${board-name}.elf
-	# atprogram.exe --tool atmelice --interface isp \
-	# 	--device atmega328p program --chiperase --verify --file $^
-	# avr-size $^
-# atprogram.exe --verbose --tool atmelice --interface isp \
-#		# --device atmega328p program --chiperase --verify --file \
-#		# $^ > \
-#		# build/atprogram-download_flash-stdout.log 2> \
-#		# build/atprogram-download_flash-stderr.log
-	atprogram.exe --tool avrispmk2 --interface isp \
+	atprogram.exe --tool atmelice --interface isp \
 		--device atmega328p program --chiperase --verify --file $^
 	avr-size $^
-
-#---Development---
-# ;mkp
-# Test USB communication with the AVR programmer.
+	# atprogram.exe --tool avrispmk2 --interface isp \
+	# 	--device atmega328p program --chiperase --verify --file $^
+	# avr-size $^
+# }}}
+# ;mkp - test USB communication with the AVR programmer{{{
 .PHONY: test_programmer_is_connected
 test_programmer_is_connected:
 	atprogram.exe --tool atmelice --interface isp --device atmega328p info
 	# atprogram.exe --tool avrispmk2 --interface isp --device atmega328p info
-# Check voltage on target PCB. 2018-03-20: I see 2.94V.
-# This is included in the output of 'info'.
+# }}}
+# ;mkv - check voltage on target PCB{{{
 .PHONY: display_target_voltage
 display_target_voltage:
 	atprogram.exe --tool atmelice --interface isp \
 		--device atmega328p parameters --voltage
-#----------------------------------------------------------------------
+# }}}
+# =====[ Check Makefile variables ]=====
+# ;mpv - paste variables into documentation{{{
+.PHONY: print_vars
+print_vars:
+	echo hwlib:
+	echo - ${hwlib}
+	echo
+	echo nohwlib:
+	echo - ${nohwlib}
+	echo
+	echo Hardware:
+	echo - ${Hardware}
+	echo
+	echo HardwareFakes:
+	echo - ${HardwareFakes}
+	echo
+	echo lib_o:
+	echo - ${lib_o}
+	echo
+	echo lib_faked_o:
+	echo - ${lib_faked_o}
+	echo
+	echo lib_headers:
+	echo - ${lib_headers}
+	echo
+	echo IncludeAvrHeaders:
+	echo - ${IncludeAvrHeaders}
+	echo
+	echo IncludeFakeAvrHeaders:
+	echo - ${IncludeFakeAvrHeaders}
+	echo
+# }}}
+# vim:set fdm=marker:
 
-#;mc
-.PHONY: clean-all-builds
-clean-all-builds:
-	rm -f build/${board-name}.elf
-	rm -f build/${board-name}.lst
-	rm -f build/${board-name}.map
-	rm -f ${obj_prj-libs}
-	rm -f ${obj_app-libs}
-	rm -f ${obj_prj-libs-mocked}
-	rm -f ${obj_libs-tested-with-mocks}
-	rm -f build/atprogram-download*.log
-	rm -f build/avr-size_*.log
