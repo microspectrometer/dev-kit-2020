@@ -7,8 +7,9 @@
 // avr libs
 #include <avr/interrupt.h> // defines macro ISR()
 #include <avr/io.h> // includes iom328p.h for hardware i/o values
-// ${inlhw_lib_src} libs have inline functions so add those defs
-// here for inclusion in the main() translation unit
+// all hardware libs have hardware definitions
+// add those definitions here ("-Hardware.h")
+// for inclusion in the main() translation unit
 #include "BiColorLed-Hardware.h"
 #include "Lis-Hardware.h"
 #include "SpiSlave-Hardware.h"
