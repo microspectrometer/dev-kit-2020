@@ -11,6 +11,7 @@
 // add those definitions here ("-Hardware.h")
 // for inclusion in the main() translation unit
 #include "BiColorLed-Hardware.h"
+#include "Usb-Hardware.h"
 
 #endif // _HARDWARE_H
 

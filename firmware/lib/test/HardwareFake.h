@@ -6,5 +6,6 @@
 #include "SpiSlave-HardwareFake.h"
 #include "UartSpi-HardwareFake.h"
 #include "Lis-HardwareFake.h"
+#include "Usb-HardwareFake.h"
 
 #endif // _HARDWAREFAKE_H

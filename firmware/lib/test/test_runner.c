@@ -24,6 +24,8 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 #include "test_Queue.h"
 #include "test_UartSpi.h"
 #include "test_Lis.h"
+// test libs for usb-bridge
+#include "test_Usb.h"
 
 // ---Fake all hardware---
 #include "HardwareFake.h"
@@ -393,6 +395,37 @@ void Lis_tests(bool run_test)
     }
 }
 
+/* =====[ test libs for usb-bridge ]===== */
+
+/* =====[ Usb_tests ]===== */
+void Run_UsbRxbufferIsEmpty_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(UsbRxbufferIsEmpty_returns_true_if_pin_FT1248_MISO_is_HIGH);
+        RUN_TEST(UsbRxbufferIsEmpty_returns_false_if_pin_FT1248_MISO_is_LOW);
+    }
+}
+void Run_UsbRxbufferIsFull_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(UsbRxbufferIsFull_returns_false_if_pin_MIOSIO0_is_HIGH);
+        RUN_TEST(UsbRxbufferIsFull_returns_true_if_pin_MIOSIO0_is_LOW);
+    }
+}
+
+void Usb_tests(bool run_test)
+{
+    if (run_test)
+    {
+        Run_UsbRxbufferIsEmpty_tests(Nope);
+        Run_UsbRxbufferIsFull_tests(Yep);
+    }
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -400,9 +433,11 @@ int main()
     ReadWriteBits_tests(Nope);
     Queue_tests(Nope);
     UartSpi_tests(Nope);
-    Lis_tests(Yep);
+    Lis_tests(Nope);
     Flag_tests(Nope);
     SpiSlave_tests(Nope);
+    /* =====[ test libs for usb-bridge ]===== */
+    Usb_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();
 }

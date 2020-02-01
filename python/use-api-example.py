@@ -108,11 +108,11 @@ from chromaspeclib.simple import ChromaSpecSimpleInterface
 # quiet() to shut it up again, quiet(True) to also shut up the internals
 #xxx = ChromaSpecSimpleInterface( timeout=0.01, retry_timeout=0.001 )
 xxx = ChromaSpecSimpleInterface()
-print(xxx.getBridgeLED(led_num=0))
+# print(xxx.getBridgeLED(led_num=0))
 print(xxx.setBridgeLED(led_num=0, led_setting=1))
-print(xxx.getBridgeLED(led_num=0))
-print(xxx.setBridgeLED(led_num=0, led_setting=2))
-print(xxx.getBridgeLED(led_num=0))
+# print(xxx.getBridgeLED(led_num=0))
+# print(xxx.setBridgeLED(led_num=0, led_setting=2))
+# print(xxx.getBridgeLED(led_num=0))
 
 #xxx.flush()
 
