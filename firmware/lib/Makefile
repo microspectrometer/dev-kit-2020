@@ -81,7 +81,7 @@ test_lib_o := $(addprefix build/test_,${test_lib_o})
 lib_headers := $(addsuffix .h,${all_libs})
 lib_headers := $(addprefix src/,${lib_headers})
 # List libs that USE_FAKES in tests
-lib_faked := SpiSlave Lis
+lib_faked := SpiSlave Lis Usb
 lib_faked_o := $(addsuffix _faked.o,${lib_faked})
 lib_faked_o := $(addprefix build/,${lib_faked_o})
 # }}}

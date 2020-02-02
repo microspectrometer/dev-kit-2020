@@ -416,13 +416,51 @@ void Run_UsbRxbufferIsFull_tests(bool run_test)
         RUN_TEST(UsbRxbufferIsFull_returns_true_if_pin_MIOSIO0_is_LOW);
     }
 }
-
+void Run__FtDriveDatabus_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtDriveDatabus_drives_FtClock_HIGH_to_drive_data_onto_the_bus);
+    }
+}
+void Run__FtSampleDatabus_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtSampleDatabus_drives_FtClock_LOW_to_sample_data_from_the_bus);
+    }
+}
+void Run__FtWriteDatabus_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtWriteDatabus_makes_FtMiosio0_to_FtMiosio7_output_pins);
+        RUN_TEST(FtWriteDatabus_outputs_data_on_FtMiosio0_to_FtMiosio7);
+    }
+}
+void Run_UsbRxbufferPop_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(UsbRxbufferPop_selects_the_FT221X);
+        RUN_TEST(UsbRxbufferPop_drives_databus_with_read_command);
+        RUN_TEST(UsbRxbufferPop_signals_FT221X_to_sample_the_databus);
+    }
+}
 void Usb_tests(bool run_test)
 {
     if (run_test)
     {
         Run_UsbRxbufferIsEmpty_tests(Nope);
-        Run_UsbRxbufferIsFull_tests(Yep);
+        Run_UsbRxbufferIsFull_tests(Nope);
+        Run_UsbRxbufferPop_tests(Yep);
+        Run__FtDriveDatabus_tests(Nope);
+        Run__FtSampleDatabus_tests(Nope);
+        Run__FtWriteDatabus_tests(Nope);
     }
 }
 

@@ -58,8 +58,8 @@
   *     RESET pin
   *   - USB host drives CBUS3 LOW to **hard reset** the dev-kit
  * */
-#ifndef _LIS_HARDWARE_H
-#define _LIS_HARDWARE_H
+#ifndef _USB_HARDWARE_H
+#define _USB_HARDWARE_H
 #include <stdint.h>
 #include <avr/io.h> // includes iom328p.h for hardware i/o values
 #include "Usb.h"
@@ -70,10 +70,14 @@ usb_reg FtCtrl_port = &PORTC;
 usb_reg FtCtrl_pin  = &PINC;
 // bi-directional data lines (driven by both master and slave)
 usb_reg FtData_pin  = &PIND;
+usb_reg FtData_ddr  = &DDRD;
+usb_reg FtData_port = &PORTD;
 // ---Pins---
 // control lines
-usb_pin FtMiso = PC2;
+usb_pin FtMiso       = PC2; // input: !RxbufferEmpty signal
+usb_pin FtChipSelect = PC0; // output: activate interface
+usb_pin FtClock      = PC1; // output: clock edges signal drive/sample data on bus
 // bi-directional data lines (driven by both master and slave)
-usb_pin FtMiosio0 = PD0;
-#endif // _LIS_HARDWARE_H
+usb_pin FtMiosio0 = PD0; // data bus bit 0
+#endif // _USB_HARDWARE_H
 

@@ -50,7 +50,7 @@ void setup(void)
 void loop(void)
 {
     while (UsbRxbufferIsEmpty());
-    // switch(USB Pop())
+    // switch(UsbRxbufferPop())
     // {
     //  case 0: NullCommand(); break;
     //  case 8: SetSensorConfig(); break;
