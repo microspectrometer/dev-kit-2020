@@ -38,19 +38,46 @@
 #include "Mock.h" // record call history in "mock"
 #include "Usb.h"
 
-/* =====[ Mock _FtDriveDatabus() ]===== */
-static RecordedCall * Record__FtDriveDatabus(void)
+// ---Private functions faked for testing---
+
+/* =====[ Mock _FtClockDatabus(FtDrive) ]===== */
+static RecordedCall * Record__FtClockDatabus(uint8_t arg1)
 { // Define **what is recorded** when fake is called.
-    char const *call_name = "_FtDriveDatabus";
+    char const *call_name = "_FtClockDatabus";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
+    *((uint8_t *)record_of_arg1->pArg) = arg1;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
     return record_of_this_call;
 }
-void _FtDriveDatabus_fake(void)
+void _FtClockDatabus_fake(uint8_t direction)
 { //! Fake records calls made by **function under test**.
   /** Record:\n 
    *  - call name
+   *  - arg1
    *  */
-    RecordActualCall(mock, Record__FtDriveDatabus());
+    RecordActualCall(mock, Record__FtClockDatabus(direction));
+}
+
+/* =====[ Mock _FtReadDatabus ]===== */
+static RecordedCall * Record__FtReadDatabus(uint8_t * arg1)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "_FtReadDatabus";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t **)record_of_arg1->pArg) = arg1;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void _FtReadDatabus_fake(uint8_t * pbyte)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   *  - arg1
+   * */
+    RecordActualCall( mock, Record__FtReadDatabus(pbyte) );
 }
 
 /* =====[ Mock _FtWriteDatabus ]===== */
@@ -64,26 +91,135 @@ static RecordedCall * Record__FtWriteDatabus(uint8_t arg1)
     RecordArg(record_of_this_call, record_of_arg1);
     return record_of_this_call;
 }
-void _FtWriteDatabus_fake(uint8_t data)
+void _FtWriteDatabus_fake(uint8_t byte)
 { //! Fake records calls made by **function under test**.
   /** Record:\n 
    *  - call name\n 
    *  - arg1
    * */
-    RecordActualCall( mock, Record__FtWriteDatabus(data) );
+    RecordActualCall( mock, Record__FtWriteDatabus(byte) );
 }
 
-/* =====[ Mock _FtSampleDatabus() ]===== */
-static RecordedCall * Record__FtSampleDatabus(void)
+/* =====[ Mock _FtDatabusPinDirection ]===== */
+static RecordedCall * Record__FtDatabusPinDirection(uint8_t arg1)
 { // Define **what is recorded** when fake is called.
-    char const *call_name = "_FtSampleDatabus";
+    char const *call_name = "_FtDatabusPinDirection";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
+    *((uint8_t *)record_of_arg1->pArg) = arg1;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void _FtDatabusPinDirection_fake(uint8_t pin_direction)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   *  - arg1
+   * */
+    RecordActualCall( mock, Record__FtDatabusPinDirection(pin_direction) );
+}
+
+// ---Ft API used internally by Usb---
+
+/* =====[ Mock FtSelectFT221X() ]===== */
+static RecordedCall * Record_FtSelectFT221X(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "FtSelectFT221X";
     RecordedCall *record_of_this_call = RecordedCall_new(call_name);
     return record_of_this_call;
 }
-void _FtSampleDatabus_fake(void)
+void FtSelectFT221X_fake(void)
 { //! Fake records calls made by **function under test**.
   /** Record:\n 
    *  - call name
    *  */
-    RecordActualCall(mock, Record__FtSampleDatabus());
+    RecordActualCall(mock, Record_FtSelectFT221X());
 }
+
+/* =====[ Mock FtBusTurnaround() ]===== */
+static RecordedCall * Record_FtBusTurnaround(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "FtBusTurnaround";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void FtBusTurnaround_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  */
+    RecordActualCall(mock, Record_FtBusTurnaround());
+}
+
+/* =====[ Mock FtIsOk() ]===== */
+static RecordedCall * Record_FtIsOk(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "FtIsOk";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+bool FtIsOk_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  */
+    RecordActualCall(mock, Record_FtIsOk());
+    return false;
+}
+
+/* =====[ Mock FtRead(pbyte) ]===== */
+static RecordedCall * Record_FtRead(uint8_t * arg1)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "FtRead";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_p_uint8_t);
+    *((uint8_t **)record_of_arg1->pArg) = arg1;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void FtRead_fake(uint8_t * pbyte)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   *  - arg1
+   * */
+    RecordActualCall( mock, Record_FtRead(pbyte) );
+}
+
+/* =====[ Mock FtWrite(byte) ]===== */
+static RecordedCall * Record_FtWrite(uint8_t arg1)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "FtWrite";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint8_t);
+    *((uint8_t *)record_of_arg1->pArg) = arg1;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void FtWrite_fake(uint8_t byte)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  - arg1
+   *  */
+    RecordActualCall(mock, Record_FtWrite(byte));
+}
+
+/* =====[ Mock FtUnselectFT221X() ]===== */
+static RecordedCall * Record_FtUnselectFT221X(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "FtUnselectFT221X";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void FtUnselectFT221X_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  */
+    RecordActualCall(mock, Record_FtUnselectFT221X());
+}
+

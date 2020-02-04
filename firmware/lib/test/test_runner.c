@@ -398,6 +398,119 @@ void Lis_tests(bool run_test)
 /* =====[ test libs for usb-bridge ]===== */
 
 /* =====[ Usb_tests ]===== */
+// ---Run_Usb_Private_Ft_tests---
+void Run__FtClockDatabus_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtClockDatabus_drives_FtClock_HIGH_if_direction_is_FtDrive);
+        RUN_TEST(FtClockDatabus_drives_FtClock_LOW_if_direction_is_FtSample);
+    }
+}
+void Run__FtReadDatabus_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtReadDatabus_copies_databus_pin_values_to_address_pbyte);
+    }
+}
+void Run__FtWriteDatabus_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtWriteDatabus_outputs_byte_on_databus_pins);
+    }
+}
+void Run__FtDatabusPinDirection(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtDatabusPinDirection_makes_databus_pins_outputs_if_direction_is_FtOut);
+        RUN_TEST(FtDatabusPinDirection_makes_databus_pins_inputs_if_direction_is_FtIn);
+    }
+}
+void Run_Usb_Private_Ft_tests(bool run_test)
+{
+    if (run_test)
+    {
+        Run__FtClockDatabus_tests(Yep);
+        Run__FtReadDatabus_tests(Yep);
+        Run__FtWriteDatabus_tests(Yep);
+        Run__FtDatabusPinDirection(Yep);
+    }
+}
+// ---Run_Usb_Ft_tests---
+void Run_FtSelectFT221X_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtSelectFT221X_drives_FtChipSelect_LOW);
+    }
+}
+void Run_FtUnselectFT221X_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtUnselectFT221X_drives_FtChipSelect_HIGH);
+    }
+}
+void Run_FtBusTurnaround_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(FtBusTurnaround_clocks_one_cycle_to_signal_data_drive_then_data_sample);
+    }
+}
+void Run_FtIsOk_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(FtIsOk_returns_true_if_FtMiso_is_LOW);
+        RUN_TEST(FtIsOk_returns_false_if_FtMiso_is_HIGH);
+    }
+}
+void Run_FtRead_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(FtRead_clocks_one_byte_out_of_the_FT221X);
+        RUN_TEST(FtRead_stores_the_byte_at_address_pbyte);
+    }
+}
+void Run_FtWrite_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(FtWrite_signals_to_drive_data_onto_the_databus);
+        RUN_TEST(FtWrite_sets_microcontroller_databus_pins_as_outputs);
+        RUN_TEST(FtWrite_outputs_byte_on_databus_pins);
+        RUN_TEST(FtWrite_signals_FT221X_to_sample_the_databus);
+        RUN_TEST(FtWrite_sets_microcontroller_databus_pins_as_inputs);
+    }
+}
+void Run_Usb_Ft_tests(bool run_test)
+{
+    if (run_test)
+    {
+        Run_FtSelectFT221X_tests(Yep);
+        Run_FtUnselectFT221X_tests(Yep);
+        Run_FtBusTurnaround_tests(Yep);
+        Run_FtIsOk_tests(Yep);
+        Run_FtRead_tests(Yep);
+        Run_FtWrite_tests(Yep);
+    }
+}
+// ---Run_Usb_API_tests---
 void Run_UsbRxbufferIsEmpty_tests(bool run_test)
 {
     if (run_test)
@@ -407,60 +520,50 @@ void Run_UsbRxbufferIsEmpty_tests(bool run_test)
         RUN_TEST(UsbRxbufferIsEmpty_returns_false_if_pin_FT1248_MISO_is_LOW);
     }
 }
-void Run_UsbRxbufferIsFull_tests(bool run_test)
+void Run_UsbTxbufferIsFull_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(UsbRxbufferIsFull_returns_false_if_pin_MIOSIO0_is_HIGH);
-        RUN_TEST(UsbRxbufferIsFull_returns_true_if_pin_MIOSIO0_is_LOW);
+        RUN_TEST(UsbTxbufferIsFull_returns_true_if_pin_MIOSIO0_is_HIGH);
+        RUN_TEST(UsbTxbufferIsFull_returns_false_if_pin_MIOSIO0_is_LOW);
     }
 }
-void Run__FtDriveDatabus_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(FtDriveDatabus_drives_FtClock_HIGH_to_drive_data_onto_the_bus);
-    }
-}
-void Run__FtSampleDatabus_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(FtSampleDatabus_drives_FtClock_LOW_to_sample_data_from_the_bus);
-    }
-}
-void Run__FtWriteDatabus_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(FtWriteDatabus_makes_FtMiosio0_to_FtMiosio7_output_pins);
-        RUN_TEST(FtWriteDatabus_outputs_data_on_FtMiosio0_to_FtMiosio7);
-    }
-}
-void Run_UsbRxbufferPop_tests(bool run_test)
+void Run_UsbReadByte_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
-        RUN_TEST(UsbRxbufferPop_selects_the_FT221X);
-        RUN_TEST(UsbRxbufferPop_drives_databus_with_read_command);
-        RUN_TEST(UsbRxbufferPop_signals_FT221X_to_sample_the_databus);
+        RUN_TEST(UsbReadByte_selects_the_FT221X);
+        RUN_TEST(UsbReadByte_drives_databus_with_read_command);
+        RUN_TEST(UsbReadByte_signals_FT221X_to_sample_the_databus);
     }
 }
-void Usb_tests(bool run_test)
+void Run_UsbWriteByte_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+    }
+}
+void Run_Usb_API_tests(bool run_test)
 {
     if (run_test)
     {
         Run_UsbRxbufferIsEmpty_tests(Nope);
-        Run_UsbRxbufferIsFull_tests(Nope);
-        Run_UsbRxbufferPop_tests(Yep);
-        Run__FtDriveDatabus_tests(Nope);
-        Run__FtSampleDatabus_tests(Nope);
-        Run__FtWriteDatabus_tests(Nope);
+        Run_UsbTxbufferIsFull_tests(Nope);
+        Run_UsbReadByte_tests(Yep);
+        Run_UsbWriteByte_tests(Nope);
+    }
+}
+
+void Usb_tests(bool run_test)
+{
+    if (run_test)
+    {
+        Run_Usb_Private_Ft_tests(Nope);
+        Run_Usb_Ft_tests(Nope);
+        Run_Usb_API_tests(Yep);
     }
 }
 

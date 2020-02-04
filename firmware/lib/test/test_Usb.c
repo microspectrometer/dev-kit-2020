@@ -141,6 +141,227 @@ static void test_bit_val_msg(
     g_string_free(msg, true);
 }
 
+// ---Run_Usb_Private_Ft_tests---
+
+/* =====[ _FtClockDatabus ]===== */
+void FtClockDatabus_drives_FtClock_HIGH_if_direction_is_FtDrive(void)
+{
+    /* =====[ Setup ]===== */
+    setup_bit_val(FtCtrl_port, FtClock, LOW);
+    /* =====[ Operate ]===== */
+    _FtClockDatabus(FtDrive);
+    /* =====[ Test ]===== */
+    test_bit_val_msg(FtCtrl_port, FtClock, HIGH, "FtClock");
+}
+void FtClockDatabus_drives_FtClock_LOW_if_direction_is_FtSample(void)
+{
+    /* =====[ Setup ]===== */
+    setup_bit_val(FtCtrl_port, FtClock, HIGH);
+    /* =====[ Operate ]===== */
+    _FtClockDatabus(FtSample);
+    /* =====[ Test ]===== */
+    test_bit_val_msg(FtCtrl_port, FtClock, LOW, "FtClock");
+}
+
+/* =====[ _FtReadDatabus ]===== */
+void FtReadDatabus_copies_databus_pin_values_to_address_pbyte(void)
+{
+    /* =====[ Setup ]===== */
+    *FtData_pin = 0xab;
+    /* =====[ Operate ]===== */
+    uint8_t byte = 0; uint8_t * pbyte = &byte;
+    _FtReadDatabus(pbyte);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_HEX8(*FtData_pin, byte);
+}
+
+/* =====[ _FtWriteDatabus ]===== */
+void FtWriteDatabus_outputs_byte_on_databus_pins(void)
+{
+    /* =====[ Setup ]===== */
+    *FtData_port = 0x00;
+    /* =====[ Operate ]===== */
+    uint8_t byte = 0xab;
+    _FtWriteDatabus(byte);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_HEX8(byte, *FtData_port);
+}
+
+/* =====[ _FtDatabusPinDirection ]===== */
+void FtDatabusPinDirection_makes_databus_pins_outputs_if_direction_is_FtOut(void)
+{
+    /* =====[ Setup ]===== */
+    *FtData_ddr = 0x00; // start with pins as inputs
+    /* =====[ Operate ]===== */
+    _FtDatabusPinDirection(FtOut);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_HEX8(0xFF, *FtData_ddr);
+}
+void FtDatabusPinDirection_makes_databus_pins_inputs_if_direction_is_FtIn(void)
+{
+    /* =====[ Setup ]===== */
+    *FtData_ddr = 0xFF; // start with pins as outputs
+    /* =====[ Operate ]===== */
+    _FtDatabusPinDirection(FtIn);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_HEX8(0x00, *FtData_ddr);
+}
+
+// ---Run_Usb_Ft_tests---
+
+/* =====[ FtSelectFT221X ]===== */
+void FtSelectFT221X_drives_FtChipSelect_LOW(void)
+{
+    /* =====[ Setup ]===== */
+    setup_bit_val(FtCtrl_port, FtChipSelect, HIGH);
+    /* =====[ Operate ]===== */
+    FtSelectFT221X();
+    /* =====[ Test ]===== */
+    test_bit_val_msg(FtCtrl_port, FtChipSelect, LOW, "FtChipSelect");
+}
+
+/* =====[ FtUnselectFT221X ]===== */
+void FtUnselectFT221X_drives_FtChipSelect_HIGH(void)
+{
+    /* =====[ Setup ]===== */
+    setup_bit_val(FtCtrl_port, FtChipSelect, LOW);
+    /* =====[ Operate ]===== */
+    FtUnselectFT221X();
+    /* =====[ Test ]===== */
+    test_bit_val_msg(FtCtrl_port, FtChipSelect, HIGH, "FtChipSelect");
+}
+
+/* =====[ FtBusTurnaround ]===== */
+void FtBusTurnaround_clocks_one_cycle_to_signal_data_drive_then_data_sample(void)
+{
+    /* =====[ Operate ]===== */
+    FtBusTurnaround();
+    /* PrintAllCalls(mock); */
+    /* =====[ Test ]===== */
+    uint16_t call_n; uint8_t direction;
+    //
+    call_n = 1;
+    _AssertCall(call_n, "_FtClockDatabus");
+    //
+    direction = FtDrive;
+    _AssertArg(call_n, 1, &direction);
+    //
+    call_n++;
+    _AssertCall(call_n, "_FtClockDatabus");
+    //
+    direction = FtSample;
+    _AssertArg(call_n, 1, &direction);
+}
+
+/* =====[ FtIsOk ]===== */
+void FtIsOk_returns_true_if_FtMiso_is_LOW(void)
+{
+    setup_bit_val(FtCtrl_pin, FtMiso, LOW);
+    TEST_ASSERT_TRUE(FtIsOk());
+}
+void FtIsOk_returns_false_if_FtMiso_is_HIGH(void)
+{
+    setup_bit_val(FtCtrl_pin, FtMiso, HIGH);
+    TEST_ASSERT_FALSE(FtIsOk());
+}
+
+/* =====[ FtRead ]===== */
+void FtRead_clocks_one_byte_out_of_the_FT221X(void)
+{
+    /* =====[ Operate ]===== */
+    uint8_t byte = 0; uint8_t *pbyte = &byte;
+    FtRead(pbyte);
+    /* PrintAllCalls(mock); */
+    /* =====[ Test ]===== */
+    uint16_t call_n; uint8_t direction;
+    //
+    call_n = 1;
+    _AssertCall(call_n, "_FtClockDatabus");
+    //
+    direction = FtDrive;
+    _AssertArg(call_n, 1, &direction);
+    //
+    call_n = 2;
+    _AssertCall(call_n, "_FtClockDatabus");
+    //
+    direction = FtSample;
+    _AssertArg(call_n, 1, &direction);
+    //
+}
+void FtRead_stores_the_byte_at_address_pbyte(void)
+{
+    /* =====[ Operate ]===== */
+    uint8_t byte = 0xcd; uint8_t *pbyte = &byte;
+    FtRead(pbyte);
+    /* =====[ Test ]===== */
+    uint16_t call_n = 3;
+    _AssertCall(call_n, "_FtReadDatabus");
+    //
+    _AssertArg(call_n, 1, &pbyte);
+    // See test of _FtReadDatabus to confirm byte==*FtData_pin.
+    // Cannot test this here because _FtReadDatabus is faked.
+}
+
+/* =====[ FtWrite ]===== */
+void FtWrite_signals_to_drive_data_onto_the_databus(void)
+{
+    /* =====[ Operate ]===== */
+    FtWrite(0xab);
+    /* =====[ Test ]===== */
+    uint16_t call_n; uint8_t direction;
+    //
+    call_n = 1;
+    _AssertCall(call_n, "_FtClockDatabus");
+    //
+    direction = FtDrive;
+    _AssertArg(call_n, 1, &direction);
+}
+void FtWrite_sets_microcontroller_databus_pins_as_outputs(void)
+{
+    /* =====[ Operate ]===== */
+    FtWrite(0xab);
+    /* =====[ Test ]===== */
+    uint16_t call_n = 2;
+    _AssertCall(call_n, "_FtDatabusPinDirection");
+    uint8_t pin_direction = FtOut;
+    _AssertArg(call_n, 1, &pin_direction);
+}
+void FtWrite_outputs_byte_on_databus_pins(void)
+{
+    /* =====[ Operate ]===== */
+    uint8_t byte = 0xab;
+    FtWrite(byte);
+    /* =====[ Test ]===== */
+    uint16_t call_n = 3;
+    _AssertCall(call_n, "_FtWriteDatabus");
+    _AssertArg(call_n, 1, &byte);
+}
+void FtWrite_signals_FT221X_to_sample_the_databus(void)
+{
+    /* =====[ Operate ]===== */
+    FtWrite(0xab);
+    /* =====[ Test ]===== */
+    uint16_t call_n; uint8_t direction;
+    //
+    call_n = 4;
+    _AssertCall(call_n, "_FtClockDatabus");
+    //
+    direction = FtSample;
+    _AssertArg(call_n, 1, &direction);
+}
+void FtWrite_sets_microcontroller_databus_pins_as_inputs(void)
+{
+    /* =====[ Operate ]===== */
+    FtWrite(0xab);
+    /* =====[ Test ]===== */
+    uint16_t call_n = 5;
+    _AssertCall(call_n, "_FtDatabusPinDirection");
+    uint8_t pin_direction = FtIn;
+    _AssertArg(call_n, 1, &pin_direction);
+}
+
+// ---Run_Usb_API_tests---
+
 /* =====[ UsbRxbufferIsEmpty ]===== */
 void UsbRxbufferIsEmpty_returns_true_if_pin_FT1248_MISO_is_HIGH(void)
 {
@@ -157,91 +378,50 @@ void UsbRxbufferIsEmpty_returns_false_if_pin_FT1248_MISO_is_LOW(void)
     TEST_ASSERT_FALSE(UsbRxbufferIsEmpty());
 }
 
-/* =====[ UsbRxbufferIsFull ]===== */
-void UsbRxbufferIsFull_returns_false_if_pin_MIOSIO0_is_HIGH(void)
+/* =====[ UsbTxbufferIsFull ]===== */
+void UsbTxbufferIsFull_returns_true_if_pin_MIOSIO0_is_HIGH(void)
 {
     /* =====[ Setup ]===== */
     SetBit(FtData_pin, FtMiosio0);
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_FALSE(UsbRxbufferIsFull());
+    TEST_ASSERT_TRUE(UsbTxbufferIsFull());
 }
-void UsbRxbufferIsFull_returns_true_if_pin_MIOSIO0_is_LOW(void)
+void UsbTxbufferIsFull_returns_false_if_pin_MIOSIO0_is_LOW(void)
 {
     /* =====[ Setup ]===== */
     ClearBit(FtData_pin, FtMiosio0);
     /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_TRUE(UsbRxbufferIsFull());
+    TEST_ASSERT_FALSE(UsbTxbufferIsFull());
 }
 
-/* =====[ _FtDriveDatabus ]===== */
-void FtDriveDatabus_drives_FtClock_HIGH_to_drive_data_onto_the_bus(void)
+/* =====[ UsbReadByte ]===== */
+void UsbReadByte_selects_the_FT221X(void)
 {
-    /* =====[ Setup ]===== */
-    setup_bit_val(FtCtrl_port, FtClock, LOW);
-    /* =====[ Operate ]===== */
-    _FtDriveDatabus();
-    /* =====[ Test ]===== */
-    test_bit_val_msg(FtCtrl_port, FtClock, HIGH, "FtClock");
+    TEST_FAIL_MESSAGE("Implement test.");
 }
-
-/* =====[ _FtWriteDatabus ]===== */
-void FtWriteDatabus_makes_FtMiosio0_to_FtMiosio7_output_pins(void)
-{
-    /* =====[ Setup ]===== */
-    *FtData_ddr = 0x00;
-    /* =====[ Operate ]===== */
-    uint8_t data = 0xab;
-    _FtWriteDatabus(data);
-    /* =====[ Test ]===== */
-    TEST_ASSERT_EQUAL_HEX8(0xFF, *FtData_ddr);
-}
-void FtWriteDatabus_outputs_data_on_FtMiosio0_to_FtMiosio7(void)
-{
-    /* =====[ Setup ]===== */
-    uint8_t data = 0xab;
-    *FtData_port = 0x00;
-    /* =====[ Operate ]===== */
-    _FtWriteDatabus(data);
-    /* =====[ Test ]===== */
-    TEST_ASSERT_EQUAL_HEX8(data, *FtData_port);
-}
-
-/* =====[ _FtSampleDatabus ]===== */
-void FtSampleDatabus_drives_FtClock_LOW_to_sample_data_from_the_bus(void)
-{
-    /* =====[ Setup ]===== */
-    setup_bit_val(FtCtrl_port, FtClock, HIGH);
-    /* =====[ Operate ]===== */
-    _FtSampleDatabus();
-    /* =====[ Test ]===== */
-    test_bit_val_msg(FtCtrl_port, FtClock, LOW, "FtClock");
-}
-
-/* =====[ UsbRxbufferPop ]===== */
-void UsbRxbufferPop_selects_the_FT221X(void)
-{
-    /* =====[ Setup ]===== */
-    setup_bit_val(FtCtrl_port, FtChipSelect, HIGH);
-    /* =====[ Operate ]===== */
-    UsbRxbufferPop();
-    /* =====[ Test ]===== */
-    test_bit_val_msg(FtCtrl_port, FtChipSelect, LOW, "FtChipSelect");
-}
-void UsbRxbufferPop_drives_databus_with_read_command(void)
+void UsbReadByte_drives_databus_with_read_command(void)
 {
     /* =====[ Operate ]===== */
-    UsbRxbufferPop();
+    uint8_t byte = 0; uint8_t * pbyte = &byte;
+    UsbReadByte(pbyte);
     /* =====[ Test ]===== */
     uint16_t call_n = 1;
-    _AssertCall(call_n++, "_FtDriveDatabus");
+    _AssertCall(call_n++, "_FtClockDatabusDrive");
     _AssertCall(call_n, "_FtWriteDatabus");
     uint8_t read_cmd = FtReadCmd;
     _AssertArg(call_n, 1, &read_cmd);
 }
-void UsbRxbufferPop_signals_FT221X_to_sample_the_databus(void)
+void UsbReadByte_signals_FT221X_to_sample_the_databus(void)
 {
+    TEST_FAIL_MESSAGE("Implement test.");
+
     /* =====[ Operate ]===== */
-    UsbRxbufferPop();
+    uint8_t byte = 0; uint8_t * pbyte = &byte;
+    UsbReadByte(pbyte);
     /* =====[ Test ]===== */
-    _AssertCall(3, "_FtSampleDatabus");
+    /* _AssertCall(3, "_FtClockDatabusSample"); */
 }
+
+/* =====[ UsbWriteByte ]===== */
+
+
