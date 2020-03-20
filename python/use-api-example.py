@@ -33,6 +33,15 @@ REPO
 
 MODULE INSTALLATION
 
+    CYGWIN
+
+
+    Note that Cygwin cannot see USB ports. There is no reason to run this script
+    using the Cygwin Python installation. Cygwin can call the Windows
+    installation of Python (like it calls any other Windows executable).
+
+    If for some reason I do want to use the Cygwin Python:
+
     Manually add the path to `chromaspec-sean/src/` to the PYTHONPATH.
 
     To run script from bash (on Mac/Linux, not Cygwin), edit the `~/.bashrc`
@@ -41,9 +50,45 @@ MODULE INSTALLATION
     export PYTHONPATH=$PYTHONPATH:~/.local/lib/python3.6/site-packages/chromaspec-sean/src/
     ```
 
-    Note that Cygwin cannot see USB ports. There is no reason to run this script
-    using the Cygwin Python installation. Cygwin can call the Windows
-    installation of Python (like it calls any other Windows executable).
+    Specify `python3` for the Cygwin Python3.6 or specify
+    `python.exe` for the Windows Python3.7.
+
+    Do not change PYTHONPATH for both environments. Doing so has no effect on
+    Windows, but it messes up sys.path when calling Windows Python3.7 from
+    Cygwin.
+
+    WINDOWS (invoked from PowerShell or from Cygwin)
+
+
+    Check the PYTHONPATH:
+
+    ```powershell
+    python -c "import sys; print('\n'.join(sys.path))"
+    ```
+
+    Check the Windows environment variable $env:PYTHONPATH:
+
+    ```powershell
+    $ echo $env:PYTHONPATH
+    ```
+
+    If $env:PYTHONPATH is not set in the PowerShell profile,
+    expect this is empty. Do not permanently change the
+    Windows environment variables. Add them to PowerShell
+    profile. The variables are created when a PowerShell is
+    openend.
+    
+    ```powershell
+    # Profile.ps1 {put profile path here}
+    #
+    # $chromaspeclib_path is the path to the local repo copy of chromaspec-sean/src
+    $chromaspeclib = "C:\{put repo path here}\chromaspec-sean\src"
+    $env:PYTHONPATH = "$env:PYTHONPATH;$chromaspeclib_path"
+    ```
+
+    TODO: I copied to $py3_user_site_packages, but there was no
+    reason to do that. Erase that, do the above method, then
+    erase the following.
 
     To run this script with the Windows Python installation, edit the PowerShell
     Profile:
@@ -53,22 +98,14 @@ MODULE INSTALLATION
     $env:PYTHONPATH = "$env:PYTHONPATH;$chromaspeclib_path"
     ```
 
-    Check the PYTHONPATH:
-
-    python -c "import sys; print('\n'.join(sys.path))"
-
-    Running the above command from Cygwin, specify `python3` for the Cygwin
-    Python3.6 or specify `python.exe` for the Windows Python3.7.
-
-    Do not change PYTHONPATH for both environments. Doing so has no effect on
-    Windows, but it messes up sys.path when calling Windows Python3.7 from
-    Cygwin.
-
 DETAILS: NO PIP YET
 
     `chromaspeclib` is not yet ready for `pip install`.
     I usually put these kinds of Python modules in my local site packages
     folder. This avoids editing the PYTHONPATH.
+    During development, I just point $env:PYTHONPATH to my local clone
+    of Sean's master branch of chromaspec-sean\src. I update my
+    copy of chromaspeclib by `git pull`.
 
 DETAILS: PYTHONPATH
 
@@ -107,6 +144,7 @@ from chromaspeclib.simple import ChromaSpecSimpleInterface
 # debug() to debug api, debug(True) to also debug all underlying stuff
 # quiet() to shut it up again, quiet(True) to also shut up the internals
 #xxx = ChromaSpecSimpleInterface( timeout=0.01, retry_timeout=0.001 )
+debug()
 xxx = ChromaSpecSimpleInterface()
 # print(xxx.getBridgeLED(led_num=0))
 print(xxx.setBridgeLED(led_num=0, led_setting=1))
