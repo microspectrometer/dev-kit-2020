@@ -34,6 +34,63 @@ The low-level protocol definitions are in `cfg/chromaspec.json`.
 - [ ] ctags, cscope
 - [ ] Doxygen
 
+# Doxygen
+
+One top level Doxyfile
+
+- `./Doxyfile`
+
+A doxygen folder at any level to document with Doxygen
+
+- `./doxygen`
+- `./firmware/doxygen`
+
+## Doxyfile customization
+
+The Doxyfile is the default with the following changes.
+
+Generate the default:
+
+```bash
+$ doxygen -g
+```
+
+Changes:
+
+```
+PROJECT_NAME           = "dev-kit"
+PROJECT_BRIEF          = "Python-compatible Chromation Spectrometer dev-kit."
+OUTPUT_DIRECTORY       = ./doxygen
+RECURSIVE              = YES
+OPTIMIZE_OUTPUT_FOR_C  = YES
+EXTRACT_STATIC         = YES
+OPTIMIZE_OUTPUT_JAVA   = NO
+EXCLUDE                = doc/ \
+                        hardware-drawings/ \
+                        labview/ \
+                        system-design-sketches/ \
+                        temp/
+EXTRACT_ALL            = NO
+WARN_IF_UNDOCUMENTED   = YES
+USE_MDFILE_AS_MAINPAGE = README.md
+HTML_EXTRA_STYLESHEET  = "doxygen/doxygen-dark-theme/custom.css" \
+                         "doxygen/doxygen-dark-theme/custom_dark_theme.css"
+```
+
+- `PROJECT_NAME`
+    - one-word project name
+    - appears as title on every page
+- `PROJECT_BRIEF`
+    - optional one-liner
+    - appears at the top of every page
+- `RECURSIVE`
+    - `YES`: look inside project folders for source code
+- `EXTRACT_STATIC`
+    - include documentation for `static` functions
+- `OPTIMIZE_OUTPUT_JAVA`
+    - `YES`: if project only contains Python code or Java code
+
 ## protocol defined in json
+
 - [ ] find the copy of the json file I was editing to track my
   changes to the protocol
