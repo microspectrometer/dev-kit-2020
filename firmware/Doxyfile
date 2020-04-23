@@ -32,19 +32,19 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "dev-kit"
+PROJECT_NAME           = "firmware"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         =
+PROJECT_NUMBER         = "v0"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Python-compatible Chromation Spectrometer dev-kit"
+PROJECT_BRIEF          = "Protocol compatible with chromaspec-sean"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -898,14 +898,7 @@ RECURSIVE              = YES
 # run.
 
 EXCLUDE                = doc/ \
-                        hardware-drawings/ \
-                        labview/ \
-                        system-design-sketches/ \
-                        temp/ \
-                        firmware/temp/ \
-                        firmware/AssemblyExample.md \
-                        firmware/Earhart-snippet.c \
-                        firmware/README-firmware.md
+                        temp/
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1023,7 +1016,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE = README.md
+USE_MDFILE_AS_MAINPAGE = README-firmware.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
