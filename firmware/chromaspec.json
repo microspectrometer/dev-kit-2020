@@ -1,0 +1,66 @@
+{
+  "globals":
+  {
+    "StatusOK": "0x00",
+    "StatusError": "0x01",
+    "StatusInvalidCmd": "0x02",
+    "LEDOff": "0x00",
+    "LEDGreen": "0x01",
+    "LEDRed": "0x02",
+    "BinningDefault": false,
+    "Gain1x": "0x01",
+    "Gain2_5x": "0x25",
+    "Gain4x": "0x04",
+    "Gain5x": "0x05",
+    "GainDefault": "0x01",
+    "RowsDefault": "0x1F"
+  },
+  "protocol":
+  {
+    "command":
+    {
+       "0":  { "name": "Null",            "variables": [ "command_id"                                  ], "sizes": [1] }
+      ,"1":  { "name": "GetBridgeLED",    "variables": [ "command_id", "led_num"                       ], "sizes": [1,1] }
+      ,"2":  { "name": "SetBridgeLED",    "variables": [ "command_id", "led_num", "led_setting"        ], "sizes": [1,1,1] }
+      ,"3":  { "name": "GetSensorLED",    "variables": [ "command_id", "led_num"                       ], "sizes": [1,1] }
+      ,"4":  { "name": "SetSensorLED",    "variables": [ "command_id", "led_num", "led_setting"        ], "sizes": [1,1,1] }
+      ,"-1": { "name": "Reset",           "variables": [ "command_id"                                  ], "sizes": [1] }
+      ,"-2": { "name": "Verify",          "variables": [ "command_id"                                  ], "sizes": [1] }
+      ,"7":  { "name": "GetSensorConfig", "variables": [ "command_id"                                  ], "sizes": [1] }
+      ,"8":  { "name": "SetSensorConfig", "variables": [ "command_id", "binning", "gain", "row_bitmap" ], "sizes": [1,1,1,1] }
+      ,"-3": { "name": "AutoExposure",    "variables": [ "command_id"                                  ], "sizes": [1] }
+      ,"9":  { "name": "GetExposure",     "variables": [ "command_id"                                  ], "sizes": [1] }
+      ,"10": { "name": "SetExposure",     "variables": [ "command_id", "cycles"                        ], "sizes": [1,2] }
+      ,"11": { "name": "CaptureFrame",    "variables": [ "command_id"                                  ], "sizes": [1] }
+    },
+    "serial":
+    {
+       "0":  { "name": "Null",            "variables": [                         ], "sizes": [] }
+      ,"1":  { "name": "GetBridgeLED",    "variables": [ "status", "led_setting" ], "sizes": [1,1] }
+      ,"2":  { "name": "SetBridgeLED",    "variables": [ "status"                ], "sizes": [1] }
+      ,"3":  { "name": "GetSensorLED",    "variables": [ "status"                ], "sizes": [1] }
+      ,"4":  { "name": "SetSensorLED",    "variables": [ "status"                ], "sizes": [1] }
+      ,"-1": { "name": "Reset",           "variables": [ "status"                ], "sizes": [1] }
+      ,"-2": { "name": "Verify",          "variables": [ "status"                ], "sizes": [1] }
+      ,"7":  { "name": "GetSensorConfig", "variables": [ "status"                ], "sizes": [1] }
+      ,"8":  { "name": "SetSensorConfig", "variables": [ "status"                ], "sizes": [1] }
+      ,"-3": { "name": "AutoExposure",    "variables": [ "status"                ], "sizes": [1] }
+      ,"9":  { "name": "GetExposure",     "variables": [ "status"                ], "sizes": [1] }
+      ,"10": { "name": "SetExposure",     "variables": [ "status"                ], "sizes": [1] }
+      ,"11": { "name": "CaptureFrame",    "variables": [ "status"                ], "sizes": [1] }
+    },
+    "sensor":
+    {
+       "0":  { "name": "Null",            "variables": [                         ], "sizes": [] }
+      ,"3":  { "name": "GetSensorLED",    "variables": [ "status", "led_setting"                   ], "sizes": [1,1] }
+      ,"4":  { "name": "SetSensorLED",    "variables": [ "status"                                  ], "sizes": [1] }
+      ,"7":  { "name": "GetSensorConfig", "variables": [ "status", "binning", "gain", "row_bitmap" ], "sizes": [1,1,1,1] }
+      ,"8":  { "name": "SetSensorConfig", "variables": [ "status"                                  ], "sizes": [1] }
+      ,"-3": { "name": "AutoExposure",    "variables": [ "status"                                  ], "sizes": [1] }
+      ,"9":  { "name": "GetExposure",     "variables": [ "status", "cycles"                        ], "sizes": [1,2] }
+      ,"10": { "name": "SetExposure",     "variables": [ "status"                                  ], "sizes": [1] }
+      ,"11": { "name": "CaptureFrame",    "variables": [ "status", "num_pixels", "pixels"          ], "sizes": [1,2,2],
+                                          "repeat":    { "pixels": "num_pixels"                    } }
+    }
+  }
+}

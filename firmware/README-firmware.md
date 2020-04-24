@@ -1,4 +1,5 @@
-# Tasks
+# TASKS
+# Build for dev-kit-mike
 
 ## clean Makefiles
 
@@ -13,10 +14,6 @@
 - [ ] ctags, cscope
 - [ ] Doxygen
 
-## protocol defined in json
-
-- [ ] find the copy of the json file I was editing to track my
-  changes to the protocol
 
 # Doxygen
 
@@ -159,3 +156,9 @@ and `title` for the `./firmware/doxygen` firmware-specific
 version of the documentation. This is for me during development
 of the firmware.
 
+# DONE
+## protocol defined in json
+
+- [x] find the copy of the `chromaspec.json` file I was editing
+  to track my changes to the protocol
+    - paste in `dev-kit-mike/firmware` folder
