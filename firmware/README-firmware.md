@@ -1,19 +1,141 @@
-# TASKS
-# Build for dev-kit-mike
+# Developer's Guide
 
-## clean Makefiles
+# Search code within Vim
 
-- [ ] pull common code into top-level Makefile `common.mk`
-- [ ] add help targets
-- [ ] setup test framework
-- [ ] turn test framework and `libs` into static libraries
+## cscope
 
-## setup tools
+The Vim package from Cygwin is built with `cscope`. I'd imagine
+most Vim builds are built with `cscope` because it is so tightly
+integrated with Vim.
 
-- [ ] avra Python scripts
-- [ ] ctags, cscope
-- [ ] Doxygen
+See `cscope` configuration in my `~/.vim/vimrc`:
 
+```vim
+if has("cscope")
+    set nocscopetag
+    set cscopequickfix=s-,d-,c-,t-,e-,i-,a-
+```
+
+Make a cscope database in the `./firmware` folder.
+
+```bash
+$ cd ./firmware/
+$ cscope -R -b
+```
+
+This creates/overwrites the `cscope.out` file in `./firmware`.
+I update the `cscope.out` file regularly. I made shortcut `;cu`.
+The shortcut updates my tags file as well.
+
+In Vim, updated connection to the new `cscope.out` file:
+
+```vim
+: cscope reset
+```
+
+The first time `cscope.out` is made, create the connection and
+kill any existing connections. There is a bit to do here. I made
+a `;cs` shortcut for this. See details in my `~/.vim/vimrc`:
+
+```
+function! CscopeCreateConnection()
+```
+
+
+Search with cscope using `:cscope find`.
+
+- 's' symbol: find all references to `symbol_name`
+
+```vim
+:cscope find s symbol_name
+```
+
+As a Vim shortcut:
+
+```vim
+nnoremap <C-\>s :cs find s <cword><CR>
+```
+
+- 'g' global: find the global definition of `<cword>` under the cursor
+
+```vim
+:cscope find g symbol_name
+```
+
+```vim
+nnoremap <C-\>g :cs find g <cword><CR>
+```
+
+- 'c' calls: find all calls to the function name under cursor
+- 'd' dependencies: find functions called by function under cursor
+- 't' text: find all instances of the text under cursor
+- 'e' egrep: egrep search for the word under cursor
+- 'f' file: open the filename under cursor
+- 'i' includes: find files that include the filename under cursor
+
+Then use the Vim quickfix window to navigate through the `cscope`
+results.
+
+```vim
+:copen
+```
+
+## tags
+
+Make a tags file in the `./firmware` folder.
+
+```bash
+$ cd ./firmware/
+$ ctags --c-kinds=+l --exclude=Makefile -R .
+```
+
+- `--c-kinds=+l` includes local variables in the `cscope.out` file
+- `-R` recursive
+- `.` start in the current folder
+
+Update this file with the same command to overwrite it.
+
+I use Vim shortcut `;cu` which also updates the `cscope.out`
+file.
+
+## vimgrep
+
+```vim
+:vimgreap /search_term/ files_to_search
+```
+
+Example:
+
+```vim
+:vimgrep /SetBit(Flag_SpiFlags/ lib/**/*.[ch]
+```
+
+Find all occurrences of `SetBit(Flag_SpiFlags` in every `.c` and
+`.h` file in the `lib/` folder, including sub-folders.
+
+Open a quickfix window and navigate the results.
+
+```vim
+:copen
+```
+
+Similar to using `cscope`.
+
+Use `cscope` to when the symbol name is known but its
+purpose/definition/dependencies are unknown.
+
+This is the scenario:
+
+- I am looking at a specific line of code
+- I see a symbol I want to know more about
+
+Use `vimgrep` when the symbol name itself is not known yet.
+
+This is the scenario:
+
+- I want to determine a variable naming convention
+- or I just want to check if a certain variable name is already
+  used
 
 # Doxygen
 
@@ -156,9 +278,36 @@ and `title` for the `./firmware/doxygen` firmware-specific
 version of the documentation. This is for me during development
 of the firmware.
 
+
+# TASKS
+# Build for dev-kit-mike
+
+## clean Makefiles
+
+- [ ] pull common code into top-level Makefile `common.mk`
+- [ ] add help targets
+- [ ] setup test framework
+- [ ] turn test framework and `libs` into static libraries
+
+## setup tools
+
+- [ ] avra Python scripts
+- [ ] ctags, cscope
+- [x] Doxygen
+
+## firmware
+
+- [ ] block diagrams starting with `main.c`
+- [ ] why is UartSpi-Hardware.h in the `vis-spi-out.c` folder?
+    - `vis-spi-out.c` does not include this file
+    - who does?
+    - [ ] how do I grep for `#include "UartSpi-Hardware.h` across
+      the whole project?
+
 # DONE
 ## protocol defined in json
 
 - [x] find the copy of the `chromaspec.json` file I was editing
   to track my changes to the protocol
     - paste in `dev-kit-mike/firmware` folder
+
