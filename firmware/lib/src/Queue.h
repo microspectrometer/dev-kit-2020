@@ -10,12 +10,16 @@ typedef struct Queue_s Queue_s;
  * memory is finite (the *queue* can fill up) but the user cannot
  * "fall off" the end of the byte array.\n\n 
  * Picture the byte array as a closed loop like the numbers on a
- * clock: the first byte is the next byte after the last byte. And
- * the *head* and *tail* are clock-hands pointing at the array
- * elements. The bytes *between* head and tail are the bytes in the
- * queue. Other bytes in the buffer are not in the queue, meaning
- * they cannot be accessed by a *pop*, though the values remain
- * stored in the buffer until overwritten by a *push*.\n\n 
+ * clock:
+ * - the initial byte is the next byte after the final byte
+ * - the *head* and *tail* are clock-hands pointing at the
+ * array elements
+ * - the bytes *between* head and tail are the bytes in the
+ *   queue
+ *
+ * Other bytes in the buffer are not in the queue, meaning they
+ * cannot be accessed by a *pop*. These values remain stored in
+ * the buffer until overwritten by a *push*.\n\n 
  * A queue is a FIFO
  * (first-in first-out) buffer: *pop* removes the oldest byte in
  * the queue.
