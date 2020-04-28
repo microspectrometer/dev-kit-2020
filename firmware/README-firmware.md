@@ -306,7 +306,7 @@ Place the cursor in the Vim buffer with the test results `.md`
 file. `;xdc` puts the docstring in the default register. Navigate
 to the top of the function definition and paste.
 
-# glib
+# glib for unit tests
 Unit tests use `glib`. The `Makefile` depends on it.
 
 The `Makefile` has CFLAGS:
@@ -350,6 +350,81 @@ Install from the command line with `apt-cyg`:
 $ apt-cyg install libglib2.0-devel libglib2.0-doc
 ```
 
+# avr-size with ;as and ;ds
+
+```vim
+nnoremap <leader>as :call PasteAvrSize("build/vis-spi-out.elf")<CR>
+```
+
+Context: pwd is `./firmware/vis-spi-out/`.
+
+Get size of `.elf` and paste it.
+
+Hard-coded to look for `build/vis-spi-out.elf`.
+
+`;ds` to paste size with timestamp.
+
+```vim
+nnoremap <leader>ds :call PasteBlock_DateAndAvrSize()<CR>
+```
+
+Again, this is hard-coded with the file to get the size of. To
+get `vis-spi-out.elf` or `usb-bridge.elf`, comment accordingly in
+the Vimscript function definition:
+
+```vim
+    " call PasteAvrSize("build/vis-spi-out.elf")
+    call PasteAvrSize("build/usb-bridge.elf")
+```
+
+# Add `avr/include` to Vim path for `gf` on headers
+
+Append the `avr/include` folder to the Vim path:
+
+```vim
+set path+=/cygdrive/c/Program\\\ Files\\\ (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include
+```
+
+Now searches that use the Vim path, such as `gf`, look in this
+folder.
+
+Usage: put cursor on header file like this:
+
+```c
+#include <avr/io.h> // includes iom328p.h for hardware i/o values
+```
+
+With cursor on any letter in header name, e.g., cursor on `a`,
+`gf` goes to the file.
+
+# ;io to open iom328p.h
+
+```vim
+let avr_include='/cygdrive/c/Program\ Files\ (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include'
+nnoremap <expr> <leader>io ':split ' . avr_include . '/avr/iom328p.h<CR>:set readonly<CR>'
+```
+
+# `;yn` toggle test Yep/Nope
+
+Usage: put cursor on line of test suite and `;yn` to toggle
+whether the test runs
+
+# Analyze assembly files
+
+Put cursor in a file with `.avra` (assembly), usually a subset of
+the assembly output to analyze.
+
+- `;avrb` - clean AVR assembly and calculate cycles
+- `;avrc` - just clean AVR assembly
+- `;avrt` - just calculate AVR cycles
+
+- TODO: document how to set these up
+    - [ ] eliminate need to create a bash alias to the Python
+      script, in fact, invoke the Windows Python and the
+      script name
+    - this way, Dropbox `Online only` sync method makes this work
+      by downloading the Python script on demand
+
 # TASKS
 # Build for dev-kit-mike
 
@@ -363,9 +438,11 @@ $ apt-cyg install libglib2.0-devel libglib2.0-doc
 ## setup tools
 
 - [ ] avra Python scripts
-- [x] ctags, cscope
-- [x] Doxygen
-- [ ] glib (used by unit tests)
+- [x] avr-size with ;as (run avr-size and paste output)
+- [x] ctags, cscope with ;cs ;cu
+- [x] Doxygen with ;DU ;DV ;xdc
+- [x] glib (used by unit tests)
+- [x] Add avr/include to Vim path
 
 ## firmware
 
