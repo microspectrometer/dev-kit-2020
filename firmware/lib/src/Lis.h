@@ -369,13 +369,17 @@ inline void LisInit(void)
     /** LisInit behavior:\n 
       * - sets PixSelect as an output\n 
       * - idles PixSelect low\n 
-      * - sets Clk as an output\n 
       * - sets Rst as an output\n 
       * - idles Rst low\n 
       * - sets Sync as an input\n 
+      * - sets Clk as an output\n 
+      * - resets PWM timer at top\n 
+      * - PWM timer top is OCR0A\n 
+      * - PWM timer is clocked by CPU with no prescaling\n 
+      * - sets PWM frequency at 50kHz\n 
+      * - sets PWM duty cycle to 50 percent\n 
+      * - outputs the PWM clock on pin Clk\n 
       * */
-    // ---Expected Assembly---
-    // assembly for the following calls
     Pin_LisPixSelect_SetOutput();
     LisPixSelectIdleLow();
     Pin_LisClk_SetOutput();
