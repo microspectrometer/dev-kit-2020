@@ -4,9 +4,16 @@
 
 ## cscope
 
-The Vim package from Cygwin is built with `cscope`. I'd imagine
-most Vim builds are built with `cscope` because it is so tightly
-integrated with Vim.
+The Vim package from Cygwin is built with `cscope`.
+
+*I'd imagine most Vim builds have `cscope` because Vim tightly
+integrates `cscope`.*
+
+See the Vim help:
+
+```vim
+:help cscope
+```
 
 See `cscope` configuration in my `~/.vim/vimrc`:
 
@@ -136,6 +143,17 @@ This is the scenario:
 - I want to determine a variable naming convention
 - or I just want to check if a certain variable name is already
   used
+
+Another example: search the active Vim file for a certain word:
+
+```vim
+:vimgrep /cscope/ %
+```
+
+This is superior to the usual Vim search (with `/`) because
+`:copen` displays all of the lines where the search term occurs.
+
+And this is useful when a cscope database does not exist.
 
 # Doxygen
 
@@ -278,6 +296,59 @@ and `title` for the `./firmware/doxygen` firmware-specific
 version of the documentation. This is for me during development
 of the firmware.
 
+## Vim shortcut for doxygen docstrings
+My shortcut `;xdc` takes unit test results and formats them as a
+Doxygen docstring. The pneumonic is `x` for transform, `d` for
+doxygen docstring, and `c` for C. Shortcut `;xdp` makes Python
+docstrings.
+
+Place the cursor in the Vim buffer with the test results `.md`
+file. `;xdc` puts the docstring in the default register. Navigate
+to the top of the function definition and paste.
+
+# glib
+Unit tests use `glib`. The `Makefile` depends on it.
+
+The `Makefile` has CFLAGS:
+
+```make
+-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
+```
+
+The `Makefile` has LFLAGS:
+
+```make
+-lglib-2.0 -lintl -L/usr/lib/glib-2.0
+```
+
+Install Cygwin packages:
+
+- `libglib2.0-devel`
+- `libglib2.0-doc`
+
+Check if the packages are already installed:
+
+```bash
+$ apt-cyg listall libglib2.0
+libglib2.0-devel
+libglib2.0-doc
+libglib2.0_0
+```
+
+*Yes, they are installed.*
+
+```bash
+$ apt-cyg listall libglib2.0
+libglib2.0_0
+```
+
+*No, they are not installed.*
+
+Install from the command line with `apt-cyg`:
+
+```bash
+$ apt-cyg install libglib2.0-devel libglib2.0-doc
+```
 
 # TASKS
 # Build for dev-kit-mike
@@ -292,8 +363,9 @@ of the firmware.
 ## setup tools
 
 - [ ] avra Python scripts
-- [ ] ctags, cscope
+- [x] ctags, cscope
 - [x] Doxygen
+- [ ] glib (used by unit tests)
 
 ## firmware
 
