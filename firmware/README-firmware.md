@@ -87,6 +87,17 @@ results.
 :copen
 ```
 
+### cscope has no exclude option
+
+Instead of an exclude create a `cscope.files` file that lists the
+files to include. Use double-quotes for file names that include
+spaces.
+
+Or use `-inamefile` to specify an alternate file with a list of
+file names to include. Use `-i-` to get the file list from
+standard input. Use `find` to generate the file list from a
+regexp.
+
 ## tags
 
 Make a tags file in the `./firmware` folder.
