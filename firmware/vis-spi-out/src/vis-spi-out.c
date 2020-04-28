@@ -72,7 +72,7 @@ void loop(void)
         // Total number of instructions: 5
     }
 }
-ISR(SPI_STC_vect)
+ISR(SPI_STC_vect) // Serial Transfer Complete
 {
     //! Interrupt disabled during during `SpiSlaveTxByte`.
     //! Interrupt enabled all other times.
@@ -88,6 +88,19 @@ void IndicatorLEDsOn(void)
 }
 void SetupSpiCommunication(void)
 {
+    /** Set up **SPI hardware module** and a **FIFO** to buffer
+     * bytes sent from the SPI master.\n
+     * - Configure SPI hardware module:\n
+     *   - configure microcontroller as a **SPI slave**\n
+     *   - pin `Spi_DataReady`: **output**, idle `HIGH`\n
+     *   - pin `Spi_Miso`: **output**\n
+     *   - enable **interrupt** on **SPI Serial Transfer Complete**
+     *     (`SPI_STC_vect`)\n
+     *   - see details in SpiSlaveInit()\n
+     * - Create a **FIFO Queue** to buffer up to *11 bytes* of
+     *   SPI data:\n
+     *   - see details in Queue_s
+     * */
     // Configure as SPI slave, interrupts run `ISR(SPI_STC_vect)`
     SpiSlaveInit();
     // Queue incoming SPI bytes in a FIFO buffer.
@@ -95,6 +108,17 @@ void SetupSpiCommunication(void)
 }
 void SetupDetectorReadout(void)
 {
+    /** Setup control of the **ADC** and the **LIS-770i
+     * detector**.\n
+     * - Configure UART module as a **SPI Master** to the ADC:\n
+     *   - use a **5MHz clock** to pull bits out of ADC
+     *   - pin `UartSpi_AdcConv`: **output**, idle `LOW`\n
+     *   - see details in UartSpiInit()\n 
+     * - Configure I/O pins to control LIS-770i detector:\n
+     *   - clock LIS-770i at **50kHz**\n
+     *   - pins `Lis_PixSelect` and `Lis_Rst`: **output**, idle `LOW`\n
+     *   - see details in LisInit()\n
+     * */
     // Talk to ADC with SPI interface using UART SPIM
     UartSpiInit();
     // Power up the linear array and drive with a 50kHz clock
