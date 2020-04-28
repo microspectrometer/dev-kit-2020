@@ -10,6 +10,7 @@
 #include <stdlib.h> // defines NULL
 // hardware i/o definitions
 #include "Hardware.h"
+// SPI communication queue
 #include "Queue.h"
 // Python-to-Firmware communication status codes
 #include "StatusCodes.h"
@@ -26,6 +27,8 @@ volatile uint8_t spi_rx_buffer[max_length_of_queue];
 static void setup(void);
 static void loop(void);
 static void IndicatorLEDsOn(void);
+static void SetupSpiCommunication(void);
+static void SetupDetectorReadout(void);
 int main()
 {
     setup();
@@ -34,17 +37,8 @@ int main()
 void setup(void)
 {
     IndicatorLEDsOn();
-    // Configure as SPI slave, interrupts run `ISR(SPI_STC_vect)`
-    SpiSlaveInit();
-    // Queue incoming SPI bytes in a FIFO buffer.
-    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
-    // Talk to ADC with SPI interface using UART SPIM
-    UartSpiInit();
-    // Power up the linear array and drive with a 50kHz clock
-    LisInit();
-    //
-    // Initialize linear array configuration globals
-    //
+    SetupSpiCommunication();
+    SetupDetectorReadout();
 }
 void loop(void)
 {
@@ -91,4 +85,21 @@ void IndicatorLEDsOn(void)
     BiColorLedOn(led_1); // sbi	0x07, 1
     BiColorLedGreen(led_0); // cbi	0x08, 0
     BiColorLedGreen(led_1); // cbi	0x08, 1
+}
+void SetupSpiCommunication(void)
+{
+    // Configure as SPI slave, interrupts run `ISR(SPI_STC_vect)`
+    SpiSlaveInit();
+    // Queue incoming SPI bytes in a FIFO buffer.
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+}
+void SetupDetectorReadout(void)
+{
+    // Talk to ADC with SPI interface using UART SPIM
+    UartSpiInit();
+    // Power up the linear array and drive with a 50kHz clock
+    LisInit();
+    //
+    // TODO: Initialize linear array configuration globals
+    //
 }
