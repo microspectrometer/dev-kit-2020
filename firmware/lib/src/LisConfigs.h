@@ -1,12 +1,10 @@
 /** \file
- * *LIS-770i configuration*
- * sensor config is three bytes
- * TODO: write documentation on configuring the LIS-770i
- *
- *  - binning: 0x00 (off), 0x01 (on)\n 
- *  - gain: 0x01 (1x), 0x25 (2.5x), 0x04 (4x), 0x05 (5x)\n 
- *  - active_rows: 5 rows, set the bit to turn the row on\n 
- *    bits [8..0]: xxx54321 (1 to 5 are the row numbers, x is don't care)\n 
+ * See LisConfig.h for context.\n
+ *\n
+ * Also see `cfg/chromaspec.json` in the Python API repository.\n
+ * - Section `"global"` defines the **LIS-770i cfg byte codes.**\n
+ * - The **LIS-770i cfg byte codes** definitions are duplicated
+ *   in this header file.\n
  * */
 #ifndef _LISCONFIGS_H
 #define _LISCONFIGS_H
