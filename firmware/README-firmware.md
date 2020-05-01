@@ -1,8 +1,392 @@
-# Developer's Guide
+# User's Guide -- setup Python API
+Sean is working on a `pip install` installation method. For now,
+here are the install steps without `pip install`.
 
-# Search code within Vim
+## Install Python3.x
+Install Python3.7 or later.
 
-## cscope
+## Clone `chromaspec-sean`
+Clone `chromaspec-sean` in the `USERSITE` folder.
+
+### Find `USERSITE` and make it if it does not exist
+`pip install` sets up a package in the site-packages folder where
+Python looks for it. To use a package without `pip install`, I
+use the `USERSITE` folder.
+
+Open PowerShell and check the value of USERSITE:
+
+```powershell
+> python -m site --user-site
+C:\Users\mike\AppData\Roaming\Python\Python38\site-packages
+```
+
+The repo does not have to go in USERSITE, but it is a good
+default choice.
+
+I do not install the repo here. I use Cygwin, but I run the
+Python applications using my Windows Python installation. This is
+`python.exe`. I can call `python.exe` from Windows or from
+Cygwin. It does not matter in this case.
+
+For code-editing reasons, I prefer to install to the USERSITE
+for my Cygwin Python installation:
+
+```bash
+$ python3.7 -m site --user-site
+/home/mike/.local/lib/python3.7/site-packages
+```
+
+Create this USERSITE folder if it does not exist:
+
+```powershell
+> mkdir -p C:\Users\mike\AppData\Roaming\Python\Python38\site-packages
+```
+
+Again, in my case I created this USERSITE folder instead:
+
+```bash
+$ mkdir -p /home/mike/.local/lib/python3.7/site-packages
+```
+
+### Clone chromaspec-sean in USERSITE
+Clone the repo there:
+
+```bash
+$ cd /home/mike/.local/lib/python3.7/site-packages
+$ git clone https://rainbots@bitbucket.org/eruciform/chromaspec-sean.git
+```
+
+### Edit the `PYTHONPATH`
+When looking for packages to import, Python uses the PYTHONPATH
+environment variable *if it exists*.
+
+Since I am using the Windows Python installation, I create the
+PYTHONPATH environment variable using Windows conventions:
+
+- backslashes
+- semicolons separate paths
+
+I add the following to my PowerShell profile:
+
+```powershell
+$pkg = "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages"
+$env:PYTHONPATH = "$pkg;"
+$temp_sean = "chromaspec-sean\src"
+$env:PYTHONPATH += "$pkg\$temp_sean;"
+```
+
+The trick here is that PowerShell runs the profile every time it
+starts. The profile creates the PYTHONPATH environment variable.
+
+Check the `PYTHONPATH` in PowerShell:
+
+```powershell
+> $env:PYTHONPATH.Split(";")
+C:\cygwin64\home\mike\.local\lib\python3.7\site-packages
+C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src
+```
+
+Packages in USERSITE import just fine without explicitly adding
+them to the PYTHONPATH. The issue with `chromaspec-sean` is that
+the packages are not at the top-level.
+
+`chromaspec-sean` contains more than just Python source code. The
+actual package for import is in the `src` folder. The other
+top-level folders contain executables and other things that Sean
+created. This is all temporary anyway, so just deal with the
+explicit path for now.
+
+## Install Python package dependencies
+
+- `python -m pip install pyserial`
+- `python -m pip install pytest`
+- `python -m pip install psutil`
+- `python -m pip install tabulate`
+- `python -m pip install sphinx`
+- `python -m pip install wheel` (I added this to Sean's list)
+- `python -m pip install recommonmark`
+- `python -m pip install m2r`
+- `python -m pip install sphinxcontrib-argdoc`
+
+## Check the installation
+
+```powershell
+> cd $pkg\chromaspec-sean\
+> pytest
+======================================================================== test session starts =========================================================================
+platform win32 -- Python 3.8.1, pytest-5.3.5, py-1.8.1, pluggy-0.13.1
+rootdir: C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean
+plugins: testdox-1.2.1
+collected 147 items
+
+tests\test_bytesio_stream.py ..................                                                                                                                 [ 12%]
+tests\test_emulated_stream.py ..................ssssssssssssssssssss                                                                                            [ 38%]
+tests\test_emulator.py ..........                                                                                                                               [ 44%]
+tests\test_expert_interface_emulator.py ssssssssss                                                                                                              [ 51%]
+tests\test_expert_interface_hardware.py xxxxxxxxxx                                                                                                              [ 58%]
+tests\test_json.py ....                                                                                                                                         [ 61%]
+tests\test_payload.py ..................................                                                                                                        [ 84%]
+tests\test_simple_interface_emulator.py ssssssssss                                                                                                              [ 91%]
+tests\test_simple_interface_hardware.py xxxxxxxxxx                                                                                                              [ 97%]
+tests\test_util.py ...                                                                                                                                          [100%]
+
+============================================================= 87 passed, 40 skipped, 20 xfailed in 1.24s =============================================================
+```
+
+Expect the same result (87 passed, 40 skipped, 20 xfailed) when
+running from Cygwin bash. The 20 failed tests are because I do
+not the dev-kit connected.
+
+## Documentation
+
+Read with `pydoc`:
+
+```powershell
+> python -m pydoc chromaspeclib
+> python -m pydoc chromaspeclib.simple
+> python -m pydoc chromaspeclib.expert
+```
+
+Read the expert interface:
+
+```powershell
+> python -m pydoc chromaspeclib.expert.ChromaSpecExpertInterface
+Help on class ChromaSpecExpertInterface in chromaspeclib.expert:
+```
+
+Or read the HTML:
+
+```powershell
+> cd $pkg\chromaspec-sean\doc\build\html\
+> explorer index.html
+```
+
+## Load VCP
+
+- On Windows, sometimes VCP is not set. Go to Device Manager:
+    - Right-click on USB Serial Converter
+    - Select Properties
+    - Go to tab "Advanced"
+    - Check "Load VCP"
+
+I tried to automate this in the FTDI EEPROM.
+
+- under `Hardware Specific`, `Port A`, `Driver`
+- change `D2XX Direct` to `Virtual COM Port`
+
+This did not work. The device is still not visible to pyserial.
+
+## Quick script to test VCP
+
+Make a quick test script to check that the hardware is visible:
+
+`test-hardware-is-visible.py`:
+
+```python
+'''Test hardware is visible.'''
+
+from chromaspeclib.simple import ChromaSpecSimpleInterface
+si = ChromaSpecSimpleInterface(timeout=0.1)
+print(si)
+```
+
+```powershell
+> python test-hardware-is-visible.py
+<chromaspeclib.simple.ChromaSpecSimpleInterface object at 0x000001B5F0AB42B0>
+```
+
+If the dev-kit is not connected or VCP is not enabled, this test
+produces error `Cannot find CHROMATION device`:
+
+```powershell
+> python test-hardware-is-visible.py
+2020-04-28 22:20:37,772:stream.py:__init__:193: Cannot find CHROMATION device
+Traceback (most recent call last):
+  File "C:\cygwin64\home\mike\chromation\dev-kit-mike\firmware\python\test.py", line 6, in <module>
+    si = ChromaSpecSimpleInterface(timeout=0.1)
+  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src\chromaspeclib\expert.py", line 24, in __init__
+    super().__init__(serial_number=serial_number,
+  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src\chromaspeclib\internal\stream.py", line 194, in __init__
+    raise ChromaSpecConnectionException("Cannot find CHROMATION device")
+chromaspeclib.exceptions.ChromaSpecConnectionException: Cannot find CHROMATION device
+```
+
+# User's Guide -- use Python API
+blah hah hah
+
+# Developer's Guide -- feedback on Sean's API
+
+## Notes on these notes
+From hereon, I refer to paths in Sean's repo with `.` meaning the
+repo name.
+
+Capitalization does not matter, but I capitalize (contrary to the
+documentation examples) to match with `./cfg/chromaspec.json`.
+Sean asked for feedback on the API in the chromaspeclib package
+and the supporting utilities and documentation. I am using the
+API to write system tests as I develop the firmware.
+
+## I dogfood Sean's API by doing system tests
+
+I am using the command line utilities as a convenience for quick
+system testing, i.e., testing that is not code, just me trying
+something at the command line to check that firmware changes have
+the expected result.
+
+I system test as I code the firmware to point me in the right
+direction *before* I spend time programming system tests.
+
+# Developer's Guide -- system test from the command line
+
+```bash
+python.exe -m cmdline COMMAND KEY=VALUE
+```
+
+```vim
+nnoremap <leader>pt<Space> :!python.exe -m cmdline 
+nnoremap <leader>pt0 :!python.exe -m cmdline Null
+nnoremap <leader>pt1 :!python.exe -m cmdline GetBridgeLED led_num=0
+nnoremap <leader>pt2 :!python.exe -m cmdline SetBridgeLED led_num=255 led_setting=255
+```
+
+## System test examples from the command line
+My examples work from PowerShell and Cygwin bash.
+
+### Finding bugs on 2020-04-28
+
+This opens communication:
+
+```python
+si = ChromaSpecSimpleInterface()
+```
+
+But this throws an error:
+
+```python
+si = ChromaSpecSimpleInterface(serial_number='CHROMATION091103')
+```
+
+Error traces back to line 177 of internal/stream.py:
+
+```python
+self.serial.port = list_ports.grep(serial_number).device
+```
+
+Full error message:
+
+```
+  File "<stdin>", line 1, in <module>
+  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src\chromaspeclib\expert.py", line 24, in __init__
+    super().__init__(serial_number=serial_number,
+  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src\chromaspeclib\internal\stream.py", line 177, in __init__
+    self.serial.port = list_ports.grep(serial_number).device
+AttributeError: 'generator' object has no attribute 'device'
+
+'generator' object has no attribute 'device'
+```
+
+Did Sean mean this?
+
+```python
+from serial.tools import list_ports
+next(list_ports.grep('CHROMATION091103')).device
+```
+
+Or this?
+
+```python
+from serial.tools import list_ports
+list(list_ports.grep('CHROMATION091103'))[0].device
+```
+
+### Hello world between API and `usb-bridge`
+
+Here is the loop on `usb-bridge`:
+
+```c
+void loop(void)
+{
+    while (UsbRxbufferIsEmpty()); // loop until cmd received
+    uint8_t cmd = 0; // initialize cmd as "Null"
+    UsbReadByte(&cmd); // read cmd
+    switch(cmd) // look up cmd
+    {
+        case 0: NullCommand(); BiColorLedGreen(status_led); break;
+        default: BiColorLedRed(status_led); break;  // sbi	0x08, 3
+    }
+}
+```
+
+Here is the command line:
+
+```powershell
+PS C:\Users\mike> python -m cmdline Null
+2020-04-29T18:34:46.495822,BridgeNull()
+
+PS C:\Users\mike> python -m cmdline GetBridgeLed led_num=1
+2020-04-29T18:34:57.172661,None
+
+PS C:\Users\mike> python -m cmdline Null
+2020-04-29T18:35:01.499843,BridgeNull()
+```
+
+Behavior is good:
+
+- **PASS**: the PCB powers up with its LED green
+- **PASS**: the first Null has no obvious effect
+- the second command, GetBridgeLED led_num=1, sends bytes 0x01
+  0x01
+- this simplistic loop() should see these as two commands with
+  byte value 0x01
+- so both 0x01 *should go to the default case: turn the LED red*
+- **PASS**: the LED turns red
+- *sending the final Null should turn the LED back to green*
+- **PASS**: the LED turns green
+
+If I have no better use for the LED, it can indicate whether the
+most recent command was recognized.
+
+## TODO list for Sean
+- [ ] TODO: Sean add documentation for the `serial_number` and
+  `device` parameters of `ChromaSpecSimpleInterface`
+    - [x] Sean is aware
+    - document input is a string
+    - document an example string: `CHROMATION091103`
+- [ ] TODO: Sean add list of commands in documentation or, better
+  still, in the help for `chromaspec_cmdline.py`
+    - [x] Sean is aware
+    - this is actually just a wrapper for python to execute
+      `cmdline.py` as a module
+    - cd into `chromaspec-sean/src/chromaspeclib/`
+    - execute as `python -m cmdline.py command key=val`
+    - `python cmdline.py` also works
+    - `python cmdline.py GetBridgeLED led_num=0`
+- [ ] TODO: Sean add documentation explaining how to read the
+  response
+    - [x] Sean is aware
+    - nothing in the Sphinx HTML or the pydoc docstrings explains
+      what the responses are
+    - `python cmdline.py GetBridgeLED led_num=0`
+    - has this response:
+    - `2020-04-29T19:02:37.952994,None` (from Cygwin bash)
+    - `2020-04-29T14:02:15.856620,None` (from PowerShell)
+    - the correct time is 2:02PM
+    - I'm not sure why running from Cygwin bash adds five hours
+      to the time -- the `date` utility works just fine and
+      prints the correct time, and I'm invoking the Windows
+      Python from Cygwin bash, so what gives?
+- [ ] TODO: Sean: unexpected end of docstring in
+  ChromaSpecSimpleInterface.sendAndReceive()
+    - [x] Sean is aware
+    - ends with phrase "but a reply that contains"
+
+# Developer's Guide -- navigate code base
+
+Here is how I navigate the firmware code base.
+
+## Search code within Vim
+
+### cscope
 
 The Vim package from Cygwin is built with `cscope`.
 
@@ -87,7 +471,7 @@ results.
 :copen
 ```
 
-### cscope has no exclude option
+#### cscope has no exclude option
 
 Instead of an exclude create a `cscope.files` file that lists the
 files to include. Use double-quotes for file names that include
@@ -98,7 +482,7 @@ file names to include. Use `-i-` to get the file list from
 standard input. Use `find` to generate the file list from a
 regexp.
 
-## tags
+### tags
 
 Make a tags file in the `./firmware` folder.
 
@@ -116,7 +500,7 @@ Update this file with the same command to overwrite it.
 I use Vim shortcut `;cu` which also updates the `cscope.out`
 file.
 
-## vimgrep
+### vimgrep
 
 ```vim
 :vimgreap /search_term/ files_to_search
@@ -166,13 +550,15 @@ This is superior to the usual Vim search (with `/`) because
 
 And this is useful when a cscope database does not exist.
 
-# Doxygen
+# Developer's Guide -- update documentation
 
-One top level Doxyfile
+Here is how I update documentation.
+
+There is one top level Doxyfile
 
 - `./Doxyfile`
 
-A doxygen folder at any level to document with Doxygen
+Create a doxygen folder at any level to document with Doxygen
 
 - `./doxygen`
 - `./firmware/doxygen`
@@ -286,7 +672,7 @@ OUTPUT_DIRECTORY       = ./doxygen
 If a `doxygen` folder does not exist in the `pwd`, doxygen does
 not generate documentation.
 
-## Minimum to proceed
+## Minimum Doxyfile and doxygen folder to proceed
 
 At a minimum, have `./Doxyfile` and `./firmware/doxygen/`. Then
 the `bash` command to make the documentation is simply:
@@ -295,7 +681,7 @@ the `bash` command to make the documentation is simply:
 $ doxygen Doxyfile
 ```
 
-## Two versions of the documentation
+## Top-level and firmware-level versions of the documentation
 
 I created the top-level `./doxygen` to get a top-level version of
 the documentation that excluded details in the `firmware`
@@ -307,7 +693,7 @@ and `title` for the `./firmware/doxygen` firmware-specific
 version of the documentation. This is for me during development
 of the firmware.
 
-## Vim shortcut for doxygen docstrings
+## Vim shortcut to make doxygen docstrings from unit test results
 My shortcut `;xdc` takes unit test results and formats them as a
 Doxygen docstring. The pneumonic is `x` for transform, `d` for
 doxygen docstring, and `c` for C. Shortcut `;xdp` makes Python
@@ -317,7 +703,114 @@ Place the cursor in the Vim buffer with the test results `.md`
 file. `;xdc` puts the docstring in the default register. Navigate
 to the top of the function definition and paste.
 
-# glib for unit tests
+## `;xdc` (automated) Doxygen example
+
+`;mktgc` generated the following test result output:
+
+```
+test/test_runner.c:45:ReadLedState_returns_OFF_if_LED_is_off:PASS
+test/test_runner.c:46:ReadLedState_returns_GREEN_if_LED_is_on_and_green:PASS
+test/test_runner.c:47:ReadLedState_returns_RED_if_LED_is_on_and_red:PASS
+```
+
+With the cursor in the markdown file showing, the output, `;xdc`
+copied the doxygen docstring to the clipboard.
+
+Withe the cursor on the opening `{` of the function body
+definition, pasting inserts the docstring:
+
+```c
+inline uint8_t ReadLedState(void) // -> led_state
+{
+    /** ReadLedState behavior:\n 
+      * - returns OFF if LED is off\n 
+      * - returns GREEN if LED is on and green\n 
+      * - returns RED if LED is on and red\n 
+      * - see led_state in StatusCodes.h
+      * */
+```
+
+The final line of docstring is added by hand.
+
+Doxygen automatically turns the file name `StatusCodes.h` into a
+link.
+
+## Manual Doxygen example
+
+Here is an example documenting source file `StatusCode.h`. The
+documentation is accessed in the HTML from:
+
+```
+Files
+    File List
+        lib
+            src
+                StatusCode.h
+```
+
+Following this tree opens the `StatusCode.h File Reference`.
+
+The documentation below appears in the HTML under the heading
+`Detailed Description` at the end of `StatusCode.h File
+Reference`.
+
+```c
+/** \file
+ * *See `cfg/chromaspec.json` in the Python API repository.*
+ * - Section `"global"` defines the **protocol byte codes**.
+ *   - Firmware header file StatusCodes.h duplicates these `"global"`
+ *   definitions.
+ * - Section `"protocol":"command"` defines the commands and
+ *   command parameters **sent by the USB host.**
+ * - Section `"protocol":"serial"` defines the **expected
+ *   response** from the **USB board** `usb-bridge`.
+ * - Section `"protocol":"sensor"` defines the **expected
+ *   response** from the **sensor board** `vis-spi-out`.
+ * .
+ * **STATUS CODES**
+ * - JSON section `"globals"` defines the **status codes**: `OK`,
+ *   `ERROR`, `INVALID_CMD`
+ * - the **status code** is **byte 0** of the *response* from the
+ *   **USB board** or **sensor board**
+ * - the **USB board** and the **sensor board** reply with the
+ *   same status codes
+ * - the **status code** describes the status of the
+ *   communication *from the point of view of the sender*.
+ * .
+ * **INDICATOR LED STATES**
+ * - Section `"globals"` defines the **LED states**: `OFF`, `GREEN`, or `RED`
+ * - **LED state** is:
+ *   - **byte 2** of the command to `set` the indicator LED
+ *   - **byte 1** of the reply to `get` the indicator LED
+ * .
+ * */
+```
+
+The syntax is the usual markdown. Note:
+
+- two-space indentation to indicate the level of the `-`
+  bullet symbol
+- `.` marks the end of an indented list section
+    - place `.` at the level of the indent to end
+- `\n` are unnecessary in this case thanks to the `.`
+
+# Developer's Guide -- build tests
+
+Unit tests depend on `glib` for data structures used by my
+function mocking library, `mock-c`.
+
+And unit tests depend on `mock-c`. Right now I hard-code a path
+to the source code and builds of the object files. Anyone in
+Chromation on Dropbox automatically picks these files up.
+
+TODO:
+
+- make `mock-c` into a static library
+- include the path to `mock-c` in `uservars.mk`
+    - path becomes a user-variable to define, along with the DFP
+      path
+
+## glib for unit tests
 Unit tests use `glib`. The `Makefile` depends on it.
 
 The `Makefile` has CFLAGS:
@@ -361,7 +854,9 @@ Install from the command line with `apt-cyg`:
 $ apt-cyg install libglib2.0-devel libglib2.0-doc
 ```
 
-# avr-size with ;as and ;ds
+# Developer's Guide -- analyze code
+
+## avr-size with ;as and ;ds
 
 ```vim
 nnoremap <leader>as :call PasteAvrSize("build/vis-spi-out.elf")<CR>
@@ -388,7 +883,7 @@ the Vimscript function definition:
     call PasteAvrSize("build/usb-bridge.elf")
 ```
 
-# Add `avr/include` to Vim path for `gf` on headers
+## Add `avr/include` to Vim path for `gf` on headers
 
 Append the `avr/include` folder to the Vim path:
 
@@ -408,19 +903,19 @@ Usage: put cursor on header file like this:
 With cursor on any letter in header name, e.g., cursor on `a`,
 `gf` goes to the file.
 
-# ;io to open iom328p.h
+## ;io to open iom328p.h
 
 ```vim
 let avr_include='/cygdrive/c/Program\ Files\ (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-gnu-toolchain/avr/include'
 nnoremap <expr> <leader>io ':split ' . avr_include . '/avr/iom328p.h<CR>:set readonly<CR>'
 ```
 
-# `;yn` toggle test Yep/Nope
+## `;yn` toggle test Yep/Nope
 
 Usage: put cursor on line of test suite and `;yn` to toggle
 whether the test runs
 
-# Analyze assembly files
+## Analyze assembly files
 
 Put cursor in a file with `.avra` (assembly), usually a subset of
 the assembly output to analyze.
@@ -437,6 +932,54 @@ the assembly output to analyze.
       by downloading the Python script on demand
 
 # TASKS
+
+# dev
+- [x] setup chromaspec-sean
+- [x] use chromaspec-sean to open communication
+    - chromaspeclib.simple wraps chromaspeclib.expert
+    - see python/test-open.py
+- [x] prepare Python for system test
+    - use `python -m cmdline COMMAND KEY=VALUE`
+- [ ] prepare `usb-bridge` for a system test
+    - [x] get tests to build
+    - [ ] write setup code
+        - [x] find setup code in `dev-kit-ref`
+        - [x] UsbInit
+            - threw it into setup() for now
+            - [ ] clean this up as a unit-tested UsbInit
+            - works:
+                - reads bytes off the FT221X
+                - distinguishes between 0 and not 0
+                - able to send Null so far, haven't set up
+                  anything else
+            - [ ] send the commands to control the bridge LEDs
+                - [x] system test GetBridgeLED
+                - [ ] system test SetBridgeLED
+        - [ ] SpiMasterInit
+            - once this is setup, I can send commands to the
+              sensor
+            - control the sensor LEDs
+            - then read/write the sensor configuration
+    - [ ] write main loop switchcase
+- [ ] do system test of command `SetSensorConfig`
+    - system test:
+    - mark as PASS/FAIL:
+    - :`vis-spi-out` responds `OK` to a valid config
+    - :`vis-spi-out` responds `ERROR` to an invalid config
+
+## tabled
+- [x] is there a way to reset the FT221X?
+    - **NO**
+    - *physical power cycle with USB hub switch*
+    - Issue (why I want to reset the FT221X):
+    - if I send data and do not read it, the data stays in the
+      FT221X
+    - the only way to clear the FT221X buffer is to power cycle
+        - `FT_PROG` cycle does not do it
+        - the physical reset button on the PCB does not do it
+        - Atmel-Ice `atprogram` reset command does not do it
+    - TODO: maybe there is a D2XX command that clears the FT221X buffer
+
 # Build for dev-kit-mike
 
 ## clean Makefiles
@@ -470,4 +1013,26 @@ the assembly output to analyze.
 - [x] find the copy of the `chromaspec.json` file I was editing
   to track my changes to the protocol
     - paste in `dev-kit-mike/firmware` folder
+
+## dev - troubleshoot linker error for faked function
+- linker error trying to link `FtBusTurnaround`:
+    - All the faked functions in lib `Usb` have undefined
+      references and symbols
+- example:
+    - undefined reference to `_FtClockDatabus_fake`
+    - undefined symbol `_FtClockDatabus_fake`
+- see function faking checklist in TiddlyWiki
+    - `chromation-notebook`
+    - tiddler `Fake a function`
+- `_FtClockDatabus_fake` is the fake of inline
+  function `_FtClockDatabus`
+- [x] yes, the declaration exists in `Usb_faked.h`
+- `void _FtClockDatabus_fake(uint8_t);`
+- [x] yes, the definition exists in `Usb_faked.c`
+- [x] yes, conditionally include the fake declarations in
+  `Usb.h`
+- [x] aha, I need to add to Makefile list of faked libs
+- `lib_faked := Usb`
+- that was the missing bit! I did not have `Usb` in the list of
+  faked libs
 
