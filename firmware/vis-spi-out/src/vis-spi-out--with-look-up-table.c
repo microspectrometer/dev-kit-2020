@@ -25,7 +25,7 @@ volatile uint8_t spi_rx_buffer[max_length_of_queue];
 
 static void setup(void);
 static void loop(void);
-static void IndicatorLEDsOn(void);
+static void SetupIndicatorLEDs(void);
 static Cmd* LookupSensorCmd(cmd const);
 int main()
 {
@@ -34,7 +34,7 @@ int main()
 }
 void setup(void)
 {
-    IndicatorLEDsOn();
+    SetupIndicatorLEDs();
     // Configure as SPI slave, interrupts run `ISR(SPI_STC_vect)`
     SpiSlaveInit();
     // Queue incoming SPI bytes in a FIFO buffer.
@@ -96,7 +96,7 @@ Cmd* LookupSensorCmd(cmd const key)
     // Out of bounds keys return a NULL pointer.
     else return NULL; // error
 }
-void IndicatorLEDsOn(void)
+void SetupIndicatorLEDs(void)
 {
     //! Initialize PCB indicator LEDs
     BiColorLedOn(led_0); // sbi	0x07, 0

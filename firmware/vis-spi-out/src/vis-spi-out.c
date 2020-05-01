@@ -26,9 +26,9 @@ volatile uint8_t spi_rx_buffer[max_length_of_queue];
 
 static void setup(void);
 static void loop(void);
-static void IndicatorLEDsOn(void);
-static void SetupSpiCommunication(void);
-static void SetupDetectorReadout(void);
+static void setup_IndicatorLEDs(void);
+static void setup_SpiCommunication(void);
+static void setup_DetectorReadout(void);
 int main()
 {
     setup();
@@ -36,9 +36,9 @@ int main()
 }
 void setup(void)
 {
-    IndicatorLEDsOn();
-    SetupSpiCommunication();
-    SetupDetectorReadout();
+    setup_IndicatorLEDs();
+    setup_SpiCommunication();
+    setup_DetectorReadout();
 }
 void loop(void)
 {
@@ -74,11 +74,16 @@ void loop(void)
 }
 ISR(SPI_STC_vect) // Serial Transfer Complete
 {
-    //! Interrupt disabled during during `SpiSlaveTxByte`.
-    //! Interrupt enabled all other times.
+    /** Interrupt when a SPI transfer completes:\n
+     * - push received byte onto SpiFifo (Queue head advances)\n
+     * - return from interrupt\n
+     *\n
+     * **Interrupt disabled** during `SpiSlaveTxByte`.\n
+     * **Interrupt enabled** all other times.
+     * */
     QueuePush(SpiFifo, *Spi_SPDR);
 }
-void IndicatorLEDsOn(void)
+void setup_IndicatorLEDs(void)
 {
     //! Initialize PCB indicator LEDs
     BiColorLedOn(led_0); // sbi	0x07, 0
@@ -86,7 +91,7 @@ void IndicatorLEDsOn(void)
     BiColorLedGreen(led_0); // cbi	0x08, 0
     BiColorLedGreen(led_1); // cbi	0x08, 1
 }
-void SetupSpiCommunication(void)
+void setup_SpiCommunication(void)
 {
     /** Set up **SPI hardware module** and a **FIFO** to buffer
      * bytes sent from the SPI master.\n
@@ -106,9 +111,9 @@ void SetupSpiCommunication(void)
     // Queue incoming SPI bytes in a FIFO buffer.
     SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
 }
-void SetupDetectorReadout(void)
+void setup_DetectorReadout(void)
 {
-    /** Setup control of the **ADC** and the **LIS-770i
+    /** setup_ control of the **ADC** and the **LIS-770i
      * detector**.\n
      * - Configure UART module as a **SPI Master** to the ADC:\n
      *   - use a **5MHz clock** to pull bits out of ADC
