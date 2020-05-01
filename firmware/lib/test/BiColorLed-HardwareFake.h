@@ -7,6 +7,7 @@
 static uint8_t volatile value_in_fake_BiColorLed_ddr;
 static uint8_t volatile value_in_fake_BiColorLed_port;
 
+bicolorled_num status_led = 3;
 bicolorled_num led_0 = 0;
 bicolorled_ptr BiColorLed_ddr  = &value_in_fake_BiColorLed_ddr;
 bicolorled_ptr BiColorLed_port = &value_in_fake_BiColorLed_port;

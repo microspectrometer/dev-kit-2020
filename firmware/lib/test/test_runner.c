@@ -580,5 +580,6 @@ int main()
     /* =====[ test libs for usb-bridge ]===== */
     Usb_tests(Yep);
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    RUN_TEST(ReadLedState_returns_OFF_if_LED_is_off);
     return UNITY_END();
 }

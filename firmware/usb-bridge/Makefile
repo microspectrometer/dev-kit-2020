@@ -24,13 +24,8 @@ unit-test: build/TestSuite-results.md
 avr-target: build/${board-name}.elf build/${board-name}.avra
 # }}}
 #=====[ "avr-target" library (from AtmelStudio installation) ]=====
-# Path to Device Family Pack (DFP): {{{
-ATmega_DFP = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.3.300/'
-# Last time I installed AtmelStudio, the DFP version folder was `1.2.203`.
-# }}}
-# atmega328_lib: path to DFP ATmega328p .o and .a lib files and spec file {{{
-atmega328_lib = $(ATmega_DFP)'gcc/dev/atmega328p/'
-# atmega328_lib = $(addsuffix '/gcc/dev/atmega328p/',$(ATmega_DFP))
+# atmega328_lib has the .o and .a lib files and the spec file.{{{
+atmega328_lib = '/cygdrive/c/Program Files (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.2.203/gcc/dev/atmega328p/'
 # }}}
 # AVR headers{{{
 AvrHeaders := interrupt io
@@ -57,17 +52,17 @@ LFLAGS_for_avr := -B ${atmega328_lib}
 # }}}
 #=====[ "unit-test" library (from ThrowTheSwitch and Chromation) ]=====
 # Paths{{{
-# path_tdd := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework
-path_tdd := /cygdrive/c/cygwin64/home/mike/c
-path_unity  := ${path_tdd}/mock-c/test/unity
-path_mock-c := ${path_tdd}/mock-c/
+path_tdd := /cygdrive/c/chromation-dropbox/Dropbox/c/TddFramework/
+path_unity  := ${path_tdd}mock-c/test/unity
+path_mock-c := ${path_tdd}mock-c/
 # }}}
 # Pre-compiled object files{{{
-# TODO: add build-recipes here: annoying to rebuild test-framework.
-unity_libo  := ${path_tdd}/mock-c/build/unity.o
+unity_libs  := unity
+unity_libo  := $(addsuffix .o,${unity_libs})
+unity_libo  := $(addprefix ${path_tdd}mock-c/build/,${unity_libo})
 mock-c_libs := Mock RecordedCall RecordedArg ReturnValues
 mock-c_libo := $(addsuffix .o,${mock-c_libs})
-mock-c_libo := $(addprefix ${path_tdd}/mock-c/build/,${mock-c_libo})
+mock-c_libo := $(addprefix ${path_tdd}mock-c/build/,${mock-c_libo})
 unittest_o  := ${unity_libo} ${mock-c_libo}
 # }}}
 #=====[ "unit-test" Compiler and Linker flags ]=====
@@ -106,7 +101,7 @@ endif
 # Add app libs here{{{
 # App libs are application code with test coverage.
 # List separate from other libs because path is different.
-applib := Example
+applib := Example UsbCmd
 test_app := $(addprefix test_,${applib})
 test_app_o := $(addsuffix .o,${test_app})
 test_app_o := $(addprefix build/,${test_app_o})
@@ -138,7 +133,7 @@ lib_o := $(addprefix ../lib/build/,${lib_o})
 lib_headers := $(addsuffix .h,${all_libs})
 lib_headers := $(addprefix ../lib/src/,${lib_headers})
 # List libs that USE_FAKES in tests
-lib_faked :=
+lib_faked := Usb
 lib_faked_o := $(addsuffix _faked.o,${lib_faked})
 lib_faked_o := $(addprefix ../lib/build/,${lib_faked_o})
 # }}}
@@ -221,6 +216,12 @@ download_flash: build/${board-name}.elf
 	# 	--device atmega328p program --chiperase --verify --file $^
 	# avr-size $^
 # }}}
+# ;mkr - reset connected microcontroller{{{
+.PHONY: reset
+reset:
+	atprogram.exe --tool atmelice --interface isp --device atmega328p \
+		reset
+# }}}
 # ;mkp - test USB communication with the AVR programmer{{{
 .PHONY: test_programmer_is_connected
 test_programmer_is_connected:
@@ -266,4 +267,3 @@ print_vars:
 	echo
 # }}}
 # vim:set fdm=marker:
-

@@ -69,6 +69,10 @@ extern usb_pin FtChipSelect;
 extern usb_pin FtClock;
 // bi-directional data lines (driven by both master and slave)
 extern usb_pin FtMiosio0;
+// FtMiosio0 is used on its own for flow control.
+// FtMiosio[0:7] are used together as a single port for data.
+// Write access: *FtData_port
+// Read access: *FtData_pin
 
 // TODO: change to variables in style of LisConfig and LisConfigs
 enum ft_cmd {FtReadCmd=0xC6, FtWriteCmd=0x86};

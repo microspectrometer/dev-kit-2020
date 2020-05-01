@@ -65,7 +65,7 @@
 #include "Usb.h"
 // ---Registers---
 // control lines
-/* usb_reg FtCtrl_ddr = &DDRC; */
+usb_reg FtCtrl_ddr = &DDRC;
 usb_reg FtCtrl_port = &PORTC;
 usb_reg FtCtrl_pin  = &PINC;
 // bi-directional data lines (driven by both master and slave)

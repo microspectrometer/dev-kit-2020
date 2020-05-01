@@ -21,11 +21,6 @@
   *
   * TODO:\n 
   * - Is *Load VCP* checked by default on a fresh install?
-  * - If not:
-  *   - instead of requiring Windows users to do this step
-  *   - see if this has the same effect:
-  *   - under `Hardware Specific`, `Port A`, `Driver`
-  *   - change `D2XX Direct` to `Virtual COM Port`
   * */
 // app libs
 #include "Example.h"
@@ -34,10 +29,13 @@
 #include <stdlib.h> // defines NULL
 // hardware i/o definitions
 #include "Hardware.h"
+// Python-to-Firmware communication status codes
+#include "StatusCodes.h"
+#include "UsbCmd.h"
 
 static void setup(void);
 static void loop(void);
-static void StatusLEDon(void);
+static void setup_StatusLED(void);
 int main()
 {
     setup();
@@ -45,18 +43,36 @@ int main()
 }
 void setup(void)
 {
-    StatusLEDon();
+    setup_StatusLED();
+    // Setup USB
+    // TODO: clean this into a unit tested UsbInit() in
+    // ./firmware/lib/
+    ClearBit(FtCtrl_port, FtMiso); // FtMiso is an input
+    SetBit(FtCtrl_port, FtMiso); // pull up FtMiso
+    _FtDatabusPinDirection(FtIn); // FtData lines are inputs
+    *FtData_port = 0xFF; // pull up FtData lines
+    ClearBit(FtCtrl_port, FtClock);  // drive FtClock low
+    SetBit(FtCtrl_ddr, FtClock);     // FtClock is an output
+    SetBit(FtCtrl_port, FtChipSelect); // drive FtChipSelect high
+    SetBit(FtCtrl_ddr, FtChipSelect);  // FtChipSelect is an output
 }
 void loop(void)
 {
-    while (UsbRxbufferIsEmpty());
-    // switch(UsbRxbufferPop())
-    // {
-    //  case 0: NullCommand(); break;
-    //  case 8: SetSensorConfig(); break;
-    //  default: ReplyCommandInvalid(); break;
+    while (UsbRxbufferIsEmpty()); // loop until cmd received
+    uint8_t cmd = 0; // initialize cmd as "Null"
+    UsbReadByte(&cmd); // read cmd
+    switch(cmd) // look up cmd
+    {
+        // Null gets no response, but turns status LED green for now.
+        case 0: NullCommand();      BiColorLedGreen(status_led); break;
+        case 1: GetBridgeLED(); break;
+        //  case 8: SetSensorConfig(); break;
+        // default: ReplyCommandInvalid(); break;
+        // Turn status LED red if cmd is not recognized.
+        default:                    BiColorLedRed(status_led);   break;
+    }
 }
-void StatusLEDon(void)
+void setup_StatusLED(void)
 {
     //! Initialize PCB indicator LED
     BiColorLedOn(status_led);   // sbi	0x07, 3

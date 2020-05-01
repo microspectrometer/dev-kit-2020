@@ -2,6 +2,8 @@
 // ---Unit Test Framework---
 #include <unity.h>
 #include <Mock.h>
+// Python-to-Firmware communication status codes
+#include "StatusCodes.h"
 
 // ---Test Framework requires runner to define setup/teardown/mock pointers---
 void (*setUp)(void); void (*tearDown)(void);
@@ -15,6 +17,7 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 
 // ---Lists of tests---
 #include "test_Example.h"
+#include "test_UsbCmd.h"
 
 // ---Fake all hardware---
 #include "HardwareFake.h"
@@ -33,9 +36,45 @@ void Example_tests(bool run_test)
     }
 }
 
+/* =====[ ReadLedState ]===== */
+void ReadLedState_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(ReadLedState_returns_OFF_if_LED_is_off);
+        RUN_TEST(ReadLedState_returns_GREEN_if_LED_is_on_and_green);
+        RUN_TEST(ReadLedState_returns_RED_if_LED_is_on_and_red);
+    }
+}
+
+/* =====[ GetBridgeLED ]===== */
+void GetBridgeLED_tests(bool run_test)
+{
+    if (run_test)
+    {
+        ReadLedState_tests(Yep);
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(GetBridgeLED_waits_for_byte_led_num);
+        RUN_TEST(GetBridgeLED_reads_byte_led_num);
+        RUN_TEST(GetBridgeLED_writes_two_bytes_to_USB_host);
+        RUN_TEST(GetBridgeLED_writes_OK_and_LED_STATE_if_led_num_is_valid);
+        RUN_TEST(GetBridgeLED_writes_ERROR_and_pads_second_byte_if_led_num_is_invalid);
+    }
+}
+void UsbCmd_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        GetBridgeLED_tests(Yep);
+    }
+}
+
 int main(void)
 {
     UNITY_BEGIN();
-    Example_tests(Yep);
+    Example_tests(Nope);
+    UsbCmd_tests(Yep);
     return UNITY_END();
 }
