@@ -68,6 +68,7 @@ void loop(void)
         // Null gets no response, but turns status LED green for now.
         case 0: NullCommand();      BiColorLedGreen(status_led); break;
         case 1: GetBridgeLED(); break;
+        case 2: SetBridgeLED(); break;
         //  case 8: SetSensorConfig(); break;
         // default: ReplyCommandInvalid(); break;
     }

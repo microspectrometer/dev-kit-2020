@@ -24,6 +24,7 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 #include "test_Queue.h"
 #include "test_UartSpi.h"
 #include "test_Lis.h"
+#include "test_StatusCode.h"
 // test libs for usb-bridge
 #include "test_Usb.h"
 
@@ -39,6 +40,7 @@ void BiColorLed_tests(bool run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(BiColorLedOn_sets_bit_in_ddr);
+        RUN_TEST(BiColorLedOff_clears_bit_in_ddr);
         RUN_TEST(BiColorLedGreen_clears_bit_in_port);
         RUN_TEST(BiColorLedRed_sets_bit_in_port);
     }
@@ -556,6 +558,17 @@ void Run_Usb_API_tests(bool run_test)
         Run_UsbWriteByte_tests(Nope);
     }
 }
+void StatusCode_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(led_setting_is_valid_returns_TRUE_if_setting_is_OFF);
+        RUN_TEST(led_setting_is_valid_returns_TRUE_if_setting_is_GREEN);
+        RUN_TEST(led_setting_is_valid_returns_TRUE_if_setting_is_RED);
+        RUN_TEST(led_setting_is_valid_returns_FALSE_if_setting_is_any_other_value);
+    }
+}
 
 void Usb_tests(bool run_test)
 {
@@ -570,16 +583,17 @@ void Usb_tests(bool run_test)
 int main()
 {
     UNITY_BEGIN();
-    BiColorLed_tests(Nope);
+    BiColorLed_tests(Yep);
     ReadWriteBits_tests(Nope);
     Queue_tests(Nope);
     UartSpi_tests(Nope);
     Lis_tests(Nope);
     Flag_tests(Nope);
     SpiSlave_tests(Nope);
+    StatusCode_tests(Nope);
     /* =====[ test libs for usb-bridge ]===== */
-    Usb_tests(Yep);
+    Usb_tests(Nope);
+    /* =====[ New tests ]===== */
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
-    RUN_TEST(ReadLedState_returns_OFF_if_LED_is_off);
     return UNITY_END();
 }

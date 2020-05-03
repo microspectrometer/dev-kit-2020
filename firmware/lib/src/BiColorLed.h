@@ -21,6 +21,13 @@ inline void BiColorLedOn(bicolorled_num led)
       * */
     SetBit(BiColorLed_ddr, led);
 }
+inline void BiColorLedOff(bicolorled_num led)
+{
+    /** BiColorLedOff behavior:\n 
+      * - clears bit in ddr\n 
+      * */
+    ClearBit(BiColorLed_ddr, led);
+}
 inline void BiColorLedGreen(bicolorled_num led)
 {
     /** BiColorLedGreen behavior:\n 

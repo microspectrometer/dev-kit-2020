@@ -48,7 +48,7 @@ void ReadLedState_returns_RED_if_LED_is_on_and_red(void)
     /* =====[ Operate and Test ]===== */
     TEST_ASSERT_EQUAL_UINT8(RED, ReadLedState());
 }
-// GetBridgeLED()
+// GetBridgeLED() -> void
 void GetBridgeLED_waits_for_byte_led_num(void)
 {
     TEST_PASS();
@@ -66,6 +66,37 @@ void GetBridgeLED_writes_OK_and_LED_STATE_if_led_num_is_valid(void)
     TEST_PASS();
 }
 void GetBridgeLED_writes_ERROR_and_pads_second_byte_if_led_num_is_invalid(void)
+{
+    TEST_PASS();
+}
+
+/* =====[ SetBridgeLED ]===== */
+// SetBridgeLED() -> void
+void SetBridgeLED_waits_for_byte_led_num(void)
+{
+    TEST_PASS();
+}
+void SetBridgeLED_reads_byte_led_num(void)
+{
+    TEST_PASS();
+}
+void SetBridgeLED_waits_for_byte_led_setting(void)
+{
+    TEST_PASS();
+}
+void SetBridgeLED_reads_byte_led_setting(void)
+{
+    TEST_PASS();
+}
+void SetBridgeLED_applies_led_setting_and_writes_OK_if_parameters_are_valid(void)
+{
+    TEST_PASS();
+}
+void SetBridgeLED_writes_ERROR_if_led_num_is_invalid(void)
+{
+    TEST_PASS();
+}
+void SetBridgeLED_writes_ERROR_if_led_setting_is_invalid(void)
 {
     TEST_PASS();
 }

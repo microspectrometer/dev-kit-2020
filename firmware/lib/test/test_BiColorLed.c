@@ -17,6 +17,21 @@ void BiColorLedOn_sets_bit_in_ddr(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH(led, *BiColorLed_ddr);
 }
+void BiColorLedOff_clears_bit_in_ddr(void)
+{
+    /* =====[ Setup ]===== */
+    *BiColorLed_ddr = 0x01;
+    bicolorled_num led = 0;
+    TEST_ASSERT_BIT_HIGH_MESSAGE(
+        led,
+        *BiColorLed_ddr,
+        "Cannot run test: must start with ddr led bit set!"
+        );
+    /* =====[ Operate ]===== */
+    BiColorLedOff(led);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_BIT_LOW(led, *BiColorLed_ddr);
+}
 void BiColorLedGreen_clears_bit_in_port(void)
 {
     /* =====[ Setup ]===== */

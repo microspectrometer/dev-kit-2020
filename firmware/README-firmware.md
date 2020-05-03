@@ -23,20 +23,30 @@ C:\Users\mike\AppData\Roaming\Python\Python38\site-packages
 The repo does not have to go in USERSITE, but it is a good
 default choice.
 
-I do not install the repo here. I use Cygwin, but I run the
-Python applications using my Windows Python installation. This is
-`python.exe`. I can call `python.exe` from Windows or from
-Cygwin. It does not matter in this case.
-
-For code-editing reasons, I prefer to install to the USERSITE
-for my Cygwin Python installation:
+I do not install the repo here. For code-editing reasons, I
+prefer to install to the USERSITE for my Cygwin Python
+installation:
 
 ```bash
 $ python3.7 -m site --user-site
 /home/mike/.local/lib/python3.7/site-packages
 ```
 
-Create this USERSITE folder if it does not exist:
+I use Cygwin, but I run the Python applications using my Windows
+Python installation. The Windows Python installation is executed
+from Cygwin by specifying it at the bash command line as
+`python.exe`.
+
+I can call `python.exe` from Windows or from Cygwin. It does not
+matter in this case. There are cases where attempting to run
+`python.exe` from Cygwin fails because of incompatiblity between
+Windows and POSIX path formatting.
+
+I will continue to show examples from my actual setup below,
+where the `USERSITE` is in my Cygwin directory. The examples
+should work the same with any `USERSITE` path.
+
+Create the `USERSITE` folder if it does not exist:
 
 ```powershell
 > mkdir -p C:\Users\mike\AppData\Roaming\Python\Python38\site-packages
@@ -134,8 +144,10 @@ tests\test_util.py ...                                                          
 ```
 
 Expect the same result (87 passed, 40 skipped, 20 xfailed) when
-running from Cygwin bash. The 20 failed tests are because I do
-not the dev-kit connected.
+running from Cygwin bash. I think the 20 failed tests are because
+I do not have a dev-kit with working firmware connected. I'd try
+connecting it now, but as of May 2020, I haven't written the
+firmware yet.
 
 ## Documentation
 
@@ -212,7 +224,13 @@ chromaspeclib.exceptions.ChromaSpecConnectionException: Cannot find CHROMATION d
 ```
 
 # User's Guide -- use Python API
-blah hah hah
+As of May 2020: I've just started using the Python API. Sean's
+`cmdline.py` utility lets me send any single API command and look
+at the response. This is very convenient. I am just doing quick
+system tests, so I have no reason to write my own scripts at this
+point. The `cmdline.py` utility does everything I need.
+
+See section `system test from the command line` below.
 
 # Developer's Guide -- feedback on Sean's API
 
@@ -241,6 +259,8 @@ direction *before* I spend time programming system tests.
 ```bash
 python.exe -m cmdline COMMAND KEY=VALUE
 ```
+
+I made Vim shortcuts start with `pt` (pneumonic is `p`ython `t`est):
 
 ```vim
 nnoremap <leader>pt<Space> :!python.exe -m cmdline 
@@ -345,6 +365,182 @@ Behavior is good:
 
 If I have no better use for the LED, it can indicate whether the
 most recent command was recognized.
+
+### system test GetBridgeLED
+
+GetBridgeLED gets `led_setting=1` and `led_setting=2`
+
+- `led_setting=1` means *Status LED is GREEN*
+- `led_setting=2` means *Status LED is RED*
+
+Here is the `main()` loop when I ran this system test:
+
+```c
+void loop(void)
+{
+    while (UsbRxbufferIsEmpty()); // loop until cmd received
+    uint8_t cmd = 0; // initialize cmd as "Null"
+    UsbReadByte(&cmd); // read cmd
+    switch(cmd) // look up cmd
+    {
+        // Turn status LED red if cmd is not recognized.
+        default:                    BiColorLedRed(status_led);   break;
+        // Null gets no response, but turns status LED green for now.
+        case 0: NullCommand();      BiColorLedGreen(status_led); break;
+        case 1: GetBridgeLED(); break;
+    }
+}
+```
+
+And here is the system test.
+
+START: power-on, *Status LED is GREEN.*
+
+Send `Null` just for sake of it:
+
+```bash
+$ python.exe -m cmdline Null
+2020-05-03T19:10:51.044753,BridgeNull()
+```
+
+*Status LED is GREEN.*
+
+Send `GetBridgeLED`. Should return `led_setting=1`.
+
+```bash
+$ python.exe -m cmdline GetBridgeLed led_num=0
+2020-05-03T19:10:56.366519,BridgeGetBridgeLED(status=0, led_setting=1)
+```
+
+**PASS**:
+    - Response is `led_setting=1`
+    - *Status LED is GREEN*
+
+
+Send `SetBridgeLED led_num=255 led_setting=255`.
+
+This sends bytes `0x02`, `0xFF`, `0xFF`. None of these bytes are
+recognized, so:
+
+- expect response is `None` and Status LED turns RED:
+    - `None` means the firmware does not send a response back
+    - expect `None` because I did not program a response to
+      `SetBridgeLED` yet
+    - all three bytes are handled as the `default` case of the
+      `switch` block
+    - the `default` case turns Status LED RED
+
+```bash
+$ python.exe -m cmdline SetBridgeLED led_num=255 led_setting=255
+2020-05-03T19:11:05.782671,None
+```
+
+- **PASS**:
+    - Response is `None`
+    - *Status LED is RED*
+
+
+Send `GetBridgeLED`. Should return `led_setting=2`.
+
+```bash
+$ python.exe -m cmdline GetBridgeLed led_num=0
+2020-05-03T19:11:10.128380,BridgeGetBridgeLED(status=0, led_setting=2)
+```
+
+**PASS**:
+    - Response is `led_setting=2`
+    - *Status LED is RED*
+
+Send `Null` to reset LED to GREEN:
+
+```bash
+$ python.exe -m cmdline Null
+2020-05-03T19:11:16.836114,BridgeNull()
+```
+
+*Status LED is GREEN.*
+
+Send `GetBridgeLED`. Should return `led_setting=1` again.
+
+```bash
+$ python.exe -m cmdline GetBridgeLed led_num=0
+2020-05-03T19:11:19.115907,BridgeGetBridgeLED(status=0, led_setting=1)
+```
+
+**PASS**:
+    - Response is `led_setting=1`
+    - *Status LED is GREEN*
+
+### system test SetBridgeLED
+
+Here is the `main()` loop when I ran this system test:
+
+```c
+void loop(void)
+{
+    while (UsbRxbufferIsEmpty()); // loop until cmd received
+    uint8_t cmd = 0; // initialize cmd as "Null"
+    UsbReadByte(&cmd); // read cmd
+    switch(cmd) // look up cmd
+    {
+        // Turn status LED red if cmd is not recognized.
+        default:                    BiColorLedRed(status_led);   break;
+        // Null gets no response, but turns status LED green for now.
+        case 0: NullCommand();      BiColorLedGreen(status_led); break;
+        case 1: GetBridgeLED(); break;
+        case 2: SetBridgeLED(); break;
+        //  case 8: SetSensorConfig(); break;
+        // default: ReplyCommandInvalid(); break;
+    }
+}
+```
+
+Send command to turn off the status LED:
+
+```bash
+$ python.exe -m cmdline SetBridgeLED led_num=0 led_setting=0
+2020-05-03T21:14:01.364061,BridgeSetBridgeLED(status=0)
+```
+
+**PASS**: status LED turns off
+
+Check GetBridgeLED returns `led_setting=0`:
+
+```bash
+$ python.exe -m cmdline GetBridgeLed led_num=0
+2020-05-03T21:14:05.208334,BridgeGetBridgeLED(status=0, led_setting=0)
+```
+
+Send command to turn the status LED green:
+
+```bash
+$ python.exe -m cmdline SetBridgeLED led_num=0 led_setting=1
+```
+
+**PASS**: status LED turns green
+
+Check GetBridgeLED returns `led_setting=1`:
+
+```bash
+$ python.exe -m cmdline GetBridgeLed led_num=0
+2020-05-03T21:14:14.974757,BridgeGetBridgeLED(status=0, led_setting=1)
+```
+
+Send command to turn the status LED red:
+
+```bash
+$ python.exe -m cmdline SetBridgeLED led_num=0 led_setting=2
+2020-05-03T21:14:18.531435,BridgeSetBridgeLED(status=0)
+```
+
+**PASS**: status LED turns red
+
+Check GetBridgeLED returns `led_setting=2`:
+
+```bash
+$ python.exe -m cmdline GetBridgeLed led_num=0
+2020-05-03T21:14:21.380145,BridgeGetBridgeLED(status=0, led_setting=2)
+```
 
 ## TODO list for Sean
 - [ ] TODO: Sean add documentation for the `serial_number` and
@@ -952,9 +1148,9 @@ the assembly output to analyze.
                 - distinguishes between 0 and not 0
                 - able to send Null so far, haven't set up
                   anything else
-            - [ ] send the commands to control the bridge LEDs
+            - [x] send the commands to control the bridge LEDs
                 - [x] system test GetBridgeLED
-                - [ ] system test SetBridgeLED
+                - [x] system test SetBridgeLED
         - [ ] SpiMasterInit
             - once this is setup, I can send commands to the
               sensor

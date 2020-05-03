@@ -64,7 +64,7 @@ hwlib := BiColorLed SpiSlave UartSpi Lis Flag Usb
 # }}}
 # Add non-hardware libs here{{{
 # Non-hardware libs do not depend on AVR headers.
-nohwlib := ReadWriteBits Queue
+nohwlib := ReadWriteBits Queue StatusCode
 # }}}
 # Group libs into build *pre-requisites*{{{
 # Hardware libs add libname-HardwareFake.h file pre-requisites to build rules.

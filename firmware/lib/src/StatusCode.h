@@ -35,6 +35,7 @@
 #ifndef _STATUSCODE_H
 #define _STATUSCODE_H
 #include "stdint.h"
+#include "stdbool.h"
 
 //! Status codes are type `status_code`.
 typedef uint8_t const status_code;
@@ -48,6 +49,17 @@ typedef uint8_t const led_state;
 extern led_state OFF;
 extern led_state GREEN;
 extern led_state RED;
+
+inline bool led_setting_is_valid(led_state setting)
+{
+    /** led_setting_is_valid behavior:\n 
+      * - returns TRUE if setting is OFF\n 
+      * - returns TRUE if setting is GREEN\n 
+      * - returns TRUE if setting is RED\n 
+      * - returns FALSE if setting is any other value\n 
+      * */
+    return ( (setting==OFF) || (setting==GREEN) || (setting==RED) );
+}
 
 //! When status_code is ERROR, pad responses to send expected number of bytes.
 extern uint8_t PADDING;

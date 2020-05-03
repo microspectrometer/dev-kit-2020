@@ -53,7 +53,7 @@ void GetBridgeLED_tests(bool run_test)
 {
     if (run_test)
     {
-        ReadLedState_tests(Yep);
+        ReadLedState_tests(Nope);
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(GetBridgeLED_waits_for_byte_led_num);
         RUN_TEST(GetBridgeLED_reads_byte_led_num);
@@ -62,12 +62,28 @@ void GetBridgeLED_tests(bool run_test)
         RUN_TEST(GetBridgeLED_writes_ERROR_and_pads_second_byte_if_led_num_is_invalid);
     }
 }
-void UsbCmd_tests(bool run_test)
+
+/* =====[ SetBridgeLED ]===== */
+void SetBridgeLED_tests(bool run_test)
 {
     if (run_test)
     {
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        GetBridgeLED_tests(Yep);
+        RUN_TEST(SetBridgeLED_waits_for_byte_led_num);
+        RUN_TEST(SetBridgeLED_reads_byte_led_num);
+        RUN_TEST(SetBridgeLED_waits_for_byte_led_setting);
+        RUN_TEST(SetBridgeLED_reads_byte_led_setting);
+        RUN_TEST(SetBridgeLED_applies_led_setting_and_writes_OK_if_parameters_are_valid);
+        RUN_TEST(SetBridgeLED_writes_ERROR_if_led_num_is_invalid);
+        RUN_TEST(SetBridgeLED_writes_ERROR_if_led_setting_is_invalid);
+    }
+}
+void UsbCmd_tests(bool run_test)
+{
+    if (run_test)
+    {
+        GetBridgeLED_tests(Nope);
+        SetBridgeLED_tests(Yep);
     }
 }
 

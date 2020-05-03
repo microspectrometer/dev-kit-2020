@@ -4,6 +4,7 @@
 /* ------------------ */
 void NullCommand(void);
 void GetBridgeLED(void);
+void SetBridgeLED(void);
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */
