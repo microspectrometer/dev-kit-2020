@@ -20,7 +20,9 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 #include "test_BiColorLed.h"
 #include "test_ReadWriteBits.h"
 #include "test_Flag.h"
+#include "test_Spi.h"
 #include "test_SpiSlave.h"
+#include "test_SpiMaster.h"
 #include "test_Queue.h"
 #include "test_UartSpi.h"
 #include "test_Lis.h"
@@ -69,23 +71,7 @@ void Flag_tests(bool run_test)
     }
 }
 
-/* =====[ SpiSlave_tests ]===== */
-void Check_SpiSlave_plumbing_for_fakes(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
-        RUN_TEST(SpiSlave_faked_calls_are_still_available_for_testing);
-    }
-}
-void Run__SignalDataReady_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(SignalDataReady_drives_DataReady_LOW);
-    }
-}
+/* =====[ Spi_tests ]===== */
 void Run_ClearSpiInterruptFlag_tests(bool run_test)
 {
     if (run_test)
@@ -102,6 +88,32 @@ void Run__SpiTransferIsDone_tests(bool run_test)
         setUp = NothingToSetUp; tearDown = NothingToTearDown;
         RUN_TEST(SpiTransferIsDone_returns_true_if_the_SPI_Interrupt_Flag_is_set);
         RUN_TEST(SpiTransferIsDone_returns_false_if_the_SPI_Interrupt_Flag_is_clear);
+    }
+}
+void Spi_tests(bool run_test)
+{
+    if (run_test)
+    {
+        Run_ClearSpiInterruptFlag_tests(Yep);
+        Run__SpiTransferIsDone_tests(Yep);
+    }
+}
+
+/* =====[ SpiSlave_tests ]===== */
+void Check_SpiSlave_plumbing_for_fakes(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(SpiSlave_faked_calls_are_still_available_for_testing);
+    }
+}
+void Run__SignalDataReady_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SignalDataReady_drives_DataReady_LOW);
     }
 }
 void Run_DisableSpiInterrupt_tests(bool run_test)
@@ -160,14 +172,32 @@ void SpiSlave_tests(bool run_test)
     if (run_test)
     {
         Check_SpiSlave_plumbing_for_fakes(Yep);
-        Run_ClearSpiInterruptFlag_tests(Yep);
-        Run__SpiTransferIsDone_tests(Yep);
         Run_DisableSpiInterrupt_tests(Yep);
         Run_EnableSpiInterrupt_tests(Yep);
         Run_SpiSlaveInit_tests(Yep);
         Run__SignalDataReady_tests(Yep);
         Run_SpiSlaveTxByte_tests(Yep);
         Run_SpiSlaveTx_tests(Yep);
+    }
+}
+
+/* =====[ SpiMaster_tests ]===== */
+void SpiMaster_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SpiMasterInit_idles_SlaveSelect_high);
+        RUN_TEST(SpiMasterInit_makes_SlaveSelect_an_output);
+        RUN_TEST(SpiMasterInit_makes_Miso_an_input);
+        RUN_TEST(SpiMasterInit_enables_pullup_on_Miso);
+        RUN_TEST(SpiMasterInit_makes_DataReady_an_input);
+        RUN_TEST(SpiMasterInit_enables_pullup_on_DataReady);
+        RUN_TEST(SpiMasterInit_makes_Mosi_an_output);
+        RUN_TEST(SpiMasterInit_makes_Sck_an_output);
+        RUN_TEST(SpiMasterInit_makes_this_MCU_the_SPI_Master);
+        RUN_TEST(SpiMasterInit_sets_SPI_Clock_to_10MHz_ext_osc_divided_by_8);
+        RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
     }
 }
 
@@ -583,13 +613,15 @@ void Usb_tests(bool run_test)
 int main()
 {
     UNITY_BEGIN();
-    BiColorLed_tests(Yep);
+    BiColorLed_tests(Nope);
     ReadWriteBits_tests(Nope);
     Queue_tests(Nope);
     UartSpi_tests(Nope);
     Lis_tests(Nope);
     Flag_tests(Nope);
+    Spi_tests(Yep);
     SpiSlave_tests(Nope);
+    SpiMaster_tests(Nope);
     StatusCode_tests(Nope);
     /* =====[ test libs for usb-bridge ]===== */
     Usb_tests(Nope);

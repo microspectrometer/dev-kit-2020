@@ -7,14 +7,6 @@ void SpiSlave_faked_calls_are_still_available_for_testing(void);
 /* =====[ _SignalDataReady ]===== */
 void SignalDataReady_drives_DataReady_LOW(void);
 
-/* =====[ ClearSpiInterruptFlag ]===== */
-void ClearSpiInterruptFlag_first_reads_SPI_status_register(void);
-void ClearSpiInterruptFlag_then_reads_SPI_data_register(void);
-
-/* =====[ _SpiTransferIsDone ]===== */
-void SpiTransferIsDone_returns_true_if_the_SPI_Interrupt_Flag_is_set(void);
-void SpiTransferIsDone_returns_false_if_the_SPI_Interrupt_Flag_is_clear(void);
-
 /* =====[ DisableSpiInterrupt ]===== */
 void DisableSpiInterrupt_clears_the_SPI_Interrupt_Enable_bit(void);
 

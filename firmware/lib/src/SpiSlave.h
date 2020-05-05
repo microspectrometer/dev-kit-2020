@@ -3,45 +3,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "ReadWriteBits.h"
-//---Hardware types: register addresses, pin numbers, bit numbers---
-typedef uint8_t volatile * const spi_ptr; // i/o reg address
-typedef uint8_t const spi_pin; // bit index of i/o reg for i/o pin
-typedef uint8_t const spi_bit; // bit index into i/o reg
-// Register address, pin number, and bit definitions depend on
-// compiler:
-    // "gcc" uses test/HardwareFake.h
-    // "avr-gcc" uses src/Hardware.h
-// ---Registers---
-extern spi_ptr Spi_ddr;
-extern spi_ptr Spi_port;
-extern spi_ptr Spi_SPCR;
-extern spi_ptr Spi_SPDR;
-extern spi_ptr Spi_SPSR;
-// ---Pins---
-extern spi_pin Spi_DataReady; // slave signal DR to master
-extern spi_pin Spi_Miso; // master-in, slave-out
-// ---Bits---
-extern spi_bit Spi_Enable;
-extern spi_bit Spi_InterruptEnable;
-extern spi_bit Spi_InterruptFlag;
+#include "Spi.h"
 
 #ifdef USE_FAKES
+#include "Spi_faked.h"
 #include "SpiSlave_faked.h" // declare fakes
 #endif
 // ---Private---
-inline void _EnableSpiModule(void)
-{
-    /** Set SPE bit in SPCR (SPI Control Register) to enable SPI.
-     * This bit must be set to enable any SPI operations.
-     * */
-    SetBit(Spi_SPCR, Spi_Enable);
-    // ---Expected Assembly---
-    // in r24, 0x2c;
-    // ori r24, 0x40;
-    // out 0x2c, r24
-    // This is three instructions because SPCR is outside the
-    // address range for using `sbi`.
-}
 inline void _SignalDataReady(void)
 {
     /** _SignalDataReady behavior:\n 
@@ -55,32 +23,22 @@ inline void _SignalDataReady(void)
       * - SPI Slave drives **Data Ready** HIGH after each byte of
       *   SPI transfer.
       * */
-    ClearBit(Spi_port, Spi_DataReady);
+    ClearBit(Spi_PortOutput, Spi_DataReady);
     // ---Expected Assembly---
     //  cbi	0x05, 1	; 5
 }
 inline void _SignalDataNotReady(void)
 {
     //! Drive **Data Ready** HIGH.
-    SetBit(Spi_port, Spi_DataReady);
+    SetBit(Spi_PortOutput, Spi_DataReady);
     // ---Expected Assembly---
     //  sbi	0x05, 1	; 5
-}
-inline bool _SpiTransferIsDone(void)
-{
-    /** _SpiTransferIsDone behavior:\n 
-      * - returns true if the SPI Interrupt Flag is set\n 
-      * - returns false if the SPI Interrupt Flag is clear\n 
-      * */
-    return BitIsSet(Spi_SPSR, Spi_InterruptFlag);
 }
 
 // ---API (Go to the Doxygen documentation of this file)---
 /** \file SpiSlave.h
  * # API
  * void DisableSpiInterrupt(void);\n 
- * uint8_t ReadSpiStatusRegister(void);\n 
- * uint8_t ReadSpiDataRegister(void);\n 
  * void ClearSpiInterruptFlag(void);\n 
  * void EnableSpiInterrupt(void);\n 
  * void SpiSlaveInit(void);\n 
@@ -109,18 +67,6 @@ inline void DisableSpiInterrupt(void)
     // out	0x2c, r24	; 44
     // This is three instructions because SPCR is outside the
     // address range for using `cbi`.
-}
-inline uint8_t ReadSpiStatusRegister(void)
-{
-    return *Spi_SPSR;
-    // ---Expected Assembly---
-    // in	r24, 0x2d	; 45
-}
-inline uint8_t ReadSpiDataRegister(void)
-{
-    return *Spi_SPDR;
-    // ---Expected Assembly---
-    // in	r24, 0x2e	; 46
 }
 inline void ClearSpiInterruptFlag(void)
 {
@@ -189,11 +135,11 @@ inline void SpiSlaveInit(void)
       * - enables SPI interrupt\n 
       * */
     // DataReady pin idle high
-    SetBit(Spi_port, Spi_DataReady); // sbi	0x05, 1
+    SetBit(Spi_PortOutput, Spi_DataReady); // sbi	0x05, 1
     // Set DataReady as an output pin
-    SetBit(Spi_ddr, Spi_DataReady); // sbi	0x04, 1
+    SetBit(Spi_PortDirection, Spi_DataReady); // sbi	0x04, 1
     // Set Miso as an an output pin
-    SetBit(Spi_ddr, Spi_Miso); // sbi	0x04, 4
+    SetBit(Spi_PortDirection, Spi_Miso); // sbi	0x04, 4
     _EnableSpiModule();
     // Enable interrupts for robust SPI communication
     EnableSpiInterrupt();

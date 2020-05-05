@@ -12,7 +12,8 @@
 // for inclusion in the main() translation unit
 #include "BiColorLed-Hardware.h"
 #include "Lis-Hardware.h"
-#include "SpiSlave-Hardware.h"
+/* #include "SpiSlave-Hardware.h" */
+#include "Spi-Hardware.h"
 #include "UartSpi-Hardware.h"
 #include "Flag-Hardware.h"
 

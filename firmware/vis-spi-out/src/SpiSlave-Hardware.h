@@ -1,4 +1,12 @@
-#ifndef _SPISLAVE_HARDWARE_H
+/** \file
+ * This file is not used anymore.\n
+ * There used to be separate Spi hardware files for master and
+ * slave.
+ * Now there is one Spi.h file and Spi-Hardware and
+ * Spi-HardwareFake.
+ * There are still SpiMaster.h and SpiSlave.h files, but these
+ * are for the functions unique to master and slave.
+ * */
 #define _SPISLAVE_HARDWARE_H
 #include <stdint.h>
 #include <avr/io.h> // includes iom328p.h for hardware i/o values

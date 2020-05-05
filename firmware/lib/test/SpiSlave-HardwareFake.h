@@ -1,9 +1,19 @@
+/** \file
+ * This file is not used anymore.\n
+ * There used to be separate Spi hardware files for master and
+ * slave.
+ * Now there is one Spi.h file and Spi-Hardware and
+ * Spi-HardwareFake.
+ * There are still SpiMaster.h and SpiSlave.h files, but these
+ * are for the functions unique to master and slave.
+ * */
 #ifndef _SPISLAVE_HARDWAREFAKE_H
 #define _SPISLAVE_HARDWAREFAKE_H
 #include <stdint.h>
-#include "SpiSlave.h"
+/* #include "SpiSlave.h" */
+#include "Spi.h"
 
-/* =====[ Fake i/o registers for unit tests ]===== */
+// ---Fake hardware registers as PC memory for unit tests---
 static uint8_t volatile fake_ddr;
 static uint8_t volatile fake_port;
 static uint8_t volatile fake_SPCR;

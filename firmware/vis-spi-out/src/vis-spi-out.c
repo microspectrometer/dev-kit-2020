@@ -3,6 +3,7 @@
 #include "Example.h"
 // prj libs
 #include "BiColorLed.h"
+#include "Spi.h"
 #include "SpiSlave.h"
 #include "UartSpi.h"
 #include "Lis.h"

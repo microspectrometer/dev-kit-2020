@@ -12,6 +12,8 @@
 // for inclusion in the main() translation unit
 #include "BiColorLed-Hardware.h"
 #include "Usb-Hardware.h"
+/* #include "SpiMaster-Hardware.h" */
+#include "Spi-Hardware.h"
 
 #endif // _HARDWARE_H
 

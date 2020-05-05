@@ -111,7 +111,7 @@ app_o := $(addprefix build/,${app_o})
 # Add hardware libs here{{{
 # Hardware libs depend on AVR headers (register/bit definitions, macros, etc.).
 # List separate from non-hardware libs to generate libname-Harware.h pre-reqs.
-hwlib := BiColorLed SpiSlave UartSpi Lis Flag
+hwlib := BiColorLed Spi SpiSlave UartSpi Lis Flag
 # }}}
 # Add non-hardware libs here{{{
 # Non-hardware libs do not depend on AVR headers.
@@ -133,7 +133,7 @@ lib_o := $(addprefix ../lib/build/,${lib_o})
 lib_headers := $(addsuffix .h,${all_libs})
 lib_headers := $(addprefix ../lib/src/,${lib_headers})
 # List libs that USE_FAKES in tests
-lib_faked := SpiSlave Lis
+lib_faked := Spi SpiSlave Lis
 lib_faked_o := $(addsuffix _faked.o,${lib_faked})
 lib_faked_o := $(addprefix ../lib/build/,${lib_faked_o})
 # }}}

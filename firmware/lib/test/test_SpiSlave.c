@@ -5,6 +5,7 @@
 #include "unity.h"
 #include "Mock.h" // record call history in "mock"
 #include "test_SpiSlave.h"
+#include "Spi.h"
 #include "SpiSlave.h"
 #include "ReadWriteBits.h"
 
@@ -36,42 +37,16 @@ void SpiSlave_faked_calls_are_still_available_for_testing(void)
 void SignalDataReady_drives_DataReady_LOW(void)
 {
     /* =====[ Setup ]===== */
-    SetBit(Spi_port, Spi_DataReady);
+    SetBit(Spi_PortOutput, Spi_DataReady);
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         Spi_DataReady,
-        *Spi_port,
+        *Spi_PortOutput,
         "Cannot run test: must start with DataReady HIGH!"
         );
     /* =====[ Operate ]===== */
     _SignalDataReady();
     /* =====[ Test ]===== */
-    TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_port);
-}
-
-/* =====[ ClearSpiInterruptFlag ]===== */
-void ClearSpiInterruptFlag_first_reads_SPI_status_register(void)
-{
-    TEST_PASS();
-}
-void ClearSpiInterruptFlag_then_reads_SPI_data_register(void)
-{
-    TEST_PASS();
-}
-
-/* =====[ _SpiTransferIsDone ]===== */
-void SpiTransferIsDone_returns_true_if_the_SPI_Interrupt_Flag_is_set(void)
-{
-    /* =====[ Setup ]===== */
-    SetBit(Spi_SPSR, Spi_InterruptFlag);
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_TRUE(_SpiTransferIsDone());
-}
-void SpiTransferIsDone_returns_false_if_the_SPI_Interrupt_Flag_is_clear(void)
-{
-    /* =====[ Setup ]===== */
-    ClearBit(Spi_SPSR, Spi_InterruptFlag);
-    /* =====[ Operate and Test ]===== */
-    TEST_ASSERT_FALSE(_SpiTransferIsDone());
+    TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_PortOutput);
 }
 
 /* =====[ DisableSpiInterrupt ]===== */
@@ -128,10 +103,10 @@ void EnableSpiInterrupt_consumes_6_cycles(void)
 void SpiSlaveInit_makes_DataReady_an_output_pin(void)
 {
     /* =====[ Setup ]===== */
-    *Spi_ddr = 0x00;
+    *Spi_PortDirection = 0x00;
     TEST_ASSERT_BIT_LOW_MESSAGE(
         Spi_DataReady,
-        *Spi_ddr,
+        *Spi_PortDirection,
         "Cannot run test: must start with ddr bit clear!"
         );
     /* =====[ Operate ]===== */
@@ -139,38 +114,38 @@ void SpiSlaveInit_makes_DataReady_an_output_pin(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         Spi_DataReady,
-        *Spi_ddr,
+        *Spi_PortDirection,
         "Expect DataReady to be an output."
         );
 }
 void SpiSlaveInit_idles_DataReady_high(void)
 {
     /* =====[ Setup ]===== */
-    *Spi_port = 0x00;
+    *Spi_PortOutput = 0x00;
     TEST_ASSERT_BIT_LOW_MESSAGE(
         Spi_DataReady,
-        *Spi_port,
+        *Spi_PortOutput,
         "Cannot run test: must start with port bit clear!"
         );
     /* =====[ Operate ]===== */
-    /* printf("Value of Spi_port before is 0x%02x\n", *Spi_port); */
+    /* printf("Value of Spi_PortOutput before is 0x%02x\n", *Spi_PortOutput); */
     SpiSlaveInit();
     /* =====[ Test ]===== */
     /* printf("Value of Spi_DataReady is pin %d\n", Spi_DataReady); */
-    /* printf("Value of Spi_port after is 0x%02x\n", *Spi_port); */
+    /* printf("Value of Spi_PortOutput after is 0x%02x\n", *Spi_PortOutput); */
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         Spi_DataReady,
-        *Spi_port,
+        *Spi_PortOutput,
         "Expect DataReady to idle high."
         );
 }
 void SpiSlaveInit_makes_Miso_an_output_pin(void)
 {
     /* =====[ Setup ]===== */
-    *Spi_ddr = 0x00;
+    *Spi_PortDirection = 0x00;
     TEST_ASSERT_BIT_LOW_MESSAGE(
         Spi_Miso,
-        *Spi_ddr,
+        *Spi_PortDirection,
         "Cannot run test: must start with ddr bit clear!"
         );
     /* =====[ Operate ]===== */
@@ -178,7 +153,7 @@ void SpiSlaveInit_makes_Miso_an_output_pin(void)
     /* =====[ Test ]===== */
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         Spi_Miso,
-        *Spi_ddr,
+        *Spi_PortDirection,
         "Expect Miso to be an output."
         );
 }
@@ -261,16 +236,16 @@ void SpiSlaveTxByte_disables_SPI_ISR_before_signaling_data_ready(void)
 void SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready(void)
 {
     /* =====[ Setup ]===== */
-    *Spi_port = 0xFF;
+    *Spi_PortOutput = 0xFF;
     TEST_ASSERT_BIT_HIGH_MESSAGE(
         Spi_DataReady,
-        *Spi_port,
+        *Spi_PortOutput,
         "Cannot run test: must start with DataReady HIGH!"
         );
     /* =====[ Operate ]===== */
     SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
-    /* TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_port); */
+    /* TEST_ASSERT_BIT_LOW(Spi_DataReady, *Spi_PortOutput); */
     uint16_t call_n = 2;
     TEST_ASSERT_TRUE(AssertCall(mock, call_n, "_SignalDataReady"));
 }
@@ -294,16 +269,16 @@ void SpiSlaveTxByte_waits_until_SPI_transfer_is_done(void)
 void SpiSlaveTxByte_drives_DataReady_HIGH_immediately_after_SPI_transfer_finishes(void)
 {
     /* =====[ Setup ]===== */
-    *Spi_port = 0x00;
+    *Spi_PortOutput = 0x00;
     TEST_ASSERT_BIT_LOW_MESSAGE(
         Spi_DataReady,
-        *Spi_port,
+        *Spi_PortOutput,
         "Cannot run test: must start with DataReady LOW!"
         );
     /* =====[ Operate ]===== */
     SpiSlaveTxByte(0xFF);
     /* =====[ Test ]===== */
-    TEST_ASSERT_BIT_HIGH(Spi_DataReady, *Spi_port);
+    TEST_ASSERT_BIT_HIGH(Spi_DataReady, *Spi_PortOutput);
 }
 void SpiSlaveTxByte_enables_SPI_ISR_after_transfer(void)
 {

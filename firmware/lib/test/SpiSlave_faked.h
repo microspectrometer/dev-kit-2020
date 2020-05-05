@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 // ---Private functions faked for testing---
-bool _SpiTransferIsDone_fake(void);
 void _SignalDataReady_fake(void);
 
 // ---API functions faked for testing---

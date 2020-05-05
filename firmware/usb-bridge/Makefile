@@ -111,7 +111,7 @@ app_o := $(addprefix build/,${app_o})
 # Add hardware libs here{{{
 # Hardware libs depend on AVR headers (register/bit definitions, macros, etc.).
 # List separate from non-hardware libs to generate libname-Harware.h pre-reqs.
-hwlib := BiColorLed Usb
+hwlib := BiColorLed Usb Spi SpiMaster
 # }}}
 # Add non-hardware libs here{{{
 # Non-hardware libs do not depend on AVR headers.

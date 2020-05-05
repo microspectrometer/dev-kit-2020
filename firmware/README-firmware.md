@@ -1152,6 +1152,24 @@ the assembly output to analyze.
                 - [x] system test GetBridgeLED
                 - [x] system test SetBridgeLED
         - [ ] SpiMasterInit
+            - has the iom32p.h file changed? PORTB2 instead of
+              PB2? No, hasn't changed... So when was PB2 ever
+              defined?
+            - [ ] create SpiMaster lib
+            - [ ] rename registers in SpiSlave lib to use SpiS
+            - [ ] rename bit index type from lib_pin to lib_bit
+                - pin is confusing with PIN register
+                - pin is also confusing with numbered things like
+                  LED0 -- bit makes it more obvious that LED0 is
+                  high level, so bit for LED0 is not necessarily
+                  bit 0
+            - [ ] pull common SPI functions out of SpiSlave.h
+              into a common SPI lib
+                - should I have just made SpiM Spi also?
+                - is there *ANY* case where spim and spis
+                  registers or bits would conflict? if not, then
+                   do it, make them all spis and move them to a
+                   common place, SpiCommon or SpiBase
             - once this is setup, I can send commands to the
               sensor
             - control the sensor LEDs

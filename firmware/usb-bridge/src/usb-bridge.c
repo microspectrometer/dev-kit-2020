@@ -32,6 +32,8 @@
 // Python-to-Firmware communication status codes
 #include "StatusCodes.h"
 #include "UsbCmd.h"
+#include "Spi.h"
+#include "SpiMaster.h"
 
 static void setup(void);
 static void loop(void);
@@ -55,6 +57,8 @@ void setup(void)
     SetBit(FtCtrl_ddr, FtClock);     // FtClock is an output
     SetBit(FtCtrl_port, FtChipSelect); // drive FtChipSelect high
     SetBit(FtCtrl_ddr, FtChipSelect);  // FtChipSelect is an output
+    // Setup SPI
+    SpiMasterInit();
 }
 void loop(void)
 {
