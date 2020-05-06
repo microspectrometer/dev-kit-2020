@@ -31,9 +31,9 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 #include "test_Spi.h"
 #include "test_SpiSlave.h"
 #include "test_SpiMaster.h"
-// ---Define a setup/teardown for SpiMasterTxByte---
-void SetUp_SpiMasterTxByte(void){ SetBit(Spi_SPSR, Spi_InterruptFlag); }
-void TearDown_SpiMasterTxByte(void){ ClearBit(Spi_SPSR, Spi_InterruptFlag); }
+// ---Define a setup/teardown for SpiMasterXfrByte---
+void SetUp_SpiMasterXfrByte(void){ SetBit(Spi_SPSR, Spi_InterruptFlag); }
+void TearDown_SpiMasterXfrByte(void){ ClearBit(Spi_SPSR, Spi_InterruptFlag); }
 
 /* ---Turn test suites on and off--- */
 bool Yep=true, Nope=false;
@@ -203,16 +203,17 @@ void Run_SpiMasterInit_tests(bool run_test)
         RUN_TEST(SpiMasterInit_clears_SPI_interrupt_flag);
     }
 }
-void Run_SpiMasterTxByte_tests(bool run_test)
+void Run_SpiMasterXfrByte_tests(bool run_test)
 {
     if (run_test)
     {
-        setUp = SetUp_SpiMasterTxByte; tearDown = TearDown_SpiMasterTxByte;
-        RUN_TEST(SpiMasterTxByte_selects_the_SPI_slave);
-        RUN_TEST(SpiMasterTxByte_loads_SPI_data_reg_with_the_byte_to_send);
-        RUN_TEST(SpiMasterTxByte_waits_until_the_transfer_is_done_by_reading_the_SPI_Interrupt_Flag);
-        RUN_TEST(SpiMasterTxByte_clears_the_SPI_Interrupt_Flag);
-        RUN_TEST(SpiMasterTxByte_unselects_the_SPI_slave);
+        setUp = SetUp_SpiMasterXfrByte; tearDown = TearDown_SpiMasterXfrByte;
+        RUN_TEST(SpiMasterXfrByte_selects_the_SPI_slave);
+        RUN_TEST(SpiMasterXfrByte_loads_SPI_data_reg_with_the_byte_to_send);
+        RUN_TEST(SpiMasterXfrByte_waits_until_the_transfer_is_done_by_reading_the_SPI_Interrupt_Flag);
+        RUN_TEST(SpiMasterXfrByte_unselects_the_SPI_slave);
+        RUN_TEST(SpiMasterXfrByte_clears_the_SPI_Interrupt_Flag_by_reading_the_SPI_data_reg);
+        RUN_TEST(SpiMasterXfrByte_returns_the_byte_in_the_SPI_data_reg);
     }
 }
 void SpiMaster_tests(bool run_test)
@@ -220,7 +221,7 @@ void SpiMaster_tests(bool run_test)
     if (run_test)
     {
         Run_SpiMasterInit_tests(Nope);
-        Run_SpiMasterTxByte_tests(Yep);
+        Run_SpiMasterXfrByte_tests(Yep);
     }
 }
 

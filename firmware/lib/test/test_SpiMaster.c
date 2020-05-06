@@ -203,36 +203,54 @@ void SpiMasterInit_clears_SPI_interrupt_flag(void)
     _AssertCall(call_n, "ClearSpiInterruptFlag");
 }
 
-/* =====[ SpiMasterTxByte ]===== */
-void SpiMasterTxByte_selects_the_SPI_slave(void)
+/* =====[ SpiMasterXfrByte ]===== */
+void SpiMasterXfrByte_selects_the_SPI_slave(void)
 {
     TEST_PASS();
 }
-void SpiMasterTxByte_loads_SPI_data_reg_with_the_byte_to_send(void)
+void SpiMasterXfrByte_loads_SPI_data_reg_with_the_byte_to_send(void)
 {
     /* =====[ Setup ]===== */
     *Spi_SPDR = 0x00; // initialize the SPI data register
     TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, *Spi_SPDR, "Initialize SPDR = 0 before running test.");
     uint8_t cmd = 0x03; // command 3 is GetSensorLED
     /* =====[ Operate ]===== */
-    SpiMasterTxByte(cmd);
+    SpiMasterXfrByte(cmd);
     /* =====[ Test ]===== */
     TEST_ASSERT_EQUAL_HEX8(cmd, *Spi_SPDR);
 }
-void SpiMasterTxByte_waits_until_the_transfer_is_done_by_reading_the_SPI_Interrupt_Flag(void)
+void SpiMasterXfrByte_waits_until_the_transfer_is_done_by_reading_the_SPI_Interrupt_Flag(void)
 {
     TEST_PASS();
 }
-void SpiMasterTxByte_clears_the_SPI_Interrupt_Flag(void)
-{
-    TEST_PASS();
-}
-void SpiMasterTxByte_unselects_the_SPI_slave(void)
+void SpiMasterXfrByte_unselects_the_SPI_slave(void)
 {
     /* =====[ Setup ]===== */
     setup_bit_val(Spi_PortOutput, Spi_Ss, LOW);
     /* =====[ Operate ]===== */
-    SpiMasterTxByte(OK);
+    SpiMasterXfrByte(OK);
     /* =====[ Test ]===== */
     test_bit_val_msg(Spi_PortOutput, Spi_Ss, HIGH, "Spi_Ss");
 }
+void SpiMasterXfrByte_clears_the_SPI_Interrupt_Flag_by_reading_the_SPI_data_reg(void)
+{
+    TEST_PASS();
+}
+void SpiMasterXfrByte_returns_the_byte_in_the_SPI_data_reg(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_SPDR = 0x00; // initialize the SPI data register
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, *Spi_SPDR, "Initialize SPDR = 0 before running test.");
+    uint8_t cmd = 0x03; // command 3 is GetSensorLED
+    /* =====[ Operate ]===== */
+    uint8_t byte_in = SpiMasterXfrByte(cmd);
+    /* =====[ Test ]===== */
+    // Expect byte_in == cmd:
+    // - byte_in equals SPDR
+    // - SpiMasterXfrByte loads SPDR with cmd
+    // - SPDR does not change because this is only a unit test
+    // In a real system, SPDR contains the byte shifted in from
+    // the slave when the transfer is done.
+    TEST_ASSERT_EQUAL_HEX8(cmd, byte_in);
+}
+

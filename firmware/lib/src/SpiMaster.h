@@ -15,17 +15,18 @@
 /** \file SpiMaster.h
  * # API
  * void SpiMasterInit(void);\n 
- * void SpiMasterTxByte(uint8_t byte);\n 
+ * void SpiMasterXfrByte(uint8_t byte);\n 
  * */
 
-inline void SpiMasterTxByte(uint8_t byte)
+inline uint8_t SpiMasterXfrByte(uint8_t byte)
 {
-    /** SpiMasterTxByte behavior:\n 
+    /** SpiMasterXfrByte behavior:\n 
       * - selects the SPI slave\n 
       * - loads SPI data reg with the byte to send\n 
       * - waits until the transfer is done by reading the SPI Interrupt Flag\n 
-      * - clears the SPI Interrupt Flag\n 
       * - unselects the SPI slave\n 
+      * - clears the SPI Interrupt Flag by reading the SPI data reg\n 
+      * - returns the byte in the SPI data reg\n 
       * */
 
     // select the SPI Slave
@@ -37,13 +38,13 @@ inline void SpiMasterTxByte(uint8_t byte)
     // wait for SPI transmission to complete
     while(BitIsClear(Spi_SPSR, Spi_InterruptFlag));
 
+    // unselect the SPI Slave
+    SetBit(Spi_PortOutput, Spi_Ss);
+
     // Clear the Spi_InterruptFlag by
     // reading Spi_InterruptFlag while it is set
     // then reading Spi_SPDR
-    *Spi_SPDR;  // this serves as a throwaway access
-
-    // unselect the SPI Slave
-    SetBit(Spi_PortOutput, Spi_Ss);
+    return *Spi_SPDR;
 }
 
 // ---API functions that call fakes when testing---

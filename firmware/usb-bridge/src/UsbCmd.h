@@ -120,21 +120,19 @@ inline void GetSensorLED(void)
     UsbReadByte(&led_num);
 
     // send command to sensor
-    SpiMasterTxByte(cmd);
-    SpiMasterTxByte(led_num);
+    SpiMasterXfrByte(cmd);
+    SpiMasterXfrByte(led_num);
 
     // write OK to indicate command sent to sensor
     UsbWriteByte(OK);
 
     // read response from sensor
-    // uint8_t status = 0xFF;
-    // uint8_t led_setting = 0xFF;
-    // SpiMasterRxByte(&status);
-    // SpiMasterRxByte(&led_setting);
+    uint8_t status = SpiMasterXfrByte(PADDING);
+    uint8_t led_setting = SpiMasterXfrByte(PADDING);
 
     // write response
-    // UsbWriteByte(status);
-    // UsbWriteByte(led_setting);
+    UsbWriteByte(status);
+    UsbWriteByte(led_setting);
 }
 
 #endif // _USBCMD_H
