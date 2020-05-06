@@ -1171,9 +1171,9 @@ the assembly output to analyze.
                   them to a common lib: Spi
             - [ ] write `GetSensorLED` in UsbCmd.h
                 - need more lib functions:
-                    - `SpiMasterTxByte`
-                    - `SpiMasterRxByte`
-                    - `SpiSlaveRxByte`
+                    - [x] `SpiMasterTxByte`
+                    - [ ] `SpiMasterRxByte`
+                    - [ ] `SpiSlaveRxByte`
             - once this is setup, I can send commands to the
               sensor
             - control the sensor LEDs

@@ -4,6 +4,7 @@
 #include "test_SpiMaster.h"
 #include "SpiMaster.h"
 #include "ReadWriteBits.h"
+#include "StatusCode.h"
 
 /* =====[ Test Helpers ]===== */
 static void _AssertCall(uint16_t num, char const * name)
@@ -58,11 +59,7 @@ static void setup_bit_val( spi_reg reg, spi_bit bit, bit_val v )
 }
 
 /* =====[ test_bit_val_msg ]===== */
-static void test_bit_val_msg(
-    spi_reg reg,
-    spi_bit bit,
-    bit_val v,
-    char * bit_name )
+static void test_bit_val_msg( spi_reg reg, spi_bit bit, bit_val v, char * bit_name )
 {
     //! Check bit value. Use custom fail message with `bit_name`.
     // Put bit_name in the message displayed if test fails
@@ -206,3 +203,36 @@ void SpiMasterInit_clears_SPI_interrupt_flag(void)
     _AssertCall(call_n, "ClearSpiInterruptFlag");
 }
 
+/* =====[ SpiMasterTxByte ]===== */
+void SpiMasterTxByte_selects_the_SPI_slave(void)
+{
+    TEST_PASS();
+}
+void SpiMasterTxByte_loads_SPI_data_reg_with_the_byte_to_send(void)
+{
+    /* =====[ Setup ]===== */
+    *Spi_SPDR = 0x00; // initialize the SPI data register
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, *Spi_SPDR, "Initialize SPDR = 0 before running test.");
+    uint8_t cmd = 0x03; // command 3 is GetSensorLED
+    /* =====[ Operate ]===== */
+    SpiMasterTxByte(cmd);
+    /* =====[ Test ]===== */
+    TEST_ASSERT_EQUAL_HEX8(cmd, *Spi_SPDR);
+}
+void SpiMasterTxByte_waits_until_the_transfer_is_done_by_reading_the_SPI_Interrupt_Flag(void)
+{
+    TEST_PASS();
+}
+void SpiMasterTxByte_clears_the_SPI_Interrupt_Flag(void)
+{
+    TEST_PASS();
+}
+void SpiMasterTxByte_unselects_the_SPI_slave(void)
+{
+    /* =====[ Setup ]===== */
+    setup_bit_val(Spi_PortOutput, Spi_Ss, LOW);
+    /* =====[ Operate ]===== */
+    SpiMasterTxByte(OK);
+    /* =====[ Test ]===== */
+    test_bit_val_msg(Spi_PortOutput, Spi_Ss, HIGH, "Spi_Ss");
+}

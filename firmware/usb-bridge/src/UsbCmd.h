@@ -9,6 +9,7 @@
 #include "ReadWriteBits.h"
 #include "BiColorLed.h"
 #include "Usb.h"
+#include "SpiMaster.h"
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */
@@ -109,6 +110,8 @@ inline void SetBridgeLED(void)
 }
 inline void GetSensorLED(void)
 {
+    uint8_t const cmd = 3; // GetSensorLED
+
     // loop until led_num received
     while (UsbRxbufferIsEmpty());
 
@@ -117,11 +120,11 @@ inline void GetSensorLED(void)
     UsbReadByte(&led_num);
 
     // send command to sensor
-    // SpiMasterTxByte(3); // 3: GetSensorLED
-    // SpiMasterTxByte(led_num)
+    SpiMasterTxByte(cmd);
+    SpiMasterTxByte(led_num);
 
-    // write OK
-    // UsbWriteByte(OK);
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
 
     // read response from sensor
     // uint8_t status = 0xFF;

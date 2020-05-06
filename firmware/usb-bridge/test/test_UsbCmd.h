@@ -24,5 +24,12 @@ void SetBridgeLED_writes_ERROR_if_led_setting_is_invalid(void);
 // GetSensorLED()
 void GetSensorLED_waits_for_byte_led_num(void);
 void GetSensorLED_reads_byte_led_num(void);
+void GetSensorLED_sends_command_to_sensor(void);
+void GetSensorLED_sends_led_num_to_sensor(void);
+void GetSensorLED_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void);
+void GetSensorLED_reads_status_from_sensor(void);
+void GetSensorLED_reads_led_setting_from_sensor(void);
+void GetSensorLED_writes_sensor_status(void);
+void GetSensorLED_writes_sensor_led_setting(void);
 
 #endif // _TEST_USBCMD_H

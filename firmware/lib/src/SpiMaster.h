@@ -15,7 +15,36 @@
 /** \file SpiMaster.h
  * # API
  * void SpiMasterInit(void);\n 
+ * void SpiMasterTxByte(uint8_t byte);\n 
  * */
+
+inline void SpiMasterTxByte(uint8_t byte)
+{
+    /** SpiMasterTxByte behavior:\n 
+      * - selects the SPI slave\n 
+      * - loads SPI data reg with the byte to send\n 
+      * - waits until the transfer is done by reading the SPI Interrupt Flag\n 
+      * - clears the SPI Interrupt Flag\n 
+      * - unselects the SPI slave\n 
+      * */
+
+    // select the SPI Slave
+    ClearBit(Spi_PortOutput, Spi_Ss);
+
+    // load data reg with byte to send
+    *Spi_SPDR = byte;
+
+    // wait for SPI transmission to complete
+    while(BitIsClear(Spi_SPSR, Spi_InterruptFlag));
+
+    // Clear the Spi_InterruptFlag by
+    // reading Spi_InterruptFlag while it is set
+    // then reading Spi_SPDR
+    *Spi_SPDR;  // this serves as a throwaway access
+
+    // unselect the SPI Slave
+    SetBit(Spi_PortOutput, Spi_Ss);
+}
 
 // ---API functions that call fakes when testing---
 //
