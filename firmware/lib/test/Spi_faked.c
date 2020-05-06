@@ -60,4 +60,18 @@ bool _SpiTransferIsDone_fake(void)
     return true;
 }
 
+/* =====[ Mock ClearSpiInterruptFlag() ]===== */
+static RecordedCall * Record_ClearSpiInterruptFlag(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "ClearSpiInterruptFlag";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void ClearSpiInterruptFlag_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name
+   *  */
+    RecordActualCall(mock, Record_ClearSpiInterruptFlag());
+}
 

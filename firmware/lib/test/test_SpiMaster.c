@@ -1,8 +1,25 @@
 #include <glib.h>  // GString, GList
 #include "unity.h" // unit test framework
+#include "Mock.h" // function faking framework
 #include "test_SpiMaster.h"
 #include "SpiMaster.h"
 #include "ReadWriteBits.h"
+
+/* =====[ Test Helpers ]===== */
+static void _AssertCall(uint16_t num, char const * name)
+{
+    //! Assert call number **num** is named **name**.
+    // Put num and name in the message displayed if test fails
+    GString *message = g_string_new(NULL);
+    g_string_append_printf(message, "`%s` is not call %d", name, num);
+    // Perform the test
+    TEST_ASSERT_TRUE_MESSAGE(
+        AssertCall(mock, num, name),
+        message->str
+        );
+    // Free memory used by GString
+    g_string_free(message, true);
+}
 
 /* =====[ setup_bit_val ]===== */
 enum bit_val {LOW, HIGH}; typedef enum bit_val bit_val;
@@ -39,6 +56,7 @@ static void setup_bit_val( spi_reg reg, spi_bit bit, bit_val v )
     }
     g_string_free(msg, true);
 }
+
 /* =====[ test_bit_val_msg ]===== */
 static void test_bit_val_msg(
     spi_reg reg,
@@ -179,5 +197,12 @@ void SpiMasterInit_enables_the_SPI_hardware_module(void)
     /* =====[ Test ]===== */
     test_bit_val_msg(Spi_SPCR, Spi_Enable, HIGH, "Spi_Enable");
 }
-
+void SpiMasterInit_clears_SPI_interrupt_flag(void)
+{
+    /* =====[ Operate ]===== */
+    SpiMasterInit();
+    /* =====[ Test ]===== */
+    uint16_t call_n = 1;
+    _AssertCall(call_n, "ClearSpiInterruptFlag");
+}
 

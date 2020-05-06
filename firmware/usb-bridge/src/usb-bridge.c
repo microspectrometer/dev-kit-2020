@@ -73,6 +73,7 @@ void loop(void)
         case 0: NullCommand();      BiColorLedGreen(status_led); break;
         case 1: GetBridgeLED(); break;
         case 2: SetBridgeLED(); break;
+        case 3: GetSensorLED(); break;
         //  case 8: SetSensorConfig(); break;
         // default: ReplyCommandInvalid(); break;
     }

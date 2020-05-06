@@ -11,7 +11,6 @@ void _SignalDataNotReady(void);
 void SpiSlaveInit(void);
 void SpiSlaveTxByte(uint8_t input_byte);
 void SpiSlaveTx(uint8_t const *input_buffer, uint16_t nbytes);
-void ClearSpiInterruptFlag(void);
 void DisableSpiInterrupt(void);
 void EnableSpiInterrupt(void);
 

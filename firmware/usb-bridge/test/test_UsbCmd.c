@@ -100,3 +100,15 @@ void SetBridgeLED_writes_ERROR_if_led_setting_is_invalid(void)
 {
     TEST_PASS();
 }
+
+/* =====[ GetSensorLED ]===== */
+// GetSensorLED() -> void
+void GetSensorLED_waits_for_byte_led_num(void)
+{
+    TEST_PASS();
+}
+void GetSensorLED_reads_byte_led_num(void)
+{
+    TEST_PASS();
+}
+

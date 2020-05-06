@@ -9,4 +9,5 @@ bool _SpiTransferIsDone(void);
 // ---API---
 uint8_t ReadSpiStatusRegister(void);
 uint8_t ReadSpiDataRegister(void);
+void ClearSpiInterruptFlag(void);
 

@@ -9,6 +9,7 @@
 #include "Spi_faked.h"
 #include "SpiSlave_faked.h" // declare fakes
 #endif
+
 // ---Private---
 inline void _SignalDataReady(void)
 {
@@ -39,7 +40,6 @@ inline void _SignalDataNotReady(void)
 /** \file SpiSlave.h
  * # API
  * void DisableSpiInterrupt(void);\n 
- * void ClearSpiInterruptFlag(void);\n 
  * void EnableSpiInterrupt(void);\n 
  * void SpiSlaveInit(void);\n 
  * void SpiSlaveTxByte(uint8_t input_byte);\n 
@@ -68,17 +68,7 @@ inline void DisableSpiInterrupt(void)
     // This is three instructions because SPCR is outside the
     // address range for using `cbi`.
 }
-inline void ClearSpiInterruptFlag(void)
-{
-    //! Manually clear SPI interrupt flag.
-    /** ClearSpiInterruptFlag behavior:\n 
-      * - first reads SPI status register\n 
-      * - then reads SPI data register\n 
-      * */
 
-    ReadSpiStatusRegister(); // in	r24, 0x2d
-    ReadSpiDataRegister(); // in	r24, 0x2e
-}
 // ---API functions that call fakes when testing---
 //
 #ifdef USE_FAKES
@@ -134,12 +124,15 @@ inline void SpiSlaveInit(void)
       * - enables SPI\n 
       * - enables SPI interrupt\n 
       * */
+
     // DataReady pin idle high
     SetBit(Spi_PortOutput, Spi_DataReady); // sbi	0x05, 1
     // Set DataReady as an output pin
     SetBit(Spi_PortDirection, Spi_DataReady); // sbi	0x04, 1
+
     // Set Miso as an an output pin
     SetBit(Spi_PortDirection, Spi_Miso); // sbi	0x04, 4
+
     _EnableSpiModule();
     // Enable interrupts for robust SPI communication
     EnableSpiInterrupt();

@@ -78,12 +78,25 @@ void SetBridgeLED_tests(bool run_test)
         RUN_TEST(SetBridgeLED_writes_ERROR_if_led_setting_is_invalid);
     }
 }
+
+/* =====[ GetSensorLED_tests ]===== */
+void GetSensorLED_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(GetSensorLED_waits_for_byte_led_num);
+        RUN_TEST(GetSensorLED_reads_byte_led_num);
+    }
+}
+
 void UsbCmd_tests(bool run_test)
 {
     if (run_test)
     {
         GetBridgeLED_tests(Nope);
-        SetBridgeLED_tests(Yep);
+        SetBridgeLED_tests(Nope);
+        GetSensorLED_tests(Yep);
     }
 }
 

@@ -186,7 +186,7 @@ void SpiMaster_tests(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
         RUN_TEST(SpiMasterInit_idles_SlaveSelect_high);
         RUN_TEST(SpiMasterInit_makes_SlaveSelect_an_output);
         RUN_TEST(SpiMasterInit_makes_Miso_an_input);
@@ -198,6 +198,7 @@ void SpiMaster_tests(bool run_test)
         RUN_TEST(SpiMasterInit_makes_this_MCU_the_SPI_Master);
         RUN_TEST(SpiMasterInit_sets_SPI_Clock_to_10MHz_ext_osc_divided_by_8);
         RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
+        RUN_TEST(SpiMasterInit_clears_SPI_interrupt_flag);
     }
 }
 
@@ -619,9 +620,9 @@ int main()
     UartSpi_tests(Nope);
     Lis_tests(Nope);
     Flag_tests(Nope);
-    Spi_tests(Yep);
+    Spi_tests(Nope);
     SpiSlave_tests(Nope);
-    SpiMaster_tests(Nope);
+    SpiMaster_tests(Yep);
     StatusCode_tests(Nope);
     /* =====[ test libs for usb-bridge ]===== */
     Usb_tests(Nope);

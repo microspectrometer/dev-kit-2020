@@ -133,7 +133,7 @@ lib_o := $(addprefix ../lib/build/,${lib_o})
 lib_headers := $(addsuffix .h,${all_libs})
 lib_headers := $(addprefix ../lib/src/,${lib_headers})
 # List libs that USE_FAKES in tests
-lib_faked := Usb
+lib_faked := Usb Spi
 lib_faked_o := $(addsuffix _faked.o,${lib_faked})
 lib_faked_o := $(addprefix ../lib/build/,${lib_faked_o})
 # }}}

@@ -19,6 +19,10 @@ inline void NullCommand(void)
 { //! Do nothing.
 }
 
+inline void GetSensorLED(void)
+{ //! Do nothing.
+}
+
 #ifdef USE_FAKES
 #include "SpiSlave_faked.h" // declare fakes
 #endif

@@ -107,5 +107,31 @@ inline void SetBridgeLED(void)
         UsbWriteByte(ERROR);
     }
 }
+inline void GetSensorLED(void)
+{
+    // loop until led_num received
+    while (UsbRxbufferIsEmpty());
+
+    // read led_num
+    uint8_t led_num = 0xFF;
+    UsbReadByte(&led_num);
+
+    // send command to sensor
+    // SpiMasterTxByte(3); // 3: GetSensorLED
+    // SpiMasterTxByte(led_num)
+
+    // write OK
+    // UsbWriteByte(OK);
+
+    // read response from sensor
+    // uint8_t status = 0xFF;
+    // uint8_t led_setting = 0xFF;
+    // SpiMasterRxByte(&status);
+    // SpiMasterRxByte(&led_setting);
+
+    // write response
+    // UsbWriteByte(status);
+    // UsbWriteByte(led_setting);
+}
 
 #endif // _USBCMD_H

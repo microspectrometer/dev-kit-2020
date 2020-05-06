@@ -70,6 +70,7 @@ extern spi_bit Spi_InterruptFlag;     // bit 7 in SPSR (0x2D)
 #ifdef USE_FAKES
 #include "Spi_faked.h" // declare fakes
 #endif
+
 // ---Private---
 inline void _EnableSpiModule(void)
 {
@@ -94,10 +95,11 @@ inline bool _SpiTransferIsDone(void)
 }
 
 // ---API (Go to the Doxygen documentation of this file)---
-/** \file SpiSlave.h
+/** \file Spi.h
  * # API
  * uint8_t ReadSpiStatusRegister(void);\n 
  * uint8_t ReadSpiDataRegister(void);\n 
+ * void ClearSpiInterruptFlag(void);\n 
  * */
 inline uint8_t ReadSpiStatusRegister(void)
 {
@@ -111,5 +113,19 @@ inline uint8_t ReadSpiDataRegister(void)
     // ---Expected Assembly---
     // in	r24, 0x2e	; 46
 }
+inline void ClearSpiInterruptFlag(void)
+{
+    //! Manually clear SPI interrupt flag.
+    /** ClearSpiInterruptFlag behavior:\n 
+      * - first reads SPI status register\n 
+      * - then reads SPI data register\n 
+      * */
+
+    ReadSpiStatusRegister(); // in	r24, 0x2d
+    ReadSpiDataRegister(); // in	r24, 0x2e
+}
+
+// ---API functions that call fakes when testing---
+//
 
 #endif // _SPI_H
