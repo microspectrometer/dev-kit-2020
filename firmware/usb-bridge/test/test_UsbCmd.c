@@ -123,7 +123,15 @@ void GetSensorLED_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void)
 {
     TEST_PASS();
 }
+void GetSensorLED_waits_for_sensor_to_signal_STATUS_data_ready(void)
+{
+    TEST_PASS();
+}
 void GetSensorLED_reads_status_from_sensor(void)
+{
+    TEST_PASS();
+}
+void GetSensorLED_waits_for_sensor_to_signal_LED_SETTING_data_ready(void)
 {
     TEST_PASS();
 }

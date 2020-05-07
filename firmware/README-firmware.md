@@ -542,6 +542,29 @@ $ python.exe -m cmdline GetBridgeLed led_num=0
 2020-05-03T21:14:21.380145,BridgeGetBridgeLED(status=0, led_setting=2)
 ```
 
+### system test `GetSensorLED`
+
+Both LEDs on sensor board are green. Expect `led_setting=1` for
+both.
+
+```bash
+$ python.exe -m cmdline GetSensorLED led_num=0
+2020-05-07T06:02:50.588743,SensorGetSensorLED(status=0, led_setting=1)
+```
+
+```bash
+$ python.exe -m cmdline GetSensorLED led_num=1
+2020-05-07T06:04:34.546605,SensorGetSensorLED(status=0, led_setting=1)
+```
+
+Sensor board only has led 0 and 1. Expect `status=1` (1 is ERROR)
+and `led_setting=255` (255 is PADDING) if I pass `led_num=2`.
+
+```bash
+$ python.exe -m cmdline GetSensorLED led_num=2
+2020-05-07T06:06:24.061009,SensorGetSensorLED(status=1, led_setting=255)
+```
+
 ## TODO list for Sean
 - [ ] TODO: Sean add documentation for the `serial_number` and
   `device` parameters of `ChromaSpecSimpleInterface`
@@ -1169,13 +1192,14 @@ the assembly output to analyze.
                   registers or bits would conflict? no
                 - if not, then do it, make them all spis and move
                   them to a common lib: Spi
-            - [ ] write `GetSensorLED` in UsbCmd.h
+            - [x] write `GetSensorLED` in UsbCmd.h
                 - need more lib functions:
                     - [x] SpiMasterXfrByte
-                    - [ ] `SpiSlaveRxByte`
             - once this is setup, I can send commands to the
               sensor
             - control the sensor LEDs
+                - [x] GetSensorLED system test
+                - [ ] SetSensorLED
             - then read/write the sensor configuration
     - [ ] write main loop switchcase
 - [ ] do system test of command `SetSensorConfig`

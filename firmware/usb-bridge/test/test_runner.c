@@ -90,7 +90,9 @@ void GetSensorLED_tests(bool run_test)
         RUN_TEST(GetSensorLED_sends_command_to_sensor);
         RUN_TEST(GetSensorLED_sends_led_num_to_sensor);
         RUN_TEST(GetSensorLED_writes_OK_to_indicate_it_sent_the_command_to_the_sensor);
+        RUN_TEST(GetSensorLED_waits_for_sensor_to_signal_STATUS_data_ready);
         RUN_TEST(GetSensorLED_reads_status_from_sensor);
+        RUN_TEST(GetSensorLED_waits_for_sensor_to_signal_LED_SETTING_data_ready);
         RUN_TEST(GetSensorLED_reads_led_setting_from_sensor);
         RUN_TEST(GetSensorLED_writes_sensor_status);
         RUN_TEST(GetSensorLED_writes_sensor_led_setting);

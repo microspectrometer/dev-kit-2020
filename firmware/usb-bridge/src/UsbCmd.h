@@ -110,7 +110,20 @@ inline void SetBridgeLED(void)
 }
 inline void GetSensorLED(void)
 {
-    uint8_t const cmd = 3; // GetSensorLED
+    /** GetSensorLED behavior:\n 
+      * - waits for byte led num\n 
+      * - reads byte led num\n 
+      * - sends command to sensor\n 
+      * - sends led num to sensor\n 
+      * - writes OK to indicate it sent the command to the sensor\n 
+      * - waits for sensor to signal STATUS data ready\n 
+      * - reads status from sensor\n 
+      * - waits for sensor to signal LED SETTING data ready\n 
+      * - reads led setting from sensor\n 
+      * - writes sensor status\n 
+      * - writes sensor led setting\n 
+      * */
+    uint8_t const cmd = 3; // command is GetSensorLED
 
     // loop until led_num received
     while (UsbRxbufferIsEmpty());
@@ -126,8 +139,13 @@ inline void GetSensorLED(void)
     // write OK to indicate command sent to sensor
     UsbWriteByte(OK);
 
-    // read response from sensor
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
     uint8_t status = SpiMasterXfrByte(PADDING);
+    // wait for data ready LOW: sensor ready to send LED_SETTING
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read led_setting
     uint8_t led_setting = SpiMasterXfrByte(PADDING);
 
     // write response

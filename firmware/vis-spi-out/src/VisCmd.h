@@ -12,15 +12,63 @@
 #include "Lis.h"
 #include "LisConfig.h"
 #include "Queue.h"
+#include "BiColorLed.h"
 
 extern volatile Queue_s * SpiFifo; // definiton in `main()` translation unit
 
+/* ---------------------------------------- */
+/* | ---Command helpers (not commands)--- | */
+/* ---------------------------------------- */
+inline uint8_t ReadLedState(uint8_t led_num) // -> led_state
+{
+    /** ReadLedState behavior:\n 
+      * - returns OFF if LED is off\n 
+      * - returns GREEN if LED is on and green\n 
+      * - returns RED if LED is on and red\n 
+      * - see led_state in StatusCodes.h
+      * */
+
+    if (BitIsClear(BiColorLed_ddr, led_num))
+        return OFF;
+    else // LED is on
+        return BitIsClear(BiColorLed_port, led_num)
+            ? GREEN : RED;
+}
+
+/* ------------------ */
+/* | ---Commands--- | */
+/* ------------------ */
 inline void NullCommand(void)
 { //! Do nothing.
 }
 
 inline void GetSensorLED(void)
-{ //! Do nothing.
+{
+    /** GetSensorLED behavior:\n 
+      * - waits for byte led num\n 
+      * - reads byte led num\n 
+      * - sends OK and LED SETTING if led num is valid\n 
+      * - sends ERROR and pads second byte if led num is invalid\n 
+      * */
+
+    // wait for led_num
+    while (QueueIsEmpty(SpiFifo));
+    
+    // read led_num
+    uint8_t led_num = QueuePop(SpiFifo);
+
+    if ((led_num == 0) || (led_num == 1)) // led_num is valid
+    {
+        // send OK and LED_SETTING
+        SpiSlaveTxByte(OK);
+        SpiSlaveTxByte(ReadLedState(led_num));
+    }
+    else // led_num is invalid
+    {
+        // send ERROR and pad second byte
+        SpiSlaveTxByte(ERROR);
+        SpiSlaveTxByte(PADDING);
+    }
 }
 
 #ifdef USE_FAKES

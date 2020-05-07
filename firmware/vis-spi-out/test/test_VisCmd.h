@@ -15,5 +15,10 @@ void SetSensorConfig_does_not_program_LIS_770i_if_config_is_invalid(void);
 void SetSensorConfig_writes_valid_config_to_LIS_770i_programmable_setup_register(void);
 void SetSensorConfig_replies_OK_if_all_config_values_are_valid(void);
 void SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config(void);
+// GetSensorLED()
+void GetSensorLED_waits_for_byte_led_num(void);
+void GetSensorLED_reads_byte_led_num(void);
+void GetSensorLED_sends_OK_and_LED_SETTING_if_led_num_is_valid(void);
+void GetSensorLED_sends_ERROR_and_pads_second_byte_if_led_num_is_invalid(void);
 
 #endif // _TEST_VISCMD_H

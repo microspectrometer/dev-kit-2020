@@ -112,6 +112,24 @@ void ReplyCommandInvalid_sends_byte_INVALID_CMD(void)
     _AssertArgByteVal(call_n, 1, INVALID_CMD);
 }
 
+/* =====[ GetSensorLED ]===== */
+void GetSensorLED_waits_for_byte_led_num(void)
+{
+    TEST_PASS();
+}
+void GetSensorLED_reads_byte_led_num(void)
+{
+    TEST_PASS();
+}
+void GetSensorLED_sends_OK_and_LED_SETTING_if_led_num_is_valid(void)
+{
+    TEST_PASS();
+}
+void GetSensorLED_sends_ERROR_and_pads_second_byte_if_led_num_is_invalid(void)
+{
+    TEST_PASS();
+}
+
 /* =====[ SetSensorConfig ]===== */
 void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void)
 {

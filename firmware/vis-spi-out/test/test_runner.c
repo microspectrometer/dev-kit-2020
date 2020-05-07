@@ -54,6 +54,17 @@ void Run_ReplyCommandInvalid_tests(bool run_test)
         RUN_TEST(ReplyCommandInvalid_sends_byte_INVALID_CMD);
     }
 }
+void Run_GetSensorLED_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(GetSensorLED_waits_for_byte_led_num);
+        RUN_TEST(GetSensorLED_reads_byte_led_num);
+        RUN_TEST(GetSensorLED_sends_OK_and_LED_SETTING_if_led_num_is_valid);
+        RUN_TEST(GetSensorLED_sends_ERROR_and_pads_second_byte_if_led_num_is_invalid);
+    }
+}
 void Run_SetSensorConfig_tests(bool run_test)
 {
     if (run_test)
@@ -76,7 +87,8 @@ void VisCmd_tests(bool run_test)
     {
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
         Run_ReplyCommandInvalid_tests(Nope);
-        Run_SetSensorConfig_tests(Yep);
+        Run_SetSensorConfig_tests(Nope);
+        Run_GetSensorLED_tests(Yep);
     }
 }
 
