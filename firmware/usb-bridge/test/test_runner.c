@@ -99,13 +99,34 @@ void GetSensorLED_tests(bool run_test)
     }
 }
 
+/* =====[ SetSensorLED_tests ]===== */
+void SetSensorLED_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SetSensorLED_waits_for_byte_led_num);
+        RUN_TEST(SetSensorLED_reads_byte_led_num);
+        RUN_TEST(SetSensorLED_waits_for_byte_led_setting);
+        RUN_TEST(SetSensorLED_reads_byte_led_setting);
+        RUN_TEST(SetSensorLED_sends_command_to_sensor);
+        RUN_TEST(SetSensorLED_sends_led_num_to_sensor);
+        RUN_TEST(SetSensorLED_sends_led_setting_to_sensor);
+        RUN_TEST(SetSensorLED_writes_OK_to_indicate_it_sent_the_command_to_the_sensor);
+        RUN_TEST(SetSensorLED_waits_for_sensor_to_signal_STATUS_data_ready);
+        RUN_TEST(SetSensorLED_reads_status_from_sensor);
+        RUN_TEST(SetSensorLED_writes_sensor_status);
+    }
+}
+
 void UsbCmd_tests(bool run_test)
 {
     if (run_test)
     {
         GetBridgeLED_tests(Nope);
         SetBridgeLED_tests(Nope);
-        GetSensorLED_tests(Yep);
+        GetSensorLED_tests(Nope);
+        SetSensorLED_tests(Yep);
     }
 }
 

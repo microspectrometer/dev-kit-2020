@@ -115,7 +115,7 @@ hwlib := BiColorLed Spi SpiSlave UartSpi Lis Flag
 # }}}
 # Add non-hardware libs here{{{
 # Non-hardware libs do not depend on AVR headers.
-nohwlib := ReadWriteBits Queue
+nohwlib := ReadWriteBits StatusCode Queue
 # }}}
 # Group libs into build *pre-requisites*{{{
 # Hardware libs add libname-Hardware.h file pre-requisites to build rules.

@@ -130,6 +130,57 @@ void GetSensorLED_sends_ERROR_and_pads_second_byte_if_led_num_is_invalid(void)
     TEST_PASS();
 }
 
+/* =====[ LedNumIsValid ]===== */
+void LedNumIsValid_returns_TRUE_if_led_num_is_0(void)
+{
+    /* =====[ Operate and Test]===== */
+    TEST_ASSERT_TRUE(LedNumIsValid(0));
+}
+void LedNumIsValid_returns_TRUE_if_led_num_is_1(void)
+{
+    /* =====[ Operate and Test]===== */
+    TEST_ASSERT_TRUE(LedNumIsValid(1));
+}
+void LedNumIsValid_returns_FALSE_if_led_num_is_not_0_or_1(void)
+{
+    /* =====[ Operate and Test]===== */
+    TEST_ASSERT_FALSE(LedNumIsValid(2));
+}
+
+/* =====[ SetSensorLED ]===== */
+void SetSensorLED_waits_for_byte_led_num(void)
+{
+    TEST_PASS();
+}
+void SetSensorLED_reads_byte_led_num(void)
+{
+    TEST_PASS();
+}
+void SetSensorLED_waits_for_byte_led_setting(void)
+{
+    TEST_PASS();
+}
+void SetSensorLED_reads_byte_led_setting(void)
+{
+    TEST_PASS();
+}
+void SetSensorLED_sends_ERROR_if_led_num_is_invalid(void)
+{
+    TEST_PASS();
+}
+void SetSensorLED_sends_ERROR_if_led_setting_is_invalid(void)
+{
+    TEST_PASS();
+}
+void SetSensorLED_applies_LED_setting_if_valid(void)
+{
+    TEST_PASS();
+}
+void SetSensorLED_sends_OK_if_num_and_setting_are_valid(void)
+{
+    TEST_PASS();
+}
+
 /* =====[ SetSensorConfig ]===== */
 void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void)
 {

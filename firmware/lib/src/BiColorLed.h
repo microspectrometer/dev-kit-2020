@@ -4,14 +4,18 @@
 #include <stdint.h>
 #include "ReadWriteBits.h"
 
-typedef uint8_t const bicolorled_num; // i/o bit/pin number
 typedef uint8_t volatile * const bicolorled_ptr; // i/o reg address
+
+//! Indicator LED numbers in the JSON file are not necessarily the same as the corresponding bit number in the BiColorLED register.
+typedef uint8_t const bicolorled_num; // i/o bit number
 
 // I/O register definitions in Hardware.h for dependency on make target
 extern bicolorled_ptr BiColorLed_ddr;
 extern bicolorled_ptr BiColorLed_port;
-// Pin definitions in Hardware.h for dependency on make target
-extern bicolorled_num status_led;
+// Bit definitions in Hardware.h for dependency on make target
+extern bicolorled_num status_led; // usb-bridge
+extern bicolorled_num led_0; // vis-spi-out
+extern bicolorled_num led_1; // vis-spi-out
 
 // ---API---
 inline void BiColorLedOn(bicolorled_num led)

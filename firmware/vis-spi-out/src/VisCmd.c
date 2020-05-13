@@ -5,9 +5,11 @@
 void ReplyCommandInvalid(void);
 void NullCommand(void);
 void GetSensorLED(void);
+void SetSensorLED(void);
 void SetSensorConfig(void);
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */
 /* ---------------------------------------- */
-uint8_t ReadLedState(uint8_t); // -> led_state
+bool LedNumIsValid(bicolorled_num);
+uint8_t ReadLedState(bicolorled_num);

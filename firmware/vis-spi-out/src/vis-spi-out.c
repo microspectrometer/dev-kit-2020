@@ -56,6 +56,7 @@ void loop(void)
     {
         case 0: NullCommand(); break;
         case 3: GetSensorLED(); break;
+        case 4: SetSensorLED(); break;
         case 8: SetSensorConfig(); break;
         default: ReplyCommandInvalid(); break;
         // ---Expected Assembly---

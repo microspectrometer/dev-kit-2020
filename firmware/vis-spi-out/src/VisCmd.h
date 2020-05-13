@@ -2,6 +2,8 @@
 /** \file VisCmd.h
  * # API
  * void NullCommand(void);\n 
+ * void GetSensorLED(void);\n 
+ * void SetSensorLED(void);\n 
  * void ReplyCommandInvalid(void);\n 
  * void SetSensorConfig(void);\n 
  * */
@@ -19,7 +21,34 @@ extern volatile Queue_s * SpiFifo; // definiton in `main()` translation unit
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */
 /* ---------------------------------------- */
-inline uint8_t ReadLedState(uint8_t led_num) // -> led_state
+inline bool LedNumIsValid(bicolorled_num led_num) // -> is_valid
+{
+    /** LedNumIsValid behavior:\n 
+      * - returns TRUE if led num is 0\n 
+      * - returns TRUE if led num is 1\n 
+      * - returns FALSE if led num is not 0 or 1\n 
+      * */
+
+    return ( (led_num == 0) || (led_num == 1) );
+}
+
+/*inline bool LedSettingIsValid(led_state led_setting) // -> is_valid */
+/*{ */
+/*    /1** LedSettingIsValid behavior:\n */ 
+/*      * - returns TRUE if led setting is OFF\n */ 
+/*      * - returns TRUE if led setting is GREEN\n */ 
+/*      * - returns TRUE if led setting is RED\n */ 
+/*      * - returns FALSE if led setting is not 0 1 or 2\n */ 
+/*      * *1/ */
+
+/*    return ( */
+/*        (led_setting == OFF)   || */
+/*        (led_setting == GREEN) || */
+/*        (led_setting == RED) */
+/*        ); */
+/*} */
+
+inline uint8_t ReadLedState(bicolorled_num led_num) // -> led_state
 {
     /** ReadLedState behavior:\n 
       * - returns OFF if LED is off\n 
@@ -35,9 +64,9 @@ inline uint8_t ReadLedState(uint8_t led_num) // -> led_state
             ? GREEN : RED;
 }
 
-/* ------------------ */
-/* | ---Commands--- | */
-/* ------------------ */
+/* ---------------------- */
+/* | ---Commands :( --- | */ // (these NEED proper unit tests)
+/* ---------------------- */
 inline void NullCommand(void)
 { //! Do nothing.
 }
@@ -57,7 +86,7 @@ inline void GetSensorLED(void)
     // read led_num
     uint8_t led_num = QueuePop(SpiFifo);
 
-    if ((led_num == 0) || (led_num == 1)) // led_num is valid
+    if (LedNumIsValid(led_num))
     {
         // send OK and LED_SETTING
         SpiSlaveTxByte(OK);
@@ -71,23 +100,70 @@ inline void GetSensorLED(void)
     }
 }
 
-#ifdef USE_FAKES
-#include "SpiSlave_faked.h" // declare fakes
-#endif
+inline void SetSensorLED(void)
+{
+    /** SetSensorLED behavior:\n 
+      * - waits for byte led num\n 
+      * - reads byte led num\n 
+      * - waits for byte led setting\n 
+      * - reads byte led setting\n 
+      * - sends ERROR if led num is invalid\n 
+      * - sends ERROR if led setting is invalid\n 
+      * - applies LED setting if valid\n 
+      * - sends OK if num and setting are valid\n 
+      * */
+
+    // wait for led_num
+    while (QueueIsEmpty(SpiFifo));
+
+    // read led_num
+    uint8_t led_num = QueuePop(SpiFifo);
+
+    // wait for led_setting
+    while (QueueIsEmpty(SpiFifo));
+
+    // read led_setting
+    uint8_t led_setting = QueuePop(SpiFifo);
+
+    if (!LedNumIsValid(led_num)) // led_num is invalid
+    {
+        // send ERROR
+        SpiSlaveTxByte(ERROR);
+    }
+    else if (!led_setting_is_valid(led_setting)) // led_setting is invalid
+    {
+        // send ERROR
+        SpiSlaveTxByte(ERROR);
+    }
+    else // led_num and led_setting are valid
+    {
+        // lookup led_num
+        uint8_t led;
+        switch (led_num)
+        {
+            case 0: led = led_0; break;
+            case 1: led = led_1; break;
+        }
+
+        // apply led_setting
+        switch (led_setting)
+        {
+            case 0: BiColorLedOff(led); break;
+            case 1: BiColorLedOn(led); BiColorLedGreen(led); break;
+            case 2: BiColorLedOn(led); BiColorLedRed(led); break;
+        }
+
+        // send OK
+        SpiSlaveTxByte(OK);
+    }
+}
+
+/* ---------------------- */
+/* | ---Commands :) --- | */ // (these HAVE proper unit tests)
+/* ---------------------- */
 
 #ifdef USE_FAKES
-#define SpiSlaveTxByte SpiSlaveTxByte_fake
-#endif
-inline void ReplyCommandInvalid(void)
-{
-    /** ReplyCommandInvalid behavior:\n 
-      * - transmits one byte over SPI\n 
-      * - sends byte INVALID CMD\n 
-      * */
-    SpiSlaveTxByte(INVALID_CMD);
-}
-#ifdef USE_FAKES
-#undef SpiSlaveTxByte
+#include "SpiSlave_faked.h" // declare fakes
 #endif
 
 #ifdef USE_FAKES
@@ -132,6 +208,25 @@ inline void SetSensorConfig(void)
 #ifdef USE_FAKES
 #undef SpiSlaveTxByte
 #undef LisWriteConfig
+#endif
+
+/* ------------------------------------ */
+/* | ---When command is unknown...--- | */
+/* ------------------------------------ */
+
+#ifdef USE_FAKES
+#define SpiSlaveTxByte SpiSlaveTxByte_fake
+#endif
+inline void ReplyCommandInvalid(void)
+{
+    /** ReplyCommandInvalid behavior:\n 
+      * - transmits one byte over SPI\n 
+      * - sends byte INVALID CMD\n 
+      * */
+    SpiSlaveTxByte(INVALID_CMD);
+}
+#ifdef USE_FAKES
+#undef SpiSlaveTxByte
 #endif
 
 #endif // _VISCMD_H

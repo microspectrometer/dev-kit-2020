@@ -1200,6 +1200,8 @@ the assembly output to analyze.
             - control the sensor LEDs
                 - [x] GetSensorLED system test
                 - [ ] SetSensorLED
+                    - [x] vis-spi-out
+                    - [ ] usb-bridge
             - then read/write the sensor configuration
     - [ ] write main loop switchcase
 - [ ] do system test of command `SetSensorConfig`

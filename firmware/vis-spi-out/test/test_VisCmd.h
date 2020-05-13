@@ -20,5 +20,23 @@ void GetSensorLED_waits_for_byte_led_num(void);
 void GetSensorLED_reads_byte_led_num(void);
 void GetSensorLED_sends_OK_and_LED_SETTING_if_led_num_is_valid(void);
 void GetSensorLED_sends_ERROR_and_pads_second_byte_if_led_num_is_invalid(void);
+// SetSensorLED()
+void SetSensorLED_waits_for_byte_led_num(void);
+void SetSensorLED_reads_byte_led_num(void);
+void SetSensorLED_waits_for_byte_led_setting(void);
+void SetSensorLED_reads_byte_led_setting(void);
+void SetSensorLED_sends_ERROR_if_led_num_is_invalid(void);
+void SetSensorLED_sends_ERROR_if_led_setting_is_invalid(void);
+void SetSensorLED_applies_LED_setting_if_valid(void);
+void SetSensorLED_sends_OK_if_num_and_setting_are_valid(void);
+// LedNumIsValid()
+void LedNumIsValid_returns_TRUE_if_led_num_is_0(void);
+void LedNumIsValid_returns_TRUE_if_led_num_is_1(void);
+void LedNumIsValid_returns_FALSE_if_led_num_is_not_0_or_1(void);
+// LedSettingIsValid()
+void LedSettingIsValid_returns_TRUE_if_led_setting_is_OFF(void);
+void LedSettingIsValid_returns_TRUE_if_led_setting_is_GREEN(void);
+void LedSettingIsValid_returns_TRUE_if_led_setting_is_RED(void);
+void LedSettingIsValid_returns_FALSE_if_led_setting_is_not_0_1_or_2(void);
 
 #endif // _TEST_VISCMD_H
