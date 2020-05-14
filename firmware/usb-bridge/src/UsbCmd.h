@@ -1,11 +1,12 @@
 // ---API (Go to the Doxygen documentation of this file)---
 /** \file UsbCmd.h
- * # API
- * void NullCommand(void);\n 
- * void GetBridgeLED(void);\n 
- * void SetBridgeLED(void);\n 
- * void GetSensorLED(void);\n 
- * void SetSensorLED(void);\n 
+ * # API for usb-bridge.c
+ * - void NullCommand(void)
+ * - void GetBridgeLED(void)
+ * - void SetBridgeLED(void)
+ * - void GetSensorLED(void)
+ * - void SetSensorLED(void)
+ * - void SetSensorConfig(void)
  * */
 #ifndef _USBCMD_H
 #define _USBCMD_H
@@ -27,7 +28,7 @@ inline uint8_t ReadLedState(void) // -> led_state
       * - see led_state in StatusCodes.h
       * */
 
-    //! LED 0, the status_led, is the only Bridge indicator LED.
+    //! *LED 0,* the **status_led**, *is the only indicator LED on the usb-bridge.*
     if (BitIsClear(BiColorLed_ddr, status_led))
         return OFF;
     else // LED is on
@@ -114,6 +115,13 @@ inline void SetBridgeLED(void)
 }
 inline void GetSensorLED(void)
 {
+    /** Forward 2-byte indicator-LED command to sensor.\n
+     * Respond with three bytes:
+     * - usb-bridge **status**
+     *   - send `OK` after sending all bytes to sensor
+     * - vis-spi-out **status**
+     * - **led_setting**
+     */
     /** GetSensorLED behavior:\n 
       * - waits for byte led num\n 
       * - reads byte led num\n 
@@ -158,6 +166,12 @@ inline void GetSensorLED(void)
 }
 inline void SetSensorLED(void)
 {
+    /** Forward 3-byte indicator-LED command to sensor.\n
+     * Respond with two bytes:
+     * - usb-bridge **status**
+     *   - send `OK` after sending all bytes to sensor
+     * - vis-spi-out **status**
+     */
     /** SetSensorLED behavior:\n 
       * - waits for byte led num\n 
       * - reads byte led num\n 
@@ -192,6 +206,71 @@ inline void SetSensorLED(void)
     SpiMasterXfrByte(cmd);
     SpiMasterXfrByte(led_num);
     SpiMasterXfrByte(led_setting);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // write response
+    UsbWriteByte(status);
+}
+inline void SetSensorConfig(void)
+{
+    /** Forward 4-byte sensor config command to sensor.\n
+     * Respond with two bytes:
+     * - usb-bridge **status**
+     *   - send `OK` after sending all bytes to sensor
+     * - vis-spi-out **status**
+     */
+    /** SetSensorConfig behavior:\n 
+      * - waits for byte binning\n 
+      * - reads byte binning\n 
+      * - waits for byte gain\n 
+      * - reads byte gain\n 
+      * - waits for byte row_bitmap\n 
+      * - reads byte row_bitmap\n 
+      * - sends command to sensor\n 
+      * - sends binning to sensor\n 
+      * - sends gain to sensor\n 
+      * - sends row_bitmap to sensor\n 
+      * - writes OK to indicate it sent the command to the sensor\n 
+      * - waits for sensor to signal STATUS data ready\n 
+      * - reads status from sensor\n 
+      * - writes sensor status\n 
+      * */
+
+    uint8_t const cmd = 8; // command is SetSensorConfig
+
+    // loop until binning received
+    while (UsbRxbufferIsEmpty());
+
+    // read binning
+    uint8_t binning = 0xFF;
+    UsbReadByte(&binning);
+
+    // loop until gain received
+    while (UsbRxbufferIsEmpty());
+
+    // read gain
+    uint8_t gain = 0xFF;
+    UsbReadByte(&gain);
+
+    // loop until row_bitmap received
+    while (UsbRxbufferIsEmpty());
+
+    // read row_bitmap
+    uint8_t row_bitmap = 0xFF;
+    UsbReadByte(&row_bitmap);
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+    SpiMasterXfrByte(binning);
+    SpiMasterXfrByte(gain);
+    SpiMasterXfrByte(row_bitmap);
 
     // write OK to indicate command sent to sensor
     UsbWriteByte(OK);

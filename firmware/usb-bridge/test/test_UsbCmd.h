@@ -45,5 +45,20 @@ void SetSensorLED_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void);
 void SetSensorLED_waits_for_sensor_to_signal_STATUS_data_ready(void);
 void SetSensorLED_reads_status_from_sensor(void);
 void SetSensorLED_writes_sensor_status(void);
+// SetSensorConfig()
+void SetSensorConfig_waits_for_byte_binning(void);
+void SetSensorConfig_reads_byte_binning(void);
+void SetSensorConfig_waits_for_byte_gain(void);
+void SetSensorConfig_reads_byte_gain(void);
+void SetSensorConfig_waits_for_byte_row_bitmap(void);
+void SetSensorConfig_reads_byte_row_bitmap(void);
+void SetSensorConfig_sends_command_to_sensor(void);
+void SetSensorConfig_sends_binning_to_sensor(void);
+void SetSensorConfig_sends_gain_to_sensor(void);
+void SetSensorConfig_sends_row_bitmap_to_sensor(void);
+void SetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void);
+void SetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready(void);
+void SetSensorConfig_reads_status_from_sensor(void);
+void SetSensorConfig_writes_sensor_status(void);
 
 #endif // _TEST_USBCMD_H

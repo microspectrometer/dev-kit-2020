@@ -1,11 +1,11 @@
 // ---API (Go to the Doxygen documentation of this file)---
 /** \file VisCmd.h
- * # API
- * void NullCommand(void);\n 
- * void GetSensorLED(void);\n 
- * void SetSensorLED(void);\n 
- * void ReplyCommandInvalid(void);\n 
- * void SetSensorConfig(void);\n 
+ * # API for vis-spi-out.c
+ * - void NullCommand(void)
+ * - void GetSensorLED(void)
+ * - void SetSensorLED(void)
+ * - void ReplyCommandInvalid(void)
+ * - void SetSensorConfig(void)
  * */
 #ifndef _VISCMD_H
 #define _VISCMD_H
