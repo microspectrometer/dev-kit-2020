@@ -2,6 +2,10 @@
 /** \file UsbCmd.h
  * # API
  * void NullCommand(void);\n 
+ * void GetBridgeLED(void);\n 
+ * void SetBridgeLED(void);\n 
+ * void GetSensorLED(void);\n 
+ * void SetSensorLED(void);\n 
  * */
 #ifndef _USBCMD_H
 #define _USBCMD_H
@@ -151,6 +155,54 @@ inline void GetSensorLED(void)
     // write response
     UsbWriteByte(status);
     UsbWriteByte(led_setting);
+}
+inline void SetSensorLED(void)
+{
+    /** SetSensorLED behavior:\n 
+      * - waits for byte led num\n 
+      * - reads byte led num\n 
+      * - waits for byte led setting\n 
+      * - reads byte led setting\n 
+      * - sends command to sensor\n 
+      * - sends led num to sensor\n 
+      * - sends led setting to sensor\n 
+      * - writes OK to indicate it sent the command to the sensor\n 
+      * - waits for sensor to signal STATUS data ready\n 
+      * - reads status from sensor\n 
+      * - writes sensor status\n 
+      * */
+
+    uint8_t const cmd = 4; // command is SetSensorLED
+
+    // loop until led_num received
+    while (UsbRxbufferIsEmpty());
+
+    // read led_num
+    uint8_t led_num = 0xFF;
+    UsbReadByte(&led_num);
+
+    // loop until led_setting received
+    while (UsbRxbufferIsEmpty());
+
+    // read led_setting
+    uint8_t led_setting = 0xFF;
+    UsbReadByte(&led_setting);
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+    SpiMasterXfrByte(led_num);
+    SpiMasterXfrByte(led_setting);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // write response
+    UsbWriteByte(status);
 }
 
 #endif // _USBCMD_H

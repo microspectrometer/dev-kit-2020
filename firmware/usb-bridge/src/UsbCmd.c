@@ -6,6 +6,7 @@ void NullCommand(void);
 void GetBridgeLED(void);
 void SetBridgeLED(void);
 void GetSensorLED(void);
+void SetSensorLED(void);
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */
