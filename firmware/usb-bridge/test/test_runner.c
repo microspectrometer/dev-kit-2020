@@ -119,6 +119,29 @@ void SetSensorLED_tests(bool run_test)
     }
 }
 
+/* =====[ GetSensorConfig_tests ]===== */
+void GetSensorConfig_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(GetSensorConfig_sends_command_to_sensor);
+        RUN_TEST(GetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor);
+        RUN_TEST(GetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready);
+        RUN_TEST(GetSensorConfig_reads_status_from_sensor);
+        RUN_TEST(GetSensorConfig_waits_for_sensor_to_signal_BINNING_data_ready);
+        RUN_TEST(GetSensorConfig_reads_binning_from_sensor);
+        RUN_TEST(GetSensorConfig_waits_for_sensor_to_signal_GAIN_data_ready);
+        RUN_TEST(GetSensorConfig_reads_gain_from_sensor);
+        RUN_TEST(GetSensorConfig_waits_for_sensor_to_signal_ROW_BITMAP_data_ready);
+        RUN_TEST(GetSensorConfig_reads_row_bitmap_from_sensor);
+        RUN_TEST(GetSensorConfig_writes_sensor_status);
+        RUN_TEST(GetSensorConfig_writes_sensor_binning);
+        RUN_TEST(GetSensorConfig_writes_sensor_gain);
+        RUN_TEST(GetSensorConfig_writes_sensor_row_bitmap);
+    }
+}
+
 /* =====[ SetSensorConfig_tests ]===== */
 void SetSensorConfig_tests(bool run_test)
 {
@@ -150,7 +173,8 @@ void UsbCmd_tests(bool run_test)
         SetBridgeLED_tests(Nope);
         GetSensorLED_tests(Nope);
         SetSensorLED_tests(Nope);
-        SetSensorConfig_tests(Yep);
+        SetSensorConfig_tests(Nope);
+        GetSensorConfig_tests(Yep);
     }
 }
 

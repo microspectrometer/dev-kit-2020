@@ -1252,7 +1252,7 @@ the assembly output to analyze.
                     - [x] usb-bridge
                 - [ ] GetSensorConfig
                     - [ ] vis-spi-out
-                    - [ ] usb-bridge
+                    - [x] usb-bridge
             - [ ] system test read/write of the sensor configuration
     - [ ] write main loop switchcase
 - [ ] do system test of command `SetSensorConfig`

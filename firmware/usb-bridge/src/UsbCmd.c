@@ -7,6 +7,7 @@ void GetBridgeLED(void);
 void SetBridgeLED(void);
 void GetSensorLED(void);
 void SetSensorLED(void);
+void GetSensorConfig(void);
 void SetSensorConfig(void);
 
 /* ---------------------------------------- */

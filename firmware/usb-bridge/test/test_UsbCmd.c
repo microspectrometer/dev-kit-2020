@@ -255,3 +255,64 @@ void SetSensorConfig_writes_sensor_status(void)
 {
     TEST_PASS();
 }
+
+/* =====[ GetSensorConfig ]===== */
+// GetSensorConfig() -> void
+void GetSensorConfig_sends_command_to_sensor(void)
+{
+    /* =====[ Operate ]===== */
+    /* GetSensorConfig(); */
+    TEST_PASS();
+}
+void GetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_reads_status_from_sensor(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_waits_for_sensor_to_signal_BINNING_data_ready(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_reads_binning_from_sensor(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_waits_for_sensor_to_signal_GAIN_data_ready(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_reads_gain_from_sensor(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_waits_for_sensor_to_signal_ROW_BITMAP_data_ready(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_reads_row_bitmap_from_sensor(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_writes_sensor_status(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_writes_sensor_binning(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_writes_sensor_gain(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_writes_sensor_row_bitmap(void)
+{
+    TEST_PASS();
+}

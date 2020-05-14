@@ -6,6 +6,7 @@
  * - void SetBridgeLED(void)
  * - void GetSensorLED(void)
  * - void SetSensorLED(void)
+ * - void GetSensorConfig(void)
  * - void SetSensorConfig(void)
  * */
 #ifndef _USBCMD_H
@@ -215,7 +216,7 @@ inline void SetSensorLED(void)
     // read status
     uint8_t status = SpiMasterXfrByte(PADDING);
 
-    // write response
+    // write response from sensor
     UsbWriteByte(status);
 }
 inline void SetSensorConfig(void)
@@ -282,6 +283,73 @@ inline void SetSensorConfig(void)
 
     // write response
     UsbWriteByte(status);
+}
+inline void GetSensorConfig(void)
+{
+    /** Forward 1-byte sensor config command to sensor.\n
+     * Respond with five bytes:
+     * - usb-bridge **status**
+     *   - send `OK` after sending all bytes to sensor
+     * - vis-spi-out **status**
+     * - **binning**
+     * - **gain**
+     * - **row_bitmap**
+     */
+    /** GetSensorConfig behavior:\n 
+      * - sends command to sensor\n 
+      * - writes OK to indicate it sent the command to the sensor\n 
+      * - waits for sensor to signal STATUS data ready\n 
+      * - reads status from sensor\n 
+      * - waits for sensor to signal BINNING data ready\n 
+      * - reads binning from sensor\n 
+      * - waits for sensor to signal GAIN data ready\n 
+      * - reads gain from sensor\n 
+      * - waits for sensor to signal ROW_BITMAP data ready\n 
+      * - reads row_bitmap from sensor\n 
+      * - writes sensor status\n 
+      * - writes sensor binning\n 
+      * - writes sensor gain\n 
+      * - writes sensor row_bitmap\n 
+      * */
+
+    uint8_t const cmd = 7; // command is GetSensorConfig
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send BINNING
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read binning
+    uint8_t binning = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send GAIN
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read gain
+    uint8_t gain = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send ROW_BITMAP
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read row_bitmap
+    uint8_t row_bitmap = SpiMasterXfrByte(PADDING);
+
+    (void)status;
+    (void)binning;
+    (void)gain;
+    (void)row_bitmap;
+
+    // write response from sensor
+    UsbWriteByte(status);
+    UsbWriteByte(binning);
+    UsbWriteByte(gain);
+    UsbWriteByte(row_bitmap);
 }
 
 #endif // _USBCMD_H

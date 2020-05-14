@@ -60,5 +60,20 @@ void SetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(voi
 void SetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready(void);
 void SetSensorConfig_reads_status_from_sensor(void);
 void SetSensorConfig_writes_sensor_status(void);
+// GetSensorConfig()
+void GetSensorConfig_sends_command_to_sensor(void);
+void GetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void);
+void GetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready(void);
+void GetSensorConfig_reads_status_from_sensor(void);
+void GetSensorConfig_waits_for_sensor_to_signal_BINNING_data_ready(void);
+void GetSensorConfig_reads_binning_from_sensor(void);
+void GetSensorConfig_waits_for_sensor_to_signal_GAIN_data_ready(void);
+void GetSensorConfig_reads_gain_from_sensor(void);
+void GetSensorConfig_waits_for_sensor_to_signal_ROW_BITMAP_data_ready(void);
+void GetSensorConfig_reads_row_bitmap_from_sensor(void);
+void GetSensorConfig_writes_sensor_status(void);
+void GetSensorConfig_writes_sensor_binning(void);
+void GetSensorConfig_writes_sensor_gain(void);
+void GetSensorConfig_writes_sensor_row_bitmap(void);
 
 #endif // _TEST_USBCMD_H
