@@ -565,6 +565,50 @@ $ python.exe -m cmdline GetSensorLED led_num=2
 2020-05-07T06:06:24.061009,SensorGetSensorLED(status=1, led_setting=255)
 ```
 
+### system test `SetSensorLED`
+
+Both LEDs on sensor board are green. Expect `led_setting=2` to
+turn one LED red.
+
+```bash
+$ python.exe -m cmdline SetSensorLED led_num=0 led_setting=2
+2020-05-14T05:49:48.348288,SensorSetSensorLED(status=0)
+```
+
+Turn the other LED red.
+
+```bash
+$ python.exe -m cmdline SetSensorLED led_num=1 led_setting=2
+2020-05-14T05:51:19.018410,SensorSetSensorLED(status=0)
+```
+
+Turn both LEDs back to green.
+
+```bash
+$ python.exe -m cmdline SetSensorLED led_num=1 led_setting=1
+$ python.exe -m cmdline SetSensorLED led_num=0 led_setting=1
+2020-05-14T05:52:19.548047,SensorSetSensorLED(status=0)
+2020-05-14T05:52:52.624399,SensorSetSensorLED(status=0)
+```
+
+Turn both LEDs off.
+
+```bash
+$ python.exe -m cmdline SetSensorLED led_num=1 led_setting=0
+$ python.exe -m cmdline SetSensorLED led_num=0 led_setting=0
+2020-05-14T05:53:43.891838,SensorSetSensorLED(status=0)
+2020-05-14T05:53:51.731680,SensorSetSensorLED(status=0)
+```
+
+Turn both LEDs green again.
+
+```bash
+$ python.exe -m cmdline SetSensorLED led_num=1 led_setting=1
+$ python.exe -m cmdline SetSensorLED led_num=0 led_setting=1
+2020-05-14T05:54:49.939523,SensorSetSensorLED(status=0)
+2020-05-14T05:54:56.939379,SensorSetSensorLED(status=0)
+```
+
 ## TODO list for Sean
 - [ ] TODO: Sean add documentation for the `serial_number` and
   `device` parameters of `ChromaSpecSimpleInterface`
