@@ -18,16 +18,19 @@
 #include "test_Queue.h"
 #include "Queue.h"
 
-/** ---Queue memory---\n 
-  * This test unit allocates static memory for the queue object.
-  * */
+/* ------------ */
+/* Queue memory */
+/* ------------ */
+// Tests allocate static memory for the queue object.
 volatile Queue_s * SpiFifo;
-/** *Define maximum size (bytes) of the queue's buffer*\n 
-  * Memory for the buffer (`spi_rx_buffer`) is allocated on the
-  * stack (`spi_rx_buffer` is a local variable in each test).
-  * This eliminates the need for buffer setup/teardown code.
-  * */
-#define max_length_of_queue 5 // bytes
+// Define maximum size (bytes) of the queue's buffer
+#define max_length_of_queue 5
+/* --------------------------------------------------- */
+/* FIFO buffer memory is allocated local to each test. */
+/* --------------------------------------------------- */
+// Memory for the buffer (`spi_rx_buffer`) is allocated on the
+// stack (`spi_rx_buffer` is a local variable in each test).
+// This eliminates the need for buffer setup/teardown code.
 
 void QueueInit_returns_a_pointer_to_a_Queue_struct(void)
 {
