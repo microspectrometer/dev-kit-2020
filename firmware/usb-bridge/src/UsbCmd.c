@@ -9,6 +9,7 @@ void GetSensorLED(void);
 void SetSensorLED(void);
 void GetSensorConfig(void);
 void SetSensorConfig(void);
+void GetExposure(void);
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */

@@ -77,6 +77,7 @@ void loop(void)
         case 4: SetSensorLED(); break;
         case 7: GetSensorConfig(); break;
         case 8: SetSensorConfig(); break;
+        case 9: GetExposure(); break;
         // default: ReplyCommandInvalid(); break;
     }
 }

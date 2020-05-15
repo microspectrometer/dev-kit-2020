@@ -165,6 +165,27 @@ void SetSensorConfig_tests(bool run_test)
     }
 }
 
+/* =====[ GetExposure_tests ]===== */
+void GetExposure_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(GetExposure_sends_command_to_sensor);
+        RUN_TEST(GetExposure_writes_OK_to_indicate_it_sent_the_command_to_the_sensor);
+        RUN_TEST(GetExposure_waits_for_sensor_to_signal_STATUS_data_ready);
+        RUN_TEST(GetExposure_reads_status_from_sensor);
+        RUN_TEST(GetExposure_waits_for_sensor_to_signal_EXPOSURE_MSB_data_ready);
+        RUN_TEST(GetExposure_reads_exposure_MSB_from_sensor);
+        RUN_TEST(GetExposure_waits_for_sensor_to_signal_EXPOSURE_LSB_data_ready);
+        RUN_TEST(GetExposure_reads_exposure_LSB_from_sensor);
+        RUN_TEST(GetExposure_writes_sensor_status);
+        RUN_TEST(GetExposure_writes_exposure_MSB);
+        RUN_TEST(GetExposure_writes_exposure_LSB);
+    }
+}
+
+
 void UsbCmd_tests(bool run_test)
 {
     if (run_test)
@@ -173,8 +194,9 @@ void UsbCmd_tests(bool run_test)
         SetBridgeLED_tests(Nope);
         GetSensorLED_tests(Nope);
         SetSensorLED_tests(Nope);
+        GetSensorConfig_tests(Nope);
         SetSensorConfig_tests(Nope);
-        GetSensorConfig_tests(Yep);
+        GetExposure_tests(Yep);
     }
 }
 

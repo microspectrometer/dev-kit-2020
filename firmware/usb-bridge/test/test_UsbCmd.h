@@ -75,5 +75,17 @@ void GetSensorConfig_writes_sensor_status(void);
 void GetSensorConfig_writes_sensor_binning(void);
 void GetSensorConfig_writes_sensor_gain(void);
 void GetSensorConfig_writes_sensor_row_bitmap(void);
+// GetExposure()
+void GetExposure_sends_command_to_sensor(void);
+void GetExposure_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void);
+void GetExposure_waits_for_sensor_to_signal_STATUS_data_ready(void);
+void GetExposure_reads_status_from_sensor(void);
+void GetExposure_waits_for_sensor_to_signal_EXPOSURE_MSB_data_ready(void);
+void GetExposure_reads_exposure_MSB_from_sensor(void);
+void GetExposure_waits_for_sensor_to_signal_EXPOSURE_LSB_data_ready(void);
+void GetExposure_reads_exposure_LSB_from_sensor(void);
+void GetExposure_writes_sensor_status(void);
+void GetExposure_writes_exposure_MSB(void);
+void GetExposure_writes_exposure_LSB(void);
 
 #endif // _TEST_USBCMD_H

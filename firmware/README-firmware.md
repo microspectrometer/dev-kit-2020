@@ -648,6 +648,15 @@ $ python.exe -m cmdline GetSensorConfig
 binning=0, gain=5, row_bitmap=30)
 ```
 
+### system test GetExposure
+
+Initial exposure is 1ms. Expect status=0, cycles=50.
+
+```bash
+$ python.exe -m cmdline GetExposure
+2020-05-15T18:31:13.646272,SensorGetExposure(status=0, cycles=50)
+```
+
 ## TODO list for Sean
 - [ ] TODO: Sean add documentation for the `serial_number` and
   `device` parameters of `ChromaSpecSimpleInterface`
@@ -1292,13 +1301,42 @@ the assembly output to analyze.
                 - [x] GetSensorConfig
                     - [x] vis-spi-out
                     - [x] usb-bridge
-            - [ ] system test read/write of the sensor configuration
-    - [ ] write main loop switchcase
-- [ ] do system test of command `SetSensorConfig`
-    - system test:
-    - mark as PASS/FAIL:
-    - :`vis-spi-out` responds `OK` to a valid config
-    - :`vis-spi-out` responds `ERROR` to an invalid config
+            - [x] do system test of GetSensorConfig and SetSensorConfig
+                - system test:
+                - mark as PASS/FAIL:
+                - :`vis-spi-out` responds `OK` to a valid config
+                - :`vis-spi-out` responds `ERROR` to an invalid config
+
+```date-and-size
+Thu, May 14, 2020 11:20:14 PM
+   text	   data	    bss	    dec	    hex	filename
+   4036	      2	     22	   4060	    fdc	build/vis-spi-out.elf
+```
+
+- consuming 1.17% (24 bytes out of 2048) of the Data SRAM
+- consuming 12.32% (4038 bytes out of 32768) of the Flash
+
+    - [x] GetExposure
+        - [x] vis-spi-out
+        - [x] usb-bridge
+        - [x] system test
+
+```date-and-size
+Fri, May 15, 2020  1:29:35 PM
+   text	   data	    bss	    dec	    hex	filename
+   4308	      2	     24	   4334	   10ee	build/vis-spi-out.elf
+```
+
+- consuming 1.17% (24 bytes out of 2048) of the Data SRAM
+- consuming 13.15% (4308 bytes out of 32768) of the Flash
+
+    - [ ] SetExposure
+        - [ ] vis-spi-out
+        - [ ] usb-bridge
+    - [ ] CaptureFrame
+        - [ ] vis-spi-out
+        - [ ] usb-bridge
+- [ ] write main loop switchcase
 
 ## tabled
 - [x] is there a way to reset the FT221X?
