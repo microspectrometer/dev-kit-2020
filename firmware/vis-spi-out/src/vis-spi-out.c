@@ -60,6 +60,7 @@ void loop(void)
         case 4: SetSensorLED(); break;
         case 7: GetSensorConfig(); break;
         case 8: SetSensorConfig(); break;
+        case 9: GetExposure(); break;
         default: ReplyCommandInvalid(); break;
         // ---Expected Assembly---
         // Context:
@@ -118,26 +119,30 @@ void setup_SpiCommunication(void)
 }
 void setup_DetectorReadout(void)
 {
-    /** setup control of the **ADC** and the **LIS-770i
-     * detector**.\n
-     * - Configure UART module as a **SPI Master** to the ADC:\n
+    /** Setup control of the **ADC** and the **LIS-770i
+     * detector**.
+     * - Configure UART module as a **SPI Master** to the ADC:
      *   - use a **5MHz clock** to pull bits out of ADC
-     *   - pin `UartSpi_AdcConv`: **output**, idle `LOW`\n
-     *   - see details in UartSpiInit()\n 
-     * - Configure I/O pins to control LIS-770i detector:\n
-     *   - clock LIS-770i at **50kHz**\n
-     *   - pins `Lis_PixSelect` and `Lis_Rst`: **output**, idle `LOW`\n
-     *   - see details in LisInit()\n
-     * - Program LIS-770i:
+     *   - pin `UartSpi_AdcConv`: **output**, idle `LOW`
+     *   - see details in UartSpiInit()
+     * - Configure I/O pins to control LIS-770i detector:
+     *   - clock LIS-770i at **50kHz**
+     *   - pins `Lis_PixSelect` and `Lis_Rst`: **output**, idle `LOW`
+     *   - see details in LisInit()
+     * - Set initial exposure time to 1 millisecond.
+     * - Set initial LIS-770i configuration:
      *   - binning on
      *   - gain 1x
      *   - all rows active
      *   - see LIS-770i cfg byte code definitions in LisConfigs.h
+     * - Program LIS-770i with initial configuration.
      * */
     // Talk to ADC with SPI interface using UART SPIM
     UartSpiInit();
     // Power up the LIS-770i and drive with a 50kHz clock
     LisInit();
+    // Initialize exposure time to 1 millisecond
+    exposure_ticks = 50; // 50 ticks = (1.0e-3 s)/(20.0e-6 s/tick)
     // Initialize LIS-770i configuration globals
     binning = BINNING_ON;
     gain = GAIN_1X;

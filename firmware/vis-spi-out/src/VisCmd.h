@@ -37,22 +37,6 @@ inline bool LedNumIsValid(bicolorled_num led_num) // -> is_valid
     return ( (led_num == 0) || (led_num == 1) );
 }
 
-/*inline bool LedSettingIsValid(led_state led_setting) // -> is_valid */
-/*{ */
-/*    /1** LedSettingIsValid behavior:\n */ 
-/*      * - returns TRUE if led setting is OFF\n */ 
-/*      * - returns TRUE if led setting is GREEN\n */ 
-/*      * - returns TRUE if led setting is RED\n */ 
-/*      * - returns FALSE if led setting is not 0 1 or 2\n */ 
-/*      * *1/ */
-
-/*    return ( */
-/*        (led_setting == OFF)   || */
-/*        (led_setting == GREEN) || */
-/*        (led_setting == RED) */
-/*        ); */
-/*} */
-
 inline uint8_t ReadLedState(bicolorled_num led_num) // -> led_state
 {
     /** ReadLedState behavior:\n 
@@ -176,6 +160,19 @@ inline void GetSensorConfig(void)
     SpiSlaveTxByte(binning);
     SpiSlaveTxByte(gain);
     SpiSlaveTxByte(active_rows);
+}
+
+inline void GetExposure(void)
+{
+    /** GetExposure behavior:\n 
+      * - sends OK\n 
+      * - sends MSB of exposure ticks\n 
+      * - sends LSB of exposure ticks\n 
+      * */
+
+    SpiSlaveTxByte(OK);
+    SpiSlaveTxByte(MSB(exposure_ticks));
+    SpiSlaveTxByte(LSB(exposure_ticks));
 }
 
 /* ---------------------- */

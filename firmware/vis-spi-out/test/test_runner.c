@@ -118,6 +118,16 @@ void Run_SetSensorConfig_tests(bool run_test)
         RUN_TEST(SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config);
     }
 }
+void Run_GetExposure_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(GetExposure_sends_OK);
+        RUN_TEST(GetExposure_sends_MSB_of_exposure_ticks);
+        RUN_TEST(GetExposure_sends_LSB_of_exposure_ticks);
+    }
+}
 void VisCmd_tests(bool run_test)
 {
     if (run_test)
@@ -127,8 +137,9 @@ void VisCmd_tests(bool run_test)
         Run_LedNumIsValid_tests(Nope);
         Run_GetSensorLED_tests(Nope);
         Run_SetSensorLED_tests(Nope);
-        Run_GetSensorConfig_tests(Yep);
+        Run_GetSensorConfig_tests(Nope);
         Run_SetSensorConfig_tests(Nope);
+        Run_GetExposure_tests(Yep);
     }
 }
 

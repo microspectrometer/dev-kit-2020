@@ -43,5 +43,9 @@ void GetSensorConfig_sends_OK(void);
 void GetSensorConfig_sends_binning(void);
 void GetSensorConfig_sends_gain(void);
 void GetSensorConfig_sends_row_bitmap(void);
+// GetExposure()
+void GetExposure_sends_OK(void);
+void GetExposure_sends_MSB_of_exposure_ticks(void);
+void GetExposure_sends_LSB_of_exposure_ticks(void);
 
 #endif // _TEST_VISCMD_H

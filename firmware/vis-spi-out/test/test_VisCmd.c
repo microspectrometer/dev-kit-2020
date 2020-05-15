@@ -432,3 +432,19 @@ void SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config(void
     _AssertCall(call_n, "SpiSlaveTxByte");
     _AssertArgByteVal(call_n, 1, OK);
 }
+
+/* =====[ GetExposure ]===== */
+void GetExposure_sends_OK(void)
+{
+    /* =====[ Operate ]===== */
+    /* GetExposure(); */
+    TEST_PASS();
+}
+void GetExposure_sends_MSB_of_exposure_ticks(void)
+{
+    TEST_PASS();
+}
+void GetExposure_sends_LSB_of_exposure_ticks(void)
+{
+    TEST_PASS();
+}
