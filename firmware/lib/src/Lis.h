@@ -364,6 +364,29 @@ inline void _Write28bitLisConfig(uint8_t const *config)
  * # API
  * void LisInit(void);\n 
  * */
+
+/** LIS-770i exposure time
+ * - exposure is a 16-bit word
+ * - exposure is in units of clock ticks
+ * - multiply exposure by 20e-6 seconds to get exposure time in seconds
+ *   - one clock tick is 20e-6 seconds because the LIS-770i is clocked at 50kHz
+ * */
+uint16_t exposure_ticks;
+inline uint8_t MSB(uint16_t exposure_ticks)
+{
+    /** MSB behavior:\n 
+      * - returns most significant bit of 16bit input\n 
+      * */
+    return exposure_ticks >> 8;
+}
+inline uint8_t LSB(uint16_t exposure_ticks)
+{
+    /** LSB behavior:\n 
+      * - returns least significant bit of 16bit input\n 
+      * */
+    return exposure_ticks & 0xFF;
+}
+
 inline void LisInit(void)
 {
     /** LisInit behavior:\n 
@@ -445,4 +468,6 @@ inline void LisWriteConfig(void)
 #undef _Write28bitLisConfig
 #undef _ExitLisProgrammingMode
 #endif // USE_FAKES
+
+
 #endif // _LIS_H

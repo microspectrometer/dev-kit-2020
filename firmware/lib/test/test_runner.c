@@ -318,7 +318,15 @@ void UartSpi_tests(bool run_test)
         RUN_TEST(UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior);
     }
 }
-
+void Run_Exposure_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(MSB_returns_most_significant_bit_of_16bit_input);
+        RUN_TEST(LSB_returns_least_significant_bit_of_16bit_input);
+    }
+}
 void Run_LisInit_tests(bool run_test)
 {
     if (run_test)
@@ -438,6 +446,7 @@ void Lis_tests(bool run_test)
 {
     if (run_test)
     {
+        Run_Exposure_tests(Yep);
         Run_LisInit_tests(Yep);
         Run_LisConfigIsValid_tests(Yep);
         Run__ConfigAs28bits_tests(Yep);
@@ -645,7 +654,7 @@ int main()
     Flag_tests(Nope);
     Spi_tests(Nope);
     SpiSlave_tests(Nope);
-    SpiMaster_tests(Yep);
+    SpiMaster_tests(Nope);
     StatusCode_tests(Nope);
     /* =====[ test libs for usb-bridge ]===== */
     Usb_tests(Nope);

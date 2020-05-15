@@ -1,6 +1,10 @@
 #ifndef _TEST_LIS_H
 #define _TEST_LIS_H
 
+/* =====[ Exposure ]===== */
+void MSB_returns_most_significant_bit_of_16bit_input(void);
+void LSB_returns_least_significant_bit_of_16bit_input(void);
+
 /* =====[ LisInit ]===== */
 void LisInit_sets_PixSelect_as_an_output(void);
 void LisInit_idles_PixSelect_low(void);

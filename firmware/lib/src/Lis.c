@@ -20,6 +20,8 @@ void _Write28bitLisConfig(uint8_t const *config);
 void _ExitLisProgrammingMode(void);
 
 // ---API---
+uint8_t MSB(uint16_t exposure_ticks);
+uint8_t LSB(uint16_t exposure_ticks);
 void LisInit(void);
 bool LisConfigIsValid(
     uint8_t binning,

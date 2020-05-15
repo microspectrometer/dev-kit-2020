@@ -160,6 +160,20 @@ static void _test_bit_val( lis_ptr reg, lis_bit bit, bit_val v )
     g_string_free(msg, true);
 }
 
+/* =====[ Exposure ]===== */
+void MSB_returns_most_significant_bit_of_16bit_input(void)
+{
+    /* =====[ Operate and Test ]===== */
+    exposure_ticks = 0xABCD;
+    TEST_ASSERT_EQUAL_HEX8( 0xAB, MSB(exposure_ticks) );
+}
+void LSB_returns_least_significant_bit_of_16bit_input(void)
+{
+    /* =====[ Operate and Test ]===== */
+    exposure_ticks = 0xABCD;
+    TEST_ASSERT_EQUAL_HEX8( 0xCD, LSB(exposure_ticks) );
+}
+
 /* =====[ LisInit ]===== */
 void LisInit_sets_PixSelect_as_an_output(void)
 {
