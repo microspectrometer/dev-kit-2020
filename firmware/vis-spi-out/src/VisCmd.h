@@ -5,6 +5,7 @@
  * - void GetSensorLED(void)
  * - void SetSensorLED(void)
  * - void ReplyCommandInvalid(void)
+ * - void GetSensorConfig(void)
  * - void SetSensorConfig(void)
  * */
 #ifndef _VISCMD_H
@@ -156,6 +157,21 @@ inline void SetSensorLED(void)
         // send OK
         SpiSlaveTxByte(OK);
     }
+}
+
+inline void GetSensorConfig(void)
+{
+    /** GetSensorConfig behavior:\n 
+      * - sends OK\n 
+      * - sends binning\n 
+      * - sends gain\n 
+      * - sends row bitmap\n 
+      * */
+
+    SpiSlaveTxByte(OK);
+    SpiSlaveTxByte(binning);
+    SpiSlaveTxByte(gain);
+    SpiSlaveTxByte(active_rows);
 }
 
 /* ---------------------- */

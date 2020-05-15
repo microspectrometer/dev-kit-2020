@@ -57,6 +57,7 @@ void loop(void)
         case 0: NullCommand(); break;
         case 3: GetSensorLED(); break;
         case 4: SetSensorLED(); break;
+        case 7: GetSensorConfig(); break;
         case 8: SetSensorConfig(); break;
         default: ReplyCommandInvalid(); break;
         // ---Expected Assembly---
@@ -129,9 +130,10 @@ void setup_DetectorReadout(void)
      * */
     // Talk to ADC with SPI interface using UART SPIM
     UartSpiInit();
-    // Power up the linear array and drive with a 50kHz clock
+    // Power up the LIS-770i and drive with a 50kHz clock
     LisInit();
-    //
-    // TODO: Initialize linear array configuration globals
-    //
+    // Initialize LIS-770i configuration globals
+    binning = BINNING_ON;
+    gain = GAIN_1X;
+    active_rows = ALL_ROWS_ACTIVE;
 }

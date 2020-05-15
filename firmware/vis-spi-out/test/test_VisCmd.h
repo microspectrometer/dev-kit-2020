@@ -38,5 +38,10 @@ void LedSettingIsValid_returns_TRUE_if_led_setting_is_OFF(void);
 void LedSettingIsValid_returns_TRUE_if_led_setting_is_GREEN(void);
 void LedSettingIsValid_returns_TRUE_if_led_setting_is_RED(void);
 void LedSettingIsValid_returns_FALSE_if_led_setting_is_not_0_1_or_2(void);
+// GetSensorConfig()
+void GetSensorConfig_sends_OK(void);
+void GetSensorConfig_sends_binning(void);
+void GetSensorConfig_sends_gain(void);
+void GetSensorConfig_sends_row_bitmap(void);
 
 #endif // _TEST_VISCMD_H

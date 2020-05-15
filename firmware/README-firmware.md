@@ -542,7 +542,7 @@ $ python.exe -m cmdline GetBridgeLed led_num=0
 2020-05-03T21:14:21.380145,BridgeGetBridgeLED(status=0, led_setting=2)
 ```
 
-### system test `GetSensorLED`
+### system test GetSensorLED
 
 Both LEDs on sensor board are green. Expect `led_setting=1` for
 both.
@@ -565,7 +565,7 @@ $ python.exe -m cmdline GetSensorLED led_num=2
 2020-05-07T06:06:24.061009,SensorGetSensorLED(status=1, led_setting=255)
 ```
 
-### system test `SetSensorLED`
+### system test SetSensorLED
 
 Both LEDs on sensor board are green. Expect `led_setting=2` to
 turn one LED red.
@@ -607,6 +607,45 @@ $ python.exe -m cmdline SetSensorLED led_num=1 led_setting=1
 $ python.exe -m cmdline SetSensorLED led_num=0 led_setting=1
 2020-05-14T05:54:49.939523,SensorSetSensorLED(status=0)
 2020-05-14T05:54:56.939379,SensorSetSensorLED(status=0)
+```
+
+### system test GetSensorConfig and SetSensorConfig
+
+Expect default configuration is:
+
+- `binning` = 1;
+- `gain` = 1;
+- `row_bitmap` = 31;
+
+```bash
+$ python.exe -m cmdline GetSensorConfig
+2020-05-15T03:57:30.367547,SensorGetSensorConfig(status=0, binning=1, gain=1, row_bitmap=31)
+```
+
+Change the configuration:
+
+```bash
+$ python.exe -m cmdline SetSensorConfig binning=0 gain=5 row_bitmap=30
+2020-05-15T04:07:33.613819,SensorSetSensorConfig(status=0)
+
+$ python.exe -m cmdline GetSensorConfig
+2020-05-15T04:07:39.208883,SensorGetSensorConfig(status=0, binning=0, gain=5, row_bitmap=30)
+```
+
+Try an invalid configuration by setting binning to 2. Expect
+status is 1 (ERROR).
+
+```bash
+$ python.exe -m cmdline SetSensorConfig binning=2 gain=5 row_bitmap=30
+2020-05-15T04:09:09.196835,SensorSetSensorConfig(status=1)
+```
+
+Check that the configuration did not change.
+
+```bash
+$ python.exe -m cmdline GetSensorConfig
+2020-05-15T04:10:18.475317,SensorGetSensorConfig(status=0,
+binning=0, gain=5, row_bitmap=30)
 ```
 
 ## TODO list for Sean
@@ -1250,8 +1289,8 @@ the assembly output to analyze.
                 - [x] SetSensorConfig
                     - [x] vis-spi-out
                     - [x] usb-bridge
-                - [ ] GetSensorConfig
-                    - [ ] vis-spi-out
+                - [x] GetSensorConfig
+                    - [x] vis-spi-out
                     - [x] usb-bridge
             - [ ] system test read/write of the sensor configuration
     - [ ] write main loop switchcase

@@ -6,6 +6,7 @@ void ReplyCommandInvalid(void);
 void NullCommand(void);
 void GetSensorLED(void);
 void SetSensorLED(void);
+void GetSensorConfig(void);
 void SetSensorConfig(void);
 
 /* ---------------------------------------- */

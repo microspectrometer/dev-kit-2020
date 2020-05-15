@@ -91,7 +91,17 @@ void Run_SetSensorLED_tests(bool run_test)
         RUN_TEST(SetSensorLED_sends_OK_if_num_and_setting_are_valid);
     }
 }
-
+void Run_GetSensorConfig_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(GetSensorConfig_sends_OK);
+        RUN_TEST(GetSensorConfig_sends_binning);
+        RUN_TEST(GetSensorConfig_sends_gain);
+        RUN_TEST(GetSensorConfig_sends_row_bitmap);
+    }
+}
 void Run_SetSensorConfig_tests(bool run_test)
 {
     if (run_test)
@@ -116,7 +126,8 @@ void VisCmd_tests(bool run_test)
         Run_ReplyCommandInvalid_tests(Nope);
         Run_LedNumIsValid_tests(Nope);
         Run_GetSensorLED_tests(Nope);
-        Run_SetSensorLED_tests(Yep);
+        Run_SetSensorLED_tests(Nope);
+        Run_GetSensorConfig_tests(Yep);
         Run_SetSensorConfig_tests(Nope);
     }
 }

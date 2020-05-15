@@ -181,6 +181,26 @@ void SetSensorLED_sends_OK_if_num_and_setting_are_valid(void)
     TEST_PASS();
 }
 
+/* =====[ GetSensorConfig ]===== */
+void GetSensorConfig_sends_OK(void)
+{
+    /* =====[ Operate ]===== */
+    /* GetSensorConfig(); */
+    TEST_PASS();
+}
+void GetSensorConfig_sends_binning(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_sends_gain(void)
+{
+    TEST_PASS();
+}
+void GetSensorConfig_sends_row_bitmap(void)
+{
+    TEST_PASS();
+}
+
 /* =====[ SetSensorConfig ]===== */
 void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void)
 {
