@@ -394,5 +394,53 @@ inline void GetExposure(void)
     UsbWriteByte(exposure_msb);
     UsbWriteByte(exposure_lsb);
 }
+inline void SetExposure(void)
+{
+    /** SetExposure behavior:\n 
+      * - waits for byte exposure_MSB\n 
+      * - reads byte exposure_MSB\n 
+      * - waits for byte exposure_LSB\n 
+      * - reads byte exposure_LSB\n 
+      * - sends command to sensor\n 
+      * - sends exposure_MSB to sensor\n 
+      * - sends exposure_LSB to sensor\n 
+      * - writes OK to indicate it sent the command to the sensor\n 
+      * - waits for sensor to signal STATUS data ready\n 
+      * - reads status from sensor\n 
+      * - writes sensor status\n 
+      * */
+
+    uint8_t const cmd = 10; // command is SetExposure
+
+    // loop until exposure_MSB received
+    while (UsbRxbufferIsEmpty());
+    
+    // read exposure_MSB
+    uint8_t exposure_MSB = 0xFF;
+    UsbReadByte(&exposure_MSB);
+
+    // loop until exposure_LSB received
+    while (UsbRxbufferIsEmpty());
+    
+    // read exposure_LSB
+    uint8_t exposure_LSB = 0xFF;
+    UsbReadByte(&exposure_LSB);
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+    SpiMasterXfrByte(exposure_MSB);
+    SpiMasterXfrByte(exposure_LSB);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // write response
+    UsbWriteByte(status);
+}
 
 #endif // _USBCMD_H

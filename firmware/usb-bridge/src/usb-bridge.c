@@ -70,14 +70,15 @@ void loop(void)
         // Turn status LED red if cmd is not recognized.
         default:                    BiColorLedRed(status_led);   break;
         // Null gets no response, but turns status LED green for now.
-        case 0: NullCommand();      BiColorLedGreen(status_led); break;
-        case 1: GetBridgeLED(); break;
-        case 2: SetBridgeLED(); break;
-        case 3: GetSensorLED(); break;
-        case 4: SetSensorLED(); break;
-        case 7: GetSensorConfig(); break;
-        case 8: SetSensorConfig(); break;
-        case 9: GetExposure(); break;
+        case  0: NullCommand();      BiColorLedGreen(status_led); break;
+        case  1: GetBridgeLED(); break;
+        case  2: SetBridgeLED(); break;
+        case  3: GetSensorLED(); break;
+        case  4: SetSensorLED(); break;
+        case  7: GetSensorConfig(); break;
+        case  8: SetSensorConfig(); break;
+        case  9: GetExposure(); break;
+        case 10: SetExposure(); break;
         // default: ReplyCommandInvalid(); break;
     }
 }

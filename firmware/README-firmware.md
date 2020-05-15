@@ -648,13 +648,27 @@ $ python.exe -m cmdline GetSensorConfig
 binning=0, gain=5, row_bitmap=30)
 ```
 
-### system test GetExposure
+### system test GetExposure and SetExposure
 
 Initial exposure is 1ms. Expect status=0, cycles=50.
 
 ```bash
 $ python.exe -m cmdline GetExposure
 2020-05-15T18:31:13.646272,SensorGetExposure(status=0, cycles=50)
+```
+
+Set exposure to 10ms (500 20µs-ticks). Expect status=0.
+
+```bash
+$ python.exe -m cmdline SetExposure cycles=500
+2020-05-15T20:12:56.027071,SensorSetExposure(status=0)
+```
+
+Check exposure. Expect status=0, cycles=500.
+
+```bash
+$ python.exe -m cmdline GetExposure
+2020-05-15T20:13:06.457501,SensorGetExposure(status=0, cycles=500)
 ```
 
 ## TODO list for Sean
@@ -1330,9 +1344,10 @@ Fri, May 15, 2020  1:29:35 PM
 - consuming 1.17% (24 bytes out of 2048) of the Data SRAM
 - consuming 13.15% (4308 bytes out of 32768) of the Flash
 
-    - [ ] SetExposure
-        - [ ] vis-spi-out
-        - [ ] usb-bridge
+    - [x] SetExposure
+        - [x] vis-spi-out
+        - [x] usb-bridge
+        - [x] system test
     - [ ] CaptureFrame
         - [ ] vis-spi-out
         - [ ] usb-bridge

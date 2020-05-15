@@ -128,6 +128,20 @@ void Run_GetExposure_tests(bool run_test)
         RUN_TEST(GetExposure_sends_LSB_of_exposure_ticks);
     }
 }
+void Run_SetExposure_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(SetExposure_waits_for_byte_exposure_MSB);
+        RUN_TEST(SetExposure_reads_byte_exposure_MSB);
+        RUN_TEST(SetExposure_waits_for_byte_exposure_LSB);
+        RUN_TEST(SetExposure_reads_byte_exposure_LSB);
+        RUN_TEST(SetExposure_updates_global_exposure_ticks);
+        RUN_TEST(SetExposure_sends_OK);
+    }
+}
+
 void VisCmd_tests(bool run_test)
 {
     if (run_test)
@@ -139,7 +153,8 @@ void VisCmd_tests(bool run_test)
         Run_SetSensorLED_tests(Nope);
         Run_GetSensorConfig_tests(Nope);
         Run_SetSensorConfig_tests(Nope);
-        Run_GetExposure_tests(Yep);
+        Run_GetExposure_tests(Nope);
+        Run_SetExposure_tests(Yep);
     }
 }
 

@@ -364,3 +364,54 @@ void GetExposure_writes_exposure_LSB(void)
 {
     TEST_PASS();
 }
+
+/* =====[ SetExposure ]===== */
+// SetExposure() -> void
+void SetExposure_waits_for_byte_exposure_MSB(void)
+{
+    /* =====[ Operate ]===== */
+    /* SetExposure(); */
+    TEST_PASS();
+}
+void SetExposure_reads_byte_exposure_MSB(void)
+{
+    TEST_PASS();
+}
+void SetExposure_waits_for_byte_exposure_LSB(void)
+{
+    /* =====[ Operate ]===== */
+    TEST_PASS();
+}
+void SetExposure_reads_byte_exposure_LSB(void)
+{
+    TEST_PASS();
+}
+void SetExposure_sends_command_to_sensor(void)
+{
+    TEST_PASS();
+}
+void SetExposure_sends_exposure_MSB_to_sensor(void)
+{
+    TEST_PASS();
+}
+void SetExposure_sends_exposure_LSB_to_sensor(void)
+{
+    TEST_PASS();
+}
+void SetExposure_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void)
+{
+    TEST_PASS();
+}
+void SetExposure_waits_for_sensor_to_signal_STATUS_data_ready(void)
+{
+    TEST_PASS();
+}
+void SetExposure_reads_status_from_sensor(void)
+{
+    TEST_PASS();
+}
+void SetExposure_writes_sensor_status(void)
+{
+    TEST_PASS();
+}
+

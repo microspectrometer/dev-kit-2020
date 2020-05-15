@@ -448,3 +448,31 @@ void GetExposure_sends_LSB_of_exposure_ticks(void)
 {
     TEST_PASS();
 }
+
+/* =====[ SetExposure ]===== */
+void SetExposure_waits_for_byte_exposure_MSB(void)
+{
+    /* =====[ Operate ]===== */
+    /* SetExposure(); */
+    TEST_PASS();
+}
+void SetExposure_reads_byte_exposure_MSB(void)
+{
+    TEST_PASS();
+}
+void SetExposure_waits_for_byte_exposure_LSB(void)
+{
+    TEST_PASS();
+}
+void SetExposure_reads_byte_exposure_LSB(void)
+{
+    TEST_PASS();
+}
+void SetExposure_updates_global_exposure_ticks(void)
+{
+    TEST_PASS();
+}
+void SetExposure_sends_OK(void)
+{
+    TEST_PASS();
+}

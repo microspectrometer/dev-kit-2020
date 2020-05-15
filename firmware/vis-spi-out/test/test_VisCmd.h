@@ -47,5 +47,12 @@ void GetSensorConfig_sends_row_bitmap(void);
 void GetExposure_sends_OK(void);
 void GetExposure_sends_MSB_of_exposure_ticks(void);
 void GetExposure_sends_LSB_of_exposure_ticks(void);
+// SetExposure()
+void SetExposure_waits_for_byte_exposure_MSB(void);
+void SetExposure_reads_byte_exposure_MSB(void);
+void SetExposure_waits_for_byte_exposure_LSB(void);
+void SetExposure_reads_byte_exposure_LSB(void);
+void SetExposure_updates_global_exposure_ticks(void);
+void SetExposure_sends_OK(void);
 
 #endif // _TEST_VISCMD_H

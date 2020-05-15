@@ -175,6 +175,36 @@ inline void GetExposure(void)
     SpiSlaveTxByte(LSB(exposure_ticks));
 }
 
+inline void SetExposure(void)
+{
+    /** SetExposure behavior:\n 
+      * - waits for byte exposure MSB\n 
+      * - reads byte exposure MSB\n 
+      * - waits for byte exposure LSB\n 
+      * - reads byte exposure LSB\n 
+      * - updates global exposure ticks\n 
+      * - sends OK\n 
+      * */
+
+    // wait for exposure_MSB
+    while (QueueIsEmpty(SpiFifo));
+
+    // read exposure_MSB
+    uint8_t exposure_MSB = QueuePop(SpiFifo);
+
+    // wait for exposure_LSB
+    while (QueueIsEmpty(SpiFifo));
+
+    // read exposure_LSB
+    uint8_t exposure_LSB = QueuePop(SpiFifo);
+
+    // update global exposure_ticks
+    exposure_ticks = (exposure_MSB << 8) | exposure_LSB;
+
+    // send OK
+    SpiSlaveTxByte(OK);
+}
+
 /* ---------------------- */
 /* | ---Commands :) --- | */ // (these HAVE proper unit tests)
 /* ---------------------- */
