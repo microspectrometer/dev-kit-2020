@@ -8,6 +8,10 @@
  * - void SetSensorLED(void)
  * - void GetSensorConfig(void)
  * - void SetSensorConfig(void)
+ * - void GetExposure(void)
+ * - void SetExposure(void)
+ * - void AutoExposure(void)
+ * - void GetFrame(void)
  * */
 #ifndef _USBCMD_H
 #define _USBCMD_H
