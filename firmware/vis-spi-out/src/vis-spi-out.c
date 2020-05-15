@@ -19,10 +19,11 @@
 // LIS-770i configuration
 #include "LisConfigs.h"
 
-// Allocate memory for the FIFO SPI Buffer
+//! Allocate static memory for the SPI Rx Queue.
 volatile Queue_s * SpiFifo;
-// Define maximum size (bytes) of the SPI Rx Buffer
+//! Maximum size of the Queue's FIFO buffer is 11 bytes.
 #define max_length_of_queue 11 // bytes
+//! Allocate static memory for the Queue's FIFO buffer.
 volatile uint8_t spi_rx_buffer[max_length_of_queue];
 
 static void setup(void);
@@ -117,7 +118,7 @@ void setup_SpiCommunication(void)
 }
 void setup_DetectorReadout(void)
 {
-    /** setup_ control of the **ADC** and the **LIS-770i
+    /** setup control of the **ADC** and the **LIS-770i
      * detector**.\n
      * - Configure UART module as a **SPI Master** to the ADC:\n
      *   - use a **5MHz clock** to pull bits out of ADC
@@ -127,6 +128,11 @@ void setup_DetectorReadout(void)
      *   - clock LIS-770i at **50kHz**\n
      *   - pins `Lis_PixSelect` and `Lis_Rst`: **output**, idle `LOW`\n
      *   - see details in LisInit()\n
+     * - Program LIS-770i:
+     *   - binning on
+     *   - gain 1x
+     *   - all rows active
+     *   - see LIS-770i cfg byte code definitions in LisConfigs.h
      * */
     // Talk to ADC with SPI interface using UART SPIM
     UartSpiInit();
@@ -136,4 +142,6 @@ void setup_DetectorReadout(void)
     binning = BINNING_ON;
     gain = GAIN_1X;
     active_rows = ALL_ROWS_ACTIVE;
+    // Program LIS-770i with above configuration
+    LisWriteConfig();
 }
