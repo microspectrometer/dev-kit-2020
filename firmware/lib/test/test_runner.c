@@ -318,7 +318,7 @@ void UartSpi_tests(bool run_test)
         RUN_TEST(UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior);
     }
 }
-void Run_Exposure_tests(bool run_test)
+void Run_MSB_LSB_tests(bool run_test)
 {
     if (run_test)
     {
@@ -442,11 +442,22 @@ void Run_LisWriteConfig_tests(bool run_test)
         RUN_TEST(LisWriteConfig_exits_LIS_programming_mode);
     }
 }
+void Run_LisExpose_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(LisExpose_waits_for_the_falling_edge_of_Lis_Clk);
+        RUN_TEST(LisExpose_starts_exposure_by_driving_Lis_Rst_HIGH);
+        RUN_TEST(LisExpose_counts_falling_edges_of_Lis_Clk_until_count_equals_exposure_ticks);
+        RUN_TEST(LisExpose_stops_exposure_by_driving_Lis_Rst_LOW);
+    }
+}
 void Lis_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_Exposure_tests(Yep);
+        Run_MSB_LSB_tests(Yep);
         Run_LisInit_tests(Yep);
         Run_LisConfigIsValid_tests(Yep);
         Run__ConfigAs28bits_tests(Yep);
@@ -457,6 +468,7 @@ void Lis_tests(bool run_test)
         Run__Write28bitLisConfig_tests(Yep);
         Run__ExitLisProgrammingMode_tests(Yep);
         Run_LisWriteConfig_tests(Yep);
+        Run_LisExpose_tests(Yep);
     }
 }
 

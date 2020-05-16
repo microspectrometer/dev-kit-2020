@@ -1,6 +1,18 @@
 #ifndef _TEST_VISCMD_H
 #define _TEST_VISCMD_H
 
+/* =====[ LisReadout ]===== */
+void LisReadout_waits_for_Lis_Sync_to_go_HIGH_then_go_LOW(void);
+void LisReadout_reads_one_pixel_on_each_rising_edge_of_Lis_Clk(void);
+void LisReadout_LOOP_wait_for_the_rising_edge_of_Lis_Clk(void);
+void LisReadout_LOOP_start_the_ADC_conversion(void);
+void LisReadout_LOOP_wait_for_45_cycles_of_10MHz_clock(void);
+void LisReadout_LOOP_start_ADC_readout(void);
+void LisReadout_LOOP_wait_for_most_significant_byte_ADC_readout(void);
+void LisReadout_LOOP_save_MSB_to_frame_buffer(void);
+void LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout(void);
+void LisReadout_LOOP_save_LSB_to_frame_buffer(void);
+
 /* =====[ ReplyCommandInvalid ]===== */
 void ReplyCommandInvalid_transmits_one_byte_over_SPI(void);
 void ReplyCommandInvalid_sends_byte_INVALID_CMD(void);
@@ -54,5 +66,13 @@ void SetExposure_waits_for_byte_exposure_LSB(void);
 void SetExposure_reads_byte_exposure_LSB(void);
 void SetExposure_updates_global_exposure_ticks(void);
 void SetExposure_sends_OK(void);
+// CaptureFrame()
+void CaptureFrame_sends_OK(void);
+void CaptureFrame_checks_binning_to_determine_number_of_pixels_in_frame(void);
+void CaptureFrame_sends_num_pixels_MSB(void);
+void CaptureFrame_sends_num_pixels_LSB(void);
+void CaptureFrame_exposes_the_pixels(void);
+void CaptureFrame_does_readout_of_num_pixels_into_the_frame_buffer(void);
+void CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer(void);
 
 #endif // _TEST_VISCMD_H

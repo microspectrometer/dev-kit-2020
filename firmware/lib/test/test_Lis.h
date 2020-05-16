@@ -70,4 +70,10 @@ void WriteLisConfigBit_waits_for_LisClk_LOW(void);
 /* =====[ _Write28bitLisConfig ]===== */
 void Write28bitLisConfig_writes_28bits_starting_at_byte0_bit0_and_ending_at_byte3_bit3(void);
 
+/* =====[ LisExpose ]===== */
+void LisExpose_waits_for_the_falling_edge_of_Lis_Clk(void);
+void LisExpose_starts_exposure_by_driving_Lis_Rst_HIGH(void);
+void LisExpose_counts_falling_edges_of_Lis_Clk_until_count_equals_exposure_ticks(void);
+void LisExpose_stops_exposure_by_driving_Lis_Rst_LOW(void);
+
 #endif // _TEST_LIS_H

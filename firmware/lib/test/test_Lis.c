@@ -937,3 +937,22 @@ void ExitLisProgrammingMode_outputs_LOW_on_pin_LisPixSelect(void)
         );
 }
 
+/* =====[ LisExpose ]===== */
+void LisExpose_waits_for_the_falling_edge_of_Lis_Clk(void)
+{
+    /* =====[ Operate ]===== */
+    /* LisExpose(); */
+    TEST_PASS();
+}
+void LisExpose_starts_exposure_by_driving_Lis_Rst_HIGH(void)
+{
+    TEST_PASS();
+}
+void LisExpose_counts_falling_edges_of_Lis_Clk_until_count_equals_exposure_ticks(void)
+{
+    TEST_PASS();
+}
+void LisExpose_stops_exposure_by_driving_Lis_Rst_LOW(void)
+{
+    TEST_PASS();
+}

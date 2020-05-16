@@ -11,6 +11,7 @@ void GetSensorConfig(void);
 void SetSensorConfig(void);
 void GetExposure(void);
 void SetExposure(void);
+void CaptureFrame(void);
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */

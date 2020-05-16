@@ -159,7 +159,7 @@ inline void SpiMasterCfg(void)
 /** \file UartSpi.h
  * # API
  * void UartSpiInit(void);\n 
- * void StartAdcReadout(void);\n 
+ * void StartAdcConversion(void);\n 
  * */
 inline void UartSpiInit(void)
 {
@@ -181,9 +181,17 @@ inline void UartSpiInit(void)
     SpiMasterCfg();
     RunSpiAt5Mhz();
 }
+inline void StartAdcConversion(void)
+{
+    SetBit(UartSpi_port, UartSpi_AdcConv);
+    // ---Expected Assembly---
+    // sbi	0x0b, 2	; 11
+}
 inline void StartAdcReadout(void)
 {
     ClearBit(UartSpi_port, UartSpi_AdcConv);
+    // write two dummy bytes to transfer 16 bits
+    *UartSpi_UDR0 = 0x00; *UartSpi_UDR0 = 0x00;
     // ---Expected Assembly---
     // cbi	0x0b, 2	; 11
 }

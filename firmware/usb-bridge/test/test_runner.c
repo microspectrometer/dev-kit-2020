@@ -205,6 +205,31 @@ void SetExposure_tests(bool run_test)
     }
 }
 
+/* =====[ CaptureFrame_tests ]===== */
+
+void CaptureFrame_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(CaptureFrame_sends_command_to_sensor);
+        RUN_TEST(CaptureFrame_writes_OK_to_indicate_it_sent_the_command_to_the_sensor);
+        RUN_TEST(CaptureFrame_waits_for_sensor_to_signal_STATUS_data_ready);
+        RUN_TEST(CaptureFrame_reads_status_from_sensor);
+        RUN_TEST(CaptureFrame_waits_for_sensor_to_signal_NUM_PIXELS_MSB_data_ready);
+        RUN_TEST(CaptureFrame_reads_num_pixels_MSB_from_sensor);
+        RUN_TEST(CaptureFrame_waits_for_sensor_to_signal_NUM_PIXELS_LSB_data_ready);
+        RUN_TEST(CaptureFrame_reads_num_pixels_LSB_from_sensor);
+        RUN_TEST(CaptureFrame_writes_sensor_status);
+        RUN_TEST(CaptureFrame_writes_num_pixels_MSB);
+        RUN_TEST(CaptureFrame_writes_num_pixels_LSB);
+        RUN_TEST(CaptureFrame_returns_if_status_is_not_OK);
+        RUN_TEST(CaptureFrame_waits_for_the_next_byte_of_frame_data);
+        RUN_TEST(CaptureFrame_writes_the_next_byte_of_frame_data);
+        RUN_TEST(CaptureFrame_loops_wait_for_byte_then_write_byte_for_a_total_nbytes_of_2x_num_pixels);
+    }
+}
+
 void UsbCmd_tests(bool run_test)
 {
     if (run_test)
@@ -217,6 +242,7 @@ void UsbCmd_tests(bool run_test)
         SetSensorConfig_tests(Nope);
         GetExposure_tests(Nope);
         SetExposure_tests(Nope);
+        CaptureFrame_tests(Yep);
     }
 }
 

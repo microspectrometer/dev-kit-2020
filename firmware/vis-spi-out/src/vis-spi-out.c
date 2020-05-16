@@ -62,6 +62,7 @@ void loop(void)
         case  8: SetSensorConfig(); break;
         case  9: GetExposure(); break;
         case 10: SetExposure(); break;
+        case 11: CaptureFrame(); break;
         default: ReplyCommandInvalid(); break;
         // ---Expected Assembly---
         // Context:

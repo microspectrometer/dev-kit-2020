@@ -372,19 +372,25 @@ inline void _Write28bitLisConfig(uint8_t const *config)
  *   - one clock tick is 20e-6 seconds because the LIS-770i is clocked at 50kHz
  * */
 uint16_t exposure_ticks;
-inline uint8_t MSB(uint16_t exposure_ticks)
+/** LIS-770i maximum number of pixels
+ * - with binning *off* there are at most 784 pixels
+ * - this includes the 13 optically dark and one dummy pixel
+ * - with binning *on* there are at most 392 pixels
+ * */
+#define MAX_NUM_PIXELS 784
+inline uint8_t MSB(uint16_t msb_lsb)
 {
     /** MSB behavior:\n 
       * - returns most significant bit of 16bit input\n 
       * */
-    return exposure_ticks >> 8;
+    return msb_lsb >> 8;
 }
-inline uint8_t LSB(uint16_t exposure_ticks)
+inline uint8_t LSB(uint16_t msb_lsb)
 {
     /** LSB behavior:\n 
       * - returns least significant bit of 16bit input\n 
       * */
-    return exposure_ticks & 0xFF;
+    return msb_lsb & 0xFF;
 }
 
 inline void LisInit(void)
@@ -469,5 +475,30 @@ inline void LisWriteConfig(void)
 #undef _ExitLisProgrammingMode
 #endif // USE_FAKES
 
+inline void LisExpose(void)
+{
+    /** LisExpose behavior:\n 
+      * - waits for the falling edge of Lis_Clk\n 
+      * - starts exposure by driving Lis_Rst HIGH\n 
+      * - counts falling edges of Lis_Clk until count equals exposure_ticks\n 
+      * - stops exposure by driving Lis_Rst LOW\n 
+      * */
+    // wait for the falling clock edge
+    _WaitForLisClkLow();
+
+    // start exposure
+    SetBit(Lis_port1, Lis_Rst);
+
+    // count falling edges as ticks
+    uint16_t tick_count = 0;
+    while (tick_count++ < exposure_ticks)
+    {
+        // wait for the falling clock edge
+        _WaitForLisClkLow();
+    }
+
+    // stop exposure
+    ClearBit(Lis_port1, Lis_Rst);
+}
 
 #endif // _LIS_H

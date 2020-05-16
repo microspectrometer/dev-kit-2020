@@ -11,5 +11,6 @@ void GiveSpiControlOverMisoAndMosiPins(void);
 void SpiMasterCfg(void);
 // ---API---
 void UartSpiInit(void);
+void StartAdcConversion(void);
 void StartAdcReadout(void);
 

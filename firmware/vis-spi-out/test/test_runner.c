@@ -64,6 +64,23 @@ void Run_LedNumIsValid_tests(bool run_test)
         RUN_TEST(LedNumIsValid_returns_FALSE_if_led_num_is_not_0_or_1);
     }
 }
+void Run_LisReadout_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(LisReadout_waits_for_Lis_Sync_to_go_HIGH_then_go_LOW);
+        RUN_TEST(LisReadout_reads_one_pixel_on_each_rising_edge_of_Lis_Clk);
+        RUN_TEST(LisReadout_LOOP_wait_for_the_rising_edge_of_Lis_Clk);
+        RUN_TEST(LisReadout_LOOP_start_the_ADC_conversion);
+        RUN_TEST(LisReadout_LOOP_wait_for_45_cycles_of_10MHz_clock);
+        RUN_TEST(LisReadout_LOOP_start_ADC_readout);
+        RUN_TEST(LisReadout_LOOP_wait_for_most_significant_byte_ADC_readout);
+        RUN_TEST(LisReadout_LOOP_save_MSB_to_frame_buffer);
+        RUN_TEST(LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout);
+        RUN_TEST(LisReadout_LOOP_save_LSB_to_frame_buffer);
+    }
+}
 
 void Run_GetSensorLED_tests(bool run_test)
 {
@@ -141,6 +158,20 @@ void Run_SetExposure_tests(bool run_test)
         RUN_TEST(SetExposure_sends_OK);
     }
 }
+void Run_CaptureFrame_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(CaptureFrame_sends_OK);
+        RUN_TEST(CaptureFrame_checks_binning_to_determine_number_of_pixels_in_frame);
+        RUN_TEST(CaptureFrame_sends_num_pixels_MSB);
+        RUN_TEST(CaptureFrame_sends_num_pixels_LSB);
+        RUN_TEST(CaptureFrame_exposes_the_pixels);
+        RUN_TEST(CaptureFrame_does_readout_of_num_pixels_into_the_frame_buffer);
+        RUN_TEST(CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer);
+    }
+}
 
 void VisCmd_tests(bool run_test)
 {
@@ -149,12 +180,14 @@ void VisCmd_tests(bool run_test)
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
         Run_ReplyCommandInvalid_tests(Nope);
         Run_LedNumIsValid_tests(Nope);
+        Run_LisReadout_tests(Nope);
         Run_GetSensorLED_tests(Nope);
         Run_SetSensorLED_tests(Nope);
         Run_GetSensorConfig_tests(Nope);
         Run_SetSensorConfig_tests(Nope);
         Run_GetExposure_tests(Nope);
-        Run_SetExposure_tests(Yep);
+        Run_SetExposure_tests(Nope);
+        Run_CaptureFrame_tests(Yep);
     }
 }
 

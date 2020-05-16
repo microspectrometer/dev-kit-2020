@@ -99,5 +99,21 @@ void SetExposure_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void);
 void SetExposure_waits_for_sensor_to_signal_STATUS_data_ready(void);
 void SetExposure_reads_status_from_sensor(void);
 void SetExposure_writes_sensor_status(void);
+// CaptureFrame()
+void CaptureFrame_sends_command_to_sensor(void);
+void CaptureFrame_writes_OK_to_indicate_it_sent_the_command_to_the_sensor(void);
+void CaptureFrame_waits_for_sensor_to_signal_STATUS_data_ready(void);
+void CaptureFrame_reads_status_from_sensor(void);
+void CaptureFrame_waits_for_sensor_to_signal_NUM_PIXELS_MSB_data_ready(void);
+void CaptureFrame_reads_num_pixels_MSB_from_sensor(void);
+void CaptureFrame_waits_for_sensor_to_signal_NUM_PIXELS_LSB_data_ready(void);
+void CaptureFrame_reads_num_pixels_LSB_from_sensor(void);
+void CaptureFrame_writes_sensor_status(void);
+void CaptureFrame_writes_num_pixels_MSB(void);
+void CaptureFrame_writes_num_pixels_LSB(void);
+void CaptureFrame_returns_if_status_is_not_OK(void);
+void CaptureFrame_waits_for_the_next_byte_of_frame_data(void);
+void CaptureFrame_writes_the_next_byte_of_frame_data(void);
+void CaptureFrame_loops_wait_for_byte_then_write_byte_for_a_total_nbytes_of_2x_num_pixels(void);
 
 #endif // _TEST_USBCMD_H

@@ -442,5 +442,71 @@ inline void SetExposure(void)
     // write response
     UsbWriteByte(status);
 }
+inline void CaptureFrame(void)
+{
+    /** CaptureFrame behavior:\n 
+      * - sends command to sensor\n 
+      * - writes OK to indicate it sent the command to the sensor\n 
+      * - waits for sensor to signal STATUS data ready\n 
+      * - reads status from sensor\n 
+      * - waits for sensor to signal NUM_PIXELS_MSB data ready\n 
+      * - reads num_pixels_MSB from sensor\n 
+      * - waits for sensor to signal NUM_PIXELS_LSB data ready\n 
+      * - reads num_pixels_LSB from sensor\n 
+      * - writes sensor status\n 
+      * - writes num_pixels_MSB\n 
+      * - writes num_pixels_LSB\n 
+      * - returns if status is not OK\n 
+      * - waits for the next byte of frame data\n 
+      * - writes the next byte of frame data\n 
+      * - loops wait for byte then write byte for a total nbytes of 2x num_pixels\n 
+      * */
 
+    uint8_t const cmd = 11; // command is CaptureFrame
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send num_pixels_MSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read num_pixels_MSB
+    uint8_t num_pixels_MSB = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send num_pixels_LSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read num_pixels_LSB
+    uint8_t num_pixels_LSB = SpiMasterXfrByte(PADDING);
+
+    // write first three bytes of response from sensor
+    UsbWriteByte(status);
+    UsbWriteByte(num_pixels_MSB);
+    UsbWriteByte(num_pixels_LSB);
+
+    if (status == OK)
+    {
+        /* ------------------ */
+        /* | READ THE FRAME | */
+        /* ------------------ */
+
+        uint16_t num_pixels = (num_pixels_MSB << 8) | num_pixels_LSB;
+        uint16_t nbytes = 2*num_pixels;
+        uint16_t nbytes_read = 0;
+        while(nbytes_read++ < nbytes)
+        {
+            // wait for data ready LOW: sensor ready to send next byte
+            while( BitIsSet(Spi_PortInput, Spi_DataReady));
+            // read next byte of frame data and write to USB host
+            UsbWriteByte( SpiMasterXfrByte(PADDING) );
+        }
+    }
+
+}
 #endif // _USBCMD_H
