@@ -35,7 +35,10 @@ $ python3.7 -m site --user-site
 I use Cygwin, but I run the Python applications using my Windows
 Python installation. The Windows Python installation is executed
 from Cygwin by specifying it at the bash command line as
-`python.exe`.
+`python.exe`. The Windows Python installation searches the Cygwin
+Python USERSITE because I add this USERSITE path to the
+`$env:PYTHONPATH` in my PowerShell $PROFILE, as explained in
+below in *Edit the `PYTHONPATH`*.
 
 I can call `python.exe` from Windows or from Cygwin. It does not
 matter in this case. There are cases where attempting to run
@@ -233,6 +236,31 @@ point. The `cmdline.py` utility does everything I need.
 See section `system test from the command line` below.
 
 # Developer's Guide -- feedback on Sean's API
+
+## Show signature does not work in ptpython
+
+Jonathan Slenders ptpython makes it easy to discover how to use a
+package at the command line. Tab-complete to get a list of
+attributes and methods, and then once one is chosen, he uses Jedi
+to show the function signature.
+
+From Sean's `docstring` module:
+
+> Great pains were taken to auto-generate the proper function and
+> class signatures such as `CommandSetBridgeLED(led_num=None,
+> led_setting=None)` rather than just `CommandSetBridgeLED(\*args,
+> \**kwargs)`, so that pydoc and sphinx could introspect and
+> document them properly. 
+
+Thus Sean generates a single source of truth for code and
+documentation. The tradeoff for this is that Jedi cannot find the
+docstrings.
+
+The workaround to this minor inconvenience is to explicitly call
+help. So, tab-complete as usual to get the method name, then
+instead of opening parentheses to see the docstring, wrap the
+method in help, e.g., `help(si.getBridgeLED)`, and hit Enter to
+read the docstring.
 
 ## Notes on these notes
 From hereon, I refer to paths in Sean's repo with `.` meaning the
@@ -1355,10 +1383,10 @@ Fri, May 15, 2020  1:29:35 PM
         - [x] vis-spi-out
         - [x] usb-bridge
         - [x] system test
-    - [ ] CaptureFrame
+    - [x] CaptureFrame
         - [x] usb-bridge
         - [x] vis-spi-out
-        - [ ] system test
+        - [x] system test
 
 ```date-and-size
 Sat, May 16, 2020  1:39:47 AM
@@ -1368,6 +1396,16 @@ Sat, May 16, 2020  1:39:47 AM
 
 - consuming 77.83% (1594 bytes out of 2048) of the Data SRAM
 - consuming 15.72% (5152 bytes out of 32768) of the Flash
+
+    - [ ] AutoExpose
+        - [ ] vis-spi-out
+        - [ ] usb-bridge
+        - [ ] system test
+
+- [ ] rewrite LabVIEW to test new firmware speed and know we have
+  a working version
+- [ ] write Python GUI
+
 
 - [ ] write main loop switchcase
 
