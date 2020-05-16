@@ -244,6 +244,15 @@ package at the command line. Tab-complete to get a list of
 attributes and methods, and then once one is chosen, he uses Jedi
 to show the function signature.
 
+PyPi page: <https://pypi.org/project/jedi/>
+
+Jedi is meant for adding Python auto-complete to IDEs. Vim example: <https://github.com/davidhalter/jedi-vim>
+
+The way Sean set up the docstrings, Jedi's `get_signatures`
+(method for reading function signatures) is broken.
+
+<https://jedi.readthedocs.io/en/latest/docs/api.html#jedi.Script.get_signatures>
+
 From Sean's `docstring` module:
 
 > Great pains were taken to auto-generate the proper function and
