@@ -176,6 +176,19 @@ Or read the HTML:
 > explorer index.html
 ```
 
+The API is buried here:
+
+```powershell
+> cd $pkg\chromaspec-sean\doc\build\html\
+> explorer chromaspeclib.simple.html
+```
+
+I made a Vim shortcut to open this section in the browser:
+
+```vim
+;api
+```
+
 ## Load VCP
 
 - On Windows, sometimes VCP is not set. Go to Device Manager:
