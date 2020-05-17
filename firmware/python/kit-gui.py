@@ -52,7 +52,10 @@ kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
 # | GUI Setup |
 # -------------
 rgb = pygs.RGB()
-win = pygs.Window()
+win = pygs.Window(
+    caption='Chromation Kit GUI',
+    icon='icon.png'
+    )
 
 # Want to use counts values as pixel y-coordinate,
 # but pixel 0,0 is the top-left, not the bottom-left.
@@ -61,7 +64,7 @@ win = pygs.Window()
 # Add an extra offset to control where the top of the plot is.
 max_data_length = 392 # pixels in LIS-770i with BINNING_ON
 plot_height = 300 # later call scale_data_to_fit(counts, plot_height)
-margin = 50 # space in screen pixels between plot top and window top
+margin = 20 # space in screen pixels between plot top and window top
 win.open_window( max_data_length, plot_height + margin )
 print(f"Display window size: {win.width}x{win.height}")
 clock = pygs.Clock(framerate=50)
@@ -90,7 +93,7 @@ while not quit:
     pixnum = list(range(len(counts)))
 
     # scale counts to plot height
-    yrange = 65000
+    yrange = 65535
     counts = pygs.plot.scale_data_to_fixed_yrange(counts, plot_height, yrange)
 
     # flip to plot upright
@@ -102,6 +105,30 @@ while not quit:
     '''--- UPDATE SCREEN ---'''
     # Blank screen
     win.surface.fill(rgb.blackestgravel)
+
+    # Full scale level
+    # top
+    pygame.draw.aaline(
+        win.surface,
+        rgb.darkgravel,
+        (0,margin), (len(counts),margin) # start, end
+        )
+    # bottom
+    pygame.draw.aaline(
+        win.surface,
+        rgb.darkgravel,
+        (0,0), (len(counts),0) # start, end
+        )
+
+    # AutoExpose target level
+    target = 45000
+    ae_y = round(plot_height + margin - plot_height/yrange * target)
+    pygame.draw.aaline(
+        win.surface,
+        rgb.gravel,
+        (0,ae_y), (len(counts),ae_y) # start, end
+        )
+
     # Draw plot
     pygame.draw.aalines(
         win.surface,
