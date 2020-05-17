@@ -82,17 +82,19 @@ while not quit:
     '''--- ACQUIRE SPECTRUM ---'''
     # capture one frame
     counts = kit.captureFrame().pixels
+    # put short wavelengths on left side of plot
+    counts.reverse()
 
     '''--- CREATE PLOT DATA ---'''
     # create x-axis: 1,2,...,391,392
     pixnum = list(range(len(counts)))
 
     # scale counts to plot height
-    counts = pygs.plot.scale_data_to_fit(counts, plot_height)
+    yrange = 65000
+    counts = pygs.plot.scale_data_to_fixed_yrange(counts, plot_height, yrange)
 
     # flip to plot upright
-    max_val = max(counts)
-    counts = [ max_val + margin - val for val in counts ]
+    counts = [ plot_height + margin - val for val in counts ]
 
     # turn x and y data arrays into x,y coordinate pairs
     zipped = list(zip(pixnum, counts))
