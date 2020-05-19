@@ -74,5 +74,9 @@ void CaptureFrame_sends_num_pixels_LSB(void);
 void CaptureFrame_exposes_the_pixels(void);
 void CaptureFrame_does_readout_of_num_pixels_into_the_frame_buffer(void);
 void CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer(void);
+// GetPeak(start_pixel, stop_pixel) -> peak_counts
+void GetPeak_is_visible(void);
+// AutoExpose(start_pixel, stop_pixel)
+void AutoExpose_is_visible(void);
 
 #endif // _TEST_VISCMD_H

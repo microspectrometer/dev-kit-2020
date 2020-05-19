@@ -101,7 +101,7 @@ endif
 # Add app libs here{{{
 # App libs are application code with test coverage.
 # List separate from other libs because path is different.
-applib := Example VisCmd
+applib := Example VisCmd AutoExpose
 test_app := $(addprefix test_,${applib})
 test_app_o := $(addsuffix .o,${test_app})
 test_app_o := $(addprefix build/,${test_app_o})

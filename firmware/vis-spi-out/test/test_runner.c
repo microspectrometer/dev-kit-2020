@@ -25,6 +25,7 @@ void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
 
 // ---Lists of tests---
 #include "test_Example.h"
+#include "test_AutoExpose.h"
 #include "test_VisCmd.h"
 
 // ---Fake all hardware---
@@ -44,6 +45,32 @@ void Example_tests(bool run_test)
     }
 }
 
+/* =====[ AutoExpose_tests ]===== */
+
+void Run_GetPeak_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(GetPeak_is_visible);
+    }
+}
+void Run_AutoExpose_tests(bool run_test)
+{
+    if (run_test)
+    {
+        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        RUN_TEST(AutoExpose_is_visible);
+    }
+}
+void AutoExpose_tests(bool run_test)
+{
+    if (run_test)
+    {
+        Run_GetPeak_tests(Yep);
+        Run_AutoExpose_tests(Yep);
+    }
+}
 /* =====[ VisCmd_tests ]===== */
 void Run_ReplyCommandInvalid_tests(bool run_test)
 {
@@ -195,6 +222,7 @@ int main(void)
 {
     UNITY_BEGIN();
     Example_tests(Nope);
-    VisCmd_tests(Yep);
+    AutoExpose_tests(Yep);
+    VisCmd_tests(Nope);
     return UNITY_END();
 }

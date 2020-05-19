@@ -151,4 +151,15 @@ void setup_DetectorReadout(void)
     active_rows = ALL_ROWS_ACTIVE;
     // Program LIS-770i with above configuration
     LisWriteConfig();
+    /* ------------------------------- */
+    /* | Initialize AutoExposeConfig | */
+    /* ------------------------------- */
+    // Initialize AutoExpose maximum number of tries
+    max_tries = 10;
+    // Initialize AutoExpose pixel range to all 392 pixels
+    start_pixel = 7; // first 6 pixels are optically meaningless
+    stop_pixel = 392;
+    // Initialize AutoExpose target peak range to 46420 ± 3277 counts
+    target = 46420;
+    target_tolerance = 3277;
 }

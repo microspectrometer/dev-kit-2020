@@ -559,3 +559,17 @@ void CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer(void)
 {
     TEST_PASS();
 }
+
+// GetPeak(start_pixel, stop_pixel) -> peak_counts
+void GetPeak_is_visible(void)
+{
+    /* uint16_t val = GetPeak(7, 200); */
+    TEST_FAIL_MESSAGE("Implement test.");
+}
+
+// AutoExpose(start_pixel, stop_pixel)
+void AutoExpose_is_visible(void)
+{
+    /* AutoExpose(256, 256); */
+    TEST_FAIL_MESSAGE("Implement test.");
+}
