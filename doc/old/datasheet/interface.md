@@ -67,6 +67,20 @@ values. Voltage reference selection depends on application-specific design
 considerations.
 
 # Recommended ADC values
+TODO: change this section based on new info re: resolution,
+vref, and offset subtraction
+
+- resolution
+    - 11-bits is the max useful resolution given dynamic range limits
+      of the detector itself, but the kit uses 16-bits
+    - do not express resolution as a min/max/typ type parameter
+    - see /cygdrive/c/chromation-dropbox/Dropbox/ChromationBD/customers/DistributedSensingTechnology/enob.md
+- vref
+    - changed from 2.048V to 1.8V
+    - this makes sense as a min/max/typ parameter
+    - use 2.048V as the max, 1.8V as the typical
+- also discuss how the offset is subtracted with the trimpot
+
 Chromation uses a 16-bit SAR ADC and 2.048V reference in the Chromation
 Spectrometer Evaluation Kit. The voltage reference value is based on the
 Chromation recommendations for linear pixel array configuration and analog
