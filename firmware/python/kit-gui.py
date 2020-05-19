@@ -53,8 +53,8 @@ kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
 # -------------
 rgb = pygs.RGB()
 win = pygs.Window(
-    caption='Chromation Kit GUI',
-    icon='icon.png'
+    caption='Chromation Kit',
+    icon='icon.png' # TODO: find this even if pwd does not match
     )
 
 # Want to use counts values as pixel y-coordinate,
