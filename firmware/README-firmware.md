@@ -1419,10 +1419,17 @@ Sat, May 16, 2020  1:39:47 AM
 - consuming 77.83% (1594 bytes out of 2048) of the Data SRAM
 - consuming 15.72% (5152 bytes out of 32768) of the Flash
 
-    - [ ] AutoExpose
+    - [ ] AutoExposure
         - [ ] vis-spi-out
         - [ ] usb-bridge
         - [ ] system test
+
+- [ ] find a work-around to make this warning go away:
+
+```make
+src/VisCmd.h|108 col 9| warning: '_delay_loop_1' is static but used in inline function 'LisReadout' which is not static
+||          _delay_loop_1(15); // 15 * 3 = 45 -> 4.5µs plus overhead
+```
 
 - [ ] rewrite LabVIEW to test new firmware speed and know we have
   a working version
