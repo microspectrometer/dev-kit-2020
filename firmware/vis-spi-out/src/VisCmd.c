@@ -18,7 +18,64 @@ void AutoExposure(void);
 /* ---------------------------------------- */
 bool LedNumIsValid(bicolorled_num);
 uint8_t ReadLedState(bicolorled_num);
-void LisReadout(uint16_t num_pixels);
+
+void LisReadout(uint16_t num_pixels)
+{
+    /** LisReadout behavior:\n 
+      * - waits for Lis_Sync to go HIGH then go LOW\n 
+      * - reads one pixel on each rising edge of Lis_Clk\n 
+      * - LOOP: wait for the rising edge of Lis_Clk\n 
+      * - LOOP: start the ADC conversion\n 
+      * - LOOP: wait for 45 cycles of 10MHz clock\n 
+      * - LOOP: start ADC readout\n 
+      * - LOOP: wait for most significant byte of ADC readout\n 
+      * - LOOP: save MSB to frame buffer\n 
+      * - LOOP: wait for least significant byte of ADC readout\n 
+      * - LOOP: save LSB to frame buffer\n 
+      * */
+
+    // wait for SYNC pulse to signify readout starts
+    while( BitIsClear(Lis_pin1, Lis_Sync) ); // wait for RISING
+    while(   BitIsSet(Lis_pin1, Lis_Sync) ); // wait for FALLING
+
+    /* --------------------------------------------------------- */
+    /* | LOOP: read one pixel on each rising edge of Lis clock | */
+    /* --------------------------------------------------------- */
+    uint16_t pixel_count = 0;
+    uint8_t *pframe = frame;
+    while( pixel_count++ < num_pixels)
+    {
+        // wait for rising edge of Lis clock
+        _WaitForLisClkHigh();
+
+        // start ADC conversion
+        StartAdcConversion();
+
+        /* --------------------------------------------------- */
+        /* | wait at least 4.66µs for conversion to complete | */
+        /* --------------------------------------------------- */
+        // use _delay_loop_1 to count 45 ticks of the 10MHz osc
+        // each loop iteration is 3 ticks
+#ifndef USE_FAKES
+        _delay_loop_1(15); // 15 * 3 = 45 -> 4.5µs plus overhead
+#endif
+
+        // start 16-bit ADC readout
+        StartAdcReadout();
+
+        // wait for MSB of ADC readout
+        while (BitIsClear(UartSpi_UCSR0A, UartSpi_RXC0));
+
+        // save MSB to frame buffer
+        *(pframe++) = *UartSpi_UDR0;
+
+        // wait for LSB of ADC readout
+        while (BitIsClear(UartSpi_UCSR0A, UartSpi_RXC0));
+
+        // save LSB to frame buffer
+        *(pframe++) = *UartSpi_UDR0;
+    }
+}
 
 uint16_t GetPeak(uint16_t const _start_pixel, uint16_t const _stop_pixel)
 {
