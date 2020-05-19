@@ -1419,17 +1419,39 @@ Sat, May 16, 2020  1:39:47 AM
 - consuming 77.83% (1594 bytes out of 2048) of the Data SRAM
 - consuming 15.72% (5152 bytes out of 32768) of the Flash
 
+    - [x] AutoExpose
+    - [x] GetPeak
+
+```date-and-size
+Tue, May 19, 2020 10:48:08 AM
+   text	   data	    bss	    dec	    hex	filename
+   5394	     16	   1601	   7011	   1b63	build/vis-spi-out.elf
+```
+
+- consuming 78.96% (1617 bytes out of 2048) of the Data SRAM
+- consuming 16.51% (5410 bytes out of 32768) of the Flash
+
     - [ ] AutoExposure
         - [ ] vis-spi-out
         - [ ] usb-bridge
         - [ ] system test
+    - [ ] GetAutoExposeConfig
+        - [ ] vis-spi-out
+        - [ ] usb-bridge
+        - [ ] system test
+    - [ ] SetAutoExposeConfig
+        - [ ] vis-spi-out
+        - [ ] usb-bridge
+        - [ ] system test
 
-- [ ] find a work-around to make this warning go away:
+- [x] find a work-around to make this warning go away:
 
 ```make
 src/VisCmd.h|108 col 9| warning: '_delay_loop_1' is static but used in inline function 'LisReadout' which is not static
 ||          _delay_loop_1(15); // 15 * 3 = 45 -> 4.5µs plus overhead
 ```
+
+- solution: make LisReadout *not* inline
 
 - [ ] rewrite LabVIEW to test new firmware speed and know we have
   a working version
@@ -1437,6 +1459,9 @@ src/VisCmd.h|108 col 9| warning: '_delay_loop_1' is static but used in inline fu
 
 
 - [ ] write main loop switchcase
+- [ ] pull command helpers out of VisCmd into their own app libs
+- [ ] system test response to invalid commands
+
 
 ## tabled
 - [x] is there a way to reset the FT221X?
