@@ -14,6 +14,8 @@
  * */
 #ifndef _VISCMD_H
 #define _VISCMD_H
+#include <stdint.h>
+#include <stdbool.h>
 #include "SpiSlave.h"
 #include "StatusCode.h"
 #include "Lis.h"
@@ -21,6 +23,7 @@
 #include "Queue.h"
 #include "BiColorLed.h"
 #include "UartSpi.h"
+#include "AutoExpose.h"
 
 /* ------------------------------------------------------- */
 /* | Only use these headers when building for AVR target | */
@@ -29,7 +32,7 @@
 #include <util/delay_basic.h> // use _delay_loop_1 to count µs
 #endif
 
-extern volatile Queue_s * SpiFifo; // definiton in `main()` translation unit
+extern volatile Queue_s * SpiFifo; // definition in `main()` translation unit
 
 //! One frame of pixel data is, at most, 1568 bytes.
 uint8_t frame[2*MAX_NUM_PIXELS];
@@ -121,6 +124,9 @@ inline void LisReadout(uint16_t num_pixels)
         *(pframe++) = *UartSpi_UDR0;
     }
 }
+
+uint16_t GetPeak(uint16_t const start_pixel, uint16_t const stop_pixel);
+void AutoExpose(void);
 
 /* ---------------------- */
 /* | ---Commands :( --- | */ // (these NEED proper unit tests)
@@ -335,6 +341,13 @@ inline void CaptureFrame(void)
 
     // Re-enable interrupt and reset (clear) SPI interrupt flag
     EnableSpiInterrupt();
+}
+
+inline void AutoExposure(void)
+{
+    //! Placeholder.
+
+    AutoExpose();
 }
 
 /* ---------------------- */
