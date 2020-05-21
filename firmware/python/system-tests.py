@@ -19,7 +19,7 @@ from chromaspeclib.simple import ChromaSpecSimpleInterface
 # Open communication. Communication closes when this script finishes.
 kit = ChromaSpecSimpleInterface(
     serial_number='091103', # dev-kit I'm using for my system tests
-    timeout=0.1 # timeout if there is no response in 100ms
+    timeout=1.0 # timeout if there is no response in 100ms
     )
 
 # -------------
@@ -49,6 +49,13 @@ ONLY_ROW_3_ACTIVE = 0x04
 ONLY_ROW_4_ACTIVE = 0x08
 ONLY_ROW_5_ACTIVE = 0x10
 
+# auto-expose config
+MAX_TRIES        = 10
+START_PIXEL      = 7
+STOP_PIXEL       = 392
+TARGET           = 46420
+TARGET_TOLERANCE = 3277
+
 # command_id
 GetBridgeLED = 1
 SetBridgeLED = 2
@@ -59,12 +66,17 @@ SetSensorConfig = 8
 GetExposure = 9
 SetExposure = 10
 CaptureFrame = 11
+AutoExposure = 12
+GetAutoExposeConfig = 13
+SetAutoExposeConfig = 14
 
 # --------------------
 # | API System Tests |
 # --------------------
 
 class TestGetBridgeLED(unittest.TestCase):
+    def tearDown(self):
+        kit.setBridgeLED(0, 1)
 
     def test_GetBridgeLED_1_replies_status_ERROR(self):
         # =====[ Operate ]=====
@@ -108,6 +120,9 @@ class TestGetBridgeLED(unittest.TestCase):
         self.assertEqual(RED, reply.led_setting)
 
 class TestSetBridgeLED(unittest.TestCase):
+    def tearDown(self):
+        kit.setSensorLED(0, 1)
+        kit.setSensorLED(1, 1)
 
     def test_SetBridgeLED_1_X_replies_status_ERROR(self):
         # =====[ Operate ]=====
@@ -138,6 +153,9 @@ class TestSetBridgeLED(unittest.TestCase):
         self.assertEqual(OK, reply.status)
 
 class TestGetSensorLED(unittest.TestCase):
+    def tearDown(self):
+        kit.setSensorLED(0, 1)
+        kit.setSensorLED(1, 1)
 
     def test_GetSensorLED_2_replies_status_ERROR(self):
         # =====[ Operate ]=====
@@ -215,6 +233,9 @@ class TestGetSensorLED(unittest.TestCase):
         self.assertEqual(RED, reply.led_setting)
 
 class TestSetSensorLED(unittest.TestCase):
+    def tearDown(self):
+        kit.setSensorLED(0, 1)
+        kit.setSensorLED(1, 1)
 
     def test_SetSensorLED_2_X_replies_status_ERROR(self):
         # =====[ Operate ]=====
@@ -266,6 +287,8 @@ class TestSetSensorLED(unittest.TestCase):
         self.assertEqual(OK, reply.status)
 
 class TestSetSensorConfig(unittest.TestCase):
+    def tearDown(self):
+        kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
 
     def test_SetSensorConfig_BINNING_OFF_GAIN_5X_ONLY_ROW_3_ACTIVE_replies_status_OK(self):
         # =====[ Operate ]=====
@@ -282,6 +305,8 @@ class TestSetSensorConfig(unittest.TestCase):
         self.assertEqual(ERROR, reply.status)
 
 class TestGetSensorConfig(unittest.TestCase):
+    def tearDown(self):
+        kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
 
     def test_GetSensorConfig_replies_with_parameters_matching_most_recently_set_config(self):
         # =====[ Setup ]=====
@@ -306,6 +331,8 @@ class TestGetSensorConfig(unittest.TestCase):
         self.assertEqual(ALL_ROWS_ACTIVE, reply.row_bitmap)
 
 class TestGetExposure(unittest.TestCase):
+    def tearDown(self):
+        kit.setExposure(50)
 
     def test_GetExposure_replies_status_OK(self):
         # =====[ Operate ]=====
@@ -336,6 +363,8 @@ class TestGetExposure(unittest.TestCase):
         self.assertEqual(cycles, reply.cycles)
 
 class TestSetExposure(unittest.TestCase):
+    def tearDown(self):
+        kit.setExposure(50)
 
     def test_SetExposure_replies_status_OK(self):
         exposure = 10e-3 # seconds
@@ -374,3 +403,152 @@ class TestCaptureFrame(unittest.TestCase):
         self.assertEqual(CaptureFrame, reply.command_id)
         # =====[ Test ]=====
         self.assertEqual(392, len(reply.pixels))
+
+class TestSetAutoExposeConfig(unittest.TestCase):
+    def tearDown(self):
+        kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
+        kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+
+    def test_SetAutoExposeConfig_replies_status_OK_if_config_is_valid(self):
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(OK, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_MAX_TRIES_is_0(self):
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(0, START_PIXEL, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_START_PIXEL_is_less_than_7_and_BINNING_ON(self):
+        # =====[ Setup ]=====
+        kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, 6, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_START_PIXEL_is_less_than_14_and_BINNING_OFF(self):
+        # =====[ Setup ]=====
+        kit.setSensorConfig(BINNING_OFF, GAIN_1X, ALL_ROWS_ACTIVE)
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, 13, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_START_PIXEL_is_more_than_392_and_BINNING_ON(self):
+        # =====[ Setup ]=====
+        kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, 393, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_START_PIXEL_is_more_than_784_and_BINNING_OFF(self):
+        # =====[ Setup ]=====
+        kit.setSensorConfig(BINNING_OFF, GAIN_1X, ALL_ROWS_ACTIVE)
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, 785, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_STOP_PIXEL_is_less_than_7_and_BINNING_ON(self):
+        # =====[ Setup ]=====
+        kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, 6, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_STOP_PIXEL_is_less_than_14_and_BINNING_OFF(self):
+        # =====[ Setup ]=====
+        kit.setSensorConfig(BINNING_OFF, GAIN_1X, ALL_ROWS_ACTIVE)
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, 13, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_STOP_PIXEL_is_more_than_392_and_BINNING_ON(self):
+        # =====[ Setup ]=====
+        kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, 393, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_STOP_PIXEL_is_more_than_784_and_BINNING_OFF(self):
+        # =====[ Setup ]=====
+        kit.setSensorConfig(BINNING_OFF, GAIN_1X, ALL_ROWS_ACTIVE)
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, 785, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_STOP_PIXEL_is_less_than_START_PIXEL(self):
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, 200, 100, TARGET, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+    def test_SetAutoExposeConfig_replies_status_ERROR_if_TARGET_is_less_than_4500(self):
+        # =====[ Operate ]=====
+        reply = kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, STOP_PIXEL, 4499, TARGET_TOLERANCE)
+        self.assertEqual(SetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(ERROR, reply.status)
+
+class TestGetAutoExposeConfig(unittest.TestCase):
+    def tearDown(self):
+        kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
+        kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+
+    def test_GetAutoExposeConfig_replies_MAX_TRIES_START_PIXEL_STOP_PIXEL_TARGET_TARGET_TOLERANCE_if_using_default_config(self):
+        # =====[ Setup ]=====
+        kit.setAutoExposeConfig(MAX_TRIES, START_PIXEL, STOP_PIXEL, TARGET, TARGET_TOLERANCE)
+        # =====[ Operate ]=====
+        reply = kit.getAutoExposeConfig()
+        self.assertEqual(GetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(MAX_TRIES, reply.max_tries)
+        self.assertEqual(START_PIXEL, reply.start_pixel)
+        self.assertEqual(STOP_PIXEL, reply.stop_pixel)
+        self.assertEqual(TARGET, reply.target)
+        self.assertEqual(TARGET_TOLERANCE, reply.target_tolerance)
+
+    def test_GetAutoExposeConfig_replies_with_parameters_matching_most_recently_set_config(self):
+        # =====[ Setup ]=====
+        max_tries = 20; start_pixel = 100; stop_pixel = 200; target = 46000; target_tolerance = 3000
+        kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, target_tolerance)
+        # =====[ Operate ]=====
+        reply = kit.getAutoExposeConfig()
+        self.assertEqual(GetAutoExposeConfig, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(max_tries, reply.max_tries)
+        self.assertEqual(start_pixel, reply.start_pixel)
+        self.assertEqual(stop_pixel, reply.stop_pixel)
+        self.assertEqual(target, reply.target)
+        self.assertEqual(target_tolerance, reply.target_tolerance)
+
+class TestAutoExposure(unittest.TestCase):
+    def tearDown(self):
+        kit.setExposure(50)
+
+    def test_AutoExposure_replies_status_OK(self):
+        # =====[ Operate ]=====
+        reply = kit.autoExposure()
+        self.assertEqual(AutoExposure, reply.command_id)
+        # =====[ Test ]=====
+        self.assertEqual(OK, reply.status)
+

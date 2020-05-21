@@ -17,18 +17,30 @@ def report(reply):
     _print_the_reply_received(reply)
 
 from chromaspeclib.simple import ChromaSpecSimpleInterface
-si = ChromaSpecSimpleInterface(
+kit = ChromaSpecSimpleInterface(
     serial_number='091103', # dev-kit I'm using for my system tests
-    timeout=0.1 # timeout if there is no response in 100ms
+    timeout=2.0 # timeout if there is no response in 100ms
     )
-print(f"Using: {si}")
+print(f"Using: {kit}")
 
-# ----------------
-# | GetBridgeLED |
-# ----------------
+# ---------------------------------------
+# | Replace line 32 with command to try |
+# ---------------------------------------
 
 # Send the command and get the reply.
-reply = si.getBridgeLED(0)
+# max_tries = 20; start_pixel = 100; stop_pixel = 200; target = 46000; target_tolerance = 3000
+# kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, target_tolerance)
+# reply = kit.setAutoExposeConfig(10, 7, 392, 46420, 3277)
+# reply = kit.getBridgeLED(0)
 # Report the command and its reply.
-report(reply)
+# report(reply)
 
+# kit.null()
+
+kit.setAutoExposeConfig(1, 8, 200, 46420, 3277)
+reply = kit.getAutoExposeConfig()
+report(reply)
+reply = kit.autoExposure()
+report(reply)
+# reply = kit.getExposure()
+# report(reply)
