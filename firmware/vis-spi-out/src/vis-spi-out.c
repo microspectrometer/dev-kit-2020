@@ -174,6 +174,8 @@ void setup_DetectorReadout(void)
     // SetAutoExposeConfig guarantees target is not below max_dark.
     max_dark = 4500;
     // Hard-code exposure time limits
+    // keep lower limit well-away from 1 cycle
     min_exposure = 5; // cycles
-    max_exposure = UINT16_MAX; // cycles
+    // upper limit is 1.3s, but use 300ms for faster auto-expose
+    max_exposure = 15000; // cycles
 }

@@ -37,7 +37,7 @@ print(f"Using: {kit}")
 
 # kit.null()
 
-kit.setAutoExposeConfig(1, 8, 200, 46420, 3277)
+kit.setAutoExposeConfig(1, 8, 235, 46420, 3277, 65535)
 reply = kit.getAutoExposeConfig()
 report(reply)
 reply = kit.autoExposure()

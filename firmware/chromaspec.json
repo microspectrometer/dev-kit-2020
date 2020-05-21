@@ -33,7 +33,7 @@
       ,"11": { "name": "CaptureFrame",    "variables": [ "command_id"                                  ], "sizes": [1] }
       ,"12": { "name": "AutoExposure",    "variables": [ "command_id"                                  ], "sizes": [1] }
       ,"13": { "name": "GetAutoExposeConfig", "variables": [ "command_id"                              ], "sizes": [1] }
-      ,"14": { "name": "SetAutoExposeConfig", "variables": [ "command_id", "max_tries", "start_pixel", "stop_pixel", "target", "target_tolerance" ], "sizes": [1,1,2,2,2,2] }
+      ,"14": { "name": "SetAutoExposeConfig", "variables": [ "command_id", "max_tries", "start_pixel", "stop_pixel", "target", "target_tolerance", "max_exposure" ], "sizes": [1,1,2,2,2,2,2] }
     },
     "bridge":
     {
@@ -64,8 +64,8 @@
       ,"10": { "name": "SetExposure",     "variables": [ "status"                                  ], "sizes": [1] }
       ,"11": { "name": "CaptureFrame",    "variables": [ "status", "num_pixels", "pixels"          ], "sizes": [1,2,2],
                                           "repeat":    { "pixels": "num_pixels"                    } }
-      ,"12": { "name": "AutoExposure",    "variables": [ "status", "success", "iterations"         ], "sizes": [1, 1, 1] }
-      ,"13": { "name": "GetAutoExposeConfig", "variables": [ "status", "max_tries", "start_pixel", "stop_pixel", "target", "target_tolerance" ], "sizes": [1,1,2,2,2,2] }
+      ,"12": { "name": "AutoExposure",    "variables": [ "status", "success", "iterations"         ], "sizes": [1,1,1] }
+      ,"13": { "name": "GetAutoExposeConfig", "variables": [ "status", "max_tries", "start_pixel", "stop_pixel", "target", "target_tolerance", "max_exposure" ], "sizes": [1,1,2,2,2,2,2] }
       ,"14": { "name": "SetAutoExposeConfig", "variables": [ "status"                              ], "sizes": [1] }
     }
   }

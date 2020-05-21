@@ -1864,6 +1864,10 @@ Tue, May 19, 2020 10:48:08 AM
         - [x] usb-bridge
         - [x] system test
         - [ ] add max_exposure to config
+            - [x] json
+            - [x] vis-spi-out
+            - [x] usb-bridge
+            - [ ] system test
     - [x] SetAutoExposeConfig
         - [x] vis-spi-out
             - [-] unit test AutoExposeConfigIsValid()
@@ -1873,6 +1877,11 @@ Tue, May 19, 2020 10:48:08 AM
         - [x] usb-bridge
         - [x] system test
         - [ ] add max_exposure to config
+            - [x] json
+            - [x] vis-spi-out
+            - [x] usb-bridge
+            - [ ] vis-spi-out: add to AutoExposeConfigIsValid
+            - [ ] system test
 
 ```
 || avr-size build/usb-bridge.elf

@@ -597,15 +597,25 @@ inline void GetAutoExposeConfig(void)
     // read target_lsb
     uint8_t target_lsb = SpiMasterXfrByte(PADDING);
 
-    // wait for data ready LOW: sensor ready to send TARGET_TOLERANCE_MSB
+    // wait for data ready LOW: sensor ready to send target_tolerance_MSB
     while( BitIsSet(Spi_PortInput, Spi_DataReady));
     // read target_tolerance_msb
     uint8_t target_tolerance_msb = SpiMasterXfrByte(PADDING);
 
-    // wait for data ready LOW: sensor ready to send TARGET_LSB
+    // wait for data ready LOW: sensor ready to send target_tolerance_LSB
     while( BitIsSet(Spi_PortInput, Spi_DataReady));
     // read target_tolerance_lsb
     uint8_t target_tolerance_lsb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send max_exposure_MSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read max_exposure_msb
+    uint8_t max_exposure_msb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send max_exposure_LSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read max_exposure_lsb
+    uint8_t max_exposure_lsb = SpiMasterXfrByte(PADDING);
 
     // write response from sensor
     UsbWriteByte(status);
@@ -623,6 +633,9 @@ inline void GetAutoExposeConfig(void)
     // default: 3277 = 0x0ccd
     UsbWriteByte(target_tolerance_msb); // 0x0c -- 12 (*256)
     UsbWriteByte(target_tolerance_lsb); // 0xcd -- 205
+    // default: 65535 = 0xFFFF
+    UsbWriteByte(max_exposure_msb); // 0x0c -- 12 (*256)
+    UsbWriteByte(max_exposure_lsb); // 0xcd -- 205
 }
 inline void SetAutoExposeConfig(void)
 {
@@ -685,6 +698,18 @@ inline void SetAutoExposeConfig(void)
     uint8_t target_tolerance_lsb = 0xFF;
     UsbReadByte(&target_tolerance_lsb);
 
+    // loop until max_exposure_msb is received
+    while (UsbRxbufferIsEmpty());
+    // read max_exposure_msb
+    uint8_t max_exposure_msb = 0xFF;
+    UsbReadByte(&max_exposure_msb);
+
+    // loop until max_exposure_lsb is received
+    while (UsbRxbufferIsEmpty());
+    // read max_exposure_lsb
+    uint8_t max_exposure_lsb = 0xFF;
+    UsbReadByte(&max_exposure_lsb);
+
     // send command to sensor
     SpiMasterXfrByte(cmd);
     SpiMasterXfrByte(max_tries);
@@ -696,6 +721,8 @@ inline void SetAutoExposeConfig(void)
     SpiMasterXfrByte(target_lsb);
     SpiMasterXfrByte(target_tolerance_msb);
     SpiMasterXfrByte(target_tolerance_lsb);
+    SpiMasterXfrByte(max_exposure_msb);
+    SpiMasterXfrByte(max_exposure_lsb);
 
     // write OK to indicate command sent to sensor
     UsbWriteByte(OK);

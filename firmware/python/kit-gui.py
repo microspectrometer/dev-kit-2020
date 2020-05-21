@@ -47,8 +47,8 @@ ALL_ROWS_ACTIVE = 0x1F
 # start with default config
 kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
 # dead pixel at 236
-max_tries=12; start_pixel=8; stop_pixel=235; target=46420; tol=3277
-kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, tol)
+max_tries=12; start_pixel=8; stop_pixel=235; target=46420; tol=3277; max_exposure=15000
+kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, tol, max_exposure)
 
 # start with 1ms exposure time
 milliseconds = 1
@@ -106,7 +106,7 @@ exposure_tag_label = h3_font.render(
     None # text bg color, use None for transparent
     )
 exposure_ms_label = h3_font.render(
-    f'{to_ms(exposure)}ms', # text
+        f'{to_ms(exposure):.2f}ms', # text
     1, # antialias: 0: off, 1: on
     rgb.darkgravel, # text fg color
     None # text bg color, use None for transparent
@@ -205,7 +205,7 @@ while not quit:
             exposure = kit.getExposure().cycles
             # update label "exposure"
             exposure_ms_label = h3_font.render(
-                f'{to_ms(exposure)}ms', # text
+                    f'{to_ms(exposure):.2f}ms', # text
                 1, # antialias: 0: off, 1: on
                 rgb.saltwatertaffy, # text fg color
                 None # text bg color, use None for transparent
@@ -334,8 +334,8 @@ while not quit:
     # Draw pixel label
     win.surface.blit(pixel_label,           (10, margin+20))
     win.surface.blit(exposure_tag_label,    (max_data_length-140, margin+110))
-    win.surface.blit(exposure_ms_label,     (max_data_length-55, margin+110))
-    win.surface.blit(exposure_cycles_label, (max_data_length-140, margin+130))
+    win.surface.blit(exposure_ms_label,     (max_data_length-120, margin+130))
+    win.surface.blit(exposure_cycles_label, (max_data_length-120, margin+150))
     win.surface.blit(ae_label,              (10, margin+110))
     win.surface.blit(success_label,         (30, margin+130))
     win.surface.blit(iterations_label,      (30, margin+150))

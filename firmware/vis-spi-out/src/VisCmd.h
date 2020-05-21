@@ -353,20 +353,22 @@ inline void GetAutoExposeConfig(void)
     SpiSlaveTxByte(LSB(target));
     SpiSlaveTxByte(MSB(target_tolerance));
     SpiSlaveTxByte(LSB(target_tolerance));
+    SpiSlaveTxByte(MSB(max_exposure));
+    SpiSlaveTxByte(LSB(max_exposure));
 }
 
 inline void SetAutoExposeConfig(void)
 {
 
     /* ------------------------------------------- */
-    /* | Get 5 config values, a total of 9 bytes | */
+    /* | Get 6 config values, a total of 11 bytes | */
     /* ------------------------------------------- */
 
     // get max_tries
     while (QueueIsEmpty(SpiFifo));
     uint8_t new_max_tries = QueuePop(SpiFifo);
 
-    // remaining 4 config values are each 16 bits, sent MSB first
+    // remaining 5 config values are each 16 bits, sent MSB first
     uint8_t msb; uint8_t lsb;
 
     // get start pixel
@@ -374,28 +376,35 @@ inline void SetAutoExposeConfig(void)
     msb = QueuePop(SpiFifo);
     while (QueueIsEmpty(SpiFifo));
     lsb = QueuePop(SpiFifo);
-    uint16_t new_start_pixel = (msb << 8) | lsb;
+    uint16_t new_start_pixel = (uint16_t)(msb << 8) | lsb;
 
     // get stop pixel
     while (QueueIsEmpty(SpiFifo));
     msb = QueuePop(SpiFifo);
     while (QueueIsEmpty(SpiFifo));
     lsb = QueuePop(SpiFifo);
-    uint16_t new_stop_pixel = (msb << 8) | lsb;
+    uint16_t new_stop_pixel = (uint16_t)(msb << 8) | lsb;
 
     // get target
     while (QueueIsEmpty(SpiFifo));
     msb = QueuePop(SpiFifo);
     while (QueueIsEmpty(SpiFifo));
     lsb = QueuePop(SpiFifo);
-    uint16_t new_target = (msb << 8) | lsb;
+    uint16_t new_target = (uint16_t)(msb << 8) | lsb;
 
     // get target_tolerance
     while (QueueIsEmpty(SpiFifo));
     msb = QueuePop(SpiFifo);
     while (QueueIsEmpty(SpiFifo));
     lsb = QueuePop(SpiFifo);
-    uint16_t new_target_tolerance = (msb << 8) | lsb;
+    uint16_t new_target_tolerance = (uint16_t)(msb << 8) | lsb;
+
+    // get max_exposure
+    while (QueueIsEmpty(SpiFifo));
+    msb = QueuePop(SpiFifo);
+    while (QueueIsEmpty(SpiFifo));
+    lsb = QueuePop(SpiFifo);
+    uint16_t new_max_exposure = (uint16_t)(msb << 8) | lsb;
 
     /* ----------------------- */
     /* | Validate New Config | */
@@ -418,6 +427,7 @@ inline void SetAutoExposeConfig(void)
         stop_pixel = new_stop_pixel;
         target = new_target;
         target_tolerance = new_target_tolerance;
+        max_exposure = new_max_exposure;
 
         // reply with OK
         SpiSlaveTxByte(OK);
