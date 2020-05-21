@@ -59,15 +59,38 @@ void Run_AutoExpose_tests(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(AutoExpose_is_visible);
+        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+        RUN_TEST(AutoExpose_turns_led1_red_to_indicate_starting);
+        RUN_TEST(AutoExpose_sets_max_dark_at_4500_counts);
+        RUN_TEST(AutoExpose_sets_min_exposure_at_5_cycles);
+        RUN_TEST(AutoExpose_sets_max_exposure_at_65535_cycles);
+        RUN_TEST(AutoExpose_sets_min_peak_at_target_minus_tolerance);
+        RUN_TEST(AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_GREATER_THAN_target);
+        RUN_TEST(AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_LESS_THAN_max_dark);
+        RUN_TEST(AutoExpose_sets_max_peak_at_target_plus_tolerance);
+        RUN_TEST(AutoExpose_clamps_max_peak_at_65535_counts_if_target_plus_tolerance_is_LESS_THAN_target);
+        RUN_TEST(AutoExpose_loops_until_done);
+        RUN_TEST(AutoExpose_exposes_the_LIS_770i_pixels);
+        RUN_TEST(AutoExpose_reads_pixel_counts_into_global_frame_buffer);
+        RUN_TEST(AutoExpose_finds_frame_peak_in_range_start_pixel_to_stop_pixel);
+        RUN_TEST(AutoExpose_is_done_if_peak_less_than_max_dark_AND_exposure_at_max);
+        RUN_TEST(AutoExpose_scales_exposure_by_10_if_peak_less_than_max_dark);
+        RUN_TEST(AutoExpose_clamps_exposure_at_max_exposure_if_10_x_exposure_is_GREATER_THAN_max_exposure);
+        RUN_TEST(AutoExpose_scales_exposure_by_half_if_peak_ABOVE_max_peak);
+        RUN_TEST(AutoExpose_clamps_exposure_at_min_exposure_if_half_exposure_is_LESS_THAN_min_exposure);
+        RUN_TEST(AutoExpose_is_done_if_peak_BELOW_min_peak_and_exposure_at_max_exposure);
+        RUN_TEST(AutoExpose_scales_exposure_by_target_div_peak_if_peak_BELOW_min_peak_and_exposure_not_at_max);
+        RUN_TEST(AutoExpose_clamps_exposure_at_max_exposure_if_gain_is_GREATER_THAN_max_exposure);
+        RUN_TEST(AutoExpose_is_done_if_peak_is_in_the_target_range);
+        RUN_TEST(AutoExpose_turns_led1_green_to_indicate_it_hit_the_target_range);
+        RUN_TEST(AutoExpose_gives_up_if_it_iterates_for_max_tries);
     }
 }
 void AutoExpose_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_GetPeak_tests(Yep);
+        Run_GetPeak_tests(Nope);
         Run_AutoExpose_tests(Yep);
     }
 }

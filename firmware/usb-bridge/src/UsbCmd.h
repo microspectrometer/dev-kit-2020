@@ -1,17 +1,19 @@
 // ---API (Go to the Doxygen documentation of this file)---
 /** \file UsbCmd.h
  * # API for usb-bridge.c
- * - void NullCommand(void)
- * - void GetBridgeLED(void)
- * - void SetBridgeLED(void)
- * - void GetSensorLED(void)
- * - void SetSensorLED(void)
- * - void GetSensorConfig(void)
- * - void SetSensorConfig(void)
- * - void GetExposure(void)
- * - void SetExposure(void)
- * - void AutoExposure(void)
- * - void GetFrame(void)
+ * - NullCommand()
+ * - GetBridgeLED()
+ * - SetBridgeLED()
+ * - GetSensorLED()
+ * - SetSensorLED()
+ * - GetSensorConfig()
+ * - SetSensorConfig()
+ * - GetExposure()
+ * - SetExposure()
+ * - CaptureFrame()
+ * - AutoExposure()
+ * - GetAutoExposeConfig()
+ * - SetAutoExposeConfig()
  * */
 #ifndef _USBCMD_H
 #define _USBCMD_H
@@ -509,4 +511,205 @@ inline void CaptureFrame(void)
     }
 
 }
+inline void AutoExposure(void)
+{
+    uint8_t const cmd = 12; // command is GetAutoExposeConfig
+
+    // indicate BUSY
+    BiColorLedRed(status_led);
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send success
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read success true/false
+    uint8_t success = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send iterations
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read number of iterations to hit AutoExpose target
+    uint8_t iterations = SpiMasterXfrByte(PADDING);
+
+    // write response from sensor
+    UsbWriteByte(status);
+    UsbWriteByte(success);
+    UsbWriteByte(iterations);
+
+    // indicate DONE
+    BiColorLedGreen(status_led);
+}
+inline void GetAutoExposeConfig(void)
+{
+    uint8_t const cmd = 13; // command is GetAutoExposeConfig
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send MAX_TRIES
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read max_tries
+    uint8_t max_tries = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send START_PIXEL_MSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read start_pixel_msb
+    uint8_t start_pixel_msb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send START_PIXEL_LSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read start_pixel_lsb
+    uint8_t start_pixel_lsb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send STOP_PIXEL_MSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read stop_pixel_msb
+    uint8_t stop_pixel_msb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send STOP_PIXEL_LSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read stop_pixel_lsb
+    uint8_t stop_pixel_lsb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send TARGET_MSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read target_msb
+    uint8_t target_msb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send TARGET_LSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read target_lsb
+    uint8_t target_lsb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send TARGET_TOLERANCE_MSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read target_tolerance_msb
+    uint8_t target_tolerance_msb = SpiMasterXfrByte(PADDING);
+
+    // wait for data ready LOW: sensor ready to send TARGET_LSB
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read target_tolerance_lsb
+    uint8_t target_tolerance_lsb = SpiMasterXfrByte(PADDING);
+
+    // write response from sensor
+    UsbWriteByte(status);
+    // default: 10 = 0x0a
+    UsbWriteByte(max_tries);
+    // default: 7 = 0x0007
+    UsbWriteByte(start_pixel_msb); // 0
+    UsbWriteByte(start_pixel_lsb); // 7
+    // default: 392 = 0x0188
+    UsbWriteByte(stop_pixel_msb); // 0x01 -- 1 (*256)
+    UsbWriteByte(stop_pixel_lsb); // 0x88 -- 136
+    // default: 46420 = 0xb554
+    UsbWriteByte(target_msb); // 0xb5 -- 181 (*256)
+    UsbWriteByte(target_lsb); // 0x54 -- 84
+    // default: 3277 = 0x0ccd
+    UsbWriteByte(target_tolerance_msb); // 0x0c -- 12 (*256)
+    UsbWriteByte(target_tolerance_lsb); // 0xcd -- 205
+}
+inline void SetAutoExposeConfig(void)
+{
+
+    // indicate BUSY
+    BiColorLedRed(status_led);
+    uint8_t const cmd = 14; // command is SetAutoExposeConfig
+
+    // loop until max_tries is received
+    while (UsbRxbufferIsEmpty());
+    // read max_tries
+    uint8_t max_tries = 0xFF;
+    UsbReadByte(&max_tries);
+
+    // loop until start_pixel_msb is received
+    while (UsbRxbufferIsEmpty());
+    // read start_pixel_msb
+    uint8_t start_pixel_msb = 0xFF;
+    UsbReadByte(&start_pixel_msb);
+
+    // loop until start_pixel_lsb is received
+    while (UsbRxbufferIsEmpty());
+    // read start_pixel_lsb
+    uint8_t start_pixel_lsb = 0xFF;
+    UsbReadByte(&start_pixel_lsb);
+
+    // loop until stop_pixel_msb is received
+    while (UsbRxbufferIsEmpty());
+    // read stop_pixel_msb
+    uint8_t stop_pixel_msb = 0xFF;
+    UsbReadByte(&stop_pixel_msb);
+
+    // loop until stop_pixel_lsb is received
+    while (UsbRxbufferIsEmpty());
+    // read stop_pixel_lsb
+    uint8_t stop_pixel_lsb = 0xFF;
+    UsbReadByte(&stop_pixel_lsb);
+
+    // loop until target_msb is received
+    while (UsbRxbufferIsEmpty());
+    // read target_msb
+    uint8_t target_msb = 0xFF;
+    UsbReadByte(&target_msb);
+
+    // loop until target_lsb is received
+    while (UsbRxbufferIsEmpty());
+    // read target_lsb
+    uint8_t target_lsb = 0xFF;
+    UsbReadByte(&target_lsb);
+
+    // loop until target_tolerance_msb is received
+    while (UsbRxbufferIsEmpty());
+    // read target_tolerance_msb
+    uint8_t target_tolerance_msb = 0xFF;
+    UsbReadByte(&target_tolerance_msb);
+
+    // loop until target_tolerance_lsb is received
+    while (UsbRxbufferIsEmpty());
+    // read target_tolerance_lsb
+    uint8_t target_tolerance_lsb = 0xFF;
+    UsbReadByte(&target_tolerance_lsb);
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+    SpiMasterXfrByte(max_tries);
+    SpiMasterXfrByte(start_pixel_msb);
+    SpiMasterXfrByte(start_pixel_lsb);
+    SpiMasterXfrByte(stop_pixel_msb);
+    SpiMasterXfrByte(stop_pixel_lsb);
+    SpiMasterXfrByte(target_msb);
+    SpiMasterXfrByte(target_lsb);
+    SpiMasterXfrByte(target_tolerance_msb);
+    SpiMasterXfrByte(target_tolerance_lsb);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // write response
+    UsbWriteByte(status);
+
+    // indicate DONE
+    BiColorLedGreen(status_led);
+}
+
 #endif // _USBCMD_H

@@ -4,6 +4,8 @@
 
 // ---Public functions faked for testing---
 void LisWriteConfig_fake(void);
+void LisExpose_fake(void);
+void LisReadout_fake(uint16_t); // LisReadout defined in VisCmd.c
 
 // ---Private functions faked for testing---
 void _ConfigAs28bits_fake(uint8_t * config);

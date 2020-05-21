@@ -38,6 +38,41 @@
 #include "Mock.h" // record call history in "mock"
 #include "Lis.h"
 
+/* =====[ Mock LisReadout ]===== */
+static RecordedCall * Record_LisReadout(uint16_t arg1)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "LisReadout";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    RecordedArg *record_of_arg1 = RecordedArg_new(SetupRecord_uint16_t);
+    *((uint16_t *)record_of_arg1->pArg) = arg1;
+    // Store the arg records in the call record.
+    RecordArg(record_of_this_call, record_of_arg1);
+    return record_of_this_call;
+}
+void LisReadout_fake(uint16_t num_pixels)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   *  - arg1
+   * */
+    RecordActualCall(mock, Record_LisReadout(num_pixels));
+}
+
+/* =====[ Mock LisExpose ]===== */
+static RecordedCall * Record_LisExpose(void)
+{ // Define **what is recorded** when fake is called.
+    char const *call_name = "LisExpose";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void LisExpose_fake(void)
+{ //! Fake records calls made by **function under test**.
+  /** Record:\n 
+   *  - call name\n 
+   * */
+    RecordActualCall(mock, Record_LisExpose());
+}
+
 /* =====[ Mock LisWriteConfig ]===== */
 static RecordedCall * Record_LisWriteConfig(void)
 { // Define **what is recorded** when fake is called.

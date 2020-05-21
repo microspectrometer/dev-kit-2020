@@ -12,12 +12,15 @@ void GetExposure(void);
 void SetExposure(void);
 void CaptureFrame(void);
 void AutoExposure(void);
+void GetAutoExposeConfig(void);
+void SetAutoExposeConfig(void);
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */
 /* ---------------------------------------- */
 bool LedNumIsValid(bicolorled_num);
 uint8_t ReadLedState(bicolorled_num);
+bool AutoExposeConfigIsValid(uint8_t, uint16_t, uint16_t, uint16_t);
 
 void LisReadout(uint16_t num_pixels)
 {
@@ -119,8 +122,38 @@ uint16_t GetPeak(uint16_t const _start_pixel, uint16_t const _stop_pixel)
     return peak;
 }
 
-void AutoExpose(void)
+#ifdef USE_FAKES
+#define LisExpose LisExpose_fake
+#define LisReadout LisReadout_fake
+#endif
+uint16_t AutoExpose(void)
 {
+    /** AutoExpose behavior:\n 
+      * - turns led1 red to indicate starting\n 
+      * - sets max dark at 4500 counts\n 
+      * - sets min exposure at 5 cycles\n 
+      * - sets max exposure at 65535 cycles\n 
+      * - sets min peak at target minus tolerance\n 
+      * - clamps min peak at max dark if target minus tolerance is GREATER THAN target\n 
+      * - clamps min peak at max dark if target minus tolerance is LESS THAN max dark\n 
+      * - sets max peak at target plus tolerance\n 
+      * - clamps max peak at 65535 counts if target plus tolerance is LESS THAN target\n 
+      * - loops until done\n 
+      * - exposes the LIS 770i pixels\n 
+      * - reads pixel counts into global frame buffer\n 
+      * - finds frame peak in range start pixel to stop pixel\n 
+      * - is done if peak less than max dark AND exposure at max\n 
+      * - scales exposure by 10 if peak less than max dark\n 
+      * - clamps exposure at max exposure if 10 x exposure is GREATER THAN max exposure\n 
+      * - scales exposure by half if peak ABOVE max peak\n 
+      * - clamps exposure at min exposure if half exposure is LESS THAN min exposure\n 
+      * - is done if peak BELOW min peak and exposure at max exposure\n 
+      * - scales exposure by target div peak if peak BELOW min peak and exposure not at max\n 
+      * - clamps exposure at max exposure if gain is GREATER THAN max exposure\n 
+      * - is done if peak is in the target range\n 
+      * - turns led1 green to indicate it hit the target range\n 
+      * - gives up if it iterates for max tries\n 
+      * */
     /** # AutoExpose uses a "Take Back Half" algorithm
       *
       * Find an exposure time that gets a peak within +/-5% of
@@ -257,8 +290,17 @@ void AutoExpose(void)
       *     - if iterations is at max:
       *       - **AutoExpose is done**
       */
+    
+    // red means AutoExpose started
+    BiColorLedRed(led_1);
 
-    // determine number of pixels
+    // report AutoExpose success/failure
+    bool success = false;
+
+    // return final peak value for inspecting algorithm behavior
+    uint16_t peak=0;
+
+    // determine number of pixels to readout
     uint16_t num_pixels;
     if (binning == BINNING_OFF) num_pixels = MAX_NUM_PIXELS;
     else num_pixels = MAX_NUM_PIXELS/2;
@@ -268,31 +310,12 @@ void AutoExpose(void)
     /* -------------------- */
 
     // give up after 10 tries
+    // SetAutoExposeConfig guarantees at least one try.
     uint8_t iterations = 0;
 
-    // calculate gain only when signal is above max_dark
-    uint16_t const max_dark = 4500;
-    /* -------------------------------------------------------- */
-    /* | TODO: move this to the SetAutoExposureConfig command | */
-    /* -------------------------------------------------------- */
-    // clamp target to not be below max_dark
-    if (target < max_dark) target = max_dark;
-
-    // clamp exposure time
-    uint16_t const min_exposure = 1;
-    uint16_t const max_exposure = 65535;
-
-    // target range for peak values
-    uint16_t min_peak = target - target_tolerance;
-    uint16_t max_peak = target + target_tolerance;
-    /* -------------------------------------------------------- */
-    /* | TODO: move this to the SetAutoExposureConfig command | */
-    /* -------------------------------------------------------- */
-    // clamp min_peak to not go below max_dark
-    if ( min_peak < max_dark) min_peak = max_dark;
-    // clamp target range to guard against arithmetic wrap-around
-    if ( min_peak > target) min_peak = max_dark;
-    if ( max_peak < target) max_peak = 65535;
+    // calculate target range for peak values
+    uint16_t min_peak = _MinPeak(target, target_tolerance);
+    uint16_t max_peak = _MaxPeak(target, target_tolerance);
 
     /* ------------------- */
     /* | AutoExpose LOOP | */
@@ -312,14 +335,14 @@ void AutoExpose(void)
         LisReadout(num_pixels);
 
         // find peak in range start_pixel : stop_pixel
-        uint16_t peak = GetPeak(start_pixel, stop_pixel);
+        peak = GetPeak(start_pixel, stop_pixel);
 
         /* ------------------------ */
         /* | ADJUST EXPOSURE TIME | */
         /* ------------------------ */
 
         // one variable for all big calculation results
-        uint32_t big_result;
+        uint32_t big_result; // stores up to 4294967295
 
         // any signal?
         if (peak < max_dark)
@@ -333,8 +356,8 @@ void AutoExpose(void)
                 big_result = 10 * exposure_ticks;
 
                 // clamp exposure at its maximum value
-                if (big_result > max_exposure) exposure_ticks = max_exposure;
-                else exposure_ticks = big_result;
+                if (big_result > max_exposure) big_result = max_exposure;
+                exposure_ticks = big_result;
             }
         }
 
@@ -357,23 +380,38 @@ void AutoExpose(void)
             // otherwise, scale exposure by gain
             else
             {
-                big_result = target * exposure_ticks;
+                // -------------------------------------------------
+                // | AT LEAST ONE OPERAND MUST BE CAST AS uint32_t |
+                // | OTHERWISE THE OPERATION IS TREATED AS 16-bit  |
+                // -------------------------------------------------
+                big_result = (uint32_t)target * exposure_ticks;
                 big_result = big_result / peak;
 
                 // clamp exposure at its maximum value
-                if (big_result > max_exposure) exposure_ticks = max_exposure;
-                else exposure_ticks = big_result;
+                if (big_result > max_exposure) big_result = max_exposure;
+                exposure_ticks = big_result;
             }
         }
 
         // peak is in the target range
-        else done = true;
+        else
+        {
+            done = true;
+            success = true;
+            // green means target hit
+            BiColorLedGreen(led_1);
+        }
 
         // give up if peak fails to hit target range after many tries
         if (++iterations == max_tries) done = true;
-
-        (void) peak;
     }
+    // return success as MSB and iterations as LSB
+    uint16_t result = (uint16_t)(success << 8) | iterations;
+    return result;
 }
+#ifdef USE_FAKES
+#undef LisExpose
+#undef LisReadout
+#endif
 
 

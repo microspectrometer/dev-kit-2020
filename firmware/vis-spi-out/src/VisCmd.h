@@ -1,16 +1,18 @@
 // ---API (Go to the Doxygen documentation of this file)---
 /** \file VisCmd.h
  * # API for vis-spi-out.c
- * - void NullCommand(void)
- * - void GetSensorLED(void)
- * - void SetSensorLED(void)
- * - void ReplyCommandInvalid(void)
- * - void GetSensorConfig(void)
- * - void SetSensorConfig(void)
- * - void GetExposure(void)
- * - void SetExposure(void)
- * - void AutoExposure(void)
- * - void GetFrame(void)
+ * - NullCommand()
+ * - GetSensorLED()
+ * - SetSensorLED()
+ * - GetSensorConfig()
+ * - SetSensorConfig()
+ * - GetExposure()
+ * - SetExposure()
+ * - CaptureFrame()
+ * - AutoExposure()
+ * - GetAutoExposeConfig()
+ * - SetAutoExposeConfig()
+ * - ReplyCommandInvalid()
  * */
 #ifndef _VISCMD_H
 #define _VISCMD_H
@@ -67,9 +69,42 @@ inline uint8_t ReadLedState(bicolorled_num led_num) // -> led_state
             ? GREEN : RED;
 }
 
+inline bool AutoExposeConfigIsValid(
+        uint8_t new_max_tries,
+        uint16_t new_start_pixel,
+        uint16_t new_stop_pixel,
+        uint16_t new_target
+        )
+{
+    // Check max_tries is valid
+    if (new_max_tries == 0) return false;
+
+    // Check target is valid
+    if (new_target < 4500) return false;
+
+    // Check stop_pixel is not less than start_pixel
+    if (new_stop_pixel < new_start_pixel) return false;
+
+    // Check start_pixel and stop_pixel are in range
+    if (binning == BINNING_ON)
+    {
+        if ((new_start_pixel < 7) || (new_start_pixel > 392)) return false;
+        if ((new_stop_pixel < 7) || (new_stop_pixel > 392)) return false;
+    }
+    else // (binning == BINNING_OFF)
+    {
+        if ((new_start_pixel < 14) || (new_start_pixel > 784)) return false;
+        if ((new_stop_pixel < 14) || (new_stop_pixel > 784)) return false;
+    }
+
+    // Config is valid
+    return true;
+}
+
+
 void LisReadout(uint16_t num_pixels);
-uint16_t GetPeak(uint16_t const start_pixel, uint16_t const stop_pixel);
-void AutoExpose(void);
+uint16_t GetPeak(uint16_t const, uint16_t const);
+uint16_t AutoExpose(void);
 
 /* ---------------------- */
 /* | ---Commands :( --- | */ // (these NEED proper unit tests)
@@ -288,9 +323,105 @@ inline void CaptureFrame(void)
 
 inline void AutoExposure(void)
 {
-    //! Placeholder.
 
-    AutoExpose();
+    // BUSY
+    BiColorLedRed(led_0);
+
+    // auto-expose, report result:
+    uint16_t result = AutoExpose();
+
+    // send OK
+    SpiSlaveTxByte(OK);
+
+    // send final_peak
+    SpiSlaveTxByte(MSB(result)); // success true/false
+    SpiSlaveTxByte(LSB(result)); // iterations to hit target
+
+    // Done
+    BiColorLedGreen(led_0);
+}
+
+inline void GetAutoExposeConfig(void)
+{
+    SpiSlaveTxByte(OK);
+    SpiSlaveTxByte(max_tries);
+    SpiSlaveTxByte(MSB(start_pixel));
+    SpiSlaveTxByte(LSB(start_pixel));
+    SpiSlaveTxByte(MSB(stop_pixel));
+    SpiSlaveTxByte(LSB(stop_pixel));
+    SpiSlaveTxByte(MSB(target));
+    SpiSlaveTxByte(LSB(target));
+    SpiSlaveTxByte(MSB(target_tolerance));
+    SpiSlaveTxByte(LSB(target_tolerance));
+}
+
+inline void SetAutoExposeConfig(void)
+{
+
+    /* ------------------------------------------- */
+    /* | Get 5 config values, a total of 9 bytes | */
+    /* ------------------------------------------- */
+
+    // get max_tries
+    while (QueueIsEmpty(SpiFifo));
+    uint8_t new_max_tries = QueuePop(SpiFifo);
+
+    // remaining 4 config values are each 16 bits, sent MSB first
+    uint8_t msb; uint8_t lsb;
+
+    // get start pixel
+    while (QueueIsEmpty(SpiFifo));
+    msb = QueuePop(SpiFifo);
+    while (QueueIsEmpty(SpiFifo));
+    lsb = QueuePop(SpiFifo);
+    uint16_t new_start_pixel = (msb << 8) | lsb;
+
+    // get stop pixel
+    while (QueueIsEmpty(SpiFifo));
+    msb = QueuePop(SpiFifo);
+    while (QueueIsEmpty(SpiFifo));
+    lsb = QueuePop(SpiFifo);
+    uint16_t new_stop_pixel = (msb << 8) | lsb;
+
+    // get target
+    while (QueueIsEmpty(SpiFifo));
+    msb = QueuePop(SpiFifo);
+    while (QueueIsEmpty(SpiFifo));
+    lsb = QueuePop(SpiFifo);
+    uint16_t new_target = (msb << 8) | lsb;
+
+    // get target_tolerance
+    while (QueueIsEmpty(SpiFifo));
+    msb = QueuePop(SpiFifo);
+    while (QueueIsEmpty(SpiFifo));
+    lsb = QueuePop(SpiFifo);
+    uint16_t new_target_tolerance = (msb << 8) | lsb;
+
+    /* ----------------------- */
+    /* | Validate New Config | */
+    /* ----------------------- */
+
+    if ( !AutoExposeConfigIsValid(
+            new_max_tries,
+            new_start_pixel, new_stop_pixel,
+            new_target
+            ) ) // any new_target_tolerance is valid
+    { // at least one value in new config is invalid
+        // reply with ERROR
+        SpiSlaveTxByte(ERROR);
+    }
+    else // new config is valid
+    {
+        // update global config
+        max_tries = new_max_tries;
+        start_pixel = new_start_pixel;
+        stop_pixel = new_stop_pixel;
+        target = new_target;
+        target_tolerance = new_target_tolerance;
+
+        // reply with OK
+        SpiSlaveTxByte(OK);
+    }
 }
 
 /* ---------------------- */

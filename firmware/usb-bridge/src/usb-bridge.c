@@ -80,6 +80,9 @@ void loop(void)
         case  9: GetExposure(); break;
         case 10: SetExposure(); break;
         case 11: CaptureFrame(); break;
+        case 12: AutoExposure(); break;
+        case 13: GetAutoExposeConfig(); break;
+        case 14: SetAutoExposeConfig(); break;
         // default: ReplyCommandInvalid(); break;
     }
 }

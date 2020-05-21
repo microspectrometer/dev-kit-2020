@@ -62,4 +62,58 @@ uint16_t target;
 //! `target` ± `target_tolerance` is the target peak counts range for AutoExpose().
 uint16_t target_tolerance;
 
+//! `max_dark` is a conservative estimate on the largest dark offset
+uint16_t max_dark;
+
+/** `min_exposure` is 100 microseconds (five 20µs-cycles)\n 
+ * This is a safe lower limit to avoid dead frames.
+ * */
+uint16_t min_exposure;
+
+/** `max_exposure` is 1.31 seconds (65535 20µs-cycles)\n 
+ * This is the 16-bit limit, UINT16_MAX, but it is also a
+ * practical limit on waiting time for one frame.\n 
+ * For longer exposure times:
+ * - change the datatype in firmware to uint32_t
+ * - revise all transmissions of exposure_ticks in VisCmd.h and
+ *   UsbCmd.h to send/receive four bytes
+ * - update the Python API by changing all occurrences of
+ *   `cycles` in the JSON file from size:2 to size:4.
+ * .
+ * */
+uint16_t max_exposure;
+
+inline uint16_t _MinPeak(uint16_t target, uint16_t target_tolerance)
+{
+    uint16_t min_peak = target-target_tolerance;
+
+    /* ------------------------------ */
+    /* | clamp min_peak at max_dark | */
+    /* ------------------------------ */
+
+    // guard against arithmetic wrap around where target - tol > target
+    if ( min_peak > target) min_peak = max_dark;
+    // guard against large tolerance where target - tol < max_dark
+    else if ( min_peak < max_dark) min_peak = max_dark;
+    return min_peak;
+}
+
+// ---------------------------------------------------------
+// |                       stdint.h                        |
+// |                defines UINT16_MAX as 65535            |
+// | (both /usr/include/stdint.h and avr/include/stdint.h) |
+// ---------------------------------------------------------
+
+inline uint16_t _MaxPeak(uint16_t target, uint16_t target_tolerance)
+{
+    uint16_t max_peak = target + target_tolerance;
+
+    /* --------------------------- */
+    /* | clamp max_peak at 65535 | */
+    /* --------------------------- */
+    // guard against arithmetic wrap around where target + tol < target
+    if ( max_peak < target) max_peak = UINT16_MAX;
+    return max_peak;
+}
+
 #endif // _AUTOEXPOSE_H

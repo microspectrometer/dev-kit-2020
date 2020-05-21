@@ -21,8 +21,8 @@
 
 //! Allocate static memory for the SPI Rx Queue.
 volatile Queue_s * SpiFifo;
-//! Maximum size of the Queue's FIFO buffer is 11 bytes.
-#define max_length_of_queue 11 // bytes
+//! Maximum size of the Queue's FIFO buffer is 24 bytes.
+#define max_length_of_queue 24 // bytes
 //! Allocate static memory for the Queue's FIFO buffer.
 volatile uint8_t spi_rx_buffer[max_length_of_queue];
 
@@ -53,6 +53,8 @@ void loop(void)
     // Idle until a command is received
     while (QueueIsEmpty(SpiFifo)); // 5 cycles
     // Execute the command.
+    // BUSY
+    BiColorLedRed(led_0);
     switch(QueuePop(SpiFifo))
     {
         case  0: NullCommand(); break;
@@ -63,7 +65,10 @@ void loop(void)
         case  9: GetExposure(); break;
         case 10: SetExposure(); break;
         case 11: CaptureFrame(); break;
-        default: ReplyCommandInvalid(); break;
+        case 12: AutoExposure(); break;
+        case 13: GetAutoExposeConfig(); break;
+        case 14: SetAutoExposeConfig(); break;
+        /* default: ReplyCommandInvalid(); break; */
         // ---Expected Assembly---
         // Context:
         // 1. 0x19e is the start of loop()
@@ -79,6 +84,8 @@ void loop(void)
         // Total number of cycles: 7
         // Total number of instructions: 5
     }
+    // DONE
+    BiColorLedGreen(led_0);
 }
 ISR(SPI_STC_vect) // Serial Transfer Complete
 {
@@ -162,4 +169,11 @@ void setup_DetectorReadout(void)
     // Initialize AutoExpose target peak range to 46420 ± 3277 counts
     target = 46420;
     target_tolerance = 3277;
+    // Hard-code conservative estimate on dark offset
+    // AutoExpose calculates gain ONLY when signal is above max_dark.
+    // SetAutoExposeConfig guarantees target is not below max_dark.
+    max_dark = 4500;
+    // Hard-code exposure time limits
+    min_exposure = 5; // cycles
+    max_exposure = UINT16_MAX; // cycles
 }

@@ -154,6 +154,8 @@ firmware yet.
 
 ## Documentation
 
+### Ways to access documentation
+
 Read with `pydoc`:
 
 ```powershell
@@ -169,14 +171,14 @@ Read the expert interface:
 Help on class ChromaSpecExpertInterface in chromaspeclib.expert:
 ```
 
-Or read the HTML:
+Read the HTML:
 
 ```powershell
 > cd $pkg\chromaspec-sean\doc\build\html\
 > explorer index.html
 ```
 
-The API is buried here:
+The API is buried here in the HTML:
 
 ```powershell
 > cd $pkg\chromaspec-sean\doc\build\html\
@@ -188,6 +190,407 @@ I made a Vim shortcut to open this section in the browser:
 ```vim
 ;api
 ```
+
+Get help on a specific API command with pydoc.
+
+Example: help on **GetExposure**
+
+```powershell
+> python -m pydoc chromaspeclib.simple.ChromaSpecSimpleInterface.getExposure
+
+Help on function func in chromaspeclib.simple.ChromaSpecSimpleInterface:
+
+chromaspeclib.simple.ChromaSpecSimpleInterface.getExposure = func(self, **kwargs)
+    Retrieve the current exposure setting, which may have been set
+    either by :class:`~chromaspeclib.datatypes.command.CommandSetExposure` or :class:`~chromaspeclib.datatypes.command.CommandAutoExposure`.
+
+    Returns
+    -------
+    :class:`~chromaspeclib.datatypes.bridge.BridgeGetExposure`
+    :class:`~chromaspeclib.datatypes.sensor.SensorGetExposure`
+```
+
+The *useful* help is in the return value. Look at the
+`chromaspeclib.datatypes.sensor` return bytes.
+
+```powershell
+> python -m pydoc chromaspeclib.datatypes.sensor.SensorGetExposure
+```
+
+The names of the variables in the reply are listed in the **keyword arguments**:
+
+```help
+Help on class SensorGetExposure in chromaspeclib.datatypes.sensor:
+
+chromaspeclib.datatypes.sensor.SensorGetExposure = class SensorGetExposure(ChromaSpecPayload)
+ |  chromaspeclib.datatypes.sensor.SensorGetExposure(*args, status=None, cycles=None, **kwargs)
+ |  
+ ...
+```
+
+And in the description of the **kwargs** under under `Parameters`:
+
+```powershell
+ ...
+ |  Parameters
+ |  ----------
+ |  status: :data:`~chromaspeclib.datatypes.types.StatusOK` or :data:`~chromaspeclib.datatypes.types.StatusError`  If there is an error status, the other attributes are not valid
+ |  cycles: 1-65535
+ |    Number of cycles to wait to collect pixel strength.
+ ...
+```
+
+### Return values in the API
+
+There are always bytes returned from both boards:
+
+- the **Sensor** board (`vis-spi-out`)
+- the **Bridge** board (`usb-bridge`)
+
+Few commands are for the Bridge. The Bridge is meant to be
+transparent. Exceptions are GetBridgeLED, SetBridgeLED, and
+Reset.
+
+For all other commands, the **Sensor** return bytes are all that
+matters. In fact, the simple interface hides the **Bridge**
+return bytes for these commands.
+
+Takeaway: to find out what response a command gives, get help on
+the command to find out what the name of the return type is, then
+get help on the **Sensor** return type.
+
+The **Bridge** is a buffer between the **Sensor** board and
+whatever serial communication plumbing the application uses to
+talk to the **Sensor** board. The dev-kit, for example, provides a USB bridge. Drop in another bridge, say a bluetooth bridge, and as long as it complies with the `bridge` section of the JSON protocol, the Python API works exactly the same.
+
+## Extend the API
+
+It is easy to extend the API to work with custom firmware.
+
+Example: extend the API to make the AutoExpose configurable
+
+Add commands:
+
+- GetAutoExposeConfig
+- SetAutoExposeConfig
+
+GetAutoExposeConfig sends one byte:
+
+- `command_id`
+
+Expect one byte from the **Bridge**:
+
+- `status`
+
+Expect ten bytes from the **Sensor**:
+
+- `status` (1 byte)
+- `max_tries` (1 byte)
+- `start_pixel` (2 bytes)
+- `stop_pixel` (2 bytes)
+- `target` (2 bytes)
+- `target_tolerance` (2 bytes)
+
+SetAutoExposeConfig sends ten bytes:
+
+- `command_id` (1 byte)
+- `max_tries` (1 byte)
+- `start_pixel` (2 bytes)
+- `stop_pixel` (2 bytes)
+- `target` (2 bytes)
+- `target_tolerance` (2 bytes)
+
+Expect one byte from the **Bridge**:
+
+- `status`
+
+Expect one byte from the **Sensor**:
+
+- `status`
+
+### Edit JSON
+
+Encode this in the JSON file in the three sections, `command`,
+`bridge`, and `sensor`.
+
+Under section `command`:
+
+```json
+    ...
+    ,"13": { "name": "GetAutoExposeConfig", "variables": [ "command_id" ], "sizes": [1] }
+    ,"14": { "name": "SetAutoExposeConfig", "variables": [ "command_id", "max_tries", "start_pixel", "stop_pixel", "target", "target_tolerance" ], "sizes": [1,1,2,2,2,2] }
+```
+
+Under section `bridge`:
+
+```json
+    ...
+    ,"13": { "name": "GetAutoExposeConfig", "variables": [ "status" ], "sizes": [1] }
+    ,"14": { "name": "SetAutoExposeConfig", "variables": [ "status" ], "sizes": [1] }
+```
+
+Under section `sensor`:
+
+```json
+    ...
+    ,"13": { "name": "GetAutoExposeConfig", "variables": [ "status", "max_tries", "start_pixel", "stop_pixel", "target", "target_tolerance" ], "sizes": [1,1,2,2,2,2] }
+    ,"14": { "name": "SetAutoExposeConfig", "variables": [ "status" ], "sizes": [1] }
+```
+
+### Test at the REPL
+
+Try auto-complete at the REPL to test the commands are added to
+the API:
+
+```python
+>>> from chromaspeclib.simple import ChromaSpecSimpleInterface
+>>> si = ChromaSpecSimpleInterface()
+>>> si.getA<TAB>
+```
+
+Pressing TAB, that last line auto-completes:
+
+```python
+>>> si.getAutoExposeConfig
+```
+
+Similarly:
+
+```python
+>>> si.setA<TAB>
+```
+
+Pressing TAB, auto-complete yields:
+
+```python
+>>> si.setAutoExposeConfig
+```
+
+### Edit the documentation
+
+Merely editing the JSON file provides default documentation that
+shows the function signature. If the command takes parameters,
+these are listed in the function signature.
+
+```bash
+$ python.exe -m pydoc chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig
+
+Help on function func in chromaspeclib.simple.ChromaSpecSimpleInterface:
+
+chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig = func(self, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
+```
+
+This at least indicates the names of the expected parameters, and
+then the developer can look up the sizes in the JSON file.
+
+But it is better to add a docstring and a description of each parameter.
+
+Add docstrings to `/internal/docstrings.py`:
+
+```python
+
+CHROMASPEC_DYNAMIC_DOC["command"]["CommandGetAutoExposeConfig"] = """Retrieves the current auto-expose configuration.
+
+Returns
+-------
+:class:`~{dt}.bridge.BridgeGetAutoExposeConfig`
+:class:`~{dt}.sensor.SensorGetAutoExposeConfig`
+
+"""
+```
+
+Now the help contains the docstring and lists the return types.
+
+```bash
+$ python.exe -m pydoc chromaspeclib.simple.ChromaSpecSimpleInterface.getAutoExposeConfig
+
+Help on function func in chromaspeclib.simple.ChromaSpecSimpleInterface:
+
+chromaspeclib.simple.ChromaSpecSimpleInterface.getAutoExposeConfig = func(self, **kwargs)
+    Retrieves the current auto-expose configuration.
+    
+    Returns
+    -------
+    :class:`~chromaspeclib.datatypes.bridge.BridgeGetAutoExposeConfig`
+    :class:`~chromaspeclib.datatypes.sensor.SensorGetAutoExposeConfig`
+```
+
+The docstring for `setAutoExposeConfig` is much longer because it
+contains parameters.
+
+```python
+CHROMASPEC_DYNAMIC_DOC["command"]["CommandSetAutoExposeConfig"] = """Sets the current auto-expose configuration.
+
+Parameters
+----------
+max_tries: 1-255
+  Maximum number of exposures to try before giving up.
+
+  Firmware defaults to 10 on power-up.
+
+start_pixel: 7-392 if binning on, 14-784 if binning off
+  Auto-expose ignores pixels below start_pixel when checking if
+  the peak is in the target range.
+
+  Firmware defaults to 7 on power-up.
+  Recommended value is the smallest pixel number in the
+  pixel-to-wavelength map.
+
+  If start_pixel is outside the allowed range, status is ERROR
+  and the AutoExposeConfig is not changed.
+
+stop_pixel: 7-392 if binning on, 14-784 if binning off, must be >= start_pixel
+  Auto-expose ignores pixels above stop_pixel when checking if
+  the peak is in the target range.
+
+  Firmware defaults to 392 on power-up.
+  Recommended value is the largest pixel number in the
+  pixel-to-wavelength map.
+
+  If stop_pixel < start_pixel, or if stop_pixel is outside the
+  allowed range, status is ERROR and the AutoExposeConfig is not
+  changed.
+
+target: 4500-65535
+  Target peak-counts for exposure gain calculation.
+
+  Firmware defaults to 46420 counts on power-up.
+
+  If target is outside the allowed range, status is ERROR and the
+  AutoExposeConfig is not changed.
+
+target_tolerance: 0-65535
+  target +/- target_tolerance is the target peak-counts range.
+  Auto-expose is finished when the peak counts lands in this
+  range.
+
+  Firmware defaults to 3277 counts on power-up.
+
+  If the combination of target and target_tolerance results in
+  target ranges extending below 4500 counts or above 65535
+  counts, auto-expose ignores the target_tolerance and clamps the
+  target range at these boundaries.
+
+Returns
+-------
+:class:`~{dt}.bridge.BridgeSetAutoExposeConfig`
+:class:`~{dt}.sensor.SensorSetAutoExposeConfig`
+
+"""
+```
+
+Here is the resulting help for `setAutoExposeConfig`:
+
+```
+$ python.exe -m pydoc chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig
+
+Help on function func in chromaspeclib.simple.ChromaSpecSimpleInterface:
+
+chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig = func(self, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
+    Sets the current auto-expose configuration.
+    
+    Parameters
+    ----------
+    max_tries: 1-255
+      Maximum number of exposures to try before giving up.
+    
+      Firmware defaults to 10 on power-up.
+    
+    start_pixel: 7-392 if binning on, 14-784 if binning off
+      Auto-expose ignores pixels below start_pixel when checking if
+      the peak is in the target range.
+    
+      Firmware defaults to 7 on power-up.
+      Recommended value is the smallest pixel number in the
+      pixel-to-wavelength map.
+    
+      If start_pixel is outside the allowed range, status is ERROR
+      and the AutoExposeConfig is not changed.
+    
+    stop_pixel: 7-392 if binning on, 14-784 if binning off, must be >= start_pixel
+      Auto-expose ignores pixels above stop_pixel when checking if
+      the peak is in the target range.
+    
+      Firmware defaults to 392 on power-up.
+      Recommended value is the largest pixel number in the
+      pixel-to-wavelength map.
+    
+      If stop_pixel < start_pixel, or if stop_pixel is outside the
+      allowed range, status is ERROR and the AutoExposeConfig is not
+      changed.
+    
+    target: 4500-65535
+      Target peak-counts for exposure gain calculation.
+    
+      Firmware defaults to 46420 counts on power-up.
+    
+      If target is outside the allowed range, status is ERROR and the
+      AutoExposeConfig is not changed.
+    
+    target_tolerance: 0-65535
+      target +/- target_tolerance is the target peak-counts range.
+      Auto-expose is finished when the peak counts lands in this
+      range.
+    
+      Firmware defaults to 3277 counts on power-up.
+    
+      If the combination of target and target_tolerance results in
+      target ranges extending below 4500 counts or above 65535
+      counts, auto-expose ignores the target_tolerance and clamps the
+      target range at these boundaries.
+    
+    Returns
+    -------
+    :class:`~chromaspeclib.datatypes.bridge.BridgeSetAutoExposeConfig`
+    :class:`~chromaspeclib.datatypes.sensor.SensorSetAutoExposeConfig`
+```
+
+For the `getAutoExposeConfig` command, the useful help is in the
+keyword arguments of the **Sensor** return type.
+
+```bash
+$ python.exe -m pydoc chromaspeclib.datatypes.sensor.SensorSetAutoExposeConfig
+```
+
+Again, all of the following is done automatically merely by
+encoding the command in the JSON file.
+
+The reply's variable names are listed in the keyword arguments of
+the datatype `__init__()` method:
+
+```help
+Help on class SensorGetAutoExposeConfig in chromaspeclib.datatypes.sensor:
+
+chromaspeclib.datatypes.sensor.SensorGetAutoExposeConfig = class SensorGetAutoExposeConfig(ChromaSpecPayload)
+ |  chromaspeclib.datatypes.sensor.SensorGetAutoExposeConfig(*args, status=None, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
+ ...
+```
+
+The `command_id` is listed:
+
+```help
+ ...
+ |  Data and other attributes defined here:
+ |  
+ |  command_id = 13
+ ...
+```
+
+The size of each response is listed:
+
+```help
+ ...
+ |  Data and other attributes defined here:
+ ...
+ |  sizes = [1, 1, 2, 2, 2, 2]
+ ...
+ |  variables = ['status', 'max_tries', 'start_pixel', 'stop_pixel', 'targ...
+ ...
+```
+
+### Rebuild the Sphinx documentation
+- [ ] learn how to do this, I've made many changes and I want to
+  see what impact newlines have on the Sphinx output
 
 ## Load VCP
 
@@ -1405,10 +1808,18 @@ Fri, May 15, 2020  1:29:35 PM
         - [x] vis-spi-out
         - [x] usb-bridge
         - [x] system test
-    - [x] CaptureFrame
+    - [ ] CaptureFrame
         - [x] usb-bridge
         - [x] vis-spi-out
         - [x] system test
+        - [ ] still occassionally timeouts
+            - find a way to deal with this without causing a
+              crash
+            - the timeout is annoying because it throws an
+              exception and the microcontrollers are left in an
+              uncommunicative state
+            - I suspect that exiting via an expception fails to
+              close USB commnication, ask Sean about this
 
 ```date-and-size
 Sat, May 16, 2020  1:39:47 AM
@@ -1431,19 +1842,53 @@ Tue, May 19, 2020 10:48:08 AM
 - consuming 78.96% (1617 bytes out of 2048) of the Data SRAM
 - consuming 16.51% (5410 bytes out of 32768) of the Flash
 
-    - [ ] AutoExposure
-        - [ ] vis-spi-out
-        - [ ] usb-bridge
-        - [ ] system test
-    - [ ] GetAutoExposeConfig
-        - [ ] vis-spi-out
-        - [ ] usb-bridge
-        - [ ] system test
-    - [ ] SetAutoExposeConfig
-        - [ ] vis-spi-out
-        - [ ] usb-bridge
-        - [ ] system test
+    - [x] AutoExposure
+        - [x] vis-spi-out
+        - [x] usb-bridge
+        - [x] system test
+            - problem
+                - AutoExpose is very wonky
+                - run the kit-gui.py and step the response
+                - report the peak value as you go
+                - plug the numbers in and see what's going on
+                - OR
+                - unit test AutoExpose
+            - OK, I did both
+            - unit tests show it is correct
+            - system tests show it is good for all cases EXCEPT
+              applying the calculated gain
+            - CHECK THE ATMEGA328 SUPPORTS 32-BIT MATH!
+            - I did an experiment: I had to cast at least one operand in the 32-bit calc as (uint32_t)
+    - [x] GetAutoExposeConfig
+        - [x] vis-spi-out
+        - [x] usb-bridge
+        - [x] system test
+        - [ ] add max_exposure to config
+    - [x] SetAutoExposeConfig
+        - [x] vis-spi-out
+            - [-] unit test AutoExposeConfigIsValid()
+            - I know it is working because I unit tested it with
+              system tests
+            - but I should still put in the unit tests
+        - [x] usb-bridge
+        - [x] system test
+        - [ ] add max_exposure to config
 
+```
+|| avr-size build/usb-bridge.elf
+||    text	   data	    bss	    dec	    hex	filename
+||    3866	      2	      0	   3868	    f1c	build/usb-bridge.elf
+
+|| avr-size build/vis-spi-out.elf
+||    text	   data	    bss	    dec	    hex	filename
+||    7520	     20	   1614	   9154	   23c2	build/vis-spi-out.elf
+```
+
+- [ ] Bridge sends NullCommand to Sensor
+- [ ] Sensor and Bridge turn their indicator LEDs green after
+  receiving NullCommand
+- [ ] Sensor and Bridge turn their LEDs red after receiving an
+  unrecognized command
 - [x] find a work-around to make this warning go away:
 
 ```make
@@ -1461,6 +1906,19 @@ src/VisCmd.h|108 col 9| warning: '_delay_loop_1' is static but used in inline fu
 - [ ] write main loop switchcase
 - [ ] pull command helpers out of VisCmd into their own app libs
 - [ ] system test response to invalid commands
+    - response is simply None because it timeouts
+    - I can either eliminate this from the JSON:
+        - we don't need it, timeout is OK
+    - or I can encode this in the usb-bridge
+        - [ ] need case Bridge receives invalid command
+        - [ ] need case Bridge receives INVALID from sensor
+            - have to add this as a dummy command just to test
+              this behavior out
+    - the sensor board already has code to respond to an INVALID
+      command
+    - the Bridge does not, so the bridge is not sending the
+      command to the sensor board, and there is simply no
+      response and the whole system time outs
 
 
 ## tabled
