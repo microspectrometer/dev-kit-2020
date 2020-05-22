@@ -29,18 +29,6 @@ void AutoExpose_turns_led1_red_to_indicate_starting(void)
     /* =====[ Test ]===== */
     TEST_PASS();
 }
-void AutoExpose_sets_max_dark_at_4500_counts(void)
-{
-    TEST_PASS();
-}
-void AutoExpose_sets_min_exposure_at_5_cycles(void)
-{
-    TEST_PASS();
-}
-void AutoExpose_sets_max_exposure_at_65535_cycles(void)
-{
-    TEST_PASS();
-}
 void AutoExpose_sets_min_peak_at_target_minus_tolerance(void)
 {
     /* =====[ Setup ]===== */

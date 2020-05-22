@@ -5,6 +5,7 @@
 import pygame # from PyPi
 import pygs # I wrote this to simplify using pygame
 from chromaspeclib.simple import ChromaSpecSimpleInterface
+from pathlib import Path
 
 # ----------------------
 # | Spectrometer Setup |
@@ -41,13 +42,18 @@ def to_ms(cycles):
 
 # LIS-770i config constants
 BINNING_ON = 1
+BINNING_OFF = 0
 GAIN_1X = 0x01
 ALL_ROWS_ACTIVE = 0x1F
 
+binning = BINNING_ON
 # start with default config
-kit.setSensorConfig(BINNING_ON, GAIN_1X, ALL_ROWS_ACTIVE)
-# dead pixel at 236
-max_tries=12; start_pixel=8; stop_pixel=235; target=46420; tol=3277; max_exposure=15000
+kit.setSensorConfig(binning, GAIN_1X, ALL_ROWS_ACTIVE)
+max_tries=12;
+# dead pixel at 236 (BINNING_ON)
+start_pixel=8 if binning else 16
+stop_pixel=235 if binning else 470
+target=46420; tol=3277; max_exposure=10000
 kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, tol, max_exposure)
 
 # start with 1ms exposure time
@@ -58,11 +64,24 @@ kit.setExposure( to_cycles(milliseconds) )
 # -------------
 # | GUI Setup |
 # -------------
-rgb = pygs.RGB()
+
+# -----------------------------------
+# | Get the path to the window icon |
+# -----------------------------------
+
+# make resource path agnostic to path kit-gui is launched from
+path = Path(__file__)
+here = path.parent
+chromation_logo = str(Path(here).joinpath('icon.png'))
+
 win = pygs.Window(
     caption='Chromation Kit',
-    icon='icon.png' # TODO: find this even if pwd does not match
+    icon=chromation_logo # TODO: find this even if pwd does not match
     )
+
+# import Steve Losh's Badwolf color names
+# example: rgb.saltwatertaffy
+rgb = pygs.RGB()
 
 # -------------------
 # | Initialize Text |
@@ -71,9 +90,10 @@ win = pygs.Window(
 # ---------------------------------
 # | Fonts for labels              |
 # ---------------------------------
-h1_font = pygame.font.Font('consola.ttf', 40)
-h2_font = pygame.font.Font('consola.ttf', 20)
-h3_font = pygame.font.Font('consola.ttf', 16)
+consola = str(Path(here).joinpath('consola.ttf'))
+h1_font = pygame.font.Font(consola, 40)
+h2_font = pygame.font.Font(consola, 20)
+h3_font = pygame.font.Font(consola, 16)
 
 # initialize AutoExpose result display
 success = True # kit.autoExposure().success
@@ -123,7 +143,7 @@ exposure_cycles_label = h3_font.render(
 # Flip the count values about the x-axis by making all values negative,
 # and constrain the plot peak to the top of the screen by adding max_yval to all values.
 # Add an extra offset to control where the top of the plot is.
-max_data_length = 392 # pixels in LIS-770i with BINNING_ON
+max_data_length = 392 if binning else 784
 plot_height = 300 # later call scale_data_to_fit(counts, plot_height)
 margin = 20 # space in screen pixels between plot top and window top
 win.open_window( max_data_length, plot_height + margin )
@@ -146,14 +166,33 @@ class Cursor(object):
         self.ybot = plot_height+margin
         self.ytop = margin
         self.pixel_number = max_data_length-position
-    def get_motions_pressed(self, event, key_pressed):
+    def get_motions_pressed(self, event, key_pressed, key_mods):
         self.motions = []
-        if pygs.user.pressed_right(event, key_pressed): self.motions.append('right')
-        if pygs.user.pressed_up   (event, key_pressed): self.motions.append('up')
-        if pygs.user.pressed_left (event, key_pressed): self.motions.append('left')
-        if pygs.user.pressed_down (event, key_pressed): self.motions.append('down')
+        if pygs.user.pressed_right(event, key_pressed, key_mods): self.motions.append('right')
+        if pygs.user.pressed_up   (event, key_pressed, key_mods): self.motions.append('up')
+        if pygs.user.pressed_left (event, key_pressed, key_mods): self.motions.append('left')
+        if pygs.user.pressed_down (event, key_pressed, key_mods): self.motions.append('down')
+        if pygs.user.pressed_home (event, key_pressed, key_mods): self.motions.append('home')
+        '''joystick control: test with "Controller (XBOX 360 For Windows)"'''
+        if event.type == pygame.JOYAXISMOTION:
+            # right-hand stick for fine-grain left/right
+            if round(joy.get_axis(4),1) == -1.0:
+                self.motions.append('left')
+            elif round(joy.get_axis(4),1) == 1.0:
+                self.motions.append('right')
+            # left-hand stick for coarse-grain left/right
+            if round(joy.get_axis(0),1) == -1.0:
+                self.motions.append('down')
+            elif round(joy.get_axis(0),1) == 1.0:
+                self.motions.append('up')
+            # left-trigger to go home (left-most end of useful range)
+            if round(joy.get_axis(2),1) == 1.0:
+                self.motions.append('home')
+            # right-trigger to go to end (right-most end of useful range)
+            if round(joy.get_axis(2),1) == -1.0:
+                self.motions.append('end')
     def move(self):
-        big = 20
+        big = 10
         for motion in self.motions:
             if motion == 'right':
                 cursor.pixel_number -= 1
@@ -167,8 +206,19 @@ class Cursor(object):
             if motion == 'down':
                 cursor.pixel_number += big
                 cursor.position -= big
+            if motion == 'home':
+                cursor.pixel_number = stop_pixel
+                cursor.position = max_data_length-stop_pixel
+            if motion == 'end':
+                cursor.pixel_number = start_pixel
+                cursor.position = max_data_length-start_pixel
 
+# control data cursor with h,j,k,l or with a joystick
 cursor = Cursor(position=max_data_length-stop_pixel)
+
+# add the last connected joystick
+joy = pygame.joystick.Joystick(pygame.joystick.get_count()-1)
+joy.init()
 
 # ------------
 # | GUI Loop |
@@ -181,14 +231,145 @@ while not quit:
     for event in pygame.event.get():
         kp = pygame.key.get_pressed()
         km = pygame.key.get_mods()
-        cursor.get_motions_pressed(event, kp)
+        cursor.get_motions_pressed(event, kp, km)
         quit = pygs.user.quit(event, kp, km)
-        if pygs.user.pressed_spacebar(event, kp):
+
+        if event.type == pygame.JOYBUTTONDOWN:
+            if joy.get_button(6) == 1:
+                quit = True
+
+        if ( pygs.user.pressed_X(event, kp, km)
+             or
+             event.type == pygame.JOYBUTTONDOWN and joy.get_button(3) == 1
+           ): # increase exposure
+
+            # read exposure to INCREASE, convert to milliseconds
+            ms = to_ms(kit.getExposure().cycles)
+
+            # round milliseconds to nearest single significant digit
+            # use second-most significant when most sig digit == 0
+            if str(ms)[0] == '0':
+                ms = float(str(ms)[0:3])
+            else:
+                nsigdig = 1 # e.g., if exposure_ms = 123.45, want 100
+                ms = int(round( ms, nsigdig-len(str(ms).split('.')[0])))
+
+            # INCREMENT significant digit
+            # use second-most significant when most sig digit == 0
+            if (str(ms)[0] == '0'):
+                ms = float(str(float(str(ms)[0:3])+0.1).format(".3f"))
+            else:
+                # increment first leading digit ('1:9')
+                ms = int(str(int(str(ms)[0])+1)+str(ms)[1:])
+
+            # set new exposure
+            kit.setExposure( to_cycles(ms) )
+
+            # get new exposure for reporting in GUI
+            exposure = kit.getExposure().cycles
+
+            # update GUI label "exposure"
+            exposure_ms_label = h3_font.render(
+                f'{to_ms(exposure):.2f}ms', # text
+                1, # antialias: 0: off, 1: on
+                rgb.saltwatertaffy, # text fg color
+                None # text bg color, use None for transparent
+                )
+            exposure_cycles_label = h3_font.render(
+                f'{exposure} cycles', # text
+                1, # antialias: 0: off, 1: on
+                rgb.dirtyblonde, # text fg color
+                None # text bg color, use None for transparent
+                )
+            # grey out GUI labels "success" and "iterations"
+            success_label = h3_font.render(
+                f'{"HIT TARGET" if success else "GAVE UP"}', # text
+                1, # antialias: 0: off, 1: on
+                rgb.darkgravel, # text fg color
+                None # text bg color, use None for transparent
+                )
+            iterations_label = h3_font.render(
+                f'iterations: {iterations}', # text
+                1, # antialias: 0: off, 1: on
+                rgb.darkgravel, # text fg color
+                None # text bg color, use None for transparent
+                )
+
+        if ( pygs.user.pressed_x(event, kp, km)
+             or
+             event.type == pygame.JOYBUTTONDOWN and joy.get_button(2) == 1
+           ):  # decrease exposure
+
+            # read exposure to DECREASE, convert to milliseconds
+            ms = to_ms(kit.getExposure().cycles)
+
+            # round milliseconds to nearest single significant digit
+            # use second-most significant when most sig digit == 0
+            if str(ms)[0] == '0':
+                ms = float(str(ms)[0:3])
+            else:
+                nsigdig = 1 # e.g., if exposure_ms = 123.45, want 100
+                ms = int(round( ms, nsigdig-len(str(ms).split('.')[0])))
+
+            # DECREMENT significant digit
+            # use second-most significant when most sig digit == 0
+            # also use second-most significant digit when round(ms) == 1ms
+            if (str(ms)[0] == '0') or (ms == 1):
+                ms = float(str(float(str(ms)[0:3])-0.1).format(".3f"))
+            # carry when most significant digit == 1
+            elif str(ms)[0] == '1':
+                # decrement using first two leading digits ('10')
+                ms = int(str(int(str(ms)[0:2])-1)+str(ms)[2:])
+            else:
+                # decrement first leading digit ('2:9')
+                ms = int(str(int(str(ms)[0:1])-1)+str(ms)[1:])
+
+            # set new exposure
+            kit.setExposure( to_cycles(ms) )
+
+            # get new exposure for reporting in GUI
+            exposure = kit.getExposure().cycles
+
+            # update GUI label "exposure"
+            exposure_ms_label = h3_font.render(
+                f'{to_ms(exposure):.2f}ms', # text
+                1, # antialias: 0: off, 1: on
+                rgb.saltwatertaffy, # text fg color
+                None # text bg color, use None for transparent
+                )
+            exposure_cycles_label = h3_font.render(
+                f'{exposure} cycles', # text
+                1, # antialias: 0: off, 1: on
+                rgb.dirtyblonde, # text fg color
+                None # text bg color, use None for transparent
+                )
+            # grey out GUI labels "success" and "iterations"
+            success_label = h3_font.render(
+                f'{"HIT TARGET" if success else "GAVE UP"}', # text
+                1, # antialias: 0: off, 1: on
+                rgb.darkgravel, # text fg color
+                None # text bg color, use None for transparent
+                )
+            iterations_label = h3_font.render(
+                f'iterations: {iterations}', # text
+                1, # antialias: 0: off, 1: on
+                rgb.darkgravel, # text fg color
+                None # text bg color, use None for transparent
+                )
+
+        if ( pygs.user.pressed_spacebar(event, kp)
+             or
+             event.type == pygame.JOYBUTTONDOWN and joy.get_button(0) == 1
+           ): # autoexpose
+
             # auto-expose
             reply = kit.autoExposure()
+
+            # get algorithm results for reporting in GUI
             success = True if reply.success else False
             iterations = reply.iterations
-            # update labels "success" and "iterations"
+
+            # update GUI labels "success" and "iterations"
             success_label = h3_font.render(
                 f'{"HIT TARGET" if success else "GAVE UP"}', # text
                 1, # antialias: 0: off, 1: on
@@ -201,11 +382,13 @@ while not quit:
                 rgb.dirtyblonde, # text fg color
                 None # text bg color, use None for transparent
                 )
-            # get new exposure
+
+            # get new exposure for reporting in GUI
             exposure = kit.getExposure().cycles
-            # update label "exposure"
+
+            # update GUI label "exposure"
             exposure_ms_label = h3_font.render(
-                    f'{to_ms(exposure):.2f}ms', # text
+                f'{to_ms(exposure):.2f}ms', # text
                 1, # antialias: 0: off, 1: on
                 rgb.saltwatertaffy, # text fg color
                 None # text bg color, use None for transparent
@@ -235,7 +418,7 @@ while not quit:
     peak_label = h2_font.render(
         f'peak: {peak}', # text
         1, # antialias: 0: off, 1: on
-        rgb.taffy, # text fg color
+        rgb.saltwatertaffy, # text fg color
         None # text bg color, use None for transparent
         )
 
@@ -279,22 +462,22 @@ while not quit:
         )
 
     # AutoExpose target level
-    target = 46420
+    # example: target = 46420
     ae_y = round(plot_height + margin - plot_height/yrange * target)
     pygame.draw.aaline(
         win.surface,
         rgb.gravel,
         (0,ae_y), (len(counts),ae_y) # start, end
         )
-    target = 46420 + 3277
-    ae_y = round(plot_height + margin - plot_height/yrange * target)
+    # example: target = 46420 + 3277
+    ae_y = round(plot_height + margin - plot_height/yrange * (target+tol))
     pygame.draw.aaline(
         win.surface,
         rgb.gravel,
         (0,ae_y), (len(counts),ae_y) # start, end
         )
-    target = 46420 - 3277
-    ae_y = round(plot_height + margin - plot_height/yrange * target)
+    # example: target = 46420 - 3277
+    ae_y = round(plot_height + margin - plot_height/yrange * (target-tol))
     pygame.draw.aaline(
         win.surface,
         rgb.gravel,
@@ -326,7 +509,7 @@ while not quit:
         )
     pygame.draw.aalines(
         win.surface,
-        rgb.taffy,
+        rgb.saltwatertaffy,
         False, # if True, connect first and last points
         meaningful_data # XY plot data [(x0,y0), ... (xn,yn)]
         )

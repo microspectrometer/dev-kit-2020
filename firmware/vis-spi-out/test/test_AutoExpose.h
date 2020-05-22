@@ -2,9 +2,6 @@
 #define _TEST_AUTOEXPOSE_H
 
 void AutoExpose_turns_led1_red_to_indicate_starting(void);
-void AutoExpose_sets_max_dark_at_4500_counts(void);
-void AutoExpose_sets_min_exposure_at_5_cycles(void);
-void AutoExpose_sets_max_exposure_at_65535_cycles(void);
 void AutoExpose_sets_min_peak_at_target_minus_tolerance(void);
 void AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_GREATER_THAN_target(void);
 void AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_LESS_THAN_max_dark(void);

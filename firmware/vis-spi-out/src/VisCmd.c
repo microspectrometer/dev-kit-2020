@@ -130,9 +130,6 @@ uint16_t AutoExpose(void)
 {
     /** AutoExpose behavior:\n 
       * - turns led1 red to indicate starting\n 
-      * - sets max dark at 4500 counts\n 
-      * - sets min exposure at 5 cycles\n 
-      * - sets max exposure at 65535 cycles\n 
       * - sets min peak at target minus tolerance\n 
       * - clamps min peak at max dark if target minus tolerance is GREATER THAN target\n 
       * - clamps min peak at max dark if target minus tolerance is LESS THAN max dark\n 
@@ -309,7 +306,7 @@ uint16_t AutoExpose(void)
     /* | AutoExpose SETUP | */
     /* -------------------- */
 
-    // give up after 10 tries
+    // give up after iterations == max_tries
     // SetAutoExposeConfig guarantees at least one try.
     uint8_t iterations = 0;
 
@@ -348,7 +345,8 @@ uint16_t AutoExpose(void)
         if (peak < max_dark)
         {
             // stop if already at maximum exposure
-            if (exposure_ticks == max_exposure) done = true;
+            // (compare with >= because max_exposure < UINT16_MAX)
+            if (exposure_ticks >= max_exposure) done = true;
 
             // otherwise, 10x exposure
             else
@@ -375,7 +373,8 @@ uint16_t AutoExpose(void)
         else if (peak < min_peak)
         {
             // stop if already at maximum exposure
-            if (exposure_ticks == max_exposure) done = true;
+            // (compare with >= because max_exposure < UINT16_MAX)
+            if (exposure_ticks >= max_exposure) done = true;
 
             // otherwise, scale exposure by gain
             else

@@ -61,9 +61,6 @@ void Run_AutoExpose_tests(bool run_test)
     {
         setUp = SetUp_Mock; tearDown = TearDown_Mock;
         RUN_TEST(AutoExpose_turns_led1_red_to_indicate_starting);
-        RUN_TEST(AutoExpose_sets_max_dark_at_4500_counts);
-        RUN_TEST(AutoExpose_sets_min_exposure_at_5_cycles);
-        RUN_TEST(AutoExpose_sets_max_exposure_at_65535_cycles);
         RUN_TEST(AutoExpose_sets_min_peak_at_target_minus_tolerance);
         RUN_TEST(AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_GREATER_THAN_target);
         RUN_TEST(AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_LESS_THAN_max_dark);

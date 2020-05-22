@@ -161,21 +161,23 @@ void setup_DetectorReadout(void)
     /* ------------------------------- */
     /* | Initialize AutoExposeConfig | */
     /* ------------------------------- */
-    // Initialize AutoExpose maximum number of tries
-    max_tries = 10;
-    // Initialize AutoExpose pixel range to all 392 pixels
+    // Initialize default auto-expose maximum number of tries
+    max_tries = 12;
+    // Initialize default auto-expose pixel range to all 392 pixels.
+    // Recommend user application trims pixel range to match wavelength map.
     start_pixel = 7; // first 6 pixels are optically meaningless
     stop_pixel = 392;
-    // Initialize AutoExpose target peak range to 46420 ± 3277 counts
+    // Initialize default auto-expose target peak range to 46420 ± 3277 counts
     target = 46420;
     target_tolerance = 3277;
     // Hard-code conservative estimate on dark offset
     // AutoExpose calculates gain ONLY when signal is above max_dark.
     // SetAutoExposeConfig guarantees target is not below max_dark.
     max_dark = 4500;
-    // Hard-code exposure time limits
+    // Hard-code minimum exposure time used by auto-expose.
     // keep lower limit well-away from 1 cycle
     min_exposure = 5; // cycles
-    // upper limit is 1.3s, but use 300ms for faster auto-expose
-    max_exposure = 15000; // cycles
+    // Initialize default auto-expose maximum exposure time to try.
+    // upper limit is 1.3s, but 200ms is a practical default limit
+    max_exposure = 10000; // cycles
 }
