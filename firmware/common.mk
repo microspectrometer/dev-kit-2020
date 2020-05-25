@@ -79,6 +79,10 @@ CFLAGS_for_tests = -I/usr/include/glib-2.0 \
 	-Itest -I../lib/test ${IncludeFakeAvrHeaders} \
 	-g -Wall -Wextra -pedantic -Winline
 LFLAGS_for_tests = -lglib-2.0 -lintl -L/usr/lib/glib-2.0
+
+# define compiler as avr-gcc if not defined when make is called
+compiler ?= avr-gcc
+
 # avr-gcc{{{
 ifeq ($(compiler),avr-gcc)
 	CFLAGS := $(CFLAGS_for_avr)
@@ -131,6 +135,7 @@ clean:
 	rm -f build/${board-name}.map
 	rm -f build/${board-name}.o
 	rm -f sig.log
+	rm -f fuses.log
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
 	rm -f build/test_runner.o
@@ -235,7 +240,7 @@ test-voltage:
 	atprogram.exe --tool atmelice --interface isp --device atmega328p \
 		parameters --voltage
 # }}}
-# reset connected microcontroller or is it reset programmer? {{{
+# reset all microcontrollers {{{
 # Vim ;mkr
 .PHONY: reset
 reset:

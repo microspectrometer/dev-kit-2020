@@ -36,9 +36,13 @@ from pathlib import Path
 
 # Open communication. Communication closes when this app quits.
 kit = ChromaSpecSimpleInterface(
-    serial_number='091103', # dev-kit I'm using for my system tests
+    # serial_number='091121', # dev-kit I'm using for my system tests
     timeout=2.0 # seconds until timeout if there is no response
     )
+
+# TODO:
+# Add serial number query to API
+# Add serial number of connected kit to GUI window title
 
 # led_setting
 OFF = 0

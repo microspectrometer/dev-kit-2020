@@ -32,3 +32,15 @@ Setup:
   Check voltage on PCB connected to AtmelICE:
     $ cd vis-spi-out/ or $ cd usb-bridge/
     $ make test-voltage
+
+  Check fuse settings on connected microcontroller:
+    $ cd vis-spi-out/ or $ cd usb-bridge/
+    $ make log-fuses
+
+  Check device signature of connected microcontroller:
+    $ cd vis-spi-out/ or $ cd usb-bridge/
+    $ make log-signature
+
+  Reset both microcontrollers (white switch does not matter):
+    $ cd vis-spi-out/ or $ cd usb-bridge/
+    $ make reset

@@ -1,3 +1,19 @@
+# Git exclude
+
+After cloning this repository, please add the following
+exclusions to `.git/info/exclude`:
+
+```
+*~
+*.sw[mnop]
+__pycache__
+*.elf
+*.o
+*.map
+*.log
+*.avra
+```
+
 # Dev-kit programming cheatsheet
 
 ## Overview
