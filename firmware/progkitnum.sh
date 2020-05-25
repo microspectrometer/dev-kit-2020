@@ -25,7 +25,8 @@ fi
 echo
 echo Programming EEPROM...
 cd kits/$dashed_number/
-"$ftdi" scan cycl '0'
+#Do not cycle power before scanning 
+#"$ftdi" scan cycl '0'
 "$ftdi" scan prog 0 ftcfg.xml cycl 0
 cd ../..
 "$ftdi" scan
