@@ -1,0 +1,17 @@
+Hardware:
+
+  1. Connect usb-bridge to vis-spi-out.
+     (either orientation is OK)
+
+  2. Connect usb-bridge to computer with USB cable.
+     (Expect yellow indicator LEDs on both PCBs light up.)
+
+  3. Connect AtmelICE to usb-bridge with 6-pin ribbon cable.
+
+When programming PCB microcontroller FLASH (make flash):
+  Connect AtmelICE to computer with USB cable.
+  (Expect green and red indicator LEDs on AtemlICE light up.)
+
+When programming FTDI EEPROM with kit serial number (make progkitnum):
+  Disconnect AtmelICE USB cable.
+  (Expect AtmelICE indicator LEDs are off.)

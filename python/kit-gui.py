@@ -1,6 +1,29 @@
 #!python.exe
 # -*- coding: utf-8 -*-
-'''GUI for the Chromation dev-kit.'''
+'''Chromation dev-kit interactive application.
+
+keyboard
+--------
+q   - quit
+a   - auto-expose
+x   - decrease exposure time
+X   - increase exposure time
+h/l - navigate wavelength slow
+j/k - navigate wavelength fast
+0   - go to shortest wavelength
+$   - go to longest wavelength
+
+xbox controller
+---------------
+BACK - quit
+A    - auto-expose
+X    - decrease exposure
+Y    - increase exposure
+right-stick   - navigate wavelength slow
+left-stick    - navigate wavelength fast
+left-trigger  - go to shortest wavelength
+right-trigger - go to longest wavelength
+'''
 
 import pygame # from PyPi
 import pygs # I wrote this to simplify using pygame
@@ -14,7 +37,7 @@ from pathlib import Path
 # Open communication. Communication closes when this app quits.
 kit = ChromaSpecSimpleInterface(
     serial_number='091103', # dev-kit I'm using for my system tests
-    timeout=5.0 # seconds until timeout if there is no response
+    timeout=2.0 # seconds until timeout if there is no response
     )
 
 # led_setting
@@ -55,6 +78,9 @@ start_pixel=8 if binning else 16
 stop_pixel=235 if binning else 470
 target=46420; tol=3277; max_exposure=10000
 kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, tol, max_exposure)
+
+# initial value for data to plot
+counts = [0 for pixels in range(start_pixel,stop_pixel+1)]
 
 # start with 1ms exposure time
 milliseconds = 1
@@ -167,12 +193,16 @@ class Cursor(object):
         self.ytop = margin
         self.pixel_number = max_data_length-position
     def get_motions_pressed(self, event, key_pressed, key_mods):
+        # empty the motion list
         self.motions = []
+
+        # add motions to the list
         if pygs.user.pressed_right(event, key_pressed, key_mods): self.motions.append('right')
         if pygs.user.pressed_up   (event, key_pressed, key_mods): self.motions.append('up')
         if pygs.user.pressed_left (event, key_pressed, key_mods): self.motions.append('left')
         if pygs.user.pressed_down (event, key_pressed, key_mods): self.motions.append('down')
         if pygs.user.pressed_home (event, key_pressed, key_mods): self.motions.append('home')
+        if pygs.user.pressed_end (event, key_pressed, key_mods): self.motions.append('end')
         '''joystick control: test with "Controller (XBOX 360 For Windows)"'''
         if event.type == pygame.JOYAXISMOTION:
             # right-hand stick for fine-grain left/right
@@ -191,6 +221,7 @@ class Cursor(object):
             # right-trigger to go to end (right-most end of useful range)
             if round(joy.get_axis(2),1) == -1.0:
                 self.motions.append('end')
+
     def move(self):
         big = 10
         for motion in self.motions:
@@ -212,6 +243,12 @@ class Cursor(object):
             if motion == 'end':
                 cursor.pixel_number = start_pixel
                 cursor.position = max_data_length-start_pixel
+
+        # ------------------
+        # | VERY IMPORTANT |
+        # ------------------
+        # empty the motion list
+        self.motions = []
 
 # control data cursor with h,j,k,l or with a joystick
 cursor = Cursor(position=max_data_length-stop_pixel)
@@ -412,7 +449,14 @@ while not quit:
         )
     '''--- ACQUIRE SPECTRUM ---'''
     # capture one frame
-    counts = kit.captureFrame().pixels
+    frame = kit.captureFrame()
+
+    # Exception: 'NoneType' object has no attribute 'pixels'
+    # This is rare but it causes the application to quit.
+    # Instead of quitting, just ignore the dropped frame and
+    # replot the previous value of `counts`.
+    if frame is not None: counts = frame.pixels
+
     # display peak
     peak = max(counts[start_pixel-1:stop_pixel])
     peak_label = h2_font.render(
@@ -421,7 +465,6 @@ while not quit:
         rgb.saltwatertaffy, # text fg color
         None # text bg color, use None for transparent
         )
-
 
     '''--- CREATE PLOT DATA ---'''
     # put short wavelengths on left side of plot

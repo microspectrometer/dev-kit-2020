@@ -1,0 +1,13 @@
+---Routine dev-kit preparation (program FLASH or FUSES)---
+
+    $ make flash (see make help-flash)
+  
+    $ make fuses (see make help-fuses)
+
+--- Targets for embedded systems developers---
+
+  clean all builds:                 $ make clean
+  
+  build and run unit-tests:         $ make unit-test
+  
+  build for AVR but do not flash:   $ make avr-elf

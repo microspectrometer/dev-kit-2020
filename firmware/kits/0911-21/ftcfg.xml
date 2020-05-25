@@ -1,0 +1,65 @@
+<FT_EEPROM>
+  <Chip_Details>
+    <Type>FT X Series</Type>
+  </Chip_Details>
+  <USB_Device_Descriptor>
+    <VID_PID>0</VID_PID>
+    <idVendor>0403</idVendor>
+    <idProduct>6015</idProduct>
+    <bcdUSB>USB 2.0</bcdUSB>
+  </USB_Device_Descriptor>
+  <USB_Config_Descriptor>
+    <bmAttributes>
+      <RemoteWakeupEnabled>false</RemoteWakeupEnabled>
+      <SelfPowered>false</SelfPowered>
+      <BusPowered>true</BusPowered>
+    </bmAttributes>
+    <IOpullDown>false</IOpullDown>
+    <MaxPower>90</MaxPower>
+  </USB_Config_Descriptor>
+  <USB_String_Descriptors>
+    <Manufacturer>CH</Manufacturer>
+    <Product_Description>ChromationSpect-0911-21</Product_Description>
+    <SerialNumber_Enabled>true</SerialNumber_Enabled>
+    <SerialNumber>CHROMATION091121</SerialNumber>
+    <SerialNumberPrefix>CH</SerialNumberPrefix>
+    <SerialNumber_AutoGenerate>false</SerialNumber_AutoGenerate>
+  </USB_String_Descriptors>
+  <Hardware_Specific>
+    <USB_Suspend_VBus>false</USB_Suspend_VBus>
+    <Port_A>
+      <Hardware>
+        <Device>FT220X/FT221X (FT1248)</Device>
+      </Hardware>
+      <Driver>
+        <D2XX>true</D2XX>
+        <VCP>false</VCP>
+      </Driver>
+    </Port_A>
+    <Battery_Charge_Detect>
+      <Enable>false</Enable>
+      <Power_Enable>false</Power_Enable>
+      <Deactivate_Sleep>false</Deactivate_Sleep>
+    </Battery_Charge_Detect>
+    <FT1248_Settings>
+      <Clock_Polarity>false</Clock_Polarity>
+      <Bit_Order>true</Bit_Order>
+      <Flow_Control>true</Flow_Control>
+    </FT1248_Settings>
+    <CBUS_Signals>
+      <C3>GPIO</C3>
+    </CBUS_Signals>
+    <IO_Pins>
+      <DBUS>
+        <SlowSlew>false</SlowSlew>
+        <Schmitt>false</Schmitt>
+        <Drive>4mA</Drive>
+      </DBUS>
+      <CBUS>
+        <SlowSlew>false</SlowSlew>
+        <Schmitt>false</Schmitt>
+        <Drive>4mA</Drive>
+      </CBUS>
+    </IO_Pins>
+  </Hardware_Specific>
+</FT_EEPROM>

@@ -1,0 +1,27 @@
+----------------
+|     HELP     |
+----------------
+
+Get help with:
+
+---Routine tasks for dev-kit preparation---
+
+  FTDI EEPROM programming:
+  $ make help-ftdi
+
+  Fuse programming:
+  $ make help-fuses
+
+  Flash programming:
+  $ make help-flash
+
+---First time setup of this firmware programming tool---
+
+  Atmel DFP path setup:
+  $ make help-setup
+
+---For embedded systems developers---
+
+  Rebuilding firmware:
+  $ make help-build
+

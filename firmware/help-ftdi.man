@@ -1,0 +1,19 @@
+------------------
+|   HELP-FTDI    |
+------------------
+
+---Routine tasks for dev-kit preparation---
+
+1. generate a dev-kit serial number:
+   $ make kitnum
+
+2. program FTDI chip with serial number:
+   $ make progkitnum
+
+---Checking correct connection of FTDI devices---
+
+scan devices:
+  $ make scan
+
+power-cycle first FTDI device found:
+  $ make cycle

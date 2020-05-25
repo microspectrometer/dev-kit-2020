@@ -1971,11 +1971,6 @@ src/VisCmd.h|108 col 9| warning: '_delay_loop_1' is static but used in inline fu
       the whole project?
 
 # DONE
-## protocol defined in json
-
-- [x] find the copy of the `chromaspec.json` file I was editing
-  to track my changes to the protocol
-    - paste in `dev-kit-mike/firmware` folder
 
 ## dev - troubleshoot linker error for faked function
 - linker error trying to link `FtBusTurnaround`:

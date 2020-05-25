@@ -1,0 +1,22 @@
+--------------
+| HELP-FUSES |
+--------------
+
+$ make fuses
+
+Setup:
+  Connect AtmelICE to usb-bridge with 6-pin ribbon cable.
+  Connect AtmelICE to computer with USB cable.
+  Orient PCB with 6-pin programming header on the RIGHT.
+
+Program usb-bridge:
+  (Slide white switch RIGHT, black switch LEFT)
+  $ cd usb-bridge/
+  $ make fuses
+  $ cd ../
+
+Program vis-spi-out:
+  (Slide white switch LEFT, black switch LEFT)
+  $ cd vis-spi-out/
+  $ make fuses
+  $ cd ../

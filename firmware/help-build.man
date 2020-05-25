@@ -1,0 +1,20 @@
+--------------
+| HELP-BUILD |
+--------------
+
+--- Targets ---
+
+get help (help message depends on present working directory):
+  $ make
+
+build elf:
+  $ make avr-elf
+
+program flash:
+  $ make flash
+
+delete old build:
+  $ make clean
+
+build unit-tests:
+  $ make unit-test
