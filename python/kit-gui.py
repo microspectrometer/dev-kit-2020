@@ -258,8 +258,9 @@ class Cursor(object):
 cursor = Cursor(position=max_data_length-stop_pixel)
 
 # add the last connected joystick
-joy = pygame.joystick.Joystick(pygame.joystick.get_count()-1)
-joy.init()
+if pygame.joystick.get_count() > 0:
+    joy = pygame.joystick.Joystick(pygame.joystick.get_count()-1)
+    joy.init()
 
 # ------------
 # | GUI Loop |
