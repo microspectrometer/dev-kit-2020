@@ -40,10 +40,6 @@ kit = ChromaSpecSimpleInterface(
     timeout=2.0 # seconds until timeout if there is no response
     )
 
-# TODO:
-# Add serial number query to API
-# Add serial number of connected kit to GUI window title
-
 # led_setting
 OFF = 0
 GREEN = 1
@@ -105,7 +101,7 @@ here = path.parent
 chromation_logo = str(Path(here).joinpath('icon.png'))
 
 win = pygs.Window(
-    caption='Chromation Kit',
+    caption=f'Chromation Kit: {kit.serial.serial_number.strip("CHROMATION")}',
     icon=chromation_logo # TODO: find this even if pwd does not match
     )
 
