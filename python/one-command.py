@@ -6,7 +6,7 @@ Open communication. Send one command. Print reply. Close communication.
 
 USAGE
 -----
-1. Edit line 130 with command to use.
+1. Edit line 145 with command to use.
 2. Run this script:
     $ python.exe ./one-command.py
 
@@ -14,7 +14,7 @@ View help:
     $ python.exe -m pydoc one-command
     $ python.exe -m pydoc one-command.more_help
 
-COMMANDS TO TRY (go to line 130)
+COMMANDS TO TRY (go to line 145)
 --------------------------------
 kit.null()
 kit.getBridgeLED(led_num=0)
@@ -40,7 +40,7 @@ table.
 Below are commands to try. Commands typically used in an
 application are flagged as IMPORTANT.
 
-COMMANDS TO TRY (go to line 130 and paste the command there)
+COMMANDS TO TRY (go to line 145 and paste the command there)
 ---------------
 kit.null()
 kit.getSensorConfig()
