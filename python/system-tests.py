@@ -2,12 +2,32 @@
 # -*- coding: utf-8 -*-
 '''System tests of dev-kit-mike/firmware.
 
-USAGE:
+USAGE
+-----
 
-    Run tests with:
-    $ pytest --testdox system-tests.py
+Run tests with:
+$ pytest --testdox system-tests.py
 
-    Mike's VIM shortcut: ;uf
+On Windows with:
+> python.exe -m pytest --testdox system-tests.py
+
+Mike's VIM shortcut: ;uf (Unittest this File)
+
+DEPENDENCIES
+------------
+pip install pytest
+pip install pytest-testdox
+
+PYTEST HELP (see all the flags)
+-----------
+> python.exe -m pytest -h
+
+Common flags:
+
+--testdox   -- display test output in testdox format
+-v          -- verbose (show each test name, otherwise just . for passing tests)
+-q          -- quiet (. for passing test, then a one-line summary)
+--color yes -- print in color (green for passing, red for failing)
 '''
 
 # I use unittest to automate these system tests
