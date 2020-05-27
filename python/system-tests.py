@@ -18,8 +18,7 @@ from chromaspeclib.simple import ChromaSpecSimpleInterface
 
 # Open communication. Communication closes when this script finishes.
 kit = ChromaSpecSimpleInterface(
-    serial_number='091103', # dev-kit I'm using for my system tests
-    timeout=1.0 # timeout if there is no response in 100ms
+    timeout=1.0 # timeout if there is no response in 1s
     )
 
 # -------------

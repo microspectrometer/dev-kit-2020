@@ -5,7 +5,7 @@
 keyboard
 --------
 q   - quit
-a   - auto-expose
+a   - auto-expose (spacebar works also)
 x   - decrease exposure time
 X   - increase exposure time
 h/l - navigate wavelength slow
@@ -36,7 +36,6 @@ from pathlib import Path
 
 # Open communication. Communication closes when this app quits.
 kit = ChromaSpecSimpleInterface(
-    # serial_number='091121', # dev-kit I'm using for my system tests
     timeout=2.0 # seconds until timeout if there is no response
     )
 
@@ -102,7 +101,7 @@ chromation_logo = str(Path(here).joinpath('icon.png'))
 
 win = pygs.Window(
     caption=f'Chromation Kit: {kit.serial.serial_number.strip("CHROMATION")}',
-    icon=chromation_logo # TODO: find this even if pwd does not match
+    icon=chromation_logo
     )
 
 # import Steve Losh's Badwolf color names
@@ -396,6 +395,8 @@ while not quit:
                 )
 
         if ( pygs.user.pressed_spacebar(event, kp)
+             or
+             pygs.user.pressed_a(event, kp, km)
              or
              event.type == pygame.JOYBUTTONDOWN and joy.get_button(0) == 1
            ): # autoexpose
