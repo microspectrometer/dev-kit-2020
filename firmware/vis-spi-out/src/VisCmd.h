@@ -410,6 +410,7 @@ inline void SetAutoExposeConfig(void)
     /* | Validate New Config | */
     /* ----------------------- */
 
+    /* TODO: add check that new_max_exposure is valid */
     if ( !AutoExposeConfigIsValid(
             new_max_tries,
             new_start_pixel, new_stop_pixel,
