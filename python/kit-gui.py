@@ -72,11 +72,17 @@ binning = BINNING_ON
 # start with default config
 kit.setSensorConfig(binning, GAIN_1X, ALL_ROWS_ACTIVE)
 max_tries=12;
+# TODO: get start_pixel and stop_pixel from map file
 # dead pixel at 236 (BINNING_ON)
 start_pixel=8 if binning else 16
 stop_pixel=235 if binning else 470
 target=46420; tol=3277; max_exposure=10000
+# kludge (doesn't work) to workaround 82ms bug: call set twice, followed by get
 kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, tol, max_exposure)
+kit.getAutoExposeConfig()
+kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, tol, max_exposure)
+kit.setAutoExposeConfig(max_tries, start_pixel, stop_pixel, target, tol, max_exposure)
+kit.getAutoExposeConfig()
 
 # initial value for data to plot
 counts = [0 for pixels in range(start_pixel,stop_pixel+1)]
@@ -116,52 +122,91 @@ rgb = pygs.RGB()
 # | Fonts for labels              |
 # ---------------------------------
 consola = str(Path(here).joinpath('consola.ttf'))
-h1_font = pygame.font.Font(consola, 40)
 h2_font = pygame.font.Font(consola, 20)
-h3_font = pygame.font.Font(consola, 16)
+h3_font = pygame.font.Font(consola, 20)
+
+class Text(object):
+    '''Text on screen.'''
+    def __init__(self, text='', size_pt=16, antialias=1, color_rgb=rgb.snow, background_rgb=None):
+        '''Initialize self.surface with consolas text and color.'''
+
+        # make resource path agnostic to path kit-gui is launched from
+        path = Path(__file__)
+        here = path.parent
+        consola = str(Path(here).joinpath('consola.ttf'))
+
+        # create the font
+        self.font = pygame.font.Font(consola, size_pt)
+
+        # initialize text surface values
+        self.text=text # display this text
+        self.antialias=antialias # 0: off, 1: on
+        self.color_rgb=color_rgb # rgb text foreground color
+        self.background_rgb=background_rgb # rgb text background color, None: transparent
+
+        # create the text surface
+        self.update(text=self.text, color_rgb=self.color_rgb)
+
+    def update(self, text=None, color_rgb=None):
+        '''Update text and/or color on self.surface.'''
+        # update text if given:
+        if text is not None: self.text=text
+        # update color if given:
+        if color_rgb is not None: self.color_rgb=color_rgb
+        # update the surface
+        self.surface = self.font.render(
+            self.text,
+            self.antialias,
+            self.color_rgb,
+            self.background_rgb,
+            )
+
+peak_pixel = Text(text=f'pixel: ', size_pt=40, color_rgb=rgb.tardis)
+
+class AutoExpose(object):
+    '''Autoexpose information displayed on screen.'''
+    def __init__(self):
+
+        # initialize autoexpose results
+        self.is_success =  True # kit.autoExposure().success
+        self.num_tries = 1 # kit.autoExposure().iterations
+
+        # initialize displayed text
+        self.title = Text(
+            text='Auto-expose:',
+            color_rgb=rgb.gravel
+            )
+        self.hitmiss = Text(
+            text=f'{"HIT TARGET" if self.is_success else "GAVE UP"}',
+            color_rgb=rgb.darkgravel
+            )
+        self.iterations = Text(
+            text=f'iterations: {self.num_tries}',
+            color_rgb=rgb.darkgravel
+            )
 
 # initialize AutoExpose result display
-success = True # kit.autoExposure().success
-iterations = 1 # kit.autoExposure().iterations
-ae_label = h3_font.render(
-    'Auto-expose:', # text
-    1, # antialias: 0: off, 1: on
-    rgb.gravel, # text fg color
-    None # text bg color, use None for transparent
-    )
-success_label = h3_font.render(
-    f'{"HIT TARGET" if success else "GAVE UP"}', # text
-    1, # antialias: 0: off, 1: on
-    rgb.darkgravel, # text fg color
-    None # text bg color, use None for transparent
-    )
-iterations_label = h3_font.render(
-    f'iterations: {iterations}', # text
-    1, # antialias: 0: off, 1: on
-    rgb.darkgravel, # text fg color
-    None # text bg color, use None for transparent
-    )
+autoexpose = AutoExpose()
 
-exposure = kit.getExposure().cycles
 
-exposure_tag_label = h3_font.render(
-    f'exposure:', # text
-    1, # antialias: 0: off, 1: on
-    rgb.gravel, # text fg color
-    None # text bg color, use None for transparent
-    )
-exposure_ms_label = h3_font.render(
-        f'{to_ms(exposure):.2f}ms', # text
-    1, # antialias: 0: off, 1: on
-    rgb.darkgravel, # text fg color
-    None # text bg color, use None for transparent
-    )
-exposure_cycles_label = h3_font.render(
-    f'{exposure} cycles', # text
-    1, # antialias: 0: off, 1: on
-    rgb.darkgravel, # text fg color
-    None # text bg color, use None for transparent
-    )
+class Exposure(object):
+    '''Exposure information displayed on screen.'''
+    def __init__(self):
+        self.cycles = kit.getExposure().cycles
+        self.title = Text(
+            text=f'exposure:',
+            color_rgb=rgb.gravel
+            )
+        self.ms_text = Text(
+            text=f'{to_ms(self.cycles):.2f}ms',
+            color_rgb=rgb.darkgravel
+            )
+        self.cycles_text = Text(
+            text=f'{self.cycles} cycles',
+            color_rgb=rgb.darkgravel
+                )
+
+exposure = Exposure()
 
 # Want to use counts values as pixel y-coordinate,
 # but pixel 0,0 is the top-left, not the bottom-left.
@@ -303,34 +348,14 @@ while not quit:
             kit.setExposure( to_cycles(ms) )
 
             # get new exposure for reporting in GUI
-            exposure = kit.getExposure().cycles
+            exposure.cycles = kit.getExposure().cycles
 
             # update GUI label "exposure"
-            exposure_ms_label = h3_font.render(
-                f'{to_ms(exposure):.2f}ms', # text
-                1, # antialias: 0: off, 1: on
-                rgb.saltwatertaffy, # text fg color
-                None # text bg color, use None for transparent
-                )
-            exposure_cycles_label = h3_font.render(
-                f'{exposure} cycles', # text
-                1, # antialias: 0: off, 1: on
-                rgb.dirtyblonde, # text fg color
-                None # text bg color, use None for transparent
-                )
+            exposure.ms_text.update(text=f'{to_ms(exposure.cycles):.2f}ms', color_rgb=rgb.saltwatertaffy)
+            exposure.cycles_text.update(text=f'{exposure.cycles} cycles', color_rgb=rgb.dirtyblonde)
             # grey out GUI labels "success" and "iterations"
-            success_label = h3_font.render(
-                f'{"HIT TARGET" if success else "GAVE UP"}', # text
-                1, # antialias: 0: off, 1: on
-                rgb.darkgravel, # text fg color
-                None # text bg color, use None for transparent
-                )
-            iterations_label = h3_font.render(
-                f'iterations: {iterations}', # text
-                1, # antialias: 0: off, 1: on
-                rgb.darkgravel, # text fg color
-                None # text bg color, use None for transparent
-                )
+            autoexpose.hitmiss.update(text=f'{"HIT TARGET" if autoexpose.is_success else "GAVE UP"}', color_rgb=rgb.darkgravel)
+            autoexpose.iterations.update(text=f'iterations: {autoexpose.num_tries}', color_rgb=rgb.darkgravel)
 
         if ( pygs.user.pressed_x(event, kp, km)
              or
@@ -365,34 +390,14 @@ while not quit:
             kit.setExposure( to_cycles(ms) )
 
             # get new exposure for reporting in GUI
-            exposure = kit.getExposure().cycles
+            exposure.cycles = kit.getExposure().cycles
 
             # update GUI label "exposure"
-            exposure_ms_label = h3_font.render(
-                f'{to_ms(exposure):.2f}ms', # text
-                1, # antialias: 0: off, 1: on
-                rgb.saltwatertaffy, # text fg color
-                None # text bg color, use None for transparent
-                )
-            exposure_cycles_label = h3_font.render(
-                f'{exposure} cycles', # text
-                1, # antialias: 0: off, 1: on
-                rgb.dirtyblonde, # text fg color
-                None # text bg color, use None for transparent
-                )
+            exposure.ms_text.update(text=f'{to_ms(exposure.cycles):.2f}ms', color_rgb=rgb.saltwatertaffy)
+            exposure.cycles_text.update(text=f'{exposure.cycles} cycles', color_rgb=rgb.dirtyblonde)
             # grey out GUI labels "success" and "iterations"
-            success_label = h3_font.render(
-                f'{"HIT TARGET" if success else "GAVE UP"}', # text
-                1, # antialias: 0: off, 1: on
-                rgb.darkgravel, # text fg color
-                None # text bg color, use None for transparent
-                )
-            iterations_label = h3_font.render(
-                f'iterations: {iterations}', # text
-                1, # antialias: 0: off, 1: on
-                rgb.darkgravel, # text fg color
-                None # text bg color, use None for transparent
-                )
+            autoexpose.hitmiss.update(text=f'{"HIT TARGET" if autoexpose.is_success else "GAVE UP"}', color_rgb=rgb.darkgravel)
+            autoexpose.iterations.update(text=f'iterations: {autoexpose.num_tries}', color_rgb=rgb.darkgravel)
 
         if ( pygs.user.pressed_spacebar(event, kp)
              or
@@ -405,50 +410,24 @@ while not quit:
             reply = kit.autoExposure()
 
             # get algorithm results for reporting in GUI
-            success = True if reply.success else False
-            iterations = reply.iterations
+            autoexpose.is_success = True if reply.success else False
+            autoexpose.num_tries = reply.iterations
 
             # update GUI labels "success" and "iterations"
-            success_label = h3_font.render(
-                f'{"HIT TARGET" if success else "GAVE UP"}', # text
-                1, # antialias: 0: off, 1: on
-                rgb.dirtyblonde, # text fg color
-                None # text bg color, use None for transparent
-                )
-            iterations_label = h3_font.render(
-                f'iterations: {iterations}', # text
-                1, # antialias: 0: off, 1: on
-                rgb.dirtyblonde, # text fg color
-                None # text bg color, use None for transparent
-                )
+            autoexpose.hitmiss.update(text=f'{"HIT TARGET" if autoexpose.is_success else "GAVE UP"}', color_rgb=rgb.dirtyblonde)
+            autoexpose.iterations.update(text=f'iterations: {autoexpose.num_tries}', color_rgb=rgb.dirtyblonde)
 
             # get new exposure for reporting in GUI
-            exposure = kit.getExposure().cycles
+            exposure.cycles = kit.getExposure().cycles
 
             # update GUI label "exposure"
-            exposure_ms_label = h3_font.render(
-                f'{to_ms(exposure):.2f}ms', # text
-                1, # antialias: 0: off, 1: on
-                rgb.saltwatertaffy, # text fg color
-                None # text bg color, use None for transparent
-                )
-            exposure_cycles_label = h3_font.render(
-                f'{exposure} cycles', # text
-                1, # antialias: 0: off, 1: on
-                rgb.dirtyblonde, # text fg color
-                None # text bg color, use None for transparent
-                )
-
+            exposure.ms_text.update(text=f'{to_ms(exposure.cycles):.2f}ms', color_rgb=rgb.saltwatertaffy)
+            exposure.cycles_text.update(text=f'{exposure.cycles} cycles', color_rgb=rgb.dirtyblonde)
 
     '''---UPDATE PIXEL NUMBER LABEL---'''
     cursor.move()
-    pixel_label = h1_font.render(
-        f'pixel: {cursor.pixel_number}', # text
-        1, # antialias: 0: off, 1: on
-        rgb.tardis, # text fg color
-        rgb.blackestgravel # text bg color, use None for transparent
-        # None # text bg color, use None for transparent
-        )
+    peak_pixel.update(text=f'pixel: {cursor.pixel_number}')
+
     '''--- ACQUIRE SPECTRUM ---'''
     # capture one frame
     frame = kit.captureFrame()
@@ -560,13 +539,13 @@ while not quit:
         )
 
     # Draw pixel label
-    win.surface.blit(pixel_label,           (10, margin+20))
-    win.surface.blit(exposure_tag_label,    (max_data_length-140, margin+110))
-    win.surface.blit(exposure_ms_label,     (max_data_length-120, margin+130))
-    win.surface.blit(exposure_cycles_label, (max_data_length-120, margin+150))
-    win.surface.blit(ae_label,              (10, margin+110))
-    win.surface.blit(success_label,         (30, margin+130))
-    win.surface.blit(iterations_label,      (30, margin+150))
+    win.surface.blit(peak_pixel.surface,          (10, margin+20))
+    win.surface.blit(exposure.title.surface,    (max_data_length-140, margin+110))
+    win.surface.blit(exposure.ms_text.surface,     (max_data_length-120, margin+130))
+    win.surface.blit(exposure.cycles_text.surface, (max_data_length-120, margin+150))
+    win.surface.blit(autoexpose.title.surface,              (10, margin+110))
+    win.surface.blit(autoexpose.hitmiss.surface,         (30, margin+130))
+    win.surface.blit(autoexpose.iterations.surface,      (30, margin+150))
     win.surface.blit(peak_label,            (10, margin+190))
     # Draw pixel label line
     pygame.draw.aaline(
