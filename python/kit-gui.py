@@ -122,8 +122,6 @@ rgb = pygs.RGB()
 # | Fonts for labels              |
 # ---------------------------------
 consola = str(Path(here).joinpath('consola.ttf'))
-h2_font = pygame.font.Font(consola, 20)
-h3_font = pygame.font.Font(consola, 20)
 
 class Text(object):
     '''Text on screen.'''
@@ -185,14 +183,18 @@ class AutoExpose(object):
             color_rgb=rgb.darkgravel
             )
 
-# initialize AutoExpose result display
+# initialize autoexpose result display
 autoexpose = AutoExpose()
 
 
 class Exposure(object):
     '''Exposure information displayed on screen.'''
     def __init__(self):
+
+        # initialize value displayed on screen
         self.cycles = kit.getExposure().cycles
+
+        # initialize displayed text
         self.title = Text(
             text=f'exposure:',
             color_rgb=rgb.gravel
@@ -206,7 +208,23 @@ class Exposure(object):
             color_rgb=rgb.darkgravel
                 )
 
+# initialize exposure-time display
 exposure = Exposure()
+
+class PeakCounts(object):
+    '''Peak counts information displayed on screen.'''
+    def __init__(self):
+        # initialize peak counts value
+        self.value = 0
+
+        # initialize displayed text
+        self.text = Text(
+            text=f'peak: {self.value}',
+            size_pt=20,
+            color_rgb=rgb.saltwatertaffy
+            )
+
+peak_counts = PeakCounts()
 
 # Want to use counts values as pixel y-coordinate,
 # but pixel 0,0 is the top-left, not the bottom-left.
@@ -439,13 +457,8 @@ while not quit:
     if frame is not None: counts = frame.pixels
 
     # display peak
-    peak = max(counts[start_pixel-1:stop_pixel])
-    peak_label = h2_font.render(
-        f'peak: {peak}', # text
-        1, # antialias: 0: off, 1: on
-        rgb.saltwatertaffy, # text fg color
-        None # text bg color, use None for transparent
-        )
+    peak_counts.value = max(counts[start_pixel-1:stop_pixel])
+    peak_counts.text.update(text=f'peak: {peak_counts.value}', color_rgb=rgb.saltwatertaffy)
 
     '''--- CREATE PLOT DATA ---'''
     # put short wavelengths on left side of plot
@@ -546,7 +559,7 @@ while not quit:
     win.surface.blit(autoexpose.title.surface,              (10, margin+110))
     win.surface.blit(autoexpose.hitmiss.surface,         (30, margin+130))
     win.surface.blit(autoexpose.iterations.surface,      (30, margin+150))
-    win.surface.blit(peak_label,            (10, margin+190))
+    win.surface.blit(peak_counts.text.surface,            (10, margin+190))
     # Draw pixel label line
     pygame.draw.aaline(
         win.surface,
