@@ -24,6 +24,11 @@ left-stick    - navigate wavelength fast
 left-trigger  - go to shortest wavelength
 right-trigger - go to longest wavelength
 '''
+'''TODO
+[x] vertical line automatically drawn to show where the peak is
+[x] add space BELOW plot to print peak pixel number
+[ ] get start_pixel and stop_pixel from map file
+'''
 
 import pygame # from PyPi
 import pygs # I wrote this to simplify using pygame
@@ -159,8 +164,6 @@ class Text(object):
             self.background_rgb,
             )
 
-peak_pixel = Text(text=f'pixel: ', size_pt=40, color_rgb=rgb.tardis)
-
 class AutoExpose(object):
     '''Autoexpose information displayed on screen.'''
     def __init__(self):
@@ -234,13 +237,32 @@ peak_counts = PeakCounts()
 max_data_length = 392 if binning else 784
 plot_height = 300 # later call scale_data_to_fit(counts, plot_height)
 margin = 20 # space in screen pixels between plot top and window top
-win.open_window( max_data_length, plot_height + margin )
+xax_space = 40 # space below x-axis
+yax_space = 40 # space left of y-axis
+win.open_window( yax_space + max_data_length + 100, xax_space + plot_height + margin )
 print(f"Display window size: {win.width}x{win.height}")
 clock = pygs.Clock(framerate=50)
 
+class VerticalLine(object):
+    def __init__(self, position=0, color=rgb.tardis):
+        self.position = position
+        self.color = color
+        self.ybot = plot_height+margin+xax_space
+        self.ytop = margin
+
+class PeakPixel(object):
+    '''Indicate the peak pixel on screen.'''
+    def __init__(self):
+        self.value = 0
+        self.text = Text(text=f'self.value', size_pt=14, color_rgb=rgb.tardis)
+        self.line=VerticalLine()
+
+# initialize vertical line and label of peak feature
+peak_pixel = PeakPixel()
+
 class Cursor(object):
     '''Vertical line to inspect pixel number.'''
-    def __init__(self, position=round(max_data_length/2), color=rgb.tardis):
+    def __init__(self, position=yax_space+round(max_data_length/2), color=rgb.tardis):
         '''
         Parameters
         ----------
@@ -251,9 +273,14 @@ class Cursor(object):
         '''
         self.position = position
         self.color = color
-        self.ybot = plot_height+margin
+        self.ybot = plot_height+margin+round(xax_space/2)
         self.ytop = margin
-        self.pixel_number = max_data_length-position
+        self.pixel_number = yax_space+max_data_length-position
+        self.text = Text(
+            text=f'{self.pixel_number}',
+            size_pt=14,
+            color_rgb=self.color
+            )
     def get_motions_pressed(self, event, key_pressed, key_mods):
         # empty the motion list
         self.motions = []
@@ -288,23 +315,23 @@ class Cursor(object):
         big = 10
         for motion in self.motions:
             if motion == 'right':
-                cursor.pixel_number -= 1
-                cursor.position += 1
+                self.pixel_number -= 1
+                self.position += 1
             if motion == 'left':
-                cursor.pixel_number += 1
-                cursor.position -= 1
+                self.pixel_number += 1
+                self.position -= 1
             if motion == 'up':
-                cursor.pixel_number -= big
-                cursor.position += big
+                self.pixel_number -= big
+                self.position += big
             if motion == 'down':
-                cursor.pixel_number += big
-                cursor.position -= big
+                self.pixel_number += big
+                self.position -= big
             if motion == 'home':
-                cursor.pixel_number = stop_pixel
-                cursor.position = max_data_length-stop_pixel
+                self.pixel_number = stop_pixel
+                self.position = yax_space+max_data_length-stop_pixel
             if motion == 'end':
-                cursor.pixel_number = start_pixel
-                cursor.position = max_data_length-start_pixel
+                self.pixel_number = start_pixel
+                self.position = yax_space+max_data_length-start_pixel
 
         # ------------------
         # | VERY IMPORTANT |
@@ -313,7 +340,7 @@ class Cursor(object):
         self.motions = []
 
 # control data cursor with h,j,k,l or with a joystick
-cursor = Cursor(position=max_data_length-stop_pixel)
+cursor = Cursor(position=yax_space+max_data_length-stop_pixel)
 
 # add the last connected joystick
 if pygame.joystick.get_count() > 0:
@@ -444,7 +471,7 @@ while not quit:
 
     '''---UPDATE PIXEL NUMBER LABEL---'''
     cursor.move()
-    peak_pixel.update(text=f'pixel: {cursor.pixel_number}')
+    cursor.text.update(text=f'{cursor.pixel_number}')
 
     '''--- ACQUIRE SPECTRUM ---'''
     # capture one frame
@@ -456,19 +483,24 @@ while not quit:
     # replot the previous value of `counts`.
     if frame is not None: counts = frame.pixels
 
-    # display peak
-    peak_counts.value = max(counts[start_pixel-1:stop_pixel])
-    peak_counts.text.update(text=f'peak: {peak_counts.value}', color_rgb=rgb.saltwatertaffy)
-
     '''--- CREATE PLOT DATA ---'''
     # put short wavelengths on left side of plot
     # counts.reverse()
     # create x-axis: 1,2,...,391,392
     pixnum = list(range(1,len(counts)+1))
-    # convert to screen pixels 0:391
-    screen_pixels = [p-1 for p in pixnum]
+    # convert to screen pixels 0:391 + yax_space
+    screen_pixels = [(p-1)+yax_space for p in pixnum]
     # put short wavelengths on left side of plot
     screen_pixels.reverse()
+
+    # display peak
+    peak_counts.value = max(counts[start_pixel-1:stop_pixel])
+    peak_counts.text.update(text=f'peak: {peak_counts.value}')
+    # TODO: correct this for offset-by-one and for mirrored x-axis
+    # TODO: turn this into a single update call
+    peak_pixel.line.position = screen_pixels[counts.index(peak_counts.value)] # screen pixel number
+    peak_pixel.value = pixnum[counts.index(peak_counts.value)] # actual pixel number
+    peak_pixel.text.update(text=f'{peak_pixel.value}')
 
     # scale counts to plot height
     yrange = 65535
@@ -489,13 +521,13 @@ while not quit:
     pygame.draw.aaline(
         win.surface,
         rgb.darkgravel,
-        (0,margin), (len(counts),margin) # start, end
+        (yax_space,margin), (yax_space+len(counts),margin) # start, end
         )
     # bottom
     pygame.draw.aaline(
         win.surface,
         rgb.darkgravel,
-        (0,0), (len(counts),0) # start, end
+        (yax_space,plot_height+margin), (yax_space+len(counts),plot_height+margin) # start, end
         )
 
     # AutoExpose target level
@@ -503,29 +535,29 @@ while not quit:
     ae_y = round(plot_height + margin - plot_height/yrange * target)
     pygame.draw.aaline(
         win.surface,
-        rgb.gravel,
-        (0,ae_y), (len(counts),ae_y) # start, end
+        rgb.dress,
+        (yax_space,ae_y), (yax_space+len(counts),ae_y) # start, end
         )
     # example: target = 46420 + 3277
     ae_y = round(plot_height + margin - plot_height/yrange * (target+tol))
     pygame.draw.aaline(
         win.surface,
-        rgb.gravel,
-        (0,ae_y), (len(counts),ae_y) # start, end
+        rgb.deepgravel,
+        (yax_space,ae_y), (yax_space+len(counts),ae_y) # start, end
         )
     # example: target = 46420 - 3277
     ae_y = round(plot_height + margin - plot_height/yrange * (target-tol))
     pygame.draw.aaline(
         win.surface,
-        rgb.gravel,
-        (0,ae_y), (len(counts),ae_y) # start, end
+        rgb.deepgravel,
+        (yax_space,ae_y), (yax_space+len(counts),ae_y) # start, end
         )
     max_dark = 4500
     ae_y = round(plot_height + margin - plot_height/yrange * max_dark)
     pygame.draw.aaline(
         win.surface,
-        rgb.gravel,
-        (0,ae_y), (len(counts),ae_y) # start, end
+        rgb.deepgravel,
+        (yax_space,ae_y), (yax_space+len(counts),ae_y) # start, end
         )
 
     # Draw plot: meaningful data
@@ -534,7 +566,7 @@ while not quit:
     ignored_upper_data = zipped[stop_pixel:]
     pygame.draw.aalines(
         win.surface,
-        rgb.gravel,
+        rgb.mediumgravel,
         False, # if True, connect first and last points
         ignored_lower_data # XY plot data [(x0,y0), ... (xn,yn)]
         )
@@ -552,14 +584,23 @@ while not quit:
         )
 
     # Draw pixel label
-    win.surface.blit(peak_pixel.surface,          (10, margin+20))
-    win.surface.blit(exposure.title.surface,    (max_data_length-140, margin+110))
-    win.surface.blit(exposure.ms_text.surface,     (max_data_length-120, margin+130))
-    win.surface.blit(exposure.cycles_text.surface, (max_data_length-120, margin+150))
-    win.surface.blit(autoexpose.title.surface,              (10, margin+110))
-    win.surface.blit(autoexpose.hitmiss.surface,         (30, margin+130))
-    win.surface.blit(autoexpose.iterations.surface,      (30, margin+150))
-    win.surface.blit(peak_counts.text.surface,            (10, margin+190))
+    win.surface.blit(cursor.text.surface, (cursor.position+2, win.height-xax_space))
+    win.surface.blit(exposure.title.surface,    (yax_space+max_data_length-140, margin+110))
+    win.surface.blit(exposure.ms_text.surface,     (yax_space+max_data_length-120, margin+130))
+    win.surface.blit(exposure.cycles_text.surface, (yax_space+max_data_length-120, margin+150))
+    win.surface.blit(autoexpose.title.surface,              (yax_space+10, margin+110))
+    win.surface.blit(autoexpose.hitmiss.surface,         (yax_space+30, margin+130))
+    win.surface.blit(autoexpose.iterations.surface,      (yax_space+30, margin+150))
+    win.surface.blit(peak_counts.text.surface,            (yax_space+10, margin+190))
+    win.surface.blit(peak_pixel.text.surface, (peak_pixel.line.position+2, win.height-round(xax_space/2)))
+    # Draw vertical line through peak feature
+    pygame.draw.aaline(
+        win.surface,
+        peak_pixel.line.color,
+        (peak_pixel.line.position, peak_pixel.line.ybot), # start
+        (peak_pixel.line.position, peak_pixel.line.ytop) # end
+        )
+
     # Draw pixel label line
     pygame.draw.aaline(
         win.surface,
