@@ -241,9 +241,9 @@ inline void _WaitForLisClkLow(void)
       * - waits until flag PwmTimerMatchesOCF0B is set\n 
       * */
     // Clear flag that is set when Counter0 matches OCR0B
-    SetBit(Lis_TIFR0, Lis_OCF0B); // set bit to clear flag
+    SetBit(Lis_TIFR0, Lis_OCF0B); // set bit to clear flag: sbi	0x15, 2
     // Wait for flag to set again
-    while(BitIsClear(Lis_TIFR0, Lis_OCF0B));
+    while(BitIsClear(Lis_TIFR0, Lis_OCF0B)); // sbis	0x15, 2
 }
 inline void _WaitForLisClkHigh(void)
 {
@@ -487,7 +487,7 @@ inline void LisExpose(void)
     _WaitForLisClkLow();
 
     // start exposure
-    SetBit(Lis_port1, Lis_Rst);
+    SetBit(Lis_port1, Lis_Rst); // sbi	0x0b, 6
 
     // count falling edges as ticks
     uint16_t tick_count = 0;
@@ -498,7 +498,7 @@ inline void LisExpose(void)
     }
 
     // stop exposure
-    ClearBit(Lis_port1, Lis_Rst);
+    ClearBit(Lis_port1, Lis_Rst); // cbi	0x0b, 6
 }
 
 #endif // _LIS_H

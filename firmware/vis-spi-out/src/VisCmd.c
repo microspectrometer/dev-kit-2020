@@ -38,8 +38,14 @@ void LisReadout(uint16_t num_pixels)
       * */
 
     // wait for SYNC pulse to signify readout starts
-    while( BitIsClear(Lis_pin1, Lis_Sync) ); // wait for RISING
-    while(   BitIsSet(Lis_pin1, Lis_Sync) ); // wait for FALLING
+    while( BitIsClear(Lis_pin1, Lis_Sync) ); // wait for SYNC HIGH
+    // !! DO NOT WAIT FOR SYNC LOW !!
+    // According to datasheet:
+    // - Wait for SYNC LOW
+    // - readout starts on next rising CLK
+    // But first pixel is missed if I wait for SYNC LOW.
+    /* while(   BitIsSet(Lis_pin1, Lis_Sync) ); // wait for SYNC LOW */
+    // !! DO NOT WAIT FOR SYNC LOW !!
 
     /* --------------------------------------------------------- */
     /* | LOOP: read one pixel on each rising edge of Lis clock | */
