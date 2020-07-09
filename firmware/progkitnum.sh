@@ -16,8 +16,8 @@ then
 else
     echo FAIL: $kit_xml does not exist.
     echo
-    echo Run 'make kitnum' to create $kit_xml.
-    echo Then do 'make progkitnum' again.
+    echo Run \'make kitnum\' to create $kit_xml.
+    echo Then do \'make progkitnum\' again.
     return -1
 fi
 
@@ -30,5 +30,5 @@ cd kits/$dashed_number/
 "$ftdi" scan prog 0 ftcfg.xml cycl 0
 cd ../..
 "$ftdi" scan
-echo Double-check the serial number on the line above is $dashed_number.
+echo \'make scan\' to check the serial number is $dashed_number.
 return 0
