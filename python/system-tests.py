@@ -34,10 +34,10 @@ Common flags:
 import unittest
 
 # Use Sean's simple interface
-from chromaspeclib.simple import ChromaSpecSimpleInterface
+from microspeclib.simple import MicroSpecSimpleInterface
 
 # Open communication. Communication closes when this script finishes.
-kit = ChromaSpecSimpleInterface(
+kit = MicroSpecSimpleInterface(
     timeout=2.0 # timeout if there is no response in 2s
     )
 

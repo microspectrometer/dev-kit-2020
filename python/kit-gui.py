@@ -2,6 +2,13 @@
 # -*- coding: utf-8 -*-
 '''Chromation dev-kit interactive application.
 
+Requirements
+------------
+pip install pyserial
+pip install microspec
+pip install pygame
+pip install pygstuff
+
 keyboard
 --------
 q   - quit
@@ -31,8 +38,8 @@ right-trigger - go to longest wavelength
 '''
 
 import pygame # from PyPi
-import pygs # I wrote this to simplify using pygame
-from chromaspeclib.simple import ChromaSpecSimpleInterface
+import pygstuff as pygs # I wrote this to simplify using pygame
+from microspeclib.simple import MicroSpecSimpleInterface
 from pathlib import Path
 
 # ----------------------
@@ -40,7 +47,7 @@ from pathlib import Path
 # ----------------------
 
 # Open communication. Communication closes when this app quits.
-kit = ChromaSpecSimpleInterface(
+kit = MicroSpecSimpleInterface(
     timeout=2.0 # seconds until timeout if there is no response
     )
 
@@ -275,7 +282,8 @@ class Cursor(object):
         self.color = color
         self.ybot = plot_height+margin+round(xax_space/2)
         self.ytop = margin
-        self.pixel_number = yax_space+max_data_length-position
+        # now pixel_number is set in the loop, line 510
+        self.pixel_number = start_pixel # used to be this: yax_space+max_data_length-position
         self.text = Text(
             text=f'{self.pixel_number}',
             size_pt=14,
@@ -315,22 +323,22 @@ class Cursor(object):
         big = 10
         for motion in self.motions:
             if motion == 'right':
-                self.pixel_number -= 1
+                # self.pixel_number -= 1
                 self.position += 1
             if motion == 'left':
-                self.pixel_number += 1
+                # self.pixel_number += 1
                 self.position -= 1
             if motion == 'up':
-                self.pixel_number -= big
+                # self.pixel_number -= big
                 self.position += big
             if motion == 'down':
-                self.pixel_number += big
+                # self.pixel_number += big
                 self.position -= big
             if motion == 'home':
-                self.pixel_number = stop_pixel
+                # self.pixel_number = stop_pixel
                 self.position = yax_space+max_data_length-stop_pixel
             if motion == 'end':
-                self.pixel_number = start_pixel
+                # self.pixel_number = start_pixel
                 self.position = yax_space+max_data_length-start_pixel
 
         # ------------------
@@ -501,6 +509,11 @@ while not quit:
     peak_pixel.line.position = screen_pixels[counts.index(peak_counts.value)] # screen pixel number
     peak_pixel.value = pixnum[counts.index(peak_counts.value)] # actual pixel number
     peak_pixel.text.update(text=f'{peak_pixel.value}')
+
+    # update cursor pixel text using screen_pixels
+    # todo: add a hard limit to the cursor, otherwise this will take us outside
+    # the range of screen_pixels
+    cursor.pixel_number = pixnum[screen_pixels.index(cursor.position)]
 
     # scale counts to plot height
     yrange = 65535

@@ -137,8 +137,8 @@ def report(reply):
     _print_the_reply_received(reply)
 
 if __name__ == '__main__':
-    from chromaspeclib.simple import ChromaSpecSimpleInterface
-    kit = ChromaSpecSimpleInterface(timeout=2.0)
+    from microspeclib.simple import MicroSpecSimpleInterface
+    kit = MicroSpecSimpleInterface(timeout=2.0)
     print(f"\nOpened kit: {kit.serial.serial_number}...")
 
     # Send the command and get the reply.
