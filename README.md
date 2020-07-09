@@ -1,39 +1,113 @@
-## For Chromation Internal Use Only
+# Latest
 
-This is for internal use only. Edit before making public.
+I started a Python developer guide: see
+[GettingStarted.md](GettingStarted.md).
 
-# Contents
-:rainbow: The firmware in this repo is the **new protocol**. It
-works with Python package `microspectrometer`, Chromation's
-low-level API for communicating with the dev-kit.
+:rainbow: The firmware in this repo works with PyPI project
+`microspec`.
 
-For now, the Python package is only available from the private
-GitHub repo:
+# Repository contents
 
-<https://github.com/microspectrometer/microspectrometer>
+- firmware
+- example Python scripts
 
-# Firmware old and new repos
+## Firmware
 
-Old firmware is in private GitHub repo `dev-kit-2019`:
+The `firmware` folder contains the firmware for the Chromation
+spectrometer dev-kit and some example Python scripts to get
+started.
 
-<https://github.com/sustainablelab/dev-kit-2019>
+The Chromation spectrometer is a surface-mount PCB package
+consisting of a linear photodiode array and optical components.
+This spectrometer chip does not contain any firmware.
 
-My local copy of the two firmware repos:
+The firmware is on the two microcontrollers, one on each of the
+stacked PCBs. The microcontroller on the bottom of the stack
+provides a SPI interface to the Chromation spectrometer. The
+microcontroller on the PCB stacked above provides a USB bridge
+that turns the SPI interface into a USB interface.
 
-- `~/chromation/dev-kit-2019/` (old)
-- `~/chromation/dev-kit-2020/` (new)
+The spectrometer chip is analog out, but it has programmable
+registers that affect pixel size and voltage gain. The dev-kit
+writes these registers with Chromation's recommended values when
+the dev-kit is powered on. Developers typically do not need to
+change these register values, but the Python API does expose the
+dev-kit firmware commands that write to these registers, in case
+developer's have a special use-case.
 
-# Firmware and Python API communication protocol
+## Example Python scripts
 
-The low-level protocol definitions are in
-`microspectrometer/cfg/chromaspec.json`.
+The example scripts in the `python` folder communicate with the
+firmware. These scripts require installing [PyPI project
+microspec](https://pypi.org/project/microspec/).
 
-See firmware/README-dev.md for more information.
+PyPI project `microspec` contains:
 
-# Set PYTHONPATH to include example Python scripts
+- command-line executables for:
+    - common measurement tasks
+    - communication tests
+- package `microspeclib`
+    - low-level API to write Python applications that communicate
+      with the dev-kit
+    - this is the package required by the example Python scripts
+
+## Install the Python API
+
+To use the API, install with `pip`:
+
+```
+$ pip install microspec
+```
+
+Then import the API in a Python script or at a Python REPL:
+
+```python
+>>> from microspeclib.simple import MicroSpecSimpleInterface
+```
+
+To extend/customize/repurpose the API, clone the repository from
+the project homepage:
+<https://github.com/microspectrometer/microspec>.
+
+If installing from PyPI is not an option:
+
+- clone the repository
+- create a virtual environment with `venv`
+- enter the repository directory and run `pip install -e .`,
+  this:
+    - runs `setup.py`
+    - creates symbolic links in the virtual environment
+      installation folder
+- undo the installation with `pip uninstall microspec`, or by
+  simply deleting the virtual environment
+
+## Run example scripts
 To run the example python scripts in the `dev-kit-2020/python`
-folder, add the path to `$env:PYTHONPATH` by adding this line to
-the PowerShell `$PROFILE` (`Microsoft.PowerShell_profile.ps1`):
+folder, simply enter the `python` directory and run the script.
+
+For example, to run `one-command.py`:
+
+```powershell
+> python .\one-command.py
+```
+
+### Set PYTHONPATH to include example Python scripts
+
+To run the scripts from any directory, add the path to the
+`python` folder to your `PYTHONPATH` environment variable.
+
+For example, to run `one-command.py`:
+
+```powershell
+> python -m one-command
+```
+
+If you're a Mac/Linux user, you know how to edit your PYTHONPATH
+environment variable.
+
+If you're a Windows user, add the path to `$env:PYTHONPATH` by
+adding this line to the PowerShell `$PROFILE`
+(`Microsoft.PowerShell_profile.ps1`):
 
 ```powershell
 $env:PYTHONPATH += "C:\cygwin64\home\mike\chromation\dev-kit-2020\python;"
@@ -60,17 +134,21 @@ paths for module import:
 > python -c "import sys; print('\n'.join(sys.path))"
 ```
 
-## Create a PowerShell Profile
+### Create a PowerShell Profile
 
 If you are familiar with the Linux `.bashrc`, this is a similar
-idea.
+idea. The `.bashrc` runs whenever a bash shell is opened, so it
+is a convenient place to edit the PYTHONPATH environment
+variable. The user opens a bash shell to run Python, but before
+the user can enter any commands, the `.bashrc` runs and
+PYTHONPATH is modified.
 
-The `$PROFILE` runs when the PowerShell is opened. It is a
-convenient way to edit the Python PATH environment variable for a
-use-case like this where the goal is to run Python scripts from
-the PowerShell command line.
+Similarly, the `$PROFILE` runs when the *PowerShell* is opened.
+Windows users run Python from the PowerShell, so the `$PROFILE`
+is a convenient place to edit the PYTHONPATH environment
+variable.
 
-Create a WindowsPowerShell directory in $HOME:
+First create a WindowsPowerShell directory in $HOME:
 
 ```powershell
 > mkdir C:\Users\{your-username}\Documents\WindowsPowerShell
@@ -82,18 +160,172 @@ Create a WindowsPowerShell directory in $HOME:
 - then pressing **Tab** to expand the `Documents` path
 - then typing `WindowsPowerShell`
 
-Create the Profile:
+Then create the Profile:
 
 ```powershell
 > New-Item -Path $PROFILE
 ```
+
+Add this line (but with your repository path) to your Profile:
+
+```
+$env:PYTHONPATH += "C:\cygwin64\home\mike\chromation\dev-kit-2020\python;"
+```
+
+The `+=` appends the path to the `python` folder to the
+PYTHONPATH. Windows paths use back-slashes. Lists of Windows
+paths are separated by semicolons. The trailing semicolon after
+`python` is to separate this path from the next path that gets
+added to `PYTHONPATH`.
+
+Any time you edit your Profile you can either close and
+re-open PowerShell, or simply source the Profile in the current
+session:
+
+```
+> .$PROFILE
+```
+
+## Run system tests
+
+The `system-tests.py` script defines tests. It does not do
+anything if run on its own. There are several options to run the
+system tests.
+
+My preferred method is to use pytest and testdox:
+
+```powershell
+> pip install pytest
+> pip install pytest-testdox
+> pytest --testdox system-tests.py
+```
+
+Of course you can also run the system tests with built-in
+`unittest` module:
+
+```powershell
+> python -m unittest system-tests.py
+```
+
+These system tests are an alternative to reading the
+documentation. Every possible command is called, using typical
+parameter values for commands that take paramaters. Reading the
+`--testdox` test output, it is easy to locate the code in
+`system-tests.py` for any test case and use the code there as an
+example of how to call that particular command.
+
+## Run `microspec` unit tests
+
+The system tests are not tests of the `microspec` package itself.
+If you are planning on altering the API, you'll need to setup for
+running the `microspec` unit tests. The unit tests require
+`pytest` and `tabulate`.
+
+To install these requirements, simply install `microspec[test]`:
+
+```powershell
+> pip install microspec[test]
+```
+
+If the `microspec` project is installed, enter directory
+`share/microspeclib`.
+
+For example, if your Python installation directory is
+`C:\Users\mike\AppData\Roaming\Python\Python38`, then enter
+directory:
+
+```powershell
+> cd C:\Users\mike\AppData\Roaming\Python\Python38\share\microspeclib
+```
+
+Alternatively, if the repository is cloned, simply enter the
+directory of your local clone.
+
+For non-Windows users, `microspec` includes an emulator that
+requires utility `socat`. Install `socat` to run the unit tests
+that use the emulator. The emulator lets you write unit tests
+that fake the dev-kit hardware.
+
+Whatever your operating system and however you choose to
+install/use the `microspec` project, you are now setup to run
+unit tests:
+
+```powershell
+> python -m pytest
+```
+
+There are two ways to run the unit tests:
+
+1. without the dev-kit connected
+2. with the dev-kit connected
+
+First run the tests without the kit connected. This should run
+very quickly and all tests should pass.
+
+Tests marked as `xfailed` are passing tests. `xfailed` means
+`expected to fail`, and with the hardware not connected, the test
+suite know to expect certain tests to fail.
+
+If you are not setup to use the emulator, all of the
+emulator-based tests are `skipped`.
+
+Next run the tests with the dev-kit connected. Again, all tests
+should pass, but this should take a little longer to run since it
+involves actual hardware i/o, and tests that call AutoExposure
+and CaptureFrame run for as long as it takes to expose the pixles
+for one or more frames. A trick to speed up these i/o calls is to
+brightly illuminating the spectrometer while the tests run.
+
+## Firmware and Python API communication protocol
+
+After installing the `microspec` project, the low-level protocol
+definitions are in `share/microspeclib/cfg/microspec.json`.
+
+For example, if your Python installation directory is
+`C:\Users\mike\AppData\Roaming\Python\Python38`, then the JSON
+file located here:
+
+```powershell
+> C:\Users\mike\AppData\Roaming\Python\Python38\share\microspeclib\cfg\microspec.json
+```
+
+Alternatively, if the repository is cloned, the JSON file is
+located here:
+
+```powershell
+> microspec\cfg\microspec.json
+```
+
+This JSON file drives the entire API. It defines:
+
+- `global` byte values such as `StatusOK` and `StatusError`
+- `protocol` byte sequences:
+    - `command` the byte sequence for sending each command
+    - `bridge` the expected byte sequence for responses from the
+      USB Bridge
+    - `sensor` the expected byte sequence for responses from the
+      SPI-out Sensor Interface
+
+To add new API calls or change existing calls, simply edit this
+file, run the tests to make sure they still pass, then rebuild
+the documentation.
+
+*Extending the API does not require writing any new Python code.*
+
+See firmware/README-dev.md for more information.
+
+
+# For Chromation Internal Use Only
+
+Below here needs editing before this goes public.
+
 
 # Run the example GUI
 
 The `dev-kit-2020` repository includes an example GUI:
 `dev-kit-2020/python/kit-gui.py`
 
-The GUI has two dependencies: `pygame` and `pygs`. After
+The GUI has two dependencies: `pygame` and `pygstuff`. After
 installing dependencies (see next section), run the GUI from
 PowerShell with this command:
 
@@ -111,27 +343,32 @@ Install `pygame` from [PyPI](https://pypi.org/project/pygame/):
 > python -m pip install pygame
 ```
 
-### Install `pygs`
+### Install `pygstuff`
 
-Install repository `pygs` in `USER_SITE` (see later section
+Install `pygstuff` from [PyPI](https://pypi.org/project/pygstuff/):
+
+```powershell
+> python -m pip install pygame
+```
+Install repository `pygstuff` in `USER_SITE` (see later section
 describing `USER_SITE`).
 
-- `pygs` stands for `PYGame Stuff`
-- `pygs` is:
+- `pygstuff` stands for `PYGame Stuff`
+- `pygstuff` is:
     - a package of helper modules to simplify writing `pygame`
       applications
-    - available on GitHub: https://github.com/sustainablelab/pygs
+    - available on GitHub: https://github.com/sustainablelab/pygstuff
     - created and maintained by Mike Gazes
-- `pygs` uses the standard MIT license
+- `pygstuff` uses the standard MIT license
 
-*Chromation does not own `pygs` and is not affiliated with it
+*Chromation does not own `pygstuff` and is not affiliated with it
 anyway.*
 
-Clone `pygs` in `USER_SITE`:
+Clone `pygstuff` in `USER_SITE`:
 
 ```bash
 $ cd /cygdrive/c/Users/mike/AppData/Roaming/Python/Python38/site-packages/
-$ git clone https://github.com/sustainablelab/pygs.git
+$ git clone https://github.com/sustainablelab/pygstuff.git
 ```
 
 # Python API repos
