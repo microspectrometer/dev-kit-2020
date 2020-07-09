@@ -83,6 +83,7 @@ inline void ResetPwmTimerAtTop(void)
     SetBit(Lis_TCCR0A, Lis_WGM00);
     SetBit(Lis_TCCR0A, Lis_WGM01);
     // ---Expected Assembly---
+    // Lis_TCCR0A is 0x24: expect direct reg-access in/out
     // in	r24, 0x24	; 36
     // ori	r24, 0x01	; 1
     // out	0x24, r24	; 36
@@ -127,6 +128,7 @@ inline void LisClkFreq50kHz(void)
     // 50% = 100/200
     *Lis_OCR0B = 100;
     // ---Expected Assembly---
+    // OCR0A is 0x27, OCR0B is 0x28: expect "out" writes to reg
     // ldi	r24, 0xC8	; 200
     // out	0x27, r24	; 39
     // ldi	r24, 0x64	; 100
@@ -167,6 +169,24 @@ inline void _ConfigAs28bits(uint8_t *config)
       * - b6b11b16b21b26 set if ROW 4 ACTIVE\n 
       * - b7b12b17b22b27 set if ROW 5 ACTIVE\n 
       * */
+
+    // ---Expected Assembly---
+    // Y is r28 and r29
+    // std (store indirect with displacement)
+    // std Y+1, r24 -- stores value in r24 at address in Y plus 1
+    // The following stores the 4-byte config at the address in Y:
+    // config byte 0 is 0xF9: 11111001 (bits 7 to 0)
+    // config byte 1 is 0xFF: 11111111 (bits 15 to 8)
+    // config byte 2 is 0xFF: 11111111 (bits 23 to 16)
+    // config byte 3 is 0x0F: 00001111 (bits 31 to 24)
+    // ldi	r24, 0xF9	; 249
+    // std	Y+1, r24	; 0x01
+    // ldi	r24, 0xFF	; 255
+    // std	Y+2, r24	; 0x02
+    // std	Y+3, r24	; 0x03
+    // ldi	r24, 0x0F	; 15
+    // std	Y+4, r24	; 0x04
+
     // Clear all bits in array at input address `config`.
     config[0]=0x00; config[1]=0x00; config[2]=0x00; config[3]=0x00;
     // binning is bit 0 of byte 0
