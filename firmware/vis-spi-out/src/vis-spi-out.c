@@ -150,14 +150,29 @@ void setup_DetectorReadout(void)
     UartSpiInit();
     // Power up the LIS-770i and drive with a 50kHz clock
     LisInit();
+
     // Initialize exposure time to 1 millisecond
     exposure_ticks = 50; // 50 ticks = (1.0e-3 s)/(20.0e-6 s/tick)
+    // ---Expected Assembly---
+    // ldi	r24, 0x32	; 50
+    // ldi	r25, 0x00	; 0
+    // sts	0x011D, r25	; 0x80011d <exposure_ticks+0x1>
+    // 1c8:	sts	0x011C, r24	; 0x80011c <exposure_ticks>
+
     // Initialize LIS-770i configuration globals
     binning = BINNING_ON;
     gain = GAIN_1X;
     active_rows = ALL_ROWS_ACTIVE;
+    // ---Expected Assembly---
+    // ldi	r24, 0x01	; 1
+    // sts	0x011E, r24	; 0x80011e <binning>
+    // sts	0x0140, r24	; 0x800140 <gain>
+    // ldi	r24, 0x1F	; 31
+    // sts	0x013B, r24	; 0x80013b <active_rows>
+
     // Program LIS-770i with above configuration
     LisWriteConfig();
+
     /* ------------------------------- */
     /* | Initialize AutoExposeConfig | */
     /* ------------------------------- */
