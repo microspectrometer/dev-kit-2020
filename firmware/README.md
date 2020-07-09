@@ -1,19 +1,3 @@
-# Git exclude
-
-After cloning this repository, please add the following
-exclusions to `.git/info/exclude`:
-
-```
-*~
-*.sw[mnop]
-__pycache__
-*.elf
-*.o
-*.map
-*.log
-*.avra
-```
-
 # Dev-kit programming cheatsheet
 
 ## Overview
@@ -159,9 +143,12 @@ avr-size build/vis-spi-out.elf
 
 For first time setup, see the **Setup instructions** below.
 
-# Setup instructions are in chromation-notebook
+# Dev-kit programming setup
 
-:rainbow: See **chromation-notebook**.
+:rainbow: See the
+[TiddlyWiki](https://microspectrometer.github.io/flash-avr-firmware/)
+for instructions to setup the firmware (Flash/EEPROM) programming
+toolchain.
 
 Open tiddler **Use AtmelStudio**:
 
@@ -175,7 +162,7 @@ This tiddler is the starting point for downloading the old
 firmware onto the dev-kit.
 
 The tiddler contains links to external websites and links to
-other tiddlers in chromation-notebook.
+other tiddlers in the TiddlyWiki.
 
 Also see tiddler **Program FTDI Chips with FT_PROG**.
 
