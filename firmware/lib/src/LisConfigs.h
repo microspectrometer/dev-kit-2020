@@ -1,7 +1,7 @@
 /** \file
  * See LisConfig.h for context.\n
  *\n
- * Also see `cfg/chromaspec.json` in the Python API repository.\n
+ * Also see `cfg/microspec.json` in the Python API repository.\n
  * - Section `"global"` defines the **LIS-770i cfg byte codes.**\n
  * - The **LIS-770i cfg byte codes** definitions are duplicated
  *   in this header file.\n

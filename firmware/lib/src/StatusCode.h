@@ -1,5 +1,5 @@
 /** \file
- * *See `cfg/chromaspec.json` in the Python API repository.*
+ * *See `cfg/microspec.json` in the Python API repository.*
  * - Section `"global"` defines the **protocol byte codes**.
  *   - Firmware header file StatusCodes.h duplicates these `"global"`
  *   definitions.

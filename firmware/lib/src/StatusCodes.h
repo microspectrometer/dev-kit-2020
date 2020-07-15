@@ -1,7 +1,7 @@
 /** \file
  * See StatusCode.h for context.\n
  *\n
- * Also see `cfg/chromaspec.json` in the Python API repository.\n
+ * Also see `cfg/microspec.json` in the Python API repository.\n
  * - Section `"global"` defines the **protocol byte codes**.\n
  * - The **protocol byte code** definitions are duplicated in
  *   this header file.\n

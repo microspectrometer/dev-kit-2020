@@ -81,6 +81,8 @@ If installing from PyPI is not an option:
 - undo the installation with `pip uninstall microspec`, or by
   simply deleting the virtual environment
 
+## Run command line utilities
+
 ## Run example scripts
 To run the example python scripts in the `dev-kit-2020/python`
 folder, simply enter the `python` directory and run the script.

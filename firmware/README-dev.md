@@ -5,8 +5,8 @@ here are the install steps without `pip install`.
 ## Install Python3.x
 Install Python3.7 or later.
 
-## Clone `chromaspec-sean`
-Clone `chromaspec-sean` in the `USERSITE` folder.
+## Clone `microspec`
+Clone `microspec` in the `USERSITE` folder.
 
 ### Find `USERSITE` and make it if it does not exist
 `pip install` sets up a package in the site-packages folder where
@@ -61,12 +61,12 @@ Again, in my case I created this USERSITE folder instead:
 $ mkdir -p /home/mike/.local/lib/python3.7/site-packages
 ```
 
-### Clone chromaspec-sean in USERSITE
+### Clone microspec in USERSITE
 Clone the repo there:
 
 ```bash
 $ cd /home/mike/.local/lib/python3.7/site-packages
-$ git clone https://rainbots@bitbucket.org/eruciform/chromaspec-sean.git
+$ git clone https://github.com/microspectrometer/microspec
 ```
 
 ### Edit the `PYTHONPATH`
@@ -84,8 +84,8 @@ I add the following to my PowerShell profile:
 ```powershell
 $pkg = "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages"
 $env:PYTHONPATH = "$pkg;"
-$temp_sean = "chromaspec-sean\src"
-$env:PYTHONPATH += "$pkg\$temp_sean;"
+$temp_api = "microspec\src"
+$env:PYTHONPATH += "$pkg\$temp_api;"
 ```
 
 The trick here is that PowerShell runs the profile every time it
@@ -96,14 +96,14 @@ Check the `PYTHONPATH` in PowerShell:
 ```powershell
 > $env:PYTHONPATH.Split(";")
 C:\cygwin64\home\mike\.local\lib\python3.7\site-packages
-C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src
+C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\microspec\src
 ```
 
 Packages in USERSITE import just fine without explicitly adding
-them to the PYTHONPATH. The issue with `chromaspec-sean` is that
+them to the PYTHONPATH. The issue with `microspec` is that
 the packages are not at the top-level.
 
-`chromaspec-sean` contains more than just Python source code. The
+`microspec` contains more than just Python source code. The
 actual package for import is in the `src` folder. The other
 top-level folders contain executables and other things that Sean
 created. This is all temporary anyway, so just deal with the
@@ -124,11 +124,11 @@ explicit path for now.
 ## Check the installation
 
 ```powershell
-> cd $pkg\chromaspec-sean\
+> cd $pkg\microspec\
 > pytest
 ======================================================================== test session starts =========================================================================
 platform win32 -- Python 3.8.1, pytest-5.3.5, py-1.8.1, pluggy-0.13.1
-rootdir: C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean
+rootdir: C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\microspec
 plugins: testdox-1.2.1
 collected 147 items
 
@@ -147,10 +147,9 @@ tests\test_util.py ...                                                          
 ```
 
 Expect the same result (87 passed, 40 skipped, 20 xfailed) when
-running from Cygwin bash. I think the 20 failed tests are because
-I do not have a dev-kit with working firmware connected. I'd try
-connecting it now, but as of May 2020, I haven't written the
-firmware yet.
+running from Cygwin bash. The 20 xfailed tests are `expected
+fail` meaning the test suite knows to expect the tests to fail
+because the hardware is not connected.
 
 ## Documentation
 
@@ -159,30 +158,30 @@ firmware yet.
 Read with `pydoc`:
 
 ```powershell
-> python -m pydoc chromaspeclib
-> python -m pydoc chromaspeclib.simple
-> python -m pydoc chromaspeclib.expert
+> python -m pydoc microspeclib
+> python -m pydoc microspeclib.simple
+> python -m pydoc microspeclib.expert
 ```
 
 Read the expert interface:
 
 ```powershell
-> python -m pydoc chromaspeclib.expert.ChromaSpecExpertInterface
-Help on class ChromaSpecExpertInterface in chromaspeclib.expert:
+> python -m pydoc microspeclib.expert.MicroSpecExpertInterface
+Help on class MicroSpecExpertInterface in microspeclib.expert:
 ```
 
 Read the HTML:
 
 ```powershell
-> cd $pkg\chromaspec-sean\doc\build\html\
+> cd $pkg\microspec\doc\build\html\
 > explorer index.html
 ```
 
 The API is buried here in the HTML:
 
 ```powershell
-> cd $pkg\chromaspec-sean\doc\build\html\
-> explorer chromaspeclib.simple.html
+> cd $pkg\microspec\doc\build\html\
+> explorer microspeclib.simple.html
 ```
 
 I made a Vim shortcut to open this section in the browser:
@@ -196,34 +195,34 @@ Get help on a specific API command with pydoc.
 Example: help on **GetExposure**
 
 ```powershell
-> python -m pydoc chromaspeclib.simple.ChromaSpecSimpleInterface.getExposure
+> python -m pydoc microspeclib.simple.MicroSpecSimpleInterface.getExposure
 
-Help on function func in chromaspeclib.simple.ChromaSpecSimpleInterface:
+Help on function func in microspeclib.simple.MicroSpecSimpleInterface:
 
-chromaspeclib.simple.ChromaSpecSimpleInterface.getExposure = func(self, **kwargs)
+microspeclib.simple.MicroSpecSimpleInterface.getExposure = func(self, **kwargs)
     Retrieve the current exposure setting, which may have been set
-    either by :class:`~chromaspeclib.datatypes.command.CommandSetExposure` or :class:`~chromaspeclib.datatypes.command.CommandAutoExposure`.
+    either by :class:`~microspeclib.datatypes.command.CommandSetExposure` or :class:`~microspeclib.datatypes.command.CommandAutoExposure`.
 
     Returns
     -------
-    :class:`~chromaspeclib.datatypes.bridge.BridgeGetExposure`
-    :class:`~chromaspeclib.datatypes.sensor.SensorGetExposure`
+    :class:`~microspeclib.datatypes.bridge.BridgeGetExposure`
+    :class:`~microspeclib.datatypes.sensor.SensorGetExposure`
 ```
 
 The *useful* help is in the return value. Look at the
-`chromaspeclib.datatypes.sensor` return bytes.
+`microspeclib.datatypes.sensor` return bytes.
 
 ```powershell
-> python -m pydoc chromaspeclib.datatypes.sensor.SensorGetExposure
+> python -m pydoc microspeclib.datatypes.sensor.SensorGetExposure
 ```
 
 The names of the variables in the reply are listed in the **keyword arguments**:
 
 ```help
-Help on class SensorGetExposure in chromaspeclib.datatypes.sensor:
+Help on class SensorGetExposure in microspeclib.datatypes.sensor:
 
-chromaspeclib.datatypes.sensor.SensorGetExposure = class SensorGetExposure(ChromaSpecPayload)
- |  chromaspeclib.datatypes.sensor.SensorGetExposure(*args, status=None, cycles=None, **kwargs)
+microspeclib.datatypes.sensor.SensorGetExposure = class SensorGetExposure(MicroSpecPayload)
+ |  microspeclib.datatypes.sensor.SensorGetExposure(*args, status=None, cycles=None, **kwargs)
  |  
  ...
 ```
@@ -234,7 +233,7 @@ And in the description of the **kwargs** under under `Parameters`:
  ...
  |  Parameters
  |  ----------
- |  status: :data:`~chromaspeclib.datatypes.types.StatusOK` or :data:`~chromaspeclib.datatypes.types.StatusError`  If there is an error status, the other attributes are not valid
+ |  status: :data:`~microspeclib.datatypes.types.StatusOK` or :data:`~microspeclib.datatypes.types.StatusError`  If there is an error status, the other attributes are not valid
  |  cycles: 1-65535
  |    Number of cycles to wait to collect pixel strength.
  ...
@@ -343,8 +342,8 @@ Try auto-complete at the REPL to test the commands are added to
 the API:
 
 ```python
->>> from chromaspeclib.simple import ChromaSpecSimpleInterface
->>> si = ChromaSpecSimpleInterface()
+>>> from microspeclib.simple import MicroSpecSimpleInterface
+>>> si = MicroSpecSimpleInterface()
 >>> si.getA<TAB>
 ```
 
@@ -373,11 +372,11 @@ shows the function signature. If the command takes parameters,
 these are listed in the function signature.
 
 ```bash
-$ python.exe -m pydoc chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig
+$ python.exe -m pydoc microspeclib.simple.MicroSpecSimpleInterface.setAutoExposeConfig
 
-Help on function func in chromaspeclib.simple.ChromaSpecSimpleInterface:
+Help on function func in microspeclib.simple.MicroSpecSimpleInterface:
 
-chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig = func(self, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
+microspeclib.simple.MicroSpecSimpleInterface.setAutoExposeConfig = func(self, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
 ```
 
 This at least indicates the names of the expected parameters, and
@@ -389,7 +388,7 @@ Add docstrings to `/internal/docstrings.py`:
 
 ```python
 
-CHROMASPEC_DYNAMIC_DOC["command"]["CommandGetAutoExposeConfig"] = """Retrieves the current auto-expose configuration.
+MICROSPEC_DYNAMIC_DOC["command"]["CommandGetAutoExposeConfig"] = """Retrieves the current auto-expose configuration.
 
 Returns
 -------
@@ -402,24 +401,24 @@ Returns
 Now the help contains the docstring and lists the return types.
 
 ```bash
-$ python.exe -m pydoc chromaspeclib.simple.ChromaSpecSimpleInterface.getAutoExposeConfig
+$ python.exe -m pydoc microspeclib.simple.MicroSpecSimpleInterface.getAutoExposeConfig
 
-Help on function func in chromaspeclib.simple.ChromaSpecSimpleInterface:
+Help on function func in microspeclib.simple.MicroSpecSimpleInterface:
 
-chromaspeclib.simple.ChromaSpecSimpleInterface.getAutoExposeConfig = func(self, **kwargs)
+microspeclib.simple.MicroSpecSimpleInterface.getAutoExposeConfig = func(self, **kwargs)
     Retrieves the current auto-expose configuration.
     
     Returns
     -------
-    :class:`~chromaspeclib.datatypes.bridge.BridgeGetAutoExposeConfig`
-    :class:`~chromaspeclib.datatypes.sensor.SensorGetAutoExposeConfig`
+    :class:`~microspeclib.datatypes.bridge.BridgeGetAutoExposeConfig`
+    :class:`~microspeclib.datatypes.sensor.SensorGetAutoExposeConfig`
 ```
 
 The docstring for `setAutoExposeConfig` is much longer because it
 contains parameters.
 
 ```python
-CHROMASPEC_DYNAMIC_DOC["command"]["CommandSetAutoExposeConfig"] = """Sets the current auto-expose configuration.
+MICROSPEC_DYNAMIC_DOC["command"]["CommandSetAutoExposeConfig"] = """Sets the current auto-expose configuration.
 
 Parameters
 ----------
@@ -482,11 +481,11 @@ Returns
 Here is the resulting help for `setAutoExposeConfig`:
 
 ```
-$ python.exe -m pydoc chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig
+$ python.exe -m pydoc microspeclib.simple.MicroSpecSimpleInterface.setAutoExposeConfig
 
-Help on function func in chromaspeclib.simple.ChromaSpecSimpleInterface:
+Help on function func in microspeclib.simple.MicroSpecSimpleInterface:
 
-chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig = func(self, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
+microspeclib.simple.MicroSpecSimpleInterface.setAutoExposeConfig = func(self, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
     Sets the current auto-expose configuration.
     
     Parameters
@@ -541,15 +540,15 @@ chromaspeclib.simple.ChromaSpecSimpleInterface.setAutoExposeConfig = func(self, 
     
     Returns
     -------
-    :class:`~chromaspeclib.datatypes.bridge.BridgeSetAutoExposeConfig`
-    :class:`~chromaspeclib.datatypes.sensor.SensorSetAutoExposeConfig`
+    :class:`~microspeclib.datatypes.bridge.BridgeSetAutoExposeConfig`
+    :class:`~microspeclib.datatypes.sensor.SensorSetAutoExposeConfig`
 ```
 
 For the `getAutoExposeConfig` command, the useful help is in the
 keyword arguments of the **Sensor** return type.
 
 ```bash
-$ python.exe -m pydoc chromaspeclib.datatypes.sensor.SensorSetAutoExposeConfig
+$ python.exe -m pydoc microspeclib.datatypes.sensor.SensorSetAutoExposeConfig
 ```
 
 Again, all of the following is done automatically merely by
@@ -559,10 +558,10 @@ The reply's variable names are listed in the keyword arguments of
 the datatype `__init__()` method:
 
 ```help
-Help on class SensorGetAutoExposeConfig in chromaspeclib.datatypes.sensor:
+Help on class SensorGetAutoExposeConfig in microspeclib.datatypes.sensor:
 
-chromaspeclib.datatypes.sensor.SensorGetAutoExposeConfig = class SensorGetAutoExposeConfig(ChromaSpecPayload)
- |  chromaspeclib.datatypes.sensor.SensorGetAutoExposeConfig(*args, status=None, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
+microspeclib.datatypes.sensor.SensorGetAutoExposeConfig = class SensorGetAutoExposeConfig(MicroSpecPayload)
+ |  microspeclib.datatypes.sensor.SensorGetAutoExposeConfig(*args, status=None, max_tries=None, start_pixel=None, stop_pixel=None, target=None, target_tolerance=None, **kwargs)
  ...
 ```
 
@@ -616,14 +615,14 @@ Make a quick test script to check that the hardware is visible:
 ```python
 '''Test hardware is visible.'''
 
-from chromaspeclib.simple import ChromaSpecSimpleInterface
-si = ChromaSpecSimpleInterface(timeout=0.1)
+from microspeclib.simple import MicroSpecSimpleInterface
+si = MicroSpecSimpleInterface(timeout=0.1)
 print(si)
 ```
 
 ```powershell
 > python test-hardware-is-visible.py
-<chromaspeclib.simple.ChromaSpecSimpleInterface object at 0x000001B5F0AB42B0>
+<microspeclib.simple.MicroSpecSimpleInterface object at 0x000001B5F0AB42B0>
 ```
 
 If the dev-kit is not connected or VCP is not enabled, this test
@@ -634,12 +633,12 @@ produces error `Cannot find CHROMATION device`:
 2020-04-28 22:20:37,772:stream.py:__init__:193: Cannot find CHROMATION device
 Traceback (most recent call last):
   File "C:\cygwin64\home\mike\chromation\dev-kit-mike\firmware\python\test.py", line 6, in <module>
-    si = ChromaSpecSimpleInterface(timeout=0.1)
-  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src\chromaspeclib\expert.py", line 24, in __init__
+    si = MicroSpecSimpleInterface(timeout=0.1)
+  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\microspec\src\microspeclib\expert.py", line 24, in __init__
     super().__init__(serial_number=serial_number,
-  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src\chromaspeclib\internal\stream.py", line 194, in __init__
-    raise ChromaSpecConnectionException("Cannot find CHROMATION device")
-chromaspeclib.exceptions.ChromaSpecConnectionException: Cannot find CHROMATION device
+  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\microspec\src\microspeclib\internal\stream.py", line 194, in __init__
+    raise MicroSpecConnectionException("Cannot find CHROMATION device")
+microspeclib.exceptions.MicroSpecConnectionException: Cannot find CHROMATION device
 ```
 
 # User's Guide -- use Python API
@@ -692,8 +691,8 @@ From hereon, I refer to paths in Sean's repo with `.` meaning the
 repo name.
 
 Capitalization does not matter, but I capitalize (contrary to the
-documentation examples) to match with `./cfg/chromaspec.json`.
-Sean asked for feedback on the API in the chromaspeclib package
+documentation examples) to match with `./cfg/microspec.json`.
+Sean asked for feedback on the API in the microspeclib package
 and the supporting utilities and documentation. I am using the
 API to write system tests as I develop the firmware.
 
@@ -730,13 +729,13 @@ My examples work from PowerShell and Cygwin bash.
 This opens communication:
 
 ```python
-si = ChromaSpecSimpleInterface()
+si = MicroSpecSimpleInterface()
 ```
 
 But this throws an error:
 
 ```python
-si = ChromaSpecSimpleInterface(serial_number='CHROMATION091103')
+si = MicroSpecSimpleInterface(serial_number='CHROMATION091103')
 ```
 
 Error traces back to line 177 of internal/stream.py:
@@ -749,9 +748,9 @@ Full error message:
 
 ```
   File "<stdin>", line 1, in <module>
-  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src\chromaspeclib\expert.py", line 24, in __init__
+  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\microspec\src\microspeclib\expert.py", line 24, in __init__
     super().__init__(serial_number=serial_number,
-  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\chromaspec-sean\src\chromaspeclib\internal\stream.py", line 177, in __init__
+  File "C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\microspec\src\microspeclib\internal\stream.py", line 177, in __init__
     self.serial.port = list_ports.grep(serial_number).device
 AttributeError: 'generator' object has no attribute 'device'
 
@@ -1133,16 +1132,16 @@ $ python.exe -m cmdline CaptureFrame
 
 ## TODO list for Sean
 - [ ] TODO: Sean add documentation for the `serial_number` and
-  `device` parameters of `ChromaSpecSimpleInterface`
+  `device` parameters of `MicroSpecSimpleInterface`
     - [x] Sean is aware
     - document input is a string
     - document an example string: `CHROMATION091103`
 - [ ] TODO: Sean add list of commands in documentation or, better
-  still, in the help for `chromaspec_cmdline.py`
+  still, in the help for `microspec_cmdline.py`
     - [x] Sean is aware
     - this is actually just a wrapper for python to execute
       `cmdline.py` as a module
-    - cd into `chromaspec-sean/src/chromaspeclib/`
+    - cd into `microspec/src/microspeclib/`
     - execute as `python -m cmdline.py command key=val`
     - `python cmdline.py` also works
     - `python cmdline.py GetBridgeLED led_num=0`
@@ -1161,7 +1160,7 @@ $ python.exe -m cmdline CaptureFrame
       prints the correct time, and I'm invoking the Windows
       Python from Cygwin bash, so what gives?
 - [ ] TODO: Sean: unexpected end of docstring in
-  ChromaSpecSimpleInterface.sendAndReceive()
+  MicroSpecSimpleInterface.sendAndReceive()
     - [x] Sean is aware
     - ends with phrase "but a reply that contains"
 
@@ -1397,7 +1396,7 @@ changes:
 ```
 PROJECT_NAME           = "firmware"
 PROJECT_NUMBER         = "v0"
-PROJECT_BRIEF          = "Protocol compatible with chromaspec-sean"
+PROJECT_BRIEF          = "Protocol compatible with microspec"
 EXCLUDE                = doc/ \
                         temp/
 USE_MDFILE_AS_MAINPAGE = README-firmware.md
@@ -1541,7 +1540,7 @@ Reference`.
 
 ```c
 /** \file
- * *See `cfg/chromaspec.json` in the Python API repository.*
+ * *See `cfg/microspec.json` in the Python API repository.*
  * - Section `"global"` defines the **protocol byte codes**.
  *   - Firmware header file StatusCodes.h duplicates these `"global"`
  *   definitions.
@@ -1719,9 +1718,9 @@ the assembly output to analyze.
 # TASKS
 
 # dev
-- [x] setup chromaspec-sean
-- [x] use chromaspec-sean to open communication
-    - chromaspeclib.simple wraps chromaspeclib.expert
+- [x] setup microspec
+- [x] use microspec to open communication
+    - microspeclib.simple wraps microspeclib.expert
     - see python/test-open.py
 - [x] prepare Python for system test
     - use `python -m cmdline COMMAND KEY=VALUE`
