@@ -11,8 +11,6 @@ $ pytest --testdox system-tests.py
 On Windows with:
 > python.exe -m pytest --testdox system-tests.py
 
-Mike's VIM shortcut: ;uf (Unittest this File)
-
 DEPENDENCIES
 ------------
 pip install microspec
