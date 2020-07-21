@@ -125,10 +125,10 @@ coming soon.
 - [ ] hardware-design.md is electronics design calculations and
   related documentation
 - [ ] The manufacturing files (Gerbers and Drill) are in the
-  `hardware/manufacturing` folder.
+  `hardware/manufacture` folder.
 
 - view the Gerbers with a Gerber viewer such as `gerbv`
 - the PCBs are 4-layer
-- [ ] `gerbv` screenshots of each layer-view
-  (top/bottom/inner1/inner2) are in `hardware/manufacturing/img`
+- `gerbv` screenshots of each layer-view
+  (top/bottom/inner1/inner2) are in `hardware/manufacture/img`
 
