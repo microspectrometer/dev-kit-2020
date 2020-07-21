@@ -1,0 +1,138 @@
+\hypertarget{Queue_8c}{}\doxysection{lib/src/\+Queue.c File Reference}
+\label{Queue_8c}\index{lib/src/Queue.c@{lib/src/Queue.c}}
+{\ttfamily \#include \char`\"{}Queue.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$ \mbox{\hyperlink{Queue_8c_ae7d11124f03c1d988d92ccc528f45b65}{Queue\+Init}} (volatile uint8\+\_\+t $\ast$buffer, uint16\+\_\+t const buffer\+\_\+size\+\_\+in\+\_\+bytes)
+\item 
+uint16\+\_\+t \mbox{\hyperlink{Queue_8c_a3e2b69629566525b07f0edd4cbe2af30}{Queue\+Length}} (volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$pq)
+\item 
+bool \mbox{\hyperlink{Queue_8c_aae356a36c569e92e4f57b40b82185cbe}{Queue\+Is\+Full}} (volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$\mbox{\hyperlink{VisCmd_8h_a11dee3bbd2941b72086166ebabdedd91}{Spi\+Fifo}})
+\item 
+bool \mbox{\hyperlink{Queue_8c_af8605b772c004ae79effd4ae2d51d159}{Queue\+Is\+Empty}} (volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$\mbox{\hyperlink{VisCmd_8h_a11dee3bbd2941b72086166ebabdedd91}{Spi\+Fifo}})
+\item 
+void \mbox{\hyperlink{Queue_8c_ada96851f81ecdeed864129d24c30d532}{Queue\+Push}} (volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$\mbox{\hyperlink{VisCmd_8h_a11dee3bbd2941b72086166ebabdedd91}{Spi\+Fifo}}, uint8\+\_\+t data\+\_\+to\+\_\+push)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{Queue_8c_a3b625b654b66fd3690458918e4209a0b}{Queue\+Pop}} (volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$\mbox{\hyperlink{VisCmd_8h_a11dee3bbd2941b72086166ebabdedd91}{Spi\+Fifo}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Queue_8c_a16cc3d2f32b1ae948f3c8ec0d7e2c264}\label{Queue_8c_a16cc3d2f32b1ae948f3c8ec0d7e2c264}} 
+volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} {\bfseries Queue}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{Queue_8c_ae7d11124f03c1d988d92ccc528f45b65}\label{Queue_8c_ae7d11124f03c1d988d92ccc528f45b65}} 
+\index{Queue.c@{Queue.c}!QueueInit@{QueueInit}}
+\index{QueueInit@{QueueInit}!Queue.c@{Queue.c}}
+\doxysubsubsection{\texorpdfstring{QueueInit()}{QueueInit()}}
+{\footnotesize\ttfamily volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}}$\ast$ Queue\+Init (\begin{DoxyParamCaption}\item[{volatile uint8\+\_\+t $\ast$}]{buffer,  }\item[{uint16\+\_\+t const}]{buffer\+\_\+size\+\_\+in\+\_\+bytes }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Return a pointer to the global Queue
+
+Queue\+Init behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns a pointer to a Queue struct~\newline
+
+\item memory for Queue struct is allocated in Queue object file~\newline
+
+\item assigns input buffer as Queue buffer~\newline
+
+\item size input is the maximum Queue length~\newline
+
+\item initializes Queue with length 0~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Queue_8c_af8605b772c004ae79effd4ae2d51d159}\label{Queue_8c_af8605b772c004ae79effd4ae2d51d159}} 
+\index{Queue.c@{Queue.c}!QueueIsEmpty@{QueueIsEmpty}}
+\index{QueueIsEmpty@{QueueIsEmpty}!Queue.c@{Queue.c}}
+\doxysubsubsection{\texorpdfstring{QueueIsEmpty()}{QueueIsEmpty()}}
+{\footnotesize\ttfamily bool Queue\+Is\+Empty (\begin{DoxyParamCaption}\item[{volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$}]{Spi\+Fifo }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Return true if Queue is empty
+
+Queue\+Is\+Empty behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns true if Queue is empty~\newline
+
+\item returns false if Queue is not empty~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Queue_8c_aae356a36c569e92e4f57b40b82185cbe}\label{Queue_8c_aae356a36c569e92e4f57b40b82185cbe}} 
+\index{Queue.c@{Queue.c}!QueueIsFull@{QueueIsFull}}
+\index{QueueIsFull@{QueueIsFull}!Queue.c@{Queue.c}}
+\doxysubsubsection{\texorpdfstring{QueueIsFull()}{QueueIsFull()}}
+{\footnotesize\ttfamily bool Queue\+Is\+Full (\begin{DoxyParamCaption}\item[{volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$}]{Spi\+Fifo }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Return true if Queue is full
+
+Queue\+Is\+Full behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns true if Queue is full~\newline
+
+\item returns false if Queue is not full~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Queue_8c_a3e2b69629566525b07f0edd4cbe2af30}\label{Queue_8c_a3e2b69629566525b07f0edd4cbe2af30}} 
+\index{Queue.c@{Queue.c}!QueueLength@{QueueLength}}
+\index{QueueLength@{QueueLength}!Queue.c@{Queue.c}}
+\doxysubsubsection{\texorpdfstring{QueueLength()}{QueueLength()}}
+{\footnotesize\ttfamily uint16\+\_\+t Queue\+Length (\begin{DoxyParamCaption}\item[{volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$}]{pq }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Return length of Queue
+
+Queue\+Length behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item increments after a push~\newline
+
+\item does not increase beyond max length~\newline
+
+\item decrements after a pop~\newline
+
+\item does not decrease below zero~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Queue_8c_a3b625b654b66fd3690458918e4209a0b}\label{Queue_8c_a3b625b654b66fd3690458918e4209a0b}} 
+\index{Queue.c@{Queue.c}!QueuePop@{QueuePop}}
+\index{QueuePop@{QueuePop}!Queue.c@{Queue.c}}
+\doxysubsubsection{\texorpdfstring{QueuePop()}{QueuePop()}}
+{\footnotesize\ttfamily uint8\+\_\+t Queue\+Pop (\begin{DoxyParamCaption}\item[{volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$}]{Spi\+Fifo }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Pop data from the Queue
+
+Queue\+Pop behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item removes oldest byte from Queue~\newline
+
+\item returns oldest byte~\newline
+
+\item does not remove any bytes if Queue is empty~\newline
+
+\item returns 0 if Queue is empty~\newline
+
+\item hits end of buffer and wraps around if Queue is not empty~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Queue_8c_ada96851f81ecdeed864129d24c30d532}\label{Queue_8c_ada96851f81ecdeed864129d24c30d532}} 
+\index{Queue.c@{Queue.c}!QueuePush@{QueuePush}}
+\index{QueuePush@{QueuePush}!Queue.c@{Queue.c}}
+\doxysubsubsection{\texorpdfstring{QueuePush()}{QueuePush()}}
+{\footnotesize\ttfamily void Queue\+Push (\begin{DoxyParamCaption}\item[{volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$}]{Spi\+Fifo,  }\item[{uint8\+\_\+t}]{data\+\_\+to\+\_\+push }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Push data onto the Queue
+
+Queue\+Push behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item writes byte to Queue buffer~\newline
+
+\item writes next byte to address after previous write~\newline
+
+\item does not write byte if Queue is full~\newline
+
+\item hits end of buffer and wraps around if Queue is not full~\newline
+
+\end{DoxyItemize}

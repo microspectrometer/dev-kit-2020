@@ -1,0 +1,130 @@
+\hypertarget{SpiSlave__faked_8c}{}\doxysection{lib/test/\+Spi\+Slave\+\_\+faked.c File Reference}
+\label{SpiSlave__faked_8c}\index{lib/test/SpiSlave\_faked.c@{lib/test/SpiSlave\_faked.c}}
+{\ttfamily \#include \char`\"{}Spi\+Slave\+\_\+faked.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Mock.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi\+Slave.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SpiSlave__faked_8c_aaccbe3a0a42ad461b51a291038368557}\label{SpiSlave__faked_8c_aaccbe3a0a42ad461b51a291038368557}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Spi\+Slave\+Tx\+Byte} (uint8\+\_\+t arg1)
+\item 
+void \mbox{\hyperlink{SpiSlave__faked_8c_a47cd2a2905123ae156084344b93ac3b0}{Spi\+Slave\+Tx\+Byte\+\_\+fake}} (uint8\+\_\+t input\+\_\+byte)
+\item 
+\mbox{\Hypertarget{SpiSlave__faked_8c_ad75a0a1b8b9d86ad493346188e994557}\label{SpiSlave__faked_8c_ad75a0a1b8b9d86ad493346188e994557}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Enable\+Spi\+Interrupt} (void)
+\item 
+void \mbox{\hyperlink{SpiSlave__faked_8c_ad4d1732c8cc238effddc7c894677739c}{Enable\+Spi\+Interrupt\+\_\+fake}} (void)
+\item 
+\mbox{\Hypertarget{SpiSlave__faked_8c_a7235d3496ae4d4467a27feceb268666e}\label{SpiSlave__faked_8c_a7235d3496ae4d4467a27feceb268666e}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Signal\+Data\+Ready} (void)
+\item 
+void \mbox{\hyperlink{SpiSlave__faked_8c_a14d1d211c05c75c9d55525aaa940d0c4}{\+\_\+\+Signal\+Data\+Ready\+\_\+fake}} (void)
+\item 
+\mbox{\Hypertarget{SpiSlave__faked_8c_a6b112867a687adca297c82f1b1eae398}\label{SpiSlave__faked_8c_a6b112867a687adca297c82f1b1eae398}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Disable\+Spi\+Interrupt} (void)
+\item 
+void \mbox{\hyperlink{SpiSlave__faked_8c_ad636d7aed5753d29fd10d470918976a7}{Disable\+Spi\+Interrupt\+\_\+fake}} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.~\newline
+ Tests access {\ttfamily mock} to see what the {\bfseries{function under test}} does\+:~\newline
+
+\begin{DoxyItemize}
+\item {\bfseries{calls made}} by the function under test~\newline
+
+\item {\bfseries{args passed}} by those calls.~\newline
+ {\ttfamily Test\+Suite.\+exe} seg faults if any test accesses {\ttfamily mock} without defining {\ttfamily mock}.~\newline
+ {\ttfamily Mock.\+h} declares {\ttfamily mock}\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{extern} Mock\_s mock;}
+\end{DoxyCode}
+
+\end{DoxyItemize}
+
+{\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Mock\_s *mock;}
+\end{DoxyCode}
+
+
+The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
+ Create/destroy {\ttfamily mock} for an entire test suite by pointing {\ttfamily set\+Up} and {\ttfamily tear\+Down} in the {\ttfamily test\+\_\+runner}\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{setUp = SetUp\_Mock; tearDown = TearDown\_Mock;}
+\end{DoxyCode}
+
+
+For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
+ View all calls made (not an assertion, but helpful for debug) 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{PrintAllCalls(mock);}
+\end{DoxyCode}
+
+
+Assert a specific call is made 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{uint16\_t call\_n = 1;}
+\DoxyCodeLine{TEST\_ASSERT\_TRUE(}
+\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"\_SignalDataReady"})}
+\DoxyCodeLine{    );}
+\end{DoxyCode}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{SpiSlave__faked_8c_a14d1d211c05c75c9d55525aaa940d0c4}\label{SpiSlave__faked_8c_a14d1d211c05c75c9d55525aaa940d0c4}} 
+\index{SpiSlave\_faked.c@{SpiSlave\_faked.c}!\_SignalDataReady\_fake@{\_SignalDataReady\_fake}}
+\index{\_SignalDataReady\_fake@{\_SignalDataReady\_fake}!SpiSlave\_faked.c@{SpiSlave\_faked.c}}
+\doxysubsubsection{\texorpdfstring{\_SignalDataReady\_fake()}{\_SignalDataReady\_fake()}}
+{\footnotesize\ttfamily void \+\_\+\+Signal\+Data\+Ready\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave__faked_8c_ad636d7aed5753d29fd10d470918976a7}\label{SpiSlave__faked_8c_ad636d7aed5753d29fd10d470918976a7}} 
+\index{SpiSlave\_faked.c@{SpiSlave\_faked.c}!DisableSpiInterrupt\_fake@{DisableSpiInterrupt\_fake}}
+\index{DisableSpiInterrupt\_fake@{DisableSpiInterrupt\_fake}!SpiSlave\_faked.c@{SpiSlave\_faked.c}}
+\doxysubsubsection{\texorpdfstring{DisableSpiInterrupt\_fake()}{DisableSpiInterrupt\_fake()}}
+{\footnotesize\ttfamily void Disable\+Spi\+Interrupt\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave__faked_8c_ad4d1732c8cc238effddc7c894677739c}\label{SpiSlave__faked_8c_ad4d1732c8cc238effddc7c894677739c}} 
+\index{SpiSlave\_faked.c@{SpiSlave\_faked.c}!EnableSpiInterrupt\_fake@{EnableSpiInterrupt\_fake}}
+\index{EnableSpiInterrupt\_fake@{EnableSpiInterrupt\_fake}!SpiSlave\_faked.c@{SpiSlave\_faked.c}}
+\doxysubsubsection{\texorpdfstring{EnableSpiInterrupt\_fake()}{EnableSpiInterrupt\_fake()}}
+{\footnotesize\ttfamily void Enable\+Spi\+Interrupt\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave__faked_8c_a47cd2a2905123ae156084344b93ac3b0}\label{SpiSlave__faked_8c_a47cd2a2905123ae156084344b93ac3b0}} 
+\index{SpiSlave\_faked.c@{SpiSlave\_faked.c}!SpiSlaveTxByte\_fake@{SpiSlaveTxByte\_fake}}
+\index{SpiSlaveTxByte\_fake@{SpiSlaveTxByte\_fake}!SpiSlave\_faked.c@{SpiSlave\_faked.c}}
+\doxysubsubsection{\texorpdfstring{SpiSlaveTxByte\_fake()}{SpiSlaveTxByte\_fake()}}
+{\footnotesize\ttfamily void Spi\+Slave\+Tx\+Byte\+\_\+fake (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{input\+\_\+byte }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name~\newline
+
+\item arg1
+\end{DoxyItemize}

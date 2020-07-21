@@ -1,0 +1,94 @@
+\hypertarget{StatusCode_8h}{}\doxysection{lib/src/\+Status\+Code.h File Reference}
+\label{StatusCode_8h}\index{lib/src/StatusCode.h@{lib/src/StatusCode.h}}
+{\ttfamily \#include \char`\"{}stdint.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}stdbool.\+h\char`\"{}}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}\label{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}} 
+typedef const uint8\+\_\+t \mbox{\hyperlink{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}{status\+\_\+code}}
+\begin{DoxyCompactList}\small\item\em Status codes are type {\ttfamily status\+\_\+code}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}\label{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}} 
+typedef const uint8\+\_\+t \mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}}
+\begin{DoxyCompactList}\small\item\em Indicator L\+E\+Ds have three possible states\+: {\ttfamily O\+FF}, {\ttfamily G\+R\+E\+EN}, and {\ttfamily R\+ED}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{StatusCode_8h_a01df3e137a12f62f87d970dbe61e4793}{led\+\_\+setting\+\_\+is\+\_\+valid}} (\mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}} setting)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{StatusCode_8h_aecd474d7da5310ed3ab9d8a6211c1b82}\label{StatusCode_8h_aecd474d7da5310ed3ab9d8a6211c1b82}} 
+\mbox{\hyperlink{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}{status\+\_\+code}} {\bfseries OK}
+\item 
+\mbox{\Hypertarget{StatusCode_8h_a184c0e8bd7d0a1d7a25c3e924b8402e3}\label{StatusCode_8h_a184c0e8bd7d0a1d7a25c3e924b8402e3}} 
+\mbox{\hyperlink{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}{status\+\_\+code}} {\bfseries E\+R\+R\+OR}
+\item 
+\mbox{\Hypertarget{StatusCode_8h_a838ce6b5304f7f12a3276a99ecc2e815}\label{StatusCode_8h_a838ce6b5304f7f12a3276a99ecc2e815}} 
+\mbox{\hyperlink{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}{status\+\_\+code}} {\bfseries I\+N\+V\+A\+L\+I\+D\+\_\+\+C\+MD}
+\item 
+\mbox{\Hypertarget{StatusCode_8h_a72e12a72eb28bf13e7927aa6483661a7}\label{StatusCode_8h_a72e12a72eb28bf13e7927aa6483661a7}} 
+\mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}} {\bfseries O\+FF}
+\item 
+\mbox{\Hypertarget{StatusCode_8h_a4b5b51d2b64323265f12937468bb561b}\label{StatusCode_8h_a4b5b51d2b64323265f12937468bb561b}} 
+\mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}} {\bfseries G\+R\+E\+EN}
+\item 
+\mbox{\Hypertarget{StatusCode_8h_a608dfc902b08fc07d05f381098e3f4a9}\label{StatusCode_8h_a608dfc902b08fc07d05f381098e3f4a9}} 
+\mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}} {\bfseries R\+ED}
+\item 
+\mbox{\Hypertarget{StatusCode_8h_ad6df1a4a3ce954824ecfd98d1841da98}\label{StatusCode_8h_ad6df1a4a3ce954824ecfd98d1841da98}} 
+uint8\+\_\+t \mbox{\hyperlink{StatusCode_8h_ad6df1a4a3ce954824ecfd98d1841da98}{P\+A\+D\+D\+I\+NG}}
+\begin{DoxyCompactList}\small\item\em When status\+\_\+code is E\+R\+R\+OR, pad responses to send expected number of bytes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\itshape See {\ttfamily cfg/microspec.\+json} in the Python A\+PI repository.}
+\begin{DoxyItemize}
+\item Section {\ttfamily \char`\"{}global\char`\"{}} defines the {\bfseries{protocol byte codes}}.
+\begin{DoxyItemize}
+\item Firmware header file \mbox{\hyperlink{StatusCodes_8h}{Status\+Codes.\+h}} duplicates these {\ttfamily \char`\"{}global\char`\"{}} definitions.
+\end{DoxyItemize}
+\item Section {\ttfamily \char`\"{}protocol\char`\"{}\+:\char`\"{}command\char`\"{}} defines the commands and command parameters {\bfseries{sent by the U\+SB host.}}
+\item Section {\ttfamily \char`\"{}protocol\char`\"{}\+:\char`\"{}serial\char`\"{}} defines the {\bfseries{expected response}} from the {\bfseries{U\+SB board}} {\ttfamily usb-\/bridge}.
+\item Section {\ttfamily \char`\"{}protocol\char`\"{}\+:\char`\"{}sensor\char`\"{}} defines the {\bfseries{expected response}} from the {\bfseries{sensor board}} {\ttfamily vis-\/spi-\/out}.
+\end{DoxyItemize}{\bfseries{S\+T\+A\+T\+US C\+O\+D\+ES}}
+\begin{DoxyItemize}
+\item J\+S\+ON section {\ttfamily \char`\"{}globals\char`\"{}} defines the {\bfseries{status codes}}\+: {\ttfamily OK}, {\ttfamily E\+R\+R\+OR}, {\ttfamily I\+N\+V\+A\+L\+I\+D\+\_\+\+C\+MD}
+\item the {\bfseries{status code}} is {\bfseries{byte 0}} of the {\itshape response} from the {\bfseries{U\+SB board}} or {\bfseries{sensor board}}
+\item the {\bfseries{U\+SB board}} and the {\bfseries{sensor board}} reply with the same status codes
+\item the {\bfseries{status code}} describes the status of the communication {\itshape from the point of view of the sender}\+:
+\begin{DoxyItemize}
+\item {\ttfamily OK}\+: the sender understood the message it just received {\itshape and} it successfully performed the task
+\item {\ttfamily E\+R\+R\+OR}\+: the sender understood the message but could not perform the task
+\item {\ttfamily I\+N\+V\+A\+L\+I\+D\+\_\+\+C\+MD}\+: the sender received an unrecognized command
+\end{DoxyItemize}
+\end{DoxyItemize}{\bfseries{I\+N\+D\+I\+C\+A\+T\+OR L\+ED S\+T\+A\+T\+ES}}
+\begin{DoxyItemize}
+\item Section {\ttfamily \char`\"{}globals\char`\"{}} defines the {\bfseries{L\+ED states}}\+: {\ttfamily O\+FF}, {\ttfamily G\+R\+E\+EN}, or {\ttfamily R\+ED}
+\item {\bfseries{L\+ED state}} is\+:
+\begin{DoxyItemize}
+\item {\bfseries{byte 2}} of the command to {\ttfamily set} the indicator L\+ED
+\item {\bfseries{byte 1}} of the response to the command to {\ttfamily get} the indicator L\+ED
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{StatusCode_8h_a01df3e137a12f62f87d970dbe61e4793}\label{StatusCode_8h_a01df3e137a12f62f87d970dbe61e4793}} 
+\index{StatusCode.h@{StatusCode.h}!led\_setting\_is\_valid@{led\_setting\_is\_valid}}
+\index{led\_setting\_is\_valid@{led\_setting\_is\_valid}!StatusCode.h@{StatusCode.h}}
+\doxysubsubsection{\texorpdfstring{led\_setting\_is\_valid()}{led\_setting\_is\_valid()}}
+{\footnotesize\ttfamily bool led\+\_\+setting\+\_\+is\+\_\+valid (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}}}]{setting }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+led\+\_\+setting\+\_\+is\+\_\+valid behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns T\+R\+UE if setting is O\+FF~\newline
+
+\item returns T\+R\+UE if setting is G\+R\+E\+EN~\newline
+
+\item returns T\+R\+UE if setting is R\+ED~\newline
+
+\item returns F\+A\+L\+SE if setting is any other value~\newline
+
+\end{DoxyItemize}

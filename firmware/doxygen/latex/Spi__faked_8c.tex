@@ -1,0 +1,102 @@
+\hypertarget{Spi__faked_8c}{}\doxysection{lib/test/\+Spi\+\_\+faked.c File Reference}
+\label{Spi__faked_8c}\index{lib/test/Spi\_faked.c@{lib/test/Spi\_faked.c}}
+{\ttfamily \#include \char`\"{}Mock.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi\+\_\+faked.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Spi__faked_8c_a7e0a5de44d0f452158db53327d61241b}\label{Spi__faked_8c_a7e0a5de44d0f452158db53327d61241b}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Spi\+Transfer\+Is\+Done} (void)
+\item 
+bool \mbox{\hyperlink{Spi__faked_8c_a81d029e41869a7ff06b4b7513b6a764e}{\+\_\+\+Spi\+Transfer\+Is\+Done\+\_\+fake}} (void)
+\item 
+\mbox{\Hypertarget{Spi__faked_8c_ac461b8a4869f329acff3e6eba9eab1eb}\label{Spi__faked_8c_ac461b8a4869f329acff3e6eba9eab1eb}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Clear\+Spi\+Interrupt\+Flag} (void)
+\item 
+void \mbox{\hyperlink{Spi__faked_8c_ac31e89e7b46858b01aef220725ee772d}{Clear\+Spi\+Interrupt\+Flag\+\_\+fake}} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.~\newline
+ Tests access {\ttfamily mock} to see what the {\bfseries{function under test}} does\+:~\newline
+
+\begin{DoxyItemize}
+\item {\bfseries{calls made}} by the function under test~\newline
+
+\item {\bfseries{args passed}} by those calls.~\newline
+ {\ttfamily Test\+Suite.\+exe} seg faults if any test accesses {\ttfamily mock} without defining {\ttfamily mock}.~\newline
+ {\ttfamily Mock.\+h} declares {\ttfamily mock}\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{extern} Mock\_s mock;}
+\end{DoxyCode}
+
+\end{DoxyItemize}
+
+{\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Mock\_s *mock;}
+\end{DoxyCode}
+
+
+The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
+ Create/destroy {\ttfamily mock} for an entire test suite by pointing {\ttfamily set\+Up} and {\ttfamily tear\+Down} in the {\ttfamily test\+\_\+runner}\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{setUp = SetUp\_Mock; tearDown = TearDown\_Mock;}
+\end{DoxyCode}
+
+
+For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
+ View all calls made (not an assertion, but helpful for debug) 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{PrintAllCalls(mock);}
+\end{DoxyCode}
+
+
+Assert a specific call is made 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{uint16\_t call\_n = 1;}
+\DoxyCodeLine{TEST\_ASSERT\_TRUE(}
+\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"\_SignalDataReady"})}
+\DoxyCodeLine{    );}
+\end{DoxyCode}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{Spi__faked_8c_a81d029e41869a7ff06b4b7513b6a764e}\label{Spi__faked_8c_a81d029e41869a7ff06b4b7513b6a764e}} 
+\index{Spi\_faked.c@{Spi\_faked.c}!\_SpiTransferIsDone\_fake@{\_SpiTransferIsDone\_fake}}
+\index{\_SpiTransferIsDone\_fake@{\_SpiTransferIsDone\_fake}!Spi\_faked.c@{Spi\_faked.c}}
+\doxysubsubsection{\texorpdfstring{\_SpiTransferIsDone\_fake()}{\_SpiTransferIsDone\_fake()}}
+{\footnotesize\ttfamily bool \+\_\+\+Spi\+Transfer\+Is\+Done\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}
+
+Fake sets S\+PI Interrupt Flag bit in S\+PI Status Register.
+
+Fake always returns true\+:~\newline
+
+\begin{DoxyItemize}
+\item Prevents test suite from hanging forever.
+\end{DoxyItemize}\mbox{\Hypertarget{Spi__faked_8c_ac31e89e7b46858b01aef220725ee772d}\label{Spi__faked_8c_ac31e89e7b46858b01aef220725ee772d}} 
+\index{Spi\_faked.c@{Spi\_faked.c}!ClearSpiInterruptFlag\_fake@{ClearSpiInterruptFlag\_fake}}
+\index{ClearSpiInterruptFlag\_fake@{ClearSpiInterruptFlag\_fake}!Spi\_faked.c@{Spi\_faked.c}}
+\doxysubsubsection{\texorpdfstring{ClearSpiInterruptFlag\_fake()}{ClearSpiInterruptFlag\_fake()}}
+{\footnotesize\ttfamily void Clear\+Spi\+Interrupt\+Flag\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}

@@ -1,0 +1,101 @@
+\hypertarget{test__Queue_8c}{}\doxysection{lib/test/test\+\_\+\+Queue.c File Reference}
+\label{test__Queue_8c}\index{lib/test/test\_Queue.c@{lib/test/test\_Queue.c}}
+{\ttfamily \#include \char`\"{}unity.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}test\+\_\+\+Queue.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Queue.\+h\char`\"{}}\newline
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a2f01b0db26e0ac965789a937aaac4bba}\label{test__Queue_8c_a2f01b0db26e0ac965789a937aaac4bba}} 
+\#define {\bfseries max\+\_\+length\+\_\+of\+\_\+queue}~5
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a4c6689cb9baa7e2b76bb81c4344be2a0}\label{test__Queue_8c_a4c6689cb9baa7e2b76bb81c4344be2a0}} 
+void {\bfseries Queue\+Init\+\_\+returns\+\_\+a\+\_\+pointer\+\_\+to\+\_\+a\+\_\+\+Queue\+\_\+struct} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a61da0d38174734dc486333aba0d5734e}\label{test__Queue_8c_a61da0d38174734dc486333aba0d5734e}} 
+void {\bfseries Queue\+Init\+\_\+memory\+\_\+for\+\_\+\+Queue\+\_\+struct\+\_\+is\+\_\+allocated\+\_\+in\+\_\+\+Queue\+\_\+object\+\_\+file} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_afc84671a0a60c9887e94acda8306c50d}\label{test__Queue_8c_afc84671a0a60c9887e94acda8306c50d}} 
+void {\bfseries Queue\+Init\+\_\+assigns\+\_\+input\+\_\+buffer\+\_\+as\+\_\+\+Queue\+\_\+buffer} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a045d1e56a372ccd92d5327972e4568bd}\label{test__Queue_8c_a045d1e56a372ccd92d5327972e4568bd}} 
+void {\bfseries Queue\+Init\+\_\+size\+\_\+input\+\_\+is\+\_\+the\+\_\+maximum\+\_\+\+Queue\+\_\+length} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a9aca78c3b9847e67ccd98d7974b0f745}\label{test__Queue_8c_a9aca78c3b9847e67ccd98d7974b0f745}} 
+void {\bfseries Queue\+Init\+\_\+initializes\+\_\+\+Queue\+\_\+with\+\_\+length\+\_\+0} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a96bddc776b97746172d402556616b514}\label{test__Queue_8c_a96bddc776b97746172d402556616b514}} 
+void {\bfseries Queue\+Length\+\_\+increments\+\_\+after\+\_\+a\+\_\+push} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a6e6ad5dc6e2fdceb142e18dc4bfe1d7a}\label{test__Queue_8c_a6e6ad5dc6e2fdceb142e18dc4bfe1d7a}} 
+void {\bfseries Queue\+Length\+\_\+does\+\_\+not\+\_\+increase\+\_\+beyond\+\_\+max\+\_\+length} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a27fed51777aa222e955c1796a95c26b5}\label{test__Queue_8c_a27fed51777aa222e955c1796a95c26b5}} 
+void {\bfseries Queue\+Length\+\_\+decrements\+\_\+after\+\_\+a\+\_\+pop} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_aede79027d1082474d77fb078827c6c68}\label{test__Queue_8c_aede79027d1082474d77fb078827c6c68}} 
+void {\bfseries Queue\+Length\+\_\+does\+\_\+not\+\_\+decrease\+\_\+below\+\_\+zero} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a712cdeed438598e8d02cf8b79c060d0f}\label{test__Queue_8c_a712cdeed438598e8d02cf8b79c060d0f}} 
+void {\bfseries Queue\+Push\+\_\+writes\+\_\+byte\+\_\+to\+\_\+\+Queue\+\_\+buffer} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a84788576e00ca6ae3f4633ce39180bea}\label{test__Queue_8c_a84788576e00ca6ae3f4633ce39180bea}} 
+void {\bfseries Queue\+Push\+\_\+writes\+\_\+next\+\_\+byte\+\_\+to\+\_\+address\+\_\+after\+\_\+previous\+\_\+write} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a32b635ffff1bb4336ed1c0f12a00cf09}\label{test__Queue_8c_a32b635ffff1bb4336ed1c0f12a00cf09}} 
+void {\bfseries Queue\+Push\+\_\+does\+\_\+not\+\_\+write\+\_\+byte\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+full} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a6af38ae055844238126acd2da4e7af45}\label{test__Queue_8c_a6af38ae055844238126acd2da4e7af45}} 
+void {\bfseries Queue\+Push\+\_\+hits\+\_\+end\+\_\+of\+\_\+buffer\+\_\+and\+\_\+wraps\+\_\+around\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+not\+\_\+full} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a0baeaf52f03d0f6b3a24e327bfac613f}\label{test__Queue_8c_a0baeaf52f03d0f6b3a24e327bfac613f}} 
+void {\bfseries Queue\+Pop\+\_\+removes\+\_\+oldest\+\_\+byte\+\_\+from\+\_\+\+Queue} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a06cf017495ff6138b4fee06109eb8b12}\label{test__Queue_8c_a06cf017495ff6138b4fee06109eb8b12}} 
+void {\bfseries Queue\+Pop\+\_\+returns\+\_\+oldest\+\_\+byte} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a19a0af1477fb91bb0f51fd8f3e0bb83e}\label{test__Queue_8c_a19a0af1477fb91bb0f51fd8f3e0bb83e}} 
+void {\bfseries Queue\+Pop\+\_\+does\+\_\+not\+\_\+remove\+\_\+any\+\_\+bytes\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+empty} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_af791937858613a8c0f21938d405a1ff2}\label{test__Queue_8c_af791937858613a8c0f21938d405a1ff2}} 
+void {\bfseries Queue\+Pop\+\_\+returns\+\_\+0\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+empty} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_ab6c0e1eaeddfa20aa53869d72f7c3a15}\label{test__Queue_8c_ab6c0e1eaeddfa20aa53869d72f7c3a15}} 
+void {\bfseries Queue\+Pop\+\_\+hits\+\_\+end\+\_\+of\+\_\+buffer\+\_\+and\+\_\+wraps\+\_\+around\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+not\+\_\+empty} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a2ff00dc068d1b5219ccdf9cc31043b95}\label{test__Queue_8c_a2ff00dc068d1b5219ccdf9cc31043b95}} 
+void {\bfseries Queue\+Is\+Full\+\_\+returns\+\_\+true\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+full} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a3aa39e72ed21027d757d93d09968d8dc}\label{test__Queue_8c_a3aa39e72ed21027d757d93d09968d8dc}} 
+void {\bfseries Queue\+Is\+Full\+\_\+returns\+\_\+false\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+not\+\_\+full} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_afce2be0f4dbbc5a6f8bc842ed29f895c}\label{test__Queue_8c_afce2be0f4dbbc5a6f8bc842ed29f895c}} 
+void {\bfseries Queue\+Is\+Empty\+\_\+returns\+\_\+true\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+empty} (void)
+\item 
+\mbox{\Hypertarget{test__Queue_8c_af59612a62b6dbd57a367e44ce20b0049}\label{test__Queue_8c_af59612a62b6dbd57a367e44ce20b0049}} 
+void {\bfseries Queue\+Is\+Empty\+\_\+returns\+\_\+false\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+not\+\_\+empty} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{test__Queue_8c_a11dee3bbd2941b72086166ebabdedd91}\label{test__Queue_8c_a11dee3bbd2941b72086166ebabdedd91}} 
+volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$ {\bfseries Spi\+Fifo}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\itshape Queue tests are coupled}~\newline
+ Testing one {\bfseries{Queue}} method requires calling other {\bfseries{Queue}} methods. Lib {\bfseries{Queue}} design intent is that data in a {\ttfamily \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}}} is only accessible through the {\bfseries{Queue}} methods. The {\ttfamily \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}}} is intended to be an abstract data type, but it is exposed in {\ttfamily \mbox{\hyperlink{Queue_8h_source}{Queue.\+h}}} to make {\ttfamily inline} possible in the application\textquotesingle{}s translation unit.
+
+{\itshape Empty tests are for generating function doc strings}~\newline
+
+\begin{DoxyItemize}
+\item Empty tests contain one line\+: {\ttfamily T\+E\+S\+T\+\_\+\+P\+A\+S\+S();}~\newline
+
+\item Tests start as empty.~\newline
+
+\item If the test is useful, write it using the necessary {\bfseries{Queue}} methods when they are available. 
+\end{DoxyItemize}

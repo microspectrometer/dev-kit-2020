@@ -1,0 +1,412 @@
+\hypertarget{UsbCmd_8h}{}\doxysection{usb-\/bridge/src/\+Usb\+Cmd.h File Reference}
+\label{UsbCmd_8h}\index{usb-\/bridge/src/UsbCmd.h@{usb-\/bridge/src/UsbCmd.h}}
+{\ttfamily \#include \char`\"{}Status\+Code.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Bi\+Color\+Led.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Usb.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi\+Master.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{UsbCmd_8h_ab54bb71cd582d7ce2e3c5a104bf66478}{Read\+Led\+State}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{Null\+Command}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_a2be59832e776d1ef15b9d995e18cf26d}{Get\+Bridge\+L\+ED}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_a5b3a22b24f2d01d4fc902fc7fb7e9de9}{Set\+Bridge\+L\+ED}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_a374617629eb104d96d1b5008aa9af582}{Get\+Sensor\+L\+ED}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}{Set\+Sensor\+L\+ED}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_a28364aa58a96dc236db7b616e100154e}{Get\+Sensor\+Config}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}{Set\+Sensor\+Config}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}{Get\+Exposure}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}{Set\+Exposure}} (void)
+\item 
+void \mbox{\hyperlink{UsbCmd_8h_a01172b96bcd0b33c8f7046584b805b8e}{Capture\+Frame}} (void)
+\item 
+\mbox{\Hypertarget{UsbCmd_8h_aa0ee743a8cfa8c716b0658ad2cd8e6b3}\label{UsbCmd_8h_aa0ee743a8cfa8c716b0658ad2cd8e6b3}} 
+void {\bfseries Auto\+Exposure} (void)
+\item 
+\mbox{\Hypertarget{UsbCmd_8h_a6b97f0a2df9c9f777bf6647f4745c706}\label{UsbCmd_8h_a6b97f0a2df9c9f777bf6647f4745c706}} 
+void {\bfseries Get\+Auto\+Expose\+Config} (void)
+\item 
+\mbox{\Hypertarget{UsbCmd_8h_af120fbef5bc5220fe4a80c23586c6dbe}\label{UsbCmd_8h_af120fbef5bc5220fe4a80c23586c6dbe}} 
+void {\bfseries Set\+Auto\+Expose\+Config} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxysubsection*{A\+PI for \mbox{\hyperlink{usb-bridge_8c}{usb-\/bridge.\+c}}}
+
+
+\begin{DoxyItemize}
+\item \mbox{\hyperlink{UsbCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{Null\+Command()}}
+\item \mbox{\hyperlink{UsbCmd_8h_a2be59832e776d1ef15b9d995e18cf26d}{Get\+Bridge\+L\+E\+D()}}
+\item \mbox{\hyperlink{UsbCmd_8h_a5b3a22b24f2d01d4fc902fc7fb7e9de9}{Set\+Bridge\+L\+E\+D()}}
+\item \mbox{\hyperlink{UsbCmd_8h_a374617629eb104d96d1b5008aa9af582}{Get\+Sensor\+L\+E\+D()}}
+\item \mbox{\hyperlink{UsbCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}{Set\+Sensor\+L\+E\+D()}}
+\item \mbox{\hyperlink{UsbCmd_8h_a28364aa58a96dc236db7b616e100154e}{Get\+Sensor\+Config()}}
+\item \mbox{\hyperlink{UsbCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}{Set\+Sensor\+Config()}}
+\item \mbox{\hyperlink{UsbCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}{Get\+Exposure()}}
+\item \mbox{\hyperlink{UsbCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}{Set\+Exposure()}}
+\item \mbox{\hyperlink{UsbCmd_8h_a01172b96bcd0b33c8f7046584b805b8e}{Capture\+Frame()}}
+\item Auto\+Exposure()
+\item Get\+Auto\+Expose\+Config()
+\item Set\+Auto\+Expose\+Config() 
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{UsbCmd_8h_a01172b96bcd0b33c8f7046584b805b8e}\label{UsbCmd_8h_a01172b96bcd0b33c8f7046584b805b8e}} 
+\index{UsbCmd.h@{UsbCmd.h}!CaptureFrame@{CaptureFrame}}
+\index{CaptureFrame@{CaptureFrame}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{CaptureFrame()}{CaptureFrame()}}
+{\footnotesize\ttfamily void Capture\+Frame (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Capture\+Frame behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sends command to sensor~\newline
+
+\item writes OK to indicate it sent the command to the sensor~\newline
+
+\item waits for sensor to signal S\+T\+A\+T\+US data ready~\newline
+
+\item reads status from sensor~\newline
+
+\item waits for sensor to signal N\+U\+M\+\_\+\+P\+I\+X\+E\+L\+S\+\_\+\+M\+SB data ready~\newline
+
+\item reads num\+\_\+pixels\+\_\+\+M\+SB from sensor~\newline
+
+\item waits for sensor to signal N\+U\+M\+\_\+\+P\+I\+X\+E\+L\+S\+\_\+\+L\+SB data ready~\newline
+
+\item reads num\+\_\+pixels\+\_\+\+L\+SB from sensor~\newline
+
+\item writes sensor status~\newline
+
+\item writes num\+\_\+pixels\+\_\+\+M\+SB~\newline
+
+\item writes num\+\_\+pixels\+\_\+\+L\+SB~\newline
+
+\item returns if status is not OK~\newline
+
+\item waits for the next byte of frame data~\newline
+
+\item writes the next byte of frame data~\newline
+
+\item loops wait for byte then write byte for a total nbytes of 2x num\+\_\+pixels~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UsbCmd_8h_a2be59832e776d1ef15b9d995e18cf26d}\label{UsbCmd_8h_a2be59832e776d1ef15b9d995e18cf26d}} 
+\index{UsbCmd.h@{UsbCmd.h}!GetBridgeLED@{GetBridgeLED}}
+\index{GetBridgeLED@{GetBridgeLED}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{GetBridgeLED()}{GetBridgeLED()}}
+{\footnotesize\ttfamily void Get\+Bridge\+L\+ED (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Get\+Bridge\+L\+ED behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte led num~\newline
+
+\item reads byte led num~\newline
+
+\item writes two bytes to U\+SB host~\newline
+
+\item writes OK and L\+ED S\+T\+A\+TE if led num is valid~\newline
+
+\item writes E\+R\+R\+OR and pads second byte if led num is invalid~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UsbCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}\label{UsbCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}} 
+\index{UsbCmd.h@{UsbCmd.h}!GetExposure@{GetExposure}}
+\index{GetExposure@{GetExposure}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{GetExposure()}{GetExposure()}}
+{\footnotesize\ttfamily void Get\+Exposure (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Get\+Exposure behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sends command to sensor~\newline
+
+\item writes OK to indicate it sent the command to the sensor~\newline
+
+\item waits for sensor to signal S\+T\+A\+T\+US data ready~\newline
+
+\item reads status from sensor~\newline
+
+\item waits for sensor to signal E\+X\+P\+O\+S\+U\+RE M\+SB data ready~\newline
+
+\item reads exposure M\+SB from sensor~\newline
+
+\item waits for sensor to signal E\+X\+P\+O\+S\+U\+RE L\+SB data ready~\newline
+
+\item reads exposure L\+SB from sensor~\newline
+
+\item writes sensor status~\newline
+
+\item writes exposure M\+SB~\newline
+
+\item writes exposure L\+SB~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UsbCmd_8h_a28364aa58a96dc236db7b616e100154e}\label{UsbCmd_8h_a28364aa58a96dc236db7b616e100154e}} 
+\index{UsbCmd.h@{UsbCmd.h}!GetSensorConfig@{GetSensorConfig}}
+\index{GetSensorConfig@{GetSensorConfig}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{GetSensorConfig()}{GetSensorConfig()}}
+{\footnotesize\ttfamily void Get\+Sensor\+Config (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Forward 1-\/byte sensor config command to sensor.~\newline
+Respond with five bytes\+:
+\begin{DoxyItemize}
+\item usb-\/bridge {\bfseries{status}}
+\begin{DoxyItemize}
+\item send {\ttfamily OK} after sending all bytes to sensor
+\end{DoxyItemize}
+\item vis-\/spi-\/out {\bfseries{status}}
+\item {\bfseries{binning}}
+\item {\bfseries{gain}}
+\item {\bfseries{row\+\_\+bitmap}}
+\end{DoxyItemize}
+
+Get\+Sensor\+Config behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sends command to sensor~\newline
+
+\item writes OK to indicate it sent the command to the sensor~\newline
+
+\item waits for sensor to signal S\+T\+A\+T\+US data ready~\newline
+
+\item reads status from sensor~\newline
+
+\item waits for sensor to signal B\+I\+N\+N\+I\+NG data ready~\newline
+
+\item reads binning from sensor~\newline
+
+\item waits for sensor to signal G\+A\+IN data ready~\newline
+
+\item reads gain from sensor~\newline
+
+\item waits for sensor to signal R\+O\+W\+\_\+\+B\+I\+T\+M\+AP data ready~\newline
+
+\item reads row\+\_\+bitmap from sensor~\newline
+
+\item writes sensor status~\newline
+
+\item writes sensor binning~\newline
+
+\item writes sensor gain~\newline
+
+\item writes sensor row\+\_\+bitmap~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UsbCmd_8h_a374617629eb104d96d1b5008aa9af582}\label{UsbCmd_8h_a374617629eb104d96d1b5008aa9af582}} 
+\index{UsbCmd.h@{UsbCmd.h}!GetSensorLED@{GetSensorLED}}
+\index{GetSensorLED@{GetSensorLED}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{GetSensorLED()}{GetSensorLED()}}
+{\footnotesize\ttfamily void Get\+Sensor\+L\+ED (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Forward 2-\/byte indicator-\/\+L\+ED command to sensor.~\newline
+Respond with three bytes\+:
+\begin{DoxyItemize}
+\item usb-\/bridge {\bfseries{status}}
+\begin{DoxyItemize}
+\item send {\ttfamily OK} after sending all bytes to sensor
+\end{DoxyItemize}
+\item vis-\/spi-\/out {\bfseries{status}}
+\item {\bfseries{led\+\_\+setting}}
+\end{DoxyItemize}
+
+Get\+Sensor\+L\+ED behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte led num~\newline
+
+\item reads byte led num~\newline
+
+\item sends command to sensor~\newline
+
+\item sends led num to sensor~\newline
+
+\item writes OK to indicate it sent the command to the sensor~\newline
+
+\item waits for sensor to signal S\+T\+A\+T\+US data ready~\newline
+
+\item reads status from sensor~\newline
+
+\item waits for sensor to signal L\+ED S\+E\+T\+T\+I\+NG data ready~\newline
+
+\item reads led setting from sensor~\newline
+
+\item writes sensor status~\newline
+
+\item writes sensor led setting~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UsbCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}\label{UsbCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}} 
+\index{UsbCmd.h@{UsbCmd.h}!NullCommand@{NullCommand}}
+\index{NullCommand@{NullCommand}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{NullCommand()}{NullCommand()}}
+{\footnotesize\ttfamily void Null\+Command (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Do nothing.\mbox{\Hypertarget{UsbCmd_8h_ab54bb71cd582d7ce2e3c5a104bf66478}\label{UsbCmd_8h_ab54bb71cd582d7ce2e3c5a104bf66478}} 
+\index{UsbCmd.h@{UsbCmd.h}!ReadLedState@{ReadLedState}}
+\index{ReadLedState@{ReadLedState}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{ReadLedState()}{ReadLedState()}}
+{\footnotesize\ttfamily uint8\+\_\+t Read\+Led\+State (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Read\+Led\+State behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns O\+FF if L\+ED is off~\newline
+
+\item returns G\+R\+E\+EN if L\+ED is on and green~\newline
+
+\item returns R\+ED if L\+ED is on and red~\newline
+
+\item see led\+\_\+state in \mbox{\hyperlink{StatusCodes_8h}{Status\+Codes.\+h}}
+\end{DoxyItemize}
+
+{\itshape L\+ED 0,} the {\bfseries{status\+\_\+led}}, {\itshape is the only indicator L\+ED on the usb-\/bridge.}\mbox{\Hypertarget{UsbCmd_8h_a5b3a22b24f2d01d4fc902fc7fb7e9de9}\label{UsbCmd_8h_a5b3a22b24f2d01d4fc902fc7fb7e9de9}} 
+\index{UsbCmd.h@{UsbCmd.h}!SetBridgeLED@{SetBridgeLED}}
+\index{SetBridgeLED@{SetBridgeLED}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{SetBridgeLED()}{SetBridgeLED()}}
+{\footnotesize\ttfamily void Set\+Bridge\+L\+ED (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Set\+Bridge\+L\+ED behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte led num~\newline
+
+\item reads byte led num~\newline
+
+\item waits for byte led setting~\newline
+
+\item reads byte led setting~\newline
+
+\item applies led setting and writes OK if parameters are valid~\newline
+
+\item writes E\+R\+R\+OR if led num is invalid~\newline
+
+\item writes E\+R\+R\+OR if led setting is invalid~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UsbCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}\label{UsbCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}} 
+\index{UsbCmd.h@{UsbCmd.h}!SetExposure@{SetExposure}}
+\index{SetExposure@{SetExposure}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{SetExposure()}{SetExposure()}}
+{\footnotesize\ttfamily void Set\+Exposure (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Set\+Exposure behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte exposure\+\_\+\+M\+SB~\newline
+
+\item reads byte exposure\+\_\+\+M\+SB~\newline
+
+\item waits for byte exposure\+\_\+\+L\+SB~\newline
+
+\item reads byte exposure\+\_\+\+L\+SB~\newline
+
+\item sends command to sensor~\newline
+
+\item sends exposure\+\_\+\+M\+SB to sensor~\newline
+
+\item sends exposure\+\_\+\+L\+SB to sensor~\newline
+
+\item writes OK to indicate it sent the command to the sensor~\newline
+
+\item waits for sensor to signal S\+T\+A\+T\+US data ready~\newline
+
+\item reads status from sensor~\newline
+
+\item writes sensor status~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UsbCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}\label{UsbCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}} 
+\index{UsbCmd.h@{UsbCmd.h}!SetSensorConfig@{SetSensorConfig}}
+\index{SetSensorConfig@{SetSensorConfig}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{SetSensorConfig()}{SetSensorConfig()}}
+{\footnotesize\ttfamily void Set\+Sensor\+Config (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Forward 4-\/byte sensor config command to sensor.~\newline
+Respond with two bytes\+:
+\begin{DoxyItemize}
+\item usb-\/bridge {\bfseries{status}}
+\begin{DoxyItemize}
+\item send {\ttfamily OK} after sending all bytes to sensor
+\end{DoxyItemize}
+\item vis-\/spi-\/out {\bfseries{status}}
+\end{DoxyItemize}
+
+Set\+Sensor\+Config behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte binning~\newline
+
+\item reads byte binning~\newline
+
+\item waits for byte gain~\newline
+
+\item reads byte gain~\newline
+
+\item waits for byte row\+\_\+bitmap~\newline
+
+\item reads byte row\+\_\+bitmap~\newline
+
+\item sends command to sensor~\newline
+
+\item sends binning to sensor~\newline
+
+\item sends gain to sensor~\newline
+
+\item sends row\+\_\+bitmap to sensor~\newline
+
+\item writes OK to indicate it sent the command to the sensor~\newline
+
+\item waits for sensor to signal S\+T\+A\+T\+US data ready~\newline
+
+\item reads status from sensor~\newline
+
+\item writes sensor status~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UsbCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}\label{UsbCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}} 
+\index{UsbCmd.h@{UsbCmd.h}!SetSensorLED@{SetSensorLED}}
+\index{SetSensorLED@{SetSensorLED}!UsbCmd.h@{UsbCmd.h}}
+\doxysubsubsection{\texorpdfstring{SetSensorLED()}{SetSensorLED()}}
+{\footnotesize\ttfamily void Set\+Sensor\+L\+ED (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Forward 3-\/byte indicator-\/\+L\+ED command to sensor.~\newline
+Respond with two bytes\+:
+\begin{DoxyItemize}
+\item usb-\/bridge {\bfseries{status}}
+\begin{DoxyItemize}
+\item send {\ttfamily OK} after sending all bytes to sensor
+\end{DoxyItemize}
+\item vis-\/spi-\/out {\bfseries{status}}
+\end{DoxyItemize}
+
+Set\+Sensor\+L\+ED behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte led num~\newline
+
+\item reads byte led num~\newline
+
+\item waits for byte led setting~\newline
+
+\item reads byte led setting~\newline
+
+\item sends command to sensor~\newline
+
+\item sends led num to sensor~\newline
+
+\item sends led setting to sensor~\newline
+
+\item writes OK to indicate it sent the command to the sensor~\newline
+
+\item waits for sensor to signal S\+T\+A\+T\+US data ready~\newline
+
+\item reads status from sensor~\newline
+
+\item writes sensor status~\newline
+
+\end{DoxyItemize}

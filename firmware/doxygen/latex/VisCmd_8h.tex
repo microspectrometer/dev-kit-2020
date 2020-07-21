@@ -1,0 +1,554 @@
+\hypertarget{VisCmd_8h}{}\doxysection{vis-\/spi-\/out/src/\+Vis\+Cmd.h File Reference}
+\label{VisCmd_8h}\index{vis-\/spi-\/out/src/VisCmd.h@{vis-\/spi-\/out/src/VisCmd.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Spi\+Slave.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Status\+Code.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Lis.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Lis\+Config.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Queue.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Bi\+Color\+Led.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Uart\+Spi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Auto\+Expose.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$util/delay\+\_\+basic.\+h$>$}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{VisCmd_8h_accab57292c3f42baef73058c3a94c46c}{Led\+Num\+Is\+Valid}} (\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} led\+\_\+num)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{VisCmd_8h_a49322dc41b69eb256669262ac54be5e5}{Read\+Led\+State}} (\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} led\+\_\+num)
+\item 
+\mbox{\Hypertarget{VisCmd_8h_a8b405f55baef221a1cc4c767b384d451}\label{VisCmd_8h_a8b405f55baef221a1cc4c767b384d451}} 
+bool {\bfseries Auto\+Expose\+Config\+Is\+Valid} (uint8\+\_\+t new\+\_\+max\+\_\+tries, uint16\+\_\+t new\+\_\+start\+\_\+pixel, uint16\+\_\+t new\+\_\+stop\+\_\+pixel, uint16\+\_\+t new\+\_\+target)
+\item 
+static void \mbox{\hyperlink{VisCmd_8h_aada5013dffe7417b0ed6754fabe7464f}{Lis\+Readout}} (uint16\+\_\+t num\+\_\+pixels)
+\item 
+uint16\+\_\+t \mbox{\hyperlink{VisCmd_8h_aaa49202fc0999c3a3f06da7787f30565}{Get\+Peak}} (uint16\+\_\+t const, uint16\+\_\+t const)
+\item 
+uint16\+\_\+t \mbox{\hyperlink{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}{Auto\+Expose}} (void)
+\item 
+void \mbox{\hyperlink{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{Null\+Command}} (void)
+\item 
+void \mbox{\hyperlink{VisCmd_8h_a374617629eb104d96d1b5008aa9af582}{Get\+Sensor\+L\+ED}} (void)
+\item 
+void \mbox{\hyperlink{VisCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}{Set\+Sensor\+L\+ED}} (void)
+\item 
+void \mbox{\hyperlink{VisCmd_8h_a28364aa58a96dc236db7b616e100154e}{Get\+Sensor\+Config}} (void)
+\item 
+void \mbox{\hyperlink{VisCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}{Get\+Exposure}} (void)
+\item 
+void \mbox{\hyperlink{VisCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}{Set\+Exposure}} (void)
+\item 
+static void \mbox{\hyperlink{VisCmd_8h_ae68a7e94e1584ce65d3ef0d22f432f57}{Capture\+Frame}} (void)
+\item 
+\mbox{\Hypertarget{VisCmd_8h_aa0ee743a8cfa8c716b0658ad2cd8e6b3}\label{VisCmd_8h_aa0ee743a8cfa8c716b0658ad2cd8e6b3}} 
+void {\bfseries Auto\+Exposure} (void)
+\item 
+\mbox{\Hypertarget{VisCmd_8h_a6b97f0a2df9c9f777bf6647f4745c706}\label{VisCmd_8h_a6b97f0a2df9c9f777bf6647f4745c706}} 
+void {\bfseries Get\+Auto\+Expose\+Config} (void)
+\item 
+\mbox{\Hypertarget{VisCmd_8h_af120fbef5bc5220fe4a80c23586c6dbe}\label{VisCmd_8h_af120fbef5bc5220fe4a80c23586c6dbe}} 
+void {\bfseries Set\+Auto\+Expose\+Config} (void)
+\item 
+void \mbox{\hyperlink{VisCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}{Set\+Sensor\+Config}} (void)
+\item 
+void \mbox{\hyperlink{VisCmd_8h_a223d486351108244d6138b2c74196a99}{Reply\+Command\+Invalid}} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{VisCmd_8h_a11dee3bbd2941b72086166ebabdedd91}\label{VisCmd_8h_a11dee3bbd2941b72086166ebabdedd91}} 
+volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$ \mbox{\hyperlink{VisCmd_8h_a11dee3bbd2941b72086166ebabdedd91}{Spi\+Fifo}}
+\begin{DoxyCompactList}\small\item\em Allocate static memory for the S\+PI Rx Queue. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{VisCmd_8h_aa0b58e2e3aa5a94e743e302ea7737e82}\label{VisCmd_8h_aa0b58e2e3aa5a94e743e302ea7737e82}} 
+uint8\+\_\+t \mbox{\hyperlink{VisCmd_8h_aa0b58e2e3aa5a94e743e302ea7737e82}{frame}} \mbox{[}2 $\ast$\mbox{\hyperlink{Lis_8h_aebccd6b42d427ada3124a7a962e82f39}{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+P\+I\+X\+E\+LS}}\mbox{]}
+\begin{DoxyCompactList}\small\item\em One frame of pixel data is, at most, 1568 bytes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxysubsection*{A\+PI for \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}}
+
+
+\begin{DoxyItemize}
+\item \mbox{\hyperlink{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{Null\+Command()}}
+\item \mbox{\hyperlink{VisCmd_8h_a374617629eb104d96d1b5008aa9af582}{Get\+Sensor\+L\+E\+D()}}
+\item \mbox{\hyperlink{VisCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}{Set\+Sensor\+L\+E\+D()}}
+\item \mbox{\hyperlink{VisCmd_8h_a28364aa58a96dc236db7b616e100154e}{Get\+Sensor\+Config()}}
+\item \mbox{\hyperlink{VisCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}{Set\+Sensor\+Config()}}
+\item \mbox{\hyperlink{VisCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}{Get\+Exposure()}}
+\item \mbox{\hyperlink{VisCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}{Set\+Exposure()}}
+\item \mbox{\hyperlink{VisCmd_8h_ae68a7e94e1584ce65d3ef0d22f432f57}{Capture\+Frame()}}
+\item Auto\+Exposure()
+\item Get\+Auto\+Expose\+Config()
+\item Set\+Auto\+Expose\+Config()
+\item \mbox{\hyperlink{VisCmd_8h_a223d486351108244d6138b2c74196a99}{Reply\+Command\+Invalid()}} 
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}\label{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}} 
+\index{VisCmd.h@{VisCmd.h}!AutoExpose@{AutoExpose}}
+\index{AutoExpose@{AutoExpose}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{AutoExpose()}{AutoExpose()}}
+{\footnotesize\ttfamily uint16\+\_\+t Auto\+Expose (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Auto\+Expose behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item turns led1 red to indicate starting~\newline
+
+\item sets min peak at target minus tolerance~\newline
+
+\item clamps min peak at max dark if target minus tolerance is G\+R\+E\+A\+T\+ER T\+H\+AN target~\newline
+
+\item clamps min peak at max dark if target minus tolerance is L\+E\+SS T\+H\+AN max dark~\newline
+
+\item sets max peak at target plus tolerance~\newline
+
+\item clamps max peak at 65535 counts if target plus tolerance is L\+E\+SS T\+H\+AN target~\newline
+
+\item loops until done~\newline
+
+\item exposes the L\+IS 770i pixels~\newline
+
+\item reads pixel counts into global frame buffer~\newline
+
+\item finds frame peak in range start pixel to stop pixel~\newline
+
+\item is done if peak less than max dark A\+ND exposure at max~\newline
+
+\item scales exposure by 10 if peak less than max dark~\newline
+
+\item clamps exposure at max exposure if 10 x exposure is G\+R\+E\+A\+T\+ER T\+H\+AN max exposure~\newline
+
+\item scales exposure by half if peak A\+B\+O\+VE max peak~\newline
+
+\item clamps exposure at min exposure if half exposure is L\+E\+SS T\+H\+AN min exposure~\newline
+
+\item is done if peak B\+E\+L\+OW min peak and exposure at max exposure~\newline
+
+\item scales exposure by target div peak if peak B\+E\+L\+OW min peak and exposure not at max~\newline
+
+\item clamps exposure at max exposure if gain is G\+R\+E\+A\+T\+ER T\+H\+AN max exposure~\newline
+
+\item is done if peak is in the target range~\newline
+
+\item turns led1 green to indicate it hit the target range~\newline
+
+\item gives up if it iterates for max tries~\newline
+
+\end{DoxyItemize}
+
+\doxysubsection*{Auto\+Expose uses a \char`\"{}\+Take Back Half\char`\"{} algorithm}
+
+Find an exposure time that gets a peak within +/-\/5\% of the target peak value. On each iteration, multiply exposure time, either by\+:
+\begin{DoxyItemize}
+\item {\ttfamily 10}, if peak is {\itshape below} the {\bfseries{dark background}}
+\item {\ttfamily 1/2}, if peak is {\itshape above} the {\bfseries{target range}}
+\item {\ttfamily gain}, if peak is {\itshape visible} but {\itshape below} the {\bfseries{target range}}
+\begin{DoxyItemize}
+\item {\ttfamily gain} = {\ttfamily target} {\bfseries{÷}} {\ttfamily peak}
+\begin{DoxyItemize}
+\item note {\ttfamily gain} is {\bfseries{always $>$ 1}}\+:
+\begin{DoxyItemize}
+\item {\ttfamily target} is the {\itshape center} of the target range
+\item {\ttfamily peak} is {\itshape below} the {\ttfamily target} range, so {\ttfamily peak} $<$ {\ttfamily target}
+\item then {\ttfamily target} {\bfseries{÷}} {\ttfamily peak} must be $>$ 1
+\end{DoxyItemize}
+\item for {\bfseries{precise}} {\itshape division} with {\bfseries{integers}}\+:
+\begin{DoxyItemize}
+\item multiply exposure by {\ttfamily target} {\itshape B\+E\+F\+O\+RE} dividing by {\ttfamily peak}\+:
+\begin{DoxyItemize}
+\item ( {\ttfamily exposure\+\_\+ticks} {\bfseries{x}} {\ttfamily target} ) {\bfseries{÷}} {\ttfamily peak}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}The algorithm {\bfseries{gives up}} if\+:
+\begin{DoxyItemize}
+\item exposure time hits a limit
+\item or the peak fails to land in the ±5\% tolerance after 10 iterations.
+\end{DoxyItemize}
+
+The {\bfseries{large}} tolerance, {\bfseries{±5\%}}, makes the algorithm fast. It usually settles within a few iterations.
+
+\doxysubsubsection*{target range }
+
+The range of target values is configured by setting {\ttfamily target} and {\ttfamily target\+\_\+tolerance}. The recommended values are\+:
+\begin{DoxyItemize}
+\item {\ttfamily target}\+: {\bfseries{46420}} counts
+\item {\ttfamily target\+\_\+tolerance}\+: {\bfseries{3277}} counts
+\end{DoxyItemize}Auto\+Expose tries to get the peak counts between {\ttfamily min\+\_\+peak} and {\ttfamily max\+\_\+peak}.
+\begin{DoxyItemize}
+\item {\ttfamily target -\/ target\+\_\+tolerance} is the {\ttfamily min\+\_\+peak}
+\item {\ttfamily target + target\+\_\+tolerance} is the {\ttfamily max\+\_\+peak}
+\end{DoxyItemize}Using the recommended values, this results in\+:
+\begin{DoxyItemize}
+\item {\ttfamily min\+\_\+peak}\+: {\bfseries{43143}} counts
+\item {\ttfamily max\+\_\+peak}\+: {\bfseries{49697}} counts
+\end{DoxyItemize}{\bfseries{49697}} counts is the {\itshape top} of the guaranteed {\bfseries{linear}} range of output values for the L\+I\+S-\/770i
+\begin{DoxyItemize}
+\item this value is based on the dev-\/kit design\+:
+\begin{DoxyItemize}
+\item {\bfseries{16-\/bit}} A\+DC
+\item {\bfseries{1.\+8V}} A\+DC voltage reference
+\item L\+I\+S-\/770i power supply\+: {\bfseries{3.\+3V}}
+\end{DoxyItemize}
+\item and based on the L\+I\+S-\/770i programming configuration\+:
+\begin{DoxyItemize}
+\item binning {\bfseries{on}}
+\item gain {\bfseries{1x}}
+\item {\bfseries{all rows}} active
+\end{DoxyItemize}
+\end{DoxyItemize}This target range, {\bfseries{\mbox{[} 43143 \+: 49697 \mbox{]}}}, represents 10\% of the full-\/scale reading, {\bfseries{65535}}.
+
+\doxysubsubsection*{max\+\_\+dark }
+
+Signal below {\ttfamily max\+\_\+dark} is considered {\bfseries{no signal}} because it is {\itshape indistinguishable} from the dark background.
+\begin{DoxyItemize}
+\item use {\bfseries{4500}} counts for {\ttfamily max\+\_\+dark}
+\begin{DoxyItemize}
+\item {\bfseries{1000}} counts is the {\bfseries{actual}} approximate peak in the dark background when Chromation ships the dev-\/kit
+\item {\bfseries{4500}} counts is {\bfseries{well above}} the {\itshape actual} peak dark background
+\begin{DoxyItemize}
+\item setting {\ttfamily max\+\_\+dark} to {\bfseries{4500}} ensures the algorithm calculates a gain {\bfseries{only when necessary}}
+\item for signal below {\bfseries{4500}} counts, the 10x gain is sufficient
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item {\ttfamily max\+\_\+dark} depends on\+:
+\begin{DoxyItemize}
+\item exposure time
+\begin{DoxyItemize}
+\item at longer exposures, peaks in the dark background are reduced because they are closer to the mean dark value
+\end{DoxyItemize}
+\item trim pot setting
+\begin{DoxyItemize}
+\item trims the output offset voltage of the L\+I\+S-\/770i
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection*{Algorithm Setup}
+
+\doxysubsubsection*{Initial state }
+
+Auto\+Expose is not done
+
+\doxysubsubsection*{Method to get peak value }
+
+
+\begin{DoxyItemize}
+\item expose the L\+I\+S-\/770i and readout one frame of data
+\item return the peak value in the frame
+\end{DoxyItemize}\doxysubsubsection*{Method to clamp exposure time }
+
+Exposure time is stored in 16-\/bit global {\ttfamily exposure\+\_\+ticks}.
+
+Clamp adjustments to {\ttfamily exposure\+\_\+ticks} between {\bfseries{1}} and {\bfseries{65535}}.
+
+When multiplying {\ttfamily exposure\+\_\+ticks} by\+:
+\begin{DoxyItemize}
+\item {\ttfamily 10} or {\ttfamily gain}\+:
+\begin{DoxyItemize}
+\item if result $>$ 65535, clamp {\ttfamily exposure\+\_\+ticks} at 65535
+\end{DoxyItemize}
+\item {\ttfamily 1/2}\+:
+\begin{DoxyItemize}
+\item {\bfseries{÷2}} is a bit-\/shift, so result is {\bfseries{integer truncated}}
+\item if result $<$ 1, clamp {\ttfamily exposure\+\_\+ticks} at 1
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection*{Algorithm}
+
+while {\bfseries{Auto\+Expose is not done}}\+:
+\begin{DoxyItemize}
+\item expose L\+I\+S-\/770i
+\item readout L\+I\+S-\/770i, store in global {\ttfamily frame} buffer
+\item get {\ttfamily peak} from global {\ttfamily frame} buffer
+\item if there is no signal\+: {\ttfamily // peak $<$= max\+\_\+dark}
+\begin{DoxyItemize}
+\item if at max exposure time\+:
+\begin{DoxyItemize}
+\item {\bfseries{Auto\+Expose is done}}
+\end{DoxyItemize}
+\item else\+:
+\begin{DoxyItemize}
+\item {\bfseries{10x}} exposure time
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item elif {\ttfamily peak} is A\+B\+O\+VE target range\+: {\ttfamily // peak is $>$ max\+\_\+peak}
+\begin{DoxyItemize}
+\item {\bfseries{T\+A\+KE B\+A\+CK H\+A\+LF}} {\ttfamily // exposure time = 1/2 exposure time}
+\end{DoxyItemize}
+\item elif {\ttfamily peak} is B\+E\+L\+OW target range\+: {\ttfamily // peak is $<$ min\+\_\+peak}
+\begin{DoxyItemize}
+\item if at max exposure time\+:
+\begin{DoxyItemize}
+\item {\bfseries{Auto\+Expose is done}}
+\end{DoxyItemize}
+\item else\+:
+\begin{DoxyItemize}
+\item {\bfseries{gain}} = {\ttfamily target} {\bfseries{÷}} {\ttfamily peak}
+\item scale exposure time by {\bfseries{gain}} {\ttfamily // exposure time = ( target x exposure time ) ÷ peak}
+\end{DoxyItemize}
+\item else\+: {\ttfamily // signal in target range\+: min\+\_\+peak $<$= peak $<$= max\+\_\+peak}
+\begin{DoxyItemize}
+\item {\bfseries{Auto\+Expose is done}}
+\end{DoxyItemize}
+\item increment iterations
+\item if iterations is at max\+:
+\begin{DoxyItemize}
+\item {\bfseries{Auto\+Expose is done}}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_ae68a7e94e1584ce65d3ef0d22f432f57}\label{VisCmd_8h_ae68a7e94e1584ce65d3ef0d22f432f57}} 
+\index{VisCmd.h@{VisCmd.h}!CaptureFrame@{CaptureFrame}}
+\index{CaptureFrame@{CaptureFrame}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{CaptureFrame()}{CaptureFrame()}}
+{\footnotesize\ttfamily static void Capture\+Frame (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Capture\+Frame behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sends OK~\newline
+
+\item checks binning to determine number of pixels in frame~\newline
+
+\item sends num pixels M\+SB~\newline
+
+\item sends num pixels L\+SB~\newline
+
+\item exposes the pixels~\newline
+
+\item does readout of num pixels into the frame buffer~\newline
+
+\item sends the pixel readings stored in the frame buffer~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}\label{VisCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}} 
+\index{VisCmd.h@{VisCmd.h}!GetExposure@{GetExposure}}
+\index{GetExposure@{GetExposure}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{GetExposure()}{GetExposure()}}
+{\footnotesize\ttfamily void Get\+Exposure (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Get\+Exposure behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sends OK~\newline
+
+\item sends M\+SB of exposure ticks~\newline
+
+\item sends L\+SB of exposure ticks~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_aaa49202fc0999c3a3f06da7787f30565}\label{VisCmd_8h_aaa49202fc0999c3a3f06da7787f30565}} 
+\index{VisCmd.h@{VisCmd.h}!GetPeak@{GetPeak}}
+\index{GetPeak@{GetPeak}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{GetPeak()}{GetPeak()}}
+{\footnotesize\ttfamily uint16\+\_\+t Get\+Peak (\begin{DoxyParamCaption}\item[{uint16\+\_\+t const}]{,  }\item[{uint16\+\_\+t const}]{ }\end{DoxyParamCaption})}
+
+\doxysubsection*{Algorithm}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily peak} starts at 0
+\item walk the global {\ttfamily frame} buffer
+\begin{DoxyItemize}
+\item start at {\ttfamily \+\_\+start\+\_\+pixel}
+\item stop at {\ttfamily \+\_\+stop\+\_\+pixel}
+\end{DoxyItemize}
+\item for each pixel\+:
+\begin{DoxyItemize}
+\item if {\ttfamily pixval} $>$ peak
+\begin{DoxyItemize}
+\item {\ttfamily peak} = {\ttfamily pixval}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item return {\ttfamily peak}
+\end{DoxyItemize}
+
+byte\+\_\+index example\+: v-\/-\/-\/-\/--- if \+\_\+start\+\_\+pixel is 7 pixel\+: 1 2 3 4 5 6 7 8 byte\+: 01 23 45 67 89 AB CD EF $^\wedge$-\/-\/-\/-\/--- then byte\+\_\+index is 12\mbox{\Hypertarget{VisCmd_8h_a28364aa58a96dc236db7b616e100154e}\label{VisCmd_8h_a28364aa58a96dc236db7b616e100154e}} 
+\index{VisCmd.h@{VisCmd.h}!GetSensorConfig@{GetSensorConfig}}
+\index{GetSensorConfig@{GetSensorConfig}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{GetSensorConfig()}{GetSensorConfig()}}
+{\footnotesize\ttfamily void Get\+Sensor\+Config (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Get\+Sensor\+Config behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sends OK~\newline
+
+\item sends binning~\newline
+
+\item sends gain~\newline
+
+\item sends row bitmap~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_a374617629eb104d96d1b5008aa9af582}\label{VisCmd_8h_a374617629eb104d96d1b5008aa9af582}} 
+\index{VisCmd.h@{VisCmd.h}!GetSensorLED@{GetSensorLED}}
+\index{GetSensorLED@{GetSensorLED}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{GetSensorLED()}{GetSensorLED()}}
+{\footnotesize\ttfamily void Get\+Sensor\+L\+ED (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Get\+Sensor\+L\+ED behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte led num~\newline
+
+\item reads byte led num~\newline
+
+\item sends OK and L\+ED S\+E\+T\+T\+I\+NG if led num is valid~\newline
+
+\item sends E\+R\+R\+OR and pads second byte if led num is invalid~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_accab57292c3f42baef73058c3a94c46c}\label{VisCmd_8h_accab57292c3f42baef73058c3a94c46c}} 
+\index{VisCmd.h@{VisCmd.h}!LedNumIsValid@{LedNumIsValid}}
+\index{LedNumIsValid@{LedNumIsValid}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{LedNumIsValid()}{LedNumIsValid()}}
+{\footnotesize\ttfamily bool Led\+Num\+Is\+Valid (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}}}]{led\+\_\+num }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Led\+Num\+Is\+Valid behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns T\+R\+UE if led num is 0~\newline
+
+\item returns T\+R\+UE if led num is 1~\newline
+
+\item returns F\+A\+L\+SE if led num is not 0 or 1~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_aada5013dffe7417b0ed6754fabe7464f}\label{VisCmd_8h_aada5013dffe7417b0ed6754fabe7464f}} 
+\index{VisCmd.h@{VisCmd.h}!LisReadout@{LisReadout}}
+\index{LisReadout@{LisReadout}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{LisReadout()}{LisReadout()}}
+{\footnotesize\ttfamily static void Lis\+Readout (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{num\+\_\+pixels }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Lis\+Readout behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for Lis\+\_\+\+Sync to go H\+I\+GH then go L\+OW~\newline
+
+\item reads one pixel on each rising edge of Lis\+\_\+\+Clk~\newline
+
+\item L\+O\+OP\+: wait for the rising edge of Lis\+\_\+\+Clk~\newline
+
+\item L\+O\+OP\+: start the A\+DC conversion~\newline
+
+\item L\+O\+OP\+: wait for 45 cycles of 10M\+Hz clock~\newline
+
+\item L\+O\+OP\+: start A\+DC readout~\newline
+
+\item L\+O\+OP\+: wait for most significant byte of A\+DC readout~\newline
+
+\item L\+O\+OP\+: save M\+SB to frame buffer~\newline
+
+\item L\+O\+OP\+: wait for least significant byte of A\+DC readout~\newline
+
+\item L\+O\+OP\+: save L\+SB to frame buffer~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}\label{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}} 
+\index{VisCmd.h@{VisCmd.h}!NullCommand@{NullCommand}}
+\index{NullCommand@{NullCommand}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{NullCommand()}{NullCommand()}}
+{\footnotesize\ttfamily void Null\+Command (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Do nothing.\mbox{\Hypertarget{VisCmd_8h_a49322dc41b69eb256669262ac54be5e5}\label{VisCmd_8h_a49322dc41b69eb256669262ac54be5e5}} 
+\index{VisCmd.h@{VisCmd.h}!ReadLedState@{ReadLedState}}
+\index{ReadLedState@{ReadLedState}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{ReadLedState()}{ReadLedState()}}
+{\footnotesize\ttfamily uint8\+\_\+t Read\+Led\+State (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}}}]{led\+\_\+num }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Read\+Led\+State behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns O\+FF if L\+ED is off~\newline
+
+\item returns G\+R\+E\+EN if L\+ED is on and green~\newline
+
+\item returns R\+ED if L\+ED is on and red~\newline
+
+\item see led\+\_\+state in \mbox{\hyperlink{StatusCodes_8h}{Status\+Codes.\+h}}
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_a223d486351108244d6138b2c74196a99}\label{VisCmd_8h_a223d486351108244d6138b2c74196a99}} 
+\index{VisCmd.h@{VisCmd.h}!ReplyCommandInvalid@{ReplyCommandInvalid}}
+\index{ReplyCommandInvalid@{ReplyCommandInvalid}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{ReplyCommandInvalid()}{ReplyCommandInvalid()}}
+{\footnotesize\ttfamily void Reply\+Command\+Invalid (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Reply\+Command\+Invalid behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item transmits one byte over S\+PI~\newline
+
+\item sends byte I\+N\+V\+A\+L\+ID C\+MD~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}\label{VisCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}} 
+\index{VisCmd.h@{VisCmd.h}!SetExposure@{SetExposure}}
+\index{SetExposure@{SetExposure}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{SetExposure()}{SetExposure()}}
+{\footnotesize\ttfamily void Set\+Exposure (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Set\+Exposure behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte exposure M\+SB~\newline
+
+\item reads byte exposure M\+SB~\newline
+
+\item waits for byte exposure L\+SB~\newline
+
+\item reads byte exposure L\+SB~\newline
+
+\item updates global exposure ticks~\newline
+
+\item sends OK~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}\label{VisCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}} 
+\index{VisCmd.h@{VisCmd.h}!SetSensorConfig@{SetSensorConfig}}
+\index{SetSensorConfig@{SetSensorConfig}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{SetSensorConfig()}{SetSensorConfig()}}
+{\footnotesize\ttfamily void Set\+Sensor\+Config (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Set\+Sensor\+Config behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item receives three bytes of config from Bridge~\newline
+
+\item does not update config globals if config is invalid~\newline
+
+\item replies E\+R\+R\+OR if binning is invalid~\newline
+
+\item replies E\+R\+R\+OR if gain is invalid~\newline
+
+\item replies E\+R\+R\+OR if active rows is invalid~\newline
+
+\item does not program L\+IS 770i if config is invalid~\newline
+
+\item writes valid config to L\+IS 770i programmable setup register~\newline
+
+\item replies OK if all config values are valid~\newline
+
+\item the OK is sent after L\+IS is programmed with new config~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}\label{VisCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}} 
+\index{VisCmd.h@{VisCmd.h}!SetSensorLED@{SetSensorLED}}
+\index{SetSensorLED@{SetSensorLED}!VisCmd.h@{VisCmd.h}}
+\doxysubsubsection{\texorpdfstring{SetSensorLED()}{SetSensorLED()}}
+{\footnotesize\ttfamily void Set\+Sensor\+L\+ED (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Set\+Sensor\+L\+ED behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item waits for byte led num~\newline
+
+\item reads byte led num~\newline
+
+\item waits for byte led setting~\newline
+
+\item reads byte led setting~\newline
+
+\item sends E\+R\+R\+OR if led num is invalid~\newline
+
+\item sends E\+R\+R\+OR if led setting is invalid~\newline
+
+\item applies L\+ED setting if valid~\newline
+
+\item sends OK if num and setting are valid~\newline
+
+\end{DoxyItemize}

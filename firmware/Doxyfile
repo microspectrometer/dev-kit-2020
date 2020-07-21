@@ -900,7 +900,11 @@ RECURSIVE              = YES
 EXCLUDE                = doc/ \
                         temp/ \
                         lib/src/Queue_slow.c \
-                        lib/src/Queue_slow.h
+                        lib/src/Queue_slow.h \
+                        NOT-USED/ \
+                        vis-spi-out/NOT-USED/ \
+                        README.md \
+                        todo.md
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1018,7 +1022,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE = README-firmware.md
+USE_MDFILE_AS_MAINPAGE = doxygen-mainpage.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing

@@ -1,0 +1,142 @@
+
+\begin{DoxyItemize}
+\item rename project
+\begin{DoxyItemize}
+\item old name is {\ttfamily chromaspec}
+\item microspectrometer is long
+\item new project name is {\ttfamily microspec}
+\end{DoxyItemize}
+\item non-\/\+Python files in opt/config
+\item installation file structure and development file structure are different, that\textquotesingle{}s OK
+\end{DoxyItemize}
+
+\doxysection*{Py\+PI}
+
+
+\begin{DoxyItemize}
+\item publish {\ttfamily bdist\+\_\+wheel}, not {\ttfamily sdist}
+\end{DoxyItemize}
+
+\doxysection*{changes to Python project {\ttfamily microspectrometer}}
+
+
+\begin{DoxyItemize}
+\item \href{https://github.com/microspectrometer/microspectrometer}{\texttt{ https\+://github.\+com/microspectrometer/microspectrometer}}
+\item \mbox{[}x\mbox{]} Mike\+: rename github repo microspec
+\item \mbox{[}x\mbox{]} rebuild Sphinx documentation
+\begin{DoxyItemize}
+\item just go into doc and do one command
+\item {\ttfamily P\+A\+TH=\$\+P\+A\+TH\+:../bin P\+Y\+T\+H\+O\+N\+P\+A\+TH=../src\+:../\+:../tests make clean html}
+\item 17 warnings\+: I need to figure out how to fix the P\+Y\+T\+H\+O\+N\+P\+A\+TH
+\begin{DoxyItemize}
+\item trouble is I need to be in Cygwin to run {\ttfamily make}
+\item but the P\+Y\+T\+H\+O\+N\+P\+A\+TH is set for Windows
+\end{DoxyItemize}
+\item Cygwin actually does correctly show the P\+O\+S\+IX style of all paths in the Windows \begin{DoxyParagraph}{env}
+A\+TH, just not in 
+\end{DoxyParagraph}
+env\+:P\+Y\+T\+H\+O\+N\+P\+A\+TH
+\item solution\+: override the path in this one session\+:
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Start a new bash session\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ PATH=\$PATH:../bin PYTHONPATH=../src:../:../tests make clean html}
+\end{DoxyCode}
+
+
+\doxysection*{update Sean\textquotesingle{}s hardware}
+
+
+\begin{DoxyItemize}
+\item tell Sean how to program Flash
+\end{DoxyItemize}
+
+\doxysection*{plan for gui}
+
+
+\begin{DoxyItemize}
+\item see $\sim$/chromation/todo.md
+\begin{DoxyItemize}
+\item read map file
+\item auto flip plot based on map direction
+\item plot zoom
+\item plot axes
+\item map file display
+\item display help
+\item modal, switchable focus, command line
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysection*{Tasks}
+
+\mbox{[} \mbox{]} 2020-\/06-\/29 Nadia received Focuz batch of failed smt builds
+\begin{DoxyItemize}
+\item not sending to get assembled\+:
+\begin{DoxyItemize}
+\item die to detector spacing will be different
+\item builds are bad
+\item no point
+\end{DoxyItemize}
+\item but a new set of 6 was sent by Fed-\/\+Ex this morning
+\item want to get these assembled
+\end{DoxyItemize}
+
+\mbox{[} \mbox{]} discuss Joshua Pearce Friday\+:
+\begin{DoxyItemize}
+\item review their two application areas (not plastic) to be ready to help them get up and running
+\item 90-\/aoa die -- turn 45 into 90 with a mirror
+\item maybe a live demo? they may want 90, but still be able to start with 45 as a proxy if 90 is not ready (e.\+g., to get software up and running) \mbox{[}x\mbox{]} fix system-\/tests.\+py to match new protocol \mbox{[} \mbox{]} rebuild documentation \mbox{[} \mbox{]} rename package and modules \mbox{[} \mbox{]} upload to Py\+Pi \mbox{[}x\mbox{]} make kitnum works \mbox{[}x\mbox{]} make progkitnum works (but not from Vim) \mbox{[}x\mbox{]} make help-\/flash \mbox{[}x\mbox{]} make fuses \mbox{[}x\mbox{]} make flash
+\item had to add avr-\/gcc as the default definition of compiler
+\item \mbox{[} \mbox{]} help\+: include set compiler name to gcc for unit tests
+\item \mbox{[} \mbox{]} come up with a way to make the build folders if they do not exist, and do this silently as part of a first attempt at {\ttfamily make flash}
+\begin{DoxyItemize}
+\item my workaround for now is to put files called {\ttfamily empty} in each of the build folders to force git to track these otherwise empty folders
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\mbox{[} \mbox{]} clean up common.\+mk Libs section, explain Avr\+Headers and Fake\+Avr\+Headers \mbox{[} \mbox{]} clean up messy conditional in kitnum
+\begin{DoxyItemize}
+\item break this out to its own script?
+\item want to use the same input validation in progkitnum \mbox{[} \mbox{]} clean up top-\/level files used for firmware programming \mbox{[} \mbox{]} should the kits folder be in the repo?
+\end{DoxyItemize}
+
+\doxysection*{T\+O\+DO\+: progkitnum}
+
+progkitnum fails when I run it from the Vim command line. The scan on line 28 works,
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{"\$ftdi" scan cycl '0'}
+\end{DoxyCode}
+
+
+then the subsequent scans fail
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{"\$ftdi" scan prog 0 ftcfg.xml cycl 0}
+\DoxyCodeLine{cd ../..}
+\DoxyCodeLine{"\$ftdi" scan}
+\end{DoxyCode}
+
+
+The failure message\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Scanning for devices...}
+\DoxyCodeLine{No devices found!}
+\DoxyCodeLine{Device 0 does not exist.}
+\DoxyCodeLine{Index was out of range. Must be non-\/negative and less than the size of the collection.}
+\DoxyCodeLine{Parameter name: index}
+\DoxyCodeLine{Scanning for devices...}
+\DoxyCodeLine{No devices found!}
+\DoxyCodeLine{Double-\/check the serial number on the line above is 0911-\/21.}
+\end{DoxyCode}
+
+
+Why would this fail when I run it from Vim? 

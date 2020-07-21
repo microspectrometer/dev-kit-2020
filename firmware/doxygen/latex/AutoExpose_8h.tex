@@ -1,0 +1,91 @@
+\hypertarget{AutoExpose_8h}{}\doxysection{vis-\/spi-\/out/src/\+Auto\+Expose.h File Reference}
+\label{AutoExpose_8h}\index{vis-\/spi-\/out/src/AutoExpose.h@{vis-\/spi-\/out/src/AutoExpose.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{AutoExpose_8h_a38545a4f257a94dab01cf4d4ef994a41}\label{AutoExpose_8h_a38545a4f257a94dab01cf4d4ef994a41}} 
+uint16\+\_\+t {\bfseries \+\_\+\+Min\+Peak} (uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_af27d9627f4a2f2839ae2c3500301b87e}{target}}, uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a68197a7b63858a45475d838e4a350348}{target\+\_\+tolerance}})
+\item 
+\mbox{\Hypertarget{AutoExpose_8h_acb2a80cca41c1f12e39c3c35e2ecb8f4}\label{AutoExpose_8h_acb2a80cca41c1f12e39c3c35e2ecb8f4}} 
+uint16\+\_\+t {\bfseries \+\_\+\+Max\+Peak} (uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_af27d9627f4a2f2839ae2c3500301b87e}{target}}, uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a68197a7b63858a45475d838e4a350348}{target\+\_\+tolerance}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{AutoExpose_8h_a17a3968dbb1f295867f6cc196bd31371}\label{AutoExpose_8h_a17a3968dbb1f295867f6cc196bd31371}} 
+uint8\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a17a3968dbb1f295867f6cc196bd31371}{max\+\_\+tries}}
+\begin{DoxyCompactList}\small\item\em maximum number of tries before \mbox{\hyperlink{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}{Auto\+Expose()}} gives up \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{AutoExpose_8h_a1120c8c52bf6454a9572c17ab7ae8f1f}\label{AutoExpose_8h_a1120c8c52bf6454a9572c17ab7ae8f1f}} 
+uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a1120c8c52bf6454a9572c17ab7ae8f1f}{start\+\_\+pixel}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}{Auto\+Expose()}} ignores pixels below {\ttfamily start\+\_\+pixel}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{AutoExpose_8h_a5550cfa3b685655e8877b07f7c35b8fd}\label{AutoExpose_8h_a5550cfa3b685655e8877b07f7c35b8fd}} 
+uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a5550cfa3b685655e8877b07f7c35b8fd}{stop\+\_\+pixel}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}{Auto\+Expose()}} ignores pixels above {\ttfamily stop\+\_\+pixel}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{AutoExpose_8h_af27d9627f4a2f2839ae2c3500301b87e}\label{AutoExpose_8h_af27d9627f4a2f2839ae2c3500301b87e}} 
+uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_af27d9627f4a2f2839ae2c3500301b87e}{target}}
+\begin{DoxyCompactList}\small\item\em target peak counts for \mbox{\hyperlink{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}{Auto\+Expose()}}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{AutoExpose_8h_a68197a7b63858a45475d838e4a350348}\label{AutoExpose_8h_a68197a7b63858a45475d838e4a350348}} 
+uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a68197a7b63858a45475d838e4a350348}{target\+\_\+tolerance}}
+\begin{DoxyCompactList}\small\item\em {\ttfamily target} ± {\ttfamily target\+\_\+tolerance} is the target peak counts range for \mbox{\hyperlink{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}{Auto\+Expose()}}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{AutoExpose_8h_ad81c4f3ebaff13164278daae98925df6}\label{AutoExpose_8h_ad81c4f3ebaff13164278daae98925df6}} 
+uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_ad81c4f3ebaff13164278daae98925df6}{max\+\_\+dark}}
+\begin{DoxyCompactList}\small\item\em {\ttfamily max\+\_\+dark} is a conservative estimate on the largest dark offset \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{AutoExpose_8h_aff0baca87a62c38057db03b83be02362}\label{AutoExpose_8h_aff0baca87a62c38057db03b83be02362}} 
+uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_aff0baca87a62c38057db03b83be02362}{min\+\_\+exposure}}
+\begin{DoxyCompactList}\small\item\em {\ttfamily min\+\_\+exposure} is 100 microseconds (five 20µs-\/cycles)~\newline
+ This is a safe lower limit to avoid dead frames. \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a0b2c447b1d12e1c69a0fc2f166621c38}{max\+\_\+exposure}}
+\begin{DoxyCompactList}\small\item\em {\ttfamily max\+\_\+exposure} is 1.\+31 seconds (65535 20µs-\/cycles)~\newline
+ This is the 16-\/bit limit, U\+I\+N\+T16\+\_\+\+M\+AX, but it is also a practical limit on waiting time for one frame. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxysubsection*{Global Auto\+Expose config}
+
+\doxysubsubsection*{Auto\+Expose maximum number of tries }
+
+Auto\+Expose gives up if it cannot hit the target peak counts range after {\ttfamily max\+\_\+tries} attempts. Recommended value is {\bfseries{10}}. Use smaller numbers to speed up Auto\+Expose. Set the value to {\bfseries{1}} to manually trigger each iteration and get a sense of how many tries are necessary to hit the target range. The range of allowed values is 1 to 255.
+
+\doxysubsubsection*{Auto\+Expose pixel range }
+
+Recommended values for {\ttfamily start\+\_\+pixel} and {\ttfamily stop\+\_\+pixel} depend on the spectrometer pixel-\/to-\/wavelength map file\+:
+\begin{DoxyItemize}
+\item {\ttfamily start\+\_\+pixel}\+: smallest pixel number in the map file
+\item {\ttfamily stop\+\_\+pixel}\+: largest pixel number
+\end{DoxyItemize}The default pixel range on power-\/up is\+:
+\begin{DoxyItemize}
+\item {\ttfamily start\+\_\+pixel = 7}
+\item {\ttfamily stop\+\_\+pixel = 392}
+\end{DoxyItemize}
+
+With binning on, the default pixel range is also the allowed range of values. Attempting to exceed this range, it is clamped at these boundaries. With binning off, the allowed range is {\ttfamily start\+\_\+pixel = 14}, {\ttfamily stop\+\_\+pixel = 784}.
+
+\doxysubsubsection*{Auto\+Expose target peak counts range }
+
+Recommended values for {\ttfamily target} and {\ttfamily target\+\_\+tolerance} are\+:
+\begin{DoxyItemize}
+\item {\ttfamily target}\+: {\bfseries{46420}} counts
+\item {\ttfamily target\+\_\+tolerance}\+: {\bfseries{3277}} counts
+\end{DoxyItemize}See details in the Doxygen for \mbox{\hyperlink{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}{Auto\+Expose()}}. Allowed values for {\ttfamily target} are in the range 4500 counts to 65535 counts. Attempting to set a {\ttfamily target} less than {\bfseries{4500}} counts, {\ttfamily target} is clamped at {\bfseries{4500}} counts. If the combination of {\ttfamily target} and {\ttfamily target\+\_\+tolerance} results in target ranges extending below {\bfseries{4500}} counts or above {\bfseries{65535}} counts, the target tolerance is ignored and the target range is clamped at these boundaries. 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{AutoExpose_8h_a0b2c447b1d12e1c69a0fc2f166621c38}\label{AutoExpose_8h_a0b2c447b1d12e1c69a0fc2f166621c38}} 
+\index{AutoExpose.h@{AutoExpose.h}!max\_exposure@{max\_exposure}}
+\index{max\_exposure@{max\_exposure}!AutoExpose.h@{AutoExpose.h}}
+\doxysubsubsection{\texorpdfstring{max\_exposure}{max\_exposure}}
+{\footnotesize\ttfamily uint16\+\_\+t max\+\_\+exposure}
+
+
+
+{\ttfamily max\+\_\+exposure} is 1.\+31 seconds (65535 20µs-\/cycles)~\newline
+ This is the 16-\/bit limit, U\+I\+N\+T16\+\_\+\+M\+AX, but it is also a practical limit on waiting time for one frame. 
+
+~\newline
+ For longer exposure times\+:
+\begin{DoxyItemize}
+\item change the datatype in firmware to uint32\+\_\+t
+\item revise all transmissions of exposure\+\_\+ticks in \mbox{\hyperlink{VisCmd_8h}{Vis\+Cmd.\+h}} and \mbox{\hyperlink{UsbCmd_8h}{Usb\+Cmd.\+h}} to send/receive four bytes
+\item update the Python A\+PI by changing all occurrences of {\ttfamily cycles} in the J\+S\+ON file from size\+:2 to size\+:4.
+\end{DoxyItemize}

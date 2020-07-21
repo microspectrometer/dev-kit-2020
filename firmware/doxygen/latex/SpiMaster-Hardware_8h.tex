@@ -1,0 +1,73 @@
+\hypertarget{SpiMaster-Hardware_8h}{}\doxysection{usb-\/bridge/src/\+Spi\+Master-\/\+Hardware.h File Reference}
+\label{SpiMaster-Hardware_8h}\index{usb-\/bridge/src/SpiMaster-\/Hardware.h@{usb-\/bridge/src/SpiMaster-\/Hardware.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$avr/io.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Spi\+Master.\+h\char`\"{}}\newline
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_aec40af5381153762006be56c71746baf}\label{SpiMaster-Hardware_8h_aec40af5381153762006be56c71746baf}} 
+spi\+\_\+reg {\bfseries Spi\+\_\+ddr} = \&D\+D\+RB
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a4dd8c273df864a9cf530ab2a554e0493}\label{SpiMaster-Hardware_8h_a4dd8c273df864a9cf530ab2a554e0493}} 
+spi\+\_\+reg {\bfseries Spi\+\_\+pin} = \&P\+I\+NB
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a7d9a1eccb5e84ff54b835beccfc08c7d}\label{SpiMaster-Hardware_8h_a7d9a1eccb5e84ff54b835beccfc08c7d}} 
+spi\+\_\+reg {\bfseries Spi\+\_\+port} = \&P\+O\+R\+TB
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a84a5780048a545d63c5bac43ffa953f8}\label{SpiMaster-Hardware_8h_a84a5780048a545d63c5bac43ffa953f8}} 
+spi\+\_\+reg \mbox{\hyperlink{SpiMaster-Hardware_8h_a84a5780048a545d63c5bac43ffa953f8}{Spi\+\_\+\+S\+P\+CR}} = \&S\+P\+CR
+\begin{DoxyCompactList}\small\item\em S\+PI Control Register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_ae5319f5544831747d8a0ba856ce9ef7b}\label{SpiMaster-Hardware_8h_ae5319f5544831747d8a0ba856ce9ef7b}} 
+spi\+\_\+reg \mbox{\hyperlink{SpiMaster-Hardware_8h_ae5319f5544831747d8a0ba856ce9ef7b}{Spi\+\_\+\+S\+P\+SR}} = \&S\+P\+SR
+\begin{DoxyCompactList}\small\item\em S\+PI Status Register. \end{DoxyCompactList}\item 
+spi\+\_\+reg \mbox{\hyperlink{SpiMaster-Hardware_8h_a82096f50267fe9862f6b981f5fa39385}{Spi\+\_\+\+S\+P\+DR}} = \&S\+P\+DR
+\begin{DoxyCompactList}\small\item\em S\+PI Data Register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a4bb557c75bcbbc368ae7282f15c5172c}\label{SpiMaster-Hardware_8h_a4bb557c75bcbbc368ae7282f15c5172c}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Data\+Ready} = P\+O\+R\+T\+B1
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a931b310f3fe4dce6eccbbe5c572a961b}\label{SpiMaster-Hardware_8h_a931b310f3fe4dce6eccbbe5c572a961b}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Ss} = P\+O\+R\+T\+B2
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a5c8ea8b321c43e4af307f7a692f346fb}\label{SpiMaster-Hardware_8h_a5c8ea8b321c43e4af307f7a692f346fb}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Mosi} = P\+O\+R\+T\+B3
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a16a98621031ee5b1a9cab27f789840a1}\label{SpiMaster-Hardware_8h_a16a98621031ee5b1a9cab27f789840a1}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Miso} = P\+O\+R\+T\+B4
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a4706ecd0e784d4500b48d0eb306381f0}\label{SpiMaster-Hardware_8h_a4706ecd0e784d4500b48d0eb306381f0}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Sck} = P\+O\+R\+T\+B5
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a14aa04b873018a66c21d427a643b4a61}\label{SpiMaster-Hardware_8h_a14aa04b873018a66c21d427a643b4a61}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Master\+Slave\+Select} = M\+S\+TR
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a0575549ab1dc8a4f564464680f9a26d1}\label{SpiMaster-Hardware_8h_a0575549ab1dc8a4f564464680f9a26d1}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Clock\+Bit0} = S\+P\+R0
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_aac4e605c861e1160b147a3aaeab73511}\label{SpiMaster-Hardware_8h_aac4e605c861e1160b147a3aaeab73511}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Clock\+Bit1} = S\+P\+R1
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a967c787505d8e5c50275662c18df5bf3}\label{SpiMaster-Hardware_8h_a967c787505d8e5c50275662c18df5bf3}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Double\+Clock} = S\+P\+I2X
+\item 
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a2405a31cfc34fd30c0fd1dc5ae6f6ee2}\label{SpiMaster-Hardware_8h_a2405a31cfc34fd30c0fd1dc5ae6f6ee2}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Spi\+Enable} = S\+PE
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This file is not used anymore.~\newline
+There used to be separate Spi hardware files for master and slave. Now there is one \mbox{\hyperlink{Spi_8h}{Spi.\+h}} file and Spi-\/\+Hardware and Spi-\/\+Hardware\+Fake. There are still \mbox{\hyperlink{SpiMaster_8h}{Spi\+Master.\+h}} and \mbox{\hyperlink{SpiSlave_8h}{Spi\+Slave.\+h}} files, but these are for the functions unique to master and slave. 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{SpiMaster-Hardware_8h_a82096f50267fe9862f6b981f5fa39385}\label{SpiMaster-Hardware_8h_a82096f50267fe9862f6b981f5fa39385}} 
+\index{SpiMaster-\/Hardware.h@{SpiMaster-\/Hardware.h}!Spi\_SPDR@{Spi\_SPDR}}
+\index{Spi\_SPDR@{Spi\_SPDR}!SpiMaster-\/Hardware.h@{SpiMaster-\/Hardware.h}}
+\doxysubsubsection{\texorpdfstring{Spi\_SPDR}{Spi\_SPDR}}
+{\footnotesize\ttfamily spi\+\_\+reg Spi\+\_\+\+S\+P\+DR = \&S\+P\+DR}
+
+
+
+S\+PI Data Register. 
+
+S\+PI Data Register. 

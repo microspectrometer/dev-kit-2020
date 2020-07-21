@@ -1,0 +1,587 @@
+\hypertarget{README-dev_8md}{}\doxysection{N\+O\+T-\/\+U\+S\+E\+D/\+R\+E\+A\+D\+M\+E-\/dev.md File Reference}
+\label{README-dev_8md}\index{NOT-\/USED/README-\/dev.md@{NOT-\/USED/README-\/dev.md}}
+
+
+\doxysubsection{Detailed Description}
+
+\begin{DoxyItemize}
+\item {\itshape See {\ttfamily cfg/microspec.\+json} in the Python A\+PI repository.}
+\item -\/ Section {\ttfamily \char`\"{}global\char`\"{}} defines the {\bfseries{protocol byte codes}}.
+\item -\/ Firmware header file \mbox{\hyperlink{StatusCodes_8h}{Status\+Codes.\+h}} duplicates these {\ttfamily \char`\"{}global\char`\"{}}
+\item definitions.
+\item -\/ Section {\ttfamily \char`\"{}protocol\char`\"{}\+:\char`\"{}command\char`\"{}} defines the commands and
+\item command parameters {\bfseries{sent by the U\+SB host.}}
+\item -\/ Section {\ttfamily \char`\"{}protocol\char`\"{}\+:\char`\"{}serial\char`\"{}} defines the {\bfseries{expected}}
+\item {\bfseries{ response}} from the {\bfseries{U\+SB board}} {\ttfamily usb-\/bridge}.
+\item -\/ Section {\ttfamily \char`\"{}protocol\char`\"{}\+:\char`\"{}sensor\char`\"{}} defines the {\bfseries{expected}}
+\item {\bfseries{ response}} from the {\bfseries{sensor board}} {\ttfamily vis-\/spi-\/out}.
+\item .
+\item {\bfseries{S\+T\+A\+T\+US C\+O\+D\+ES}}
+\item -\/ J\+S\+ON section {\ttfamily \char`\"{}globals\char`\"{}} defines the {\bfseries{status codes}}\+: {\ttfamily OK},
+\item {\ttfamily E\+R\+R\+OR}, {\ttfamily I\+N\+V\+A\+L\+I\+D\+\_\+\+C\+MD}
+\item -\/ the {\bfseries{status code}} is {\bfseries{byte 0}} of the {\itshape response} from the
+\item {\bfseries{U\+SB board}} or {\bfseries{sensor board}}
+\item -\/ the {\bfseries{U\+SB board}} and the {\bfseries{sensor board}} reply with the
+\item same status codes
+\item -\/ the {\bfseries{status code}} describes the status of the
+\item communication {\itshape from the point of view of the sender}.
+\item .
+\item {\bfseries{I\+N\+D\+I\+C\+A\+T\+OR L\+ED S\+T\+A\+T\+ES}}
+\item -\/ Section {\ttfamily \char`\"{}globals\char`\"{}} defines the {\bfseries{L\+ED states}}\+: {\ttfamily O\+FF}, {\ttfamily G\+R\+E\+EN}, or {\ttfamily R\+ED}
+\item -\/ {\bfseries{L\+ED state}} is\+:
+\item -\/ {\bfseries{byte 2}} of the command to {\ttfamily set} the indicator L\+ED
+\item -\/ {\bfseries{byte 1}} of the reply to {\ttfamily get} the indicator L\+ED
+\item .
+\item $\ast$/ \`{}\`{}\`{}
+\end{DoxyItemize}
+
+The syntax is the usual markdown. Note\+:
+
+
+\begin{DoxyItemize}
+\item two-\/space indentation to indicate the level of the {\ttfamily -\/} bullet symbol
+\item {\ttfamily .} marks the end of an indented list section
+\begin{DoxyItemize}
+\item place {\ttfamily .} at the level of the indent to end
+\end{DoxyItemize}
+\item {\ttfamily \textbackslash{}n} are unnecessary in this case thanks to the {\ttfamily .}
+\end{DoxyItemize}
+
+\doxysubsection*{Developer\textquotesingle{}s Guide -- build tests}
+
+Unit tests depend on {\ttfamily glib} for data structures used by my function mocking library, {\ttfamily mock-\/c}.
+
+And unit tests depend on {\ttfamily mock-\/c}. Right now I hard-\/code a path to the source code and builds of the object files. Anyone in Chromation on Dropbox automatically picks these files up.
+
+T\+O\+DO\+:
+
+
+\begin{DoxyItemize}
+\item make {\ttfamily mock-\/c} into a static library
+\item include the path to {\ttfamily mock-\/c} in {\ttfamily uservars.\+mk}
+\begin{DoxyItemize}
+\item path becomes a user-\/variable to define, along with the D\+FP path
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsubsection*{glib for unit tests}
+
+Unit tests use {\ttfamily glib}. The {\ttfamily Makefile} depends on it.
+
+The {\ttfamily Makefile} has C\+F\+L\+A\+GS\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/I/usr/include/glib-\/2.0 -\/I/usr/lib/glib-\/2.0/include}
+\end{DoxyCode}
+
+
+The {\ttfamily Makefile} has L\+F\+L\+A\+GS\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/lglib-\/2.0 -\/lintl -\/L/usr/lib/glib-\/2.0}
+\end{DoxyCode}
+
+
+Install Cygwin packages\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily libglib2.\+0-\/devel}
+\item {\ttfamily libglib2.\+0-\/doc}
+\end{DoxyItemize}
+
+Check if the packages are already installed\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ apt-\/cyg listall libglib2.0}
+\DoxyCodeLine{libglib2.0-\/devel}
+\DoxyCodeLine{libglib2.0-\/doc}
+\DoxyCodeLine{libglib2.0\_0}
+\end{DoxyCode}
+
+
+{\itshape Yes, they are installed.}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ apt-\/cyg listall libglib2.0}
+\DoxyCodeLine{libglib2.0\_0}
+\end{DoxyCode}
+
+
+{\itshape No, they are not installed.}
+
+Install from the command line with {\ttfamily apt-\/cyg}\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ apt-\/cyg install libglib2.0-\/devel libglib2.0-\/doc}
+\end{DoxyCode}
+
+
+\doxysubsection*{Developer\textquotesingle{}s Guide -- analyze code}
+
+\doxysubsubsection*{avr-\/size with ;as and ;ds}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nnoremap <leader>as :call PasteAvrSize("build/vis-\/spi-\/out.elf")<CR>}
+\end{DoxyCode}
+
+
+Context\+: pwd is {\ttfamily ./firmware/vis-\/spi-\/out/}.
+
+Get size of {\ttfamily .elf} and paste it.
+
+Hard-\/coded to look for {\ttfamily build/vis-\/spi-\/out.\+elf}.
+
+{\ttfamily ;ds} to paste size with timestamp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nnoremap <leader>ds :call PasteBlock\_DateAndAvrSize()<CR>}
+\end{DoxyCode}
+
+
+Again, this is hard-\/coded with the file to get the size of. To get {\ttfamily vis-\/spi-\/out.\+elf} or {\ttfamily usb-\/bridge.\+elf}, comment accordingly in the Vimscript function definition\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{" call PasteAvrSize("build/vis-\/spi-\/out.elf")}
+\DoxyCodeLine{call PasteAvrSize("build/usb-\/bridge.elf")}
+\end{DoxyCode}
+
+
+\doxysubsubsection*{Add {\ttfamily avr/include} to Vim path for {\ttfamily gf} on headers}
+
+Append the {\ttfamily avr/include} folder to the Vim path\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{set path+=/cygdrive/c/Program\(\backslash\)\(\backslash\)\(\backslash\) Files\(\backslash\)\(\backslash\)\(\backslash\) (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-\/gnu-\/toolchain/avr/include}
+\end{DoxyCode}
+
+
+Now searches that use the Vim path, such as {\ttfamily gf}, look in this folder.
+
+Usage\+: put cursor on header file like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <avr/io.h>} \textcolor{comment}{// includes iom328p.h for hardware i/o values}}
+\end{DoxyCode}
+
+
+With cursor on any letter in header name, e.\+g., cursor on {\ttfamily a}, {\ttfamily gf} goes to the file.
+
+\doxysubsubsection*{;io to open iom328p.\+h}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{let avr\_include='/cygdrive/c/Program\(\backslash\) Files\(\backslash\) (x86)/Atmel/Studio/7.0/toolchain/avr8/avr8-\/gnu-\/toolchain/avr/include'}
+\DoxyCodeLine{nnoremap <expr> <leader>io ':split ' . avr\_include . '/avr/iom328p.h<CR>:set readonly<CR>'}
+\end{DoxyCode}
+
+
+\doxysubsubsection*{{\ttfamily ;yn} toggle test Yep/\+Nope}
+
+Usage\+: put cursor on line of test suite and {\ttfamily ;yn} to toggle whether the test runs
+
+\doxysubsubsection*{Analyze assembly files}
+
+Put cursor in a file with {\ttfamily .avra} (assembly), usually a subset of the assembly output to analyze.
+
+
+\begin{DoxyItemize}
+\item {\ttfamily ;avrb} -\/ clean A\+VR assembly and calculate cycles
+\item {\ttfamily ;avrc} -\/ just clean A\+VR assembly
+\item {\ttfamily ;avrt} -\/ just calculate A\+VR cycles
+\item T\+O\+DO\+: document how to set these up
+\begin{DoxyItemize}
+\item \mbox{[} \mbox{]} eliminate need to create a bash alias to the Python script, in fact, invoke the Windows Python and the script name
+\item this way, Dropbox {\ttfamily Online only} sync method makes this work by downloading the Python script on demand
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection*{T\+A\+S\+KS}
+
+\doxysubsection*{dev}
+
+
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} setup microspec
+\item \mbox{[}x\mbox{]} use microspec to open communication
+\begin{DoxyItemize}
+\item microspeclib.\+simple wraps microspeclib.\+expert
+\item see python/test-\/open.\+py
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} prepare Python for system test
+\begin{DoxyItemize}
+\item use {\ttfamily python -\/m cmdline C\+O\+M\+M\+A\+ND K\+EY=V\+A\+L\+UE}
+\end{DoxyItemize}
+\item \mbox{[} \mbox{]} prepare {\ttfamily usb-\/bridge} for a system test
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} get tests to build
+\item \mbox{[} \mbox{]} write setup code
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} find setup code in {\ttfamily dev-\/kit-\/ref}
+\item \mbox{[}x\mbox{]} Usb\+Init
+\begin{DoxyItemize}
+\item threw it into setup() for now
+\item \mbox{[} \mbox{]} clean this up as a unit-\/tested Usb\+Init
+\item works\+:
+\begin{DoxyItemize}
+\item reads bytes off the F\+T221X
+\item distinguishes between 0 and not 0
+\item able to send Null so far, haven\textquotesingle{}t set up anything else
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} send the commands to control the bridge L\+E\+Ds
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} system test Get\+Bridge\+L\+ED
+\item \mbox{[}x\mbox{]} system test Set\+Bridge\+L\+ED
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} Spi\+Master\+Init
+\begin{DoxyItemize}
+\item has the iom32p.\+h file changed? P\+O\+R\+T\+B2 instead of P\+B2? No, hasn\textquotesingle{}t changed... So when was P\+B2 ever defined?
+\item \mbox{[}x\mbox{]} create Spi\+Master lib
+\item \mbox{[} \mbox{]} rename bit index type from lib\+\_\+pin to lib\+\_\+bit
+\begin{DoxyItemize}
+\item pin is confusing with P\+IN register
+\item pin is also confusing with numbered things like L\+E\+D0 -- bit makes it more obvious that L\+E\+D0 is high level, so bit for L\+E\+D0 is not necessarily bit 0
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} pull common S\+PI functions out of \mbox{\hyperlink{SpiSlave_8h}{Spi\+Slave.\+h}} into a common S\+PI lib
+\begin{DoxyItemize}
+\item should I have just made SpiM Spi also? yes
+\item is there {\itshape A\+NY} case where spim and spis registers or bits would conflict? no
+\item if not, then do it, make them all spis and move them to a common lib\+: Spi
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} write {\ttfamily Get\+Sensor\+L\+ED} in \mbox{\hyperlink{UsbCmd_8h}{Usb\+Cmd.\+h}}
+\begin{DoxyItemize}
+\item need more lib functions\+:
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Spi\+Master\+Xfr\+Byte
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item once this is setup, I can send commands to the sensor
+\item control the sensor L\+E\+Ds
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Get\+Sensor\+L\+ED system test
+\item \mbox{[}x\mbox{]} Set\+Sensor\+L\+ED system test
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item then read/write the sensor configuration
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Set\+Sensor\+Config
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} Get\+Sensor\+Config
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} do system test of Get\+Sensor\+Config and Set\+Sensor\+Config
+\begin{DoxyItemize}
+\item system test\+:
+\item mark as P\+A\+S\+S/\+F\+A\+IL\+:
+\item \+:{\ttfamily vis-\/spi-\/out} responds {\ttfamily OK} to a valid config
+\item \+:{\ttfamily vis-\/spi-\/out} responds {\ttfamily E\+R\+R\+OR} to an invalid config
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Thu, May 14, 2020 11:20:14 PM}
+\DoxyCodeLine{   text    data     bss     dec     hex filename}
+\DoxyCodeLine{   4036       2      22    4060     fdc build/vis-\/spi-\/out.elf}
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item consuming 1.\+17\% (24 bytes out of 2048) of the Data S\+R\+AM
+\item consuming 12.\+32\% (4038 bytes out of 32768) of the Flash
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Get\+Exposure
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\item \mbox{[}x\mbox{]} system test
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Fri, May 15, 2020  1:29:35 PM}
+\DoxyCodeLine{   text    data     bss     dec     hex filename}
+\DoxyCodeLine{   4308       2      24    4334    10ee build/vis-\/spi-\/out.elf}
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item consuming 1.\+17\% (24 bytes out of 2048) of the Data S\+R\+AM
+\item consuming 13.\+15\% (4308 bytes out of 32768) of the Flash
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Set\+Exposure
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\item \mbox{[}x\mbox{]} system test
+\end{DoxyItemize}
+\item \mbox{[} \mbox{]} Capture\+Frame
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} system test
+\item \mbox{[} \mbox{]} still occassionally timeouts
+\begin{DoxyItemize}
+\item find a way to deal with this without causing a crash
+\item the timeout is annoying because it throws an exception and the microcontrollers are left in an uncommunicative state
+\item I suspect that exiting via an expception fails to close U\+SB commnication, ask Sean about this
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Sat, May 16, 2020  1:39:47 AM}
+\DoxyCodeLine{   text    data     bss     dec     hex filename}
+\DoxyCodeLine{   5150       2    1592    6744    1a58 build/vis-\/spi-\/out.elf}
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item consuming 77.\+83\% (1594 bytes out of 2048) of the Data S\+R\+AM
+\item consuming 15.\+72\% (5152 bytes out of 32768) of the Flash
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Auto\+Expose
+\item \mbox{[}x\mbox{]} Get\+Peak
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Tue, May 19, 2020 10:48:08 AM}
+\DoxyCodeLine{   text    data     bss     dec     hex filename}
+\DoxyCodeLine{   5394      16    1601    7011    1b63 build/vis-\/spi-\/out.elf}
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item consuming 78.\+96\% (1617 bytes out of 2048) of the Data S\+R\+AM
+\item consuming 16.\+51\% (5410 bytes out of 32768) of the Flash
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Auto\+Exposure
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\item \mbox{[}x\mbox{]} system test
+\begin{DoxyItemize}
+\item problem
+\begin{DoxyItemize}
+\item Auto\+Expose is very wonky
+\item run the kit-\/gui.\+py and step the response
+\item report the peak value as you go
+\item plug the numbers in and see what\textquotesingle{}s going on
+\item OR
+\item unit test Auto\+Expose
+\end{DoxyItemize}
+\item OK, I did both
+\item unit tests show it is correct
+\item system tests show it is good for all cases E\+X\+C\+E\+PT applying the calculated gain
+\item C\+H\+E\+CK T\+HE A\+T\+M\+E\+G\+A328 S\+U\+P\+P\+O\+R\+TS 32-\/B\+IT M\+A\+T\+H!
+\item I did an experiment\+: I had to cast at least one operand in the 32-\/bit calc as (uint32\+\_\+t)
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} Get\+Auto\+Expose\+Config
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\item \mbox{[}x\mbox{]} system test
+\item \mbox{[} \mbox{]} add max\+\_\+exposure to config
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} json
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\item \mbox{[} \mbox{]} system test
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} Set\+Auto\+Expose\+Config
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\begin{DoxyItemize}
+\item \mbox{[}-\/\mbox{]} unit test Auto\+Expose\+Config\+Is\+Valid()
+\item I know it is working because I unit tested it with system tests
+\item but I should still put in the unit tests
+\end{DoxyItemize}
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\item \mbox{[}x\mbox{]} system test
+\item \mbox{[} \mbox{]} add max\+\_\+exposure to config
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} json
+\item \mbox{[}x\mbox{]} vis-\/spi-\/out
+\item \mbox{[}x\mbox{]} usb-\/bridge
+\item \mbox{[} \mbox{]} vis-\/spi-\/out\+: add to Auto\+Expose\+Config\+Is\+Valid
+\item \mbox{[} \mbox{]} system test
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{|| avr-\/size build/usb-\/bridge.elf}
+\DoxyCodeLine{||    text     data     bss     dec     hex filename}
+\DoxyCodeLine{||    3866        2       0    3868     f1c build/usb-\/bridge.elf}
+\DoxyCodeLine{}
+\DoxyCodeLine{|| avr-\/size build/vis-\/spi-\/out.elf}
+\DoxyCodeLine{||    text     data     bss     dec     hex filename}
+\DoxyCodeLine{||    7520       20    1614    9154    23c2 build/vis-\/spi-\/out.elf}
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item \mbox{[} \mbox{]} Bridge sends Null\+Command to Sensor
+\item \mbox{[} \mbox{]} Sensor and Bridge turn their indicator L\+E\+Ds green after receiving Null\+Command
+\item \mbox{[} \mbox{]} Sensor and Bridge turn their L\+E\+Ds red after receiving an unrecognized command
+\item \mbox{[}x\mbox{]} find a work-\/around to make this warning go away\+:
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{src/VisCmd.h|108 col 9| warning: '\_delay\_loop\_1' is static but used in inline function 'LisReadout' which is not static}
+\DoxyCodeLine{||          \_delay\_loop\_1(15); // 15 * 3 = 45 -\/> 4.5µs plus overhead}
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item solution\+: make Lis\+Readout {\itshape not} inline
+\item \mbox{[} \mbox{]} rewrite Lab\+V\+I\+EW to test new firmware speed and know we have a working version
+\item \mbox{[} \mbox{]} write Python G\+UI
+\item \mbox{[} \mbox{]} write main loop switchcase
+\item \mbox{[} \mbox{]} pull command helpers out of Vis\+Cmd into their own app libs
+\item \mbox{[} \mbox{]} system test response to invalid commands
+\begin{DoxyItemize}
+\item response is simply None because it timeouts
+\item I can either eliminate this from the J\+S\+ON\+:
+\begin{DoxyItemize}
+\item we don\textquotesingle{}t need it, timeout is OK
+\end{DoxyItemize}
+\item or I can encode this in the usb-\/bridge
+\begin{DoxyItemize}
+\item \mbox{[} \mbox{]} need case Bridge receives invalid command
+\item \mbox{[} \mbox{]} need case Bridge receives I\+N\+V\+A\+L\+ID from sensor
+\begin{DoxyItemize}
+\item have to add this as a dummy command just to test this behavior out
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item the sensor board already has code to respond to an I\+N\+V\+A\+L\+ID command
+\item the Bridge does not, so the bridge is not sending the command to the sensor board, and there is simply no response and the whole system time outs
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsubsection*{tabled}
+
+
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} is there a way to reset the F\+T221X?
+\begin{DoxyItemize}
+\item {\bfseries{NO}}
+\item {\itshape physical power cycle with U\+SB hub switch}
+\item Issue (why I want to reset the F\+T221X)\+:
+\item if I send data and do not read it, the data stays in the F\+T221X
+\item the only way to clear the F\+T221X buffer is to power cycle
+\begin{DoxyItemize}
+\item {\ttfamily F\+T\+\_\+\+P\+R\+OG} cycle does not do it
+\item the physical reset button on the P\+CB does not do it
+\item Atmel-\/\+Ice {\ttfamily atprogram} reset command does not do it
+\end{DoxyItemize}
+\item T\+O\+DO\+: maybe there is a D2\+XX command that clears the F\+T221X buffer
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection*{Build for dev-\/kit-\/mike}
+
+\doxysubsubsection*{clean Makefiles}
+
+
+\begin{DoxyItemize}
+\item \mbox{[} \mbox{]} pull common code into top-\/level Makefile {\ttfamily common.\+mk}
+\item \mbox{[} \mbox{]} add help targets
+\item \mbox{[} \mbox{]} setup test framework
+\item \mbox{[} \mbox{]} turn test framework and {\ttfamily libs} into static libraries
+\end{DoxyItemize}
+
+\doxysubsubsection*{setup tools}
+
+
+\begin{DoxyItemize}
+\item \mbox{[} \mbox{]} avra Python scripts
+\item \mbox{[}x\mbox{]} avr-\/size with ;as (run avr-\/size and paste output)
+\item \mbox{[}x\mbox{]} ctags, cscope with ;cs ;cu
+\item \mbox{[}x\mbox{]} Doxygen with ;DU ;DV ;xdc
+\item \mbox{[}x\mbox{]} glib (used by unit tests)
+\item \mbox{[}x\mbox{]} Add avr/include to Vim path
+\end{DoxyItemize}
+
+\doxysubsubsection*{firmware}
+
+
+\begin{DoxyItemize}
+\item \mbox{[} \mbox{]} block diagrams starting with {\ttfamily main.\+c}
+\item \mbox{[} \mbox{]} why is \mbox{\hyperlink{UartSpi-Hardware_8h}{Uart\+Spi-\/\+Hardware.\+h}} in the {\ttfamily \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}} folder?
+\begin{DoxyItemize}
+\item {\ttfamily \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}} does not include this file
+\item who does?
+\item \mbox{[} \mbox{]} how do I grep for {\ttfamily \#include "\mbox{\hyperlink{UartSpi-Hardware_8h}{Uart\+Spi-\/\+Hardware.\+h}}} across the whole project?
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection*{D\+O\+NE}
+
+\doxysubsubsection*{dev -\/ troubleshoot linker error for faked function}
+
+
+\begin{DoxyItemize}
+\item linker error trying to link {\ttfamily Ft\+Bus\+Turnaround}\+:
+\begin{DoxyItemize}
+\item All the faked functions in lib {\ttfamily Usb} have undefined references and symbols
+\end{DoxyItemize}
+\item example\+:
+\begin{DoxyItemize}
+\item undefined reference to {\ttfamily \+\_\+\+Ft\+Clock\+Databus\+\_\+fake}
+\item undefined symbol {\ttfamily \+\_\+\+Ft\+Clock\+Databus\+\_\+fake}
+\end{DoxyItemize}
+\item see function faking checklist in Tiddly\+Wiki
+\begin{DoxyItemize}
+\item {\ttfamily chromation-\/notebook}
+\item tiddler {\ttfamily Fake a function}
+\end{DoxyItemize}
+\item {\ttfamily \+\_\+\+Ft\+Clock\+Databus\+\_\+fake} is the fake of inline function {\ttfamily \+\_\+\+Ft\+Clock\+Databus}
+\item \mbox{[}x\mbox{]} yes, the declaration exists in {\ttfamily \mbox{\hyperlink{Usb__faked_8h_source}{Usb\+\_\+faked.\+h}}}
+\item {\ttfamily void \mbox{\hyperlink{Usb__faked_8c_ad72ab12cb3203d7862d6715eac5ecad0}{\+\_\+\+Ft\+Clock\+Databus\+\_\+fake(uint8\+\_\+t)}};}
+\item \mbox{[}x\mbox{]} yes, the definition exists in {\ttfamily \mbox{\hyperlink{Usb__faked_8c}{Usb\+\_\+faked.\+c}}}
+\item \mbox{[}x\mbox{]} yes, conditionally include the fake declarations in {\ttfamily \mbox{\hyperlink{Usb_8h}{Usb.\+h}}}
+\item \mbox{[}x\mbox{]} aha, I need to add to Makefile list of faked libs
+\item {\ttfamily lib\+\_\+faked \+:= Usb}
+\item that was the missing bit! I did not have {\ttfamily Usb} in the list of faked libs 
+\end{DoxyItemize}

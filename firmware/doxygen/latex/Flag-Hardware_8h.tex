@@ -1,0 +1,21 @@
+\hypertarget{Flag-Hardware_8h}{}\doxysection{vis-\/spi-\/out/src/\+Flag-\/\+Hardware.h File Reference}
+\label{Flag-Hardware_8h}\index{vis-\/spi-\/out/src/Flag-\/Hardware.h@{vis-\/spi-\/out/src/Flag-\/Hardware.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$avr/io.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Flag.\+h\char`\"{}}\newline
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Flag-Hardware_8h_a74ae636da51c2248d9dc1eb6636bd11d}\label{Flag-Hardware_8h_a74ae636da51c2248d9dc1eb6636bd11d}} 
+flag\+\_\+reg {\bfseries Flag\+\_\+\+Spi\+Flags} = \&G\+P\+I\+O\+R0
+\item 
+\mbox{\Hypertarget{Flag-Hardware_8h_a89fe60bc93759f11853e7da67ec122c5}\label{Flag-Hardware_8h_a89fe60bc93759f11853e7da67ec122c5}} 
+flag\+\_\+bit {\bfseries Flag\+\_\+\+Slave\+Rx} = G\+P\+I\+O\+R00
+\item 
+\mbox{\Hypertarget{Flag-Hardware_8h_ae895490cf7247584542af22f49423fc7}\label{Flag-Hardware_8h_ae895490cf7247584542af22f49423fc7}} 
+flag\+\_\+bit {\bfseries Flag\+\_\+\+Transfer\+Done} = G\+P\+I\+O\+R01
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Flag uses A\+VR G\+P\+I\+OR registers for direct-\/bit access to flags. 

@@ -1,0 +1,232 @@
+{\ttfamily firmware} consists of C source files and build scripts. The build scripts are for two targets\+:
+
+
+\begin{DoxyItemize}
+\item the microcontroller target -- this outputs A\+VR assembly {\ttfamily .elf}
+\item the unit-\/test target -- this outputs an executable that runs from a command line on the development computer
+\end{DoxyItemize}
+
+{\ttfamily firmware} also contains shell scripts for programming the E\+E\+P\+R\+OM in the F\+T\+DI chip on the {\ttfamily usb-\/bridge} P\+CB.
+
+\`{}\`{}\`{} firmware ├── R\+E\+A\+D\+M\+E.\+md ├── Makefile ├── common.\+mk -- Makefile common to {\ttfamily vis-\/spi-\/out} and {\ttfamily usb-\/bridge} ├── Doxyfile -- Doxygen settings for firmware documentation ├── kits -- Kit data, sorted by serial number │~~ ├── 0911-\/03 -- example kit serial number │~~ ├── ... │~~ ... ├── lib │~~ ├── build │~~ ├── Makefile │~~ ├── src │~~ └── test ├── usb-\/bridge │~~ ├── build │~~ ├── Makefile │~~ ├── src │~~ └── test └── vis-\/spi-\/out ~~ ├── build ~~ ├── Makefile ~~ ├── src ~~ └── test 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{The top-\/level also contains assorted scripts and help messages}
+\DoxyCodeLine{that are of no interest to most users:}
+\end{DoxyCode}
+
+
+firmware ├── help.\+man -- Help msg printed when running {\ttfamily make} with no args ├── help-\/setup.\+man -- Help msg to setup firmware toolchain ├── help-\/board-\/common.\+man -- Help msg for {\ttfamily make} from board folder with no args ├── help-\/build.\+man -- Help msg for build from source ├── help-\/flash.\+man -- Help msg for programming Flash memory ├── help-\/ftdi.\+man -- Help msg for programming F\+T\+DI E\+E\+P\+R\+OM ├── help-\/fuses.\+man -- Help msg for programming M\+CU A\+VR fuses ├── devcnt.\+sh -- bash script to parse temporary file {\ttfamily devscan} ├── ftcfg.\+xml -- Template config for F\+T\+DI E\+E\+P\+R\+OM ├── kitnum.\+py -- Python script to generate new serial numbers ├── kitnum.\+sh -- bash script C\+LI to generate X\+ML for new serial numbers ├── progkitnum.\+sh -- bash script to write the F\+T\+DI E\+E\+P\+R\+OM ├── uservars.\+mk ... └── writexml.\+py \`{}\`{}\`{}
+
+The dev-\/kit firmware is written in C.
+
+\mbox{[} \mbox{]} View Doxygen documentation
+
+\doxysection*{Dev-\/kit Flash memory programming}
+
+\doxysubsection*{Overview}
+
+Use {\ttfamily make} to program\+:
+
+
+\begin{DoxyItemize}
+\item the F\+T\+DI F\+T221X E\+E\+P\+R\+OM
+\begin{DoxyItemize}
+\item the kit serial number
+\item configuration for how the U\+SB Bridge IC behaves
+\end{DoxyItemize}
+\item the two A\+Tmega328 microcontrollers
+\begin{DoxyItemize}
+\item Flash memory
+\item fuses
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+First time setup of a dev kit requires\+:
+
+
+\begin{DoxyItemize}
+\item two {\ttfamily make} commands for the F\+T\+DI chip
+\begin{DoxyItemize}
+\item {\ttfamily \$ make kitnum}
+\item {\ttfamily \$ make progkitnum}
+\end{DoxyItemize}
+\item two {\ttfamily make} commands for each microcontroller.
+\begin{DoxyItemize}
+\item {\ttfamily \$ make fuses}
+\item {\ttfamily \$ make flash}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Once a kit has been programmed, updating firmware is just the Flash\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily \$ make flash}
+\end{DoxyItemize}
+
+\doxysubsection*{Enter the repo}
+
+Open bash (the Cygwin mintty terminal)\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> bash}
+\end{DoxyCode}
+
+
+Enter the local directory for this repo
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cd \string~/chromation/dev-\/kit-\/2020/}
+\end{DoxyCode}
+
+
+Enter the {\ttfamily firmware} folder
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cd firmware/}
+\end{DoxyCode}
+
+
+\doxysubsection*{Program the E\+E\+P\+R\+OM}
+
+Hardware setup\+:
+
+
+\begin{DoxyItemize}
+\item connect the dev-\/kit over U\+SB
+\item if Atmel\+I\+CE is connected, power it O\+FF
+\end{DoxyItemize}
+
+Check the dev-\/kit is visible\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make scan}
+\DoxyCodeLine{Scanning connected USB devices...}
+\DoxyCodeLine{Device 0: FT X Series, ChromationSpect-\/0911-\/03, CHROMATION091103}
+\DoxyCodeLine{OK: One device found.}
+\end{DoxyCode}
+
+
+Program the serial number and configure the F\+T\+DI E\+E\+P\+R\+OM\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make kitnum}
+\DoxyCodeLine{}
+\DoxyCodeLine{Serial number: 1182-\/XX}
+\DoxyCodeLine{Enter two digits to replace XX}
+\DoxyCodeLine{...}
+\end{DoxyCode}
+
+
+$\ast${\ttfamily make kitnum} creates a sub-\/folder in {\ttfamily kits/} and the E\+E\+P\+R\+OM config file for this kit$\ast$
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make progkitnum}
+\DoxyCodeLine{...}
+\DoxyCodeLine{Enter ENTIRE kit serial number, for example: 1182-\/01}
+\DoxyCodeLine{XXXX-\/XX: 1182-\/03}
+\DoxyCodeLine{...}
+\end{DoxyCode}
+
+
+\doxysubsection*{Program the fuses and the Flash}
+
+
+\begin{DoxyItemize}
+\item connect the {\itshape Atmel-\/\+I\+CE} programmer over U\+SB and I\+SP
+\item flip the switches to program the {\ttfamily usb-\/bridge}
+\begin{DoxyItemize}
+\item slide black switch \textquotesingle{}\textquotesingle{}left\textquotesingle{}\textquotesingle{}
+\item slide white switch \textquotesingle{}\textquotesingle{}right\textquotesingle{}\textquotesingle{}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Program the usb-\/bridge microcontroller\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cd usb-\/bridge/}
+\DoxyCodeLine{\$ make fuses}
+\DoxyCodeLine{}
+\DoxyCodeLine{atprogram.exe -\/-\/tool atmelice -\/-\/interface isp -\/-\/device atmega328p \(\backslash\)}
+\DoxyCodeLine{        write -\/-\/verify -\/-\/fuses -\/-\/values F7D9FF}
+\DoxyCodeLine{Firmware check OK}
+\DoxyCodeLine{Verification of write OK}
+\DoxyCodeLine{Write completed successfully.}
+\DoxyCodeLine{}
+\DoxyCodeLine{\$ make flash}
+\DoxyCodeLine{}
+\DoxyCodeLine{atprogram.exe -\/-\/tool atmelice -\/-\/interface isp \(\backslash\)}
+\DoxyCodeLine{        -\/-\/device atmega328p program -\/-\/chiperase -\/-\/verify -\/-\/file build/usb-\/bridge.elf}
+\DoxyCodeLine{Firmware check OK}
+\DoxyCodeLine{Programming and verification completed successfully.}
+\DoxyCodeLine{avr-\/size build/usb-\/bridge.elf}
+\DoxyCodeLine{   text    data     bss     dec     hex filename}
+\DoxyCodeLine{   2980      96    1577    4653    122d build/usb-\/bridge.elf}
+\end{DoxyCode}
+
+
+Hardware setup\+:
+
+
+\begin{DoxyItemize}
+\item flip the switches to program the {\ttfamily vis-\/spi-\/out}
+\begin{DoxyItemize}
+\item slide white switch \textquotesingle{}\textquotesingle{}left\textquotesingle{}\textquotesingle{}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Program the vis-\/spi-\/out microcontroller\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cd ../vis-\/spi-\/out/}
+\DoxyCodeLine{}
+\DoxyCodeLine{\$ make fuses}
+\DoxyCodeLine{}
+\DoxyCodeLine{atprogram.exe -\/-\/tool atmelice -\/-\/interface isp -\/-\/device atmega328p \(\backslash\)}
+\DoxyCodeLine{        write -\/-\/verify -\/-\/fuses -\/-\/values F7D9FF}
+\DoxyCodeLine{Firmware check OK}
+\DoxyCodeLine{Verification of write OK}
+\DoxyCodeLine{Write completed successfully.}
+\DoxyCodeLine{}
+\DoxyCodeLine{\$ make flash}
+\DoxyCodeLine{}
+\DoxyCodeLine{atprogram.exe -\/-\/tool atmelice -\/-\/interface isp \(\backslash\)}
+\DoxyCodeLine{        -\/-\/device atmega328p program -\/-\/chiperase -\/-\/verify -\/-\/file build/vis-\/spi-\/out.elf}
+\DoxyCodeLine{Firmware check OK}
+\DoxyCodeLine{Programming and verification completed successfully.}
+\DoxyCodeLine{avr-\/size build/vis-\/spi-\/out.elf}
+\DoxyCodeLine{   text    data     bss     dec     hex filename}
+\DoxyCodeLine{   3754     352    1577    5683    1633 build/vis-\/spi-\/out.elf}
+\end{DoxyCode}
+
+
+For first time setup, see the {\bfseries{Setup instructions}} below.
+
+\doxysection*{Dev-\/kit programming setup}
+
+\+:rainbow\+: See the \href{https://microspectrometer.github.io/flash-avr-firmware/}{\texttt{ Tiddly\+Wiki}} for instructions to setup the firmware (Flash/\+E\+E\+P\+R\+OM) programming toolchain.
+
+Open tiddler {\bfseries{Use Atmel\+Studio}}\+:
+
+
+
+
+\begin{DoxyItemize}
+\item type {\itshape Use Atmel\+Studio} in the search bar on the right
+\item click on the link {\bfseries{Use Atmel\+Studio}} in the search results
+\item the tiddler opens on the left, as shown
+\end{DoxyItemize}
+
+This tiddler is the starting point for downloading the old firmware onto the dev-\/kit.
+
+The tiddler contains links to external websites and links to other tiddlers in the Tiddly\+Wiki.
+
+Also see tiddler {\bfseries{Program F\+T\+DI Chips with F\+T\+\_\+\+P\+R\+OG}}. 

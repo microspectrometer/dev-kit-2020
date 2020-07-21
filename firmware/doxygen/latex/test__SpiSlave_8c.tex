@@ -1,0 +1,70 @@
+\hypertarget{test__SpiSlave_8c}{}\doxysection{lib/test/test\+\_\+\+Spi\+Slave.c File Reference}
+\label{test__SpiSlave_8c}\index{lib/test/test\_SpiSlave.c@{lib/test/test\_SpiSlave.c}}
+{\ttfamily \#include \char`\"{}unity.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Mock.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}test\+\_\+\+Spi\+Slave.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi\+Slave.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_aaba227406479e7a8010d0f113da22d0f}\label{test__SpiSlave_8c_aaba227406479e7a8010d0f113da22d0f}} 
+void {\bfseries Spi\+Slave\+\_\+faked\+\_\+calls\+\_\+are\+\_\+still\+\_\+available\+\_\+for\+\_\+testing} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a6b636be3b846ecdd855ca608d916bccd}\label{test__SpiSlave_8c_a6b636be3b846ecdd855ca608d916bccd}} 
+void {\bfseries Signal\+Data\+Ready\+\_\+drives\+\_\+\+Data\+Ready\+\_\+\+L\+OW} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_ae91c76e6a1a5f3b702e9ce52b71b55f9}\label{test__SpiSlave_8c_ae91c76e6a1a5f3b702e9ce52b71b55f9}} 
+void {\bfseries Disable\+Spi\+Interrupt\+\_\+clears\+\_\+the\+\_\+\+S\+P\+I\+\_\+\+Interrupt\+\_\+\+Enable\+\_\+bit} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_ae7793468d5b0bb3b8e78204a27381fbc}\label{test__SpiSlave_8c_ae7793468d5b0bb3b8e78204a27381fbc}} 
+void {\bfseries Enable\+Spi\+Interrupt\+\_\+clears\+\_\+\+S\+P\+I\+\_\+interrupt\+\_\+flag} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a6208bf37ea648f6d75b91b91573feb10}\label{test__SpiSlave_8c_a6208bf37ea648f6d75b91b91573feb10}} 
+void {\bfseries Enable\+Spi\+Interrupt\+\_\+enables\+\_\+\+S\+P\+I\+\_\+transfer\+\_\+complete\+\_\+interrupt} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a258dfce707b1a71b28e06928bbe78889}\label{test__SpiSlave_8c_a258dfce707b1a71b28e06928bbe78889}} 
+void {\bfseries Enable\+Spi\+Interrupt\+\_\+consumes\+\_\+6\+\_\+cycles} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a9b76e5fc6161426b65880e000938363c}\label{test__SpiSlave_8c_a9b76e5fc6161426b65880e000938363c}} 
+void {\bfseries Spi\+Slave\+Init\+\_\+makes\+\_\+\+Data\+Ready\+\_\+an\+\_\+output\+\_\+pin} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a1a548b9fd2ff482bcda7e5128b828d77}\label{test__SpiSlave_8c_a1a548b9fd2ff482bcda7e5128b828d77}} 
+void {\bfseries Spi\+Slave\+Init\+\_\+idles\+\_\+\+Data\+Ready\+\_\+high} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a5db4670d562a0fcb57ea633709e0a18f}\label{test__SpiSlave_8c_a5db4670d562a0fcb57ea633709e0a18f}} 
+void {\bfseries Spi\+Slave\+Init\+\_\+makes\+\_\+\+Miso\+\_\+an\+\_\+output\+\_\+pin} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a8eceb94e5915fbcd707d360965abc7f8}\label{test__SpiSlave_8c_a8eceb94e5915fbcd707d360965abc7f8}} 
+void {\bfseries Spi\+Slave\+Init\+\_\+enables\+\_\+\+S\+PI} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a09c0159c66d10261653aead085ef30ad}\label{test__SpiSlave_8c_a09c0159c66d10261653aead085ef30ad}} 
+void {\bfseries Spi\+Slave\+Init\+\_\+enables\+\_\+\+S\+P\+I\+\_\+interrupt} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_ad658760194cc319f269004b81858f046}\label{test__SpiSlave_8c_ad658760194cc319f269004b81858f046}} 
+void {\bfseries Spi\+Slave\+Tx\+\_\+sends\+\_\+nbytes\+\_\+of\+\_\+input\+\_\+buffer\+\_\+to\+\_\+\+Spi\+Master} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a229eda0a12b2855c2c023954212c75a2}\label{test__SpiSlave_8c_a229eda0a12b2855c2c023954212c75a2}} 
+void {\bfseries Spi\+Slave\+Tx\+Byte\+\_\+loads\+\_\+\+S\+P\+I\+\_\+data\+\_\+register\+\_\+with\+\_\+input\+\_\+byte} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a2ef72096ec523202187b0f58b554e212}\label{test__SpiSlave_8c_a2ef72096ec523202187b0f58b554e212}} 
+void {\bfseries Spi\+Slave\+Tx\+Byte\+\_\+disables\+\_\+\+S\+P\+I\+\_\+\+I\+S\+R\+\_\+before\+\_\+signaling\+\_\+data\+\_\+ready} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a274d02076e6ff1efe6fb69a799f77cad}\label{test__SpiSlave_8c_a274d02076e6ff1efe6fb69a799f77cad}} 
+void {\bfseries Spi\+Slave\+Tx\+Byte\+\_\+drives\+\_\+\+Data\+Ready\+\_\+\+L\+O\+W\+\_\+to\+\_\+signal\+\_\+data\+\_\+is\+\_\+ready} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_aa00a6bfd75ae73928732369769cd4447}\label{test__SpiSlave_8c_aa00a6bfd75ae73928732369769cd4447}} 
+void {\bfseries Spi\+Slave\+Tx\+Byte\+\_\+waits\+\_\+until\+\_\+\+S\+P\+I\+\_\+transfer\+\_\+is\+\_\+done} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a2b2115d55d8ea3611e4282e1c24f1f1d}\label{test__SpiSlave_8c_a2b2115d55d8ea3611e4282e1c24f1f1d}} 
+void {\bfseries Spi\+Slave\+Tx\+Byte\+\_\+drives\+\_\+\+Data\+Ready\+\_\+\+H\+I\+G\+H\+\_\+immediately\+\_\+after\+\_\+\+S\+P\+I\+\_\+transfer\+\_\+finishes} (void)
+\item 
+\mbox{\Hypertarget{test__SpiSlave_8c_a8bfac0bfad9ba52d8f7b12351a402a93}\label{test__SpiSlave_8c_a8bfac0bfad9ba52d8f7b12351a402a93}} 
+void {\bfseries Spi\+Slave\+Tx\+Byte\+\_\+enables\+\_\+\+S\+P\+I\+\_\+\+I\+S\+R\+\_\+after\+\_\+transfer} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\itshape Empty tests are for generating function doc strings}~\newline
+ Empty tests contain one line\+: {\ttfamily T\+E\+S\+T\+\_\+\+P\+A\+S\+S();} 

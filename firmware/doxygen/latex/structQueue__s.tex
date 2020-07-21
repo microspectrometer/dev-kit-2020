@@ -1,0 +1,114 @@
+\hypertarget{structQueue__s}{}\doxysection{Queue\+\_\+s Struct Reference}
+\label{structQueue__s}\index{Queue\_s@{Queue\_s}}
+
+
+Queue uses a byte array as a circular buffer.  
+
+
+
+
+{\ttfamily \#include $<$Queue.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+volatile uint8\+\_\+t $\ast$ \mbox{\hyperlink{structQueue__s_ac3342d21c8c45818eca36ef882ceabae}{buffer}}
+\begin{DoxyCompactList}\small\item\em {\itshape buffer} is the address of the queue\textquotesingle{}s F\+I\+FO buffer~\newline
+\end{DoxyCompactList}\item 
+volatile uint8\+\_\+t \mbox{\hyperlink{structQueue__s_ae789d6c9c2eabe81864f900b2640316f}{head}}
+\begin{DoxyCompactList}\small\item\em {\itshape head} advances after a byte is pushed onto the queue~\newline
+\end{DoxyCompactList}\item 
+volatile uint8\+\_\+t \mbox{\hyperlink{structQueue__s_a85a9337969541758708911bd9df7a479}{tail}}
+\begin{DoxyCompactList}\small\item\em {\itshape tail} advances after a byte is popped from the queue~\newline
+\end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structQueue__s_a97872eec1c37e9bdc4e59e1e924aff09}\label{structQueue__s_a97872eec1c37e9bdc4e59e1e924aff09}} 
+volatile uint8\+\_\+t \mbox{\hyperlink{structQueue__s_a97872eec1c37e9bdc4e59e1e924aff09}{length}}
+\begin{DoxyCompactList}\small\item\em {\itshape length} is the number of unread bytes in the queue \end{DoxyCompactList}\item 
+volatile uint8\+\_\+t \mbox{\hyperlink{structQueue__s_a4f592eaa34c4c85ce91a1194ced6aaf7}{max\+\_\+length}}
+\begin{DoxyCompactList}\small\item\em {\itshape max\+\_\+length} is the maximum number of bytes the queue can hold~\newline
+\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Queue uses a byte array as a circular buffer. 
+
+A {\itshape queue} is a byte array with data (head, tail) and methods (push, pop) that access linear memory like circular memory. The memory is finite (the {\itshape queue} can fill up) but the user cannot \char`\"{}fall off\char`\"{} the end of the byte array.~\newline
+~\newline
+ Picture the byte array as a closed loop like the numbers on a clock\+:
+\begin{DoxyItemize}
+\item the initial byte is the next byte after the final byte
+\item the {\itshape head} and {\itshape tail} are clock-\/hands pointing at the array elements
+\item the bytes {\itshape between} head and tail are the bytes in the queue
+\end{DoxyItemize}
+
+Other bytes in the buffer are not in the queue, meaning they cannot be accessed by a {\itshape pop}. These values remain stored in the buffer until overwritten by a {\itshape push}.~\newline
+~\newline
+ A queue is a F\+I\+FO (first-\/in first-\/out) buffer\+: {\itshape pop} removes the oldest byte in the queue. 
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structQueue__s_ac3342d21c8c45818eca36ef882ceabae}\label{structQueue__s_ac3342d21c8c45818eca36ef882ceabae}} 
+\index{Queue\_s@{Queue\_s}!buffer@{buffer}}
+\index{buffer@{buffer}!Queue\_s@{Queue\_s}}
+\doxysubsubsection{\texorpdfstring{buffer}{buffer}}
+{\footnotesize\ttfamily volatile uint8\+\_\+t$\ast$ Queue\+\_\+s\+::buffer}
+
+
+
+{\itshape buffer} is the address of the queue\textquotesingle{}s F\+I\+FO buffer~\newline
+
+
+
+\begin{DoxyItemize}
+\item buffer is an array of bytes~\newline
+
+\item buffer size is set by user~\newline
+
+\item buffer memory is allocated by user~\newline
+ 
+\end{DoxyItemize}\mbox{\Hypertarget{structQueue__s_ae789d6c9c2eabe81864f900b2640316f}\label{structQueue__s_ae789d6c9c2eabe81864f900b2640316f}} 
+\index{Queue\_s@{Queue\_s}!head@{head}}
+\index{head@{head}!Queue\_s@{Queue\_s}}
+\doxysubsubsection{\texorpdfstring{head}{head}}
+{\footnotesize\ttfamily volatile uint8\+\_\+t Queue\+\_\+s\+::head}
+
+
+
+{\itshape head} advances after a byte is pushed onto the queue~\newline
+
+
+
+\begin{DoxyItemize}
+\item {\itshape push} indexes buffer at head 
+\end{DoxyItemize}\mbox{\Hypertarget{structQueue__s_a4f592eaa34c4c85ce91a1194ced6aaf7}\label{structQueue__s_a4f592eaa34c4c85ce91a1194ced6aaf7}} 
+\index{Queue\_s@{Queue\_s}!max\_length@{max\_length}}
+\index{max\_length@{max\_length}!Queue\_s@{Queue\_s}}
+\doxysubsubsection{\texorpdfstring{max\_length}{max\_length}}
+{\footnotesize\ttfamily volatile uint8\+\_\+t Queue\+\_\+s\+::max\+\_\+length}
+
+
+
+{\itshape max\+\_\+length} is the maximum number of bytes the queue can hold~\newline
+
+
+
+\begin{DoxyItemize}
+\item max\+\_\+length is set by the user 
+\end{DoxyItemize}\mbox{\Hypertarget{structQueue__s_a85a9337969541758708911bd9df7a479}\label{structQueue__s_a85a9337969541758708911bd9df7a479}} 
+\index{Queue\_s@{Queue\_s}!tail@{tail}}
+\index{tail@{tail}!Queue\_s@{Queue\_s}}
+\doxysubsubsection{\texorpdfstring{tail}{tail}}
+{\footnotesize\ttfamily volatile uint8\+\_\+t Queue\+\_\+s\+::tail}
+
+
+
+{\itshape tail} advances after a byte is popped from the queue~\newline
+
+
+
+\begin{DoxyItemize}
+\item {\itshape pop} indexes buffer at tail 
+\end{DoxyItemize}
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+lib/src/Queue.\+h\end{DoxyCompactItemize}

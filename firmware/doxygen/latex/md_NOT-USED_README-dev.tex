@@ -1,0 +1,1740 @@
+Sean is working on a {\ttfamily pip install} installation method. For now, here are the install steps without {\ttfamily pip install}.
+
+\doxysection*{Install Python3.\+x}
+
+Install Python3.\+7 or later.
+
+\doxysection*{Clone {\ttfamily microspec}}
+
+Clone {\ttfamily microspec} in the {\ttfamily U\+S\+E\+R\+S\+I\+TE} folder.
+
+\doxysubsection*{Find {\ttfamily U\+S\+E\+R\+S\+I\+TE} and make it if it does not exist}
+
+{\ttfamily pip install} sets up a package in the site-\/packages folder where Python looks for it. To use a package without {\ttfamily pip install}, I use the {\ttfamily U\+S\+E\+R\+S\+I\+TE} folder.
+
+Open Power\+Shell and check the value of U\+S\+E\+R\+S\+I\+TE\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> python -\/m site -\/-\/user-\/site}
+\DoxyCodeLine{C:\(\backslash\)Users\(\backslash\)mike\(\backslash\)AppData\(\backslash\)Roaming\(\backslash\)Python\(\backslash\)Python38\(\backslash\)site-\/packages}
+\end{DoxyCode}
+
+
+The repo does not have to go in U\+S\+E\+R\+S\+I\+TE, but it is a good default choice.
+
+I do not install the repo here. For code-\/editing reasons, I prefer to install to the U\+S\+E\+R\+S\+I\+TE for my Cygwin Python installation\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python3.7 -\/m site -\/-\/user-\/site}
+\DoxyCodeLine{/home/mike/.local/lib/python3.7/site-\/packages}
+\end{DoxyCode}
+
+
+I use Cygwin, but I run the Python applications using my Windows Python installation. The Windows Python installation is executed from Cygwin by specifying it at the bash command line as {\ttfamily python.\+exe}. The Windows Python installation searches the Cygwin Python U\+S\+E\+R\+S\+I\+TE because I add this U\+S\+E\+R\+S\+I\+TE path to the {\ttfamily \begin{DoxyParagraph}{env}
+Y\+T\+H\+O\+N\+P\+A\+TH in my Power\+Shell 
+\end{DoxyParagraph}
+P\+R\+O\+F\+I\+LE, as explained in below in {\itshape Edit the {\ttfamily P\+Y\+T\+H\+O\+N\+P\+A\+TH}}.}
+
+{\ttfamily I can call {\ttfamily python.\+exe} from Windows or from Cygwin. It does not matter in this case. There are cases where attempting to run {\ttfamily python.\+exe} from Cygwin fails because of incompatiblity between Windows and P\+O\+S\+IX path formatting.}
+
+{\ttfamily I will continue to show examples from my actual setup below, where the {\ttfamily U\+S\+E\+R\+S\+I\+TE} is in my Cygwin directory. The examples should work the same with any {\ttfamily U\+S\+E\+R\+S\+I\+TE} path.}
+
+{\ttfamily Create the {\ttfamily U\+S\+E\+R\+S\+I\+TE} folder if it does not exist\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> mkdir -\/p C:\(\backslash\)Users\(\backslash\)mike\(\backslash\)AppData\(\backslash\)Roaming\(\backslash\)Python\(\backslash\)Python38\(\backslash\)site-\/packages}
+\end{DoxyCode}
+}
+
+{\ttfamily Again, in my case I created this U\+S\+E\+R\+S\+I\+TE folder instead\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ mkdir -\/p /home/mike/.local/lib/python3.7/site-\/packages}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{Clone microspec in U\+S\+E\+R\+S\+I\+TE}}
+
+{\ttfamily  Clone the repo there\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cd /home/mike/.local/lib/python3.7/site-\/packages}
+\DoxyCodeLine{\$ git clone https://github.com/microspectrometer/microspec}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{Edit the {\ttfamily P\+Y\+T\+H\+O\+N\+P\+A\+TH}}}
+
+{\ttfamily  When looking for packages to import, Python uses the P\+Y\+T\+H\+O\+N\+P\+A\+TH environment variable {\itshape if it exists}.}
+
+{\ttfamily Since I am using the Windows Python installation, I create the P\+Y\+T\+H\+O\+N\+P\+A\+TH environment variable using Windows conventions\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item backslashes
+\item semicolons separate paths
+\end{DoxyItemize}}
+
+{\ttfamily I add the following to my Power\+Shell profile\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$pkg = "C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages"}
+\DoxyCodeLine{\$env:PYTHONPATH = "\$pkg;"}
+\DoxyCodeLine{\$temp\_api = "microspec\(\backslash\)src"}
+\DoxyCodeLine{\$env:PYTHONPATH += "\$pkg\(\backslash\)\$temp\_api;"}
+\end{DoxyCode}
+}
+
+{\ttfamily The trick here is that Power\+Shell runs the profile every time it starts. The profile creates the P\+Y\+T\+H\+O\+N\+P\+A\+TH environment variable.}
+
+{\ttfamily Check the {\ttfamily P\+Y\+T\+H\+O\+N\+P\+A\+TH} in Power\+Shell\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> \$env:PYTHONPATH.Split(";")}
+\DoxyCodeLine{C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages}
+\DoxyCodeLine{C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec\(\backslash\)src}
+\end{DoxyCode}
+}
+
+{\ttfamily Packages in U\+S\+E\+R\+S\+I\+TE import just fine without explicitly adding them to the P\+Y\+T\+H\+O\+N\+P\+A\+TH. The issue with {\ttfamily microspec} is that the packages are not at the top-\/level.}
+
+{\ttfamily {\ttfamily microspec} contains more than just Python source code. The actual package for import is in the {\ttfamily src} folder. The other top-\/level folders contain executables and other things that Sean created. This is all temporary anyway, so just deal with the explicit path for now.}
+
+{\ttfamily \doxysection*{Install Python package dependencies}}
+
+{\ttfamily }
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily python -\/m pip install pyserial}
+\item {\ttfamily python -\/m pip install pytest}
+\item {\ttfamily python -\/m pip install psutil}
+\item {\ttfamily python -\/m pip install tabulate}
+\item {\ttfamily python -\/m pip install sphinx}
+\item {\ttfamily python -\/m pip install wheel} (I added this to Sean\textquotesingle{}s list)
+\item {\ttfamily python -\/m pip install recommonmark}
+\item {\ttfamily python -\/m pip install m2r}
+\item {\ttfamily python -\/m pip install sphinxcontrib-\/argdoc}
+\end{DoxyItemize}}
+
+{\ttfamily \doxysection*{Check the installation}}
+
+{\ttfamily }
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> cd \$pkg\(\backslash\)microspec\(\backslash\)}
+\DoxyCodeLine{> pytest}
+\DoxyCodeLine{======================================================================== test session starts =========================================================================}
+\DoxyCodeLine{platform win32 -\/-\/ Python 3.8.1, pytest-\/5.3.5, py-\/1.8.1, pluggy-\/0.13.1}
+\DoxyCodeLine{rootdir: C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec}
+\DoxyCodeLine{plugins: testdox-\/1.2.1}
+\DoxyCodeLine{collected 147 items}
+\DoxyCodeLine{}
+\DoxyCodeLine{tests\(\backslash\)test\_bytesio\_stream.py ..................                                                                                                                 [ 12\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_emulated\_stream.py ..................ssssssssssssssssssss                                                                                            [ 38\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_emulator.py ..........                                                                                                                               [ 44\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_expert\_interface\_emulator.py ssssssssss                                                                                                              [ 51\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_expert\_interface\_hardware.py xxxxxxxxxx                                                                                                              [ 58\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_json.py ....                                                                                                                                         [ 61\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_payload.py ..................................                                                                                                        [ 84\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_simple\_interface\_emulator.py ssssssssss                                                                                                              [ 91\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_simple\_interface\_hardware.py xxxxxxxxxx                                                                                                              [ 97\%]}
+\DoxyCodeLine{tests\(\backslash\)test\_util.py ...                                                                                                                                          [100\%]}
+\DoxyCodeLine{}
+\DoxyCodeLine{============================================================= 87 passed, 40 skipped, 20 xfailed in 1.24s =============================================================}
+\end{DoxyCode}
+}
+
+{\ttfamily Expect the same result (87 passed, 40 skipped, 20 xfailed) when running from Cygwin bash. The 20 xfailed tests are {\ttfamily expected fail} meaning the test suite knows to expect the tests to fail because the hardware is not connected.}
+
+{\ttfamily \doxysection*{Documentation}}
+
+{\ttfamily }
+
+{\ttfamily \doxysubsection*{Ways to access documentation}}
+
+{\ttfamily }
+
+{\ttfamily Read with {\ttfamily pydoc}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> python -\/m pydoc microspeclib}
+\DoxyCodeLine{> python -\/m pydoc microspeclib.simple}
+\DoxyCodeLine{> python -\/m pydoc microspeclib.expert}
+\end{DoxyCode}
+}
+
+{\ttfamily Read the expert interface\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> python -\/m pydoc microspeclib.expert.MicroSpecExpertInterface}
+\DoxyCodeLine{Help on class MicroSpecExpertInterface in microspeclib.expert:}
+\end{DoxyCode}
+}
+
+{\ttfamily Read the H\+T\+ML\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> cd \$pkg\(\backslash\)microspec\(\backslash\)doc\(\backslash\)build\(\backslash\)html\(\backslash\)}
+\DoxyCodeLine{> explorer index.html}
+\end{DoxyCode}
+}
+
+{\ttfamily The A\+PI is buried here in the H\+T\+ML\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> cd \$pkg\(\backslash\)microspec\(\backslash\)doc\(\backslash\)build\(\backslash\)html\(\backslash\)}
+\DoxyCodeLine{> explorer microspeclib.simple.html}
+\end{DoxyCode}
+}
+
+{\ttfamily I made a Vim shortcut to open this section in the browser\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{;api}
+\end{DoxyCode}
+}
+
+{\ttfamily Get help on a specific A\+PI command with pydoc.}
+
+{\ttfamily Example\+: help on {\bfseries{Get\+Exposure}}}
+
+{\ttfamily \`{}\`{}\`{}powershell \begin{quote}
+python -\/m pydoc microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface.\+get\+Exposure \end{quote}
+}
+
+{\ttfamily Help on function func in microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface\+:}
+
+{\ttfamily microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface.\+get\+Exposure = func(self, $\ast$$\ast$kwargs) Retrieve the current exposure setting, which may have been set either by \+:class\+:{\ttfamily $\sim$microspeclib.datatypes.\+command.\+Command\+Set\+Exposure} or \+:class\+:{\ttfamily $\sim$microspeclib.datatypes.\+command.\+Command\+Auto\+Exposure}.}
+
+{\ttfamily \doxysection*{Returns }}
+
+{\ttfamily  \+:class\+:{\ttfamily $\sim$microspeclib.datatypes.\+bridge.\+Bridge\+Get\+Exposure} \+:class\+:{\ttfamily $\sim$microspeclib.datatypes.\+sensor.\+Sensor\+Get\+Exposure} 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{The *useful* help is in the return value. Look at the}
+\DoxyCodeLine{`microspeclib.datatypes.sensor` return bytes.}
+\DoxyCodeLine{}
+\DoxyCodeLine{```powershell}
+\DoxyCodeLine{> python -\/m pydoc microspeclib.datatypes.sensor.SensorGetExposure}
+\end{DoxyCode}
+}
+
+{\ttfamily The names of the variables in the reply are listed in the {\bfseries{keyword arguments}}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Help on class SensorGetExposure in microspeclib.datatypes.sensor:}
+\DoxyCodeLine{}
+\DoxyCodeLine{microspeclib.datatypes.sensor.SensorGetExposure = class SensorGetExposure(MicroSpecPayload)}
+\DoxyCodeLine{ |  microspeclib.datatypes.sensor.SensorGetExposure(*args, status=None, cycles=None, **kwargs)}
+\DoxyCodeLine{ |  }
+\DoxyCodeLine{ ...}
+\end{DoxyCode}
+}
+
+{\ttfamily And in the description of the {\bfseries{kwargs}} under under {\ttfamily Parameters}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+\DoxyCodeLine{|  Parameters}
+\DoxyCodeLine{|  -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{|  status: :data:`\string~microspeclib.datatypes.types.StatusOK` or :data:`\string~microspeclib.datatypes.types.StatusError`  If there is an error status, the other attributes are not valid}
+\DoxyCodeLine{|  cycles: 1-\/65535}
+\DoxyCodeLine{|    Number of cycles to wait to collect pixel strength.}
+\DoxyCodeLine{...}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{Return values in the A\+PI}}
+
+{\ttfamily }
+
+{\ttfamily There are always bytes returned from both boards\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item the {\bfseries{Sensor}} board ({\ttfamily vis-\/spi-\/out})
+\item the {\bfseries{Bridge}} board ({\ttfamily usb-\/bridge})
+\end{DoxyItemize}}
+
+{\ttfamily Few commands are for the Bridge. The Bridge is meant to be transparent. Exceptions are Get\+Bridge\+L\+ED, Set\+Bridge\+L\+ED, and Reset.}
+
+{\ttfamily For all other commands, the {\bfseries{Sensor}} return bytes are all that matters. In fact, the simple interface hides the {\bfseries{Bridge}} return bytes for these commands.}
+
+{\ttfamily Takeaway\+: to find out what response a command gives, get help on the command to find out what the name of the return type is, then get help on the {\bfseries{Sensor}} return type.}
+
+{\ttfamily The {\bfseries{Bridge}} is a buffer between the {\bfseries{Sensor}} board and whatever serial communication plumbing the application uses to talk to the {\bfseries{Sensor}} board. The dev-\/kit, for example, provides a U\+SB bridge. Drop in another bridge, say a bluetooth bridge, and as long as it complies with the {\ttfamily bridge} section of the J\+S\+ON protocol, the Python A\+PI works exactly the same.}
+
+{\ttfamily \doxysection*{Extend the A\+PI}}
+
+{\ttfamily }
+
+{\ttfamily It is easy to extend the A\+PI to work with custom firmware.}
+
+{\ttfamily Example\+: extend the A\+PI to make the Auto\+Expose configurable}
+
+{\ttfamily Add commands\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item Get\+Auto\+Expose\+Config
+\item Set\+Auto\+Expose\+Config
+\end{DoxyItemize}}
+
+{\ttfamily Get\+Auto\+Expose\+Config sends one byte\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily command\+\_\+id}
+\end{DoxyItemize}}
+
+{\ttfamily Expect one byte from the {\bfseries{Bridge}}\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily status}
+\end{DoxyItemize}}
+
+{\ttfamily Expect ten bytes from the {\bfseries{Sensor}}\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily status} (1 byte)
+\item {\ttfamily max\+\_\+tries} (1 byte)
+\item {\ttfamily start\+\_\+pixel} (2 bytes)
+\item {\ttfamily stop\+\_\+pixel} (2 bytes)
+\item {\ttfamily target} (2 bytes)
+\item {\ttfamily target\+\_\+tolerance} (2 bytes)
+\end{DoxyItemize}}
+
+{\ttfamily Set\+Auto\+Expose\+Config sends ten bytes\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily command\+\_\+id} (1 byte)
+\item {\ttfamily max\+\_\+tries} (1 byte)
+\item {\ttfamily start\+\_\+pixel} (2 bytes)
+\item {\ttfamily stop\+\_\+pixel} (2 bytes)
+\item {\ttfamily target} (2 bytes)
+\item {\ttfamily target\+\_\+tolerance} (2 bytes)
+\end{DoxyItemize}}
+
+{\ttfamily Expect one byte from the {\bfseries{Bridge}}\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily status}
+\end{DoxyItemize}}
+
+{\ttfamily Expect one byte from the {\bfseries{Sensor}}\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily status}
+\end{DoxyItemize}}
+
+{\ttfamily \doxysubsection*{Edit J\+S\+ON}}
+
+{\ttfamily }
+
+{\ttfamily Encode this in the J\+S\+ON file in the three sections, {\ttfamily command}, {\ttfamily bridge}, and {\ttfamily sensor}.}
+
+{\ttfamily Under section {\ttfamily command}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+\DoxyCodeLine{,"13": \{ "name": "GetAutoExposeConfig", "variables": [ "command\_id" ], "sizes": [1] \}}
+\DoxyCodeLine{,"14": \{ "name": "SetAutoExposeConfig", "variables": [ "command\_id", "max\_tries", "start\_pixel", "stop\_pixel", "target", "target\_tolerance" ], "sizes": [1,1,2,2,2,2] \}}
+\end{DoxyCode}
+}
+
+{\ttfamily Under section {\ttfamily bridge}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+\DoxyCodeLine{,"13": \{ "name": "GetAutoExposeConfig", "variables": [ "status" ], "sizes": [1] \}}
+\DoxyCodeLine{,"14": \{ "name": "SetAutoExposeConfig", "variables": [ "status" ], "sizes": [1] \}}
+\end{DoxyCode}
+}
+
+{\ttfamily Under section {\ttfamily sensor}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+\DoxyCodeLine{,"13": \{ "name": "GetAutoExposeConfig", "variables": [ "status", "max\_tries", "start\_pixel", "stop\_pixel", "target", "target\_tolerance" ], "sizes": [1,1,2,2,2,2] \}}
+\DoxyCodeLine{,"14": \{ "name": "SetAutoExposeConfig", "variables": [ "status" ], "sizes": [1] \}}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{Test at the R\+E\+PL}}
+
+{\ttfamily }
+
+{\ttfamily Try auto-\/complete at the R\+E\+PL to test the commands are added to the A\+PI\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{>>> from microspeclib.simple import MicroSpecSimpleInterface}
+\DoxyCodeLine{>>> si = MicroSpecSimpleInterface()}
+\DoxyCodeLine{>>> si.getA<TAB>}
+\end{DoxyCode}
+}
+
+{\ttfamily Pressing T\+AB, that last line auto-\/completes\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{>>> si.getAutoExposeConfig}
+\end{DoxyCode}
+}
+
+{\ttfamily Similarly\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{>>> si.setA<TAB>}
+\end{DoxyCode}
+}
+
+{\ttfamily Pressing T\+AB, auto-\/complete yields\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{>>> si.setAutoExposeConfig}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{Edit the documentation}}
+
+{\ttfamily }
+
+{\ttfamily Merely editing the J\+S\+ON file provides default documentation that shows the function signature. If the command takes parameters, these are listed in the function signature.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m pydoc microspeclib.simple.MicroSpecSimpleInterface.setAutoExposeConfig}
+\DoxyCodeLine{}
+\DoxyCodeLine{Help on function func in microspeclib.simple.MicroSpecSimpleInterface:}
+\DoxyCodeLine{}
+\DoxyCodeLine{microspeclib.simple.MicroSpecSimpleInterface.setAutoExposeConfig = func(self, max\_tries=None, start\_pixel=None, stop\_pixel=None, target=None, target\_tolerance=None, **kwargs)}
+\end{DoxyCode}
+}
+
+{\ttfamily This at least indicates the names of the expected parameters, and then the developer can look up the sizes in the J\+S\+ON file.}
+
+{\ttfamily But it is better to add a docstring and a description of each parameter.}
+
+{\ttfamily Add docstrings to {\ttfamily /internal/docstrings.py}\+:}
+
+{\ttfamily \`{}\`{}\`{}python}
+
+{\ttfamily M\+I\+C\+R\+O\+S\+P\+E\+C\+\_\+\+D\+Y\+N\+A\+M\+I\+C\+\_\+\+D\+OC\mbox{[}\char`\"{}command\char`\"{}\mbox{]}\mbox{[}\char`\"{}\+Command\+Get\+Auto\+Expose\+Config\char`\"{}\mbox{]} = \char`\"{}\char`\"{}"Retrieves the current auto-\/expose configuration.}
+
+{\ttfamily \doxysection*{Returns }}
+
+{\ttfamily  \+:class\+:{\ttfamily $\sim$\{dt\}.bridge.\+Bridge\+Get\+Auto\+Expose\+Config} \+:class\+:{\ttfamily $\sim$\{dt\}.sensor.\+Sensor\+Get\+Auto\+Expose\+Config}}
+
+{\ttfamily \char`\"{}\char`\"{}" \`{}\`{}\`{}}
+
+{\ttfamily Now the help contains the docstring and lists the return types.}
+
+{\ttfamily \`{}\`{}\`{}bash \$ python.\+exe -\/m pydoc microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface.\+get\+Auto\+Expose\+Config}
+
+{\ttfamily Help on function func in microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface\+:}
+
+{\ttfamily microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface.\+get\+Auto\+Expose\+Config = func(self, $\ast$$\ast$kwargs) Retrieves the current auto-\/expose configuration.}
+
+{\ttfamily \doxysection*{Returns }}
+
+{\ttfamily  \+:class\+:{\ttfamily $\sim$microspeclib.datatypes.\+bridge.\+Bridge\+Get\+Auto\+Expose\+Config} \+:class\+:{\ttfamily $\sim$microspeclib.datatypes.\+sensor.\+Sensor\+Get\+Auto\+Expose\+Config} \`{}\`{}\`{}}
+
+{\ttfamily The docstring for {\ttfamily set\+Auto\+Expose\+Config} is much longer because it contains parameters.}
+
+{\ttfamily \`{}\`{}\`{}python M\+I\+C\+R\+O\+S\+P\+E\+C\+\_\+\+D\+Y\+N\+A\+M\+I\+C\+\_\+\+D\+OC\mbox{[}\char`\"{}command\char`\"{}\mbox{]}\mbox{[}\char`\"{}\+Command\+Set\+Auto\+Expose\+Config\char`\"{}\mbox{]} = \char`\"{}\char`\"{}"Sets the current auto-\/expose configuration.}
+
+{\ttfamily \doxysection*{Parameters }}
+
+{\ttfamily  max\+\_\+tries\+: 1-\/255 Maximum number of exposures to try before giving up.}
+
+{\ttfamily  Firmware defaults to 10 on power-\/up.}
+
+{\ttfamily start\+\_\+pixel\+: 7-\/392 if binning on, 14-\/784 if binning off Auto-\/expose ignores pixels below start\+\_\+pixel when checking if the peak is in the target range.}
+
+{\ttfamily  Firmware defaults to 7 on power-\/up. Recommended value is the smallest pixel number in the pixel-\/to-\/wavelength map.}
+
+{\ttfamily  If start\+\_\+pixel is outside the allowed range, status is E\+R\+R\+OR and the Auto\+Expose\+Config is not changed.}
+
+{\ttfamily stop\+\_\+pixel\+: 7-\/392 if binning on, 14-\/784 if binning off, must be $>$= start\+\_\+pixel Auto-\/expose ignores pixels above stop\+\_\+pixel when checking if the peak is in the target range.}
+
+{\ttfamily  Firmware defaults to 392 on power-\/up. Recommended value is the largest pixel number in the pixel-\/to-\/wavelength map.}
+
+{\ttfamily  If stop\+\_\+pixel $<$ start\+\_\+pixel, or if stop\+\_\+pixel is outside the allowed range, status is E\+R\+R\+OR and the Auto\+Expose\+Config is not changed.}
+
+{\ttfamily target\+: 4500-\/65535 Target peak-\/counts for exposure gain calculation.}
+
+{\ttfamily  Firmware defaults to 46420 counts on power-\/up.}
+
+{\ttfamily  If target is outside the allowed range, status is E\+R\+R\+OR and the Auto\+Expose\+Config is not changed.}
+
+{\ttfamily target\+\_\+tolerance\+: 0-\/65535 target +/-\/ target\+\_\+tolerance is the target peak-\/counts range. Auto-\/expose is finished when the peak counts lands in this range.}
+
+{\ttfamily  Firmware defaults to 3277 counts on power-\/up.}
+
+{\ttfamily  If the combination of target and target\+\_\+tolerance results in target ranges extending below 4500 counts or above 65535 counts, auto-\/expose ignores the target\+\_\+tolerance and clamps the target range at these boundaries.}
+
+{\ttfamily \doxysection*{Returns }}
+
+{\ttfamily  \+:class\+:{\ttfamily $\sim$\{dt\}.bridge.\+Bridge\+Set\+Auto\+Expose\+Config} \+:class\+:{\ttfamily $\sim$\{dt\}.sensor.\+Sensor\+Set\+Auto\+Expose\+Config}}
+
+{\ttfamily \char`\"{}\char`\"{}" 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Here is the resulting help for `setAutoExposeConfig`:}
+\end{DoxyCode}
+}
+
+{\ttfamily \$ python.\+exe -\/m pydoc microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface.\+set\+Auto\+Expose\+Config}
+
+{\ttfamily Help on function func in microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface\+:}
+
+{\ttfamily microspeclib.\+simple.\+Micro\+Spec\+Simple\+Interface.\+set\+Auto\+Expose\+Config = func(self, max\+\_\+tries=None, start\+\_\+pixel=None, stop\+\_\+pixel=None, target=None, target\+\_\+tolerance=None, $\ast$$\ast$kwargs) Sets the current auto-\/expose configuration.}
+
+{\ttfamily \doxysection*{Parameters }}
+
+{\ttfamily  max\+\_\+tries\+: 1-\/255 Maximum number of exposures to try before giving up.}
+
+{\ttfamily  Firmware defaults to 10 on power-\/up.}
+
+{\ttfamily  start\+\_\+pixel\+: 7-\/392 if binning on, 14-\/784 if binning off Auto-\/expose ignores pixels below start\+\_\+pixel when checking if the peak is in the target range.}
+
+{\ttfamily  Firmware defaults to 7 on power-\/up. Recommended value is the smallest pixel number in the pixel-\/to-\/wavelength map.}
+
+{\ttfamily  If start\+\_\+pixel is outside the allowed range, status is E\+R\+R\+OR and the Auto\+Expose\+Config is not changed.}
+
+{\ttfamily  stop\+\_\+pixel\+: 7-\/392 if binning on, 14-\/784 if binning off, must be $>$= start\+\_\+pixel Auto-\/expose ignores pixels above stop\+\_\+pixel when checking if the peak is in the target range.}
+
+{\ttfamily  Firmware defaults to 392 on power-\/up. Recommended value is the largest pixel number in the pixel-\/to-\/wavelength map.}
+
+{\ttfamily  If stop\+\_\+pixel $<$ start\+\_\+pixel, or if stop\+\_\+pixel is outside the allowed range, status is E\+R\+R\+OR and the Auto\+Expose\+Config is not changed.}
+
+{\ttfamily  target\+: 4500-\/65535 Target peak-\/counts for exposure gain calculation.}
+
+{\ttfamily  Firmware defaults to 46420 counts on power-\/up.}
+
+{\ttfamily  If target is outside the allowed range, status is E\+R\+R\+OR and the Auto\+Expose\+Config is not changed.}
+
+{\ttfamily  target\+\_\+tolerance\+: 0-\/65535 target +/-\/ target\+\_\+tolerance is the target peak-\/counts range. Auto-\/expose is finished when the peak counts lands in this range.}
+
+{\ttfamily  Firmware defaults to 3277 counts on power-\/up.}
+
+{\ttfamily  If the combination of target and target\+\_\+tolerance results in target ranges extending below 4500 counts or above 65535 counts, auto-\/expose ignores the target\+\_\+tolerance and clamps the target range at these boundaries.}
+
+{\ttfamily \doxysection*{Returns }}
+
+{\ttfamily  \+:class\+:{\ttfamily $\sim$microspeclib.datatypes.\+bridge.\+Bridge\+Set\+Auto\+Expose\+Config} \+:class\+:{\ttfamily $\sim$microspeclib.datatypes.\+sensor.\+Sensor\+Set\+Auto\+Expose\+Config} 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{For the `getAutoExposeConfig` command, the useful help is in the}
+\DoxyCodeLine{keyword arguments of the **Sensor** return type.}
+\DoxyCodeLine{}
+\DoxyCodeLine{```bash}
+\DoxyCodeLine{\$ python.exe -\/m pydoc microspeclib.datatypes.sensor.SensorSetAutoExposeConfig}
+\end{DoxyCode}
+}
+
+{\ttfamily Again, all of the following is done automatically merely by encoding the command in the J\+S\+ON file.}
+
+{\ttfamily The reply\textquotesingle{}s variable names are listed in the keyword arguments of the datatype {\ttfamily \+\_\+\+\_\+init\+\_\+\+\_\+()} method\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Help on class SensorGetAutoExposeConfig in microspeclib.datatypes.sensor:}
+\DoxyCodeLine{}
+\DoxyCodeLine{microspeclib.datatypes.sensor.SensorGetAutoExposeConfig = class SensorGetAutoExposeConfig(MicroSpecPayload)}
+\DoxyCodeLine{ |  microspeclib.datatypes.sensor.SensorGetAutoExposeConfig(*args, status=None, max\_tries=None, start\_pixel=None, stop\_pixel=None, target=None, target\_tolerance=None, **kwargs)}
+\DoxyCodeLine{ ...}
+\end{DoxyCode}
+}
+
+{\ttfamily The {\ttfamily command\+\_\+id} is listed\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+\DoxyCodeLine{|  Data and other attributes defined here:}
+\DoxyCodeLine{|  }
+\DoxyCodeLine{|  command\_id = 13}
+\DoxyCodeLine{...}
+\end{DoxyCode}
+}
+
+{\ttfamily The size of each response is listed\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+\DoxyCodeLine{|  Data and other attributes defined here:}
+\DoxyCodeLine{...}
+\DoxyCodeLine{|  sizes = [1, 1, 2, 2, 2, 2]}
+\DoxyCodeLine{...}
+\DoxyCodeLine{|  variables = ['status', 'max\_tries', 'start\_pixel', 'stop\_pixel', 'targ...}
+\DoxyCodeLine{...}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{Rebuild the Sphinx documentation}}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item \mbox{[} \mbox{]} learn how to do this, I\textquotesingle{}ve made many changes and I want to see what impact newlines have on the Sphinx output
+\end{DoxyItemize}}
+
+{\ttfamily \doxysection*{Load V\+CP}}
+
+{\ttfamily }
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item On Windows, sometimes V\+CP is not set. Go to Device Manager\+:
+\begin{DoxyItemize}
+\item Right-\/click on U\+SB Serial Converter
+\item Select Properties
+\item Go to tab \char`\"{}\+Advanced\char`\"{}
+\item Check \char`\"{}\+Load V\+C\+P\char`\"{}
+\end{DoxyItemize}
+\end{DoxyItemize}}
+
+{\ttfamily I tried to automate this in the F\+T\+DI E\+E\+P\+R\+OM.}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item under {\ttfamily Hardware Specific}, {\ttfamily Port A}, {\ttfamily Driver}
+\item change {\ttfamily D2\+XX Direct} to {\ttfamily Virtual C\+OM Port}
+\end{DoxyItemize}}
+
+{\ttfamily This did not work. The device is still not visible to pyserial.}
+
+{\ttfamily \doxysection*{Quick script to test V\+CP}}
+
+{\ttfamily }
+
+{\ttfamily Make a quick test script to check that the hardware is visible\+:}
+
+{\ttfamily {\ttfamily test-\/hardware-\/is-\/visible.\+py}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{'''Test hardware is visible.'''}
+\DoxyCodeLine{}
+\DoxyCodeLine{from microspeclib.simple import MicroSpecSimpleInterface}
+\DoxyCodeLine{si = MicroSpecSimpleInterface(timeout=0.1)}
+\DoxyCodeLine{print(si)}
+\end{DoxyCode}
+}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> python test-\/hardware-\/is-\/visible.py}
+\DoxyCodeLine{<microspeclib.simple.MicroSpecSimpleInterface object at 0x000001B5F0AB42B0>}
+\end{DoxyCode}
+}
+
+{\ttfamily If the dev-\/kit is not connected or V\+CP is not enabled, this test produces error {\ttfamily Cannot find C\+H\+R\+O\+M\+A\+T\+I\+ON device}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> python test-\/hardware-\/is-\/visible.py}
+\DoxyCodeLine{2020-\/04-\/28 22:20:37,772:stream.py:\_\_init\_\_:193: Cannot find CHROMATION device}
+\DoxyCodeLine{Traceback (most recent call last):}
+\DoxyCodeLine{  File "C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\)chromation\(\backslash\)dev-\/kit-\/mike\(\backslash\)firmware\(\backslash\)python\(\backslash\)test.py", line 6, in <module>}
+\DoxyCodeLine{    si = MicroSpecSimpleInterface(timeout=0.1)}
+\DoxyCodeLine{  File "C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec\(\backslash\)src\(\backslash\)microspeclib\(\backslash\)expert.py", line 24, in \_\_init\_\_}
+\DoxyCodeLine{    super().\_\_init\_\_(serial\_number=serial\_number,}
+\DoxyCodeLine{  File "C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec\(\backslash\)src\(\backslash\)microspeclib\(\backslash\)internal\(\backslash\)stream.py", line 194, in \_\_init\_\_}
+\DoxyCodeLine{    raise MicroSpecConnectionException("Cannot find CHROMATION device")}
+\DoxyCodeLine{microspeclib.exceptions.MicroSpecConnectionException: Cannot find CHROMATION device}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysection*{User\textquotesingle{}s Guide -- use Python A\+PI}}
+
+{\ttfamily  As of May 2020\+: I\textquotesingle{}ve just started using the Python A\+PI. Sean\textquotesingle{}s {\ttfamily cmdline.\+py} utility lets me send any single A\+PI command and look at the response. This is very convenient. I am just doing quick system tests, so I have no reason to write my own scripts at this point. The {\ttfamily cmdline.\+py} utility does everything I need.}
+
+{\ttfamily See section {\ttfamily system test from the command line} below.}
+
+{\ttfamily \doxysection*{Developer\textquotesingle{}s Guide -- feedback on Sean\textquotesingle{}s A\+PI}}
+
+{\ttfamily }
+
+{\ttfamily \doxysubsection*{Show signature does not work in ptpython}}
+
+{\ttfamily }
+
+{\ttfamily Jonathan Slenders ptpython makes it easy to discover how to use a package at the command line. Tab-\/complete to get a list of attributes and methods, and then once one is chosen, he uses Jedi to show the function signature.}
+
+{\ttfamily Py\+Pi page\+: \href{https://pypi.org/project/jedi/}{\texttt{ https\+://pypi.\+org/project/jedi/}}}
+
+{\ttfamily Jedi is meant for adding Python auto-\/complete to I\+D\+Es. Vim example\+: \href{https://github.com/davidhalter/jedi-vim}{\texttt{ https\+://github.\+com/davidhalter/jedi-\/vim}}}
+
+{\ttfamily The way Sean set up the docstrings, Jedi\textquotesingle{}s {\ttfamily get\+\_\+signatures} (method for reading function signatures) is broken.}
+
+{\ttfamily \href{https://jedi.readthedocs.io/en/latest/docs/api.html\#jedi.Script.get_signatures}{\texttt{ https\+://jedi.\+readthedocs.\+io/en/latest/docs/api.\+html\#jedi.\+Script.\+get\+\_\+signatures}}}
+
+{\ttfamily From Sean\textquotesingle{}s {\ttfamily docstring} module\+:}
+
+{\ttfamily \begin{quote}
+Great pains were taken to auto-\/generate the proper function and class signatures such as {\ttfamily Command\+Set\+Bridge\+L\+ED(led\+\_\+num=None, led\+\_\+setting=None)} rather than just {\ttfamily Command\+Set\+Bridge\+L\+ED(\textbackslash{}$\ast$args, \textbackslash{}$\ast$$\ast$kwargs)}, so that pydoc and sphinx could introspect and document them properly. \end{quote}
+}
+
+{\ttfamily Thus Sean generates a single source of truth for code and documentation. The tradeoff for this is that Jedi cannot find the docstrings.}
+
+{\ttfamily The workaround to this minor inconvenience is to explicitly call help. So, tab-\/complete as usual to get the method name, then instead of opening parentheses to see the docstring, wrap the method in help, e.\+g., {\ttfamily help(si.\+get\+Bridge\+L\+ED)}, and hit Enter to read the docstring.}
+
+{\ttfamily \doxysubsection*{Notes on these notes}}
+
+{\ttfamily  From hereon, I refer to paths in Sean\textquotesingle{}s repo with {\ttfamily .} meaning the repo name.}
+
+{\ttfamily Capitalization does not matter, but I capitalize (contrary to the documentation examples) to match with {\ttfamily ./cfg/microspec.json}. Sean asked for feedback on the A\+PI in the microspeclib package and the supporting utilities and documentation. I am using the A\+PI to write system tests as I develop the firmware.}
+
+{\ttfamily \doxysubsection*{I dogfood Sean\textquotesingle{}s A\+PI by doing system tests}}
+
+{\ttfamily }
+
+{\ttfamily I am using the command line utilities as a convenience for quick system testing, i.\+e., testing that is not code, just me trying something at the command line to check that firmware changes have the expected result.}
+
+{\ttfamily I system test as I code the firmware to point me in the right direction {\itshape before} I spend time programming system tests.}
+
+{\ttfamily \doxysection*{Developer\textquotesingle{}s Guide -- system test from the command line}}
+
+{\ttfamily }
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python.exe -\/m cmdline COMMAND KEY=VALUE}
+\end{DoxyCode}
+}
+
+{\ttfamily I made Vim shortcuts start with {\ttfamily pt} (pneumonic is {\ttfamily p}ython {\ttfamily t}est)\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nnoremap <leader>pt<Space> :!python.exe -\/m cmdline }
+\DoxyCodeLine{nnoremap <leader>pt0 :!python.exe -\/m cmdline Null}
+\DoxyCodeLine{nnoremap <leader>pt1 :!python.exe -\/m cmdline GetBridgeLED led\_num=0}
+\DoxyCodeLine{nnoremap <leader>pt2 :!python.exe -\/m cmdline SetBridgeLED led\_num=255 led\_setting=255}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{System test examples from the command line}}
+
+{\ttfamily  My examples work from Power\+Shell and Cygwin bash.}
+
+{\ttfamily \doxysubsubsection*{Finding bugs on 2020-\/04-\/28}}
+
+{\ttfamily }
+
+{\ttfamily This opens communication\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{si = MicroSpecSimpleInterface()}
+\end{DoxyCode}
+}
+
+{\ttfamily But this throws an error\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{si = MicroSpecSimpleInterface(serial\_number='CHROMATION091103')}
+\end{DoxyCode}
+}
+
+{\ttfamily Error traces back to line 177 of internal/stream.\+py\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{self.serial.port = list\_ports.grep(serial\_number).device}
+\end{DoxyCode}
+}
+
+{\ttfamily Full error message\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{  File "<stdin>", line 1, in <module>}
+\DoxyCodeLine{  File "C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec\(\backslash\)src\(\backslash\)microspeclib\(\backslash\)expert.py", line 24, in \_\_init\_\_}
+\DoxyCodeLine{    super().\_\_init\_\_(serial\_number=serial\_number,}
+\DoxyCodeLine{  File "C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec\(\backslash\)src\(\backslash\)microspeclib\(\backslash\)internal\(\backslash\)stream.py", line 177, in \_\_init\_\_}
+\DoxyCodeLine{    self.serial.port = list\_ports.grep(serial\_number).device}
+\DoxyCodeLine{AttributeError: 'generator' object has no attribute 'device'}
+\DoxyCodeLine{}
+\DoxyCodeLine{'generator' object has no attribute 'device'}
+\end{DoxyCode}
+}
+
+{\ttfamily Did Sean mean this?}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{from serial.tools import list\_ports}
+\DoxyCodeLine{next(list\_ports.grep('CHROMATION091103')).device}
+\end{DoxyCode}
+}
+
+{\ttfamily Or this?}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{from serial.tools import list\_ports}
+\DoxyCodeLine{list(list\_ports.grep('CHROMATION091103'))[0].device}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsubsection*{Hello world between A\+PI and {\ttfamily usb-\/bridge}}}
+
+{\ttfamily }
+
+{\ttfamily Here is the loop on {\ttfamily usb-\/bridge}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void} loop(\textcolor{keywordtype}{void})}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    \textcolor{keywordflow}{while} (\mbox{\hyperlink{Usb_8h_a3081311c24ae86b950d6770c6a67cedb}{UsbRxbufferIsEmpty}}()); \textcolor{comment}{// loop until cmd received}}
+\DoxyCodeLine{    uint8\_t \mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}} = 0; \textcolor{comment}{// initialize cmd as "Null"}}
+\DoxyCodeLine{    \mbox{\hyperlink{Usb_8h_a4ed6f08cb0ec2adf9631d0932b30bbc5}{UsbReadByte}}(\&\mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}}); \textcolor{comment}{// read cmd}}
+\DoxyCodeLine{    \textcolor{keywordflow}{switch}(\mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}}) \textcolor{comment}{// look up cmd}}
+\DoxyCodeLine{    \{}
+\DoxyCodeLine{        \textcolor{keywordflow}{case} 0: \mbox{\hyperlink{UsbCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{NullCommand}}(); \mbox{\hyperlink{BiColorLed_8h_a2401f7a281e7e5cbc5c76c074cf7fe6b}{BiColorLedGreen}}(status\_led); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{        \textcolor{keywordflow}{default}: \mbox{\hyperlink{BiColorLed_8h_a2da32b453449ba56817344847d923a93}{BiColorLedRed}}(status\_led); \textcolor{keywordflow}{break};  \textcolor{comment}{// sbi  0x08, 3}}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+}
+
+{\ttfamily Here is the command line\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{PS C:\(\backslash\)Users\(\backslash\)mike> python -\/m cmdline Null}
+\DoxyCodeLine{2020-\/04-\/29T18:34:46.495822,BridgeNull()}
+\DoxyCodeLine{}
+\DoxyCodeLine{PS C:\(\backslash\)Users\(\backslash\)mike> python -\/m cmdline GetBridgeLed led\_num=1}
+\DoxyCodeLine{2020-\/04-\/29T18:34:57.172661,None}
+\DoxyCodeLine{}
+\DoxyCodeLine{PS C:\(\backslash\)Users\(\backslash\)mike> python -\/m cmdline Null}
+\DoxyCodeLine{2020-\/04-\/29T18:35:01.499843,BridgeNull()}
+\end{DoxyCode}
+}
+
+{\ttfamily Behavior is good\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\bfseries{P\+A\+SS}}\+: the P\+CB powers up with its L\+ED green
+\item {\bfseries{P\+A\+SS}}\+: the first Null has no obvious effect
+\item the second command, Get\+Bridge\+L\+ED led\+\_\+num=1, sends bytes 0x01 0x01
+\item this simplistic loop() should see these as two commands with byte value 0x01
+\item so both 0x01 {\itshape should go to the default case\+: turn the L\+ED red}
+\item {\bfseries{P\+A\+SS}}\+: the L\+ED turns red
+\item {\itshape sending the final Null should turn the L\+ED back to green}
+\item {\bfseries{P\+A\+SS}}\+: the L\+ED turns green
+\end{DoxyItemize}}
+
+{\ttfamily If I have no better use for the L\+ED, it can indicate whether the most recent command was recognized.}
+
+{\ttfamily \doxysubsubsection*{system test Get\+Bridge\+L\+ED}}
+
+{\ttfamily }
+
+{\ttfamily Get\+Bridge\+L\+ED gets {\ttfamily led\+\_\+setting=1} and {\ttfamily led\+\_\+setting=2}}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily led\+\_\+setting=1} means {\itshape Status L\+ED is G\+R\+E\+EN}
+\item {\ttfamily led\+\_\+setting=2} means {\itshape Status L\+ED is R\+ED}
+\end{DoxyItemize}}
+
+{\ttfamily Here is the {\ttfamily main()} loop when I ran this system test\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void} loop(\textcolor{keywordtype}{void})}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    \textcolor{keywordflow}{while} (\mbox{\hyperlink{Usb_8h_a3081311c24ae86b950d6770c6a67cedb}{UsbRxbufferIsEmpty}}()); \textcolor{comment}{// loop until cmd received}}
+\DoxyCodeLine{    uint8\_t \mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}} = 0; \textcolor{comment}{// initialize cmd as "Null"}}
+\DoxyCodeLine{    \mbox{\hyperlink{Usb_8h_a4ed6f08cb0ec2adf9631d0932b30bbc5}{UsbReadByte}}(\&\mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}}); \textcolor{comment}{// read cmd}}
+\DoxyCodeLine{    \textcolor{keywordflow}{switch}(\mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}}) \textcolor{comment}{// look up cmd}}
+\DoxyCodeLine{    \{}
+\DoxyCodeLine{        \textcolor{comment}{// Turn status LED red if cmd is not recognized.}}
+\DoxyCodeLine{        \textcolor{keywordflow}{default}:                    \mbox{\hyperlink{BiColorLed_8h_a2da32b453449ba56817344847d923a93}{BiColorLedRed}}(status\_led);   \textcolor{keywordflow}{break};}
+\DoxyCodeLine{        \textcolor{comment}{// Null gets no response, but turns status LED green for now.}}
+\DoxyCodeLine{        \textcolor{keywordflow}{case} 0: \mbox{\hyperlink{UsbCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{NullCommand}}();      \mbox{\hyperlink{BiColorLed_8h_a2401f7a281e7e5cbc5c76c074cf7fe6b}{BiColorLedGreen}}(status\_led); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{        \textcolor{keywordflow}{case} 1: \mbox{\hyperlink{UsbCmd_8h_a2be59832e776d1ef15b9d995e18cf26d}{GetBridgeLED}}(); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+}
+
+{\ttfamily And here is the system test.}
+
+{\ttfamily S\+T\+A\+RT\+: power-\/on, {\itshape Status L\+ED is G\+R\+E\+EN.}}
+
+{\ttfamily Send {\ttfamily Null} just for sake of it\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline Null}
+\DoxyCodeLine{2020-\/05-\/03T19:10:51.044753,BridgeNull()}
+\end{DoxyCode}
+}
+
+{\ttfamily {\itshape Status L\+ED is G\+R\+E\+EN.}}
+
+{\ttfamily Send {\ttfamily Get\+Bridge\+L\+ED}. Should return {\ttfamily led\+\_\+setting=1}.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetBridgeLed led\_num=0}
+\DoxyCodeLine{2020-\/05-\/03T19:10:56.366519,BridgeGetBridgeLED(status=0, led\_setting=1)}
+\end{DoxyCode}
+}
+
+{\ttfamily {\bfseries{P\+A\+SS}}\+:
+\begin{DoxyItemize}
+\item Response is {\ttfamily led\+\_\+setting=1}
+\item {\itshape Status L\+ED is G\+R\+E\+EN}
+\end{DoxyItemize}}
+
+{\ttfamily Send {\ttfamily Set\+Bridge\+L\+ED led\+\_\+num=255 led\+\_\+setting=255}.}
+
+{\ttfamily This sends bytes {\ttfamily 0x02}, {\ttfamily 0x\+FF}, {\ttfamily 0x\+FF}. None of these bytes are recognized, so\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item expect response is {\ttfamily None} and Status L\+ED turns R\+ED\+:
+\begin{DoxyItemize}
+\item {\ttfamily None} means the firmware does not send a response back
+\item expect {\ttfamily None} because I did not program a response to {\ttfamily Set\+Bridge\+L\+ED} yet
+\item all three bytes are handled as the {\ttfamily default} case of the {\ttfamily switch} block
+\item the {\ttfamily default} case turns Status L\+ED R\+ED
+\end{DoxyItemize}
+\end{DoxyItemize}}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetBridgeLED led\_num=255 led\_setting=255}
+\DoxyCodeLine{2020-\/05-\/03T19:11:05.782671,None}
+\end{DoxyCode}
+}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\bfseries{P\+A\+SS}}\+:
+\begin{DoxyItemize}
+\item Response is {\ttfamily None}
+\item {\itshape Status L\+ED is R\+ED}
+\end{DoxyItemize}
+\end{DoxyItemize}}
+
+{\ttfamily Send {\ttfamily Get\+Bridge\+L\+ED}. Should return {\ttfamily led\+\_\+setting=2}.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetBridgeLed led\_num=0}
+\DoxyCodeLine{2020-\/05-\/03T19:11:10.128380,BridgeGetBridgeLED(status=0, led\_setting=2)}
+\end{DoxyCode}
+}
+
+{\ttfamily {\bfseries{P\+A\+SS}}\+:
+\begin{DoxyItemize}
+\item Response is {\ttfamily led\+\_\+setting=2}
+\item {\itshape Status L\+ED is R\+ED}
+\end{DoxyItemize}}
+
+{\ttfamily Send {\ttfamily Null} to reset L\+ED to G\+R\+E\+EN\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline Null}
+\DoxyCodeLine{2020-\/05-\/03T19:11:16.836114,BridgeNull()}
+\end{DoxyCode}
+}
+
+{\ttfamily {\itshape Status L\+ED is G\+R\+E\+EN.}}
+
+{\ttfamily Send {\ttfamily Get\+Bridge\+L\+ED}. Should return {\ttfamily led\+\_\+setting=1} again.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetBridgeLed led\_num=0}
+\DoxyCodeLine{2020-\/05-\/03T19:11:19.115907,BridgeGetBridgeLED(status=0, led\_setting=1)}
+\end{DoxyCode}
+}
+
+{\ttfamily {\bfseries{P\+A\+SS}}\+:
+\begin{DoxyItemize}
+\item Response is {\ttfamily led\+\_\+setting=1}
+\item {\itshape Status L\+ED is G\+R\+E\+EN}
+\end{DoxyItemize}}
+
+{\ttfamily \doxysubsubsection*{system test Set\+Bridge\+L\+ED}}
+
+{\ttfamily }
+
+{\ttfamily Here is the {\ttfamily main()} loop when I ran this system test\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void} loop(\textcolor{keywordtype}{void})}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    \textcolor{keywordflow}{while} (\mbox{\hyperlink{Usb_8h_a3081311c24ae86b950d6770c6a67cedb}{UsbRxbufferIsEmpty}}()); \textcolor{comment}{// loop until cmd received}}
+\DoxyCodeLine{    uint8\_t \mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}} = 0; \textcolor{comment}{// initialize cmd as "Null"}}
+\DoxyCodeLine{    \mbox{\hyperlink{Usb_8h_a4ed6f08cb0ec2adf9631d0932b30bbc5}{UsbReadByte}}(\&\mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}}); \textcolor{comment}{// read cmd}}
+\DoxyCodeLine{    \textcolor{keywordflow}{switch}(\mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}}) \textcolor{comment}{// look up cmd}}
+\DoxyCodeLine{    \{}
+\DoxyCodeLine{        \textcolor{comment}{// Turn status LED red if cmd is not recognized.}}
+\DoxyCodeLine{        \textcolor{keywordflow}{default}:                    \mbox{\hyperlink{BiColorLed_8h_a2da32b453449ba56817344847d923a93}{BiColorLedRed}}(status\_led);   \textcolor{keywordflow}{break};}
+\DoxyCodeLine{        \textcolor{comment}{// Null gets no response, but turns status LED green for now.}}
+\DoxyCodeLine{        \textcolor{keywordflow}{case} 0: \mbox{\hyperlink{UsbCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{NullCommand}}();      \mbox{\hyperlink{BiColorLed_8h_a2401f7a281e7e5cbc5c76c074cf7fe6b}{BiColorLedGreen}}(status\_led); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{        \textcolor{keywordflow}{case} 1: \mbox{\hyperlink{UsbCmd_8h_a2be59832e776d1ef15b9d995e18cf26d}{GetBridgeLED}}(); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{        \textcolor{keywordflow}{case} 2: \mbox{\hyperlink{UsbCmd_8h_a5b3a22b24f2d01d4fc902fc7fb7e9de9}{SetBridgeLED}}(); \textcolor{keywordflow}{break};}
+\DoxyCodeLine{        \textcolor{comment}{//  case 8: SetSensorConfig(); break;}}
+\DoxyCodeLine{        \textcolor{comment}{// default: ReplyCommandInvalid(); break;}}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+}
+
+{\ttfamily Send command to turn off the status L\+ED\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetBridgeLED led\_num=0 led\_setting=0}
+\DoxyCodeLine{2020-\/05-\/03T21:14:01.364061,BridgeSetBridgeLED(status=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily {\bfseries{P\+A\+SS}}\+: status L\+ED turns off}
+
+{\ttfamily Check Get\+Bridge\+L\+ED returns {\ttfamily led\+\_\+setting=0}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetBridgeLed led\_num=0}
+\DoxyCodeLine{2020-\/05-\/03T21:14:05.208334,BridgeGetBridgeLED(status=0, led\_setting=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily Send command to turn the status L\+ED green\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetBridgeLED led\_num=0 led\_setting=1}
+\end{DoxyCode}
+}
+
+{\ttfamily {\bfseries{P\+A\+SS}}\+: status L\+ED turns green}
+
+{\ttfamily Check Get\+Bridge\+L\+ED returns {\ttfamily led\+\_\+setting=1}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetBridgeLed led\_num=0}
+\DoxyCodeLine{2020-\/05-\/03T21:14:14.974757,BridgeGetBridgeLED(status=0, led\_setting=1)}
+\end{DoxyCode}
+}
+
+{\ttfamily Send command to turn the status L\+ED red\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetBridgeLED led\_num=0 led\_setting=2}
+\DoxyCodeLine{2020-\/05-\/03T21:14:18.531435,BridgeSetBridgeLED(status=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily {\bfseries{P\+A\+SS}}\+: status L\+ED turns red}
+
+{\ttfamily Check Get\+Bridge\+L\+ED returns {\ttfamily led\+\_\+setting=2}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetBridgeLed led\_num=0}
+\DoxyCodeLine{2020-\/05-\/03T21:14:21.380145,BridgeGetBridgeLED(status=0, led\_setting=2)}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsubsection*{system test Get\+Sensor\+L\+ED}}
+
+{\ttfamily }
+
+{\ttfamily Both L\+E\+Ds on sensor board are green. Expect {\ttfamily led\+\_\+setting=1} for both.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetSensorLED led\_num=0}
+\DoxyCodeLine{2020-\/05-\/07T06:02:50.588743,SensorGetSensorLED(status=0, led\_setting=1)}
+\end{DoxyCode}
+}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetSensorLED led\_num=1}
+\DoxyCodeLine{2020-\/05-\/07T06:04:34.546605,SensorGetSensorLED(status=0, led\_setting=1)}
+\end{DoxyCode}
+}
+
+{\ttfamily Sensor board only has led 0 and 1. Expect {\ttfamily status=1} (1 is E\+R\+R\+OR) and {\ttfamily led\+\_\+setting=255} (255 is P\+A\+D\+D\+I\+NG) if I pass {\ttfamily led\+\_\+num=2}.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetSensorLED led\_num=2}
+\DoxyCodeLine{2020-\/05-\/07T06:06:24.061009,SensorGetSensorLED(status=1, led\_setting=255)}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsubsection*{system test Set\+Sensor\+L\+ED}}
+
+{\ttfamily }
+
+{\ttfamily Both L\+E\+Ds on sensor board are green. Expect {\ttfamily led\+\_\+setting=2} to turn one L\+ED red.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorLED led\_num=0 led\_setting=2}
+\DoxyCodeLine{2020-\/05-\/14T05:49:48.348288,SensorSetSensorLED(status=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily Turn the other L\+ED red.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorLED led\_num=1 led\_setting=2}
+\DoxyCodeLine{2020-\/05-\/14T05:51:19.018410,SensorSetSensorLED(status=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily Turn both L\+E\+Ds back to green.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorLED led\_num=1 led\_setting=1}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorLED led\_num=0 led\_setting=1}
+\DoxyCodeLine{2020-\/05-\/14T05:52:19.548047,SensorSetSensorLED(status=0)}
+\DoxyCodeLine{2020-\/05-\/14T05:52:52.624399,SensorSetSensorLED(status=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily Turn both L\+E\+Ds off.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorLED led\_num=1 led\_setting=0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorLED led\_num=0 led\_setting=0}
+\DoxyCodeLine{2020-\/05-\/14T05:53:43.891838,SensorSetSensorLED(status=0)}
+\DoxyCodeLine{2020-\/05-\/14T05:53:51.731680,SensorSetSensorLED(status=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily Turn both L\+E\+Ds green again.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorLED led\_num=1 led\_setting=1}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorLED led\_num=0 led\_setting=1}
+\DoxyCodeLine{2020-\/05-\/14T05:54:49.939523,SensorSetSensorLED(status=0)}
+\DoxyCodeLine{2020-\/05-\/14T05:54:56.939379,SensorSetSensorLED(status=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsubsection*{system test Get\+Sensor\+Config and Set\+Sensor\+Config}}
+
+{\ttfamily }
+
+{\ttfamily Expect default configuration is\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily binning} = 1;
+\item {\ttfamily gain} = 1;
+\item {\ttfamily row\+\_\+bitmap} = 31;
+\end{DoxyItemize}}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetSensorConfig}
+\DoxyCodeLine{2020-\/05-\/15T03:57:30.367547,SensorGetSensorConfig(status=0, binning=1, gain=1, row\_bitmap=31)}
+\end{DoxyCode}
+}
+
+{\ttfamily Change the configuration\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorConfig binning=0 gain=5 row\_bitmap=30}
+\DoxyCodeLine{2020-\/05-\/15T04:07:33.613819,SensorSetSensorConfig(status=0)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetSensorConfig}
+\DoxyCodeLine{2020-\/05-\/15T04:07:39.208883,SensorGetSensorConfig(status=0, binning=0, gain=5, row\_bitmap=30)}
+\end{DoxyCode}
+}
+
+{\ttfamily Try an invalid configuration by setting binning to 2. Expect status is 1 (E\+R\+R\+OR).}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetSensorConfig binning=2 gain=5 row\_bitmap=30}
+\DoxyCodeLine{2020-\/05-\/15T04:09:09.196835,SensorSetSensorConfig(status=1)}
+\end{DoxyCode}
+}
+
+{\ttfamily Check that the configuration did not change.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetSensorConfig}
+\DoxyCodeLine{2020-\/05-\/15T04:10:18.475317,SensorGetSensorConfig(status=0,}
+\DoxyCodeLine{binning=0, gain=5, row\_bitmap=30)}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsubsection*{system test Get\+Exposure and Set\+Exposure}}
+
+{\ttfamily }
+
+{\ttfamily Initial exposure is 1ms. Expect status=0, cycles=50.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetExposure}
+\DoxyCodeLine{2020-\/05-\/15T18:31:13.646272,SensorGetExposure(status=0, cycles=50)}
+\end{DoxyCode}
+}
+
+{\ttfamily Set exposure to 10ms (500 20µs-\/ticks). Expect status=0.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline SetExposure cycles=500}
+\DoxyCodeLine{2020-\/05-\/15T20:12:56.027071,SensorSetExposure(status=0)}
+\end{DoxyCode}
+}
+
+{\ttfamily Check exposure. Expect status=0, cycles=500.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline GetExposure}
+\DoxyCodeLine{2020-\/05-\/15T20:13:06.457501,SensorGetExposure(status=0, cycles=500)}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsubsection*{system test Capture\+Frame}}
+
+{\ttfamily }
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ python.exe -\/m cmdline CaptureFrame}
+\DoxyCodeLine{2020-\/05-\/16T06:46:46.992454,SensorCaptureFrame(status=0, num\_pixels=392, pixels=[8653, 7711, 7675, 7964, 6932, 7475, 6939, 414, 0, 0, 134, 29, 0, 0, 20 08, 0, 0, 762, 1246, 911, 0, 399, 0, 601, 0, 0, 1032, 0, 0, 0, 1201, 1681, 248, 0, 348, 709, 100, 418, 0, 0, 0, 421, 0, 0, 0, 0, 759, 539, 948, 1250, 449, 0, 0, 97, 0, 307, 195, 272, 81, 0, 0, 0, 641, 0, 0, 0, 0, 0, 0, 0, 0, 221, 512, 762, 1365, 729, 0, 0, 0, 0, 0, 443, 0, 0, 72, 29, 0, 0, 118, 893, 0, 0, 0, 0, 0, 0, 0, 0, 116, 1743, 0, 0, 0, 1520, 64, 1371, 124, 0, 0, 0, 530, 167, 1, 416, 0, 0, 0, 0, 1544, 0, 0, 0, 0, 1036, 0, 851, 0, 0, 0, 667, 0, 546, 1212, 348, 0, 61, 0, 50, 267, 23, 942, 0, 0, 564, 211, 0, 1482, 91, 0, 0, 186, 730, 0, 0, 1272, 0, 0, 436, 122, 0, 0, 0, 283, 204, 104, 0, 0, 0, 451, 722, 0, 0, 80, 0, 0, 0, 0, 0, 433, 0, 1511, 0, 0, 310, 49, 0, 181, 0, 0, 0, 0, 0, 0, 100, 213, 0, 338, 349, 645, 156, 1110, 0, 0, 0, 0, 0, 48 3, 0, 774, 0, 0, 714, 0, 0, 0, 0, 712, 206, 0, 18, 0, 0, 189, 469, 0, 896, 0, 0, 0, 649, 528, 0, 0, 0, 539, 783, 0, 447, 0, 0, 0, 0, 0, 0, 0, 0, 691, 0, 259, 0, 848, 0, 0, 417, 683, 0, 0, 732, 613, 48, 341, 0, 0, 218, 0, 364, 0, 228, 0, 1427, 72, 0, 0, 160, 483, 0, 0, 0, 0, 308, 0, 288, 1261, 686, 0 , 0, 0, 0, 0, 0, 293, 0, 984, 224, 0, 191, 222, 0, 0, 0, 0, 808, 416, 601, 0, 0, 0, 202, 590, 658, 134, 227, 622, 806, 0, 0, 0, 473, 305, 0, 112, 0, 0 , 0, 32, 0, 0, 28, 797, 0, 18, 0, 504, 0, 0, 601, 362, 0, 814, 56, 1208, 230, 0, 0, 420, 0, 0, 0, 236, 0, 0, 0, 799, 16, 294, 272, 574, 0, 0, 0, 953, 0, 223, 0, 146, 1212, 0, 1040, 0, 0, 0, 0, 0, 0, 760, 400, 187, 0, 1865, 442, 638, 94, 112, 1284, 0, 0, 314, 385, 0, 133, 0, 371])}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{T\+O\+DO list for Sean}}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item \mbox{[} \mbox{]} T\+O\+DO\+: Sean add documentation for the {\ttfamily serial\+\_\+number} and {\ttfamily device} parameters of {\ttfamily Micro\+Spec\+Simple\+Interface}
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Sean is aware
+\item document input is a string
+\item document an example string\+: {\ttfamily C\+H\+R\+O\+M\+A\+T\+I\+O\+N091103}
+\end{DoxyItemize}
+\item \mbox{[} \mbox{]} T\+O\+DO\+: Sean add list of commands in documentation or, better still, in the help for {\ttfamily microspec\+\_\+cmdline.\+py}
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Sean is aware
+\item this is actually just a wrapper for python to execute {\ttfamily cmdline.\+py} as a module
+\item cd into {\ttfamily microspec/src/microspeclib/}
+\item execute as {\ttfamily python -\/m cmdline.\+py command key=val}
+\item {\ttfamily python cmdline.\+py} also works
+\item {\ttfamily python cmdline.\+py Get\+Bridge\+L\+ED led\+\_\+num=0}
+\end{DoxyItemize}
+\item \mbox{[} \mbox{]} T\+O\+DO\+: Sean add documentation explaining how to read the response
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Sean is aware
+\item nothing in the Sphinx H\+T\+ML or the pydoc docstrings explains what the responses are
+\item {\ttfamily python cmdline.\+py Get\+Bridge\+L\+ED led\+\_\+num=0}
+\item has this response\+:
+\item {\ttfamily 2020-\/04-\/29T19\+:02\+:37.\+952994,None} (from Cygwin bash)
+\item {\ttfamily 2020-\/04-\/29T14\+:02\+:15.\+856620,None} (from Power\+Shell)
+\item the correct time is 2\+:02PM
+\item I\textquotesingle{}m not sure why running from Cygwin bash adds five hours to the time -- the {\ttfamily date} utility works just fine and prints the correct time, and I\textquotesingle{}m invoking the Windows Python from Cygwin bash, so what gives?
+\end{DoxyItemize}
+\item \mbox{[} \mbox{]} T\+O\+DO\+: Sean\+: unexpected end of docstring in Micro\+Spec\+Simple\+Interface.\+send\+And\+Receive()
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} Sean is aware
+\item ends with phrase \char`\"{}but a reply that contains\char`\"{}
+\end{DoxyItemize}
+\end{DoxyItemize}}
+
+{\ttfamily \doxysection*{Developer\textquotesingle{}s Guide -- navigate code base}}
+
+{\ttfamily }
+
+{\ttfamily Here is how I navigate the firmware code base.}
+
+{\ttfamily \doxysubsection*{Search code within Vim}}
+
+{\ttfamily }
+
+{\ttfamily \doxysubsubsection*{cscope}}
+
+{\ttfamily }
+
+{\ttfamily The Vim package from Cygwin is built with {\ttfamily cscope}.}
+
+{\ttfamily {\itshape I\textquotesingle{}d imagine most Vim builds have {\ttfamily cscope} because Vim tightly integrates {\ttfamily cscope}.}}
+
+{\ttfamily See the Vim help\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:help cscope}
+\end{DoxyCode}
+}
+
+{\ttfamily See {\ttfamily cscope} configuration in my {\ttfamily $\sim$/.vim/vimrc}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{if has("cscope")}
+\DoxyCodeLine{    set nocscopetag}
+\DoxyCodeLine{    set cscopequickfix=s-\/,d-\/,c-\/,t-\/,e-\/,i-\/,a-\/}
+\end{DoxyCode}
+}
+
+{\ttfamily Make a cscope database in the {\ttfamily ./firmware} folder.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cd ./firmware/}
+\DoxyCodeLine{\$ cscope -\/R -\/b}
+\end{DoxyCode}
+}
+
+{\ttfamily This creates/overwrites the {\ttfamily cscope.\+out} file in {\ttfamily ./firmware}. I update the {\ttfamily cscope.\+out} file regularly. I made shortcut {\ttfamily ;cu}. The shortcut updates my tags file as well.}
+
+{\ttfamily In Vim, updated connection to the new {\ttfamily cscope.\+out} file\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{: cscope reset}
+\end{DoxyCode}
+}
+
+{\ttfamily The first time {\ttfamily cscope.\+out} is made, create the connection and kill any existing connections. There is a bit to do here. I made a {\ttfamily ;cs} shortcut for this. See details in my {\ttfamily $\sim$/.vim/vimrc}\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{function! CscopeCreateConnection()}
+\end{DoxyCode}
+}
+
+{\ttfamily Search with cscope using {\ttfamily \+:cscope find}.}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item \textquotesingle{}s\textquotesingle{} symbol\+: find all references to {\ttfamily symbol\+\_\+name}
+\end{DoxyItemize}}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:cscope find s symbol\_name}
+\end{DoxyCode}
+}
+
+{\ttfamily As a Vim shortcut\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nnoremap <C-\/\(\backslash\)>s :cs find s <cword><CR>}
+\end{DoxyCode}
+}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item \textquotesingle{}g\textquotesingle{} global\+: find the global definition of {\ttfamily $<$cword$>$} under the cursor
+\end{DoxyItemize}}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:cscope find g symbol\_name}
+\end{DoxyCode}
+}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nnoremap <C-\/\(\backslash\)>g :cs find g <cword><CR>}
+\end{DoxyCode}
+}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item \textquotesingle{}c\textquotesingle{} calls\+: find all calls to the function name under cursor
+\item \textquotesingle{}d\textquotesingle{} dependencies\+: find functions called by function under cursor
+\item \textquotesingle{}t\textquotesingle{} text\+: find all instances of the text under cursor
+\item \textquotesingle{}e\textquotesingle{} egrep\+: egrep search for the word under cursor
+\item \textquotesingle{}f\textquotesingle{} file\+: open the filename under cursor
+\item \textquotesingle{}i\textquotesingle{} includes\+: find files that include the filename under cursor
+\end{DoxyItemize}}
+
+{\ttfamily Then use the Vim quickfix window to navigate through the {\ttfamily cscope} results.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:copen}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxyparagraph*{cscope has no exclude option}}
+
+{\ttfamily }
+
+{\ttfamily Instead of an exclude create a {\ttfamily cscope.\+files} file that lists the files to include. Use double-\/quotes for file names that include spaces.}
+
+{\ttfamily Or use {\ttfamily -\/inamefile} to specify an alternate file with a list of file names to include. Use {\ttfamily -\/i-\/} to get the file list from standard input. Use {\ttfamily find} to generate the file list from a regexp.}
+
+{\ttfamily \doxysubsubsection*{tags}}
+
+{\ttfamily }
+
+{\ttfamily Make a tags file in the {\ttfamily ./firmware} folder.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cd ./firmware/}
+\DoxyCodeLine{\$ ctags -\/-\/c-\/kinds=+l -\/-\/exclude=Makefile -\/R .}
+\end{DoxyCode}
+}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily -\/-\/c-\/kinds=+l} includes local variables in the {\ttfamily cscope.\+out} file
+\item {\ttfamily -\/R} recursive
+\item {\ttfamily .} start in the current folder
+\end{DoxyItemize}}
+
+{\ttfamily Update this file with the same command to overwrite it.}
+
+{\ttfamily I use Vim shortcut {\ttfamily ;cu} which also updates the {\ttfamily cscope.\+out} file.}
+
+{\ttfamily \doxysubsubsection*{vimgrep}}
+
+{\ttfamily }
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:vimgreap /search\_term/ files\_to\_search}
+\end{DoxyCode}
+}
+
+{\ttfamily Example\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:vimgrep /SetBit(Flag\_SpiFlags/ lib/**/*.[ch]}
+\end{DoxyCode}
+}
+
+{\ttfamily Find all occurrences of {\ttfamily Set\+Bit(Flag\+\_\+\+Spi\+Flags} in every {\ttfamily .c} and {\ttfamily .h} file in the {\ttfamily lib/} folder, including sub-\/folders.}
+
+{\ttfamily Open a quickfix window and navigate the results.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:copen}
+\end{DoxyCode}
+}
+
+{\ttfamily Similar to using {\ttfamily cscope}.}
+
+{\ttfamily Use {\ttfamily cscope} to when the symbol name is known but its purpose/definition/dependencies are unknown.}
+
+{\ttfamily This is the scenario\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item I am looking at a specific line of code
+\item I see a symbol I want to know more about
+\end{DoxyItemize}}
+
+{\ttfamily Use {\ttfamily vimgrep} when the symbol name itself is not known yet.}
+
+{\ttfamily This is the scenario\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item I want to determine a variable naming convention
+\item or I just want to check if a certain variable name is already used
+\end{DoxyItemize}}
+
+{\ttfamily Another example\+: search the active Vim file for a certain word\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:vimgrep /cscope/ \%}
+\end{DoxyCode}
+}
+
+{\ttfamily This is superior to the usual Vim search (with {\ttfamily /}) because {\ttfamily \+:copen} displays all of the lines where the search term occurs.}
+
+{\ttfamily And this is useful when a cscope database does not exist.}
+
+{\ttfamily \doxysection*{Developer\textquotesingle{}s Guide -- update documentation}}
+
+{\ttfamily }
+
+{\ttfamily Here is how I update documentation.}
+
+{\ttfamily There is one top level Doxyfile}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily ./\+Doxyfile}
+\end{DoxyItemize}}
+
+{\ttfamily Create a doxygen folder at any level to document with Doxygen}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily ./doxygen}
+\item {\ttfamily ./firmware/doxygen}
+\end{DoxyItemize}}
+
+{\ttfamily Optionally, add a second {\ttfamily Doxyfile}\+:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily ./firmware/\+Doxyfile}
+\end{DoxyItemize}}
+
+{\ttfamily I decided to add a second {\ttfamily Doxyfile} to have different page titles and main page files for the {\ttfamily ./doxygen} and {\ttfamily ./firmware/doxygen}.}
+
+{\ttfamily \doxysubsection*{Doxyfile customization}}
+
+{\ttfamily }
+
+{\ttfamily Generate the default Doxyfile\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ doxygen -\/g}
+\end{DoxyCode}
+}
+
+{\ttfamily The {\ttfamily ./\+Doxyfile} is the default Doxyfile with the following changes\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{PROJECT\_NAME           = "dev-\/kit"}
+\DoxyCodeLine{PROJECT\_BRIEF          = "Python-\/compatible Chromation Spectrometer dev-\/kit"}
+\DoxyCodeLine{OUTPUT\_DIRECTORY       = ./doxygen}
+\DoxyCodeLine{RECURSIVE              = YES}
+\DoxyCodeLine{OPTIMIZE\_OUTPUT\_FOR\_C  = YES}
+\DoxyCodeLine{EXTRACT\_STATIC         = YES}
+\DoxyCodeLine{OPTIMIZE\_OUTPUT\_JAVA   = NO}
+\DoxyCodeLine{EXCLUDE                = doc/ \(\backslash\)}
+\DoxyCodeLine{                        hardware-\/drawings/ \(\backslash\)}
+\DoxyCodeLine{                        labview/ \(\backslash\)}
+\DoxyCodeLine{                        system-\/design-\/sketches/ \(\backslash\)}
+\DoxyCodeLine{                        temp/ \(\backslash\)}
+\DoxyCodeLine{                        firmware/temp/ \(\backslash\)}
+\DoxyCodeLine{                        firmware/AssemblyExample.md \(\backslash\)}
+\DoxyCodeLine{                        firmware/Earhart-\/snippet.c \(\backslash\)}
+\DoxyCodeLine{                        firmware/README-\/firmware.md}
+\DoxyCodeLine{EXTRACT\_ALL            = NO}
+\DoxyCodeLine{WARN\_IF\_UNDOCUMENTED   = YES}
+\DoxyCodeLine{USE\_MDFILE\_AS\_MAINPAGE = README.md}
+\DoxyCodeLine{HTML\_EXTRA\_STYLESHEET  = "doxygen/doxygen-\/dark-\/theme/custom.css" \(\backslash\)}
+\DoxyCodeLine{                         "doxygen/doxygen-\/dark-\/theme/custom\_dark\_theme.css"}
+\end{DoxyCode}
+}
+
+{\ttfamily The {\ttfamily ./firmware/\+Doxyfile} is the {\ttfamily ./\+Doxyfile} with the following changes\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{PROJECT\_NAME           = "firmware"}
+\DoxyCodeLine{PROJECT\_NUMBER         = "v0"}
+\DoxyCodeLine{PROJECT\_BRIEF          = "Protocol compatible with microspec"}
+\DoxyCodeLine{EXCLUDE                = doc/ \(\backslash\)}
+\DoxyCodeLine{                        temp/}
+\DoxyCodeLine{USE\_MDFILE\_AS\_MAINPAGE = README-\/firmware.md}
+\end{DoxyCode}
+}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item {\ttfamily P\+R\+O\+J\+E\+C\+T\+\_\+\+N\+A\+ME}
+\begin{DoxyItemize}
+\item one-\/word project name
+\item appears as title on every page
+\end{DoxyItemize}
+\item {\ttfamily P\+R\+O\+J\+E\+C\+T\+\_\+\+B\+R\+I\+EF}
+\begin{DoxyItemize}
+\item optional one-\/liner
+\item appears at the top of every page
+\end{DoxyItemize}
+\item {\ttfamily R\+E\+C\+U\+R\+S\+I\+VE}
+\begin{DoxyItemize}
+\item {\ttfamily Y\+ES}\+: look inside project folders for source code
+\end{DoxyItemize}
+\item {\ttfamily E\+X\+T\+R\+A\+C\+T\+\_\+\+S\+T\+A\+T\+IC}
+\begin{DoxyItemize}
+\item include documentation for {\ttfamily static} functions
+\end{DoxyItemize}
+\item {\ttfamily O\+P\+T\+I\+M\+I\+Z\+E\+\_\+\+O\+U\+T\+P\+U\+T\+\_\+\+J\+A\+VA}
+\begin{DoxyItemize}
+\item {\ttfamily Y\+ES}\+: if project only contains Python code or Java code
+\end{DoxyItemize}
+\item {\ttfamily U\+S\+E\+\_\+\+M\+D\+F\+I\+L\+E\+\_\+\+A\+S\+\_\+\+M\+A\+I\+N\+P\+A\+GE}
+\begin{DoxyItemize}
+\item {\ttfamily R\+E\+A\+D\+M\+E.\+md}\+: use the {\ttfamily R\+E\+A\+D\+M\+E.\+md} file in the same folder that as the {\ttfamily doxygen} folder
+\item this means the {\ttfamily doxygen} for the top-\/level and the {\ttfamily doxygen} for {\ttfamily ./firmware} have their own {\ttfamily R\+E\+A\+D\+M\+E.\+md} files which appear as the main page
+\end{DoxyItemize}
+\end{DoxyItemize}}
+
+{\ttfamily Use Vim shortcuts {\ttfamily ;DU} to create/update doxygen and {\ttfamily ;DV} to view in the browser.}
+
+{\ttfamily {\ttfamily ;DU} is equivalent to {\ttfamily bash} command\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ doxygen ./firmware/Doxyfile}
+\end{DoxyCode}
+}
+
+{\ttfamily {\ttfamily ;DV} is equivalent to {\ttfamily bash} command\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ explorer "\$(cygpath -\/wa ./firmware/doxygen/html/index.html)"}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{Create a doxygen folder before running doxygen}}
+
+{\ttfamily }
+
+{\ttfamily The repo {\itshape does not contain} a {\ttfamily doxygen} folder after the initial clone. Create empty {\ttfamily doxygen} folders before running {\ttfamily ;DU}.}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ mkdir ./doxygen \# top-\/level documentation}
+\DoxyCodeLine{\$ mkdir ./firmware/doxygen \# documentation for firmware only}
+\end{DoxyCode}
+}
+
+{\ttfamily The importance of making a {\ttfamily doxygen} folder is that my Doxyfile looks for this folder\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{OUTPUT\_DIRECTORY       = ./doxygen}
+\end{DoxyCode}
+}
+
+{\ttfamily If a {\ttfamily doxygen} folder does not exist in the {\ttfamily pwd}, doxygen does not generate documentation.}
+
+{\ttfamily \doxysubsection*{Minimum Doxyfile and doxygen folder to proceed}}
+
+{\ttfamily }
+
+{\ttfamily At a minimum, have {\ttfamily ./\+Doxyfile} and {\ttfamily ./firmware/doxygen/}. Then the {\ttfamily bash} command to make the documentation is simply\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ doxygen Doxyfile}
+\end{DoxyCode}
+}
+
+{\ttfamily \doxysubsection*{Top-\/level and firmware-\/level versions of the documentation}}
+
+{\ttfamily }
+
+{\ttfamily I created the top-\/level {\ttfamily ./doxygen} to get a top-\/level version of the documentation that excluded details in the {\ttfamily firmware} folder\textquotesingle{}s markdown files. This is for the wider Chromation audience.}
+
+{\ttfamily I created the {\ttfamily ./doxygen/\+Doxyfile} to make a distinct {\ttfamily main page} and {\ttfamily title} for the {\ttfamily ./firmware/doxygen} firmware-\/specific version of the documentation. This is for me during development of the firmware.}
+
+{\ttfamily \doxysubsection*{Vim shortcut to make doxygen docstrings from unit test results}}
+
+{\ttfamily  My shortcut {\ttfamily ;xdc} takes unit test results and formats them as a Doxygen docstring. The pneumonic is {\ttfamily x} for transform, {\ttfamily d} for doxygen docstring, and {\ttfamily c} for C. Shortcut {\ttfamily ;xdp} makes Python docstrings.}
+
+{\ttfamily Place the cursor in the Vim buffer with the test results {\ttfamily .md} file. {\ttfamily ;xdc} puts the docstring in the default register. Navigate to the top of the function definition and paste.}
+
+{\ttfamily \doxysubsection*{{\ttfamily ;xdc} (automated) Doxygen example}}
+
+{\ttfamily }
+
+{\ttfamily {\ttfamily ;mktgc} generated the following test result output\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{test/test\_runner.c:45:ReadLedState\_returns\_OFF\_if\_LED\_is\_off:PASS}
+\DoxyCodeLine{test/test\_runner.c:46:ReadLedState\_returns\_GREEN\_if\_LED\_is\_on\_and\_green:PASS}
+\DoxyCodeLine{test/test\_runner.c:47:ReadLedState\_returns\_RED\_if\_LED\_is\_on\_and\_red:PASS}
+\end{DoxyCode}
+}
+
+{\ttfamily With the cursor in the markdown file showing, the output, {\ttfamily ;xdc} copied the doxygen docstring to the clipboard.}
+
+{\ttfamily Withe the cursor on the opening {\ttfamily \{} of the function body definition, pasting inserts the docstring\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{inline} uint8\_t \mbox{\hyperlink{UsbCmd_8h_ab54bb71cd582d7ce2e3c5a104bf66478}{ReadLedState}}(\textcolor{keywordtype}{void}) \textcolor{comment}{// -\/> led\_state}}
+\DoxyCodeLine{\{}
+\end{DoxyCode}
+}
+
+{\ttfamily The final line of docstring is added by hand.}
+
+{\ttfamily Doxygen automatically turns the file name {\ttfamily \mbox{\hyperlink{StatusCodes_8h}{Status\+Codes.\+h}}} into a link.}
+
+{\ttfamily \doxysubsection*{Manual Doxygen example}}
+
+{\ttfamily }
+
+{\ttfamily Here is an example documenting source file {\ttfamily \mbox{\hyperlink{StatusCode_8h}{Status\+Code.\+h}}}. The documentation is accessed in the H\+T\+ML from\+:}
+
+{\ttfamily 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Files}
+\DoxyCodeLine{    File List}
+\DoxyCodeLine{        lib}
+\DoxyCodeLine{            src}
+\DoxyCodeLine{                StatusCode.h}
+\end{DoxyCode}
+}
+
+{\ttfamily Following this tree opens the {\ttfamily \mbox{\hyperlink{StatusCode_8h}{Status\+Code.\+h}} File Reference}.}
+
+{\ttfamily The documentation below appears in the H\+T\+ML under the heading {\ttfamily Detailed Description} at the end of {\ttfamily \mbox{\hyperlink{StatusCode_8h}{Status\+Code.\+h}} File Reference}.}
+
+{\ttfamily \`{}\`{}\`{}c /$\ast$$\ast$ }

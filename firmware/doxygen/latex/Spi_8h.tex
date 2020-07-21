@@ -1,0 +1,174 @@
+\hypertarget{Spi_8h}{}\doxysection{lib/src/\+Spi.h File Reference}
+\label{Spi_8h}\index{lib/src/Spi.h@{lib/src/Spi.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Spi_8h_a7b162f67416f8962dc4d1ec5c57390ba}\label{Spi_8h_a7b162f67416f8962dc4d1ec5c57390ba}} 
+typedef uint8\+\_\+t volatile $\ast$const {\bfseries spi\+\_\+reg}
+\item 
+\mbox{\Hypertarget{Spi_8h_aa816b5d5698f7f12b8975761caa1fba2}\label{Spi_8h_aa816b5d5698f7f12b8975761caa1fba2}} 
+typedef const uint8\+\_\+t {\bfseries spi\+\_\+bit}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{Spi_8h_a023af672cfffd023a8f1a4fb5c9d7694}{\+\_\+\+Enable\+Spi\+Module}} (void)
+\item 
+bool \mbox{\hyperlink{Spi_8h_ac49dafccb5a49148ea7b150634c0116a}{\+\_\+\+Spi\+Transfer\+Is\+Done}} (void)
+\item 
+\mbox{\Hypertarget{Spi_8h_a292ad2add9750240bdb6957fa07846c1}\label{Spi_8h_a292ad2add9750240bdb6957fa07846c1}} 
+uint8\+\_\+t {\bfseries Read\+Spi\+Status\+Register} (void)
+\item 
+\mbox{\Hypertarget{Spi_8h_a7c08b994c435603b9c0a1b641293eb7b}\label{Spi_8h_a7c08b994c435603b9c0a1b641293eb7b}} 
+uint8\+\_\+t {\bfseries Read\+Spi\+Data\+Register} (void)
+\item 
+void \mbox{\hyperlink{Spi_8h_aed96203cc269b893b63bca5950d21771}{Clear\+Spi\+Interrupt\+Flag}} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Spi_8h_abe0d90a0af7f9c78885111c743dc3def}\label{Spi_8h_abe0d90a0af7f9c78885111c743dc3def}} 
+spi\+\_\+reg \mbox{\hyperlink{Spi_8h_abe0d90a0af7f9c78885111c743dc3def}{Spi\+\_\+\+Port\+Direction}}
+\begin{DoxyCompactList}\small\item\em Atmel D\+DR. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{Spi_8h_ad2c1e8d9230d5684191e02eacfe18695}\label{Spi_8h_ad2c1e8d9230d5684191e02eacfe18695}} 
+spi\+\_\+reg \mbox{\hyperlink{Spi_8h_ad2c1e8d9230d5684191e02eacfe18695}{Spi\+\_\+\+Port\+Input}}
+\begin{DoxyCompactList}\small\item\em Atmel P\+IN. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{Spi_8h_a11c8477735b9251a354f79018052cea1}\label{Spi_8h_a11c8477735b9251a354f79018052cea1}} 
+spi\+\_\+reg \mbox{\hyperlink{Spi_8h_a11c8477735b9251a354f79018052cea1}{Spi\+\_\+\+Port\+Output}}
+\begin{DoxyCompactList}\small\item\em Atmel P\+O\+RT. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{Spi_8h_aac6e04e871615a632d85f4f025dd186d}\label{Spi_8h_aac6e04e871615a632d85f4f025dd186d}} 
+spi\+\_\+reg \mbox{\hyperlink{Spi_8h_aac6e04e871615a632d85f4f025dd186d}{Spi\+\_\+\+Port\+Pullup}}
+\begin{DoxyCompactList}\small\item\em Atmel P\+O\+RT alias. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{Spi_8h_a84a5780048a545d63c5bac43ffa953f8}\label{Spi_8h_a84a5780048a545d63c5bac43ffa953f8}} 
+spi\+\_\+reg \mbox{\hyperlink{Spi_8h_a84a5780048a545d63c5bac43ffa953f8}{Spi\+\_\+\+S\+P\+CR}}
+\begin{DoxyCompactList}\small\item\em S\+PI Control Register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{Spi_8h_ae5319f5544831747d8a0ba856ce9ef7b}\label{Spi_8h_ae5319f5544831747d8a0ba856ce9ef7b}} 
+spi\+\_\+reg \mbox{\hyperlink{Spi_8h_ae5319f5544831747d8a0ba856ce9ef7b}{Spi\+\_\+\+S\+P\+SR}}
+\begin{DoxyCompactList}\small\item\em S\+PI Status Register. \end{DoxyCompactList}\item 
+spi\+\_\+reg \mbox{\hyperlink{Spi_8h_a82096f50267fe9862f6b981f5fa39385}{Spi\+\_\+\+S\+P\+DR}}
+\begin{DoxyCompactList}\small\item\em S\+PI Data Register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{Spi_8h_a4bb557c75bcbbc368ae7282f15c5172c}\label{Spi_8h_a4bb557c75bcbbc368ae7282f15c5172c}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Data\+Ready}
+\item 
+\mbox{\Hypertarget{Spi_8h_a931b310f3fe4dce6eccbbe5c572a961b}\label{Spi_8h_a931b310f3fe4dce6eccbbe5c572a961b}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Ss}
+\item 
+\mbox{\Hypertarget{Spi_8h_a5c8ea8b321c43e4af307f7a692f346fb}\label{Spi_8h_a5c8ea8b321c43e4af307f7a692f346fb}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Mosi}
+\item 
+\mbox{\Hypertarget{Spi_8h_a16a98621031ee5b1a9cab27f789840a1}\label{Spi_8h_a16a98621031ee5b1a9cab27f789840a1}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Miso}
+\item 
+\mbox{\Hypertarget{Spi_8h_a4706ecd0e784d4500b48d0eb306381f0}\label{Spi_8h_a4706ecd0e784d4500b48d0eb306381f0}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Sck}
+\item 
+\mbox{\Hypertarget{Spi_8h_a14aa04b873018a66c21d427a643b4a61}\label{Spi_8h_a14aa04b873018a66c21d427a643b4a61}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Master\+Slave\+Select}
+\item 
+\mbox{\Hypertarget{Spi_8h_a0575549ab1dc8a4f564464680f9a26d1}\label{Spi_8h_a0575549ab1dc8a4f564464680f9a26d1}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Clock\+Bit0}
+\item 
+\mbox{\Hypertarget{Spi_8h_aac4e605c861e1160b147a3aaeab73511}\label{Spi_8h_aac4e605c861e1160b147a3aaeab73511}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Clock\+Bit1}
+\item 
+\mbox{\Hypertarget{Spi_8h_a967c787505d8e5c50275662c18df5bf3}\label{Spi_8h_a967c787505d8e5c50275662c18df5bf3}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Double\+Clock}
+\item 
+\mbox{\Hypertarget{Spi_8h_adb95cc70cb7645cad21dd92113681d2f}\label{Spi_8h_adb95cc70cb7645cad21dd92113681d2f}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Enable}
+\item 
+\mbox{\Hypertarget{Spi_8h_a987ff43c57d64b84a75e50ec17aa902b}\label{Spi_8h_a987ff43c57d64b84a75e50ec17aa902b}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Interrupt\+Enable}
+\item 
+\mbox{\Hypertarget{Spi_8h_afdfba4343f7744501188467f517be1d5}\label{Spi_8h_afdfba4343f7744501188467f517be1d5}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Interrupt\+Flag}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\ttfamily \mbox{\hyperlink{Spi_8h}{Spi.\+h}}} declares S\+PI hardware types and variables common to the {\itshape S\+PI Master} and {\itshape S\+PI Slave}.
+\begin{DoxyItemize}
+\item S\+PI Master\+: {\ttfamily usb-\/bridge}~\newline
+
+\item S\+PI Slave\+: {\ttfamily vis-\/spi-\/out}~\newline
+
+\end{DoxyItemize}{\bfseries{Definitions}} for {\bfseries{I/O register}} and {\bfseries{bit number}} depend on the {\itshape compiler} and {\itshape target}\+:
+\begin{DoxyItemize}
+\item {\ttfamily \mbox{\hyperlink{Spi-HardwareFake_8h_source}{lib/test/\+Spi-\/\+Hardware\+Fake.\+h}}} defines i/o for {\bfseries{compiler}} {\ttfamily gcc}, {\bfseries{target}} {\ttfamily unit-\/test}
+\item {\ttfamily \mbox{\hyperlink{usb-bridge_2src_2Spi-Hardware_8h_source}{usb-\/bridge/src/\+Spi-\/\+Hardware.\+h}}} defines i/o for {\bfseries{compiler}} {\ttfamily avr-\/gcc}, {\bfseries{target}} {\ttfamily usb-\/bridge}
+\item {\ttfamily \mbox{\hyperlink{vis-spi-out_2src_2Spi-Hardware_8h_source}{vis-\/spi-\/out/src/\+Spi-\/\+Hardware.\+h}}} defines i/o for {\bfseries{compiler}} {\ttfamily avr-\/gcc}, {\bfseries{target}} {\ttfamily vis-\/spi-\/out}
+\end{DoxyItemize}A S\+PI interface usually only has four S\+PI pins\+:
+\begin{DoxyItemize}
+\item {\bfseries{SS}}\+: {\itshape Slave Select}
+\item {\bfseries{S\+CK}}\+: {\itshape S\+PI Clock}
+\item {\bfseries{M\+O\+SI}}\+: {\itshape Master} data {\itshape O\+UT}, {\itshape Slave} data {\itshape IN}
+\item {\bfseries{M\+I\+SO}}\+: {\itshape Master} data {\itshape IN}, {\itshape Slave} data {\itshape O\+UT}
+\end{DoxyItemize}The development kit uses a 5th S\+PI pin\+:
+\begin{DoxyItemize}
+\item {\bfseries{DR}}\+: {\itshape Data Ready}
+\end{DoxyItemize}{\bfseries{Data Ready}} signals when {\ttfamily vis-\/spi-\/out} is ready for a {\bfseries{S\+PI transmission}}\+:
+\begin{DoxyItemize}
+\item {\bfseries{Data Ready}} is normally H\+I\+GH
+\item {\ttfamily vis-\/spi-\/out} {\bfseries{drives Data Ready L\+OW}} to signal ready for transmission.
+\item {\ttfamily vis-\/spi-\/out} {\bfseries{drives Data Ready H\+I\+GH}} when transmission is done.
+\item for {\itshape multi-\/byte transmissions}, {\bfseries{Data Ready}} is driven {\bfseries{L\+OW before each byte}} and {\bfseries{H\+I\+GH after each byte}}.
+\end{DoxyItemize}
+
+\doxysubsection*{A\+PI}
+
+uint8\+\_\+t Read\+Spi\+Status\+Register(void);~\newline
+ uint8\+\_\+t Read\+Spi\+Data\+Register(void);~\newline
+ void \mbox{\hyperlink{Spi_8h_aed96203cc269b893b63bca5950d21771}{Clear\+Spi\+Interrupt\+Flag(void)}};~\newline
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{Spi_8h_a023af672cfffd023a8f1a4fb5c9d7694}\label{Spi_8h_a023af672cfffd023a8f1a4fb5c9d7694}} 
+\index{Spi.h@{Spi.h}!\_EnableSpiModule@{\_EnableSpiModule}}
+\index{\_EnableSpiModule@{\_EnableSpiModule}!Spi.h@{Spi.h}}
+\doxysubsubsection{\texorpdfstring{\_EnableSpiModule()}{\_EnableSpiModule()}}
+{\footnotesize\ttfamily void \+\_\+\+Enable\+Spi\+Module (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Set S\+PE bit in S\+P\+CR (S\+PI Control Register) to enable S\+PI. This bit must be set to enable any S\+PI operations.\mbox{\Hypertarget{Spi_8h_ac49dafccb5a49148ea7b150634c0116a}\label{Spi_8h_ac49dafccb5a49148ea7b150634c0116a}} 
+\index{Spi.h@{Spi.h}!\_SpiTransferIsDone@{\_SpiTransferIsDone}}
+\index{\_SpiTransferIsDone@{\_SpiTransferIsDone}!Spi.h@{Spi.h}}
+\doxysubsubsection{\texorpdfstring{\_SpiTransferIsDone()}{\_SpiTransferIsDone()}}
+{\footnotesize\ttfamily bool \+\_\+\+Spi\+Transfer\+Is\+Done (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\+\_\+\+Spi\+Transfer\+Is\+Done behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns true if the S\+PI Interrupt Flag is set~\newline
+
+\item returns false if the S\+PI Interrupt Flag is clear~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Spi_8h_aed96203cc269b893b63bca5950d21771}\label{Spi_8h_aed96203cc269b893b63bca5950d21771}} 
+\index{Spi.h@{Spi.h}!ClearSpiInterruptFlag@{ClearSpiInterruptFlag}}
+\index{ClearSpiInterruptFlag@{ClearSpiInterruptFlag}!Spi.h@{Spi.h}}
+\doxysubsubsection{\texorpdfstring{ClearSpiInterruptFlag()}{ClearSpiInterruptFlag()}}
+{\footnotesize\ttfamily void Clear\+Spi\+Interrupt\+Flag (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Manually clear S\+PI interrupt flag.
+
+Clear\+Spi\+Interrupt\+Flag behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item first reads S\+PI status register~\newline
+
+\item then reads S\+PI data register~\newline
+
+\end{DoxyItemize}
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{Spi_8h_a82096f50267fe9862f6b981f5fa39385}\label{Spi_8h_a82096f50267fe9862f6b981f5fa39385}} 
+\index{Spi.h@{Spi.h}!Spi\_SPDR@{Spi\_SPDR}}
+\index{Spi\_SPDR@{Spi\_SPDR}!Spi.h@{Spi.h}}
+\doxysubsubsection{\texorpdfstring{Spi\_SPDR}{Spi\_SPDR}}
+{\footnotesize\ttfamily spi\+\_\+reg Spi\+\_\+\+S\+P\+DR}
+
+
+
+S\+PI Data Register. 
+
+S\+PI Data Register. 

@@ -1,0 +1,208 @@
+\hypertarget{UartSpi_8h}{}\doxysection{lib/src/\+Uart\+Spi.h File Reference}
+\label{UartSpi_8h}\index{lib/src/UartSpi.h@{lib/src/UartSpi.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_ad23be0e7fa7ec056bf024934cf5df38f}\label{UartSpi_8h_ad23be0e7fa7ec056bf024934cf5df38f}} 
+typedef uint8\+\_\+t volatile $\ast$const {\bfseries uspi\+\_\+ptr}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a47ce7a6dd00f793943e3c877863bd82d}\label{UartSpi_8h_a47ce7a6dd00f793943e3c877863bd82d}} 
+typedef uint16\+\_\+t volatile $\ast$const {\bfseries uspi\+\_\+ptr16}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a2bd7b1f697bddc540d372905aeb6fd67}\label{UartSpi_8h_a2bd7b1f697bddc540d372905aeb6fd67}} 
+typedef const uint8\+\_\+t {\bfseries uspi\+\_\+pin}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a2a2e7214b1a6709bcb0237080c0190bb}\label{UartSpi_8h_a2a2e7214b1a6709bcb0237080c0190bb}} 
+typedef const uint8\+\_\+t {\bfseries uspi\+\_\+bit}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{UartSpi_8h_ae8027c5bb232f7040f6e46734962654d}{Run\+Spi\+At5\+Mhz}} (void)
+\item 
+void \mbox{\hyperlink{UartSpi_8h_adc59a41741f0b376c5e490bdec9e2372}{Set\+Sck\+As\+Output}} (void)
+\item 
+\mbox{\Hypertarget{UartSpi_8h_abf24b035c004fa6dff14fc6b313e4219}\label{UartSpi_8h_abf24b035c004fa6dff14fc6b313e4219}} 
+void {\bfseries Adc\+Conv\+Idle\+Low} (void)
+\item 
+void \mbox{\hyperlink{UartSpi_8h_a5de8d6a60b4e8258d700ae8e96276a3d}{Set\+Adc\+Conv\+As\+Output}} (void)
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a5e42bb1c6ce7fa9de0a61125ccd7df41}\label{UartSpi_8h_a5e42bb1c6ce7fa9de0a61125ccd7df41}} 
+void {\bfseries Enable\+Atmega328\+Usart\+In\+Spi\+Master\+Mode} (void)
+\item 
+void \mbox{\hyperlink{UartSpi_8h_ab9bcab91233ca05fc00c4bf197da50ea}{Use\+Spi\+Data\+Mode\+Cpol1\+C\+Pha1}} (void)
+\item 
+void \mbox{\hyperlink{UartSpi_8h_a1724f53073fbcc17107d9dbdf9022b29}{Cfg\+Spi\+To\+Transfer\+Msb\+First}} (void)
+\item 
+void \mbox{\hyperlink{UartSpi_8h_af03c5322e52a68ecb14ab4d6ae337ba2}{Give\+Spi\+Control\+Over\+Miso\+And\+Mosi\+Pins}} (void)
+\item 
+\mbox{\Hypertarget{UartSpi_8h_ad4da826c00faf2a6093dde4df9bd6129}\label{UartSpi_8h_ad4da826c00faf2a6093dde4df9bd6129}} 
+void {\bfseries Spi\+Master\+Cfg} (void)
+\item 
+void \mbox{\hyperlink{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}{Uart\+Spi\+Init}} (void)
+\item 
+\mbox{\Hypertarget{UartSpi_8h_ae5612835df4c95e42540a0dce24780ff}\label{UartSpi_8h_ae5612835df4c95e42540a0dce24780ff}} 
+void {\bfseries Start\+Adc\+Conversion} (void)
+\item 
+\mbox{\Hypertarget{UartSpi_8h_ade90bac1239d2f791f76cb9e91138b18}\label{UartSpi_8h_ade90bac1239d2f791f76cb9e91138b18}} 
+void {\bfseries Start\+Adc\+Readout} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_acd7fc0ffb1e9aa45e1cec54c4fa2d153}\label{UartSpi_8h_acd7fc0ffb1e9aa45e1cec54c4fa2d153}} 
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+ddr}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_ac1869a47588df1c60d2862931ecfe53f}\label{UartSpi_8h_ac1869a47588df1c60d2862931ecfe53f}} 
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+port}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_aef2684539b6407d399daeafb972f9cd7}\label{UartSpi_8h_aef2684539b6407d399daeafb972f9cd7}} 
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+U\+C\+S\+R0A}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a5a4723dd0076de92f54e74ff6c5e67b0}\label{UartSpi_8h_a5a4723dd0076de92f54e74ff6c5e67b0}} 
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+U\+C\+S\+R0B}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_afc8598c2eacac3cad7e8c75c1c1e7af8}\label{UartSpi_8h_afc8598c2eacac3cad7e8c75c1c1e7af8}} 
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+U\+C\+S\+R0C}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a2c2e40b0342e445e7f9e3e443f7be950}\label{UartSpi_8h_a2c2e40b0342e445e7f9e3e443f7be950}} 
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+U\+D\+R0}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a5e0e878a32e13642a8bb4de4f98573b3}\label{UartSpi_8h_a5e0e878a32e13642a8bb4de4f98573b3}} 
+uspi\+\_\+ptr16 {\bfseries Uart\+Spi\+\_\+\+U\+B\+R\+R0}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_af0d652e86393c3b28fd26faab7e95d4c}\label{UartSpi_8h_af0d652e86393c3b28fd26faab7e95d4c}} 
+uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Miso}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_ad75e9a5ba001841e0c5bd39587844a09}\label{UartSpi_8h_ad75e9a5ba001841e0c5bd39587844a09}} 
+uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Adc\+Conv}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a638e25290668dd5167ff8514bbbc2f4f}\label{UartSpi_8h_a638e25290668dd5167ff8514bbbc2f4f}} 
+uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Sck}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_ad7a98ea5b45b53fa81c6203cf43349de}\label{UartSpi_8h_ad7a98ea5b45b53fa81c6203cf43349de}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+M\+S\+E\+L00}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_acdba72af5dd46e13068ff4cecf8a8021}\label{UartSpi_8h_acdba72af5dd46e13068ff4cecf8a8021}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+M\+S\+E\+L01}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a1583ef5f70db466d486b804c118ca95f}\label{UartSpi_8h_a1583ef5f70db466d486b804c118ca95f}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+R\+X\+E\+N0}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_afee114d4a26cbdbb4da28477d1f74738}\label{UartSpi_8h_afee114d4a26cbdbb4da28477d1f74738}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+T\+X\+E\+N0}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_abb3c1af8ca684e8664bd023006ed468f}\label{UartSpi_8h_abb3c1af8ca684e8664bd023006ed468f}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+C\+P\+O\+L0}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_ab51bdf15fd460d657e7b07c4905edef5}\label{UartSpi_8h_ab51bdf15fd460d657e7b07c4905edef5}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+C\+P\+H\+A0}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_afceabcbd67e789367af932d70208b821}\label{UartSpi_8h_afceabcbd67e789367af932d70208b821}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+D\+O\+R\+D0}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a1f5f0cddf449c7eda1d7506fec9fa905}\label{UartSpi_8h_a1f5f0cddf449c7eda1d7506fec9fa905}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+D\+R\+E0}
+\item 
+\mbox{\Hypertarget{UartSpi_8h_a89a59fcf10e494cf20a81d5646bcc4ea}\label{UartSpi_8h_a89a59fcf10e494cf20a81d5646bcc4ea}} 
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+R\+X\+C0}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxysubsection*{A\+PI}
+
+void \mbox{\hyperlink{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}{Uart\+Spi\+Init(void)}};~\newline
+ void Start\+Adc\+Conversion(void);~\newline
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{UartSpi_8h_a1724f53073fbcc17107d9dbdf9022b29}\label{UartSpi_8h_a1724f53073fbcc17107d9dbdf9022b29}} 
+\index{UartSpi.h@{UartSpi.h}!CfgSpiToTransferMsbFirst@{CfgSpiToTransferMsbFirst}}
+\index{CfgSpiToTransferMsbFirst@{CfgSpiToTransferMsbFirst}!UartSpi.h@{UartSpi.h}}
+\doxysubsubsection{\texorpdfstring{CfgSpiToTransferMsbFirst()}{CfgSpiToTransferMsbFirst()}}
+{\footnotesize\ttfamily void Cfg\+Spi\+To\+Transfer\+Msb\+First (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Transfer M\+SB first\mbox{\Hypertarget{UartSpi_8h_af03c5322e52a68ecb14ab4d6ae337ba2}\label{UartSpi_8h_af03c5322e52a68ecb14ab4d6ae337ba2}} 
+\index{UartSpi.h@{UartSpi.h}!GiveSpiControlOverMisoAndMosiPins@{GiveSpiControlOverMisoAndMosiPins}}
+\index{GiveSpiControlOverMisoAndMosiPins@{GiveSpiControlOverMisoAndMosiPins}!UartSpi.h@{UartSpi.h}}
+\doxysubsubsection{\texorpdfstring{GiveSpiControlOverMisoAndMosiPins()}{GiveSpiControlOverMisoAndMosiPins()}}
+{\footnotesize\ttfamily void Give\+Spi\+Control\+Over\+Miso\+And\+Mosi\+Pins (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Override normal port operation for S\+PI M\+O\+S\+I/\+M\+I\+SO\+:
+\begin{DoxyItemize}
+\item enable the transmitter\+:
+\begin{DoxyItemize}
+\item the U\+A\+RT Tx pin becomes the S\+PI M\+O\+SI
+\end{DoxyItemize}
+\item enable the receiver\+:
+\begin{DoxyItemize}
+\item the U\+A\+RT Rx pin becomes the S\+PI M\+I\+SO
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{UartSpi_8h_ae8027c5bb232f7040f6e46734962654d}\label{UartSpi_8h_ae8027c5bb232f7040f6e46734962654d}} 
+\index{UartSpi.h@{UartSpi.h}!RunSpiAt5Mhz@{RunSpiAt5Mhz}}
+\index{RunSpiAt5Mhz@{RunSpiAt5Mhz}!UartSpi.h@{UartSpi.h}}
+\doxysubsubsection{\texorpdfstring{RunSpiAt5Mhz()}{RunSpiAt5Mhz()}}
+{\footnotesize\ttfamily void Run\+Spi\+At5\+Mhz (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Configure U\+S\+A\+RT to clock A\+DC S\+CK at {\ttfamily fosc/2 = 5M\+Hz}
+\begin{DoxyItemize}
+\item {\ttfamily fosc = 10M\+Hz} (10M\+Hz external oscillator)
+\item {\bfseries{baudrate}} in bits per second {\ttfamily = fosc/(2$\ast$(U\+B\+B\+R0+1))}
+\item set {\ttfamily U\+B\+B\+R0=0} for {\bfseries{baudrate}} {\ttfamily = fosc/2}
+\end{DoxyItemize}\mbox{\Hypertarget{UartSpi_8h_a5de8d6a60b4e8258d700ae8e96276a3d}\label{UartSpi_8h_a5de8d6a60b4e8258d700ae8e96276a3d}} 
+\index{UartSpi.h@{UartSpi.h}!SetAdcConvAsOutput@{SetAdcConvAsOutput}}
+\index{SetAdcConvAsOutput@{SetAdcConvAsOutput}!UartSpi.h@{UartSpi.h}}
+\doxysubsubsection{\texorpdfstring{SetAdcConvAsOutput()}{SetAdcConvAsOutput()}}
+{\footnotesize\ttfamily void Set\+Adc\+Conv\+As\+Output (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Adc\+Conv is a general purpose i/o pin.
+\begin{DoxyItemize}
+\item configure as an output
+\item controls start of conversion
+\item controls start of readout
+\end{DoxyItemize}\mbox{\Hypertarget{UartSpi_8h_adc59a41741f0b376c5e490bdec9e2372}\label{UartSpi_8h_adc59a41741f0b376c5e490bdec9e2372}} 
+\index{UartSpi.h@{UartSpi.h}!SetSckAsOutput@{SetSckAsOutput}}
+\index{SetSckAsOutput@{SetSckAsOutput}!UartSpi.h@{UartSpi.h}}
+\doxysubsubsection{\texorpdfstring{SetSckAsOutput()}{SetSckAsOutput()}}
+{\footnotesize\ttfamily void Set\+Sck\+As\+Output (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Cfg X\+CK as an output. C\+P\+OL=1 makes the clock idle high.\mbox{\Hypertarget{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}\label{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}} 
+\index{UartSpi.h@{UartSpi.h}!UartSpiInit@{UartSpiInit}}
+\index{UartSpiInit@{UartSpiInit}!UartSpi.h@{UartSpi.h}}
+\doxysubsubsection{\texorpdfstring{UartSpiInit()}{UartSpiInit()}}
+{\footnotesize\ttfamily void Uart\+Spi\+Init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Uart\+Spi\+Init behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item clocks S\+PI bus at 5M\+Hz~\newline
+
+\item sets Sck as an output~\newline
+
+\item sets Adc\+Conv to idle low~\newline
+
+\item sets Adc\+Conv as an output~\newline
+
+\item enables the U\+A\+RT in Master S\+PI Mode~\newline
+
+\item uses S\+PI data mode C\+P\+OL 1 C\+P\+HA 1~\newline
+
+\item cfgs S\+PI to transfer M\+SB first~\newline
+
+\item gives S\+PI control over Miso and Mosi pin behavior~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{UartSpi_8h_ab9bcab91233ca05fc00c4bf197da50ea}\label{UartSpi_8h_ab9bcab91233ca05fc00c4bf197da50ea}} 
+\index{UartSpi.h@{UartSpi.h}!UseSpiDataModeCpol1CPha1@{UseSpiDataModeCpol1CPha1}}
+\index{UseSpiDataModeCpol1CPha1@{UseSpiDataModeCpol1CPha1}!UartSpi.h@{UartSpi.h}}
+\doxysubsubsection{\texorpdfstring{UseSpiDataModeCpol1CPha1()}{UseSpiDataModeCpol1CPha1()}}
+{\footnotesize\ttfamily void Use\+Spi\+Data\+Mode\+Cpol1\+C\+Pha1 (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Use S\+PI data mode\+: C\+P\+OL=1, C\+P\+HA=1
+\begin{DoxyItemize}
+\item clock idles high
+\item load data on falling clock edge
+\item sample data on rising clock edge
+\end{DoxyItemize}

@@ -1,0 +1,28 @@
+\hypertarget{Cmd_8h}{}\doxysection{N\+O\+T-\/\+U\+S\+E\+D/\+Cmd.h File Reference}
+\label{Cmd_8h}\index{NOT-\/USED/Cmd.h@{NOT-\/USED/Cmd.h}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}\label{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}} 
+typedef const uint8\+\_\+t \mbox{\hyperlink{Cmd_8h_ad48b407655ab242ef8b80e5ad0084399}{cmd}}
+\begin{DoxyCompactList}\small\item\em Keys in the command lookup table are type {\ttfamily cmd}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{Cmd_8h_a9d6754f6e359941e4e2b11d2bc8ad526}\label{Cmd_8h_a9d6754f6e359941e4e2b11d2bc8ad526}} 
+typedef void() \mbox{\hyperlink{Cmd_8h_a9d6754f6e359941e4e2b11d2bc8ad526}{Cmd}}(void)
+\begin{DoxyCompactList}\small\item\em Functions in the command lookup table are type {\ttfamily Cmd}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Commands are described in doc \char`\"{}\+U\+S\+B\+Protocol\char`\"{}\+: a table showing the expected payload and responses (if any) for each command.
+
+Each command is one byte. Firmware source code refers to this command byte as the {\ttfamily key}.
+
+The user issues a command by sending the command byte ({\ttfamily key}) to the firmware. The firmware looks up the command {\ttfamily key} in a {\itshape jump table} and returns the function that performs that command. The {\itshape jump table} is just an {\bfseries{array of function pointers}}, one function for each command in \char`\"{}\+U\+S\+B\+Protocol\char`\"{}.
+
+Firmware source code names both the {\bfseries{key}} and the {\bfseries{function}} with the command\textquotesingle{}s name\+:~\newline
+
+\begin{DoxyItemize}
+\item the {\bfseries{key}} name is the command name with a {\ttfamily \+\_\+key} suffix
+\item the {\bfseries{function}} name is simply the command name
+\end{DoxyItemize}
+
+T\+O\+DO\+: command lookup table replaced by switch-\/case block. Datatypes {\ttfamily cmd} and {\ttfamily Cmd} are not used. Delete this file and move the documentation somewhere else. 

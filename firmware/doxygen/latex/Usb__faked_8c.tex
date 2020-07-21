@@ -1,0 +1,239 @@
+\hypertarget{Usb__faked_8c}{}\doxysection{lib/test/\+Usb\+\_\+faked.c File Reference}
+\label{Usb__faked_8c}\index{lib/test/Usb\_faked.c@{lib/test/Usb\_faked.c}}
+{\ttfamily \#include \char`\"{}Usb\+\_\+faked.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Mock.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Usb.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_a000cd77243c7934a6750b13b2c5aa056}\label{Usb__faked_8c_a000cd77243c7934a6750b13b2c5aa056}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Ft\+Clock\+Databus} (uint8\+\_\+t arg1)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_ad72ab12cb3203d7862d6715eac5ecad0}{\+\_\+\+Ft\+Clock\+Databus\+\_\+fake}} (uint8\+\_\+t direction)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_ab30d63c46604c8df5eeea7f7e64f9bba}\label{Usb__faked_8c_ab30d63c46604c8df5eeea7f7e64f9bba}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Ft\+Read\+Databus} (uint8\+\_\+t $\ast$arg1)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_a3f20119c8fb5b3442bb43397a6fd4eeb}{\+\_\+\+Ft\+Read\+Databus\+\_\+fake}} (uint8\+\_\+t $\ast$pbyte)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_af2b332934621bb148ae1c880aa4d20ed}\label{Usb__faked_8c_af2b332934621bb148ae1c880aa4d20ed}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Ft\+Write\+Databus} (uint8\+\_\+t arg1)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_a1f072a6f59297cf52448aa4bd60472cb}{\+\_\+\+Ft\+Write\+Databus\+\_\+fake}} (uint8\+\_\+t byte)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_a47b78d678ff0b81548fe8ca468eb8fac}\label{Usb__faked_8c_a47b78d678ff0b81548fe8ca468eb8fac}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Ft\+Databus\+Pin\+Direction} (uint8\+\_\+t arg1)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_a2bda3e1deb2d6f55f2bf61f5759d29b0}{\+\_\+\+Ft\+Databus\+Pin\+Direction\+\_\+fake}} (uint8\+\_\+t pin\+\_\+direction)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_ad5208547c54c2191ec598474d15225d3}\label{Usb__faked_8c_ad5208547c54c2191ec598474d15225d3}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Select\+F\+T221X} (void)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_ab76a3f22fbeb6ecc364fe3ed4a124989}{Ft\+Select\+F\+T221\+X\+\_\+fake}} (void)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_a191256289cee7212b3759d14b1ebbd63}\label{Usb__faked_8c_a191256289cee7212b3759d14b1ebbd63}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Bus\+Turnaround} (void)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_a99c1ec9cb8e25aebcf47c2106787bd12}{Ft\+Bus\+Turnaround\+\_\+fake}} (void)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_a91296b5f3132bbdb04a901089a3ce502}\label{Usb__faked_8c_a91296b5f3132bbdb04a901089a3ce502}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Is\+Ok} (void)
+\item 
+bool \mbox{\hyperlink{Usb__faked_8c_adab5752171d9bbc72f1f255e75a24a7c}{Ft\+Is\+Ok\+\_\+fake}} (void)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_a902e3be33a0c2de74e2e37ee679e0026}\label{Usb__faked_8c_a902e3be33a0c2de74e2e37ee679e0026}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Read} (uint8\+\_\+t $\ast$arg1)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_a712a3b1139c6082265766534e36b9ad5}{Ft\+Read\+\_\+fake}} (uint8\+\_\+t $\ast$pbyte)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_a9685881111ff41856d68e81bdcaae249}\label{Usb__faked_8c_a9685881111ff41856d68e81bdcaae249}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Write} (uint8\+\_\+t arg1)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_aded36ff4c70790135ce48c17d9c9b4fd}{Ft\+Write\+\_\+fake}} (uint8\+\_\+t byte)
+\item 
+\mbox{\Hypertarget{Usb__faked_8c_a52a3f4aab3cca7c1c7819c6c63ed8860}\label{Usb__faked_8c_a52a3f4aab3cca7c1c7819c6c63ed8860}} 
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Unselect\+F\+T221X} (void)
+\item 
+void \mbox{\hyperlink{Usb__faked_8c_aef5068cb0eca8e2d7cb4c3f5269885c4}{Ft\+Unselect\+F\+T221\+X\+\_\+fake}} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.~\newline
+ Tests access {\ttfamily mock} to see what the {\bfseries{function under test}} does\+:~\newline
+
+\begin{DoxyItemize}
+\item {\bfseries{calls made}} by the function under test~\newline
+
+\item {\bfseries{args passed}} by those calls.~\newline
+ {\ttfamily Test\+Suite.\+exe} seg faults if any test accesses {\ttfamily mock} without defining {\ttfamily mock}.~\newline
+ {\ttfamily Mock.\+h} declares {\ttfamily mock}\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{extern} Mock\_s mock;}
+\end{DoxyCode}
+
+\end{DoxyItemize}
+
+{\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Mock\_s *mock;}
+\end{DoxyCode}
+
+
+The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
+ Create/destroy {\ttfamily mock} for an entire test suite by pointing {\ttfamily set\+Up} and {\ttfamily tear\+Down} in the {\ttfamily test\+\_\+runner}\+:~\newline
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{setUp = SetUp\_Mock; tearDown = TearDown\_Mock;}
+\end{DoxyCode}
+
+
+For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
+ View all calls made (not an assertion, but helpful for debug) 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{PrintAllCalls(mock);}
+\end{DoxyCode}
+
+
+Assert a specific call is made 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{uint16\_t call\_n = 1;}
+\DoxyCodeLine{TEST\_ASSERT\_TRUE(}
+\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"\_SomeCall"})}
+\DoxyCodeLine{    );}
+\end{DoxyCode}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{Usb__faked_8c_ad72ab12cb3203d7862d6715eac5ecad0}\label{Usb__faked_8c_ad72ab12cb3203d7862d6715eac5ecad0}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!\_FtClockDatabus\_fake@{\_FtClockDatabus\_fake}}
+\index{\_FtClockDatabus\_fake@{\_FtClockDatabus\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{\_FtClockDatabus\_fake()}{\_FtClockDatabus\_fake()}}
+{\footnotesize\ttfamily void \+\_\+\+Ft\+Clock\+Databus\+\_\+fake (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{direction }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\item arg1
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_a2bda3e1deb2d6f55f2bf61f5759d29b0}\label{Usb__faked_8c_a2bda3e1deb2d6f55f2bf61f5759d29b0}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!\_FtDatabusPinDirection\_fake@{\_FtDatabusPinDirection\_fake}}
+\index{\_FtDatabusPinDirection\_fake@{\_FtDatabusPinDirection\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{\_FtDatabusPinDirection\_fake()}{\_FtDatabusPinDirection\_fake()}}
+{\footnotesize\ttfamily void \+\_\+\+Ft\+Databus\+Pin\+Direction\+\_\+fake (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{pin\+\_\+direction }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name~\newline
+
+\item arg1
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_a3f20119c8fb5b3442bb43397a6fd4eeb}\label{Usb__faked_8c_a3f20119c8fb5b3442bb43397a6fd4eeb}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!\_FtReadDatabus\_fake@{\_FtReadDatabus\_fake}}
+\index{\_FtReadDatabus\_fake@{\_FtReadDatabus\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{\_FtReadDatabus\_fake()}{\_FtReadDatabus\_fake()}}
+{\footnotesize\ttfamily void \+\_\+\+Ft\+Read\+Databus\+\_\+fake (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{pbyte }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name~\newline
+
+\item arg1
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_a1f072a6f59297cf52448aa4bd60472cb}\label{Usb__faked_8c_a1f072a6f59297cf52448aa4bd60472cb}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!\_FtWriteDatabus\_fake@{\_FtWriteDatabus\_fake}}
+\index{\_FtWriteDatabus\_fake@{\_FtWriteDatabus\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{\_FtWriteDatabus\_fake()}{\_FtWriteDatabus\_fake()}}
+{\footnotesize\ttfamily void \+\_\+\+Ft\+Write\+Databus\+\_\+fake (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{byte }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name~\newline
+
+\item arg1
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_a99c1ec9cb8e25aebcf47c2106787bd12}\label{Usb__faked_8c_a99c1ec9cb8e25aebcf47c2106787bd12}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!FtBusTurnaround\_fake@{FtBusTurnaround\_fake}}
+\index{FtBusTurnaround\_fake@{FtBusTurnaround\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{FtBusTurnaround\_fake()}{FtBusTurnaround\_fake()}}
+{\footnotesize\ttfamily void Ft\+Bus\+Turnaround\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_adab5752171d9bbc72f1f255e75a24a7c}\label{Usb__faked_8c_adab5752171d9bbc72f1f255e75a24a7c}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!FtIsOk\_fake@{FtIsOk\_fake}}
+\index{FtIsOk\_fake@{FtIsOk\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{FtIsOk\_fake()}{FtIsOk\_fake()}}
+{\footnotesize\ttfamily bool Ft\+Is\+Ok\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_a712a3b1139c6082265766534e36b9ad5}\label{Usb__faked_8c_a712a3b1139c6082265766534e36b9ad5}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!FtRead\_fake@{FtRead\_fake}}
+\index{FtRead\_fake@{FtRead\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{FtRead\_fake()}{FtRead\_fake()}}
+{\footnotesize\ttfamily void Ft\+Read\+\_\+fake (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{pbyte }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name~\newline
+
+\item arg1
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_ab76a3f22fbeb6ecc364fe3ed4a124989}\label{Usb__faked_8c_ab76a3f22fbeb6ecc364fe3ed4a124989}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!FtSelectFT221X\_fake@{FtSelectFT221X\_fake}}
+\index{FtSelectFT221X\_fake@{FtSelectFT221X\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{FtSelectFT221X\_fake()}{FtSelectFT221X\_fake()}}
+{\footnotesize\ttfamily void Ft\+Select\+F\+T221\+X\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_aef5068cb0eca8e2d7cb4c3f5269885c4}\label{Usb__faked_8c_aef5068cb0eca8e2d7cb4c3f5269885c4}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!FtUnselectFT221X\_fake@{FtUnselectFT221X\_fake}}
+\index{FtUnselectFT221X\_fake@{FtUnselectFT221X\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{FtUnselectFT221X\_fake()}{FtUnselectFT221X\_fake()}}
+{\footnotesize\ttfamily void Ft\+Unselect\+F\+T221\+X\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\end{DoxyItemize}\mbox{\Hypertarget{Usb__faked_8c_aded36ff4c70790135ce48c17d9c9b4fd}\label{Usb__faked_8c_aded36ff4c70790135ce48c17d9c9b4fd}} 
+\index{Usb\_faked.c@{Usb\_faked.c}!FtWrite\_fake@{FtWrite\_fake}}
+\index{FtWrite\_fake@{FtWrite\_fake}!Usb\_faked.c@{Usb\_faked.c}}
+\doxysubsubsection{\texorpdfstring{FtWrite\_fake()}{FtWrite\_fake()}}
+{\footnotesize\ttfamily void Ft\+Write\+\_\+fake (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{byte }\end{DoxyParamCaption})}
+
+Fake records calls made by {\bfseries{function under test}}.
+
+Record\+:~\newline
+
+\begin{DoxyItemize}
+\item call name
+\item arg1
+\end{DoxyItemize}

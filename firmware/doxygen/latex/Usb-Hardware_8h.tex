@@ -1,0 +1,137 @@
+\hypertarget{Usb-Hardware_8h}{}\doxysection{usb-\/bridge/src/\+Usb-\/\+Hardware.h File Reference}
+\label{Usb-Hardware_8h}\index{usb-\/bridge/src/Usb-\/Hardware.h@{usb-\/bridge/src/Usb-\/Hardware.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$avr/io.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Usb.\+h\char`\"{}}\newline
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_ab992442dd2c0c5374a39ed14eab85d53}\label{Usb-Hardware_8h_ab992442dd2c0c5374a39ed14eab85d53}} 
+usb\+\_\+reg {\bfseries Ft\+Ctrl\+\_\+ddr} = \&D\+D\+RC
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_ab7091923ead96672739f33e82a096094}\label{Usb-Hardware_8h_ab7091923ead96672739f33e82a096094}} 
+usb\+\_\+reg {\bfseries Ft\+Ctrl\+\_\+port} = \&P\+O\+R\+TC
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_a1b7a5000fb5015d23662970079d1d0e1}\label{Usb-Hardware_8h_a1b7a5000fb5015d23662970079d1d0e1}} 
+usb\+\_\+reg {\bfseries Ft\+Ctrl\+\_\+pin} = \&P\+I\+NC
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_ac97196ef5dca036bc1fba36d67325424}\label{Usb-Hardware_8h_ac97196ef5dca036bc1fba36d67325424}} 
+usb\+\_\+reg {\bfseries Ft\+Data\+\_\+pin} = \&P\+I\+ND
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_acaf8f8bac074289392678352e8e3ddf6}\label{Usb-Hardware_8h_acaf8f8bac074289392678352e8e3ddf6}} 
+usb\+\_\+reg {\bfseries Ft\+Data\+\_\+ddr} = \&D\+D\+RD
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_aaf03b40c961fd03755952e6aff10c3f4}\label{Usb-Hardware_8h_aaf03b40c961fd03755952e6aff10c3f4}} 
+usb\+\_\+reg {\bfseries Ft\+Data\+\_\+port} = \&P\+O\+R\+TD
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_a85cc27df45f177467d7928fcc65e3752}\label{Usb-Hardware_8h_a85cc27df45f177467d7928fcc65e3752}} 
+usb\+\_\+pin {\bfseries Ft\+Miso} = P\+C2
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_ad76db4dc979cb09a5d2753ed60c81140}\label{Usb-Hardware_8h_ad76db4dc979cb09a5d2753ed60c81140}} 
+usb\+\_\+pin {\bfseries Ft\+Chip\+Select} = P\+C0
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_a7ea8b38f4b1f7f81f7fe4bff8e919dea}\label{Usb-Hardware_8h_a7ea8b38f4b1f7f81f7fe4bff8e919dea}} 
+usb\+\_\+pin {\bfseries Ft\+Clock} = P\+C1
+\item 
+\mbox{\Hypertarget{Usb-Hardware_8h_a434843a24a30c3f38faef5f0b432aa94}\label{Usb-Hardware_8h_a434843a24a30c3f38faef5f0b432aa94}} 
+usb\+\_\+pin {\bfseries Ft\+Miosio0} = P\+D0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\ttfamily usb-\/bridge} communicates over U\+SB via F\+T\+DI U\+SB Bridge IC {\ttfamily F\+T221X}
+
+About the {\ttfamily F\+T221X}\+:
+
+
+\begin{DoxyItemize}
+\item Provides an embedded interface to a {\bfseries{U\+SB host}}
+\begin{DoxyItemize}
+\item embedded system {\bfseries{microcontroller}} is the {\bfseries{F\+T1248 master}}
+\item {\bfseries{microcontroller}} sees {\ttfamily F\+T221X} as {\bfseries{F\+T1248 slave}}
+\item {\bfseries{U\+SB host}} sees {\ttfamily F\+T221X} as a {\bfseries{U\+SB device}}
+\item {\ttfamily U\+SB} protocol is entirely handled by the {\ttfamily F\+T221X}
+\end{DoxyItemize}
+\item Data\+:
+\begin{DoxyItemize}
+\item U\+SB 2.\+0 Full Speed capable
+\item Data transfer rate up to 1M\+Byte/s (T\+O\+DO\+: measure)
+\item 512-\/byte receive buffer
+\item 512-\/byte transmit buffer
+\end{DoxyItemize}
+\item U\+SB Driver options for Windows, Mac OS X, and Linux\+:
+\begin{DoxyItemize}
+\item Virtual Com Port (V\+CP)
+\begin{DoxyItemize}
+\item this is what {\ttfamily pyserial} uses
+\item Chromation uses {\ttfamily pyserial} for the Python A\+PI
+\end{DoxyItemize}
+\item D2\+XX
+\begin{DoxyItemize}
+\item F\+T\+D\+I-\/specific extended functionality
+\item write your own Python package to wrap D2\+XX A\+PI calls
+\begin{DoxyItemize}
+\item examples available on the internet
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Both types free to download from F\+T\+DI\+:
+\begin{DoxyItemize}
+\item \href{https://www.ftdichip.com/Drivers/VCP.htm}{\texttt{ https\+://www.\+ftdichip.\+com/\+Drivers/\+V\+C\+P.\+htm}}
+\item scroll down to your operating system
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\ttfamily F\+T221X} usage in Chromation {\ttfamily usb-\/bridge}\+:
+\begin{DoxyItemize}
+\item {\ttfamily U\+SB} to {\ttfamily F\+T1248}
+\begin{DoxyItemize}
+\item {\ttfamily usb-\/bridge} uses {\ttfamily F\+T1248} mode with 8-\/bit-\/wide data bus
+\item {\ttfamily U\+SB} protocol is entirely handled by the {\ttfamily F\+T221X}
+\begin{DoxyItemize}
+\item {\ttfamily usb-\/bridge} firmware implements an {\ttfamily F\+T1248} master
+\item {\ttfamily usb-\/bridge} firmware is ignorant of {\ttfamily U\+SB} specifics
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Program internal 2kB memory via F\+T\+DI G\+UI {\ttfamily F\+T\+\_\+\+Prog}\+:
+\begin{DoxyItemize}
+\item Chromation serial number\+: {\ttfamily C\+H\+R\+O\+M\+A\+T\+I\+O\+N123456}
+\begin{DoxyItemize}
+\item each dev-\/kit has a unique six-\/digit serial number
+\end{DoxyItemize}
+\item {\itshape Ft1248 Settings}
+\begin{DoxyItemize}
+\item {\itshape Clock Polarity High}\+: {\ttfamily uncheck}
+\item {\itshape Bit Order L\+SB}\+: {\ttfamily check}
+\item {\itshape Flow Ctrl not selected}\+: {\ttfamily check}
+\begin{DoxyItemize}
+\item implements flow control when {\ttfamily F\+T221X} is not selected
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item {\itshape C\+B\+US Signals}
+\begin{DoxyItemize}
+\item {\itshape C3}\+: {\ttfamily G\+P\+IO}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Flow control\+:
+\begin{DoxyItemize}
+\item when {\ttfamily F\+T221X} pin {\ttfamily CS\#} ({\bfseries{Not}} Chip Select) is H\+I\+GH\+:
+\item reflect status of receive buffer on {\ttfamily F\+T221X} pin {\ttfamily M\+I\+SO}
+\begin{DoxyItemize}
+\item receive buffer {\bfseries{has data}}\+: {\ttfamily M\+I\+SO} is {\bfseries{L\+OW}}
+\item receive buffer is empty\+: {\ttfamily M\+I\+SO} is {\bfseries{H\+I\+GH}}
+\item {\itshape usage\+:} wait for {\ttfamily M\+I\+SO} {\bfseries{L\+OW}} before a read
+\end{DoxyItemize}
+\item reflect status of transmit buffer on {\ttfamily F\+T221X} pin {\ttfamily M\+I\+O\+S\+IO\mbox{[}0\mbox{]}}
+\begin{DoxyItemize}
+\item transmit buffer {\bfseries{is full}}\+: {\ttfamily M\+I\+O\+S\+IO\mbox{[}0\mbox{]}} is {\bfseries{L\+OW}}
+\item transmit buffer has room\+: {\ttfamily M\+I\+O\+S\+IO\mbox{[}0\mbox{]}} is {\bfseries{H\+I\+GH}}
+\item {\itshape usage\+:} wait for {\ttfamily M\+I\+O\+S\+IO\mbox{[}0\mbox{]}} {\bfseries{H\+I\+GH}} before a write
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Dev-\/kit hard reset\+:
+\begin{DoxyItemize}
+\item {\ttfamily F\+T221X} pin {\ttfamily C\+B\+U\+S3} connects to the microcontroller R\+E\+S\+ET pin
+\item U\+SB host drives C\+B\+U\+S3 L\+OW to {\bfseries{hard reset}} the dev-\/kit 
+\end{DoxyItemize}
+\end{DoxyItemize}

@@ -1,0 +1,390 @@
+\hypertarget{Usb_8h}{}\doxysection{lib/src/\+Usb.h File Reference}
+\label{Usb_8h}\index{lib/src/Usb.h@{lib/src/Usb.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Usb_8h_a45fd67363fd5176dec144f81f5728c02}\label{Usb_8h_a45fd67363fd5176dec144f81f5728c02}} 
+typedef uint8\+\_\+t volatile $\ast$const {\bfseries usb\+\_\+reg}
+\item 
+\mbox{\Hypertarget{Usb_8h_a4e33b86ffdc03f54bf6f94d6a7a49584}\label{Usb_8h_a4e33b86ffdc03f54bf6f94d6a7a49584}} 
+typedef const uint8\+\_\+t {\bfseries usb\+\_\+pin}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Usb_8h_ae7d6029ad4b5f5331fac4d7f11d5a321}\label{Usb_8h_ae7d6029ad4b5f5331fac4d7f11d5a321}} 
+enum {\bfseries ft\+\_\+cmd} \{ {\bfseries Ft\+Read\+Cmd} =0x\+C6, 
+{\bfseries Ft\+Write\+Cmd} =0x86
+ \}
+\item 
+\mbox{\Hypertarget{Usb_8h_a94a9bf5c4decfdea8a0289d7171b9853}\label{Usb_8h_a94a9bf5c4decfdea8a0289d7171b9853}} 
+enum {\bfseries ft\+\_\+databus\+\_\+pin\+\_\+direction} \{ {\bfseries Ft\+In} =0x00, 
+{\bfseries Ft\+Out} =0x\+FF
+ \}
+\item 
+\mbox{\Hypertarget{Usb_8h_ac3eb2463a59f1ad3a2e07810e3b04054}\label{Usb_8h_ac3eb2463a59f1ad3a2e07810e3b04054}} 
+enum {\bfseries ft\+\_\+status} \{ {\bfseries Ft\+Error} =0, 
+{\bfseries Ft\+Ok} =1
+ \}
+\item 
+\mbox{\Hypertarget{Usb_8h_a0951226d1bfa6bf82ff3c284df82c763}\label{Usb_8h_a0951226d1bfa6bf82ff3c284df82c763}} 
+enum {\bfseries ft\+\_\+clock\+\_\+edge} \{ {\bfseries Ft\+Sample} =0, 
+{\bfseries Ft\+Drive} =1
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{Usb_8h_a2d804c9be32ebee64d82d1d4a737818d}{\+\_\+\+Ft\+Clock\+Databus}} (uint8\+\_\+t direction)
+\item 
+void \mbox{\hyperlink{Usb_8h_a743314baa5c1a8c1641becfc294aa3f1}{\+\_\+\+Ft\+Read\+Databus}} (uint8\+\_\+t $\ast$pbyte)
+\item 
+void \mbox{\hyperlink{Usb_8h_a53465365fd9154df9e7ebf5d971e0ee4}{\+\_\+\+Ft\+Write\+Databus}} (uint8\+\_\+t byte)
+\item 
+void \mbox{\hyperlink{Usb_8h_af068f8d14dc07d5d7f5a2cc38fee2d06}{\+\_\+\+Ft\+Databus\+Pin\+Direction}} (uint8\+\_\+t pin\+\_\+direction)
+\item 
+void \mbox{\hyperlink{Usb_8h_a4552875ccbe38f1c34825dd391c90c58}{Ft\+Select\+F\+T221X}} (void)
+\item 
+void \mbox{\hyperlink{Usb_8h_a6de206a884078a3ba1d7fdb3bc9374e2}{Ft\+Unselect\+F\+T221X}} (void)
+\item 
+void \mbox{\hyperlink{Usb_8h_acaf9c07ef4851b8c7d207525133faebb}{Ft\+Bus\+Turnaround}} (void)
+\item 
+bool \mbox{\hyperlink{Usb_8h_a043998603a62da8cbe306223d78535c2}{Ft\+Is\+Ok}} (void)
+\item 
+void \mbox{\hyperlink{Usb_8h_ac70293c43d8ccf81187313f241a26de2}{Ft\+Read}} (uint8\+\_\+t $\ast$pbyte)
+\item 
+void \mbox{\hyperlink{Usb_8h_ac0e5d30badf5676ceca134fa71323b76}{Ft\+Write}} (uint8\+\_\+t byte)
+\item 
+bool \mbox{\hyperlink{Usb_8h_a3081311c24ae86b950d6770c6a67cedb}{Usb\+Rxbuffer\+Is\+Empty}} (void)
+\item 
+bool \mbox{\hyperlink{Usb_8h_a379ae6fbbdf30b142ae85dad4da834f4}{Usb\+Txbuffer\+Is\+Full}} (void)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{Usb_8h_a4ed6f08cb0ec2adf9631d0932b30bbc5}{Usb\+Read\+Byte}} (uint8\+\_\+t $\ast$pbyte)
+\item 
+\mbox{\Hypertarget{Usb_8h_a844d4ef0e0d8cce1631cd26cee1a4989}\label{Usb_8h_a844d4ef0e0d8cce1631cd26cee1a4989}} 
+uint8\+\_\+t {\bfseries Usb\+Write\+Byte} (uint8\+\_\+t byte)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Usb_8h_ab7091923ead96672739f33e82a096094}\label{Usb_8h_ab7091923ead96672739f33e82a096094}} 
+usb\+\_\+reg {\bfseries Ft\+Ctrl\+\_\+port}
+\item 
+\mbox{\Hypertarget{Usb_8h_a1b7a5000fb5015d23662970079d1d0e1}\label{Usb_8h_a1b7a5000fb5015d23662970079d1d0e1}} 
+usb\+\_\+reg {\bfseries Ft\+Ctrl\+\_\+pin}
+\item 
+\mbox{\Hypertarget{Usb_8h_ac97196ef5dca036bc1fba36d67325424}\label{Usb_8h_ac97196ef5dca036bc1fba36d67325424}} 
+usb\+\_\+reg {\bfseries Ft\+Data\+\_\+pin}
+\item 
+\mbox{\Hypertarget{Usb_8h_acaf8f8bac074289392678352e8e3ddf6}\label{Usb_8h_acaf8f8bac074289392678352e8e3ddf6}} 
+usb\+\_\+reg {\bfseries Ft\+Data\+\_\+ddr}
+\item 
+\mbox{\Hypertarget{Usb_8h_aaf03b40c961fd03755952e6aff10c3f4}\label{Usb_8h_aaf03b40c961fd03755952e6aff10c3f4}} 
+usb\+\_\+reg {\bfseries Ft\+Data\+\_\+port}
+\item 
+\mbox{\Hypertarget{Usb_8h_a85cc27df45f177467d7928fcc65e3752}\label{Usb_8h_a85cc27df45f177467d7928fcc65e3752}} 
+usb\+\_\+pin {\bfseries Ft\+Miso}
+\item 
+\mbox{\Hypertarget{Usb_8h_ad76db4dc979cb09a5d2753ed60c81140}\label{Usb_8h_ad76db4dc979cb09a5d2753ed60c81140}} 
+usb\+\_\+pin {\bfseries Ft\+Chip\+Select}
+\item 
+\mbox{\Hypertarget{Usb_8h_a7ea8b38f4b1f7f81f7fe4bff8e919dea}\label{Usb_8h_a7ea8b38f4b1f7f81f7fe4bff8e919dea}} 
+usb\+\_\+pin {\bfseries Ft\+Clock}
+\item 
+\mbox{\Hypertarget{Usb_8h_a434843a24a30c3f38faef5f0b432aa94}\label{Usb_8h_a434843a24a30c3f38faef5f0b432aa94}} 
+usb\+\_\+pin {\bfseries Ft\+Miosio0}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\ttfamily usb-\/bridge} communicates over U\+SB via F\+T\+DI U\+SB Bridge IC {\ttfamily F\+T221X}
+
+
+\begin{DoxyItemize}
+\item U\+SB host sees {\ttfamily F\+T221X} as a {\bfseries{U\+SB device}}
+\item Two options for host to communicate with this U\+SB device\+:
+\begin{DoxyEnumerate}
+\item use generic U\+SB serial device driver, e.\+g., {\ttfamily pyserial}
+\item use the {\ttfamily D2\+XX} driver to access the expanded functionality of the F\+T\+DI U\+SB A\+PI
+\end{DoxyEnumerate}
+\item The {\ttfamily usb-\/bridge} microcontroller sees {\ttfamily F\+T221X} as an {\bfseries{F\+T1248 slave}}
+\end{DoxyItemize}
+
+Flow from U\+SB host to {\ttfamily usb-\/bridge} microcontroller\+:~\newline
+
+\begin{DoxyItemize}
+\item U\+SB host writes to {\ttfamily F\+T221X}
+\item now {\ttfamily F\+T221X} has data in its receive buffer\+:
+\begin{DoxyItemize}
+\item pin {\ttfamily F\+T1248 M\+I\+SO} asserts L\+OW
+\item this signals to the {\ttfamily usb-\/bridge} microcontroller that data is available
+\end{DoxyItemize}
+\item {\ttfamily usb-\/bridge} microcontroller reads the data
+\end{DoxyItemize}
+
+Flow from {\ttfamily usb-\/bridge} microcontroller to U\+SB host\+:~\newline
+
+\begin{DoxyItemize}
+\item Control lines
+\begin{DoxyItemize}
+\item {\ttfamily Ft\+Clock}
+\begin{DoxyItemize}
+\item the clock idles {\ttfamily L\+OW}
+\item the clock is only active during F\+T1248 communication
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Sending a single byte takes three clock cycles
+\item T\+O\+DO\+: multi-\/byte communication where each additional byte only adds one clock cycle
+\item Databus pin {\bfseries{direction}}
+\begin{DoxyItemize}
+\item databus pins are {\ttfamily Ft\+Miosio0} through {\ttfamily Ft\+Miosio7}
+\item the databus is bi-\/directional
+\begin{DoxyItemize}
+\item {\ttfamily Ft\+Read}\+: the {\itshape F\+T221X} drives the databus
+\item {\ttfamily Ft\+Write} the {\itshape microcontroller} drives the databus
+\end{DoxyItemize}
+\item databus pins are usually microcontroller inputs
+\item microcontroller {\bfseries{only outputs to the databus during an {\ttfamily Ft\+Write}}}
+\begin{DoxyItemize}
+\item the microcontroller pins are outputs for the interval
+\item starting after a clock rising edge
+\item ending before the next clock rising edge
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item T\+O\+DO\+: fill this in 
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{Usb_8h_a2d804c9be32ebee64d82d1d4a737818d}\label{Usb_8h_a2d804c9be32ebee64d82d1d4a737818d}} 
+\index{Usb.h@{Usb.h}!\_FtClockDatabus@{\_FtClockDatabus}}
+\index{\_FtClockDatabus@{\_FtClockDatabus}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{\_FtClockDatabus()}{\_FtClockDatabus()}}
+{\footnotesize\ttfamily void \+\_\+\+Ft\+Clock\+Databus (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{direction }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Clock\+Databus behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item drives Ft\+Clock H\+I\+GH if direction is Ft\+Drive~\newline
+
+\item drives Ft\+Clock L\+OW if direction is Ft\+Sample~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_af068f8d14dc07d5d7f5a2cc38fee2d06}\label{Usb_8h_af068f8d14dc07d5d7f5a2cc38fee2d06}} 
+\index{Usb.h@{Usb.h}!\_FtDatabusPinDirection@{\_FtDatabusPinDirection}}
+\index{\_FtDatabusPinDirection@{\_FtDatabusPinDirection}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{\_FtDatabusPinDirection()}{\_FtDatabusPinDirection()}}
+{\footnotesize\ttfamily void \+\_\+\+Ft\+Databus\+Pin\+Direction (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{pin\+\_\+direction }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Databus\+Pin\+Direction behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item makes databus pins outputs if direction is Ft\+Out~\newline
+
+\item makes databus pins inputs if direction is Ft\+In~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a743314baa5c1a8c1641becfc294aa3f1}\label{Usb_8h_a743314baa5c1a8c1641becfc294aa3f1}} 
+\index{Usb.h@{Usb.h}!\_FtReadDatabus@{\_FtReadDatabus}}
+\index{\_FtReadDatabus@{\_FtReadDatabus}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{\_FtReadDatabus()}{\_FtReadDatabus()}}
+{\footnotesize\ttfamily void \+\_\+\+Ft\+Read\+Databus (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{pbyte }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Read\+Databus behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item copies databus pin values to address pbyte~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a53465365fd9154df9e7ebf5d971e0ee4}\label{Usb_8h_a53465365fd9154df9e7ebf5d971e0ee4}} 
+\index{Usb.h@{Usb.h}!\_FtWriteDatabus@{\_FtWriteDatabus}}
+\index{\_FtWriteDatabus@{\_FtWriteDatabus}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{\_FtWriteDatabus()}{\_FtWriteDatabus()}}
+{\footnotesize\ttfamily void \+\_\+\+Ft\+Write\+Databus (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{byte }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Write\+Databus behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item outputs byte on databus pins~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_acaf9c07ef4851b8c7d207525133faebb}\label{Usb_8h_acaf9c07ef4851b8c7d207525133faebb}} 
+\index{Usb.h@{Usb.h}!FtBusTurnaround@{FtBusTurnaround}}
+\index{FtBusTurnaround@{FtBusTurnaround}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{FtBusTurnaround()}{FtBusTurnaround()}}
+{\footnotesize\ttfamily void Ft\+Bus\+Turnaround (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Bus\+Turnaround behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item clocks one cycle to signal data drive then data sample~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a043998603a62da8cbe306223d78535c2}\label{Usb_8h_a043998603a62da8cbe306223d78535c2}} 
+\index{Usb.h@{Usb.h}!FtIsOk@{FtIsOk}}
+\index{FtIsOk@{FtIsOk}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{FtIsOk()}{FtIsOk()}}
+{\footnotesize\ttfamily bool Ft\+Is\+Ok (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+The F\+T221X indicates data transfer status on Pin {\ttfamily M\+I\+SO} while F\+T1248 communication is active.~\newline
+{\ttfamily L\+OW} on pin {\ttfamily M\+I\+SO} means {\itshape F\+T221X status is OK.}~\newline
+
+\begin{DoxyItemize}
+\item See the {\bfseries{8-\/bit write}} and {\bfseries{8-\/bit read}} timing diagrams\+:
+\begin{DoxyItemize}
+\item \href{https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT221X.pdf}{\texttt{ F\+T221X datasheet}}
+\end{DoxyItemize}
+\item See A\+C\+K/\+N\+AK details in section {\bfseries{F\+T1248\+: N\+AK}}\+:
+\begin{DoxyItemize}
+\item \href{https://www.ftdichip.com/Support/Documents/AppNotes/AN_167_FT1248_Parallel_Serial_Interface_Basics.pdf}{\texttt{ F\+T\+DI application note A\+N167}}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Timing diagram and A\+C\+K/\+N\+AK summary\+:~\newline
+
+\begin{DoxyItemize}
+\item During the {\ttfamily B\+US T\+U\+R\+N\+A\+R\+O\+U\+ND} after the {\ttfamily C\+O\+M\+M\+A\+ND P\+H\+A\+SE}
+\begin{DoxyItemize}
+\item if command is {\bfseries{8-\/bit read}}
+\begin{DoxyItemize}
+\item {\ttfamily L\+OW} indicates {\bfseries{receive buffer}} {\itshape has data} to read
+\item {\ttfamily H\+I\+GH} indicates {\bfseries{receive buffer}} {\itshape is empty}
+\end{DoxyItemize}
+\item if command is {\bfseries{8-\/bit write}}
+\begin{DoxyItemize}
+\item {\ttfamily L\+OW} indicates {\bfseries{transmit buffer}} {\itshape has room} to write
+\item {\ttfamily H\+I\+GH} indicates {\bfseries{transmit buffer}} {\itshape is full}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item During the {\ttfamily D\+A\+TA} phase
+\begin{DoxyItemize}
+\item after the clock {\itshape rising} edge
+\begin{DoxyItemize}
+\item F\+T221X outputs an {\ttfamily A\+CK} or {\ttfamily N\+AK} on {\ttfamily M\+I\+SO}
+\item {\ttfamily A\+CK}\+:
+\begin{DoxyItemize}
+\item {\ttfamily M\+I\+SO} is {\ttfamily L\+OW}
+\item indicates a {\itshape successful} data transfer
+\end{DoxyItemize}
+\item {\ttfamily N\+AK}\+:
+\begin{DoxyItemize}
+\item {\ttfamily M\+I\+SO} is {\ttfamily H\+I\+GH}
+\item indicates a {\itshape failed} data transfer
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item after clock {\itshape falling} edge\+:
+\begin{DoxyItemize}
+\item Microcontroller reads {\ttfamily M\+I\+SO}
+\begin{DoxyItemize}
+\item {\ttfamily L\+OW} indicates {\ttfamily A\+CK}
+\item {\ttfamily H\+I\+GH} indicates {\ttfamily N\+AK}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Data transers {\bfseries{fail}} because of either\+:
+\begin{DoxyItemize}
+\item a {\itshape buffer full} condition on {\bfseries{writing data}} to the F\+T221X
+\item a {\itshape buffer empty} condition on {\bfseries{reading data}} from the F\+T221X
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Ft\+Is\+Ok behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns true if Ft\+Miso is L\+OW~\newline
+
+\item returns false if Ft\+Miso is H\+I\+GH~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_ac70293c43d8ccf81187313f241a26de2}\label{Usb_8h_ac70293c43d8ccf81187313f241a26de2}} 
+\index{Usb.h@{Usb.h}!FtRead@{FtRead}}
+\index{FtRead@{FtRead}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{FtRead()}{FtRead()}}
+{\footnotesize\ttfamily void Ft\+Read (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{pbyte }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Read behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item clocks one byte out of the F\+T221X~\newline
+
+\item stores the byte at address pbyte~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a4552875ccbe38f1c34825dd391c90c58}\label{Usb_8h_a4552875ccbe38f1c34825dd391c90c58}} 
+\index{Usb.h@{Usb.h}!FtSelectFT221X@{FtSelectFT221X}}
+\index{FtSelectFT221X@{FtSelectFT221X}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{FtSelectFT221X()}{FtSelectFT221X()}}
+{\footnotesize\ttfamily void Ft\+Select\+F\+T221X (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Select\+F\+T221X behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item drives Ft\+Chip\+Select L\+OW~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a6de206a884078a3ba1d7fdb3bc9374e2}\label{Usb_8h_a6de206a884078a3ba1d7fdb3bc9374e2}} 
+\index{Usb.h@{Usb.h}!FtUnselectFT221X@{FtUnselectFT221X}}
+\index{FtUnselectFT221X@{FtUnselectFT221X}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{FtUnselectFT221X()}{FtUnselectFT221X()}}
+{\footnotesize\ttfamily void Ft\+Unselect\+F\+T221X (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Unselect\+F\+T221X behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item drives Ft\+Chip\+Select H\+I\+GH~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_ac0e5d30badf5676ceca134fa71323b76}\label{Usb_8h_ac0e5d30badf5676ceca134fa71323b76}} 
+\index{Usb.h@{Usb.h}!FtWrite@{FtWrite}}
+\index{FtWrite@{FtWrite}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{FtWrite()}{FtWrite()}}
+{\footnotesize\ttfamily void Ft\+Write (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{byte }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Ft\+Write behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item signals to drive data onto the databus~\newline
+
+\item sets microcontroller databus pins as outputs~\newline
+
+\item outputs byte on databus pins~\newline
+
+\item signals F\+T221X to sample the databus~\newline
+
+\item sets microcontroller databus pins as inputs~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a4ed6f08cb0ec2adf9631d0932b30bbc5}\label{Usb_8h_a4ed6f08cb0ec2adf9631d0932b30bbc5}} 
+\index{Usb.h@{Usb.h}!UsbReadByte@{UsbReadByte}}
+\index{UsbReadByte@{UsbReadByte}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{UsbReadByte()}{UsbReadByte()}}
+{\footnotesize\ttfamily uint8\+\_\+t Usb\+Read\+Byte (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{pbyte }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Usb\+Read\+Byte behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item selects the F\+T221X~\newline
+
+\item drives databus with read command~\newline
+
+\item signals F\+T221X to sample the databus~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a3081311c24ae86b950d6770c6a67cedb}\label{Usb_8h_a3081311c24ae86b950d6770c6a67cedb}} 
+\index{Usb.h@{Usb.h}!UsbRxbufferIsEmpty@{UsbRxbufferIsEmpty}}
+\index{UsbRxbufferIsEmpty@{UsbRxbufferIsEmpty}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{UsbRxbufferIsEmpty()}{UsbRxbufferIsEmpty()}}
+{\footnotesize\ttfamily bool Usb\+Rxbuffer\+Is\+Empty (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Usb\+Rxbuffer\+Is\+Empty behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns true if pin F\+T1248 M\+I\+SO is H\+I\+GH~\newline
+
+\item returns false if pin F\+T1248 M\+I\+SO is L\+OW~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a379ae6fbbdf30b142ae85dad4da834f4}\label{Usb_8h_a379ae6fbbdf30b142ae85dad4da834f4}} 
+\index{Usb.h@{Usb.h}!UsbTxbufferIsFull@{UsbTxbufferIsFull}}
+\index{UsbTxbufferIsFull@{UsbTxbufferIsFull}!Usb.h@{Usb.h}}
+\doxysubsubsection{\texorpdfstring{UsbTxbufferIsFull()}{UsbTxbufferIsFull()}}
+{\footnotesize\ttfamily bool Usb\+Txbuffer\+Is\+Full (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Usb\+Txbuffer\+Is\+Full behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns true if pin M\+I\+O\+S\+I\+O0 is H\+I\+GH~\newline
+
+\item returns false if pin M\+I\+O\+S\+I\+O0 is L\+OW~\newline
+
+\end{DoxyItemize}

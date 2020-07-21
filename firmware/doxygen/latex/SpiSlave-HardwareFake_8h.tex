@@ -1,0 +1,57 @@
+\hypertarget{SpiSlave-HardwareFake_8h}{}\doxysection{lib/test/\+Spi\+Slave-\/\+Hardware\+Fake.h File Reference}
+\label{SpiSlave-HardwareFake_8h}\index{lib/test/SpiSlave-\/HardwareFake.h@{lib/test/SpiSlave-\/HardwareFake.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Spi.\+h\char`\"{}}\newline
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a6dd583cb4fbb02b491647ed2c2e05d69}\label{SpiSlave-HardwareFake_8h_a6dd583cb4fbb02b491647ed2c2e05d69}} 
+static uint8\+\_\+t volatile {\bfseries fake\+\_\+ddr}
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a520b20cea7c7dd0915c2fc786dddbde5}\label{SpiSlave-HardwareFake_8h_a520b20cea7c7dd0915c2fc786dddbde5}} 
+static uint8\+\_\+t volatile {\bfseries fake\+\_\+port}
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_ad19dbe2a47a6b81e2881291424c4bc81}\label{SpiSlave-HardwareFake_8h_ad19dbe2a47a6b81e2881291424c4bc81}} 
+static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+S\+P\+CR}
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_ad283e3bf083426155e1f50449c5eea8e}\label{SpiSlave-HardwareFake_8h_ad283e3bf083426155e1f50449c5eea8e}} 
+static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+S\+P\+DR}
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a0f7e04537ffdaaf137e2252f2c1f619d}\label{SpiSlave-HardwareFake_8h_a0f7e04537ffdaaf137e2252f2c1f619d}} 
+static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+S\+P\+SR}
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a6196d17af3e39e970ce8156bdc311266}\label{SpiSlave-HardwareFake_8h_a6196d17af3e39e970ce8156bdc311266}} 
+spi\+\_\+ptr {\bfseries Spi\+\_\+ddr} = \&fake\+\_\+ddr
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_aea5a1c94ff847a4ea61201f5b7f893d7}\label{SpiSlave-HardwareFake_8h_aea5a1c94ff847a4ea61201f5b7f893d7}} 
+spi\+\_\+ptr {\bfseries Spi\+\_\+port} = \&fake\+\_\+port
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a95cfc632f478c6b99e15e958336864a4}\label{SpiSlave-HardwareFake_8h_a95cfc632f478c6b99e15e958336864a4}} 
+spi\+\_\+ptr \mbox{\hyperlink{SpiSlave-HardwareFake_8h_a95cfc632f478c6b99e15e958336864a4}{Spi\+\_\+\+S\+P\+CR}} = \&fake\+\_\+\+S\+P\+CR
+\begin{DoxyCompactList}\small\item\em S\+PI Control Register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_ac9c5ac8dff5cb48f3d1fc7477b820bf3}\label{SpiSlave-HardwareFake_8h_ac9c5ac8dff5cb48f3d1fc7477b820bf3}} 
+spi\+\_\+ptr \mbox{\hyperlink{SpiSlave-HardwareFake_8h_ac9c5ac8dff5cb48f3d1fc7477b820bf3}{Spi\+\_\+\+S\+P\+DR}} = \&fake\+\_\+\+S\+P\+DR
+\begin{DoxyCompactList}\small\item\em S\+PI Data Register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a7a843d0582334c868f71c363b2aff63c}\label{SpiSlave-HardwareFake_8h_a7a843d0582334c868f71c363b2aff63c}} 
+spi\+\_\+ptr \mbox{\hyperlink{SpiSlave-HardwareFake_8h_a7a843d0582334c868f71c363b2aff63c}{Spi\+\_\+\+S\+P\+SR}} = \&fake\+\_\+\+S\+P\+SR
+\begin{DoxyCompactList}\small\item\em S\+PI Status Register. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a58401557bd81484a24c5520fb5c8c082}\label{SpiSlave-HardwareFake_8h_a58401557bd81484a24c5520fb5c8c082}} 
+spi\+\_\+pin {\bfseries Spi\+\_\+\+Data\+Ready} = 1
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a024a5b3c9aafda183ee9a9d502064bd0}\label{SpiSlave-HardwareFake_8h_a024a5b3c9aafda183ee9a9d502064bd0}} 
+spi\+\_\+pin {\bfseries Spi\+\_\+\+Miso} = 4
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_adb95cc70cb7645cad21dd92113681d2f}\label{SpiSlave-HardwareFake_8h_adb95cc70cb7645cad21dd92113681d2f}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Enable} = 6
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_a987ff43c57d64b84a75e50ec17aa902b}\label{SpiSlave-HardwareFake_8h_a987ff43c57d64b84a75e50ec17aa902b}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Interrupt\+Enable} = 7
+\item 
+\mbox{\Hypertarget{SpiSlave-HardwareFake_8h_afdfba4343f7744501188467f517be1d5}\label{SpiSlave-HardwareFake_8h_afdfba4343f7744501188467f517be1d5}} 
+spi\+\_\+bit {\bfseries Spi\+\_\+\+Interrupt\+Flag} = 7
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This file is not used anymore.~\newline
+There used to be separate Spi hardware files for master and slave. Now there is one \mbox{\hyperlink{Spi_8h}{Spi.\+h}} file and Spi-\/\+Hardware and Spi-\/\+Hardware\+Fake. There are still \mbox{\hyperlink{SpiMaster_8h}{Spi\+Master.\+h}} and \mbox{\hyperlink{SpiSlave_8h}{Spi\+Slave.\+h}} files, but these are for the functions unique to master and slave. 

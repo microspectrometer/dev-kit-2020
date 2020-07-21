@@ -1,0 +1,79 @@
+\hypertarget{usb-bridge_8c}{}\doxysection{usb-\/bridge/src/usb-\/bridge.c File Reference}
+\label{usb-bridge_8c}\index{usb-\/bridge/src/usb-\/bridge.c@{usb-\/bridge/src/usb-\/bridge.c}}
+{\ttfamily \#include \char`\"{}Example.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Bi\+Color\+Led.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Hardware.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Status\+Codes.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Usb\+Cmd.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi\+Master.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{usb-bridge_8c_a7dfd9b79bc5a37d7df40207afbc5431f}\label{usb-bridge_8c_a7dfd9b79bc5a37d7df40207afbc5431f}} 
+static void {\bfseries setup} (void)
+\item 
+\mbox{\Hypertarget{usb-bridge_8c_a0b33edabd7f1c4e4a0bf32c67269be2f}\label{usb-bridge_8c_a0b33edabd7f1c4e4a0bf32c67269be2f}} 
+static void {\bfseries loop} (void)
+\item 
+static void \mbox{\hyperlink{usb-bridge_8c_a20a1e96ac3bf8dee1e170c9e15a9a408}{setup\+\_\+\+Status\+L\+ED}} (void)
+\item 
+\mbox{\Hypertarget{usb-bridge_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{usb-bridge_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
+int {\bfseries main} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\bfseries{F\+T\+\_\+\+Prog Hardware Settings}}~\newline
+
+\begin{DoxyItemize}
+\item {\itshape U\+SB String Descriptors}
+\begin{DoxyItemize}
+\item {\itshape Manufacturer}\+: {\ttfamily CH}
+\item {\itshape Product Description}\+: {\ttfamily Chromation\+Spect-\/1234-\/56}
+\item {\itshape Serial Number}\+: {\ttfamily C\+H\+R\+O\+M\+A\+T\+I\+O\+N123456}
+\end{DoxyItemize}
+\item {\itshape Hardware Specific}
+\begin{DoxyItemize}
+\item {\itshape Ft1248 Settings}
+\begin{DoxyItemize}
+\item {\itshape Clock Polarity High}\+: {\ttfamily uncheck}
+\item {\itshape Bit Order L\+SB}\+: {\ttfamily check}
+\item {\itshape Flow Ctrl not selected}\+: {\ttfamily check}
+\end{DoxyItemize}
+\item {\itshape C\+B\+US Signals}
+\begin{DoxyItemize}
+\item {\itshape C3}\+: {\ttfamily G\+P\+IO}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\bfseries{Windows Device Manager Settings}}~\newline
+
+\begin{DoxyItemize}
+\item Under {\itshape Universal Serial Bus controllers}
+\item Right-\/click {\itshape U\+SB Serial Converter}
+\begin{DoxyItemize}
+\item select {\itshape Properties}
+\end{DoxyItemize}
+\item Go to the {\itshape Advanced} tab
+\begin{DoxyItemize}
+\item {\itshape Load V\+CP}\+: {\ttfamily check}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+T\+O\+DO\+:~\newline
+
+\begin{DoxyItemize}
+\item Is {\itshape Load V\+CP} checked by default on a fresh install? 
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{usb-bridge_8c_a20a1e96ac3bf8dee1e170c9e15a9a408}\label{usb-bridge_8c_a20a1e96ac3bf8dee1e170c9e15a9a408}} 
+\index{usb-\/bridge.c@{usb-\/bridge.c}!setup\_StatusLED@{setup\_StatusLED}}
+\index{setup\_StatusLED@{setup\_StatusLED}!usb-\/bridge.c@{usb-\/bridge.c}}
+\doxysubsubsection{\texorpdfstring{setup\_StatusLED()}{setup\_StatusLED()}}
+{\footnotesize\ttfamily void setup\+\_\+\+Status\+L\+ED (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Initialize P\+CB indicator L\+ED

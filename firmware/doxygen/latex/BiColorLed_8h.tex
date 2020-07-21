@@ -1,0 +1,90 @@
+\hypertarget{BiColorLed_8h}{}\doxysection{lib/src/\+Bi\+Color\+Led.h File Reference}
+\label{BiColorLed_8h}\index{lib/src/BiColorLed.h@{lib/src/BiColorLed.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{BiColorLed_8h_abe3f0eb80e4343f85861bc4cd9fe28c3}\label{BiColorLed_8h_abe3f0eb80e4343f85861bc4cd9fe28c3}} 
+typedef uint8\+\_\+t volatile $\ast$const {\bfseries bicolorled\+\_\+ptr}
+\item 
+\mbox{\Hypertarget{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}\label{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}} 
+typedef const uint8\+\_\+t \mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}}
+\begin{DoxyCompactList}\small\item\em Indicator L\+ED numbers in the J\+S\+ON file are not necessarily the same as the corresponding bit number in the Bi\+Color\+L\+ED register. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{BiColorLed_8h_a972a182b5a725d81cfd50a55b7272e9d}{Bi\+Color\+Led\+On}} (\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} led)
+\item 
+void \mbox{\hyperlink{BiColorLed_8h_a1a21d8251dc9ad7106f6cd50d6115061}{Bi\+Color\+Led\+Off}} (\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} led)
+\item 
+void \mbox{\hyperlink{BiColorLed_8h_a2401f7a281e7e5cbc5c76c074cf7fe6b}{Bi\+Color\+Led\+Green}} (\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} led)
+\item 
+void \mbox{\hyperlink{BiColorLed_8h_a2da32b453449ba56817344847d923a93}{Bi\+Color\+Led\+Red}} (\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} led)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{BiColorLed_8h_ae88667da9b193d72c07f5357e38128f0}\label{BiColorLed_8h_ae88667da9b193d72c07f5357e38128f0}} 
+bicolorled\+\_\+ptr {\bfseries Bi\+Color\+Led\+\_\+ddr}
+\item 
+\mbox{\Hypertarget{BiColorLed_8h_a54c1c83e42b3d8cc6df60303ee86aba9}\label{BiColorLed_8h_a54c1c83e42b3d8cc6df60303ee86aba9}} 
+bicolorled\+\_\+ptr {\bfseries Bi\+Color\+Led\+\_\+port}
+\item 
+\mbox{\Hypertarget{BiColorLed_8h_ae5ac18800d37532fb2a5f2721533dcae}\label{BiColorLed_8h_ae5ac18800d37532fb2a5f2721533dcae}} 
+\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} {\bfseries status\+\_\+led}
+\item 
+\mbox{\Hypertarget{BiColorLed_8h_a1ca007f69b88e049392db746982ca45d}\label{BiColorLed_8h_a1ca007f69b88e049392db746982ca45d}} 
+\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} {\bfseries led\+\_\+0}
+\item 
+\mbox{\Hypertarget{BiColorLed_8h_a7f50dc500c57a72608342a5fa3419943}\label{BiColorLed_8h_a7f50dc500c57a72608342a5fa3419943}} 
+\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}} {\bfseries led\+\_\+1}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{BiColorLed_8h_a2401f7a281e7e5cbc5c76c074cf7fe6b}\label{BiColorLed_8h_a2401f7a281e7e5cbc5c76c074cf7fe6b}} 
+\index{BiColorLed.h@{BiColorLed.h}!BiColorLedGreen@{BiColorLedGreen}}
+\index{BiColorLedGreen@{BiColorLedGreen}!BiColorLed.h@{BiColorLed.h}}
+\doxysubsubsection{\texorpdfstring{BiColorLedGreen()}{BiColorLedGreen()}}
+{\footnotesize\ttfamily void Bi\+Color\+Led\+Green (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}}}]{led }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Bi\+Color\+Led\+Green behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item clears bit in port~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{BiColorLed_8h_a1a21d8251dc9ad7106f6cd50d6115061}\label{BiColorLed_8h_a1a21d8251dc9ad7106f6cd50d6115061}} 
+\index{BiColorLed.h@{BiColorLed.h}!BiColorLedOff@{BiColorLedOff}}
+\index{BiColorLedOff@{BiColorLedOff}!BiColorLed.h@{BiColorLed.h}}
+\doxysubsubsection{\texorpdfstring{BiColorLedOff()}{BiColorLedOff()}}
+{\footnotesize\ttfamily void Bi\+Color\+Led\+Off (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}}}]{led }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Bi\+Color\+Led\+Off behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item clears bit in ddr~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{BiColorLed_8h_a972a182b5a725d81cfd50a55b7272e9d}\label{BiColorLed_8h_a972a182b5a725d81cfd50a55b7272e9d}} 
+\index{BiColorLed.h@{BiColorLed.h}!BiColorLedOn@{BiColorLedOn}}
+\index{BiColorLedOn@{BiColorLedOn}!BiColorLed.h@{BiColorLed.h}}
+\doxysubsubsection{\texorpdfstring{BiColorLedOn()}{BiColorLedOn()}}
+{\footnotesize\ttfamily void Bi\+Color\+Led\+On (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}}}]{led }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Bi\+Color\+Led\+On behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sets bit in ddr~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{BiColorLed_8h_a2da32b453449ba56817344847d923a93}\label{BiColorLed_8h_a2da32b453449ba56817344847d923a93}} 
+\index{BiColorLed.h@{BiColorLed.h}!BiColorLedRed@{BiColorLedRed}}
+\index{BiColorLedRed@{BiColorLedRed}!BiColorLed.h@{BiColorLed.h}}
+\doxysubsubsection{\texorpdfstring{BiColorLedRed()}{BiColorLedRed()}}
+{\footnotesize\ttfamily void Bi\+Color\+Led\+Red (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{BiColorLed_8h_a656bbe981a828f2a0f10cf93d5d2a2dc}{bicolorled\+\_\+num}}}]{led }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Bi\+Color\+Led\+Red behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sets bit in port~\newline
+
+\end{DoxyItemize}

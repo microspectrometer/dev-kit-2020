@@ -1,0 +1,77 @@
+\hypertarget{SpiMaster_8h}{}\doxysection{lib/src/\+Spi\+Master.h File Reference}
+\label{SpiMaster_8h}\index{lib/src/SpiMaster.h@{lib/src/SpiMaster.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{SpiMaster_8h_a8b4ef2a3943c1924d7e1de50bf4a998d}{Spi\+Master\+Xfr\+Byte}} (uint8\+\_\+t byte)
+\item 
+void \mbox{\hyperlink{SpiMaster_8h_a5e72d6678288db6c0b473d1fc2953665}{Spi\+Master\+Init}} (void)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxysubsection*{A\+PI}
+
+void \mbox{\hyperlink{SpiMaster_8h_a5e72d6678288db6c0b473d1fc2953665}{Spi\+Master\+Init(void)}};~\newline
+ void \mbox{\hyperlink{SpiMaster_8h_a8b4ef2a3943c1924d7e1de50bf4a998d}{Spi\+Master\+Xfr\+Byte(uint8\+\_\+t byte)}};~\newline
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{SpiMaster_8h_a5e72d6678288db6c0b473d1fc2953665}\label{SpiMaster_8h_a5e72d6678288db6c0b473d1fc2953665}} 
+\index{SpiMaster.h@{SpiMaster.h}!SpiMasterInit@{SpiMasterInit}}
+\index{SpiMasterInit@{SpiMasterInit}!SpiMaster.h@{SpiMaster.h}}
+\doxysubsubsection{\texorpdfstring{SpiMasterInit()}{SpiMasterInit()}}
+{\footnotesize\ttfamily void Spi\+Master\+Init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Spi\+Master\+Init behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item idles Slave\+Select high~\newline
+
+\item makes Slave\+Select an output~\newline
+
+\item makes Miso an input~\newline
+
+\item enables pullup on Miso~\newline
+
+\item makes Data\+Ready an input~\newline
+
+\item enables pullup on Data\+Ready~\newline
+
+\item makes Mosi an output~\newline
+
+\item makes Sck an output~\newline
+
+\item makes this M\+CU the S\+PI Master~\newline
+
+\item sets S\+PI Clock to 10M\+Hz ext osc divided by 8~\newline
+
+\item enables the S\+PI hardware module~\newline
+
+\item clears S\+PI interrupt flag~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{SpiMaster_8h_a8b4ef2a3943c1924d7e1de50bf4a998d}\label{SpiMaster_8h_a8b4ef2a3943c1924d7e1de50bf4a998d}} 
+\index{SpiMaster.h@{SpiMaster.h}!SpiMasterXfrByte@{SpiMasterXfrByte}}
+\index{SpiMasterXfrByte@{SpiMasterXfrByte}!SpiMaster.h@{SpiMaster.h}}
+\doxysubsubsection{\texorpdfstring{SpiMasterXfrByte()}{SpiMasterXfrByte()}}
+{\footnotesize\ttfamily uint8\+\_\+t Spi\+Master\+Xfr\+Byte (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{byte }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Spi\+Master\+Xfr\+Byte behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item selects the S\+PI slave~\newline
+
+\item loads S\+PI data reg with the byte to send~\newline
+
+\item waits until the transfer is done by reading the S\+PI Interrupt Flag~\newline
+
+\item unselects the S\+PI slave~\newline
+
+\item clears the S\+PI Interrupt Flag by reading the S\+PI data reg~\newline
+
+\item returns the byte in the S\+PI data reg~\newline
+
+\end{DoxyItemize}

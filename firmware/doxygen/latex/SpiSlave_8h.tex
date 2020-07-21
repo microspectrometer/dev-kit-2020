@@ -1,0 +1,173 @@
+\hypertarget{SpiSlave_8h}{}\doxysection{lib/src/\+Spi\+Slave.h File Reference}
+\label{SpiSlave_8h}\index{lib/src/SpiSlave.h@{lib/src/SpiSlave.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Spi.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{SpiSlave_8h_ad755a0d99463eaaf919cdd1c2a0af729}{\+\_\+\+Signal\+Data\+Ready}} (void)
+\item 
+void \mbox{\hyperlink{SpiSlave_8h_a03a83560cd64e92c7b667694914e79b2}{\+\_\+\+Signal\+Data\+Not\+Ready}} (void)
+\item 
+void \mbox{\hyperlink{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}{Disable\+Spi\+Interrupt}} (void)
+\item 
+void \mbox{\hyperlink{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}{Enable\+Spi\+Interrupt}} (void)
+\item 
+void \mbox{\hyperlink{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}{Spi\+Slave\+Init}} (void)
+\item 
+void \mbox{\hyperlink{SpiSlave_8h_ac3192410581612594cbec3d368bd6d6b}{Spi\+Slave\+Tx\+Byte}} (uint8\+\_\+t input\+\_\+byte)
+\item 
+void \mbox{\hyperlink{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}{Spi\+Slave\+Tx}} (uint8\+\_\+t const $\ast$input\+\_\+buffer, uint16\+\_\+t nbytes)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxysubsection*{A\+PI}
+
+void \mbox{\hyperlink{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}{Disable\+Spi\+Interrupt(void)}};~\newline
+ void \mbox{\hyperlink{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}{Enable\+Spi\+Interrupt(void)}};~\newline
+ void \mbox{\hyperlink{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}{Spi\+Slave\+Init(void)}};~\newline
+ void \mbox{\hyperlink{SpiSlave_8h_ac3192410581612594cbec3d368bd6d6b}{Spi\+Slave\+Tx\+Byte(uint8\+\_\+t input\+\_\+byte)}};~\newline
+ void \mbox{\hyperlink{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}{Spi\+Slave\+Tx(uint8\+\_\+t const $\ast$input\+\_\+buffer, uint16\+\_\+t nbytes)}};~\newline
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{SpiSlave_8h_a03a83560cd64e92c7b667694914e79b2}\label{SpiSlave_8h_a03a83560cd64e92c7b667694914e79b2}} 
+\index{SpiSlave.h@{SpiSlave.h}!\_SignalDataNotReady@{\_SignalDataNotReady}}
+\index{\_SignalDataNotReady@{\_SignalDataNotReady}!SpiSlave.h@{SpiSlave.h}}
+\doxysubsubsection{\texorpdfstring{\_SignalDataNotReady()}{\_SignalDataNotReady()}}
+{\footnotesize\ttfamily void \+\_\+\+Signal\+Data\+Not\+Ready (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Drive {\bfseries{Data Ready}} H\+I\+GH.\mbox{\Hypertarget{SpiSlave_8h_ad755a0d99463eaaf919cdd1c2a0af729}\label{SpiSlave_8h_ad755a0d99463eaaf919cdd1c2a0af729}} 
+\index{SpiSlave.h@{SpiSlave.h}!\_SignalDataReady@{\_SignalDataReady}}
+\index{\_SignalDataReady@{\_SignalDataReady}!SpiSlave.h@{SpiSlave.h}}
+\doxysubsubsection{\texorpdfstring{\_SignalDataReady()}{\_SignalDataReady()}}
+{\footnotesize\ttfamily void \+\_\+\+Signal\+Data\+Ready (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\+\_\+\+Signal\+Data\+Ready behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item drives Data\+Ready L\+OW~\newline
+
+\end{DoxyItemize}
+
+S\+PI Slave outputs signal {\bfseries{Data Ready}}.~\newline
+
+\begin{DoxyItemize}
+\item {\bfseries{Data Ready}} L\+OW signals next byte of data is ready.~\newline
+
+\item S\+PI Master waits for {\bfseries{Data Ready}} L\+OW before reading a byte from the S\+PI Slave.~\newline
+
+\item S\+PI Slave drives {\bfseries{Data Ready}} H\+I\+GH after each byte of S\+PI transfer.
+\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}\label{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}} 
+\index{SpiSlave.h@{SpiSlave.h}!DisableSpiInterrupt@{DisableSpiInterrupt}}
+\index{DisableSpiInterrupt@{DisableSpiInterrupt}!SpiSlave.h@{SpiSlave.h}}
+\doxysubsubsection{\texorpdfstring{DisableSpiInterrupt()}{DisableSpiInterrupt()}}
+{\footnotesize\ttfamily void Disable\+Spi\+Interrupt (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Clear {\ttfamily S\+P\+IE} bit in {\ttfamily S\+P\+CR} to disable the S\+PI I\+SR.
+
+Disable\+Spi\+Interrupt behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item clears the S\+PI Interrupt Enable bit~\newline
+
+\end{DoxyItemize}
+
+Note\+:~\newline
+
+\begin{DoxyItemize}
+\item Even with the S\+PI I\+SR disabled, interrupt flag bit {\ttfamily S\+P\+IF} in register {\ttfamily S\+P\+SR} is still set when a serial transfer completes.~\newline
+
+\item Check the flag by calling {\ttfamily \mbox{\hyperlink{Spi_8h_ac49dafccb5a49148ea7b150634c0116a}{\+\_\+\+Spi\+Transfer\+Is\+Done()}}}~\newline
+
+\item Clear {\ttfamily S\+P\+IF} manually by calling {\ttfamily \mbox{\hyperlink{Spi_8h_aed96203cc269b893b63bca5950d21771}{Clear\+Spi\+Interrupt\+Flag()}}}~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}\label{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}} 
+\index{SpiSlave.h@{SpiSlave.h}!EnableSpiInterrupt@{EnableSpiInterrupt}}
+\index{EnableSpiInterrupt@{EnableSpiInterrupt}!SpiSlave.h@{SpiSlave.h}}
+\doxysubsubsection{\texorpdfstring{EnableSpiInterrupt()}{EnableSpiInterrupt()}}
+{\footnotesize\ttfamily void Enable\+Spi\+Interrupt (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Enable\+Spi\+Interrupt behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item clears S\+PI interrupt flag~\newline
+
+\item enables S\+PI transfer complete interrupt~\newline
+
+\item consumes 6 cycles~\newline
+
+\end{DoxyItemize}
+
+Set S\+P\+IE bit in S\+P\+CR to execute the S\+PI I\+SR when\+:~\newline
+
+\begin{DoxyItemize}
+\item the Global Interrupt Enable bit is set in S\+R\+EG~\newline
+
+\item bit S\+P\+IF in register S\+P\+SR is set~\newline
+
+\begin{DoxyItemize}
+\item bit S\+P\+IF in register S\+P\+SR is set when a serial transfer completes~\newline
+
+\item S\+P\+IF is cleared when executing the S\+PI I\+SR~\newline
+
+\item alternatively, S\+P\+IF is cleared by first reading the S\+PI status register, then accessing the S\+PI data register~\newline
+
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}\label{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}} 
+\index{SpiSlave.h@{SpiSlave.h}!SpiSlaveInit@{SpiSlaveInit}}
+\index{SpiSlaveInit@{SpiSlaveInit}!SpiSlave.h@{SpiSlave.h}}
+\doxysubsubsection{\texorpdfstring{SpiSlaveInit()}{SpiSlaveInit()}}
+{\footnotesize\ttfamily void Spi\+Slave\+Init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Spi\+Slave\+Init behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item makes Data\+Ready an output pin~\newline
+
+\item idles Data\+Ready high~\newline
+
+\item makes Miso an output pin~\newline
+
+\item enables S\+PI~\newline
+
+\item enables S\+PI interrupt~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}\label{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}} 
+\index{SpiSlave.h@{SpiSlave.h}!SpiSlaveTx@{SpiSlaveTx}}
+\index{SpiSlaveTx@{SpiSlaveTx}!SpiSlave.h@{SpiSlave.h}}
+\doxysubsubsection{\texorpdfstring{SpiSlaveTx()}{SpiSlaveTx()}}
+{\footnotesize\ttfamily void Spi\+Slave\+Tx (\begin{DoxyParamCaption}\item[{uint8\+\_\+t const $\ast$}]{input\+\_\+buffer,  }\item[{uint16\+\_\+t}]{nbytes }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Spi\+Slave\+Tx behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item sends nbytes of input buffer to Spi\+Master~\newline
+
+\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_ac3192410581612594cbec3d368bd6d6b}\label{SpiSlave_8h_ac3192410581612594cbec3d368bd6d6b}} 
+\index{SpiSlave.h@{SpiSlave.h}!SpiSlaveTxByte@{SpiSlaveTxByte}}
+\index{SpiSlaveTxByte@{SpiSlaveTxByte}!SpiSlave.h@{SpiSlave.h}}
+\doxysubsubsection{\texorpdfstring{SpiSlaveTxByte()}{SpiSlaveTxByte()}}
+{\footnotesize\ttfamily void Spi\+Slave\+Tx\+Byte (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{input\+\_\+byte }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Transmit a byte and ignore byte received.
+
+Spi\+Slave\+Tx\+Byte behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item loads S\+PI data register with input byte~\newline
+
+\item disables S\+PI I\+SR before signaling data ready~\newline
+
+\item drives Data\+Ready L\+OW to signal data is ready~\newline
+
+\item waits until S\+PI transfer is done~\newline
+
+\item drives Data\+Ready H\+I\+GH immediately after S\+PI transfer finishes~\newline
+
+\item enables S\+PI I\+SR after transfer~\newline
+
+\end{DoxyItemize}

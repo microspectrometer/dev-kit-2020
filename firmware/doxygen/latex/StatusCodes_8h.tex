@@ -1,0 +1,40 @@
+\hypertarget{StatusCodes_8h}{}\doxysection{lib/src/\+Status\+Codes.h File Reference}
+\label{StatusCodes_8h}\index{lib/src/StatusCodes.h@{lib/src/StatusCodes.h}}
+{\ttfamily \#include \char`\"{}Status\+Code.\+h\char`\"{}}\newline
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{StatusCodes_8h_aecd474d7da5310ed3ab9d8a6211c1b82}\label{StatusCodes_8h_aecd474d7da5310ed3ab9d8a6211c1b82}} 
+\mbox{\hyperlink{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}{status\+\_\+code}} {\bfseries OK} = 0x00
+\item 
+\mbox{\Hypertarget{StatusCodes_8h_a184c0e8bd7d0a1d7a25c3e924b8402e3}\label{StatusCodes_8h_a184c0e8bd7d0a1d7a25c3e924b8402e3}} 
+\mbox{\hyperlink{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}{status\+\_\+code}} {\bfseries E\+R\+R\+OR} = 0x01
+\item 
+\mbox{\Hypertarget{StatusCodes_8h_a838ce6b5304f7f12a3276a99ecc2e815}\label{StatusCodes_8h_a838ce6b5304f7f12a3276a99ecc2e815}} 
+\mbox{\hyperlink{StatusCode_8h_ae30080e7a5cc9ae7b160e50dd4f809b6}{status\+\_\+code}} {\bfseries I\+N\+V\+A\+L\+I\+D\+\_\+\+C\+MD} = 0x02
+\item 
+\mbox{\Hypertarget{StatusCodes_8h_a72e12a72eb28bf13e7927aa6483661a7}\label{StatusCodes_8h_a72e12a72eb28bf13e7927aa6483661a7}} 
+\mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}} {\bfseries O\+FF} = 0x00
+\item 
+\mbox{\Hypertarget{StatusCodes_8h_a4b5b51d2b64323265f12937468bb561b}\label{StatusCodes_8h_a4b5b51d2b64323265f12937468bb561b}} 
+\mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}} {\bfseries G\+R\+E\+EN} = 0x01
+\item 
+\mbox{\Hypertarget{StatusCodes_8h_a608dfc902b08fc07d05f381098e3f4a9}\label{StatusCodes_8h_a608dfc902b08fc07d05f381098e3f4a9}} 
+\mbox{\hyperlink{StatusCode_8h_ab71e2d8890c3c184047dd526c85173bf}{led\+\_\+state}} {\bfseries R\+ED} = 0x02
+\item 
+\mbox{\Hypertarget{StatusCodes_8h_ad6df1a4a3ce954824ecfd98d1841da98}\label{StatusCodes_8h_ad6df1a4a3ce954824ecfd98d1841da98}} 
+uint8\+\_\+t \mbox{\hyperlink{StatusCodes_8h_ad6df1a4a3ce954824ecfd98d1841da98}{P\+A\+D\+D\+I\+NG}} = 0x\+FF
+\begin{DoxyCompactList}\small\item\em When status\+\_\+code is E\+R\+R\+OR, pad responses to send expected number of bytes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+See \mbox{\hyperlink{StatusCode_8h}{Status\+Code.\+h}} for context.~\newline
+~\newline
+ Also see {\ttfamily cfg/microspec.\+json} in the Python A\+PI repository.~\newline
+
+\begin{DoxyItemize}
+\item Section {\ttfamily \char`\"{}global\char`\"{}} defines the {\bfseries{protocol byte codes}}.~\newline
+
+\item The {\bfseries{protocol byte code}} definitions are duplicated in this header file.~\newline
+
+\end{DoxyItemize}

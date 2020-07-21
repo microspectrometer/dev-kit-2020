@@ -1,0 +1,23 @@
+This firmware works with Py\+PI project {\ttfamily microspec}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ pip install microspec}
+\end{DoxyCode}
+
+
+\doxysection*{Chromation Spectrometer dev-\/kit}
+
+The Chromation spectrometer is a surface-\/mount P\+CB package consisting of a linear photodiode array and optical components. This spectrometer chip does not contain any firmware.
+
+The dev-\/kit helps evaluate the spectrometer.
+
+The firmware is on the two microcontrollers in the dev-\/kit. The dev-\/kit has a stack of two P\+C\+Bs, with one microcontroller on each.
+
+The microcontroller on the lower P\+CB provides a S\+PI interface to the Chromation spectrometer. The microcontroller on the upper P\+CB converts the S\+PI interface into a U\+SB interface.
+
+\doxysubsection*{Programmable registers}
+
+The spectrometer chip has programmable registers that affect pixel size and voltage gain. The dev-\/kit writes these registers with Chromation\textquotesingle{}s recommended values when the dev-\/kit is powered on.
+
+Developers typically do not need to change these register values. The Python A\+PI includes commands that write to these registers, in case developer\textquotesingle{}s have a special use-\/case. 
