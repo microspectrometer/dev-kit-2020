@@ -4,7 +4,13 @@
 
 --- Targets ---
 
-get help (help message depends on present working directory):
+first enter directory for usb-bridge or vis-spi-out:
+  $ cd usb-bridge
+  $ cd vis-spi-out
+
+(commands below are invoked from one of these directories)
+
+get help
   $ make
 
 build elf:
