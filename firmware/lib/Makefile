@@ -1,3 +1,17 @@
+help:
+	@echo
+	@echo
+	@echo
+	@echo "----------------"
+	@echo "|     HELP     |"
+	@echo "----------------"
+	@echo
+	@echo "TODO: clean up this Makefile"
+	@echo
+	@echo "  For now, do not run make here."
+	@echo "  Run make from folder usb-bridge"
+	@echo "  or from folder vis-spi-out."
+
 # =====[ Build targets ]=====
 # ---"unit-test" runs on PC with Cygwin---{{{
 # Vim ;mktgc builds unit-test target using gcc
@@ -95,9 +109,9 @@ clean-TestSuite:
 # ;mca - remember to clean all builds when switching build targets{{{
 # "avr-target" and "unit-test" builds share same *lib* object file paths,
 # but avr-gcc and gcc object files are obviously not compatible.
-# ;mca - `:make clean-all-builds`{{{
-.PHONY: clean-all-builds
-clean-all-builds:
+# ;mca - `:make clean`{{{
+.PHONY: clean
+clean:
 	rm -f build/TestSuite-results.md
 	rm -f build/TestSuite.exe
 	rm -f build/test_runner.o
