@@ -220,7 +220,7 @@ void SpiMaster_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_SpiMasterInit_tests(Nope);
+        Run_SpiMasterInit_tests(Yep);
         Run_SpiMasterXfrByte_tests(Yep);
     }
 }
@@ -627,10 +627,10 @@ void Run_Usb_API_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_UsbRxbufferIsEmpty_tests(Nope);
-        Run_UsbTxbufferIsFull_tests(Nope);
+        Run_UsbRxbufferIsEmpty_tests(Yep);
+        Run_UsbTxbufferIsFull_tests(Yep);
         Run_UsbReadByte_tests(Yep);
-        Run_UsbWriteByte_tests(Nope);
+        Run_UsbWriteByte_tests(Yep);
     }
 }
 void StatusCode_tests(bool run_test)
@@ -649,8 +649,8 @@ void Usb_tests(bool run_test)
 {
     if (run_test)
     {
-        Run_Usb_Private_Ft_tests(Nope);
-        Run_Usb_Ft_tests(Nope);
+        Run_Usb_Private_Ft_tests(Yep);
+        Run_Usb_Ft_tests(Yep);
         Run_Usb_API_tests(Yep);
     }
 }
@@ -658,18 +658,18 @@ void Usb_tests(bool run_test)
 int main()
 {
     UNITY_BEGIN();
-    BiColorLed_tests(Nope);
-    ReadWriteBits_tests(Nope);
-    Queue_tests(Nope);
-    UartSpi_tests(Nope);
-    Lis_tests(Nope);
-    Flag_tests(Nope);
-    Spi_tests(Nope);
-    SpiSlave_tests(Nope);
-    SpiMaster_tests(Nope);
-    StatusCode_tests(Nope);
-    /* =====[ test libs for usb-bridge ]===== */
-    Usb_tests(Nope);
+    BiColorLed_tests(Yep);
+    ReadWriteBits_tests(Yep);
+    Queue_tests(Yep);
+    UartSpi_tests(Yep);
+    Lis_tests(Yep);
+    Flag_tests(Yep);
+    Spi_tests(Yep);
+    SpiSlave_tests(Yep);
+    SpiMaster_tests(Yep);
+    StatusCode_tests(Yep);
+    /* =====[ test libs for usb-bridge (what is this?) ]===== */
+    Usb_tests(Nope); // TODO: clean this up -- delete it?
     /* =====[ New tests ]===== */
     setUp = NothingToSetUp; tearDown = NothingToTearDown;
     return UNITY_END();

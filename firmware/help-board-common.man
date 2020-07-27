@@ -8,6 +8,7 @@
 
   clean all builds:                 $ make clean
   
-  build and run unit-tests:         $ make unit-test
+  build and run unit-tests:         $ make unit-test compiler=gcc
+  (if no compiler is specified, avr-gcc is used)
   
   build for AVR but do not flash:   $ make avr-elf

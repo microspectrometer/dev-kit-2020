@@ -5,10 +5,10 @@ board-name := vis-spi-out
 applib := Example VisCmd AutoExpose
 
 # Name HARDWARE libs in lib/src.
-hwlib := BiColorLed Spi SpiSlave UartSpi Lis Flag
+hwlib := BiColorLed Spi UartSpi Lis Flag
 
 # Name NON-hardware libs in lib/src.
-nohwlib := ReadWriteBits StatusCode Queue
+nohwlib := ReadWriteBits StatusCode Queue SpiSlave
 
 # Name libs that USE_FAKES in tests
 lib_faked := Spi SpiSlave Lis

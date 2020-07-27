@@ -5,10 +5,10 @@ board-name := usb-bridge
 applib := Example UsbCmd
 
 # Name HARDWARE libs in lib/src.
-hwlib := BiColorLed Usb Spi SpiMaster
+hwlib := BiColorLed Usb Spi
 
 # Name NON-hardware libs in lib/src.
-nohwlib := ReadWriteBits StatusCode
+nohwlib := ReadWriteBits StatusCode SpiMaster
 
 # Name libs that USE_FAKES in tests
 lib_faked := Usb Spi

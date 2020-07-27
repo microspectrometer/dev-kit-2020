@@ -7,7 +7,7 @@
 #include "SpiSlave.h"
 #include "UartSpi.h"
 #include "Lis.h"
-#include "Cmd.h"
+// #include "Cmd.h" - old typedefs from jump table days
 #include <stdlib.h> // defines NULL
 // hardware i/o definitions
 #include "Hardware.h"

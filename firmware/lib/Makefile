@@ -74,11 +74,11 @@ endif
 # Add hardware libs here{{{
 # Hardware libs depend on AVR headers (register/bit definitions, macros, etc.).
 # List separate from non-hardware libs to generate libname-Harware.h pre-reqs.
-hwlib := BiColorLed Spi SpiSlave SpiMaster UartSpi Lis Flag Usb
+hwlib := BiColorLed Spi UartSpi Lis Flag Usb
 # }}}
 # Add non-hardware libs here{{{
 # Non-hardware libs do not depend on AVR headers.
-nohwlib := ReadWriteBits Queue StatusCode
+nohwlib := ReadWriteBits Queue StatusCode SpiSlave SpiMaster
 # }}}
 # Group libs into build *pre-requisites*{{{
 # Hardware libs add libname-HardwareFake.h file pre-requisites to build rules.
