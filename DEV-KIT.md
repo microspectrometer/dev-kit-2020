@@ -256,7 +256,7 @@ The dev-kit spectrometer is mounted on breakout board
 `vis-analog-out` for connecting via a zero-insertion-force (ZIF)
 connector:
 
-![vis-analog-out board](img/render/vis-analog-out.PNG)
+![vis-analog-out board](img/render/vis-analog-out.png)
 
 To design a PCB that connects to `vis-analog-out`, use the same
 ZIF connector, [Hirose
