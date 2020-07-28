@@ -1,0 +1,9 @@
+# PCB EAGLE board file name: chip-breakout.brd
+# PCB is `14.000 mm` wide by `18.000 mm` long.
+RefDes,X (mm),Y (mm),Side,Rotate,DigiKey
+C1,9.50,5.50,Top,270,810-CGA3E2X7R1H104K
+C2,11.00,5.50,Top,270,80-C0603C103K5R
+HW5,3.00,11.00,Bottom,0,DNP
+HW6,3.00,3.00,Bottom,0,DNP
+J1,8.60,14.80,Top,0,798-FH128S05SH55
+U1,10.00,5.91,Bottom,0,DNP

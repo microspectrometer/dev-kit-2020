@@ -59,14 +59,25 @@ hardware
         └── vis-spi-out-xyrs-bom.csv
 ```
 
-## Use the CAD files
+## CAD files
 
-### Spectrometer chip package
+### Spectrometer chip package CAD files and documentation
 
-This respository does **not** contain design and manufacturing
-files for the internal design of the spectrometer chip itself.
 This documentation is intended for PCB layout and opto-mechanical
 alignment.
+
+*Chromation does not provide design and manufacturing files for
+the internal design of the spectrometer chip itself.*
+
+#### Chip package render
+
+The chip package should look like this after importing into 3D
+CAD software:
+
+![CUVV-45-1-1-1-SMT
+render](design/CUVV-45-1-1-1-SMT/render/CUVV-45-1-1-1-SMT.png)
+
+#### 3D CAD files
 
 ```
 hardware
@@ -80,15 +91,14 @@ hardware
 The chip package is designed in Fusion360.
 
 - if you use Fusion360, import the `.f3d` file
-- if you use a different 3D CAD package, import the `.step` file
-- if you do not have a 3D CAD package, you can still view the
-  part and measure features [using this
-  link](https://a360.co/2CVHmGy)
+- if you use different 3D CAD software, import the `.step` file
+- if you do not have 3D CAD software, you can still view the part
+  and measure features [using this link](https://a360.co/2CVHmGy)
 
 See
 `hardware/design/CUVV-45-1-1-1-SMT/CUVV-45-1-1-1-SMT_technical-note-1.0.pdf` for additional information about the spectrometer chip.
 
-### PCBs
+### PCB CAD files and documentation
 
 The PCBs (printed circuit boards) are designed in EAGLE.
 
@@ -104,6 +114,14 @@ coming soon.
 │   ├── usb-bridge.brd
 │   ├── usb-bridge.sch
 │   └── usb-bridge-xyrs-bom.csv
+├── vis-analog-out
+│   ├── render
+│   │   └── vis-analog-out.png
+│   ├── eagle.epf
+│   ├── lbr/
+│   ├── vis-analog-out.brd
+│   ├── vis-analog-out.sch
+│   └── vis-analog-out-xyrs-bom.csv
 └── vis-spi-out
     ├── datasheets/
     ├── eagle.epf
