@@ -100,6 +100,23 @@ See
 
 ### PCB CAD files and documentation
 
+#### vis-analog-out
+
+![vis-analog-out
+render](design/vis-analog-out/render/pcb.png)
+
+#### vis-spi-out
+
+![vis-spi-out
+render](design/vis-spi-out/render/pcb.png)
+
+#### usb-bridge
+
+![usb-bridge
+render](design/usb-bridge/render/pcb.png)
+
+#### EAGLE
+
 The PCBs (printed circuit boards) are designed in EAGLE.
 
 The EAGLE files are in the `hardware/design` folder. The
@@ -108,6 +125,8 @@ coming soon.
 
 ```
 ├── usb-bridge
+│   ├── render
+│   │   └── pcb.png
 │   ├── datasheets/
 │   ├── eagle.epf
 │   ├── lbr/
@@ -116,13 +135,15 @@ coming soon.
 │   └── usb-bridge-xyrs-bom.csv
 ├── vis-analog-out
 │   ├── render
-│   │   └── vis-analog-out.png
+│   │   └── pcb.png
 │   ├── eagle.epf
 │   ├── lbr/
 │   ├── vis-analog-out.brd
 │   ├── vis-analog-out.sch
 │   └── vis-analog-out-xyrs-bom.csv
 └── vis-spi-out
+    ├── render
+    │   └── pcb.png
     ├── datasheets/
     ├── eagle.epf
     ├── lbr/

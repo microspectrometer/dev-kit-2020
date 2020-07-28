@@ -1,4 +1,4 @@
-# PCB EAGLE board file name: 20190429-usb-bridge.brd
+# PCB EAGLE board file name: usb-bridge.brd
 # PCB is `29.000 mm` wide by `29.024 mm` long.
 RefDes,X (mm),Y (mm),Side,Rotate,DigiKey
 C1,15.25,1.75,Top,270,81-GRM1885C1H103JA1D

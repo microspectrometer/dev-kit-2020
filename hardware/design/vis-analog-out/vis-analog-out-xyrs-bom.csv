@@ -1,4 +1,4 @@
-# PCB EAGLE board file name: chip-breakout.brd
+# PCB EAGLE board file name: vis-analog-out.brd
 # PCB is `14.000 mm` wide by `18.000 mm` long.
 RefDes,X (mm),Y (mm),Side,Rotate,DigiKey
 C1,9.50,5.50,Top,270,810-CGA3E2X7R1H104K
