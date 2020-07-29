@@ -11,7 +11,7 @@ The dev-kit helps:
 - evaluate Chromation's spectrometer technology
 - design a product using Chromation's spectrometer chip
 
-# Dev-kit interfaces
+## Dev-kit interfaces
 
 The Chromation dev-kit divides into **three interfaces**:
 
@@ -21,7 +21,9 @@ The Chromation dev-kit divides into **three interfaces**:
 
 ![dev-kit output options](img/dev-kit-output-options.png)
 
-The dev-kit divides into three printed circuit boards (PCBs):
+## Dev-kit circuit boards
+
+The dev-kit divides into **three printed circuit boards** (PCBs):
 
 - `vis-analog-out`
     - breakout board for Chromation `CUVV-45-1-1-1-SMT`
@@ -34,8 +36,14 @@ The dev-kit divides into three printed circuit boards (PCBs):
 
 ## Dev-kit setup and usage
 
-Please see additional information about setting up and using the
-dev-kit in [DEV-KIT.md](DEV-KIT.md)
+Please see additional information about setting up and using:
+
+- the dev-kit hardware
+    - see [DEV-KIT.md](DEV-KIT.md#usb-out)
+- the dev-kit Python interface
+    - see [PYTHON.md](PYTHON.md)
+
+*Windows users:* please [enable "Load VCP"](DEV-KIT.md#windows-users-enable-load-vcp).
 
 # Repository Contents
 
@@ -136,7 +144,11 @@ python
 └── system-tests.py
 ```
 
-Coming soon:
+Please [install microspec](PYTHON.md#setup-microspeclib) before running these examples.
+
+*The example applications use Chromation's `microspeclib` package.*
+
+More applications coming soon:
 
 - [ ] a Python version of the GUI
 - [ ] a simple application to capture a single frame and plot it
