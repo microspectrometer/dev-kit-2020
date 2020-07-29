@@ -8,3 +8,6 @@ __pycache__
 *.avra
 cscope.out
 tags
+*.b#?
+*.l#?
+*.s#?
