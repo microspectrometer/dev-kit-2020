@@ -31,11 +31,11 @@ hardware
     │   ├── usb-bridge.pdf
     │   ├── vis-analog-out.pdf
     │   └── vis-spi-out.pdf
+    ├── lbr (EAGLE library components)
     ├── usb-bridge
     │   ├── datasheets
     │   ├── eagle.epf
     │   ├── hardware-design.md
-    │   ├── lbr
     │   ├── usb-bridge.brd
     │   ├── usb-bridge.sch
     │   └── usb-bridge-xyrs-bom.csv
@@ -52,7 +52,6 @@ hardware
         ├── datasheets
         ├── eagle.epf
         ├── hardware-design.md
-        ├── lbr
         ├── vis-spi-out.brd
         ├── vis-spi-out.sch
         └── vis-spi-out-xyrs-bom.csv
@@ -200,6 +199,9 @@ PCB design files:
 
 - [ ] hardware-design.md is electronics design calculations and
   related documentation
+    - [vis-analog-out hardware-design.md](design/vis-analog-out/hardware-design.md)
+    - [vis-spi-out hardware-design.md](design/vis-spi-out/hardware-design.md)
+    - [usb-bridge hardware-design.md](design/usb-bridge/hardware-design.md)
 - [ ] The manufacturing files (Gerbers and Drill) are in the
   `hardware/manufacture` folder.
 
