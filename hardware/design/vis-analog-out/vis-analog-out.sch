@@ -965,7 +965,7 @@ LETTER landscape</description>
 </package>
 </packages>
 <symbols>
-<symbol name="QUIKPAK-500580-FLUTTERSHY">
+<symbol name="CHROMATION-SPECTROMETER">
 <pin name="NC@1" x="0" y="-7.62" length="point" direction="nc"/>
 <pin name="NC@2" x="0" y="-15.24" visible="off" length="point" direction="nc"/>
 <pin name="NC@3" x="0" y="-22.86" visible="off" length="point" direction="nc"/>
@@ -1031,7 +1031,7 @@ LETTER landscape</description>
 <devicesets>
 <deviceset name="VIS" prefix="U" uservalue="yes">
 <gates>
-<gate name="G$1" symbol="QUIKPAK-500580-FLUTTERSHY" x="0" y="0"/>
+<gate name="G$1" symbol="CHROMATION-SPECTROMETER" x="0" y="0"/>
 </gates>
 <devices>
 <device name="-QFN48" package="VIS-PKG">
@@ -1286,13 +1286,13 @@ LETTER landscape</description>
 <parts>
 <part name="FRAME1" library="Chromation" deviceset="LETTER_L" device="" value="frame1"/>
 <part name="FRAME2" library="Chromation" deviceset="LETTER_L" device="" value="frame2"/>
-<part name="U1" library="VIS-PKG" deviceset="VIS" device="-QFN48" override_package3d_urn="urn:adsk.eagle:package:12144447/8" override_package_urn="urn:adsk.eagle:footprint:12144448/2" value="Chromation-optical-die-in-QFN-48-QuikPak-500580">
+<part name="U1" library="VIS-PKG" deviceset="VIS" device="-QFN48" override_package3d_urn="urn:adsk.eagle:package:12144447/8" override_package_urn="urn:adsk.eagle:footprint:12144448/2" value="CUVV-45-1-1-1-SMT">
 <attribute name="EXPORT" value="YES"/>
 <attribute name="MANUF" value="Chromation"/>
-<attribute name="MANUF_PNUM" value="Spectrometer"/>
+<attribute name="MANUF_PNUM" value="CUVV-45-1-1-1-SMT"/>
 <attribute name="NOTES" value="--"/>
 <attribute name="VENDOR1" value="Chromation"/>
-<attribute name="VENDOR1_PNUM" value="Spectrometer"/>
+<attribute name="VENDOR1_PNUM" value="CUVV-45-1-1-1-SMT"/>
 <attribute name="VENDOR1_PQ_00001" value="--"/>
 </part>
 <part name="J1" library="ZIF" deviceset="ZIF_" device="8-PIN" override_package3d_urn="urn:adsk.eagle:package:12144276/5" override_package_urn="urn:adsk.eagle:footprint:12144289/1" value="FH12-8S-0.5SH(55)">

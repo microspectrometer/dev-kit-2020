@@ -6,20 +6,28 @@ Desktop="Desktop"
 
 [Globals]
 AutoSaveProject=1
-UsedLibrary="lbr/HEADER-PIN.lbr"
-UsedLibrary="lbr/POT.lbr"
-UsedLibrary="lbr/R-ARRAY.lbr"
-UsedLibrary="lbr/TEST-POINT.lbr"
-UsedLibrary="lbr/USB-BRIDGE.lbr"
-UsedLibrary="lbr/VREF.lbr"
-UsedLibrary="lbr/ZIF.lbr"
-UsedLibrary="C:/chromation-dropbox/Dropbox/eagle/lbr/Chromation/Chromation.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/0603.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/ZIF.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/Chromation.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/HEADER-PIN.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/HEADER-SOCKET.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/BICOLOR-LED.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/R-ARRAY.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/POT.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/SPDT.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/TEST-POINT.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/PWR-SUPPLY.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/ADC.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/VREF.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/ATMEGA328.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/CRYSTAL.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/USB-BRIDGE.lbr"
 
 [Win_1]
 Type="Board Editor"
 Number=2
 File="vis-spi-out.brd"
-View="-18.2185 -35.2111 95.8974 56.3792"
+View="-12.4749 -28.5075 82.6216 47.8178"
 WireWidths=" 0.0762 0.1016 0.127 0.15 0.2 0.2032 0.254 0.3048 0.4064 0.508 0.6096 0.8128 1.016 1.27 2.54 0.1524"
 PadDiameters=" 0.254 0.3048 0.4064 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0"
 PadDrills=" 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.65 0.7 0.75 0.8 0.85 0.9 1 0.6"
@@ -102,7 +110,7 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=91
-Views=" 1: -5.50256 -4.23256 254.215 189.445"
+Views=" 1: -5.50256 -4.23256 254.215 189.445 2: 181.285 111.906 267.663 175.837 3: -5.50256 -4.23256 254.215 189.445"
 Sheet="1"
 
 [Win_3]

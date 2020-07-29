@@ -6,20 +6,20 @@ Desktop="Desktop"
 
 [Globals]
 AutoSaveProject=1
-UsedLibrary="lbr/0603.lbr"
-UsedLibrary="lbr/ATMEGA328.lbr"
-UsedLibrary="lbr/BICOLOR-LED.lbr"
-UsedLibrary="lbr/CRYSTAL.lbr"
-UsedLibrary="lbr/DOWEL-PIN.lbr"
-UsedLibrary="lbr/DPDT.lbr"
-UsedLibrary="lbr/FT221X.lbr"
-UsedLibrary="lbr/HEADER-SOCKET.lbr"
-UsedLibrary="lbr/ISP.lbr"
-UsedLibrary="lbr/MICRO-USB.lbr"
-UsedLibrary="lbr/PUSH-BUTTON.lbr"
-UsedLibrary="lbr/SPDT.lbr"
-UsedLibrary="lbr/YAGEO-0603.lbr"
-UsedLibrary="C:/chromation-dropbox/Dropbox/eagle/lbr/Chromation/Chromation.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/0603.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/Chromation.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/HEADER-SOCKET.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/BICOLOR-LED.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/SPDT.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/ATMEGA328.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/CRYSTAL.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/DOWEL-PIN.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/MICRO-USB.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/ISP.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/DPDT.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/PUSH-BUTTON.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/YAGEO-0603.lbr"
+UsedLibrary="C:/cygwin64/home/mike/chromation/dev-kit-2020/hardware/design/lbr/FT221X.lbr"
 
 [Win_1]
 Type="Board Editor"
@@ -108,7 +108,7 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=91
-Views=" 1: -5.50256 -4.23256 254.215 189.445 2: -5.50256 -4.23256 254.215 189.445"
+Views=" 1: -5.50256 -4.23256 254.215 189.445 2: 105.39 84.582 133.181 113.538"
 Sheet="1"
 
 [Win_3]

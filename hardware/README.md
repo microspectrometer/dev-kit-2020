@@ -43,7 +43,6 @@ hardware
     │   ├── CAM
     │   ├── eagle.epf
     │   ├── hardware-design.md
-    │   ├── lbr
     │   ├── step
     │   ├── vis-analog-out.brd
     │   ├── vis-analog-out.sch
@@ -123,21 +122,58 @@ The EAGLE files are in the `hardware/design` folder. The
 following files are available now, additional design files are
 coming soon.
 
+EAGLE library components:
+
+```
+└── lbr
+    ├── eagle-pkg-artwork.md
+    ├── 0603.lbr (resistors and capacitors)
+    ├── YAGEO-0603.lbr (resistors)
+    ├── ADC.lbr
+    ├── ATMEGA328.lbr
+    ├── BICOLOR-LED.lbr (red/green led)
+    ├── Chromation.lbr
+    │   ├── ADP3303_ (3.3V regulator)
+    │   ├── APTD1608SYCK_ (power indicator LED)
+    │   ├── FB_ (ferrite bead for USB back-emi filter)
+    │   ├── LETTER_L (schematic sheet border)
+    │   ├── MOUNTING-HOLE_ (#2-56 hole)
+    │   └── OPA2364_ (dual op-amp)
+    ├── CRYSTAL.lbr (MCU 10MHz oscillator)
+    ├── DOWEL-PIN.lbr (2.5mm pin to quick-mount usb-bridge PCB)
+    ├── DPDT.lbr (double-pole slide switch)
+    ├── FT221X.lbr (USB Bridge IC)
+    ├── HEADER-PIN.lbr (16-pin b2b male)
+    ├── HEADER-SOCKET.lbr (16-pin b2b female, 2-pin i2c female)
+    ├── ISP.lbr (in-system-programming shrouded header)
+    ├── MICRO-USB.lbr (usb connector)
+    ├── POT.lbr (trimpot for dark-correction)
+    ├── PUSH-BUTTON.lbr (reset button, not always populated)
+    ├── R-ARRAY.lbr (resistor arrays for current-limiting)
+    ├── SPDT.lbr (single-pole slide switch)
+    ├── TEST-POINT.lbr
+    ├── USB-BRIDGE.lbr (footprint of usb-bridge PCB)
+    ├── VIS-PKG.lbr (Chromation Spectrometer chip)
+    ├── VREF.lbr (ADC voltage reference)
+    └── ZIF.lbr (FFC connector)
+```
+
+PCB design files:
+
 ```
 ├── usb-bridge
 │   ├── render
 │   │   └── pcb.png
 │   ├── datasheets/
 │   ├── eagle.epf
-│   ├── lbr/
 │   ├── usb-bridge.brd
 │   ├── usb-bridge.sch
 │   └── usb-bridge-xyrs-bom.csv
 ├── vis-analog-out
 │   ├── render
 │   │   └── pcb.png
+│   ├── hardware-design.md
 │   ├── eagle.epf
-│   ├── lbr/
 │   ├── vis-analog-out.brd
 │   ├── vis-analog-out.sch
 │   └── vis-analog-out-xyrs-bom.csv
@@ -146,7 +182,6 @@ coming soon.
     │   └── pcb.png
     ├── datasheets/
     ├── eagle.epf
-    ├── lbr/
     ├── vis-spi-out.brd
     ├── vis-spi-out.sch
     └── vis-spi-out-xyrs-bom.csv
@@ -158,6 +193,8 @@ coming soon.
     - the schematic is the `.sch`
     - the board is the `.brd`
     - the BOM-and-pick-and-place is the `-xyrs-bom.csv`
+    - the library components for all three boards are the `.lbr`
+      files in the `hardware/design/lbr` folder
 - if you do not have EAGLE and are unable to import EAGLE files:
     - PDFs of the circuit schematics are in `hardware/design/pdf`
 
