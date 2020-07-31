@@ -23,11 +23,30 @@ details.
 
 ## Setup microspeclib
 
-Install `microspec` to use *Python package* `microspeclib`:
+Install `microspec`:
 
 ```bash
 $ pip install microspec
 ```
+
+Now you can use *Python package* `microspeclib` in a script or at
+the REPL:
+
+```python
+from microspeclib.simple import MicroSpecSimpleInterface
+```
+
+And you can run the command line utility:
+
+```bash
+$ microspec_cmdline.py setexposure cycles=100
+$ microspec_cmdline.py captureframe -t 0.2 -r 3 -w 1.5 --csv
+```
+
+On Windows, replace `microspec_cmdline.py` with
+`microspec_cmdline.exe`.
+
+The API and command line utility are explained more below.
 
 ## Use microspeclib
 
@@ -102,6 +121,51 @@ MicroSpecConnectionException: Cannot find CHROMATION device
 ```
 
 
+## Command Line API
+
+The `microspec_cmdline.py` executable will run a single command
+and print the reply to stdout, optionally in CSV format.
+
+- command is case-insensitive
+- pass command parameters as key=value, e.g., `led_num=0` or
+`cycles=100`
+
+For example, the following sequence of commands will:
+
+- configure the detector with the recommended settings
+- set exposure time to 100 cycles
+- capture three frames spaced 1.5 seconds apart
+- print the result in CSV format
+
+```
+microspec_cmdline.py setsensorconfig binning=true gain=gain1x row_bitmap=0x1f
+microspec_cmdline.py setexposure cycles=100
+microspec_cmdline.py captureframe -t 0.2 -r 3 -w 1.5 --csv
+```
+
+- `-t` *timeout*:
+    - how long to wait for a response to each command
+    - if the command timeouts (no response), the utility prints
+      `None` and moves on
+- `-`r *repeat*
+    - run the command this many times
+- `-w` *wait*:
+    - how long to *wait* between repeated commands
+
+All timeout and wait times are in fractional seconds.
+
+### The command line utility is a `.exe` on Windows
+
+On Windows, replace `microspec_cmdline.py` in the above lines
+with `microspec_cmdline.exe`.
+
+For example:
+
+```powershell
+> microspec-cmdline.exe captureframe -t 0.2 -r 3 -w 1.5 --csv
+```
+
+
 ## Python examples
 
 In addition to the example scripts in `microspec`, the dev-kit
@@ -143,12 +207,17 @@ free to develop their own GUI reusing anything from the
 hardware/firmware reusing any of the schematics, PCB layout, or
 firmware provided by Chromation.
 
-## Use the Python API
+## Python API `microspeclib` is active
 
 Chromation actively maintains `microspeclib`. We use this library
-to create all of our applications.
+to create all of our applications, both for internal work and for
+external example applications. If you make a modification you
+want to share, or find a bug, or if you have a feature request,
+please let us know.
 
-Chromation encourages using the `microspeclib` Python API, even
+## Modifying the Python API
+
+Chromation encourages using the `microspeclib` Python API even
 when building your own hardware/firmware.
 
 The `microspeclib` API is easy to customize/extend for users to
@@ -182,7 +251,7 @@ should install in `--editable` mode:
 - later undo the installation with `pip uninstall microspec`, or
   by simply deleting the virtual environment
 
-### Example extending the API
+### Example modifying the API
 
 For example, a user might want to modify the autoexpose algorithm
 to choose the final exposure time from a list of allowed exposure
