@@ -274,6 +274,15 @@ Of course it is also good practice to unit test and document. See
 the `microspec` project homepage for details. Here is a quick
 overview of unit testing and documentation.
 
+### Clone the `microspec` repository
+
+To run tests and rebuild the documentation after modifying the
+API, create a local clone of the `microspec` repository:
+
+```bash
+$ git clone https://github.com/microspectrometer/microspec.git
+```
+
 ### Unit testing
 
 Commands defined in the JSON file are automatically picked up by
@@ -309,12 +318,7 @@ the documentation.
 $ pip install microspec[dev]
 ```
 
-2. Clone the repository:
-
-```bash
-$ git clone https://github.com/microspectrometer/dev-kit-2020.git
-```
-3. Edit the docstring.
+2. Edit the docstring.
 
 Documentation is the one case where the developer needs to
 manually edit a Python file when adding new API commands.
@@ -326,7 +330,7 @@ edit.
 `src/microspeclib/internal/docstrings.py` is where the developer
 places the documentation that would normally go in the docstring.
 
-4. Enter the `microspec/doc` folder, then run the Sphinx Makefile:
+3. Enter the `microspec/doc` folder, then run the Sphinx Makefile:
 
 ```bash
 $ make clean html
