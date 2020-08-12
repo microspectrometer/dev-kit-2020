@@ -45,6 +45,9 @@ Please see additional information about setting up and using:
 
 *Windows users:* please [enable "Load VCP"](DEV-KIT.md#windows-users-enable-load-vcp).
 
+See [PYTHON-SETUP.md](PYTHON-SETUP.md) for steps starting on a
+Windows or Linux system without Python.
+
 # Repository Contents
 
 ```

@@ -4,6 +4,9 @@ Chromation's *Python project* `microspec` is available from PyPI
 (the Python Package Index) at
 <https://pypi.org/project/microspec/>.
 
+See [PYTHON-SETUP.md](PYTHON-SETUP.md) for steps starting on a
+Windows or Linux system without Python.
+
 ## Overview of microspec
 
 *Python project* `microspec` provides:
@@ -306,7 +309,12 @@ the documentation.
 $ pip install microspec[dev]
 ```
 
-2. Edit the docstring.
+2. Clone the repository:
+
+```bash
+$ git clone https://github.com/microspectrometer/dev-kit-2020.git
+```
+3. Edit the docstring.
 
 Documentation is the one case where the developer needs to
 manually edit a Python file when adding new API commands.
@@ -318,7 +326,7 @@ edit.
 `src/microspeclib/internal/docstrings.py` is where the developer
 places the documentation that would normally go in the docstring.
 
-3. Enter the `microspec/doc` folder, then run the Sphinx Makefile:
+4. Enter the `microspec/doc` folder, then run the Sphinx Makefile:
 
 ```bash
 $ make clean html
