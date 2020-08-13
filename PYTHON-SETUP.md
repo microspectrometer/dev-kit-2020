@@ -1,131 +1,28 @@
-# Context
-
-## Python
-
-Python is a high-level language with many **built-in** libraries.
-
-Python has a *huge* open-source community that contributes
-**additional** libraries.
-
-For example, Chromation maintains `microspec`, an API for USB
-communication with our spectrometer dev-kit.
-
-Installing Python consists of installing Python itself, then
-installing additional libraries your application depends on.
-
-## Python Packages
-
-Python libraries are called *packages*. Community-created
-packages are distributed as *projects* on PyPI (the *Python
-Package Index*).
-
-See the [official terminology
-here](https://packaging.python.org/glossary/).
-
-I use the terms *project* and *package* interchangeably. In
-practice, a *project* contains the *package* and the `setup.py`
-file for installing the *package*. But a *project* may also
-include applications, data, or other resources.
-
-For example, installing the `microspec` *project* installs the
-`microspeclib` *package*. Installing `microspec` also installs:
-
-- API config file `microspec.json`
-- command line utility `microspec_cmdline`
-- a suite of unit tests
-- example applications `microspec_api.py` and
-  `microspec_lowlevel_api.py`
-
-## Manage packages and virtual environments
-
-The package manager `pip` and virtual environment manager `venv`
-are the common tools for Python developers to use PyPI libraries in their projects.
-
-These tools and concepts are introduced below. Example commands
-are given in the `Windows` and `Linux` sections.
-
-### pip
-
-`pip` is the built-in *package manager*. It is Python's tool for
-installing/updating/removing packages.
-
-### venv
-
-`venv` manages virtual environments.
-
-I include `venv` in the installation steps because it is good
-practice. But you do not need to use `venv`. If you do not have a
-reason to use `venv`, do not use it. Skip steps where I create
-and activate the `venv`.
-
-Ignoring these `venv` steps means `pip` installs to the base
-installation. That is OK. You will know when you run into a
-problem that virtual environments solve.
-
-#### venv details
-
-`venv` is the built-in *virtual environment manager*.
-
-A virtual environment is an isolated sandbox for
-installing/updating/removing packages without affecting the base
-Python installation or other virtual environments.
-
-In other words, a *single Python* is installed but the *list of
-installed packages* depend on which virtual environment is
-active.
-
-Note: the PYTHONPATH environment variable determines where Python
-looks for *import packages* (i.e., to import code from installed
-packages), but PYTHONPATH is not connected to any single virtual
-environment. PYTHONPATH is the same value for all virtual
-environments.
-
-Users typically create a virtual environment for each project.
-The downside to this is that all of the duplicate package
-installations quickly add up as wasted disk space.
-
-I use `venv` to create a throwaway virtual environment to test
-installing a new package. I delete the virtual environment when
-I'm done testing.
-
-The flow for virtual environments is simple:
-
-- *Create* a virtual environment.
-    - This creates a folder with the virtual environment name.
-- *Activate* the virtual environment to limit Python to the
-  packages installed in that virtual environment.
-    - The command line prompt is prefaced with the virtual
-      environment name.
-- *Deactivate* the virtual environment to return to the base
-  installation's packages.
-    - The command line prompt returns to normal.
-- *Delete* the virtual environment by deleting its folder.
-
-Some users do not install any packages in their base Python
-installation folder and prefer to work exclusively with virtual
-environments. But there is nothing wrong with installing packages
-to the base Python installation.
-
-A common use case for virtual environments is when package
-`A` depends on a specific version of package `B` because updating
-package `B` to the latest version breaks package `A`.
-
-In this example, create a virtual environment for working on the
-projects that use package `A`. In this virtual environment, the
-old version of package `B` is installed, while the base Python
-installation can safely use the latest and greatest version of
-package `B`.
-
-When the virtual environment is active, Python sees the older
-package `B`. When the virtual environment is deactivated, Python sees the
-new package `B`.
+- [Windows Setup](#install-python-and-microspec-on-windows)
+- [Linux Mint Setup](#install-python-and-microspec-on-linux-mint)
+- [Check `microspec` is working](#check-microspec-works)
 
 # Install Python and microspec on Windows
 
-Download and install Python, test the installation, upgrade pip, and install
-`microspec` to a virtual environment.
+Overview:
 
-## Download
+- [enable "Load VCP"](#enable-load-vcp)
+- [download](#download-windows-installer-for-python) and [install Python](#install-python-on-windows)
+- [test the installation](#check-python-is-installed-on-windows)
+- [upgrade `pip`](#upgrade-pip-on-windows)
+- install Chromation package `microspec`:
+    - [install in a virtual environment](#create-a-virtual-environment)
+    - or [install to your base Python installation](#install-microspec-on-windows)
+
+## Enable Load VCP
+
+The dev-kit uses FTDI# FT221X for USB communication. You should
+not need to download drivers from the FTDI site, but you do need
+to tell Windows to `Load VCP` for this device.
+
+Please see [enable "Load VCP"](DEV-KIT.md#windows-users-enable-load-vcp).
+
+## Download Windows installer for Python
 
 - Go to the latest official [Python download page for Windows](https://www.python.org/downloads/windows/)
 - Download the executable installer for Windows
@@ -135,14 +32,14 @@ Download and install Python, test the installation, upgrade pip, and install
     python-3.8.1-amd64.exe
     ```
 
-## Install
+## Install Python on Windows
 
 - Run the installer
 - At the final step of installation, customize to add `py`
   launcher:
     - Select option to **Add Python to environment variables**
 
-## Check Python is installed
+## Check Python is installed on Windows
 
 - `Win+x` then press `i` to open a Windows PowerShell
 - run `python --version`
@@ -166,7 +63,7 @@ Exit Python:
 >>> exit()
 ```
 
-## Upgrade pip
+## Upgrade pip on Windows
 
 Check the version of pip:
 
@@ -191,13 +88,19 @@ Installing collected packages: pip
 Successfully installed pip-20.2.2
 ```
 
-## Install `microspec`
+## Try `microspec` in a virtual environment
 
 Create a virtual environment, activate the virtual environment,
 install microspec with pip, then deactivate the virtual
 environment.
 
-### Create a virtual environment named `test`
+If you do not want use a virtual environment, just skip to
+section [Install microspec](#install-microspec).
+
+### Create a virtual environment
+
+Pick a name for the virtual environment. This example is a
+throwaway environment, so I name it `test`.
 
 First, make sure there is no folder in this directory named
 `test`:
@@ -245,9 +148,8 @@ PS C:\Users\mike> .\test\Scripts\activate
 
 Notice the prompt is prefaced with the virtual environment name.
 
-### Install `microspec`
-
-First note that there are no additional packages installed yet:
+List the installed packages. Note that there are no additional
+packages installed yet because this is a new virtual environment:
 
 ```powershell
 (test) PS C:\Users\mike> pip list
@@ -265,7 +167,33 @@ If you plan to keep this virtual environment, upgrade its pip:
 (test) PS C:\Users\mike> python -m pip install --upgrade pip
 ```
 
-Install `microspec`:
+### Deactivate the virtual environment
+
+After installing and trying out `microspec` in the next section,
+deactivate the virtual environment:
+
+```powershell
+(test) PS C:\Users\mike> deactivate
+PS C:\Users\mike>
+```
+
+### Delete the virtual environment
+
+If this virtual environment is just a throwaway test environment,
+delete it to free up disk space:
+
+```powershell
+PS C:\Users\mike> rm .\test\
+
+Confirm
+The item at C:\Users\mike\test\ has children and the Recurse parameter was not
+specified. If you continue, all children will be removed with the item. Are you
+sure you want to continue?
+[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help
+(default is "Y"):A
+```
+
+### Install microspec on Windows
 
 ```powershell
 (test) PS C:\Users\mike> pip install microspec
@@ -277,26 +205,354 @@ Installing collected packages: pyserial, microspec
 Successfully installed microspec-0.1.1a3 pyserial-3.4
 ```
 
-## Try `microsepec` at the REPL
+# Install Python and microspec on Linux Mint
 
-Open the Python REPL:
+Overview:
+- [Gain permission to access `/dev/ttyUSB0`](#gain-permission-to-access-ttyusb0)
+- Either [use the installed Python](#python-install-option-1):
+    - use the Python3 that comes with the Linux Mint distribution
+    - install `pip` and `venv` with the Linux package manager
+- Or [build Python from source](#python-install-option-2):
+    - download latest Python source archive
+    - build Python from source
+        - this build includes `pip` and `venv`
+
+At this point, some version of Python3 is installed with packages
+`pip` and `venv`:
+
+- [upgrade `pip`](#upgrade-pip)
+- [install Chromation package `microspec`](#install-microspec-in-a-virtual-environment-on-Linux-Mint)
+
+## Gain permission to access ttyUSB0
+
+### Context
+
+The dev-kit uses *FTDI# FT221X* for USB communication. You should
+*not* need to download drivers from the FTDI site. Just connect
+the dev-kit with a USB cable and it should be visible to the
+operating system.
+
+But you do need to grant the user permission to communicate with
+the dev-kit over USB.
+
+### Check hardware is visible
+
+- connect the dev-kit with a USB cable
+    - *expect:* dev-kit indicator LEDs light up
+    - two yellow LEDs
+    - three green LEDs
+- display messages from the kernel ring buffer that contain
+  string `FTDI`:
+
+```bash
+$ dmesg | grep FTDI
+[101038.609497] usb 3-1: FTDI USB Serial Device converter now attached to ttyUSB0
+```
+
+Only members of the `dialout` group have permission to open port
+`/dev/ttyUSB0`.
+
+If this user is communicating with an FTDI device over USB
+for the first time, you probably need to add this user to the
+`dialout` group.
+
+Show the current user:
+
+```bash
+$ echo $USER
+```
+
+Show which `groups` this user is part of:
+
+```bash
+$ groups $USER
+```
+
+Check if this user is part of the `dialout` group:
+
+```bash
+$ groups $USER | grep dialout
+```
+
+If the user is already part of `dialout`, a list of groups is
+printed and `dialout` is highlighted.
+
+If the user is not part of `dialout`, nothing is printed.
+
+Add this user to `dialout`:
+
+```bash
+$ sudo adduser $USER dialout
+```
+
+Confirm the user is part of the `dialout` group:
+
+```bash
+$ groups $USER | grep dialout
+```
+
+Finally, logout and log back in (or simply restart the computer).
+Even though the user is listed as a member of `dialout`, this
+change does not take effect until the user logs back in.
+
+## Python install option 1
+
+Use the default Python that comes with Linux Mint.
+
+Install `pip` and `venv`. If the packages are already installed,
+`apt` checks if they are the latest versions.
+
+### Install `pip`
+
+```bash
+$ sudo apt install python3-pip
+...
+Recommended packages:
+  python3-setuptools python3-wheel
+The following NEW packages will be installed:
+  python3-pip
+...
+```
+
+### Install `venv`
+
+```bash
+$ sudo apt install python3-venv
+...
+The following additional packages will be installed:
+  python-pip-whl python3.6-venv
+The following NEW packages will be installed:
+  python-pip-whl python3-venv python3.6-venv
+...
+```
+
+## Python install option 2
+
+Build Python from source.
+
+### Install the build dependencies
+
+```bash
+$ sudo apt install build-essential checkinstall
+$ sudo apt install libreadline-gplv2-dev \
+libncursesw5-dev \
+libssl-dev \
+libsqlite3-dev \
+tk-dev \
+libgdbm-dev \
+libc6-dev \
+libbz2-dev \
+libffi-dev \
+zlib1g-dev
+```
+
+### Download the compressed source distribution
+
+Download the source to `/opt`.
+
+*`/opt` is the folder for software that is not part of the
+default Linux Mint installation.*
+
+```bash
+$ cd /opt
+```
+
+Go to `python.org` to check the latest Python version number.
+Edit the link below. At the time of this writing, the latest
+version is `3.8.5`.
+
+```bash
+$ sudo wget https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
+```
+
+### Extract the archive file
+
+Extract the archive into folder Python-3.8.5:
+
+```bash
+$ sudo tar xzf Python-3.8.5.tgz
+```
+
+### Configure the build
+
+Enter the source folder and run the configure script.
+
+```bash
+$ cd Python-3.8.5
+$ sudo ./configure --enable-optimizations
+```
+
+This takes about a minute.
+
+### Build and install Python
+
+Use `altinstall` to avoid replacing the default /usr/bin/python.
+
+```bash
+$ sudo make altinstall
+```
+
+This takes about ten minutes.
+
+### Check version numbers
+
+`python3` still uses the default installation Python.
+
+`python3.8` invokes this `alt` installation of the latest Python.
+
+```bash
+$ python3.8 --version
+Python 3.8.5
+```
+
+## Upgrade pip
+
+If Python was built from source, identify if by the version
+number. I built Python 3.8.5, so I use `python3.8`:
+
+```bash
+$ python3.8 -m pip install --upgrade-pip
+```
+
+If using the default Python that comes with Linux Mint, identify
+it as `python3`:
+
+```bash
+$ python3 -m pip install --upgrade-pip
+```
+
+*Each installation of Python has its own `pip` installation.*
+
+## Install microspec in a virtual environment on Linux Mint
+
+Create the virtual environment:
+
+```bash
+$ cd ~
+$ python3 -m venv test
+```
+
+Remember to use the correct Python version number in the above
+command:
+
+- `python3` is the default installation (which is `python3.6` in my case)
+- `python3.8` is the installation built from source
+
+Activate the virtual environment:
+
+```bash
+$ . ~/test/bin/activate
+(test) $ 
+```
+
+Now that I am in the virtual environment, `python` refers to the
+correct version of Python.
+
+For example, if I created the virtual environment with
+`python3.8`, then `python` shows version `3.8.5`:
+
+```bash
+(test)$ python --version
+Python 3.8.5
+```
+
+Likewise, `pip` is the correct version of `pip`. I do not need to
+specify `pip3` or `pip3.8`.
+
+If I plan to keep this virtual environment, take 10 seconds to
+upgrade `pip`:
+
+```bash
+(test)$ python -m pip install --upgrade pip
+```
+
+Install `microspec`:
+
+```bash
+$ pip install microspec
+```
+
+Deactivate the virtual environment:
+
+```bash
+(test)$ deactivate
+$ 
+```
+
+Delete the virtual environment:
+
+```bash
+$ sudo rm -r ~/test
+```
+
+# Check microspec works
+
+## Open the Windows Python REPL
+
+Open the Python REPL from PowerShell.
+
+- `Win+x` then press `i` to open a Windows PowerShell
+
+Activate virtual environment `test`:
+
+```powershell
+PS C:\Users\mike> .\test\Scripts\activate
+(test) PS C:\Users\mike> 
+```
+
+Start Python:
 
 ```powershell
 (test) PS C:\Users\mike> python
+```
+```python
 Python 3.8.1 (tags/v3.8.1:1b293b6, Dec 18 2019, 23:11:46) [MSC v.1916 64 bit (AMD64)] on win32
 Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-A quick test of the API:
+## Open the Linux Mint Python REPL
+
+On Linux Mint, open the Python REPL from bash.
+
+- `ctrl+alt+t` to open a bash terminal
+
+Activate virtual environment `test`:
+
+```bash
+$ . ~/test/bin/activate
+(test) $ 
+```
+
+Start Python:
+
+```bash
+(test) $ python
+```
+```python
+Python 3.8.5 (default, Aug 12 2020, 00:28:27)
+[GCC 7.5.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+```
+
+## Test the API is installed and the dev-kit is visible
+
+This first line imports the API. If the API is installed, expect
+no response:
 
 ```python
 >>> from microspeclib.simple import MicroSpecSimpleInterface
+```
+
+This next line opens communication with the dev-kit over USB. If
+the dev-kit is connected over USB, expect no response:
+
+```python
 >>> kit = MicroSpecSimpleInterface(timeout=2.0)
 ```
 
-There is no response to the above command when everything is
-working.
+## Troubleshoot failure to open communication
 
 If the above command results in the error:
 
@@ -309,21 +565,46 @@ Check:
 
 - is the dev-kit connected over USB?
 - are the indicator LEDs lit?
-- did you [enable "Load VCP"](DEV-KIT.md#windows-users-enable-load-vcp)?
+- on *Windows*:
+    - did you [enable "Load VCP"](DEV-KIT.md#windows-users-enable-load-vcp)?
+- on *Linux Mint*:
+    - did you [make `$USER` a member of group `dialout`](#gain-permission-to-access-ttyusb0)?
 
-Continue a quick test of the API if there was no error. Get the
-pixel configuration of the spectrometer's photodiode array:
+## Try an API command
+
+If there was no error, continue with a quick example using the
+API.
+
+Command `getSensorConfig` gets the pixel configuration of the
+spectrometer's photodiode array:
 
 ```python
 >>> print(kit.getSensorConfig())
 SensorGetSensorConfig(status=0, binning=1, gain=1, row_bitmap=31)
 ```
 
-There is no command to close communication. The serial connection
-will automatically close when you exit the REPL.
+## Exit the REPL to close USB communication
 
-# Install Python on Linux Mint
+There is no command to close USB communication. The serial
+connection will automatically close when you exit the REPL.
 
-Download and install Python, test the installation, upgrade pip,
-and install `microspec` to a virtual environment.
+## Execute the example as a script
+
+Try executing the same example as a script:
+
+```python
+from microspeclib.simple import MicroSpecSimpleInterface
+kit = MicroSpecSimpleInterface(timeout=2.0)
+print(kit.getSensorConfig())
+```
+
+The serial connection automatically closes when the script exits,
+*regardless of whether the script exits normally or due to an
+exception.*
+
+In other words, context management is already done for you. You
+do *not* need to open communication inside a `with` block. If the
+script terminates due to an exception, you do not need to reset
+the hardware before running the script again.
+
 
