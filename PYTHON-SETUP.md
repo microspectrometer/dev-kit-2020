@@ -299,8 +299,22 @@ change does not take effect until the user logs back in.
 
 Use the default Python that comes with Linux Mint.
 
-Install `pip` and `venv`. If the packages are already installed,
-`apt` checks if they are the latest versions.
+`microspec` requires Python >=3.7. Check which version is
+installed:
+
+```bash
+$ python3 -V
+Python 3.6.9
+```
+
+At the time of this writing, Linux Mint is distributed with a
+version that is less than Python 3.7, so I have to build Python
+from source. See [Python install option
+2](#python-install-option-2).
+
+If the version is >= 3.7, then install `pip` and `venv`, detailed
+below. If the packages are already installed, `apt` checks if
+they are the latest versions.
 
 ### Install `pip`
 
