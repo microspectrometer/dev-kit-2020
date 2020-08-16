@@ -205,6 +205,21 @@ Installing collected packages: pyserial, microspec
 Successfully installed microspec-0.1.1a3 pyserial-3.4
 ```
 
+## Install dependencies for Chromation GUI applications
+
+Chromation uses `pygame` to create GUI applications.
+
+The dev-kit GUI is still under development. It is project
+`microspecgui` on PyPI.
+
+```powershell
+(test) PS C:\Users\mike> pip install microspecgui
+```
+
+As a requirement to `microspecgui`, this command also installs
+`pygame` version 1.9.6. The Windows build of Python contains all
+of the non-Python dependencies necessary to install `pygame`.
+
 # Install Python and microspec on Linux Mint
 
 Overview:
@@ -497,6 +512,240 @@ Delete the virtual environment:
 
 ```bash
 $ sudo rm -r ~/test
+```
+
+## Install dependencies for Chromation GUI applications
+
+Chromation uses `pygame` to create GUI applications.
+
+Using the Python3 that comes with Linux Mint, I am able to
+install `pygame` like any other Python package:
+
+```bash
+$ python3 -m pip install pygame
+```
+
+But the install fails for the Python3.8 that I built from source:
+
+```bash
+$ python3.8 -m pip install pygame
+```
+
+The solution is to install several build dependencies with the
+Linux package manager. Without these dependencies, the above
+command results in different errors depending on which
+dependencies I am missing.
+
+### Install `pygame` build dependencies
+
+`pygame` is a Python wrapper around `SDL` and requires
+`sdl-config`.
+
+Install `sdl-config`:
+
+```bash
+$ sudo apt install libsdl1.2-dev
+```
+
+*The install collects additional packages that are not part of the
+default Linux Mint distribution. Proceed with installing the
+additional packages.*
+
+Check `sdl-config` is installed:
+
+```bash
+$ sdl-config --version
+1.2.15
+```
+
+Obtain all of the other dependencies for building pygame using
+the list of build dependencies for the `python-pygame` package:
+
+```bash
+$ sudo apt-get build-dep python-pygame
+```
+
+The following dependencies are installed:
+
+```
+libflac-dev
+libjbig-dev
+libjpeg-dev
+libjpeg-turbo8-dev
+libjpeg8-dev
+liblzma-dev
+libmad0-dev
+libmikmod-config
+libmikmod-dev
+libogg-dev
+libportmidi-dev
+libpython-all-dev
+libsdl-image1.2-dev
+libsdl-mixer1.2-dev
+libsdl-ttf2.0-dev
+libsmpeg-dev
+libtiff-dev
+libtiff5-dev
+libtiffxx5
+libvorbis-dev
+libwebp-dev
+python-all
+pythonall-dev
+sharutils
+```
+
+Note this is not the same as installing the Linux package
+`python-pygame`. These are the packages needed for *building*
+`python-pygame`. Luckily, these are also the packages for
+`pip` to run pygame's `setup.py`.
+
+Now finally pygame will install with the usual command:
+
+```bash
+$ python3.8 -m pip install pygame
+```
+
+Or from the virtual environment `test`:
+
+```bash
+(test) $ pip install pygame
+```
+
+Or when installing Chromation's GUI, `pygame` is installed as a
+requirement:
+
+```bash
+(test) $ pip install microspecgui
+```
+
+## Setup for modifying microspeclib
+
+Like any other Python package, if you simply want to use the
+`microspeclib` package in an application, *it is not necessary to
+run the `microspeclib` unit tests or to rebuild the `microspec`
+documentation.*
+
+For example, users can write system-level tests like the ones in
+`dev-kit-2020/python/system-tests.py` and never run the
+`microspeclib` unit tests.
+
+But for users interested in modifying `microspeclib`, there are
+**unit tests** and **documentation** to maintain.
+
+This section explains how to set up the tools for this work.
+*These tools only work on Linux and Mac.* The unit tests require
+`socat`, only available on Linux and Mac. If you figure out how
+to rebuild the documentation on Windows, please let us know.
+
+### Clone project microspec
+
+First, create a local clone of the project repository (installing
+the `microspeclib` package with `pip install microspec` does not
+download the project repository):
+
+```bash
+$ git clone https://github.com/microspectrometer/microspec
+```
+
+This creates folder `microspec` in the current directory.
+
+### Install additional Python packages
+
+The tests and documentation require additional Python packages.
+Since typical users do not require these, they are not installed
+with `microspec` by default.
+
+Install the additional packages for dev work:
+
+```bash
+$ pip install microspec[dev]
+```
+
+*These additional packages are listed in the `extras_require` dict
+in `setup.py`.*
+
+### Install utility for emulating hardware
+
+The `microspec` unit tests use an **emulator**. When writing an
+application that uses `microspeclib`, it is helpful to have the
+option of faking the dev-kit hardware.
+
+The **emulator** depends on the `socat` utility, only available
+on Linux and Mac.
+
+Check if `socat` is installed:
+
+```bash
+$ socat -V
+```
+
+If not found, install `socat`:
+
+```bash
+$ sudo apt install socat
+```
+
+Check it installed:
+
+```bash
+$ socat -V
+socat by Gerhard Rieger and contributors - see www.dest-unreach.org
+socat version 1.7.3.2 on Apr 4 2018 10:06:49
+...
+```
+
+## Overview of modifying the API
+
+At a high-level, the flow to modify the API is:
+
+- **alter the API calls** by editing `microspec/cfg/microspec.json`
+- **run the unit tests** to make sure they still pass
+- **edit the docstrings** in
+  `src/microspeclib/internal/docstrings.py`
+- **rebuild the documentation**
+
+### Run the tests
+
+From the top-level folder of `microspec`, run `pytest`:
+
+```bash
+$ cd microspec
+$ pytest
+```
+
+The test ends with a summary:
+
+- how many passed
+- how many failed *and were expected to fail* (this means they passed)
+- how many failed *but were expected to pass*
+    - these are the *real* failures
+    - if this number is zero, the unit tests all **pass**
+
+Unlike the conventional unit tests in `dev-kit-2020/python/system-tests.py`, the `microspec` test suite is auto-generated.
+
+Editing the `cfg/microspec.json` file is enough to generate new
+unit tests. But it is sometimes necessary to modify the test
+generator function `generateTest()` to catch new cases introduced
+by the new functionality. This function is defined in:
+
+- `microspec/tests/test_expert_interface.py`
+- `microspec/tests/test_simple_interface.py`
+
+### Rebuild the documentation
+
+Since the command methods are created by meta-class factories,
+they are not defined in code, so there are no docstrings to
+edit.
+
+`src/microspeclib/internal/docstrings.py` is where the developer
+places the documentation that would normally go in the docstring.
+
+Then enter the `microspec/doc` folder and run the Sphinx
+Makefile to generate the new HTML documentation:
+
+```bash
+$ cd microspec/doc
+$ PATH=$PATH:../bin PYTHONPATH=../src:../:../tests make clean html
 ```
 
 # Check microspec works

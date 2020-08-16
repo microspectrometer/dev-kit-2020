@@ -254,6 +254,16 @@ should install in `--editable` mode:
 - later undo the installation with `pip uninstall microspec`, or
   by simply deleting the virtual environment
 
+*We strongly recommend users do not modify `microspeclib` on
+Windows. Running unit tests and rebuilding documentation requires
+dependencies that are not available on Windows.*
+
+### Setup for modifying the API
+
+The setup is described below. Details on Linux Mint setup are in
+PYTHON-SETUP.md in the section [Setup for modifying
+microspeclib](PYTHON-SETUP.md#setup-for-modifying-microspeclib).
+
 ### Example modifying the API
 
 For example, a user might want to modify the autoexpose algorithm
@@ -276,52 +286,39 @@ overview of unit testing and documentation.
 
 ### Clone the `microspec` repository
 
-To run tests and rebuild the documentation after modifying the
-API, create a local clone of the `microspec` repository:
+Create a local clone of the `microspec` repository.
 
 ```bash
 $ git clone https://github.com/microspectrometer/microspec.git
+```
+
+### Install extra packages
+
+Install the packages for running the unit tests and rebuilding
+documentation:
+
+```bash
+$ pip install microspec[dev]
 ```
 
 ### Unit testing
 
 Commands defined in the JSON file are automatically picked up by
 the `microspec` unit tests to check that the hardware responds
-with the expected response (the unit tests figure out the
-expected response from the JSON file).
+with the expected response. The unit tests figure out the
+expected response from the JSON file.
 
-It is still up to the user to run the unit tests.
-
-1. Install the required packages for running the unit tests:
-
-```bash
-$ pip install microspec[test]
-```
-
-2. Enter the `microspec` local repository folder, then run the
-   tests with `pytest`:
+Enter the `microspec` local repository folder, then run the tests
+with `pytest`:
 
 ```bash
-$ python -m pytest
+$ pytest
 ```
 
 ### Documentation
 
 The documentation automatically includes some basic information.
-But it is still up to the user to add specific docstrings and to
-rebuild the Sphinx documentation to update the HTML version of
-the documentation.
-
-1. Install the required packages for building the documentation:
-
-```bash
-$ pip install microspec[dev]
-```
-
-2. Edit the docstring.
-
-Documentation is the one case where the developer needs to
-manually edit a Python file when adding new API commands.
+But it is still up to the user to add specific docstrings.
 
 Since the command methods are created by meta-class factories,
 they are not defined in code, so there are no docstrings to
@@ -330,10 +327,10 @@ edit.
 `src/microspeclib/internal/docstrings.py` is where the developer
 places the documentation that would normally go in the docstring.
 
-3. Enter the `microspec/doc` folder, then run the Sphinx Makefile:
+Then enter the `microspec/doc` folder and run the Sphinx
+Makefile to generate the new HTML documentation:
 
 ```bash
-$ make clean html
+$ cd microspec/doc
+$ PATH=$PATH:../bin PYTHONPATH=../src:../:../tests make clean html
 ```
-
-
