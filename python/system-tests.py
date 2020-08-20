@@ -1,32 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''System tests of dev-kit-mike/firmware.
+"""System tests of dev-kit-mike/firmware.
 
 USAGE
 -----
-
-Run tests with:
+Run tests on Linux/Mac:
 $ pytest --testdox system-tests.py
 
-On Windows with:
+Run tests on Windows:
 > python.exe -m pytest --testdox system-tests.py
 
-DEPENDENCIES
+PYTEST FLAGS
 ------------
-pip install microspec
-pip install microspec[test]
-
-PYTEST HELP (see all the flags)
------------
-> python.exe -m pytest -h
-
-Common flags:
-
 --testdox   -- display test output in testdox format
 -v          -- verbose (show each test name, otherwise just . for passing tests)
 -q          -- quiet (. for passing test, then a one-line summary)
 --color yes -- print in color (green for passing, red for failing)
-'''
+"""
 
 # Unit test framework
 import unittest
