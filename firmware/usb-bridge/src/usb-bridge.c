@@ -67,10 +67,15 @@ void loop(void)
     UsbReadByte(&cmd); // read cmd
     switch(cmd) // look up cmd
     {
-        // Turn status LED red if cmd is not recognized.
-        default:                    BiColorLedRed(status_led);   break;
-        // Null gets no response, but turns status LED green for now.
-        case  0: NullCommand();      BiColorLedGreen(status_led); break;
+        /* // Turn status LED red if cmd is not recognized. */
+        /* default:                    BiColorLedRed(status_led);   break; */
+        // default: ReplyCommandInvalid(); break;
+        /* // Null turns status LED green. */
+        /* case  0: NullCommand();      BiColorLedGreen(status_led); break; */
+
+        // Do nothing if the cmd is not recognized.
+        default: ; break;
+        case  0: NullCommand();  break;
         case  1: GetBridgeLED(); break;
         case  2: SetBridgeLED(); break;
         case  3: GetSensorLED(); break;
@@ -83,7 +88,6 @@ void loop(void)
         case 12: AutoExposure(); break;
         case 13: GetAutoExposeConfig(); break;
         case 14: SetAutoExposeConfig(); break;
-        // default: ReplyCommandInvalid(); break;
     }
 }
 void setup_StatusLED(void)

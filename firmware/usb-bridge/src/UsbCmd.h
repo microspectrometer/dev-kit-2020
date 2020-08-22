@@ -515,8 +515,8 @@ inline void AutoExposure(void)
 {
     uint8_t const cmd = 12; // command is GetAutoExposeConfig
 
-    // indicate BUSY
-    BiColorLedRed(status_led);
+    /* // indicate BUSY */
+    /* BiColorLedRed(status_led); */
 
     // send command to sensor
     SpiMasterXfrByte(cmd);
@@ -544,8 +544,8 @@ inline void AutoExposure(void)
     UsbWriteByte(success);
     UsbWriteByte(iterations);
 
-    // indicate DONE
-    BiColorLedGreen(status_led);
+    /* // indicate DONE */
+    /* BiColorLedGreen(status_led); */
 }
 inline void GetAutoExposeConfig(void)
 {
@@ -640,8 +640,8 @@ inline void GetAutoExposeConfig(void)
 inline void SetAutoExposeConfig(void)
 {
 
-    // indicate BUSY
-    BiColorLedRed(status_led);
+    /* // indicate BUSY */
+    /* BiColorLedRed(status_led); */
     uint8_t const cmd = 14; // command is SetAutoExposeConfig
 
     // loop until max_tries is received
@@ -735,8 +735,8 @@ inline void SetAutoExposeConfig(void)
     // write response
     UsbWriteByte(status);
 
-    // indicate DONE
-    BiColorLedGreen(status_led);
+    /* // indicate DONE */
+    /* BiColorLedGreen(status_led); */
 }
 
 #endif // _USBCMD_H

@@ -383,9 +383,6 @@ static inline void CaptureFrame(void)
 inline void AutoExposure(void)
 {
 
-    // BUSY
-    BiColorLedRed(led_0);
-
     // auto-expose, report result:
     uint16_t result = AutoExpose();
 
@@ -395,9 +392,6 @@ inline void AutoExposure(void)
     // send final_peak
     SpiSlaveTxByte(MSB(result)); // success true/false
     SpiSlaveTxByte(LSB(result)); // iterations to hit target
-
-    // Done
-    BiColorLedGreen(led_0);
 }
 
 inline void GetAutoExposeConfig(void)

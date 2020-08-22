@@ -54,7 +54,7 @@ void loop(void)
     while (QueueIsEmpty(SpiFifo)); // 5 cycles
     // Execute the command.
     // BUSY
-    BiColorLedRed(led_0);
+    BiColorLedOff(led_0);
     switch(QueuePop(SpiFifo))
     {
         case  0: NullCommand(); break;
@@ -85,7 +85,7 @@ void loop(void)
         // Total number of instructions: 5
     }
     // DONE
-    BiColorLedGreen(led_0);
+    BiColorLedOn(led_0);
 }
 ISR(SPI_STC_vect) // Serial Transfer Complete
 {
