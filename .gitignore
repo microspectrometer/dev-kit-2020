@@ -1,7 +1,6 @@
 *~
 *.sw?
 __pycache__
-*.elf
 *.o
 *.map
 *.log
