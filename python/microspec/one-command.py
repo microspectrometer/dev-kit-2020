@@ -33,21 +33,42 @@ kit.autoExposure()
 """
 
 def report(reply):
-    '''Format the reply in a nice table.
+    """Format the reply in a nice table.
 
-    Variable | Value | Number of bytes
+    Field   | Value
+    -----   | -----
+    field1  | value1
+    field2  | value2
+    ...     | ...
     
-    Use getattr(reply, variable) to look up the value of each
-    variable.
-
-    Usage
+    Notes
     -----
-    reply = kit.getAutoExposeConfig() # <----- TRY COMMAND HERE
-    _print_the_reply_received(reply)
 
-    '''
+    The replies are ``collections.namedtuple``. This type has a
+    ``_fields`` attribute.
 
-    # display what was received
+    ``report()`` generalizes to any reply
+    using getattr(reply, field) to look up the value of each
+    field in reply._fields.
+
+    Example
+    -------
+    >>> import microspec as usp
+    >>> kit = usp.Devkit()
+    >>> reply = kit.getAutoExposeConfig()
+    >>> report(reply) #doctest: +SKIP
+                   Field | Value
+                   ----- | -----
+                  status | OK
+               max_tries | 12
+             start_pixel | 228
+              stop_pixel | 363
+                  target | 46420
+        target_tolerance | 3277
+            max_exposure | 10000
+
+    """
+
     print(f"Received:")
     print(f"{'Field':>20} | {'Value'}")
     print(f"{'-----':>20} | {'-----'}")
