@@ -1,12 +1,12 @@
 #!python.exe
 # -*- coding: utf-8 -*-
-'''Send one command. Print the command and its reply.
+"""Send one command. Print the command and its reply.
 
 Open communication. Send one command. Print reply. Close communication.
 
 USAGE
 -----
-1. Edit line 145 with command to use.
+1. Edit line 135 with command to use.
 2. Run this script:
     $ python.exe ./one-command.py
 
@@ -17,19 +17,21 @@ View help:
 COMMANDS TO TRY (go to line 145)
 --------------------------------
 kit.null()
-kit.getBridgeLED(led_num=0)
-kit.setBridgeLED(led_num=0, led_setting=0)
-kit.getSensorLED(led_num=0)
-kit.setSensorLED(led_num=0, led_setting=0)
+kit.getBridgeLED()
+kit.setBridgeLED(usp.GREEN) # or usp.OFF or usp.RED
 kit.getSensorConfig()
-kit.setSensorConfig(binning=1, gain=1, row_bitmap=0x1F)
+kit.setSensorConfig(binning=usp.BINNING_OFF) # use 7.8um-wide pixels
+kit.setSensorConfig(binning=usp.BINNING_ON)  # (default) use 15.6um-wide pixels
+kit.setSensorConfig(gain=usp.GAIN1X) # (default) 1x gain
+kit.setSensorConfig(gain=usp.GAIN2_5X) # 2.5x gain
+kit.setSensorConfig(gain=usp.GAIN5X) # 4x gain
 kit.getAutoExposeConfig()
-kit.setAutoExposeConfig(max_tries=12, start_pixel=8, stop_pixel=392, target=46420, target_tolerance=3277, max_exposure=10000)
+kit.setAutoExposeConfig(start_pixel=228, stop_pixel=363)
 kit.getExposure()
-kit.setExposure(cycles=50)
+kit.setExposure(ms=1)
 kit.captureFrame()
 kit.autoExposure()
-'''
+"""
 
 def more_help():
     '''More help on this script:
@@ -85,8 +87,6 @@ for the kit firmware to indicate state:
 # -----------
 # | Helpers |
 # -----------
-def _print_the_command_sent(reply):
-    print(f"Sent:\n\tCommand {reply.command_id}: {reply.name}")
 def _print_the_reply_received(reply):
     '''Format the reply in a nice table.
 
@@ -102,47 +102,42 @@ def _print_the_reply_received(reply):
 
     '''
 
-    # do not show "received" if there is no reply
-    if reply.variables == []:
-        print("\t(There is no reply to this command.)")
-        return
-
     # display what was received
     print(f"Received:")
-
-    # do not display as a table if the command is captureFrame
-    # (frame of pixel values do not fit in this table)
-    # just print each variable and its value
-    if reply.name == 'SensorCaptureFrame':
-        for variable in reply.variables:
-            print(f"{variable}: {getattr(reply, variable)}")
-
-    # for all other commands, show the reply in a table
-    else:
-        print(f"{'Variable':>19} |{'Value':>8} | {'Number of bytes'}")
-        print(f"{'--------':>19} |{'-----':>8} | {'---------------'}")
-        #                    ----------response[0] is variable name
-        #                    |       --response[1] is variable size in bytes
-        #                    |       |
-        #                    v       v
-        # example response: (status, 1)
-        for response in zip(reply.variables, reply.sizes):
-            print(f"{response[0]:>19} |" # Variable
-            f"{getattr(reply, response[0]):>8} | " # Value
-            f"{response[1]}"
-            ) # Number of bytes
+    print(f"{'Field':>20} | {'Value'}")
+    print(f"{'-----':>20} | {'-----'}")
+    for field in reply._fields:
+        value = getattr(reply,field)
+        if type(value) is list:
+            print(f"{field:>20} | list: "
+                  f"[{value[0]}, {value[1]}, ..., "
+                  f"{value[-2]}, {value[-1]}]"
+                  )
+        elif type(value) is dict:
+            first_key = list(value.keys())[0]
+            second_key = list(value.keys())[1]
+            penult_key = list(value.keys())[-2]
+            last_key = list(value.keys())[-1]
+            print(f"{field:>20} | dict: "
+                f"{{{first_key}:{value[first_key]}, "
+                f"{second_key}:{value[second_key]}, ..., "
+                f"{penult_key}:{value[penult_key]}, "
+                f"{last_key}:{value[last_key]}}}"
+                )
+        else:
+            print(f"{field:>20} | {value}"
+        )
 
 def report(reply):
-    _print_the_command_sent(reply)
     _print_the_reply_received(reply)
 
 if __name__ == '__main__':
-    from microspeclib.simple import MicroSpecSimpleInterface
-    kit = MicroSpecSimpleInterface(timeout=2.0)
+    import microspec as usp
+    kit = usp.Devkit()
     print(f"\nOpened kit: {kit.serial.serial_number}...")
 
     # Send the command and get the reply.
-    reply = kit.getSensorConfig() # <----- TRY COMMAND HERE
+    reply = kit.captureFrame() # <----- TRY COMMAND HERE
     report(reply)
 
     print(f"\n...Closed kit: {kit.serial.serial_number}")
