@@ -32,10 +32,7 @@ kit.captureFrame()
 kit.autoExposure()
 """
 
-# -----------
-# | Helpers |
-# -----------
-def _print_the_reply_received(reply):
+def report(reply):
     '''Format the reply in a nice table.
 
     Variable | Value | Number of bytes
@@ -75,9 +72,6 @@ def _print_the_reply_received(reply):
         else:
             print(f"{field:>20} | {value}"
         )
-
-def report(reply):
-    _print_the_reply_received(reply)
 
 if __name__ == '__main__':
     import microspec as usp
