@@ -4,6 +4,23 @@ Chromation's *Python project* `microspec` is available from PyPI
 (the Python Package Index) at
 <https://pypi.org/project/microspec/>.
 
+The latest documentation for `microspec` is here: https://microspec.readthedocs.io
+
+We are adding a higher-level API to `microspec` to simplify
+application programming. It is already part of the latest version
+of `microspec`, but we don't have any example scripts yet. The
+documentation for the higher-level API is temporarily located here:
+https://microspec-api.readthedocs.io/
+
+There is also a Python GUI at
+https://pypi.org/project/microspecgui/.
+
+The GUI does not have much functionality yet, but it at least
+gives a live plot with control over exposure time and a display
+of the peak pixel. It's a good alternative when using the LabVIEW
+GUI is inconvenient but you need visual feedback to align your
+spectrometer.
+
 See [PYTHON-SETUP.md](PYTHON-SETUP.md) for steps starting on a
 Windows or Linux system without Python.
 
@@ -11,15 +28,20 @@ Windows or Linux system without Python.
 
 *Python project* `microspec` provides:
 
-- *Python package* `microspeclib`:
+- *module* `microspec`:
     - a Python API to talk to the dev-kit hardware
-- `microspec_cmdline.py`:
+- *module* `microspeclib`:
+    - the lower-level API that is auto-generated from the
+      communication protocol defined by the [JSON config
+      file](https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json)
+
+- *utility* `microspec_cmdline.py`:
     - a simple command line utility for collecting data
     - i.e., use `microspec_cmdline` to take measurements without
       needing to first develop your own Python application
 
-`microspec` also provides developer tools to modify
-`microspeclib` to work with your own firmware (instead of
+`microspec` (the project) also provides developer tools to modify
+module `microspeclib` to work with your own firmware (instead of
 Chromation's dev-kit firmware). See the [project homepage on
 GitHub](https://github.com/microspectrometer/microspec) for
 details.
@@ -32,12 +54,23 @@ Install `microspec`:
 $ pip install microspec
 ```
 
-Now you can use *Python package* `microspeclib` in a script or at
-the REPL:
+Now you can use module `microspec` in a script or at the REPL:
+
+```python
+import microspec as usp
+kit = usp.Devkit()
+```
+
+Similarly, you can use the lower-level module `microspeclib` in a
+script or at the REPL:
 
 ```python
 from microspeclib.simple import MicroSpecSimpleInterface
+kit = MicroSpecSimpleInterface()
 ```
+
+If your REPL has tab-completion, `kit.{press TAB}` brings up a
+list of commands.
 
 And you can run the command line utility:
 
@@ -49,7 +82,8 @@ $ microspec_cmdline.py captureframe -t 0.2 -r 3 -w 1.5 --csv
 On Windows, replace `microspec_cmdline.py` with
 `microspec_cmdline.exe`.
 
-The API and command line utility are explained more below.
+The low-level API and command line utility are explained more below. For
+information about the new, high-level API, see https://microspec-api.readthedocs.io/.
 
 ## Use microspeclib
 
@@ -194,11 +228,11 @@ Users install the GUI from PyPI with the usual command:
 $ pip install microspecgui
 ```
 
-This makes `microspecgui` available from the command line as a
+This makes `microspec-gui` available from the command line as a
 command that starts up the Python GUI:
 
 ```
-$ microspecgui
+$ microspec-gui
 ```
 
 ## Open-source under MIT License
@@ -210,9 +244,9 @@ free to develop their own GUI reusing anything from the
 hardware/firmware reusing any of the schematics, PCB layout, or
 firmware provided by Chromation.
 
-## Python API `microspeclib` is active
+## Python API `microspec` is active
 
-Chromation actively maintains `microspeclib`. We use this library
+Chromation actively maintains `microspec`. We use this library
 to create all of our applications, both for internal work and for
 external example applications. If you make a modification you
 want to share, or find a bug, or if you have a feature request,
@@ -332,5 +366,10 @@ Makefile to generate the new HTML documentation:
 
 ```bash
 $ cd microspec/doc
-$ PATH=$PATH:../bin PYTHONPATH=../src:../:../tests make clean html
+$ make clean html
 ```
+
+I build the documentation on Linux. I cannot get the build to run
+on Windows. The `.rst` files use the `autodoc` Sphinx extension,
+and something about the complicated path setup prevents `autodoc`
+from finding the submodules in the `tests` folder.
