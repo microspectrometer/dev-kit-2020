@@ -6,7 +6,7 @@ Open communication. Send one command. Print reply. Close communication.
 
 USAGE
 -----
-1. Edit line 88 with command to use.
+1. Edit line 103 with command to use.
 2. Run this script:
     $ python.exe ./one-command.py
 
