@@ -745,7 +745,7 @@ Makefile to generate the new HTML documentation:
 
 ```bash
 $ cd microspec/doc
-$ PATH=$PATH:../bin PYTHONPATH=../src:../:../tests make clean html
+$ make clean html
 ```
 
 # Check microspec works
