@@ -45,7 +45,7 @@ Users communicate with the dev-kit using either:
 
 - Python project `microspec` on PyPI -- *Windows, Mac, Linux*
     - see project here: <https://pypi.org/project/microspec>
-    - start using `microspec` now: [jump to PYTHON.md](PYTHON.md#setup-microspeclib)
+    - start using `microspec` now: [jump to PYTHON.md](python/PYTHON.md#setup-microspeclib)
 - LabVIEW GUI executable `dev-kit-2020-LabVIEW.exe` -- *Windows only*
     - <https://tinyurl.com/dev-kit-2020-labview>
 

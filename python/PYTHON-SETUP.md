@@ -20,7 +20,7 @@ The dev-kit uses FTDI# FT221X for USB communication. You should
 not need to download drivers from the FTDI site, but you do need
 to tell Windows to `Load VCP` for this device.
 
-Please see [enable "Load VCP"](DEV-KIT.md#windows-users-enable-load-vcp).
+Please see [enable "Load VCP"](../DEV-KIT.md#windows-users-enable-load-vcp).
 
 ## Download Windows installer for Python
 
@@ -829,7 +829,7 @@ Check:
 - is the dev-kit connected over USB?
 - are the indicator LEDs lit?
 - on *Windows*:
-    - did you [enable "Load VCP"](DEV-KIT.md#windows-users-enable-load-vcp)?
+    - did you [enable "Load VCP"](../DEV-KIT.md#windows-users-enable-load-vcp)?
 - on *Linux Mint*:
     - did you [make `$USER` a member of group `dialout`](#gain-permission-to-access-ttyusb0)?
 
