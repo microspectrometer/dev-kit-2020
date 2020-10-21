@@ -24,7 +24,7 @@ Please see [enable "Load VCP"](../DEV-KIT.md#windows-users-enable-load-vcp).
 
 ## Download Windows installer for Python
 
-- Go to the latest official [Python download page for Windows](https://www.python.org/downloads/windows/)
+- Go to the latest official [Python download page for Windows](https://www.python.org/downloads/release/python-386/)
 - Download the executable installer for Windows
     - example for my Windows system:
 
