@@ -62,7 +62,72 @@ Chromation provides the LabVIEW GUI but plans to discontinue
 using LabVIEW when a stable Python version of the GUI is
 released.
 
-## SPI out
+## Analog dark correction
+
+The dark signal has two components:
+
+- DC offset
+    - this is called *dark-offset* or *voltage-offset* and is
+      specified in Volts
+    - the offset varies on a per-pixel basis
+- AC noise
+    - this is called *dark-noise* and is specified as mV RMS
+    - *dark-noise* limits precision in measuring the dark-offset
+
+Chromation uses the term *analog dark-correction* to mean
+subtracting a single DC offset from the VIDEO signal to use the
+full dynamic range of the ADC. In other words, zero photons
+*roughly* shows up as a gray value of zero counts. See
+[ENOB](DEV-KIT.md#enob) for details on ADC resolution and dynamic
+range.
+
+The dev-kit is shipped with dark-correction turned on and
+dark-offset trimmed for an average dark of approximately 1.5% of
+full-scale (1000 counts out of 65535 counts) at 1ms exposure
+time. This setting is usually sufficient to eliminate the need
+for subsequent finer dark-correction in software.
+
+For more accurate dark-correction, rotate the trimpot
+counterclockwise to subtract *less* of the dark offset. This
+reduces the amount of *coarse* dark-correction. Increase the
+offset (reduce the coarse dark-correction) until the dark
+measurement for all pixels is greater than zero counts in any
+single frame of data.
+
+*Fine-tuning the trim pot to get very close to zero counts is
+pointless. Using the Chromation dev-kit, there is plenty of extra
+dynamic range in the ADC, so it is even fine to turn off the
+analog dark-correction completely and do the coarse
+dark-correction in software. The advantage of hardware
+dark-correction is to reduce the number of measurements and
+simplify the software that analyzes the measurements.*
+
+To perform a *fine* dark-correction in software: collect an
+average dark measurement for subtracting from illuminated
+measurements. See details in [Coarse and Fine
+dark-correction](DEV-KIT.md#coarse-and-fine-dark-correction)
+
+### Dark correction hardware in the dev-kit
+
+The pixel voltage from the spectrometer chip, output on pin
+`VIDEO`, is dark-offset-corrected using a reference voltage from
+the spectrometer chip, output on pin `VREF`:
+
+![dark-correction-circuit](img/dark-correction-circuit.PNG)
+
+`VIDEO` changes with each pixel that is clocked out, but `VREF`
+outputs a constant voltage (*not* a per-pixel voltage).
+
+`VREF` is an over-estimate of the dark-offset. The trimpot forms
+a simple voltage divider that takes a fraction of `VREF` for
+doing an analog dark-correction.
+
+The slider switch turns this analog dark-correction on/off. This
+is useful when comparing live data against data recorded without
+any dark-correction, or when performing all dark-correction in
+software.
+
+## SPI out and firmware programming
 
 The dev-kit has two stacked PCBs:
 
@@ -81,6 +146,12 @@ the **16-pin header**:
 
 ![vis-spi-out board with 16-pin header](img/photo/vis-spi-out.jpg)
 
+There are a total of eight signals on this 16-pin header. Five
+signals are the SPI interface. The other three signals are Power
+(3.3V and 0V) and Reset. These signals also serve as the Flash
+memory programming connections from the 6-pin shrouded header on
+`usb-bridge`.
+
 ### Five-wire SPI
 
 This 16-pin header carries the *five-wire* SPI interface.
@@ -97,15 +168,55 @@ after the SPI Master commands the SPI Slave to capture a frame (a
 spectrum measurement), the SPI Master waits for *Data Ready*
 before reading the frame from the SPI Slave.
 
-There are a total of eight signals on this 16-pin header. Five
-signals are the SPI interface. The other three signals are Power
-(3.3V and 0V) and Reset.
-
 ### All pins duplicated for probing
 
-Each signal is duplicated: eight signals, 16 pins. This allows
-the user to connect a signal with a jumper wire and
-simultaneously probe the same signal on the duplicate pin.
+Each signal is duplicated: eight signals, 16 pins. The pins are
+duplicated for two reasons:
+
+1. access to components on `vis-spi-out`
+2. probing the SPI bus
+
+#### *Reason 1:* Access `vis-spi-out`
+
+Orientation of `usb-bridge` on `vis-spi-out` does not matter! As
+long as the pins line up, it is **impossible** to connect these two
+PCBs the wrong way.
+
+The dev-kit ships with the `usb-bridge` PCB directly above the
+`vis-spi-out` PCB:
+
+![usb-bridge stacked directly above
+vis-spi-out](img/photo/dev-kit-with-usb-bridge-not-rotated.jpg)
+
+With power off, pull off the `usb-bridge` PCB and reconnect it
+rotated (making sure that all 16 pins line up again):
+
+![usb-bridge stacked rotated above
+vis-spi-out](img/photo/dev-kit-with-usb-bridge-rotated.jpg)
+
+- this gives access to parts on `vis-spi-out` for analog
+  dark-correction:
+    - the dark-correct trim-pot and on/off slide switch
+    - the dark-correct test point
+- this also gives access to the two-pin female socket header:
+    - modify the firmware to use these two pins as either general
+      purpose I/O or I2C communication
+    - *coming soon*: Chromation uses these two pins as general
+      purpse I/O for control of two LED boards we are adding to
+      the dev-kit: a high-CRI white and a broadband NIR
+        - jumper wires connect this header to the
+          external-control header on the LED boards
+        - control the LEDs over USB via the Python interface (or
+          over SPI if you are connecting directly to the
+          `vis-spi-out` board)
+
+#### *Reason 2:* Probe the SPI bus on a scope or logic analyzer
+
+- with power off:
+    - separate the two boards
+    - use jumper wires to connect the eight signals between the
+      two boards
+- probe signals on the duplicate pins
 
 This example shows five jumper wires for SPI and two jumper wires
 for power, connecting the `vis-spi-out` and `usb-bridge`. The
@@ -125,90 +236,33 @@ The jumper wires are female-to-male, for example [Adafruit #1954
 ](https://www.adafruit.com/product/1954). The female end is
 for inserting on the `vis-spi-out` header pins.
 
-### Header includes ISP connections
+### 16-pin header includes the 6 Atmel ISP connections
 
-The eight signals also contain the six in-system-programming
-(ISP) connections (3.3V, 0V, Reset, MISO, MOSI, SCK) to write the
-Flash program memory on the `vis-spi-out` ATmega328P
-microcontroller.
+Six of the eight signals also double as microcontroller Flash
+memory programming signals for Atmel's *In-System-Programming*
+(ISP):
 
-*If you have an AVR programming device such as the Atmel-ICE, and
-wish to reprogram the firmware on `vis-spi-out`, the easiest way
-to connect to the ISP pins is to leave the `usb-bridge` attached
-to the `vis-spi-out` and insert the programmer into the shrouded
-ISP header on the `usb-bridge`.*
+- 3.3V
+- 0V
+- Reset
+- MISO
+- MOSI
+- SCK
 
-### Connect `usb-bridge` normal or rotated
+The `usb-bridge` board has a shrouded ISP header that mates with
+the standard Atmel 6-pin, ribbon cable, programming connector.
 
-When using the dev-kit with its `usb-bridge` PCB, the duplicated
-signals are laid out on the 16-pin header such that the
-orientation of the `usb-bridge` PCB *does not matter*.
+Use any Atmel AVR programmer. Chromation uses the Atmel-ICE, but
+an AVRISP-mkII or any AVRISP-mkII imitator works just as well.
 
-The dev-kit ships with the `usb-bridge` PCB directly above the
-`vis-spi-out` PCB:
+You can program either board (`usb-bridge` or `vis-spi-out`) from
+this shrouded 6-pin header on the `ubs-bridge` board. *You do not
+need to separate the boards to program the `vis-spi-out` board.*
 
-![usb-bridge stacked directly above
-vis-spi-out](img/photo/dev-kit-with-usb-bridge-not-rotated.jpg)
-
-With power off, pull off the `usb-bridge` PCB and reconnect it
-rotated:
-
-![usb-bridge stacked rotated above
-vis-spi-out](img/photo/dev-kit-with-usb-bridge-rotated.jpg)
-
-The rotated orientation provides access to the dark-correct
-trimpot and slider switch on the lower-right corner of the bottom
-PCB, for manipulating the dark-correction while running the
-dev-kit.
-
-### Analog dark correction
-
-The dark signal has two components: a DC offset called
-*dark-offset* and an AC component called *dark-noise*.
-
-- dark-offset is reduced by subtracting:
-    - determine the average dark offset on a per-pixel basis
-    - subtract these per-pixel offsets from the illuminated
-      measurement
-- dark-noise is reduced by filtering:
-    - filtering decreases the measurement bandwidth
-    - filter by:
-        - averaging frames
-        - using longer exposure times
-
-The goal of dark correction is to eliminate the dark signal prior
-to subsequent data processing for radiometric analysis (i.e.,
-comparing spectral power across wavelengths and/or across
-measurements). Even in applications that are pure wavelength
-detection, eliminating the dark signal is desirable because it
-improves dynamic range.
-
-The pixel voltage from the spectrometer chip, output on pin
-`VIDEO`, is dark-offset-corrected using a reference voltage from
-the spectrometer chip, output on pin `VREF`:
-
-![dark-correction-circuit](img/dark-correction-circuit.PNG)
-
-`VIDEO` changes with each pixel that is clocked out, but `VREF`
-outputs a constant voltage (*not* a per-pixel voltage).
-
-`VREF` is a slight over-estimate of the dark-offset. The trimpot
-forms a simple voltage divider that takes a fraction of `VREF`
-for doing an analog dark-correction. The slider switch turns this
-analog dark-correction on/off.
-
-The dev-kit is shipped with dark-correction turned on and
-dark-offset trimmed for an average dark of approximately 1.5% of
-full-scale (1000 counts out of 65535 counts) at 1ms exposure
-time. This setting is usually sufficient to eliminate the need
-for subsequent dark-correction.
-
-For users that need more accurate dark-correction, rotate the
-trimpot counterclockwise to subtract less of the dark offset.
-This uses the analog dark-correct as a *coarse* dark-correction.
-Perform the final *fine* dark-correction in software the usual
-way: collect a dark measurement for subtracting from the
-illuminated measurement.
+The slide switches on the `usb-bridge` select normal-mode (SPI)
+or programming mode (ISP), and select which board is being
+programmed. Details on the slide-switch settings and `make`
+commands are in the firmware programming doc.
 
 ### Spi Slave configuration and protocol
 
@@ -306,5 +360,227 @@ Also see the `vis-spi-out` firmware source code, in particular:
 
 *The name `Lis` refers to the linear photodiode array in the
 spectrometer chip.*
+
+## Appendix
+
+### ENOB
+
+Effective Number of Bits (ENOB) is the effective number of bits
+of ADC resolution *for the complete system*. The ADC is one part
+of this system. The dev-kit uses a 16-bit ADC, but the effective
+number of bits is not 16. The limiting factor for ENOB in
+spectrometers using CMOS image sensor spectrometers, such as the
+Chromation spectrometer, is the image sensor itself.
+
+In qualitative terms, this means that image sensor read noise
+well-exceeds the voltage step per ADC bit using a 16-bit ADC.
+
+For reasonable measurement bandwidth, spectrometers using CMOS
+image sensors take advantage of 13 effective bits of resolution
+at most. The ENOB for the image sensor in Chromation#
+`CUVV-45-1-1-1-SMT` is 11 bits.
+
+The limitation is the SNR of the CMOS image sensor. SNR is the
+ratio of Vsat to read noise. Vsat is the maximum output swing
+minus the offset voltage (offset voltage is sometimes called the
+dark offset). Read noise is the AC noise component in the
+illuminated signal.
+
+For the CMOS image sensor in `CUVV-45-1-1-1-SMT`:
+
+- Vsat = 1.95V
+    - the pixel charge to voltage conversion factor is
+      6.5µV/electron
+    - voltage at full-well is 3.0e5 electrons x 6.5µV/electron =
+      1.95V
+    - with a 3.0V maximum swing, expect about 1.05V of offset
+      voltage
+- read noise = 1.5mV RMS
+
+```
+SNR = 1300 (1.95 Vsat / 0.0015 mV RMS)
+```
+
+Following the convention in section 6.6 of EMVA1288, express SNR
+in dB using `20*log10(SNR)`:
+
+```
+SNR = 62.3 dB
+```
+
+The dev-kit uses a 1.8V ADC reference, reducing the SNR. There
+are two good reasons for doing this:
+
+1. for design simplicity, 1.8V is a standard reference voltage value
+2. Vsat does not take into account the linear operating range of
+   the pixel
+    - linear operating range is *not* 100% of the full-well
+      capacity
+    - therefore, sacrificing SNR improves spectrometer linearity
+
+Linear range as a percentage of the pixel's full-well capacity is
+usually not documented, but for the image sensor in
+`CUVV-45-1-1-1-SMT` sensitivity is linear between 5% and 70% of
+full-well. The 1.95V value corresponds to 100% full-well. Using a
+1.8V ADC reference clamps the maximum gray value (65535 counts)
+at 92% of full-well (and then the maximum guaranteed *linear*
+gray value is around 50000 counts).
+
+Using 1.8V as the actual Vsat, the ENOB of the image sensor for
+this reduced voltage range is:
+
+```
+SNR = 1200 (1.8 Vsat / 0.0015 mV RMS)
+SNR = 61.6 dB
+```
+
+ENOB is calculated as log2(SNR):
+
+```
+ENOB = log2(1200) = 10.2 bits
+```
+
+Rounding up to the next whole number, this is 11 bits.
+
+To take full advantage of this SNR, therefore, the analog
+front-end (ADC, ADC voltage reference, and op-amp buffers) needs
+an ENOB in excess of 11 bits.
+
+### Coarse and Fine dark-correction
+
+*Applications do not always need a fine dark-correction step.
+This section explains the cost-benefit on implementing fine
+dark-correction. Please contact Chromation if you would like more
+detail.*
+
+Some image sensor manufacturers call the DC offset a
+*dark-offset*, others call it a *voltage-offset*. These are
+identical -- it is just the DC offset in the VIDEO signal.
+
+The dark offset only affects dynamic range and SNR to the extent
+that it *limits the maximum swing of the VIDEO signal*. This offset
+**does not set the noise-floor**. It is a DC value and has
+nothing to do with noise.
+
+Noise is time varying. As a single value, it is specified as mV
+RMS. Given the usual AWGN assumption about the distribution of
+the noise, this RMS value is the *standard deviation* when
+looking over many frames of data; when watching raw live data
+with very short exposure time, the *peak-to-peak* noise riding on
+the signal is about 6x this RMS value (because 99.7% of the
+readings are within three standard deviations of the mean value).
+
+*For the Chromation dev-kit, 6x the RMS read-noise is about 328
+counts.*
+
+The magnitude of the dark noise and the illuminated noise *are
+different*. Manufacturers refer to noise in the illuminated
+signal as *read noise*. Use dark noise to determine the image
+sensor's dynamic range. Use *read noise* to determine the image
+sensor's SNR.
+
+- **dark-offset** is reduced by *subtracting*:
+    - the dev-kit ships with a single voltage offset subtracted
+      from all pixels
+    - for finer dark-correction, determine the remaining average
+      dark offset on a per-pixel basis and subtract this offset
+      in software
+- **dark-noise** is reduced by *filtering*
+- filter the dark-noise to *find* the per-pixel dark offsets to
+  subtract:
+    - to determine the per-pixel values to use in fine
+      dark-correction, the dark-signal must be low-pass filtered
+      to get a value closer to the "true" DC-offset
+    - at long exposure times, the signal is already effectively
+      low-pass filtered, at short exposure times it is necessary
+      to average frames
+
+For general use cases, such as the qualitative measurements done
+in the initial stages of application development, Chromation's
+"analog dark-correction" is sufficient. This is a "coarse"
+dark-correction. It subtracts the same value from all
+measurements.
+
+The dev-kit ships with the dark-correct trim-pot set to a good
+default setting for this general use case.
+
+A finer dark-correction step is sometimes necessary when the data
+is being scaled (i.e., multiplying the pixel gray values by a
+constant or a wavelength-dependent array of values). This need
+arises at a further stage of application development where the
+measurement setup is known and the goal is to reduce the
+measurement error.
+
+The source of error is that the dark signal does not scale with
+the illuminated signal. For example, doubling integration time
+(roughly) doubles the illuminated signal, but has very little
+effect on the dark signal. Therefore, on a pixel-by-pixel basis,
+any offset (positive or negative) introduces an additive offset
+that throws off calculations where the pixel value is scaled.
+
+Typical examples where applications scale data are:
+
+- normalizing by exposure time
+    - scaling all pixels by the integration time to compare two measurements taken at different integration times
+- weighting the pixels with spectral irradiance calibration
+  coefficients
+    - each pixel is weighted by its own coefficient to convert
+      gray values to spectral irradiance
+
+Dark-correcting too much or too little introduces the same
+magnitude of offset error. Since the "coarse" dark-correction
+applies the same offset to all pixels, the best the coarse
+dark-correction can achieve is to have some pixels
+over-compensated and some under-compensated.
+
+When adding a "fine" dark-correction step, let the "coarse"
+dark-correction under-correct all pixels (the dark-data never
+falls below zero counts on any pixel). The "fine" dark-correction
+then subtracts different offsets on a per-pixel basis to get all
+pixels as close as possible to having zero-offset.
+
+Perfect dark-correction is impossible. There is always some
+offset error. The goal is just to make this contribution
+insignificant compared with other sources of measurement error.
+
+The cost of fine dark correction is that measurements require an
+additional dark-correction step: determine the measurement
+integration time, collect many frames of dark data, average these
+frames, subtract this average from the illuminated measurement.
+
+The number of frames to average depends on the exposure time:
+short exposure times require many frames, long exposure times may
+not require averaging at all. Ignoring the dependency of the dark
+signal on integration time, averaging frames and exposing for
+longer integration times have the same effect on the measurement
+bandwidth.
+
+So do not start with a magic number like 100 frames to average.
+Instead, pick a target measurement bandwidth. For example, say
+the target measurement bandwidth is 1 measurement per second and
+the application has a bright target measured at 10ms and a much
+darker target measured at 100ms. Average 100 frames of dark to
+dark-correct the 10ms target and 10 frames of dark to
+dark-correct the 100ms target. The measurement bandwidth in both
+cases is 1Hz, so both dark measurements filter the same amount of
+dark noise.
+
+"Fine" dark-correction only reduces the additive offset caused by
+the dark signal. If this error is swamped by other variables,
+"fine" dark-correction may not be worth the effort.
+
+The added benefit of the "fine" dark-correction is that it acts
+on a pixel-by-pixel basis, as opposed to the "coarse"
+dark-correction which subtracts the same offset from all pixels
+(regardless of whether coarse dark-correction is done in hardware
+or software). Keep in mind that even when scaling data is
+required, this "fine" step may not be necessary or worth the
+extra effort.
+
+If the extra accuracy of "fine" dark-correction is required, but
+collecting dark data is not practical, one solution is to collect
+the dark data ahead of time at many integration times, and then
+use a look-up table to select the correct dark-correction data.
+
 
 
