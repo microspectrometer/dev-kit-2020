@@ -1,5 +1,17 @@
 Welcome to Chromation's dev-kit resources!
 
+# How to read this
+
+If you are reading this online at Chromation's microspectrometer
+GitHub repository, please go to Chromation's GitHub pages site:
+
+https://microspectrometer.github.io/dev-kit-2020/
+
+It's the same docs, but the above link lets your browser run the
+HTML portion of the docs.
+
+# A quick overview
+
 This is the **Chromation Spectrometer Development Kit**
 (dev-kit):
 
