@@ -9,8 +9,11 @@ build scripts are for two targets:
 
 ## Firmware documentation
 
-The firmware is documented with Doxygen. View the Doxygen in
-[`firmware/doxygen/html/index.html`](firmware/doxygen/html/index.html).
+The firmware is documented with Doxygen. View the Doxygen at
+https://microspectrometer.github.io/dev-kit-2020/firmware/doxygen/html/index.html,
+or open it from your local clone of this repository here:
+[`firmware/doxygen/html/index.html`](doxygen/html/index.html).
+
 Navigate the project by clicking on `Files` on the top of the
 screen, then either:
 
