@@ -38,7 +38,7 @@ uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_aff0baca87a62c38057db03b83be02362}{
  This is a safe lower limit to avoid dead frames. \end{DoxyCompactList}\item 
 uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a0b2c447b1d12e1c69a0fc2f166621c38}{max\+\_\+exposure}}
 \begin{DoxyCompactList}\small\item\em {\ttfamily max\+\_\+exposure} is 1.\+31 seconds (65535 20µs-\/cycles)~\newline
- This is the 16-\/bit limit, U\+I\+N\+T16\+\_\+\+M\+AX, but it is also a practical limit on waiting time for one frame. \end{DoxyCompactList}\end{DoxyCompactItemize}
+ This is the 16-\/bit limit, UINT16\+\_\+\+MAX, but it is also a practical limit on waiting time for one frame. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -80,12 +80,12 @@ Recommended values for {\ttfamily target} and {\ttfamily target\+\_\+tolerance} 
 
 
 {\ttfamily max\+\_\+exposure} is 1.\+31 seconds (65535 20µs-\/cycles)~\newline
- This is the 16-\/bit limit, U\+I\+N\+T16\+\_\+\+M\+AX, but it is also a practical limit on waiting time for one frame. 
+ This is the 16-\/bit limit, UINT16\+\_\+\+MAX, but it is also a practical limit on waiting time for one frame. 
 
 ~\newline
  For longer exposure times\+:
 \begin{DoxyItemize}
 \item change the datatype in firmware to uint32\+\_\+t
 \item revise all transmissions of exposure\+\_\+ticks in \mbox{\hyperlink{VisCmd_8h}{Vis\+Cmd.\+h}} and \mbox{\hyperlink{UsbCmd_8h}{Usb\+Cmd.\+h}} to send/receive four bytes
-\item update the Python A\+PI by changing all occurrences of {\ttfamily cycles} in the J\+S\+ON file from size\+:2 to size\+:4.
+\item update the Python API by changing all occurrences of {\ttfamily cycles} in the JSON file from size\+:2 to size\+:4.
 \end{DoxyItemize}

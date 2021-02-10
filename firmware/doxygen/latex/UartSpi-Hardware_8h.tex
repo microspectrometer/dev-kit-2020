@@ -1,5 +1,10 @@
 \hypertarget{UartSpi-Hardware_8h}{}\doxysection{vis-\/spi-\/out/src/\+Uart\+Spi-\/\+Hardware.h File Reference}
 \label{UartSpi-Hardware_8h}\index{vis-\/spi-\/out/src/UartSpi-\/Hardware.h@{vis-\/spi-\/out/src/UartSpi-\/Hardware.h}}
+
+
+Uart\+Spi uses internal UART module in SPI Master Mode.  
+
+
 {\ttfamily \#include $<$stdint.\+h$>$}\newline
 {\ttfamily \#include $<$avr/io.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}Uart\+Spi.\+h\char`\"{}}\newline
@@ -7,65 +12,65 @@
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_acd7fc0ffb1e9aa45e1cec54c4fa2d153}\label{UartSpi-Hardware_8h_acd7fc0ffb1e9aa45e1cec54c4fa2d153}} 
-uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+ddr} = \&D\+D\+RD
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+ddr} = \&DDRD
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_ac1869a47588df1c60d2862931ecfe53f}\label{UartSpi-Hardware_8h_ac1869a47588df1c60d2862931ecfe53f}} 
-uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+port} = \&P\+O\+R\+TD
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+port} = \&PORTD
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_aef2684539b6407d399daeafb972f9cd7}\label{UartSpi-Hardware_8h_aef2684539b6407d399daeafb972f9cd7}} 
-uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+U\+C\+S\+R0A} = \&U\+C\+S\+R0A
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+UCSR0A} = \&UCSR0A
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_a5a4723dd0076de92f54e74ff6c5e67b0}\label{UartSpi-Hardware_8h_a5a4723dd0076de92f54e74ff6c5e67b0}} 
-uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+U\+C\+S\+R0B} = \&U\+C\+S\+R0B
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+UCSR0B} = \&UCSR0B
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_afc8598c2eacac3cad7e8c75c1c1e7af8}\label{UartSpi-Hardware_8h_afc8598c2eacac3cad7e8c75c1c1e7af8}} 
-uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+U\+C\+S\+R0C} = \&U\+C\+S\+R0C
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+UCSR0C} = \&UCSR0C
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_a2c2e40b0342e445e7f9e3e443f7be950}\label{UartSpi-Hardware_8h_a2c2e40b0342e445e7f9e3e443f7be950}} 
-uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+U\+D\+R0} = \&U\+D\+R0
+uspi\+\_\+ptr {\bfseries Uart\+Spi\+\_\+\+UDR0} = \&UDR0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_a5e0e878a32e13642a8bb4de4f98573b3}\label{UartSpi-Hardware_8h_a5e0e878a32e13642a8bb4de4f98573b3}} 
-uspi\+\_\+ptr16 {\bfseries Uart\+Spi\+\_\+\+U\+B\+R\+R0} = \&U\+B\+R\+R0
+uspi\+\_\+ptr16 {\bfseries Uart\+Spi\+\_\+\+UBRR0} = \&UBRR0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_af0d652e86393c3b28fd26faab7e95d4c}\label{UartSpi-Hardware_8h_af0d652e86393c3b28fd26faab7e95d4c}} 
-uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Miso} = P\+D0
+uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Miso} = PD0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_ad75e9a5ba001841e0c5bd39587844a09}\label{UartSpi-Hardware_8h_ad75e9a5ba001841e0c5bd39587844a09}} 
-uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Adc\+Conv} = P\+D2
+uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Adc\+Conv} = PD2
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_a638e25290668dd5167ff8514bbbc2f4f}\label{UartSpi-Hardware_8h_a638e25290668dd5167ff8514bbbc2f4f}} 
-uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Sck} = P\+D4
+uspi\+\_\+pin {\bfseries Uart\+Spi\+\_\+\+Sck} = PD4
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_ad7a98ea5b45b53fa81c6203cf43349de}\label{UartSpi-Hardware_8h_ad7a98ea5b45b53fa81c6203cf43349de}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+M\+S\+E\+L00} = U\+M\+S\+E\+L00
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+UMSEL00} = UMSEL00
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_acdba72af5dd46e13068ff4cecf8a8021}\label{UartSpi-Hardware_8h_acdba72af5dd46e13068ff4cecf8a8021}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+M\+S\+E\+L01} = U\+M\+S\+E\+L01
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+UMSEL01} = UMSEL01
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_a1583ef5f70db466d486b804c118ca95f}\label{UartSpi-Hardware_8h_a1583ef5f70db466d486b804c118ca95f}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+R\+X\+E\+N0} = R\+X\+E\+N0
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+RXEN0} = RXEN0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_afee114d4a26cbdbb4da28477d1f74738}\label{UartSpi-Hardware_8h_afee114d4a26cbdbb4da28477d1f74738}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+T\+X\+E\+N0} = T\+X\+E\+N0
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+TXEN0} = TXEN0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_abb3c1af8ca684e8664bd023006ed468f}\label{UartSpi-Hardware_8h_abb3c1af8ca684e8664bd023006ed468f}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+C\+P\+O\+L0} = U\+C\+P\+O\+L0
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+UCPOL0} = UCPOL0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_ab51bdf15fd460d657e7b07c4905edef5}\label{UartSpi-Hardware_8h_ab51bdf15fd460d657e7b07c4905edef5}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+C\+P\+H\+A0} = U\+C\+P\+H\+A0
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+UCPHA0} = UCPHA0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_afceabcbd67e789367af932d70208b821}\label{UartSpi-Hardware_8h_afceabcbd67e789367af932d70208b821}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+D\+O\+R\+D0} = U\+D\+O\+R\+D0
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+UDORD0} = UDORD0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_a1f5f0cddf449c7eda1d7506fec9fa905}\label{UartSpi-Hardware_8h_a1f5f0cddf449c7eda1d7506fec9fa905}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+U\+D\+R\+E0} = U\+D\+R\+E0
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+UDRE0} = UDRE0
 \item 
 \mbox{\Hypertarget{UartSpi-Hardware_8h_a89a59fcf10e494cf20a81d5646bcc4ea}\label{UartSpi-Hardware_8h_a89a59fcf10e494cf20a81d5646bcc4ea}} 
-uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+R\+X\+C0} = R\+X\+C0
+uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+RXC0} = RXC0
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-Uart\+Spi uses internal U\+A\+RT module in S\+PI Master Mode.
+Uart\+Spi uses internal UART module in SPI Master Mode. 
 
-S\+PI Slave is an external A\+DC. 
+SPI Slave is an external ADC. 

@@ -1,5 +1,10 @@
 \hypertarget{Usb_8h}{}\doxysection{lib/src/\+Usb.h File Reference}
 \label{Usb_8h}\index{lib/src/Usb.h@{lib/src/Usb.h}}
+
+
+{\ttfamily usb-\/bridge} communicates over USB via FTDI USB Bridge IC {\ttfamily FT221X}  
+
+
 {\ttfamily \#include $<$stdint.\+h$>$}\newline
 {\ttfamily \#include $<$stdbool.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
@@ -9,30 +14,30 @@
 \mbox{\Hypertarget{Usb_8h_a45fd67363fd5176dec144f81f5728c02}\label{Usb_8h_a45fd67363fd5176dec144f81f5728c02}} 
 typedef uint8\+\_\+t volatile $\ast$const {\bfseries usb\+\_\+reg}
 \item 
-\mbox{\Hypertarget{Usb_8h_a4e33b86ffdc03f54bf6f94d6a7a49584}\label{Usb_8h_a4e33b86ffdc03f54bf6f94d6a7a49584}} 
-typedef const uint8\+\_\+t {\bfseries usb\+\_\+pin}
+\mbox{\Hypertarget{Usb_8h_abd85b7147b1234f1ea19b6184e37cbca}\label{Usb_8h_abd85b7147b1234f1ea19b6184e37cbca}} 
+typedef uint8\+\_\+t const {\bfseries usb\+\_\+pin}
 \end{DoxyCompactItemize}
 \doxysubsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{Usb_8h_ae7d6029ad4b5f5331fac4d7f11d5a321}\label{Usb_8h_ae7d6029ad4b5f5331fac4d7f11d5a321}} 
-enum {\bfseries ft\+\_\+cmd} \{ {\bfseries Ft\+Read\+Cmd} =0x\+C6, 
-{\bfseries Ft\+Write\+Cmd} =0x86
+enum {\bfseries ft\+\_\+cmd} \{ {\bfseries Ft\+Read\+Cmd} =0x\+C6
+, {\bfseries Ft\+Write\+Cmd} =0x86
  \}
 \item 
 \mbox{\Hypertarget{Usb_8h_a94a9bf5c4decfdea8a0289d7171b9853}\label{Usb_8h_a94a9bf5c4decfdea8a0289d7171b9853}} 
-enum {\bfseries ft\+\_\+databus\+\_\+pin\+\_\+direction} \{ {\bfseries Ft\+In} =0x00, 
-{\bfseries Ft\+Out} =0x\+FF
+enum {\bfseries ft\+\_\+databus\+\_\+pin\+\_\+direction} \{ {\bfseries Ft\+In} =0x00
+, {\bfseries Ft\+Out} =0x\+FF
  \}
 \item 
 \mbox{\Hypertarget{Usb_8h_ac3eb2463a59f1ad3a2e07810e3b04054}\label{Usb_8h_ac3eb2463a59f1ad3a2e07810e3b04054}} 
-enum {\bfseries ft\+\_\+status} \{ {\bfseries Ft\+Error} =0, 
-{\bfseries Ft\+Ok} =1
+enum {\bfseries ft\+\_\+status} \{ {\bfseries Ft\+Error} =0
+, {\bfseries Ft\+Ok} =1
  \}
 \item 
 \mbox{\Hypertarget{Usb_8h_a0951226d1bfa6bf82ff3c284df82c763}\label{Usb_8h_a0951226d1bfa6bf82ff3c284df82c763}} 
-enum {\bfseries ft\+\_\+clock\+\_\+edge} \{ {\bfseries Ft\+Sample} =0, 
-{\bfseries Ft\+Drive} =1
+enum {\bfseries ft\+\_\+clock\+\_\+edge} \{ {\bfseries Ft\+Sample} =0
+, {\bfseries Ft\+Drive} =1
  \}
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
@@ -46,9 +51,9 @@ void \mbox{\hyperlink{Usb_8h_a53465365fd9154df9e7ebf5d971e0ee4}{\+\_\+\+Ft\+Writ
 \item 
 void \mbox{\hyperlink{Usb_8h_af068f8d14dc07d5d7f5a2cc38fee2d06}{\+\_\+\+Ft\+Databus\+Pin\+Direction}} (uint8\+\_\+t pin\+\_\+direction)
 \item 
-void \mbox{\hyperlink{Usb_8h_a4552875ccbe38f1c34825dd391c90c58}{Ft\+Select\+F\+T221X}} (void)
+void \mbox{\hyperlink{Usb_8h_a4552875ccbe38f1c34825dd391c90c58}{Ft\+Select\+FT221X}} (void)
 \item 
-void \mbox{\hyperlink{Usb_8h_a6de206a884078a3ba1d7fdb3bc9374e2}{Ft\+Unselect\+F\+T221X}} (void)
+void \mbox{\hyperlink{Usb_8h_a6de206a884078a3ba1d7fdb3bc9374e2}{Ft\+Unselect\+FT221X}} (void)
 \item 
 void \mbox{\hyperlink{Usb_8h_acaf9c07ef4851b8c7d207525133faebb}{Ft\+Bus\+Turnaround}} (void)
 \item 
@@ -100,50 +105,50 @@ usb\+\_\+pin {\bfseries Ft\+Miosio0}
 
 
 \doxysubsection{Detailed Description}
-{\ttfamily usb-\/bridge} communicates over U\+SB via F\+T\+DI U\+SB Bridge IC {\ttfamily F\+T221X}
+{\ttfamily usb-\/bridge} communicates over USB via FTDI USB Bridge IC {\ttfamily FT221X} 
 
 
 \begin{DoxyItemize}
-\item U\+SB host sees {\ttfamily F\+T221X} as a {\bfseries{U\+SB device}}
-\item Two options for host to communicate with this U\+SB device\+:
+\item USB host sees {\ttfamily FT221X} as a {\bfseries{USB device}}
+\item Two options for host to communicate with this USB device\+:
 \begin{DoxyEnumerate}
-\item use generic U\+SB serial device driver, e.\+g., {\ttfamily pyserial}
-\item use the {\ttfamily D2\+XX} driver to access the expanded functionality of the F\+T\+DI U\+SB A\+PI
+\item use generic USB serial device driver, e.\+g., {\ttfamily pyserial}
+\item use the {\ttfamily D2\+XX} driver to access the expanded functionality of the FTDI USB API
 \end{DoxyEnumerate}
-\item The {\ttfamily usb-\/bridge} microcontroller sees {\ttfamily F\+T221X} as an {\bfseries{F\+T1248 slave}}
+\item The {\ttfamily usb-\/bridge} microcontroller sees {\ttfamily FT221X} as an {\bfseries{FT1248 slave}}
 \end{DoxyItemize}
 
-Flow from U\+SB host to {\ttfamily usb-\/bridge} microcontroller\+:~\newline
+Flow from USB host to {\ttfamily usb-\/bridge} microcontroller\+:~\newline
 
 \begin{DoxyItemize}
-\item U\+SB host writes to {\ttfamily F\+T221X}
-\item now {\ttfamily F\+T221X} has data in its receive buffer\+:
+\item USB host writes to {\ttfamily FT221X}
+\item now {\ttfamily FT221X} has data in its receive buffer\+:
 \begin{DoxyItemize}
-\item pin {\ttfamily F\+T1248 M\+I\+SO} asserts L\+OW
+\item pin {\ttfamily FT1248 MISO} asserts LOW
 \item this signals to the {\ttfamily usb-\/bridge} microcontroller that data is available
 \end{DoxyItemize}
 \item {\ttfamily usb-\/bridge} microcontroller reads the data
 \end{DoxyItemize}
 
-Flow from {\ttfamily usb-\/bridge} microcontroller to U\+SB host\+:~\newline
+Flow from {\ttfamily usb-\/bridge} microcontroller to USB host\+:~\newline
 
 \begin{DoxyItemize}
 \item Control lines
 \begin{DoxyItemize}
 \item {\ttfamily Ft\+Clock}
 \begin{DoxyItemize}
-\item the clock idles {\ttfamily L\+OW}
-\item the clock is only active during F\+T1248 communication
+\item the clock idles {\ttfamily LOW}
+\item the clock is only active during FT1248 communication
 \end{DoxyItemize}
 \end{DoxyItemize}
 \item Sending a single byte takes three clock cycles
-\item T\+O\+DO\+: multi-\/byte communication where each additional byte only adds one clock cycle
+\item TODO\+: multi-\/byte communication where each additional byte only adds one clock cycle
 \item Databus pin {\bfseries{direction}}
 \begin{DoxyItemize}
 \item databus pins are {\ttfamily Ft\+Miosio0} through {\ttfamily Ft\+Miosio7}
 \item the databus is bi-\/directional
 \begin{DoxyItemize}
-\item {\ttfamily Ft\+Read}\+: the {\itshape F\+T221X} drives the databus
+\item {\ttfamily Ft\+Read}\+: the {\itshape FT221X} drives the databus
 \item {\ttfamily Ft\+Write} the {\itshape microcontroller} drives the databus
 \end{DoxyItemize}
 \item databus pins are usually microcontroller inputs
@@ -154,7 +159,7 @@ Flow from {\ttfamily usb-\/bridge} microcontroller to U\+SB host\+:~\newline
 \item ending before the next clock rising edge
 \end{DoxyItemize}
 \end{DoxyItemize}
-\item T\+O\+DO\+: fill this in 
+\item TODO\+: fill this in 
 \end{DoxyItemize}
 
 \doxysubsection{Function Documentation}
@@ -167,9 +172,9 @@ Flow from {\ttfamily usb-\/bridge} microcontroller to U\+SB host\+:~\newline
 Ft\+Clock\+Databus behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item drives Ft\+Clock H\+I\+GH if direction is Ft\+Drive~\newline
+\item drives Ft\+Clock HIGH if direction is Ft\+Drive~\newline
 
-\item drives Ft\+Clock L\+OW if direction is Ft\+Sample~\newline
+\item drives Ft\+Clock LOW if direction is Ft\+Sample~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_af068f8d14dc07d5d7f5a2cc38fee2d06}\label{Usb_8h_af068f8d14dc07d5d7f5a2cc38fee2d06}} 
 \index{Usb.h@{Usb.h}!\_FtDatabusPinDirection@{\_FtDatabusPinDirection}}
@@ -223,74 +228,74 @@ Ft\+Bus\+Turnaround behavior\+:~\newline
 \doxysubsubsection{\texorpdfstring{FtIsOk()}{FtIsOk()}}
 {\footnotesize\ttfamily bool Ft\+Is\+Ok (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-The F\+T221X indicates data transfer status on Pin {\ttfamily M\+I\+SO} while F\+T1248 communication is active.~\newline
-{\ttfamily L\+OW} on pin {\ttfamily M\+I\+SO} means {\itshape F\+T221X status is OK.}~\newline
+The FT221X indicates data transfer status on Pin {\ttfamily MISO} while FT1248 communication is active.~\newline
+{\ttfamily LOW} on pin {\ttfamily MISO} means {\itshape FT221X status is OK.}~\newline
 
 \begin{DoxyItemize}
 \item See the {\bfseries{8-\/bit write}} and {\bfseries{8-\/bit read}} timing diagrams\+:
 \begin{DoxyItemize}
-\item \href{https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT221X.pdf}{\texttt{ F\+T221X datasheet}}
+\item \href{https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT221X.pdf}{\texttt{ FT221X datasheet}}
 \end{DoxyItemize}
-\item See A\+C\+K/\+N\+AK details in section {\bfseries{F\+T1248\+: N\+AK}}\+:
+\item See ACK/\+NAK details in section {\bfseries{FT1248\+: NAK}}\+:
 \begin{DoxyItemize}
-\item \href{https://www.ftdichip.com/Support/Documents/AppNotes/AN_167_FT1248_Parallel_Serial_Interface_Basics.pdf}{\texttt{ F\+T\+DI application note A\+N167}}
+\item \href{https://www.ftdichip.com/Support/Documents/AppNotes/AN_167_FT1248_Parallel_Serial_Interface_Basics.pdf}{\texttt{ FTDI application note AN167}}
 \end{DoxyItemize}
 \end{DoxyItemize}
 
-Timing diagram and A\+C\+K/\+N\+AK summary\+:~\newline
+Timing diagram and ACK/\+NAK summary\+:~\newline
 
 \begin{DoxyItemize}
-\item During the {\ttfamily B\+US T\+U\+R\+N\+A\+R\+O\+U\+ND} after the {\ttfamily C\+O\+M\+M\+A\+ND P\+H\+A\+SE}
+\item During the {\ttfamily BUS TURNAROUND} after the {\ttfamily COMMAND PHASE}
 \begin{DoxyItemize}
 \item if command is {\bfseries{8-\/bit read}}
 \begin{DoxyItemize}
-\item {\ttfamily L\+OW} indicates {\bfseries{receive buffer}} {\itshape has data} to read
-\item {\ttfamily H\+I\+GH} indicates {\bfseries{receive buffer}} {\itshape is empty}
+\item {\ttfamily LOW} indicates {\bfseries{receive buffer}} {\itshape has data} to read
+\item {\ttfamily HIGH} indicates {\bfseries{receive buffer}} {\itshape is empty}
 \end{DoxyItemize}
 \item if command is {\bfseries{8-\/bit write}}
 \begin{DoxyItemize}
-\item {\ttfamily L\+OW} indicates {\bfseries{transmit buffer}} {\itshape has room} to write
-\item {\ttfamily H\+I\+GH} indicates {\bfseries{transmit buffer}} {\itshape is full}
+\item {\ttfamily LOW} indicates {\bfseries{transmit buffer}} {\itshape has room} to write
+\item {\ttfamily HIGH} indicates {\bfseries{transmit buffer}} {\itshape is full}
 \end{DoxyItemize}
 \end{DoxyItemize}
-\item During the {\ttfamily D\+A\+TA} phase
+\item During the {\ttfamily DATA} phase
 \begin{DoxyItemize}
 \item after the clock {\itshape rising} edge
 \begin{DoxyItemize}
-\item F\+T221X outputs an {\ttfamily A\+CK} or {\ttfamily N\+AK} on {\ttfamily M\+I\+SO}
-\item {\ttfamily A\+CK}\+:
+\item FT221X outputs an {\ttfamily ACK} or {\ttfamily NAK} on {\ttfamily MISO}
+\item {\ttfamily ACK}\+:
 \begin{DoxyItemize}
-\item {\ttfamily M\+I\+SO} is {\ttfamily L\+OW}
+\item {\ttfamily MISO} is {\ttfamily LOW}
 \item indicates a {\itshape successful} data transfer
 \end{DoxyItemize}
-\item {\ttfamily N\+AK}\+:
+\item {\ttfamily NAK}\+:
 \begin{DoxyItemize}
-\item {\ttfamily M\+I\+SO} is {\ttfamily H\+I\+GH}
+\item {\ttfamily MISO} is {\ttfamily HIGH}
 \item indicates a {\itshape failed} data transfer
 \end{DoxyItemize}
 \end{DoxyItemize}
 \item after clock {\itshape falling} edge\+:
 \begin{DoxyItemize}
-\item Microcontroller reads {\ttfamily M\+I\+SO}
+\item Microcontroller reads {\ttfamily MISO}
 \begin{DoxyItemize}
-\item {\ttfamily L\+OW} indicates {\ttfamily A\+CK}
-\item {\ttfamily H\+I\+GH} indicates {\ttfamily N\+AK}
+\item {\ttfamily LOW} indicates {\ttfamily ACK}
+\item {\ttfamily HIGH} indicates {\ttfamily NAK}
 \end{DoxyItemize}
 \end{DoxyItemize}
 \end{DoxyItemize}
 \item Data transers {\bfseries{fail}} because of either\+:
 \begin{DoxyItemize}
-\item a {\itshape buffer full} condition on {\bfseries{writing data}} to the F\+T221X
-\item a {\itshape buffer empty} condition on {\bfseries{reading data}} from the F\+T221X
+\item a {\itshape buffer full} condition on {\bfseries{writing data}} to the FT221X
+\item a {\itshape buffer empty} condition on {\bfseries{reading data}} from the FT221X
 \end{DoxyItemize}
 \end{DoxyItemize}
 
 Ft\+Is\+Ok behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item returns true if Ft\+Miso is L\+OW~\newline
+\item returns true if Ft\+Miso is LOW~\newline
 
-\item returns false if Ft\+Miso is H\+I\+GH~\newline
+\item returns false if Ft\+Miso is HIGH~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_ac70293c43d8ccf81187313f241a26de2}\label{Usb_8h_ac70293c43d8ccf81187313f241a26de2}} 
 \index{Usb.h@{Usb.h}!FtRead@{FtRead}}
@@ -301,7 +306,7 @@ Ft\+Is\+Ok behavior\+:~\newline
 Ft\+Read behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item clocks one byte out of the F\+T221X~\newline
+\item clocks one byte out of the FT221X~\newline
 
 \item stores the byte at address pbyte~\newline
 
@@ -309,23 +314,23 @@ Ft\+Read behavior\+:~\newline
 \index{Usb.h@{Usb.h}!FtSelectFT221X@{FtSelectFT221X}}
 \index{FtSelectFT221X@{FtSelectFT221X}!Usb.h@{Usb.h}}
 \doxysubsubsection{\texorpdfstring{FtSelectFT221X()}{FtSelectFT221X()}}
-{\footnotesize\ttfamily void Ft\+Select\+F\+T221X (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily void Ft\+Select\+FT221X (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Ft\+Select\+F\+T221X behavior\+:~\newline
+Ft\+Select\+FT221X behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item drives Ft\+Chip\+Select L\+OW~\newline
+\item drives Ft\+Chip\+Select LOW~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a6de206a884078a3ba1d7fdb3bc9374e2}\label{Usb_8h_a6de206a884078a3ba1d7fdb3bc9374e2}} 
 \index{Usb.h@{Usb.h}!FtUnselectFT221X@{FtUnselectFT221X}}
 \index{FtUnselectFT221X@{FtUnselectFT221X}!Usb.h@{Usb.h}}
 \doxysubsubsection{\texorpdfstring{FtUnselectFT221X()}{FtUnselectFT221X()}}
-{\footnotesize\ttfamily void Ft\+Unselect\+F\+T221X (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily void Ft\+Unselect\+FT221X (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Ft\+Unselect\+F\+T221X behavior\+:~\newline
+Ft\+Unselect\+FT221X behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item drives Ft\+Chip\+Select H\+I\+GH~\newline
+\item drives Ft\+Chip\+Select HIGH~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_ac0e5d30badf5676ceca134fa71323b76}\label{Usb_8h_ac0e5d30badf5676ceca134fa71323b76}} 
 \index{Usb.h@{Usb.h}!FtWrite@{FtWrite}}
@@ -342,7 +347,7 @@ Ft\+Write behavior\+:~\newline
 
 \item outputs byte on databus pins~\newline
 
-\item signals F\+T221X to sample the databus~\newline
+\item signals FT221X to sample the databus~\newline
 
 \item sets microcontroller databus pins as inputs~\newline
 
@@ -355,11 +360,11 @@ Ft\+Write behavior\+:~\newline
 Usb\+Read\+Byte behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item selects the F\+T221X~\newline
+\item selects the FT221X~\newline
 
 \item drives databus with read command~\newline
 
-\item signals F\+T221X to sample the databus~\newline
+\item signals FT221X to sample the databus~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a3081311c24ae86b950d6770c6a67cedb}\label{Usb_8h_a3081311c24ae86b950d6770c6a67cedb}} 
 \index{Usb.h@{Usb.h}!UsbRxbufferIsEmpty@{UsbRxbufferIsEmpty}}
@@ -370,9 +375,9 @@ Usb\+Read\+Byte behavior\+:~\newline
 Usb\+Rxbuffer\+Is\+Empty behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item returns true if pin F\+T1248 M\+I\+SO is H\+I\+GH~\newline
+\item returns true if pin FT1248 MISO is HIGH~\newline
 
-\item returns false if pin F\+T1248 M\+I\+SO is L\+OW~\newline
+\item returns false if pin FT1248 MISO is LOW~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Usb_8h_a379ae6fbbdf30b142ae85dad4da834f4}\label{Usb_8h_a379ae6fbbdf30b142ae85dad4da834f4}} 
 \index{Usb.h@{Usb.h}!UsbTxbufferIsFull@{UsbTxbufferIsFull}}
@@ -383,8 +388,8 @@ Usb\+Rxbuffer\+Is\+Empty behavior\+:~\newline
 Usb\+Txbuffer\+Is\+Full behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item returns true if pin M\+I\+O\+S\+I\+O0 is H\+I\+GH~\newline
+\item returns true if pin MIOSIO0 is HIGH~\newline
 
-\item returns false if pin M\+I\+O\+S\+I\+O0 is L\+OW~\newline
+\item returns false if pin MIOSIO0 is LOW~\newline
 
 \end{DoxyItemize}

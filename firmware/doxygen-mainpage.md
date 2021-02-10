@@ -1,42 +1,39 @@
-# Firmware and Python API
+This firmware runs on the Chromation dev-kit:
 
-This firmware works with PyPI project `microspec`.
+https://microspectrometer.github.io/dev-kit-2020/
 
-```
-$ pip install microspec
-```
+The dev-kit has two ATmega328 microcontrollers and a spectrometer
+chip.
 
-The firmware follows the protocol defined in the [microspec.json
-file](https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json)
+This firmware is for the Flash memory in the two
+microcontrollers. There is no firmware for the spectrometer
+chip itself, but the chip does have programmable registers which
+must be written to after power is turned on.
 
-# Chromation Spectrometer dev-kit
-
-The Chromation spectrometer is a surface-mount PCB package
-consisting of a linear photodiode array and optical components.
-This spectrometer chip does not contain any firmware.
-
-The firmware is on the two microcontrollers in the dev-kit. The
-dev-kit has a stack of two PCBs, with one microcontroller on each.
-
-The microcontroller on the lower PCB provides a SPI interface to
-the Chromation spectrometer. The microcontroller on the upper PCB
-converts the SPI interface into a USB interface.
-
-The dev-kit helps users evaluate the spectrometer chip. Also, all
-of the dev-kit files, including this firmware, are available to
-users under the MIT license, meaning reuse in commercial and
-non-commercial projects with very little limitation.
-
-## Programmable registers
+## Spectrometer chip programmable registers
 
 The spectrometer chip has programmable registers that affect
 pixel size and voltage gain. The dev-kit writes these registers
 with Chromation's recommended values when the dev-kit is powered
 on.
 
-Developers typically do not need to change these register values.
-The Python API in `microspec` (defined in
+Most applications do not require changing these register values.
+But in case there is a special use-case where it makes sense to
+change these values, the Python API in `microspec` (defined in
 [microspec.json](https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json))
-includes command `setSensorConfig()` to write to these registers,
-in case developers have a special use-case.
+includes command `setSensorConfig()` to write to these registers.
+
+# Serial communication and the Python API
+
+This firmware was created to work with PyPI project `microspec`.
+
+```
+$ pip install microspec
+```
+
+The Python code in `microspec` is auto-generated from the serial
+communication protocol defined in the [microspec.json
+file](https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json)
+
+The firmware was written (manually) to comply with this protocol.
 

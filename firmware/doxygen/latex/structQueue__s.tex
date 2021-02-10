@@ -13,7 +13,7 @@ Queue uses a byte array as a circular buffer.
 \begin{DoxyCompactItemize}
 \item 
 volatile uint8\+\_\+t $\ast$ \mbox{\hyperlink{structQueue__s_ac3342d21c8c45818eca36ef882ceabae}{buffer}}
-\begin{DoxyCompactList}\small\item\em {\itshape buffer} is the address of the queue\textquotesingle{}s F\+I\+FO buffer~\newline
+\begin{DoxyCompactList}\small\item\em {\itshape buffer} is the address of the queue\textquotesingle{}s FIFO buffer~\newline
 \end{DoxyCompactList}\item 
 volatile uint8\+\_\+t \mbox{\hyperlink{structQueue__s_ae789d6c9c2eabe81864f900b2640316f}{head}}
 \begin{DoxyCompactList}\small\item\em {\itshape head} advances after a byte is pushed onto the queue~\newline
@@ -43,7 +43,7 @@ A {\itshape queue} is a byte array with data (head, tail) and methods (push, pop
 
 Other bytes in the buffer are not in the queue, meaning they cannot be accessed by a {\itshape pop}. These values remain stored in the buffer until overwritten by a {\itshape push}.~\newline
 ~\newline
- A queue is a F\+I\+FO (first-\/in first-\/out) buffer\+: {\itshape pop} removes the oldest byte in the queue. 
+ A queue is a FIFO (first-\/in first-\/out) buffer\+: {\itshape pop} removes the oldest byte in the queue. 
 
 \doxysubsection{Field Documentation}
 \mbox{\Hypertarget{structQueue__s_ac3342d21c8c45818eca36ef882ceabae}\label{structQueue__s_ac3342d21c8c45818eca36ef882ceabae}} 
@@ -54,7 +54,7 @@ Other bytes in the buffer are not in the queue, meaning they cannot be accessed 
 
 
 
-{\itshape buffer} is the address of the queue\textquotesingle{}s F\+I\+FO buffer~\newline
+{\itshape buffer} is the address of the queue\textquotesingle{}s FIFO buffer~\newline
 
 
 

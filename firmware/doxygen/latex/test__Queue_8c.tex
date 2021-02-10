@@ -1,5 +1,11 @@
 \hypertarget{test__Queue_8c}{}\doxysection{lib/test/test\+\_\+\+Queue.c File Reference}
 \label{test__Queue_8c}\index{lib/test/test\_Queue.c@{lib/test/test\_Queue.c}}
+
+
+{\itshape Queue tests are coupled}~\newline
+ Testing one {\bfseries{Queue}} method requires calling other {\bfseries{Queue}} methods.  
+
+
 {\ttfamily \#include \char`\"{}unity.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}test\+\_\+\+Queue.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Queue.\+h\char`\"{}}\newline
@@ -88,12 +94,14 @@ volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$ {\bfseries Spi\+
 
 \doxysubsection{Detailed Description}
 {\itshape Queue tests are coupled}~\newline
- Testing one {\bfseries{Queue}} method requires calling other {\bfseries{Queue}} methods. Lib {\bfseries{Queue}} design intent is that data in a {\ttfamily \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}}} is only accessible through the {\bfseries{Queue}} methods. The {\ttfamily \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}}} is intended to be an abstract data type, but it is exposed in {\ttfamily \mbox{\hyperlink{Queue_8h_source}{Queue.\+h}}} to make {\ttfamily inline} possible in the application\textquotesingle{}s translation unit.
+ Testing one {\bfseries{Queue}} method requires calling other {\bfseries{Queue}} methods. 
+
+Lib {\bfseries{Queue}} design intent is that data in a {\ttfamily \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}}} is only accessible through the {\bfseries{Queue}} methods. The {\ttfamily \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}}} is intended to be an abstract data type, but it is exposed in {\ttfamily \mbox{\hyperlink{Queue_8h_source}{Queue.\+h}}} to make {\ttfamily inline} possible in the application\textquotesingle{}s translation unit.
 
 {\itshape Empty tests are for generating function doc strings}~\newline
 
 \begin{DoxyItemize}
-\item Empty tests contain one line\+: {\ttfamily T\+E\+S\+T\+\_\+\+P\+A\+S\+S();}~\newline
+\item Empty tests contain one line\+: {\ttfamily TEST\+\_\+\+PASS();}~\newline
 
 \item Tests start as empty.~\newline
 

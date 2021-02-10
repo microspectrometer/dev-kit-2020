@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['firmware_20and_20python_20api_344',['Firmware and Python API',['../index.html',1,'']]]
+  ['license_343',['LICENSE',['../md_LICENSE.html',1,'']]]
 ];

@@ -13,6 +13,5 @@ var searchData=
   ['ftunselectft221x_57',['FtUnselectFT221X',['../Usb_8h.html#a6de206a884078a3ba1d7fdb3bc9374e2',1,'Usb.h']]],
   ['ftunselectft221x_5ffake_58',['FtUnselectFT221X_fake',['../Usb__faked_8c.html#aef5068cb0eca8e2d7cb4c3f5269885c4',1,'Usb_faked.c']]],
   ['ftwrite_59',['FtWrite',['../Usb_8h.html#ac0e5d30badf5676ceca134fa71323b76',1,'Usb.h']]],
-  ['ftwrite_5ffake_60',['FtWrite_fake',['../Usb__faked_8c.html#aded36ff4c70790135ce48c17d9c9b4fd',1,'Usb_faked.c']]],
-  ['firmware_20and_20python_20api_61',['Firmware and Python API',['../index.html',1,'']]]
+  ['ftwrite_5ffake_60',['FtWrite_fake',['../Usb__faked_8c.html#aded36ff4c70790135ce48c17d9c9b4fd',1,'Usb_faked.c']]]
 ];

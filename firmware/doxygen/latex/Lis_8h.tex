@@ -6,19 +6,19 @@
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{Lis_8h_aebccd6b42d427ada3124a7a962e82f39}{M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+P\+I\+X\+E\+LS}}~784
-\begin{DoxyCompactList}\small\item\em L\+I\+S-\/770i maximum number of pixels. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\#define \mbox{\hyperlink{Lis_8h_aebccd6b42d427ada3124a7a962e82f39}{MAX\+\_\+\+NUM\+\_\+\+PIXELS}}~784
+\begin{DoxyCompactList}\small\item\em LIS-\/770i maximum number of pixels. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{Lis_8h_abd06f70b627e8bd05ef0dfb2b2ebf8f7}\label{Lis_8h_abd06f70b627e8bd05ef0dfb2b2ebf8f7}} 
 typedef uint8\+\_\+t volatile $\ast$const {\bfseries lis\+\_\+ptr}
 \item 
-\mbox{\Hypertarget{Lis_8h_a773522a86e95dfb2a2dd5eb9c45bc906}\label{Lis_8h_a773522a86e95dfb2a2dd5eb9c45bc906}} 
-typedef const uint8\+\_\+t {\bfseries lis\+\_\+pin}
+\mbox{\Hypertarget{Lis_8h_aa7fa5b8618a5284c7f323e59b5fdb835}\label{Lis_8h_aa7fa5b8618a5284c7f323e59b5fdb835}} 
+typedef uint8\+\_\+t const {\bfseries lis\+\_\+pin}
 \item 
-\mbox{\Hypertarget{Lis_8h_a417f005f74ab7a9adcb10b39358b69ab}\label{Lis_8h_a417f005f74ab7a9adcb10b39358b69ab}} 
-typedef const uint8\+\_\+t {\bfseries lis\+\_\+bit}
+\mbox{\Hypertarget{Lis_8h_a44571c47642249471531874eb7dd1b81}\label{Lis_8h_a44571c47642249471531874eb7dd1b81}} 
+typedef uint8\+\_\+t const {\bfseries lis\+\_\+bit}
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -45,7 +45,7 @@ void {\bfseries Pin\+\_\+\+Lis\+Sync\+\_\+\+Set\+Input} (void)
 void {\bfseries Reset\+Pwm\+Timer\+At\+Top} (void)
 \item 
 \mbox{\Hypertarget{Lis_8h_aeb6d38aab9858d6bc26cf943b06def30}\label{Lis_8h_aeb6d38aab9858d6bc26cf943b06def30}} 
-void {\bfseries Pwm\+Timer\+Top\+Is\+O\+C\+R0A} (void)
+void {\bfseries Pwm\+Timer\+Top\+Is\+OCR0A} (void)
 \item 
 \mbox{\Hypertarget{Lis_8h_a3219053f507a26387f1d7a59ca2c42b1}\label{Lis_8h_a3219053f507a26387f1d7a59ca2c42b1}} 
 void {\bfseries Pwm\+Timer\+Clocked\+By\+Cpu\+\_\+\+No\+Prescaling} (void)
@@ -68,9 +68,9 @@ void \mbox{\hyperlink{Lis_8h_a32be592b8f2e817e36e9a5fb17414f1e}{\+\_\+\+Write\+L
 \item 
 void \mbox{\hyperlink{Lis_8h_ac940f77e1a0830c08b818aac1788c33f}{\+\_\+\+Write28bit\+Lis\+Config}} (uint8\+\_\+t const $\ast$config)
 \item 
-uint8\+\_\+t \mbox{\hyperlink{Lis_8h_a2422f07f9c4038cbf6bd67c74f753662}{M\+SB}} (uint16\+\_\+t msb\+\_\+lsb)
+uint8\+\_\+t \mbox{\hyperlink{Lis_8h_a2422f07f9c4038cbf6bd67c74f753662}{MSB}} (uint16\+\_\+t msb\+\_\+lsb)
 \item 
-uint8\+\_\+t \mbox{\hyperlink{Lis_8h_ae21540775e7108af4e64e07cd4899232}{L\+SB}} (uint16\+\_\+t msb\+\_\+lsb)
+uint8\+\_\+t \mbox{\hyperlink{Lis_8h_ae21540775e7108af4e64e07cd4899232}{LSB}} (uint16\+\_\+t msb\+\_\+lsb)
 \item 
 void \mbox{\hyperlink{Lis_8h_aa84aa8e7e4e6ac94a503d022fbd07bb4}{Lis\+Init}} (void)
 \item 
@@ -99,19 +99,19 @@ lis\+\_\+ptr {\bfseries Lis\+\_\+ddr2}
 lis\+\_\+ptr {\bfseries Lis\+\_\+port2}
 \item 
 \mbox{\Hypertarget{Lis_8h_add9dfbac805aafed38bfefd6e3d46864}\label{Lis_8h_add9dfbac805aafed38bfefd6e3d46864}} 
-lis\+\_\+ptr {\bfseries Lis\+\_\+\+T\+C\+C\+R0A}
+lis\+\_\+ptr {\bfseries Lis\+\_\+\+TCCR0A}
 \item 
 \mbox{\Hypertarget{Lis_8h_aa4d9ee542210687b6886f7b0a04e0987}\label{Lis_8h_aa4d9ee542210687b6886f7b0a04e0987}} 
-lis\+\_\+ptr {\bfseries Lis\+\_\+\+T\+C\+C\+R0B}
+lis\+\_\+ptr {\bfseries Lis\+\_\+\+TCCR0B}
 \item 
 \mbox{\Hypertarget{Lis_8h_a37a3a5317db607b19e1fae821aa86e8b}\label{Lis_8h_a37a3a5317db607b19e1fae821aa86e8b}} 
-lis\+\_\+ptr {\bfseries Lis\+\_\+\+T\+I\+F\+R0}
+lis\+\_\+ptr {\bfseries Lis\+\_\+\+TIFR0}
 \item 
 \mbox{\Hypertarget{Lis_8h_a64a1a8ecaf6fc9a2ce49bfb86aaf5ac8}\label{Lis_8h_a64a1a8ecaf6fc9a2ce49bfb86aaf5ac8}} 
-lis\+\_\+ptr {\bfseries Lis\+\_\+\+O\+C\+R0A}
+lis\+\_\+ptr {\bfseries Lis\+\_\+\+OCR0A}
 \item 
 \mbox{\Hypertarget{Lis_8h_a8eecc32609c1790d3e490e175612aa83}\label{Lis_8h_a8eecc32609c1790d3e490e175612aa83}} 
-lis\+\_\+ptr {\bfseries Lis\+\_\+\+O\+C\+R0B}
+lis\+\_\+ptr {\bfseries Lis\+\_\+\+OCR0B}
 \item 
 \mbox{\Hypertarget{Lis_8h_aa8ec777186b935a90317717c2bde81f1}\label{Lis_8h_aa8ec777186b935a90317717c2bde81f1}} 
 lis\+\_\+pin {\bfseries Lis\+\_\+\+Pix\+Select}
@@ -126,41 +126,41 @@ lis\+\_\+pin {\bfseries Lis\+\_\+\+Rst}
 lis\+\_\+pin {\bfseries Lis\+\_\+\+Sync}
 \item 
 \mbox{\Hypertarget{Lis_8h_ad9ff4fdc41d63757fc183df22e913594}\label{Lis_8h_ad9ff4fdc41d63757fc183df22e913594}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+W\+G\+M00}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+WGM00}
 \item 
 \mbox{\Hypertarget{Lis_8h_a2a0cdbcc0fa1462605d3f4acaa5ceaff}\label{Lis_8h_a2a0cdbcc0fa1462605d3f4acaa5ceaff}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+W\+G\+M01}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+WGM01}
 \item 
 \mbox{\Hypertarget{Lis_8h_a2adaaff4504c431de38caeccb1169ce9}\label{Lis_8h_a2adaaff4504c431de38caeccb1169ce9}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+W\+G\+M02}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+WGM02}
 \item 
 \mbox{\Hypertarget{Lis_8h_aec65855d8edc8e20430012e5c19c3076}\label{Lis_8h_aec65855d8edc8e20430012e5c19c3076}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+C\+S00}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+CS00}
 \item 
 \mbox{\Hypertarget{Lis_8h_a135b9452f77eb3a5697f4ad52ea3eade}\label{Lis_8h_a135b9452f77eb3a5697f4ad52ea3eade}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+C\+S01}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+CS01}
 \item 
 \mbox{\Hypertarget{Lis_8h_a265198b31474c8e6aca4b636b94e8970}\label{Lis_8h_a265198b31474c8e6aca4b636b94e8970}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+C\+S02}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+CS02}
 \item 
 \mbox{\Hypertarget{Lis_8h_a4ce7fb220191db1ea26c1305821b9687}\label{Lis_8h_a4ce7fb220191db1ea26c1305821b9687}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+C\+O\+M0\+B0}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+COM0\+B0}
 \item 
 \mbox{\Hypertarget{Lis_8h_a5f87a98ff28c7955a2553212ade7b276}\label{Lis_8h_a5f87a98ff28c7955a2553212ade7b276}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+C\+O\+M0\+B1}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+COM0\+B1}
 \item 
 \mbox{\Hypertarget{Lis_8h_a3c702cf26e5e41d8f4a74d2fd4650e16}\label{Lis_8h_a3c702cf26e5e41d8f4a74d2fd4650e16}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+O\+C\+F0A}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+OCF0A}
 \item 
 \mbox{\Hypertarget{Lis_8h_a0c67066cdfa3845f5a1a3dcc18ce5abf}\label{Lis_8h_a0c67066cdfa3845f5a1a3dcc18ce5abf}} 
-lis\+\_\+bit {\bfseries Lis\+\_\+\+O\+C\+F0B}
+lis\+\_\+bit {\bfseries Lis\+\_\+\+OCF0B}
 \item 
 uint16\+\_\+t \mbox{\hyperlink{Lis_8h_aa40bb208afd06c3ca248325e44444bbe}{exposure\+\_\+ticks}}
-\begin{DoxyCompactList}\small\item\em L\+I\+S-\/770i exposure time. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em LIS-\/770i exposure time. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-\doxysubsection*{A\+PI}
+\doxysubsection*{API}
 
 void \mbox{\hyperlink{Lis_8h_aa84aa8e7e4e6ac94a503d022fbd07bb4}{Lis\+Init(void)}};~\newline
  
@@ -170,11 +170,11 @@ void \mbox{\hyperlink{Lis_8h_aa84aa8e7e4e6ac94a503d022fbd07bb4}{Lis\+Init(void)}
 \index{Lis.h@{Lis.h}!MAX\_NUM\_PIXELS@{MAX\_NUM\_PIXELS}}
 \index{MAX\_NUM\_PIXELS@{MAX\_NUM\_PIXELS}!Lis.h@{Lis.h}}
 \doxysubsubsection{\texorpdfstring{MAX\_NUM\_PIXELS}{MAX\_NUM\_PIXELS}}
-{\footnotesize\ttfamily \#define M\+A\+X\+\_\+\+N\+U\+M\+\_\+\+P\+I\+X\+E\+LS~784}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+NUM\+\_\+\+PIXELS~784}
 
 
 
-L\+I\+S-\/770i maximum number of pixels. 
+LIS-\/770i maximum number of pixels. 
 
 
 \begin{DoxyItemize}
@@ -195,29 +195,29 @@ Config\+As28bits behavior\+:~\newline
 \begin{DoxyItemize}
 \item writes config as little endian ie binning is config byte0 bit0~\newline
 
-\item sets config byte0 bit0 if B\+I\+N\+N\+I\+NG ON~\newline
+\item sets config byte0 bit0 if BINNING ON~\newline
 
-\item clears config byte0 bit0 if B\+I\+N\+N\+I\+NG O\+FF~\newline
+\item clears config byte0 bit0 if BINNING OFF~\newline
 
-\item byte0 bit1 clear and bit2 clear if G\+A\+IN 1X~\newline
+\item byte0 bit1 clear and bit2 clear if GAIN 1X~\newline
 
-\item byte0 bit1 clear and bit2 set if G\+A\+IN 2X5~\newline
+\item byte0 bit1 clear and bit2 set if GAIN 2X5~\newline
 
-\item byte0 bit1 set and bit2 clear if G\+A\+IN 4X~\newline
+\item byte0 bit1 set and bit2 clear if GAIN 4X~\newline
 
-\item byte0 bit1 set and bit2 set if G\+A\+IN 5X~\newline
+\item byte0 bit1 set and bit2 set if GAIN 5X~\newline
 
-\item bit3 to bit27 set if A\+LL R\+O\+WS A\+C\+T\+I\+VE~\newline
+\item bit3 to bit27 set if ALL ROWS ACTIVE~\newline
 
-\item b3b8b13b18b23 set if R\+OW 1 A\+C\+T\+I\+VE~\newline
+\item b3b8b13b18b23 set if ROW 1 ACTIVE~\newline
 
-\item b4b9b14b19b24 set if R\+OW 2 A\+C\+T\+I\+VE~\newline
+\item b4b9b14b19b24 set if ROW 2 ACTIVE~\newline
 
-\item b5b10b15b20b25 set if R\+OW 3 A\+C\+T\+I\+VE~\newline
+\item b5b10b15b20b25 set if ROW 3 ACTIVE~\newline
 
-\item b6b11b16b21b26 set if R\+OW 4 A\+C\+T\+I\+VE~\newline
+\item b6b11b16b21b26 set if ROW 4 ACTIVE~\newline
 
-\item b7b12b17b22b27 set if R\+OW 5 A\+C\+T\+I\+VE~\newline
+\item b7b12b17b22b27 set if ROW 5 ACTIVE~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Lis_8h_a2c9436b1222668f72ea0ebb7b4fa2dac}\label{Lis_8h_a2c9436b1222668f72ea0ebb7b4fa2dac}} 
 \index{Lis.h@{Lis.h}!\_EnterLisProgrammingMode@{\_EnterLisProgrammingMode}}
@@ -228,7 +228,7 @@ Config\+As28bits behavior\+:~\newline
 Enter\+Lis\+Programming\+Mode behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item waits for Lis\+Clk L\+OW~\newline
+\item waits for Lis\+Clk LOW~\newline
 
 \item asserts Lis\+Pix\+Select to program Lis~\newline
 
@@ -241,9 +241,9 @@ Enter\+Lis\+Programming\+Mode behavior\+:~\newline
 Exit\+Lis\+Programming\+Mode behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item outputs L\+OW on pin Lis\+Rst~\newline
+\item outputs LOW on pin Lis\+Rst~\newline
 
-\item outputs L\+OW on pin Lis\+Pix\+Select~\newline
+\item outputs LOW on pin Lis\+Pix\+Select~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Lis_8h_a31b3ad9f42158db560b995a60127b9c9}\label{Lis_8h_a31b3ad9f42158db560b995a60127b9c9}} 
 \index{Lis.h@{Lis.h}!\_WaitForLisClkHigh@{\_WaitForLisClkHigh}}
@@ -254,9 +254,9 @@ Exit\+Lis\+Programming\+Mode behavior\+:~\newline
 Wait\+For\+Lis\+Clk\+High behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item clears flag Pwm\+Timer\+Matches\+O\+C\+F0A~\newline
+\item clears flag Pwm\+Timer\+Matches\+OCF0A~\newline
 
-\item waits until flag Pwm\+Timer\+Matches\+O\+C\+F0A is set~\newline
+\item waits until flag Pwm\+Timer\+Matches\+OCF0A is set~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Lis_8h_ac28d19640f231d345e7c3450c6fa0f82}\label{Lis_8h_ac28d19640f231d345e7c3450c6fa0f82}} 
 \index{Lis.h@{Lis.h}!\_WaitForLisClkLow@{\_WaitForLisClkLow}}
@@ -267,9 +267,9 @@ Wait\+For\+Lis\+Clk\+High behavior\+:~\newline
 Wait\+For\+Lis\+Clk\+Low behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item clears flag Pwm\+Timer\+Matches\+O\+C\+F0B~\newline
+\item clears flag Pwm\+Timer\+Matches\+OCF0B~\newline
 
-\item waits until flag Pwm\+Timer\+Matches\+O\+C\+F0B is set~\newline
+\item waits until flag Pwm\+Timer\+Matches\+OCF0B is set~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Lis_8h_ac940f77e1a0830c08b818aac1788c33f}\label{Lis_8h_ac940f77e1a0830c08b818aac1788c33f}} 
 \index{Lis.h@{Lis.h}!\_Write28bitLisConfig@{\_Write28bitLisConfig}}
@@ -288,12 +288,12 @@ Write28bit\+Lis\+Config behavior\+:~\newline
 \doxysubsubsection{\texorpdfstring{\_WriteLisConfigBit()}{\_WriteLisConfigBit()}}
 {\footnotesize\ttfamily void \+\_\+\+Write\+Lis\+Config\+Bit (\begin{DoxyParamCaption}\item[{uint8\+\_\+t const $\ast$}]{config,  }\item[{uint8\+\_\+t}]{bit\+\_\+index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-{\bfseries{Write\+Lis\+Config\+Bit}} writes one bit of the L\+IS 28-\/bit programming sequence.
+{\bfseries{Write\+Lis\+Config\+Bit}} writes one bit of the LIS 28-\/bit programming sequence.
 
 To {\bfseries{write one bit}}\+:
 \begin{DoxyItemize}
 \item output bit value on pin {\ttfamily Lis\+\_\+\+Rst}
-\item clock the L\+IS
+\item clock the LIS
 \end{DoxyItemize}
 
 Input parameters\+:
@@ -307,9 +307,9 @@ Write\+Lis\+Config\+Bit behavior\+:~\newline
 \begin{DoxyItemize}
 \item outputs bit on Lis\+Rst~\newline
 
-\item waits for Lis\+Clk H\+I\+GH~\newline
+\item waits for Lis\+Clk HIGH~\newline
 
-\item waits for Lis\+Clk L\+OW~\newline
+\item waits for Lis\+Clk LOW~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Lis_8h_ab71bcb9d7cf1acc1cf8ea7d975f2ad08}\label{Lis_8h_ab71bcb9d7cf1acc1cf8ea7d975f2ad08}} 
 \index{Lis.h@{Lis.h}!LisClkFreq50kHz@{LisClkFreq50kHz}}
@@ -324,8 +324,8 @@ Pin Lis\+Clk outputs a 50k\+Hz square wave.~\newline
 \doxysubsubsection{\texorpdfstring{LisClkOn()}{LisClkOn()}}
 {\footnotesize\ttfamily void Lis\+Clk\+On (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Pin Lis\+Clk goes H\+I\+GH when Counter0 is 0.~\newline
- Pin Lis\+Clk goes L\+OW when Counter0 matches O\+C\+R0B.\mbox{\Hypertarget{Lis_8h_a0c067ab3f677d4b609e2bd763fdfa3e9}\label{Lis_8h_a0c067ab3f677d4b609e2bd763fdfa3e9}} 
+Pin Lis\+Clk goes HIGH when Counter0 is 0.~\newline
+ Pin Lis\+Clk goes LOW when Counter0 matches OCR0B.\mbox{\Hypertarget{Lis_8h_a0c067ab3f677d4b609e2bd763fdfa3e9}\label{Lis_8h_a0c067ab3f677d4b609e2bd763fdfa3e9}} 
 \index{Lis.h@{Lis.h}!LisConfigIsValid@{LisConfigIsValid}}
 \index{LisConfigIsValid@{LisConfigIsValid}!Lis.h@{Lis.h}}
 \doxysubsubsection{\texorpdfstring{LisConfigIsValid()}{LisConfigIsValid()}}
@@ -353,11 +353,11 @@ Lis\+Expose behavior\+:~\newline
 \begin{DoxyItemize}
 \item waits for the falling edge of Lis\+\_\+\+Clk~\newline
 
-\item starts exposure by driving Lis\+\_\+\+Rst H\+I\+GH~\newline
+\item starts exposure by driving Lis\+\_\+\+Rst HIGH~\newline
 
 \item counts falling edges of Lis\+\_\+\+Clk until count equals exposure\+\_\+ticks~\newline
 
-\item stops exposure by driving Lis\+\_\+\+Rst L\+OW~\newline
+\item stops exposure by driving Lis\+\_\+\+Rst LOW~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Lis_8h_aa84aa8e7e4e6ac94a503d022fbd07bb4}\label{Lis_8h_aa84aa8e7e4e6ac94a503d022fbd07bb4}} 
 \index{Lis.h@{Lis.h}!LisInit@{LisInit}}
@@ -380,17 +380,17 @@ Lis\+Init behavior\+:~\newline
 
 \item sets Clk as an output~\newline
 
-\item resets P\+WM timer at top~\newline
+\item resets PWM timer at top~\newline
 
-\item P\+WM timer top is O\+C\+R0A~\newline
+\item PWM timer top is OCR0A~\newline
 
-\item P\+WM timer is clocked by C\+PU with no prescaling~\newline
+\item PWM timer is clocked by CPU with no prescaling~\newline
 
-\item sets P\+WM frequency at 50k\+Hz~\newline
+\item sets PWM frequency at 50k\+Hz~\newline
 
-\item sets P\+WM duty cycle to 50 percent~\newline
+\item sets PWM duty cycle to 50 percent~\newline
 
-\item outputs the P\+WM clock on pin Clk~\newline
+\item outputs the PWM clock on pin Clk~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Lis_8h_a745334d083554f887d082da5570df60f}\label{Lis_8h_a745334d083554f887d082da5570df60f}} 
 \index{Lis.h@{Lis.h}!LisWriteConfig@{LisWriteConfig}}
@@ -403,19 +403,19 @@ Lis\+Write\+Config behavior\+:~\newline
 \begin{DoxyItemize}
 \item converts config to 28bit sequence~\newline
 
-\item enters L\+IS programming mode~\newline
+\item enters LIS programming mode~\newline
 
-\item writes 28bits to L\+IS setup register~\newline
+\item writes 28bits to LIS setup register~\newline
 
-\item exits L\+IS programming mode~\newline
+\item exits LIS programming mode~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{Lis_8h_ae21540775e7108af4e64e07cd4899232}\label{Lis_8h_ae21540775e7108af4e64e07cd4899232}} 
 \index{Lis.h@{Lis.h}!LSB@{LSB}}
 \index{LSB@{LSB}!Lis.h@{Lis.h}}
 \doxysubsubsection{\texorpdfstring{LSB()}{LSB()}}
-{\footnotesize\ttfamily uint8\+\_\+t L\+SB (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{msb\+\_\+lsb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily uint8\+\_\+t LSB (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{msb\+\_\+lsb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-L\+SB behavior\+:~\newline
+LSB behavior\+:~\newline
 
 \begin{DoxyItemize}
 \item returns least significant bit of 16bit input~\newline
@@ -424,9 +424,9 @@ L\+SB behavior\+:~\newline
 \index{Lis.h@{Lis.h}!MSB@{MSB}}
 \index{MSB@{MSB}!Lis.h@{Lis.h}}
 \doxysubsubsection{\texorpdfstring{MSB()}{MSB()}}
-{\footnotesize\ttfamily uint8\+\_\+t M\+SB (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{msb\+\_\+lsb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily uint8\+\_\+t MSB (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{msb\+\_\+lsb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-M\+SB behavior\+:~\newline
+MSB behavior\+:~\newline
 
 \begin{DoxyItemize}
 \item returns most significant bit of 16bit input~\newline
@@ -442,7 +442,7 @@ M\+SB behavior\+:~\newline
 
 
 
-L\+I\+S-\/770i exposure time. 
+LIS-\/770i exposure time. 
 
 
 \begin{DoxyItemize}
@@ -450,6 +450,6 @@ L\+I\+S-\/770i exposure time.
 \item exposure is in units of clock ticks
 \item multiply exposure by 20e-\/6 seconds to get exposure time in seconds
 \begin{DoxyItemize}
-\item one clock tick is 20e-\/6 seconds because the L\+I\+S-\/770i is clocked at 50k\+Hz 
+\item one clock tick is 20e-\/6 seconds because the LIS-\/770i is clocked at 50k\+Hz 
 \end{DoxyItemize}
 \end{DoxyItemize}

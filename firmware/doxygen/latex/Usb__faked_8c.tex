@@ -1,5 +1,10 @@
 \hypertarget{Usb__faked_8c}{}\doxysection{lib/test/\+Usb\+\_\+faked.c File Reference}
 \label{Usb__faked_8c}\index{lib/test/Usb\_faked.c@{lib/test/Usb\_faked.c}}
+
+
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.  
+
+
 {\ttfamily \#include \char`\"{}Usb\+\_\+faked.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Mock.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Usb.\+h\char`\"{}}\newline
@@ -27,9 +32,9 @@ static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Ft\+Databus\+Pin\+Di
 void \mbox{\hyperlink{Usb__faked_8c_a2bda3e1deb2d6f55f2bf61f5759d29b0}{\+\_\+\+Ft\+Databus\+Pin\+Direction\+\_\+fake}} (uint8\+\_\+t pin\+\_\+direction)
 \item 
 \mbox{\Hypertarget{Usb__faked_8c_ad5208547c54c2191ec598474d15225d3}\label{Usb__faked_8c_ad5208547c54c2191ec598474d15225d3}} 
-static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Select\+F\+T221X} (void)
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Select\+FT221X} (void)
 \item 
-void \mbox{\hyperlink{Usb__faked_8c_ab76a3f22fbeb6ecc364fe3ed4a124989}{Ft\+Select\+F\+T221\+X\+\_\+fake}} (void)
+void \mbox{\hyperlink{Usb__faked_8c_ab76a3f22fbeb6ecc364fe3ed4a124989}{Ft\+Select\+FT221\+X\+\_\+fake}} (void)
 \item 
 \mbox{\Hypertarget{Usb__faked_8c_a191256289cee7212b3759d14b1ebbd63}\label{Usb__faked_8c_a191256289cee7212b3759d14b1ebbd63}} 
 static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Bus\+Turnaround} (void)
@@ -52,14 +57,16 @@ static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Write} (uint8\+\_\+t a
 void \mbox{\hyperlink{Usb__faked_8c_aded36ff4c70790135ce48c17d9c9b4fd}{Ft\+Write\+\_\+fake}} (uint8\+\_\+t byte)
 \item 
 \mbox{\Hypertarget{Usb__faked_8c_a52a3f4aab3cca7c1c7819c6c63ed8860}\label{Usb__faked_8c_a52a3f4aab3cca7c1c7819c6c63ed8860}} 
-static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Unselect\+F\+T221X} (void)
+static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Ft\+Unselect\+FT221X} (void)
 \item 
-void \mbox{\hyperlink{Usb__faked_8c_aef5068cb0eca8e2d7cb4c3f5269885c4}{Ft\+Unselect\+F\+T221\+X\+\_\+fake}} (void)
+void \mbox{\hyperlink{Usb__faked_8c_aef5068cb0eca8e2d7cb4c3f5269885c4}{Ft\+Unselect\+FT221\+X\+\_\+fake}} (void)
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.~\newline
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}. 
+
+~\newline
  Tests access {\ttfamily mock} to see what the {\bfseries{function under test}} does\+:~\newline
 
 \begin{DoxyItemize}
@@ -71,39 +78,36 @@ void \mbox{\hyperlink{Usb__faked_8c_aef5068cb0eca8e2d7cb4c3f5269885c4}{Ft\+Unsel
  
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{extern} Mock\_s mock;}
+
 \end{DoxyCode}
-
-\end{DoxyItemize}
-
-{\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
+ {\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{Mock\_s *mock;}
+
 \end{DoxyCode}
-
-
-The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
+ The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
  Create/destroy {\ttfamily mock} for an entire test suite by pointing {\ttfamily set\+Up} and {\ttfamily tear\+Down} in the {\ttfamily test\+\_\+runner}\+:~\newline
  
 \begin{DoxyCode}{0}
 \DoxyCodeLine{setUp = SetUp\_Mock; tearDown = TearDown\_Mock;}
+
 \end{DoxyCode}
-
-
-For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
+ For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
  View all calls made (not an assertion, but helpful for debug) 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{PrintAllCalls(mock);}
+
 \end{DoxyCode}
-
-
-Assert a specific call is made 
+ Assert a specific call is made 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{uint16\_t call\_n = 1;}
 \DoxyCodeLine{TEST\_ASSERT\_TRUE(}
-\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"\_SomeCall"})}
+\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"{}\_SomeCall"{}})}
 \DoxyCodeLine{    );}
+
 \end{DoxyCode}
  
+\end{DoxyItemize}
 
 \doxysubsection{Function Documentation}
 \mbox{\Hypertarget{Usb__faked_8c_ad72ab12cb3203d7862d6715eac5ecad0}\label{Usb__faked_8c_ad72ab12cb3203d7862d6715eac5ecad0}} 
@@ -203,7 +207,7 @@ Record\+:~\newline
 \index{Usb\_faked.c@{Usb\_faked.c}!FtSelectFT221X\_fake@{FtSelectFT221X\_fake}}
 \index{FtSelectFT221X\_fake@{FtSelectFT221X\_fake}!Usb\_faked.c@{Usb\_faked.c}}
 \doxysubsubsection{\texorpdfstring{FtSelectFT221X\_fake()}{FtSelectFT221X\_fake()}}
-{\footnotesize\ttfamily void Ft\+Select\+F\+T221\+X\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void Ft\+Select\+FT221\+X\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
 
 Fake records calls made by {\bfseries{function under test}}.
 
@@ -215,7 +219,7 @@ Record\+:~\newline
 \index{Usb\_faked.c@{Usb\_faked.c}!FtUnselectFT221X\_fake@{FtUnselectFT221X\_fake}}
 \index{FtUnselectFT221X\_fake@{FtUnselectFT221X\_fake}!Usb\_faked.c@{Usb\_faked.c}}
 \doxysubsubsection{\texorpdfstring{FtUnselectFT221X\_fake()}{FtUnselectFT221X\_fake()}}
-{\footnotesize\ttfamily void Ft\+Unselect\+F\+T221\+X\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void Ft\+Unselect\+FT221\+X\+\_\+fake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
 
 Fake records calls made by {\bfseries{function under test}}.
 

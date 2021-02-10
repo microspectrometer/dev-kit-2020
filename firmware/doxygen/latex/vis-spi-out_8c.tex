@@ -6,7 +6,6 @@
 {\ttfamily \#include \char`\"{}Spi\+Slave.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Uart\+Spi.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Lis.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}Cmd.\+h\char`\"{}}\newline
 {\ttfamily \#include $<$stdlib.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}Hardware.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Queue.\+h\char`\"{}}\newline
@@ -18,7 +17,7 @@
 \item 
 \mbox{\Hypertarget{vis-spi-out_8c_a2f01b0db26e0ac965789a937aaac4bba}\label{vis-spi-out_8c_a2f01b0db26e0ac965789a937aaac4bba}} 
 \#define \mbox{\hyperlink{vis-spi-out_8c_a2f01b0db26e0ac965789a937aaac4bba}{max\+\_\+length\+\_\+of\+\_\+queue}}~24
-\begin{DoxyCompactList}\small\item\em Maximum size of the Queue\textquotesingle{}s F\+I\+FO buffer is 24 bytes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Maximum size of the Queue\textquotesingle{}s FIFO buffer is 24 bytes. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -28,7 +27,7 @@ static void {\bfseries setup} (void)
 \mbox{\Hypertarget{vis-spi-out_8c_a0b33edabd7f1c4e4a0bf32c67269be2f}\label{vis-spi-out_8c_a0b33edabd7f1c4e4a0bf32c67269be2f}} 
 static void {\bfseries loop} (void)
 \item 
-static void \mbox{\hyperlink{vis-spi-out_8c_afd0d45c1432ebadf293d37a9f43f775a}{setup\+\_\+\+Indicator\+L\+E\+Ds}} (void)
+static void \mbox{\hyperlink{vis-spi-out_8c_afd0d45c1432ebadf293d37a9f43f775a}{setup\+\_\+\+Indicator\+LEDs}} (void)
 \item 
 static void \mbox{\hyperlink{vis-spi-out_8c_a40b91105739a30ac20114a4d381e3644}{setup\+\_\+\+Spi\+Communication}} (void)
 \item 
@@ -37,17 +36,17 @@ static void \mbox{\hyperlink{vis-spi-out_8c_a3a81de2c20ce0457d676ee6c034a1359}{s
 \mbox{\Hypertarget{vis-spi-out_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{vis-spi-out_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
 int {\bfseries main} ()
 \item 
-\mbox{\hyperlink{vis-spi-out_8c_af9cad97352f5ba9bbd800446131125a6}{I\+SR}} (S\+P\+I\+\_\+\+S\+T\+C\+\_\+vect)
+\mbox{\hyperlink{vis-spi-out_8c_af9cad97352f5ba9bbd800446131125a6}{ISR}} (SPI\+\_\+\+STC\+\_\+vect)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{vis-spi-out_8c_a11dee3bbd2941b72086166ebabdedd91}\label{vis-spi-out_8c_a11dee3bbd2941b72086166ebabdedd91}} 
 volatile \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}} $\ast$ \mbox{\hyperlink{vis-spi-out_8c_a11dee3bbd2941b72086166ebabdedd91}{Spi\+Fifo}}
-\begin{DoxyCompactList}\small\item\em Allocate static memory for the S\+PI Rx Queue. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Allocate static memory for the SPI Rx Queue. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{vis-spi-out_8c_ac78df64981da9a49cee51200183e2db0}\label{vis-spi-out_8c_ac78df64981da9a49cee51200183e2db0}} 
 volatile uint8\+\_\+t \mbox{\hyperlink{vis-spi-out_8c_ac78df64981da9a49cee51200183e2db0}{spi\+\_\+rx\+\_\+buffer}} \mbox{[}\mbox{\hyperlink{vis-spi-out_8c_a2f01b0db26e0ac965789a937aaac4bba}{max\+\_\+length\+\_\+of\+\_\+queue}}\mbox{]}
-\begin{DoxyCompactList}\small\item\em Allocate static memory for the Queue\textquotesingle{}s F\+I\+FO buffer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Allocate static memory for the Queue\textquotesingle{}s FIFO buffer. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
@@ -55,9 +54,9 @@ volatile uint8\+\_\+t \mbox{\hyperlink{vis-spi-out_8c_ac78df64981da9a49cee512001
 \index{vis-\/spi-\/out.c@{vis-\/spi-\/out.c}!ISR@{ISR}}
 \index{ISR@{ISR}!vis-\/spi-\/out.c@{vis-\/spi-\/out.c}}
 \doxysubsubsection{\texorpdfstring{ISR()}{ISR()}}
-{\footnotesize\ttfamily I\+SR (\begin{DoxyParamCaption}\item[{S\+P\+I\+\_\+\+S\+T\+C\+\_\+vect}]{ }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily ISR (\begin{DoxyParamCaption}\item[{SPI\+\_\+\+STC\+\_\+vect}]{ }\end{DoxyParamCaption})}
 
-Interrupt when a S\+PI transfer completes\+:~\newline
+Interrupt when a SPI transfer completes\+:~\newline
 
 \begin{DoxyItemize}
 \item push received byte onto Spi\+Fifo (Queue head advances)~\newline
@@ -72,59 +71,59 @@ Interrupt when a S\+PI transfer completes\+:~\newline
 \doxysubsubsection{\texorpdfstring{setup\_DetectorReadout()}{setup\_DetectorReadout()}}
 {\footnotesize\ttfamily void setup\+\_\+\+Detector\+Readout (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
-Setup control of the {\bfseries{A\+DC}} and the {\bfseries{L\+I\+S-\/770i detector}}.
+Setup control of the {\bfseries{ADC}} and the {\bfseries{LIS-\/770i detector}}.
 \begin{DoxyItemize}
-\item Configure U\+A\+RT module as a {\bfseries{S\+PI Master}} to the A\+DC\+:
+\item Configure UART module as a {\bfseries{SPI Master}} to the ADC\+:
 \begin{DoxyItemize}
-\item use a {\bfseries{5M\+Hz clock}} to pull bits out of A\+DC
-\item pin {\ttfamily Uart\+Spi\+\_\+\+Adc\+Conv}\+: {\bfseries{output}}, idle {\ttfamily L\+OW}
+\item use a {\bfseries{5MHz clock}} to pull bits out of ADC
+\item pin {\ttfamily Uart\+Spi\+\_\+\+Adc\+Conv}\+: {\bfseries{output}}, idle {\ttfamily LOW}
 \item see details in \mbox{\hyperlink{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}{Uart\+Spi\+Init()}}
 \end{DoxyItemize}
-\item Configure I/O pins to control L\+I\+S-\/770i detector\+:
+\item Configure I/O pins to control LIS-\/770i detector\+:
 \begin{DoxyItemize}
-\item clock L\+I\+S-\/770i at {\bfseries{50k\+Hz}}
-\item pins {\ttfamily Lis\+\_\+\+Pix\+Select} and {\ttfamily Lis\+\_\+\+Rst}\+: {\bfseries{output}}, idle {\ttfamily L\+OW}
+\item clock LIS-\/770i at {\bfseries{50k\+Hz}}
+\item pins {\ttfamily Lis\+\_\+\+Pix\+Select} and {\ttfamily Lis\+\_\+\+Rst}\+: {\bfseries{output}}, idle {\ttfamily LOW}
 \item see details in \mbox{\hyperlink{Lis_8h_aa84aa8e7e4e6ac94a503d022fbd07bb4}{Lis\+Init()}}
 \end{DoxyItemize}
 \item Set initial exposure time to 1 millisecond.
-\item Set initial L\+I\+S-\/770i configuration\+:
+\item Set initial LIS-\/770i configuration\+:
 \begin{DoxyItemize}
 \item binning on
 \item gain 1x
 \item all rows active
-\item see L\+I\+S-\/770i cfg byte code definitions in \mbox{\hyperlink{LisConfigs_8h}{Lis\+Configs.\+h}}
+\item see LIS-\/770i cfg byte code definitions in \mbox{\hyperlink{LisConfigs_8h}{Lis\+Configs.\+h}}
 \end{DoxyItemize}
-\item Program L\+I\+S-\/770i with initial configuration.
+\item Program LIS-\/770i with initial configuration.
 \end{DoxyItemize}\mbox{\Hypertarget{vis-spi-out_8c_afd0d45c1432ebadf293d37a9f43f775a}\label{vis-spi-out_8c_afd0d45c1432ebadf293d37a9f43f775a}} 
 \index{vis-\/spi-\/out.c@{vis-\/spi-\/out.c}!setup\_IndicatorLEDs@{setup\_IndicatorLEDs}}
 \index{setup\_IndicatorLEDs@{setup\_IndicatorLEDs}!vis-\/spi-\/out.c@{vis-\/spi-\/out.c}}
 \doxysubsubsection{\texorpdfstring{setup\_IndicatorLEDs()}{setup\_IndicatorLEDs()}}
-{\footnotesize\ttfamily void setup\+\_\+\+Indicator\+L\+E\+Ds (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+{\footnotesize\ttfamily void setup\+\_\+\+Indicator\+LEDs (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
-Initialize P\+CB indicator L\+E\+Ds\mbox{\Hypertarget{vis-spi-out_8c_a40b91105739a30ac20114a4d381e3644}\label{vis-spi-out_8c_a40b91105739a30ac20114a4d381e3644}} 
+Initialize PCB indicator LEDs\mbox{\Hypertarget{vis-spi-out_8c_a40b91105739a30ac20114a4d381e3644}\label{vis-spi-out_8c_a40b91105739a30ac20114a4d381e3644}} 
 \index{vis-\/spi-\/out.c@{vis-\/spi-\/out.c}!setup\_SpiCommunication@{setup\_SpiCommunication}}
 \index{setup\_SpiCommunication@{setup\_SpiCommunication}!vis-\/spi-\/out.c@{vis-\/spi-\/out.c}}
 \doxysubsubsection{\texorpdfstring{setup\_SpiCommunication()}{setup\_SpiCommunication()}}
 {\footnotesize\ttfamily void setup\+\_\+\+Spi\+Communication (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
-Set up {\bfseries{S\+PI hardware module}} and a {\bfseries{F\+I\+FO}} to buffer bytes sent from the S\+PI master.~\newline
+Set up {\bfseries{SPI hardware module}} and a {\bfseries{FIFO}} to buffer bytes sent from the SPI master.~\newline
 
 \begin{DoxyItemize}
-\item Configure S\+PI hardware module\+:~\newline
+\item Configure SPI hardware module\+:~\newline
 
 \begin{DoxyItemize}
-\item configure microcontroller as a {\bfseries{S\+PI slave}}~\newline
+\item configure microcontroller as a {\bfseries{SPI slave}}~\newline
 
-\item pin {\ttfamily Spi\+\_\+\+Data\+Ready}\+: {\bfseries{output}}, idle {\ttfamily H\+I\+GH}~\newline
+\item pin {\ttfamily Spi\+\_\+\+Data\+Ready}\+: {\bfseries{output}}, idle {\ttfamily HIGH}~\newline
 
 \item pin {\ttfamily Spi\+\_\+\+Miso}\+: {\bfseries{output}}~\newline
 
-\item enable {\bfseries{interrupt}} on {\bfseries{S\+PI Serial Transfer Complete}} ({\ttfamily S\+P\+I\+\_\+\+S\+T\+C\+\_\+vect})~\newline
+\item enable {\bfseries{interrupt}} on {\bfseries{SPI Serial Transfer Complete}} ({\ttfamily SPI\+\_\+\+STC\+\_\+vect})~\newline
 
 \item see details in \mbox{\hyperlink{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}{Spi\+Slave\+Init()}}~\newline
 
 \end{DoxyItemize}
-\item Create a {\bfseries{F\+I\+FO Queue}} to buffer up to {\itshape 11 bytes} of S\+PI data\+:~\newline
+\item Create a {\bfseries{FIFO Queue}} to buffer up to {\itshape 11 bytes} of SPI data\+:~\newline
 
 \begin{DoxyItemize}
 \item see details in \mbox{\hyperlink{structQueue__s}{Queue\+\_\+s}}

@@ -13,7 +13,7 @@ void \mbox{\hyperlink{SpiMaster_8h_a5e72d6678288db6c0b473d1fc2953665}{Spi\+Maste
 
 
 \doxysubsection{Detailed Description}
-\doxysubsection*{A\+PI}
+\doxysubsection*{API}
 
 void \mbox{\hyperlink{SpiMaster_8h_a5e72d6678288db6c0b473d1fc2953665}{Spi\+Master\+Init(void)}};~\newline
  void \mbox{\hyperlink{SpiMaster_8h_a8b4ef2a3943c1924d7e1de50bf4a998d}{Spi\+Master\+Xfr\+Byte(uint8\+\_\+t byte)}};~\newline
@@ -45,13 +45,13 @@ Spi\+Master\+Init behavior\+:~\newline
 
 \item makes Sck an output~\newline
 
-\item makes this M\+CU the S\+PI Master~\newline
+\item makes this MCU the SPI Master~\newline
 
-\item sets S\+PI Clock to 10M\+Hz ext osc divided by 8~\newline
+\item sets SPI Clock to 10MHz ext osc divided by 8~\newline
 
-\item enables the S\+PI hardware module~\newline
+\item enables the SPI hardware module~\newline
 
-\item clears S\+PI interrupt flag~\newline
+\item clears SPI interrupt flag~\newline
 
 \end{DoxyItemize}\mbox{\Hypertarget{SpiMaster_8h_a8b4ef2a3943c1924d7e1de50bf4a998d}\label{SpiMaster_8h_a8b4ef2a3943c1924d7e1de50bf4a998d}} 
 \index{SpiMaster.h@{SpiMaster.h}!SpiMasterXfrByte@{SpiMasterXfrByte}}
@@ -62,16 +62,16 @@ Spi\+Master\+Init behavior\+:~\newline
 Spi\+Master\+Xfr\+Byte behavior\+:~\newline
 
 \begin{DoxyItemize}
-\item selects the S\+PI slave~\newline
+\item selects the SPI slave~\newline
 
-\item loads S\+PI data reg with the byte to send~\newline
+\item loads SPI data reg with the byte to send~\newline
 
-\item waits until the transfer is done by reading the S\+PI Interrupt Flag~\newline
+\item waits until the transfer is done by reading the SPI Interrupt Flag~\newline
 
-\item unselects the S\+PI slave~\newline
+\item unselects the SPI slave~\newline
 
-\item clears the S\+PI Interrupt Flag by reading the S\+PI data reg~\newline
+\item clears the SPI Interrupt Flag by reading the SPI data reg~\newline
 
-\item returns the byte in the S\+PI data reg~\newline
+\item returns the byte in the SPI data reg~\newline
 
 \end{DoxyItemize}

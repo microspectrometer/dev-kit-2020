@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['length_316',['length',['../structQueue__s.html#a97872eec1c37e9bdc4e59e1e924aff09',1,'Queue_s']]]
+  ['length_315',['length',['../structQueue__s.html#a97872eec1c37e9bdc4e59e1e924aff09',1,'Queue_s']]]
 ];

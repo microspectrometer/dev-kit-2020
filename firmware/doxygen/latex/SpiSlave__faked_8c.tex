@@ -1,5 +1,10 @@
 \hypertarget{SpiSlave__faked_8c}{}\doxysection{lib/test/\+Spi\+Slave\+\_\+faked.c File Reference}
 \label{SpiSlave__faked_8c}\index{lib/test/SpiSlave\_faked.c@{lib/test/SpiSlave\_faked.c}}
+
+
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.  
+
+
 {\ttfamily \#include \char`\"{}Spi\+Slave\+\_\+faked.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Mock.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Read\+Write\+Bits.\+h\char`\"{}}\newline
@@ -30,7 +35,9 @@ void \mbox{\hyperlink{SpiSlave__faked_8c_ad636d7aed5753d29fd10d470918976a7}{Disa
 
 
 \doxysubsection{Detailed Description}
-{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.~\newline
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}. 
+
+~\newline
  Tests access {\ttfamily mock} to see what the {\bfseries{function under test}} does\+:~\newline
 
 \begin{DoxyItemize}
@@ -42,39 +49,36 @@ void \mbox{\hyperlink{SpiSlave__faked_8c_ad636d7aed5753d29fd10d470918976a7}{Disa
  
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{extern} Mock\_s mock;}
+
 \end{DoxyCode}
-
-\end{DoxyItemize}
-
-{\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
+ {\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{Mock\_s *mock;}
+
 \end{DoxyCode}
-
-
-The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
+ The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
  Create/destroy {\ttfamily mock} for an entire test suite by pointing {\ttfamily set\+Up} and {\ttfamily tear\+Down} in the {\ttfamily test\+\_\+runner}\+:~\newline
  
 \begin{DoxyCode}{0}
 \DoxyCodeLine{setUp = SetUp\_Mock; tearDown = TearDown\_Mock;}
+
 \end{DoxyCode}
-
-
-For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
+ For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
  View all calls made (not an assertion, but helpful for debug) 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{PrintAllCalls(mock);}
+
 \end{DoxyCode}
-
-
-Assert a specific call is made 
+ Assert a specific call is made 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{uint16\_t call\_n = 1;}
 \DoxyCodeLine{TEST\_ASSERT\_TRUE(}
-\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"\_SignalDataReady"})}
+\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"{}\_SignalDataReady"{}})}
 \DoxyCodeLine{    );}
+
 \end{DoxyCode}
  
+\end{DoxyItemize}
 
 \doxysubsection{Function Documentation}
 \mbox{\Hypertarget{SpiSlave__faked_8c_a14d1d211c05c75c9d55525aaa940d0c4}\label{SpiSlave__faked_8c_a14d1d211c05c75c9d55525aaa940d0c4}} 

@@ -1,5 +1,10 @@
-\hypertarget{SpiMaster-HardwareFake_8h}{}\doxysection{lib/test/\+Spi\+Master-\/\+Hardware\+Fake.h File Reference}
-\label{SpiMaster-HardwareFake_8h}\index{lib/test/SpiMaster-\/HardwareFake.h@{lib/test/SpiMaster-\/HardwareFake.h}}
+\hypertarget{SpiMaster-HardwareFake_8h}{}\doxysection{lib/\+NOT-\/\+USED/test/\+Spi\+Master-\/\+Hardware\+Fake.h File Reference}
+\label{SpiMaster-HardwareFake_8h}\index{lib/NOT-\/USED/test/SpiMaster-\/HardwareFake.h@{lib/NOT-\/USED/test/SpiMaster-\/HardwareFake.h}}
+
+
+This file is not used anymore.  
+
+
 {\ttfamily \#include \char`\"{}Spi\+Master.\+h\char`\"{}}\newline
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -14,10 +19,10 @@ static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+Spi\+M\+\_\+pin}
 static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+Spi\+M\+\_\+port}
 \item 
 \mbox{\Hypertarget{SpiMaster-HardwareFake_8h_acf5e4ff118e87c1df940e8b0801ea123}\label{SpiMaster-HardwareFake_8h_acf5e4ff118e87c1df940e8b0801ea123}} 
-static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+Spi\+M\+\_\+\+S\+P\+CR}
+static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+Spi\+M\+\_\+\+SPCR}
 \item 
 \mbox{\Hypertarget{SpiMaster-HardwareFake_8h_aa302b618a69b7dd1a34ecddd51321b53}\label{SpiMaster-HardwareFake_8h_aa302b618a69b7dd1a34ecddd51321b53}} 
-static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+Spi\+M\+\_\+\+S\+P\+SR}
+static uint8\+\_\+t volatile {\bfseries fake\+\_\+\+Spi\+M\+\_\+\+SPSR}
 \item 
 \mbox{\Hypertarget{SpiMaster-HardwareFake_8h_a38b5d960b0a71c48a759b822f3ab09b3}\label{SpiMaster-HardwareFake_8h_a38b5d960b0a71c48a759b822f3ab09b3}} 
 spim\+\_\+reg {\bfseries Spi\+M\+\_\+ddr} = \&fake\+\_\+\+Spi\+M\+\_\+ddr
@@ -29,10 +34,10 @@ spim\+\_\+reg {\bfseries Spi\+M\+\_\+pin} = \&fake\+\_\+\+Spi\+M\+\_\+pin
 spim\+\_\+reg {\bfseries Spi\+M\+\_\+port} = \&fake\+\_\+\+Spi\+M\+\_\+port
 \item 
 \mbox{\Hypertarget{SpiMaster-HardwareFake_8h_ac86e3261052529a0eac9ab1c4b82ad1e}\label{SpiMaster-HardwareFake_8h_ac86e3261052529a0eac9ab1c4b82ad1e}} 
-spim\+\_\+reg {\bfseries Spi\+M\+\_\+\+S\+P\+CR} = \&fake\+\_\+\+Spi\+M\+\_\+\+S\+P\+CR
+spim\+\_\+reg {\bfseries Spi\+M\+\_\+\+SPCR} = \&fake\+\_\+\+Spi\+M\+\_\+\+SPCR
 \item 
 \mbox{\Hypertarget{SpiMaster-HardwareFake_8h_a6d7fd59d72f1d21d55219463f226d3fa}\label{SpiMaster-HardwareFake_8h_a6d7fd59d72f1d21d55219463f226d3fa}} 
-spim\+\_\+reg {\bfseries Spi\+M\+\_\+\+S\+P\+SR} = \&fake\+\_\+\+Spi\+M\+\_\+\+S\+P\+SR
+spim\+\_\+reg {\bfseries Spi\+M\+\_\+\+SPSR} = \&fake\+\_\+\+Spi\+M\+\_\+\+SPSR
 \item 
 \mbox{\Hypertarget{SpiMaster-HardwareFake_8h_a2e969e3c6cdeac073a548475467a33cf}\label{SpiMaster-HardwareFake_8h_a2e969e3c6cdeac073a548475467a33cf}} 
 spim\+\_\+bit {\bfseries Spi\+M\+\_\+\+Data\+Ready} = 1
@@ -67,5 +72,7 @@ spim\+\_\+bit {\bfseries Spi\+M\+\_\+\+Spi\+Enable} = 6
 
 
 \doxysubsection{Detailed Description}
-This file is not used anymore.~\newline
+This file is not used anymore. 
+
+~\newline
 There used to be separate Spi hardware files for master and slave. Now there is one \mbox{\hyperlink{Spi_8h}{Spi.\+h}} file and Spi-\/\+Hardware and Spi-\/\+Hardware\+Fake. There are still \mbox{\hyperlink{SpiMaster_8h}{Spi\+Master.\+h}} and \mbox{\hyperlink{SpiSlave_8h}{Spi\+Slave.\+h}} files, but these are for the functions unique to master and slave. 

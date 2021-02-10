@@ -1,5 +1,10 @@
 \hypertarget{Lis__faked_8c}{}\doxysection{lib/test/\+Lis\+\_\+faked.c File Reference}
 \label{Lis__faked_8c}\index{lib/test/Lis\_faked.c@{lib/test/Lis\_faked.c}}
+
+
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.  
+
+
 {\ttfamily \#include \char`\"{}Lis\+\_\+faked.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Mock.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Lis.\+h\char`\"{}}\newline
@@ -59,7 +64,9 @@ void \mbox{\hyperlink{Lis__faked_8c_ac1ca9d89efe21585449981c72a3d4158}{\+\_\+\+E
 
 
 \doxysubsection{Detailed Description}
-{\bfseries{Faked}} calls record themselves in {\ttfamily mock}.~\newline
+{\bfseries{Faked}} calls record themselves in {\ttfamily mock}. 
+
+~\newline
  Tests access {\ttfamily mock} to see what the {\bfseries{function under test}} does\+:~\newline
 
 \begin{DoxyItemize}
@@ -71,39 +78,36 @@ void \mbox{\hyperlink{Lis__faked_8c_ac1ca9d89efe21585449981c72a3d4158}{\+\_\+\+E
  
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{keyword}{extern} Mock\_s mock;}
+
 \end{DoxyCode}
-
-\end{DoxyItemize}
-
-{\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
+ {\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{Mock\_s *mock;}
+
 \end{DoxyCode}
-
-
-The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
+ The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline
  Create/destroy {\ttfamily mock} for an entire test suite by pointing {\ttfamily set\+Up} and {\ttfamily tear\+Down} in the {\ttfamily test\+\_\+runner}\+:~\newline
  
 \begin{DoxyCode}{0}
 \DoxyCodeLine{setUp = SetUp\_Mock; tearDown = TearDown\_Mock;}
+
 \end{DoxyCode}
-
-
-For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
+ For any {\ttfamily test} with {\ttfamily mock} defined\+:~\newline
  View all calls made (not an assertion, but helpful for debug) 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{PrintAllCalls(mock);}
+
 \end{DoxyCode}
-
-
-Assert a specific call is made 
+ Assert a specific call is made 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{uint16\_t call\_n = 1;}
 \DoxyCodeLine{TEST\_ASSERT\_TRUE(}
-\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"\_SomeCall"})}
+\DoxyCodeLine{    AssertCall(mock, call\_n, \textcolor{stringliteral}{"{}\_SomeCall"{}})}
 \DoxyCodeLine{    );}
+
 \end{DoxyCode}
  
+\end{DoxyItemize}
 
 \doxysubsection{Function Documentation}
 \mbox{\Hypertarget{Lis__faked_8c_a9879404b22a3ac919c33bb75942dccd2}\label{Lis__faked_8c_a9879404b22a3ac919c33bb75942dccd2}} 
