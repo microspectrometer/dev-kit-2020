@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>firmware: Main Page</title>
+<title>firmware: How to use this documentation</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -66,21 +66,52 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">firmware Documentation</div>  </div>
+<div class="title">How to use this documentation </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_doxygen_mainpage"></a> This firmware runs on the Chromation dev-kit:</p>
+<div class="textblock"><p><a class="anchor" id="md_doxygen_mainpage"></a> All the useful firmware information is under <a href="files.html">Files</a>.</p>
+<h1>Additional documentation</h1>
+<p>The firmware runs on the Chromation dev-kit. Documentation for the dev-kit is here:</p>
 <p><a href="https://microspectrometer.github.io/dev-kit-2020/">https://microspectrometer.github.io/dev-kit-2020/</a></p>
+<p>All dev-kit hardware and firmware files are open-source and are available from the GitHub repository:</p>
+<p><a href="https://github.com/microspectrometer/dev-kit-2020">https://github.com/microspectrometer/dev-kit-2020</a></p>
+<h1>Chromation dev-kit hardware</h1>
 <p>The dev-kit has two ATmega328 microcontrollers and a spectrometer chip.</p>
-<p>This firmware is for the Flash memory in the two microcontrollers. There is no firmware for the spectrometer chip itself, but the chip does have programmable registers which must be written to after power is turned on.</p>
+<p>The firmware is for the Flash memory in those two microcontrollers:</p>
+<ul>
+<li>the microcontroller on the <code>vis-spi-out</code> PCB handles spectrometer configuration and readout</li>
+<li>the microcontroller on the <code>usb-bridge</code> PCB simply passes messages between the application on the host computer (e.g., a Python script) and the 5-wire SPI interface on the <code>vis-spi-out</code> PCB</li>
+</ul>
+<p>There is no firmware for the spectrometer chip itself, but the chip does have programmable registers.</p>
 <h2>Spectrometer chip programmable registers</h2>
-<p>The spectrometer chip has programmable registers that affect pixel size and voltage gain. The dev-kit writes these registers with Chromation's recommended values when the dev-kit is powered on.</p>
-<p>Most applications do not require changing these register values. But in case there is a special use-case where it makes sense to change these values, the Python API in <code>microspec</code> (defined in <a href="https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json">microspec.json</a>) includes command <code>setSensorConfig()</code> to write to these registers.</p>
+<p>The programmable registers are part of the LIS-770i, the CMOS image sensor used in the spectrometer chip. These registers initialize in an unknown state and must be written to after the spectrometer chip is powered on.</p>
+<p>All registers are programmed at once by sending the LIS-770i a 28-bit word. The value of this 28-bit word determines:</p>
+<ul>
+<li>pixel binning (choosing between 7.8µm and 15.6µm pitch)</li>
+<li>voltage gain</li>
+<li>which pixels are active</li>
+</ul>
+<p>See details in <a href="LisConfig_8h.html">Lis.h</a>.</p>
+<p>The dev-kit firmware writes these registers with recommended default values when the dev-kit is powered on. The recommended defaults are to turn on pixel binning, set gain to 1x, and turn on all pixels.</p>
+<p>The <a href="https://pypi.org/project/microspec/">microspec</a> Python API includes command <code>setSensorConfig()</code> for applications to write to these registers, but most applications <b>do not require</b> changing these register values:</p>
+<ul>
+<li>the recommended value for pixel binning is based on the optical design of the spectrometer</li>
+<li>the recommended 1x gain is based on the dev-kit's analog front-end (i.e., the choice of ADC and ADC reference voltage) &ndash; given this design, increasing the gain reduces dynamic range without improving SNR</li>
+</ul>
 <h1>Serial communication and the Python API</h1>
-<p>This firmware was created to work with PyPI project <code>microspec</code>.</p>
+<h2>Protocol is in a JSON file</h2>
+<p>The serial communication protocol is defined in the JSON file <a href="https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json">microspec.json</a>:</p>
+<ul>
+<li>The firmware follows the <a href="https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json">microspec.json</a> serial communication protocol.</li>
+<li>PyPI project <a href="https://pypi.org/project/microspec/">microspec</a> defines a USB interface to the dev-kit. This interface is a <code>class</code> that is auto-generated from <a href="https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json">microspec.json</a>.</li>
+</ul>
+<h2>Develop and test</h2>
+<p>Install Python and the <a href="https://pypi.org/project/microspec/">microspec</a> package to develop and test the firmware:</p>
 <div class="fragment"><div class="line">$ pip install microspec</div>
-</div><!-- fragment --><p>The Python code in <code>microspec</code> is auto-generated from the serial communication protocol defined in the <a href="https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json">microspec.json file</a></p>
-<p>The firmware was written (manually) to comply with this protocol. </p>
+</div><!-- fragment --><p>The Python REPL is an easy way to quickly test commands. Details are in the <a href="https://microspec-api.readthedocs.io/en/latest/microspec.commands.html">documentation</a>. The <a href="https://pypi.org/project/microspec/">microspec</a> package also provides a command-line utility to send commands without opening a Python REPL. This is useful when running single dev-kit commands from a text editor like Vim or Emacs.</p>
+<p>To quickly check that the firmware and Python API are in complete agreement about the serial communication protocol, run <a href="https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspeclib/system-tests.py">system-tests.py</a>. This script runs all the serial commands and checks for the expected responses from the dev-kit. The script is organized into classes, one class per serial command. The methods in each class are the different scenarios for testing the serial command (the different arguments the command might be called with).</p>
+<h2>Protocol example</h2>
+<p>TODO: Add an example with the <code>usb-bridge</code> and <code>vis-spi-out</code> firmware that corresponds to one of the commands in the JSON file, and how the resulting call-and-response looks from Python. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->

@@ -1,22 +1,71 @@
 \label{index_md_doxygen_mainpage}%
 \Hypertarget{index_md_doxygen_mainpage}%
- This firmware runs on the Chromation dev-\/kit\+:
+ All the useful firmware information is under \href{files.html}{\texttt{ Files}}.
+
+\doxysection*{Additional documentation}
+
+The firmware runs on the Chromation dev-\/kit. Documentation for the dev-\/kit is here\+:
 
 \href{https://microspectrometer.github.io/dev-kit-2020/}{\texttt{ https\+://microspectrometer.\+github.\+io/dev-\/kit-\/2020/}}
 
+All dev-\/kit hardware and firmware files are open-\/source and are available from the Git\+Hub repository\+:
+
+\href{https://github.com/microspectrometer/dev-kit-2020}{\texttt{ https\+://github.\+com/microspectrometer/dev-\/kit-\/2020}}
+
+\doxysection*{Chromation dev-\/kit hardware}
+
 The dev-\/kit has two ATmega328 microcontrollers and a spectrometer chip.
 
-This firmware is for the Flash memory in the two microcontrollers. There is no firmware for the spectrometer chip itself, but the chip does have programmable registers which must be written to after power is turned on.
+The firmware is for the Flash memory in those two microcontrollers\+:
+
+
+\begin{DoxyItemize}
+\item the microcontroller on the {\ttfamily vis-\/spi-\/out} PCB handles spectrometer configuration and readout
+\item the microcontroller on the {\ttfamily usb-\/bridge} PCB simply passes messages between the application on the host computer (e.\+g., a Python script) and the 5-\/wire SPI interface on the {\ttfamily vis-\/spi-\/out} PCB
+\end{DoxyItemize}
+
+There is no firmware for the spectrometer chip itself, but the chip does have programmable registers.
 
 \doxysubsection*{Spectrometer chip programmable registers}
 
-The spectrometer chip has programmable registers that affect pixel size and voltage gain. The dev-\/kit writes these registers with Chromation\textquotesingle{}s recommended values when the dev-\/kit is powered on.
+The programmable registers are part of the LIS-\/770i, the CMOS image sensor used in the spectrometer chip. These registers initialize in an unknown state and must be written to after the spectrometer chip is powered on.
 
-Most applications do not require changing these register values. But in case there is a special use-\/case where it makes sense to change these values, the Python API in {\ttfamily microspec} (defined in \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}}) includes command {\ttfamily set\+Sensor\+Config()} to write to these registers.
+All registers are programmed at once by sending the LIS-\/770i a 28-\/bit word. The value of this 28-\/bit word determines\+:
+
+
+\begin{DoxyItemize}
+\item pixel binning (choosing between 7.\+8µm and 15.\+6µm pitch)
+\item voltage gain
+\item which pixels are active
+\end{DoxyItemize}
+
+See details in \href{LisConfig_8h.html}{\texttt{ Lis.\+h}}.
+
+The dev-\/kit firmware writes these registers with recommended default values when the dev-\/kit is powered on. The recommended defaults are to turn on pixel binning, set gain to 1x, and turn on all pixels.
+
+The \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} Python API includes command {\ttfamily set\+Sensor\+Config()} for applications to write to these registers, but most applications {\bfseries{do not require}} changing these register values\+:
+
+
+\begin{DoxyItemize}
+\item the recommended value for pixel binning is based on the optical design of the spectrometer
+\item the recommended 1x gain is based on the dev-\/kit\textquotesingle{}s analog front-\/end (i.\+e., the choice of ADC and ADC reference voltage) -- given this design, increasing the gain reduces dynamic range without improving SNR
+\end{DoxyItemize}
 
 \doxysection*{Serial communication and the Python API}
 
-This firmware was created to work with Py\+PI project {\ttfamily microspec}.
+\doxysubsection*{Protocol is in a JSON file}
+
+The serial communication protocol is defined in the JSON file \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}}\+:
+
+
+\begin{DoxyItemize}
+\item The firmware follows the \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}} serial communication protocol.
+\item Py\+PI project \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} defines a USB interface to the dev-\/kit. This interface is a {\ttfamily class} that is auto-\/generated from \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}}.
+\end{DoxyItemize}
+
+\doxysubsection*{Develop and test}
+
+Install Python and the \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} package to develop and test the firmware\+:
 
 
 \begin{DoxyCode}{0}
@@ -25,6 +74,10 @@ This firmware was created to work with Py\+PI project {\ttfamily microspec}.
 \end{DoxyCode}
 
 
-The Python code in {\ttfamily microspec} is auto-\/generated from the serial communication protocol defined in the \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json file}}
+The Python REPL is an easy way to quickly test commands. Details are in the \href{https://microspec-api.readthedocs.io/en/latest/microspec.commands.html}{\texttt{ documentation}}. The \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} package also provides a command-\/line utility to send commands without opening a Python REPL. This is useful when running single dev-\/kit commands from a text editor like Vim or Emacs.
 
-The firmware was written (manually) to comply with this protocol. 
+To quickly check that the firmware and Python API are in complete agreement about the serial communication protocol, run \href{https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspeclib/system-tests.py}{\texttt{ system-\/tests.\+py}}. This script runs all the serial commands and checks for the expected responses from the dev-\/kit. The script is organized into classes, one class per serial command. The methods in each class are the different scenarios for testing the serial command (the different arguments the command might be called with).
+
+\doxysubsection*{Protocol example}
+
+TODO\+: Add an example with the {\ttfamily usb-\/bridge} and {\ttfamily vis-\/spi-\/out} firmware that corresponds to one of the commands in the JSON file, and how the resulting call-\/and-\/response looks from Python. 
