@@ -1,4 +1,4 @@
-# Interface dev-kit with microspec
+# Talk to the Chromation dev-kit with Python package microspec
 
 Chromation's *Python project* `microspec` is available from PyPI
 (the Python Package Index) at
@@ -19,78 +19,103 @@ The GUI does not have much functionality yet, but it at least
 gives a live plot with control over exposure time and a display
 of the peak pixel. It's a good alternative when using the LabVIEW
 GUI is inconvenient but you need visual feedback to align your
-spectrometer.
+spectrometer. And unlike the LabVIEW GUI, the Python GUI works on
+Windows, Mac, and Linux, and Raspberry Pi 3 or higher.
 
 See [PYTHON-SETUP.md](PYTHON-SETUP.md) for steps starting on a
 Windows or Linux system without Python.
 
 ## Overview of microspec
 
-*Python project* `microspec` provides:
+[microspec](https://pypi.org/project/microspec/) is a Python
+package for USB communication with the spectrometer dev-kit.
 
-- *module* `microspec`:
-    - a Python API to talk to the dev-kit hardware
-- *module* `microspeclib`:
-    - the lower-level API that is auto-generated from the
-      communication protocol defined by the [JSON config
-      file](https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json)
+Install `microspec` with `pip`:
 
-- *utility* `microspec_cmdline.py`:
-    - a simple command line utility for collecting data
-    - i.e., use `microspec_cmdline` to take measurements without
-      needing to first develop your own Python application
-
-`microspec` (the project) also provides developer tools to modify
-module `microspeclib` to work with your own firmware (instead of
-Chromation's dev-kit firmware). See the [project homepage on
-GitHub](https://github.com/microspectrometer/microspec) for
-details.
-
-## Setup microspeclib
-
-Install `microspec`:
-
-```bash
+```
 $ pip install microspec
 ```
 
-Now you can use module `microspec` in a script or at the REPL:
+REPL Example:
+
+```
+>>> import microspec as usp
+>>> kit = usp.Devkit()
+>>> reply = kit.captureFrame()
+>>> print(reply)
+captureFrame_response(status='OK', num_pixels=392,
+                      pixels=[...], frame={...})
+```
+
+Command-line example:
+
+```
+$ microspec-cmdline.exe captureframe
+2021-02-11T22:56:17.133290,SensorCaptureFrame(status=0, num_pixels=392, pixels=[...])
+```
+
+### Inside the microspec package
+
+The `microspec` package has a command line utility and two
+modules:
+
+- *utility* `microspec_cmdline.py`:
+    - a simple command line utility to send single commands to
+      the dev-kit without writing any Python
+    - I use this utility for quick tests because it avoids the
+      overhead of opening a REPL, importing the package, and
+      instantiating the kit
+        - for example, I send commands to the dev-kit directly
+          from Vim (my text editor) by making a shell command
+          shortcut that sends `microspec-cmdline.exe` followed by
+          the dev-kit command and arguments
+- *module* `microspec`:
+    - a thin wrapper on `microspeclib` for the purpose
+      of adding docstrings and simplifying the UI for sending
+      commands to the dev-kit 
+    - use this module if you just want to write Python
+      applications that talk to the Chromation dev-kit
+    - for example, the above REPL example is using `microspec`
+    - [view source code on GitHub](https://github.com/microspectrometer/microspec/tree/master/src/microspec)
+    - [view documentation on Read the Docs](https://microspec-api.readthedocs.io/en/latest)
+- *module* `microspeclib`:
+    - the real module that talks to the dev-kit hardware
+    - each dev-kit command is a method call
+    - the methods are auto-generated from the serial
+      communication protocol defined in the [JSON config file](https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json)
+    - so, use this if you are writing your own firmware (or want
+      to modify the Chromation dev-kit firmware) and would rather
+      modify a JSON file than write your own USB interface
+    - for example, the command-line utility is a Python script
+      that uses `microspeclib`
+        - this means I can modify the JSON file (the serial
+          communication protocol) and use the
+          `microspec-cmdline.exe` utility to test that I've
+          revised the firmware to match the change in the
+          protocol -- I don't need to write any Python code to do
+          this test
+    - changing the JSON file changes the dev-kit commands in
+      `microspeclib`, but breaks the `microspec` module (which is
+      good because having to update `micropec` manually is my
+      reminder to update the docstrings)
+    - [view source code on GitHub](https://github.com/microspectrometer/microspec/tree/master/src/microspeclib)
+    - [view documentation on Read the Docs](https://microspec.readthedocs.io/en/latest/)
+
+The same example from earlier looks like this using `microspeclib`:
 
 ```python
-import microspec as usp
-kit = usp.Devkit()
+>>> from microspeclib.simple import MicroSpecSimpleInterface
+>>> kit = MicroSpecSimpleInterface()
+>>> reply = kit.captureFrame()
+>>> print(reply)
+SensorCaptureFrame(status=0, num_pixels=392, pixels=[...])
 ```
 
-Similarly, you can use the lower-level module `microspeclib` in a
-script or at the REPL:
+## Using `microspec` to talk to the dev-kit
 
-```python
-from microspeclib.simple import MicroSpecSimpleInterface
-kit = MicroSpecSimpleInterface()
-```
-
-If your REPL has tab-completion, `kit.{press TAB}` brings up a
-list of commands.
-
-And you can run the command line utility:
-
-```bash
-$ microspec_cmdline.py setexposure cycles=100
-$ microspec_cmdline.py captureframe -t 0.2 -r 3 -w 1.5 --csv
-```
-
-On Windows, replace `microspec_cmdline.py` with
-`microspec_cmdline.exe`.
-
-The low-level API and command line utility are explained more below. For
-information about the new, high-level API, see https://microspec-api.readthedocs.io/.
-
-## Use microspeclib
-
-Chromation provides the `microspeclib` package so users can
-quickly put together Python applications to control the dev-kit
-over USB **without** solving low-level USB hardware issues such
-as:
+The `microspec` package make it easy to write Python applications
+to control the dev-kit over USB **without** solving low-level USB
+hardware issues such as:
 
 - opening and closing USB communication
 - searching the USB ports for the Chromation dev-kit
@@ -98,7 +123,7 @@ as:
 
 ### A three-line example script
 
-Here is a short example script that:
+Here is a short example script using `microspeclib` that:
 
 - finds the dev-kit
 - opens communication
@@ -130,6 +155,9 @@ What is going on:
   `MicroSpecSimpleInterface` class
     - example: to create an instance named `kit`:
     - `kit = MicroSpecSimpleInterface()`
+- the USB device is automatically closed when the script ends
+    - if the USB device is opened at the REPL, the device is
+      automatically closed when exiting the REPL
 - commands in the API are methods of the
   `MicroSpecSimpleInterface` instance
     - example: send command `foo` by calling `kit.foo()`
@@ -150,7 +178,8 @@ Running the above 3-line script results in the following output
 CHROMATION091103
 ```
 
-If there is no dev-kit connected with serial number `091103`, the
+If there is no dev-kit connected with serial number `091103` (or
+if that dev-kit is already opened in another application), the
 following exception is raised:
 
 ```python
@@ -160,8 +189,8 @@ MicroSpecConnectionException: Cannot find CHROMATION device
 
 ## Command Line API
 
-The `microspec_cmdline.py` executable will run a single command
-and print the reply to stdout, optionally in CSV format.
+`microspec_cmdline.py` runs a single command and prints the reply
+to stdout, optionally in CSV format.
 
 - command is case-insensitive
 - pass command parameters as key=value, e.g., `led_num=0` or
@@ -205,12 +234,18 @@ For example:
 
 ## Python examples
 
-In addition to the example scripts in `microspec`, the dev-kit
-[firmware
-repository](https://github.com/microspectrometer/dev-kit-2020)
-includes a simple example Python application using `microspec`
-and two example scripts to supplement the `microspec`
-documentation.
+The repository has some examples:
+
+- `one-command` runs one dev-kit command. The script docstring
+  has a short summary of all the commands.
+- `system-tests` runs every dev-kit command.
+
+using `microspec`:
+- [one-command.py](https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspec/one-command.py)
+
+using `microspeclib`:
+- [one-command.py](https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspeclib/one-command.py)
+- [system-tests.py](https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspeclib/system-tests.py)
 
 ## Python GUI
 
@@ -222,17 +257,31 @@ replace the legacy LabVIEW GUI. `microspecgui` uses the
 `microspeclib` package for communication and SDL interface
 `pygame` for display and user control.
 
-Users install the GUI from PyPI with the usual command:
+Install:
 
 ```
 $ pip install microspecgui
 ```
 
-This makes `microspec-gui` available from the command line as a
-command that starts up the Python GUI:
+Run:
 
 ```
 $ microspec-gui
+```
+
+On Windows:
+
+```
+> microspec-gui.exe
+```
+
+Use:
+
+```
+X       - decrease exposure
+Shift+X - increase exposure
+Space   - autoexpose
+Ctrl+Q  - quit
 ```
 
 ## Open-source under MIT License
@@ -252,33 +301,20 @@ external example applications. If you make a modification you
 want to share, or find a bug, or if you have a feature request,
 please let us know.
 
-## Modifying the Python API
+## Modifying the communication protocol
 
-Chromation encourages using the `microspeclib` Python API even
-when building your own hardware/firmware.
-
-The `microspeclib` API is easy to customize/extend for users to
-create new interfaces. The commands defined in `microspeclib` are
-auto-generated from a JSON file. It is not necessary to write new
-API code.
-
-*[This single JSON
-file](https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json)
-defines the entire protocol:*
-
-- commands understood by the dev-kit firmware
-- command parameters expected by the dev-kit firmware
-- responses expected from the dev-kit firmware
-
-Whether users modify the dev-kit firmware or replace the dev-kit
-hardware entirely, the `microspeclib` is a solid platform for
-defining a protocol and auto-generating a Python interface that
-follows the protocol.
-
-Users interested in developing with `microspec` at this level
-should install in `--editable` mode:
+If you'd like to reuse `microspeclib` for your own custom
+communication protocol, the setup is described below, and is
+described in much greater detail in
+[PYTHON-SETUP.md](PYTHON-SETUP.md). Extra details on Linux Mint
+setup are in PYTHON-SETUP.md in the section [Setup for modifying
+microspeclib](PYTHON-SETUP.md#setup-for-modifying-microspeclib).
 
 - clone the `microspec` repository from the project homepage
+
+```bash
+$ git clone https://github.com/microspectrometer/microspec.git
+```
 - create a virtual environment with `venv`
 - enter the repository directory and run `pip install -e .`,
   this:
@@ -288,54 +324,12 @@ should install in `--editable` mode:
 - later undo the installation with `pip uninstall microspec`, or
   by simply deleting the virtual environment
 
-*We strongly recommend users do not modify `microspeclib` on
-Windows. Running unit tests and rebuilding documentation requires
-dependencies that are not available on Windows.*
-
-### Setup for modifying the API
-
-The setup is described below. Details on Linux Mint setup are in
-PYTHON-SETUP.md in the section [Setup for modifying
-microspeclib](PYTHON-SETUP.md#setup-for-modifying-microspeclib).
-
-### Example modifying the API
-
-For example, a user might want to modify the autoexpose algorithm
-to choose the final exposure time from a list of allowed exposure
-times.
-
-Besides editing the firmware to modify the autoexpose behavior,
-the user needs a new configuration command to load the list of
-allowed exposure times, e.g., `setAutoExposeTimes()`.
-
-Once this new command and its expected response are defined in
-the JSON file (and the firmware is reprogrammed to respond to
-this command), *the command is ready-to-use in applications*.
-The `setAutoExposeTimes()` method exists without editing any
-Python code in `microspeclib`!
-
-Of course it is also good practice to unit test and document. See
-the `microspec` project homepage for details. Here is a quick
-overview of unit testing and documentation.
-
-### Clone the `microspec` repository
-
-Create a local clone of the `microspec` repository.
-
-```bash
-$ git clone https://github.com/microspectrometer/microspec.git
-```
-
-### Install extra packages
-
 Install the packages for running the unit tests and rebuilding
 documentation:
 
 ```bash
 $ pip install microspec[dev]
 ```
-
-### Unit testing
 
 Commands defined in the JSON file are automatically picked up by
 the `microspec` unit tests to check that the hardware responds
@@ -356,10 +350,11 @@ But it is still up to the user to add specific docstrings.
 
 Since the command methods are created by meta-class factories,
 they are not defined in code, so there are no docstrings to
-edit.
+edit. This is why I ended up creating the `microspec`
+module to wrap `microspeclib`.
 
-`src/microspeclib/internal/docstrings.py` is where the developer
-places the documentation that would normally go in the docstring.
+`src/microspeclib/internal/docstrings.py` is a place to put
+documentation that would normally go in the method docstring.
 
 Then enter the `microspec/doc` folder and run the Sphinx
 Makefile to generate the new HTML documentation:
@@ -373,3 +368,5 @@ I build the documentation on Linux. I cannot get the build to run
 on Windows. The `.rst` files use the `autodoc` Sphinx extension,
 and something about the complicated path setup prevents `autodoc`
 from finding the submodules in the `tests` folder.
+
+[Back to Table of Contents](README.md#table-of-contents)

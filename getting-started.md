@@ -60,3 +60,5 @@ sensitivity range of standard CMOS image sensors, roughly
 (near-infrared), but CMOS image sensor sensitivity is weak at the
 tail ends of this range. The exact wavelength range is provided
 with the spectrometer's wavelength calibration data.
+
+[Back to Table of Contents](README.md#table-of-contents)
