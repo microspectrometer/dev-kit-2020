@@ -13,8 +13,6 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="custom.css" rel="stylesheet" type="text/css"/>
-<link href="custom_dark_theme.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -22,11 +20,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="Chromation_colored.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">firmware
-   &#160;<span id="projectnumber">v0</span>
+   &#160;<span id="projectnumber">v0.1.2</span>
    </div>
-   <div id="projectbrief">Protocol compatible with Python package microspeclib</div>
+   <div id="projectbrief">Chromation Spectrometer Dev-Kit</div>
   </td>
  </tr>
  </tbody>
@@ -203,11 +202,14 @@ spi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>Spi_InterruptFlag<
 <li><code>vis-spi-out</code> <b>drives Data Ready HIGH</b> when transmission is done.</li>
 <li>for <em>multi-byte transmissions</em>, <b>Data Ready</b> is driven <b>LOW before each byte</b> and <b>HIGH after each byte</b>.</li>
 </ul>
-<h1>API</h1>
+<h1><a class="anchor" id="autotoc_md9"></a>
+API</h1>
 <p>uint8_t ReadSpiStatusRegister(void);<br  />
  uint8_t ReadSpiDataRegister(void);<br  />
  void <a class="el" href="Spi_8h.html#aed96203cc269b893b63bca5950d21771">ClearSpiInterruptFlag(void)</a>;<br  />
  </p>
+
+<p class="definition">Definition in file <a class="el" href="Spi_8h_source.html">Spi.h</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a023af672cfffd023a8f1a4fb5c9d7694"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a023af672cfffd023a8f1a4fb5c9d7694">&#9670;&nbsp;</a></span>_EnableSpiModule()</h2>
@@ -233,6 +235,8 @@ spi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>Spi_InterruptFlag<
 </table>
 </div><div class="memdoc">
 <p>Set SPE bit in SPCR (SPI Control Register) to enable SPI. This bit must be set to enable any SPI operations.</p>
+
+<p class="definition">Definition at line <a class="el" href="Spi_8h_source.html#l00075">75</a> of file <a class="el" href="Spi_8h_source.html">Spi.h</a>.</p>
 
 </div>
 </div>
@@ -266,6 +270,8 @@ spi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>Spi_InterruptFlag<
 <li>returns false if the SPI Interrupt Flag is clear<br  />
 </li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="Spi_8h_source.html#l00088">88</a> of file <a class="el" href="Spi_8h_source.html">Spi.h</a>.</p>
 
 </div>
 </div>
@@ -301,6 +307,8 @@ spi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>Spi_InterruptFlag<
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="Spi_8h_source.html#l00116">116</a> of file <a class="el" href="Spi_8h_source.html">Spi.h</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
@@ -326,6 +334,8 @@ spi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>Spi_InterruptFlag<
 
 <p>SPI Data Register. </p>
 <p>SPI Data Register. </p>
+
+<p class="definition">Definition at line <a class="el" href="SpiSlave-HardwareFake_8h_source.html#l00026">26</a> of file <a class="el" href="SpiSlave-HardwareFake_8h_source.html">SpiSlave-HardwareFake.h</a>.</p>
 
 </div>
 </div>

@@ -13,8 +13,6 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="custom.css" rel="stylesheet" type="text/css"/>
-<link href="custom_dark_theme.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -22,11 +20,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="Chromation_colored.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">firmware
-   &#160;<span id="projectnumber">v0</span>
+   &#160;<span id="projectnumber">v0.1.2</span>
    </div>
-   <div id="projectbrief">Protocol compatible with Python package microspeclib</div>
+   <div id="projectbrief">Chromation Spectrometer Dev-Kit</div>
   </td>
  </tr>
  </tbody>
@@ -145,7 +144,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <tr class="separator:aa0b58e2e3aa5a94e743e302ea7737e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h1>API for <a class="el" href="vis-spi-out_8c.html">vis-spi-out.c</a></h1>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md27"></a>
+API for vis-spi-out.c</h1>
 <ul>
 <li><a class="el" href="VisCmd_8h.html#ac2b6a4bbe89e22076102bc8a65c69ecd">NullCommand()</a></li>
 <li><a class="el" href="VisCmd_8h.html#a374617629eb104d96d1b5008aa9af582">GetSensorLED()</a></li>
@@ -160,6 +160,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>SetAutoExposeConfig()</li>
 <li><a class="el" href="VisCmd_8h.html#a223d486351108244d6138b2c74196a99">ReplyCommandInvalid()</a> </li>
 </ul>
+
+<p class="definition">Definition in file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="ad331578ce39d75860495a587a2a1e45e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad331578ce39d75860495a587a2a1e45e">&#9670;&nbsp;</a></span>AutoExpose()</h2>
@@ -221,7 +223,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>gives up if it iterates for max tries<br  />
 </li>
 </ul>
-<h1>AutoExpose uses a "Take Back Half" algorithm</h1>
+<h1><a class="anchor" id="autotoc_md19"></a>
+AutoExpose uses a "Take Back Half" algorithm</h1>
 <p>Find an exposure time that gets a peak within +/-5% of the target peak value. On each iteration, multiply exposure time, either by:</p><ul>
 <li><code>10</code>, if peak is <em>below</em> the <b>dark background</b></li>
 <li><code>1/2</code>, if peak is <em>above</em> the <b>target range</b></li>
@@ -250,7 +253,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>or the peak fails to land in the ±5% tolerance after 10 iterations.</li>
 </ul>
 <p>The <b>large</b> tolerance, <b>±5%</b>, makes the algorithm fast. It usually settles within a few iterations.</p>
-<h2>target range </h2>
+<h2><a class="anchor" id="autotoc_md20"></a>
+target range</h2>
 <p>The range of target values is configured by setting <code>target</code> and <code>target_tolerance</code>. The recommended values are:</p><ul>
 <li><code>target</code>: <b>46420</b> counts</li>
 <li><code>target_tolerance</code>: <b>3277</b> counts</li>
@@ -278,7 +282,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </li>
 </ul>
 <p>This target range, <b>[ 43143 : 49697 ]</b>, represents 10% of the full-scale reading, <b>65535</b>.</p>
-<h2>max_dark </h2>
+<h2><a class="anchor" id="autotoc_md21"></a>
+max_dark</h2>
 <p>Signal below <code>max_dark</code> is considered <b>no signal</b> because it is <em>indistinguishable</em> from the dark background.</p><ul>
 <li>use <b>4500</b> counts for <code>max_dark</code><ul>
 <li><b>1000</b> counts is the <b>actual</b> approximate peak in the dark background when Chromation ships the dev-kit</li>
@@ -301,15 +306,19 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </ul>
 </li>
 </ul>
-<h1>Algorithm Setup</h1>
-<h2>Initial state </h2>
+<h1><a class="anchor" id="autotoc_md22"></a>
+Algorithm Setup</h1>
+<h2><a class="anchor" id="autotoc_md23"></a>
+Initial state</h2>
 <p>AutoExpose is not done</p>
-<h2>Method to get peak value </h2>
+<h2><a class="anchor" id="autotoc_md24"></a>
+Method to get peak value</h2>
 <ul>
 <li>expose the LIS-770i and readout one frame of data</li>
 <li>return the peak value in the frame</li>
 </ul>
-<h2>Method to clamp exposure time </h2>
+<h2><a class="anchor" id="autotoc_md25"></a>
+Method to clamp exposure time</h2>
 <p>Exposure time is stored in 16-bit global <code>exposure_ticks</code>.</p>
 <p>Clamp adjustments to <code>exposure_ticks</code> between <b>1</b> and <b>65535</b>.</p>
 <p>When multiplying <code>exposure_ticks</code> by:</p><ul>
@@ -323,7 +332,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </ul>
 </li>
 </ul>
-<h1>Algorithm</h1>
+<h1><a class="anchor" id="autotoc_md26"></a>
+Algorithm</h1>
 <p>while <b>AutoExpose is not done</b>:</p><ul>
 <li>expose LIS-770i</li>
 <li>readout LIS-770i, store in global <code>frame</code> buffer</li>
@@ -365,6 +375,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </ul>
 </li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="VisCmd_8c_source.html#l00073">73</a> of file <a class="el" href="VisCmd_8c_source.html">VisCmd.c</a>.</p>
 
 </div>
 </div>
@@ -409,6 +421,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00320">320</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+
 </div>
 </div>
 <a id="aeaf4ba863d52c28b92d04846ecaf9586"></a>
@@ -444,6 +458,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00276">276</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+
 </div>
 </div>
 <a id="aaa49202fc0999c3a3f06da7787f30565"></a>
@@ -471,7 +487,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
         </tr>
       </table>
 </div><div class="memdoc">
-<h1>Algorithm</h1>
+<h1><a class="anchor" id="autotoc_md18"></a>
+Algorithm</h1>
 <ul>
 <li><code>peak</code> starts at 0</li>
 <li>walk the global <code>frame</code> buffer<ul>
@@ -489,6 +506,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>return <code>peak</code></li>
 </ul>
 <p>byte_index example: v----&mdash; if _start_pixel is 7 pixel: 1 2 3 4 5 6 7 8 byte: 01 23 45 67 89 AB CD EF ^----&mdash; then byte_index is 12</p>
+
+<p class="definition">Definition at line <a class="el" href="VisCmd_8c_source.html#l00027">27</a> of file <a class="el" href="VisCmd_8c_source.html">VisCmd.c</a>.</p>
 
 </div>
 </div>
@@ -527,6 +546,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00261">261</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+
 </div>
 </div>
 <a id="a374617629eb104d96d1b5008aa9af582"></a>
@@ -564,6 +585,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00174">174</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+
 </div>
 </div>
 <a id="accab57292c3f42baef73058c3a94c46c"></a>
@@ -598,6 +621,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>returns FALSE if led num is not 0 or 1<br  />
 </li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00045">45</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -648,6 +673,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00106">106</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+
 </div>
 </div>
 <a id="ac2b6a4bbe89e22076102bc8a65c69ecd"></a>
@@ -674,6 +701,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </table>
 </div><div class="memdoc">
 <p>Do nothing.</p>
+
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00170">170</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -711,6 +740,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>see led_state in <a class="el" href="StatusCodes_8h.html" title="See StatusCode.h for context.">StatusCodes.h</a></li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00056">56</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+
 </div>
 </div>
 <a id="a223d486351108244d6138b2c74196a99"></a>
@@ -743,6 +774,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>sends byte INVALID CMD<br  />
 </li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00550">550</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -784,6 +817,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>sends OK<br  />
 </li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00289">289</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -832,6 +867,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00503">503</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+
 </div>
 </div>
 <a id="a7e576b6610e3660a10f3768a6cf8ce80"></a>
@@ -876,6 +913,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="V
 <li>sends OK if num and setting are valid<br  />
 </li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00203">203</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>

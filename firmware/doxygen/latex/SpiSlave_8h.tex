@@ -24,8 +24,7 @@ void \mbox{\hyperlink{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}{Spi\+Slave\
 
 
 \doxysubsection{Detailed Description}
-\doxysubsection*{API}
-
+\hypertarget{SpiSlave_8h_autotoc_md11}{}\doxysubsection{API}\label{SpiSlave_8h_autotoc_md11}
 void \mbox{\hyperlink{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}{Disable\+Spi\+Interrupt(void)}};~\newline
  void \mbox{\hyperlink{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}{Enable\+Spi\+Interrupt(void)}};~\newline
  void \mbox{\hyperlink{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}{Spi\+Slave\+Init(void)}};~\newline
@@ -40,7 +39,11 @@ void \mbox{\hyperlink{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}{Disable\+Sp
 \doxysubsubsection{\texorpdfstring{\_SignalDataNotReady()}{\_SignalDataNotReady()}}
 {\footnotesize\ttfamily void \+\_\+\+Signal\+Data\+Not\+Ready (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Drive {\bfseries{Data Ready}} HIGH.\mbox{\Hypertarget{SpiSlave_8h_ad755a0d99463eaaf919cdd1c2a0af729}\label{SpiSlave_8h_ad755a0d99463eaaf919cdd1c2a0af729}} 
+Drive {\bfseries{Data Ready}} HIGH.
+
+Definition at line 31 of file Spi\+Slave.\+h.
+
+\mbox{\Hypertarget{SpiSlave_8h_ad755a0d99463eaaf919cdd1c2a0af729}\label{SpiSlave_8h_ad755a0d99463eaaf919cdd1c2a0af729}} 
 \index{SpiSlave.h@{SpiSlave.h}!\_SignalDataReady@{\_SignalDataReady}}
 \index{\_SignalDataReady@{\_SignalDataReady}!SpiSlave.h@{SpiSlave.h}}
 \doxysubsubsection{\texorpdfstring{\_SignalDataReady()}{\_SignalDataReady()}}
@@ -61,7 +64,11 @@ SPI Slave outputs signal {\bfseries{Data Ready}}.~\newline
 \item SPI Master waits for {\bfseries{Data Ready}} LOW before reading a byte from the SPI Slave.~\newline
 
 \item SPI Slave drives {\bfseries{Data Ready}} HIGH after each byte of SPI transfer.
-\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}\label{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}} 
+\end{DoxyItemize}
+
+Definition at line 14 of file Spi\+Slave.\+h.
+
+\mbox{\Hypertarget{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}\label{SpiSlave_8h_a28e50150724ec3a11af7eff46b40b625}} 
 \index{SpiSlave.h@{SpiSlave.h}!DisableSpiInterrupt@{DisableSpiInterrupt}}
 \index{DisableSpiInterrupt@{DisableSpiInterrupt}!SpiSlave.h@{SpiSlave.h}}
 \doxysubsubsection{\texorpdfstring{DisableSpiInterrupt()}{DisableSpiInterrupt()}}
@@ -85,7 +92,11 @@ Note\+:~\newline
 
 \item Clear {\ttfamily SPIF} manually by calling {\ttfamily \mbox{\hyperlink{Spi_8h_aed96203cc269b893b63bca5950d21771}{Clear\+Spi\+Interrupt\+Flag()}}}~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}\label{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}} 
+\end{DoxyItemize}
+
+Definition at line 48 of file Spi\+Slave.\+h.
+
+\mbox{\Hypertarget{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}\label{SpiSlave_8h_a23b6bfcc9e598ca5130c2b754cfe0a66}} 
 \index{SpiSlave.h@{SpiSlave.h}!EnableSpiInterrupt@{EnableSpiInterrupt}}
 \index{EnableSpiInterrupt@{EnableSpiInterrupt}!SpiSlave.h@{SpiSlave.h}}
 \doxysubsubsection{\texorpdfstring{EnableSpiInterrupt()}{EnableSpiInterrupt()}}
@@ -117,7 +128,11 @@ Set SPIE bit in SPCR to execute the SPI ISR when\+:~\newline
 \item alternatively, SPIF is cleared by first reading the SPI status register, then accessing the SPI data register~\newline
 
 \end{DoxyItemize}
-\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}\label{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}} 
+\end{DoxyItemize}
+
+Definition at line 77 of file Spi\+Slave.\+h.
+
+\mbox{\Hypertarget{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}\label{SpiSlave_8h_a394c92dc0c1b552f9d1050cdbd794f57}} 
 \index{SpiSlave.h@{SpiSlave.h}!SpiSlaveInit@{SpiSlaveInit}}
 \index{SpiSlaveInit@{SpiSlaveInit}!SpiSlave.h@{SpiSlave.h}}
 \doxysubsubsection{\texorpdfstring{SpiSlaveInit()}{SpiSlaveInit()}}
@@ -136,7 +151,11 @@ Spi\+Slave\+Init behavior\+:~\newline
 
 \item enables SPI interrupt~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}\label{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}} 
+\end{DoxyItemize}
+
+Definition at line 118 of file Spi\+Slave.\+h.
+
+\mbox{\Hypertarget{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}\label{SpiSlave_8h_a3ee37813c25055a426d6308e1023d0d1}} 
 \index{SpiSlave.h@{SpiSlave.h}!SpiSlaveTx@{SpiSlaveTx}}
 \index{SpiSlaveTx@{SpiSlaveTx}!SpiSlave.h@{SpiSlave.h}}
 \doxysubsubsection{\texorpdfstring{SpiSlaveTx()}{SpiSlaveTx()}}
@@ -147,7 +166,11 @@ Spi\+Slave\+Tx behavior\+:~\newline
 \begin{DoxyItemize}
 \item sends nbytes of input buffer to Spi\+Master~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{SpiSlave_8h_ac3192410581612594cbec3d368bd6d6b}\label{SpiSlave_8h_ac3192410581612594cbec3d368bd6d6b}} 
+\end{DoxyItemize}
+
+Definition at line 202 of file Spi\+Slave.\+h.
+
+\mbox{\Hypertarget{SpiSlave_8h_ac3192410581612594cbec3d368bd6d6b}\label{SpiSlave_8h_ac3192410581612594cbec3d368bd6d6b}} 
 \index{SpiSlave.h@{SpiSlave.h}!SpiSlaveTxByte@{SpiSlaveTxByte}}
 \index{SpiSlaveTxByte@{SpiSlaveTxByte}!SpiSlave.h@{SpiSlave.h}}
 \doxysubsubsection{\texorpdfstring{SpiSlaveTxByte()}{SpiSlaveTxByte()}}
@@ -171,3 +194,6 @@ Spi\+Slave\+Tx\+Byte behavior\+:~\newline
 \item enables SPI ISR after transfer~\newline
 
 \end{DoxyItemize}
+
+Definition at line 150 of file Spi\+Slave.\+h.
+

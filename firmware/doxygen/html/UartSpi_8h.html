@@ -13,8 +13,6 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="custom.css" rel="stylesheet" type="text/css"/>
-<link href="custom_dark_theme.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -22,11 +20,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="Chromation_colored.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">firmware
-   &#160;<span id="projectnumber">v0</span>
+   &#160;<span id="projectnumber">v0.1.2</span>
    </div>
-   <div id="projectbrief">Protocol compatible with Python package microspeclib</div>
+   <div id="projectbrief">Chromation Spectrometer Dev-Kit</div>
   </td>
  </tr>
  </tbody>
@@ -190,10 +189,13 @@ uspi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>UartSpi_RXC0</b><
 <tr class="separator:a89a59fcf10e494cf20a81d5646bcc4ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h1>API</h1>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md12"></a>
+API</h1>
 <p>void <a class="el" href="UartSpi_8h.html#a524c34eaa315ce6f980aff426f2f4584">UartSpiInit(void)</a>;<br  />
  void StartAdcConversion(void);<br  />
  </p>
+
+<p class="definition">Definition in file <a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a1724f53073fbcc17107d9dbdf9022b29"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1724f53073fbcc17107d9dbdf9022b29">&#9670;&nbsp;</a></span>CfgSpiToTransferMsbFirst()</h2>
@@ -219,6 +221,8 @@ uspi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>UartSpi_RXC0</b><
 </table>
 </div><div class="memdoc">
 <p>Transfer MSB first</p>
+
+<p class="definition">Definition at line <a class="el" href="UartSpi_8h_source.html#l00117">117</a> of file <a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>.</p>
 
 </div>
 </div>
@@ -256,6 +260,8 @@ uspi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>UartSpi_RXC0</b><
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="UartSpi_8h_source.html#l00127">127</a> of file <a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>.</p>
+
 </div>
 </div>
 <a id="ae8027c5bb232f7040f6e46734962654d"></a>
@@ -286,6 +292,8 @@ uspi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>UartSpi_RXC0</b><
 <li><b>baudrate</b> in bits per second <code>= fosc/(2*(UBBR0+1))</code></li>
 <li>set <code>UBBR0=0</code> for <b>baudrate</b> <code>= fosc/2</code></li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="UartSpi_8h_source.html#l00037">37</a> of file <a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>.</p>
 
 </div>
 </div>
@@ -318,6 +326,8 @@ uspi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>UartSpi_RXC0</b><
 <li>controls start of readout</li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="UartSpi_8h_source.html#l00063">63</a> of file <a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>.</p>
+
 </div>
 </div>
 <a id="adc59a41741f0b376c5e490bdec9e2372"></a>
@@ -344,6 +354,8 @@ uspi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>UartSpi_RXC0</b><
 </table>
 </div><div class="memdoc">
 <p>Cfg XCK as an output. CPOL=1 makes the clock idle high.</p>
+
+<p class="definition">Definition at line <a class="el" href="UartSpi_8h_source.html#l00050">50</a> of file <a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>.</p>
 
 </div>
 </div>
@@ -390,6 +402,8 @@ uspi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>UartSpi_RXC0</b><
 </li>
 </ul>
 
+<p class="definition">Definition at line <a class="el" href="UartSpi_8h_source.html#l00164">164</a> of file <a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>.</p>
+
 </div>
 </div>
 <a id="ab9bcab91233ca05fc00c4bf197da50ea"></a>
@@ -420,6 +434,8 @@ uspi_bit&#160;</td><td class="memItemRight" valign="bottom"><b>UartSpi_RXC0</b><
 <li>load data on falling clock edge</li>
 <li>sample data on rising clock edge</li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="UartSpi_8h_source.html#l00096">96</a> of file <a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>.</p>
 
 </div>
 </div>

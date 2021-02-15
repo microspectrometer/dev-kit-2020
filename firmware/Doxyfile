@@ -38,20 +38,20 @@ PROJECT_NAME           = "firmware"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = "v0"
+PROJECT_NUMBER         = "v0.1.2"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Protocol compatible with Python package microspeclib"
+PROJECT_BRIEF          = "Chromation Spectrometer Dev-Kit"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           =
+PROJECT_LOGO           = ./doxygen/img/Chromation_colored.jpg
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -332,7 +332,7 @@ MARKDOWN_SUPPORT       = YES
 # Minimum value: 0, maximum value: 99, default value: 0.
 # This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
 
-TOC_INCLUDE_HEADINGS   = 0
+TOC_INCLUDE_HEADINGS   = 2
 
 # When enabled doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
@@ -1035,7 +1035,7 @@ USE_MDFILE_AS_MAINPAGE = doxygen-mainpage.md
 # also VERBATIM_HEADERS is set to NO.
 # The default value is: NO.
 
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER         = YES
 
 # Setting the INLINE_SOURCES tag to YES will include the body of functions,
 # classes and enums directly into the documentation.
@@ -1244,8 +1244,8 @@ HTML_STYLESHEET        =
 
 # HTML_EXTRA_STYLESHEET  = 
 
-HTML_EXTRA_STYLESHEET  = "doxygen/doxygen-dark-theme/custom.css" \
-                         "doxygen/doxygen-dark-theme/custom_dark_theme.css"
+# HTML_EXTRA_STYLESHEET  = "doxygen/doxygen-dark-theme/custom.css" \
+# HTML_EXTRA_STYLESHEET  = "doxygen/doxygen-dark-theme/custom_dark_theme.css"
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note

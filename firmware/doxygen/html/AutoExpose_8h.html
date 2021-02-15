@@ -13,8 +13,6 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="custom.css" rel="stylesheet" type="text/css"/>
-<link href="custom_dark_theme.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -22,11 +20,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="Chromation_colored.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">firmware
-   &#160;<span id="projectnumber">v0</span>
+   &#160;<span id="projectnumber">v0.1.2</span>
    </div>
-   <div id="projectbrief">Protocol compatible with Python package microspeclib</div>
+   <div id="projectbrief">Chromation Spectrometer Dev-Kit</div>
   </td>
  </tr>
  </tbody>
@@ -127,10 +126,13 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <tr class="separator:a0b2c447b1d12e1c69a0fc2f166621c38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h1>Global AutoExpose config</h1>
-<h2>AutoExpose maximum number of tries </h2>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md14"></a>
+Global AutoExpose config</h1>
+<h2><a class="anchor" id="autotoc_md15"></a>
+AutoExpose maximum number of tries</h2>
 <p>AutoExpose gives up if it cannot hit the target peak counts range after <code>max_tries</code> attempts. Recommended value is <b>10</b>. Use smaller numbers to speed up AutoExpose. Set the value to <b>1</b> to manually trigger each iteration and get a sense of how many tries are necessary to hit the target range. The range of allowed values is 1 to 255.</p>
-<h2>AutoExpose pixel range </h2>
+<h2><a class="anchor" id="autotoc_md16"></a>
+AutoExpose pixel range</h2>
 <p>Recommended values for <code>start_pixel</code> and <code>stop_pixel</code> depend on the spectrometer pixel-to-wavelength map file:</p><ul>
 <li><code>start_pixel</code>: smallest pixel number in the map file</li>
 <li><code>stop_pixel</code>: largest pixel number</li>
@@ -140,12 +142,15 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <li><code>stop_pixel = 392</code></li>
 </ul>
 <p>With binning on, the default pixel range is also the allowed range of values. Attempting to exceed this range, it is clamped at these boundaries. With binning off, the allowed range is <code>start_pixel = 14</code>, <code>stop_pixel = 784</code>.</p>
-<h2>AutoExpose target peak counts range </h2>
+<h2><a class="anchor" id="autotoc_md17"></a>
+AutoExpose target peak counts range</h2>
 <p>Recommended values for <code>target</code> and <code>target_tolerance</code> are:</p><ul>
 <li><code>target</code>: <b>46420</b> counts</li>
 <li><code>target_tolerance</code>: <b>3277</b> counts</li>
 </ul>
 <p>See details in the Doxygen for <a class="el" href="VisCmd_8h.html#ad331578ce39d75860495a587a2a1e45e">AutoExpose()</a>. Allowed values for <code>target</code> are in the range 4500 counts to 65535 counts. Attempting to set a <code>target</code> less than <b>4500</b> counts, <code>target</code> is clamped at <b>4500</b> counts. If the combination of <code>target</code> and <code>target_tolerance</code> results in target ranges extending below <b>4500</b> counts or above <b>65535</b> counts, the target tolerance is ignored and the target range is clamped at these boundaries. </p>
+
+<p class="definition">Definition in file <a class="el" href="AutoExpose_8h_source.html">AutoExpose.h</a>.</p>
 </div><h2 class="groupheader">Variable Documentation</h2>
 <a id="a0b2c447b1d12e1c69a0fc2f166621c38"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0b2c447b1d12e1c69a0fc2f166621c38">&#9670;&nbsp;</a></span>max_exposure</h2>
@@ -167,6 +172,8 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <li>revise all transmissions of exposure_ticks in <a class="el" href="VisCmd_8h.html">VisCmd.h</a> and <a class="el" href="UsbCmd_8h.html">UsbCmd.h</a> to send/receive four bytes</li>
 <li>update the Python API by changing all occurrences of <code>cycles</code> in the JSON file from size:2 to size:4.</li>
 </ul>
+
+<p class="definition">Definition at line <a class="el" href="AutoExpose_8h_source.html#l00084">84</a> of file <a class="el" href="AutoExpose_8h_source.html">AutoExpose.h</a>.</p>
 
 </div>
 </div>

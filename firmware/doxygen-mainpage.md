@@ -1,8 +1,10 @@
-# How to use this documentation
+[TOC]
+
+# How to use the firmware documentation
 
 All the useful firmware information is under [Files](files.html).
 
-# Additional documentation
+# Related dev-kit documentation
 
 The firmware runs on the Chromation dev-kit. Documentation for
 the dev-kit is here:
@@ -28,6 +30,11 @@ microcontrollers:
   messages between the application on the host computer (e.g., a
   Python script) and the 5-wire SPI interface on the
   `vis-spi-out` PCB
+
+Jump to the `main()` `.c` file for the two microcontrollers:
+
+- [usb-bridge/src/usb-bridge.c](usb-bridge_8c_source.html)
+- [vis-spi-out/src/vis-spi-out.c](vis-spi-out_8c_source.html)
 
 There is no firmware for the spectrometer chip itself, but the
 chip does have programmable registers.

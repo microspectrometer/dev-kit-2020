@@ -66,8 +66,7 @@ uint8\+\_\+t \mbox{\hyperlink{VisCmd_8h_aa0b58e2e3aa5a94e743e302ea7737e82}{frame
 
 
 \doxysubsection{Detailed Description}
-\doxysubsection*{API for \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}}
-
+\hypertarget{VisCmd_8h_autotoc_md27}{}\doxysubsection{API for vis-\/spi-\/out.\+c}\label{VisCmd_8h_autotoc_md27}
 
 \begin{DoxyItemize}
 \item \mbox{\hyperlink{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{Null\+Command()}}
@@ -136,10 +135,7 @@ Auto\+Expose behavior\+:~\newline
 
 \item gives up if it iterates for max tries~\newline
 
-\end{DoxyItemize}
-
-\doxysubsection*{Auto\+Expose uses a \char`\"{}\+Take Back Half\char`\"{} algorithm}
-
+\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md19}{}\doxysubsection{Auto\+Expose uses a \char`\"{}\+Take Back Half\char`\"{} algorithm}\label{VisCmd.c_autotoc_md19}
 Find an exposure time that gets a peak within +/-\/5\% of the target peak value. On each iteration, multiply exposure time, either by\+:
 \begin{DoxyItemize}
 \item {\ttfamily 10}, if peak is {\itshape below} the {\bfseries{dark background}}
@@ -169,10 +165,7 @@ Find an exposure time that gets a peak within +/-\/5\% of the target peak value.
 \item or the peak fails to land in the ±5\% tolerance after 10 iterations.
 \end{DoxyItemize}
 
-The {\bfseries{large}} tolerance, {\bfseries{±5\%}}, makes the algorithm fast. It usually settles within a few iterations.
-
-\doxysubsubsection*{target range }
-
+The {\bfseries{large}} tolerance, {\bfseries{±5\%}}, makes the algorithm fast. It usually settles within a few iterations.\hypertarget{VisCmd.c_autotoc_md20}{}\doxysubsubsection{target range}\label{VisCmd.c_autotoc_md20}
 The range of target values is configured by setting {\ttfamily target} and {\ttfamily target\+\_\+tolerance}. The recommended values are\+:
 \begin{DoxyItemize}
 \item {\ttfamily target}\+: {\bfseries{46420}} counts
@@ -199,10 +192,7 @@ The range of target values is configured by setting {\ttfamily target} and {\ttf
 \item gain {\bfseries{1x}}
 \item {\bfseries{all rows}} active
 \end{DoxyItemize}
-\end{DoxyItemize}This target range, {\bfseries{\mbox{[} 43143 \+: 49697 \mbox{]}}}, represents 10\% of the full-\/scale reading, {\bfseries{65535}}.
-
-\doxysubsubsection*{max\+\_\+dark }
-
+\end{DoxyItemize}This target range, {\bfseries{\mbox{[} 43143 \+: 49697 \mbox{]}}}, represents 10\% of the full-\/scale reading, {\bfseries{65535}}.\hypertarget{VisCmd.c_autotoc_md21}{}\doxysubsubsection{max\+\_\+dark}\label{VisCmd.c_autotoc_md21}
 Signal below {\ttfamily max\+\_\+dark} is considered {\bfseries{no signal}} because it is {\itshape indistinguishable} from the dark background.
 \begin{DoxyItemize}
 \item use {\bfseries{4500}} counts for {\ttfamily max\+\_\+dark}
@@ -225,22 +215,14 @@ Signal below {\ttfamily max\+\_\+dark} is considered {\bfseries{no signal}} beca
 \item trims the output offset voltage of the LIS-\/770i
 \end{DoxyItemize}
 \end{DoxyItemize}
-\end{DoxyItemize}
-
-\doxysubsection*{Algorithm Setup}
-
-\doxysubsubsection*{Initial state }
-
-Auto\+Expose is not done
-
-\doxysubsubsection*{Method to get peak value }
-
+\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md22}{}\doxysubsection{Algorithm Setup}\label{VisCmd.c_autotoc_md22}
+\hypertarget{VisCmd.c_autotoc_md23}{}\doxysubsubsection{Initial state}\label{VisCmd.c_autotoc_md23}
+Auto\+Expose is not done\hypertarget{VisCmd.c_autotoc_md24}{}\doxysubsubsection{Method to get peak value}\label{VisCmd.c_autotoc_md24}
 
 \begin{DoxyItemize}
 \item expose the LIS-\/770i and readout one frame of data
 \item return the peak value in the frame
-\end{DoxyItemize}\doxysubsubsection*{Method to clamp exposure time }
-
+\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md25}{}\doxysubsubsection{Method to clamp exposure time}\label{VisCmd.c_autotoc_md25}
 Exposure time is stored in 16-\/bit global {\ttfamily exposure\+\_\+ticks}.
 
 Clamp adjustments to {\ttfamily exposure\+\_\+ticks} between {\bfseries{1}} and {\bfseries{65535}}.
@@ -256,10 +238,7 @@ When multiplying {\ttfamily exposure\+\_\+ticks} by\+:
 \item {\bfseries{÷2}} is a bit-\/shift, so result is {\bfseries{integer truncated}}
 \item if result $<$ 1, clamp {\ttfamily exposure\+\_\+ticks} at 1
 \end{DoxyItemize}
-\end{DoxyItemize}
-
-\doxysubsection*{Algorithm}
-
+\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md26}{}\doxysubsection{Algorithm}\label{VisCmd.c_autotoc_md26}
 while {\bfseries{Auto\+Expose is not done}}\+:
 \begin{DoxyItemize}
 \item expose LIS-\/770i
@@ -301,7 +280,11 @@ while {\bfseries{Auto\+Expose is not done}}\+:
 \item {\bfseries{Auto\+Expose is done}}
 \end{DoxyItemize}
 \end{DoxyItemize}
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_ae68a7e94e1584ce65d3ef0d22f432f57}\label{VisCmd_8h_ae68a7e94e1584ce65d3ef0d22f432f57}} 
+\end{DoxyItemize}
+
+Definition at line 73 of file Vis\+Cmd.\+c.
+
+\mbox{\Hypertarget{VisCmd_8h_ae68a7e94e1584ce65d3ef0d22f432f57}\label{VisCmd_8h_ae68a7e94e1584ce65d3ef0d22f432f57}} 
 \index{VisCmd.h@{VisCmd.h}!CaptureFrame@{CaptureFrame}}
 \index{CaptureFrame@{CaptureFrame}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{CaptureFrame()}{CaptureFrame()}}
@@ -324,7 +307,11 @@ Capture\+Frame behavior\+:~\newline
 
 \item sends the pixel readings stored in the frame buffer~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}\label{VisCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}} 
+\end{DoxyItemize}
+
+Definition at line 320 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}\label{VisCmd_8h_aeaf4ba863d52c28b92d04846ecaf9586}} 
 \index{VisCmd.h@{VisCmd.h}!GetExposure@{GetExposure}}
 \index{GetExposure@{GetExposure}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{GetExposure()}{GetExposure()}}
@@ -339,14 +326,17 @@ Get\+Exposure behavior\+:~\newline
 
 \item sends LSB of exposure ticks~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_aaa49202fc0999c3a3f06da7787f30565}\label{VisCmd_8h_aaa49202fc0999c3a3f06da7787f30565}} 
+\end{DoxyItemize}
+
+Definition at line 276 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_aaa49202fc0999c3a3f06da7787f30565}\label{VisCmd_8h_aaa49202fc0999c3a3f06da7787f30565}} 
 \index{VisCmd.h@{VisCmd.h}!GetPeak@{GetPeak}}
 \index{GetPeak@{GetPeak}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{GetPeak()}{GetPeak()}}
 {\footnotesize\ttfamily uint16\+\_\+t Get\+Peak (\begin{DoxyParamCaption}\item[{uint16\+\_\+t const}]{\+\_\+start\+\_\+pixel,  }\item[{uint16\+\_\+t const}]{\+\_\+stop\+\_\+pixel }\end{DoxyParamCaption})}
 
-\doxysubsection*{Algorithm}
-
+\hypertarget{VisCmd.c_autotoc_md18}{}\doxysubsection{Algorithm}\label{VisCmd.c_autotoc_md18}
 
 \begin{DoxyItemize}
 \item {\ttfamily peak} starts at 0
@@ -365,7 +355,11 @@ Get\+Exposure behavior\+:~\newline
 \item return {\ttfamily peak}
 \end{DoxyItemize}
 
-byte\+\_\+index example\+: v-\/-\/-\/-\/--- if \+\_\+start\+\_\+pixel is 7 pixel\+: 1 2 3 4 5 6 7 8 byte\+: 01 23 45 67 89 AB CD EF $^\wedge$-\/-\/-\/-\/--- then byte\+\_\+index is 12\mbox{\Hypertarget{VisCmd_8h_a28364aa58a96dc236db7b616e100154e}\label{VisCmd_8h_a28364aa58a96dc236db7b616e100154e}} 
+byte\+\_\+index example\+: v-\/-\/-\/-\/--- if \+\_\+start\+\_\+pixel is 7 pixel\+: 1 2 3 4 5 6 7 8 byte\+: 01 23 45 67 89 AB CD EF $^\wedge$-\/-\/-\/-\/--- then byte\+\_\+index is 12
+
+Definition at line 27 of file Vis\+Cmd.\+c.
+
+\mbox{\Hypertarget{VisCmd_8h_a28364aa58a96dc236db7b616e100154e}\label{VisCmd_8h_a28364aa58a96dc236db7b616e100154e}} 
 \index{VisCmd.h@{VisCmd.h}!GetSensorConfig@{GetSensorConfig}}
 \index{GetSensorConfig@{GetSensorConfig}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{GetSensorConfig()}{GetSensorConfig()}}
@@ -382,7 +376,11 @@ Get\+Sensor\+Config behavior\+:~\newline
 
 \item sends row bitmap~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_a374617629eb104d96d1b5008aa9af582}\label{VisCmd_8h_a374617629eb104d96d1b5008aa9af582}} 
+\end{DoxyItemize}
+
+Definition at line 261 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_a374617629eb104d96d1b5008aa9af582}\label{VisCmd_8h_a374617629eb104d96d1b5008aa9af582}} 
 \index{VisCmd.h@{VisCmd.h}!GetSensorLED@{GetSensorLED}}
 \index{GetSensorLED@{GetSensorLED}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{GetSensorLED()}{GetSensorLED()}}
@@ -399,7 +397,11 @@ Get\+Sensor\+LED behavior\+:~\newline
 
 \item sends ERROR and pads second byte if led num is invalid~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_accab57292c3f42baef73058c3a94c46c}\label{VisCmd_8h_accab57292c3f42baef73058c3a94c46c}} 
+\end{DoxyItemize}
+
+Definition at line 174 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_accab57292c3f42baef73058c3a94c46c}\label{VisCmd_8h_accab57292c3f42baef73058c3a94c46c}} 
 \index{VisCmd.h@{VisCmd.h}!LedNumIsValid@{LedNumIsValid}}
 \index{LedNumIsValid@{LedNumIsValid}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{LedNumIsValid()}{LedNumIsValid()}}
@@ -414,7 +416,11 @@ Led\+Num\+Is\+Valid behavior\+:~\newline
 
 \item returns FALSE if led num is not 0 or 1~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_aada5013dffe7417b0ed6754fabe7464f}\label{VisCmd_8h_aada5013dffe7417b0ed6754fabe7464f}} 
+\end{DoxyItemize}
+
+Definition at line 45 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_aada5013dffe7417b0ed6754fabe7464f}\label{VisCmd_8h_aada5013dffe7417b0ed6754fabe7464f}} 
 \index{VisCmd.h@{VisCmd.h}!LisReadout@{LisReadout}}
 \index{LisReadout@{LisReadout}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{LisReadout()}{LisReadout()}}
@@ -443,13 +449,21 @@ Lis\+Readout behavior\+:~\newline
 
 \item LOOP\+: save LSB to frame buffer~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}\label{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}} 
+\end{DoxyItemize}
+
+Definition at line 106 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}\label{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}} 
 \index{VisCmd.h@{VisCmd.h}!NullCommand@{NullCommand}}
 \index{NullCommand@{NullCommand}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{NullCommand()}{NullCommand()}}
 {\footnotesize\ttfamily void Null\+Command (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Do nothing.\mbox{\Hypertarget{VisCmd_8h_a49322dc41b69eb256669262ac54be5e5}\label{VisCmd_8h_a49322dc41b69eb256669262ac54be5e5}} 
+Do nothing.
+
+Definition at line 170 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_a49322dc41b69eb256669262ac54be5e5}\label{VisCmd_8h_a49322dc41b69eb256669262ac54be5e5}} 
 \index{VisCmd.h@{VisCmd.h}!ReadLedState@{ReadLedState}}
 \index{ReadLedState@{ReadLedState}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{ReadLedState()}{ReadLedState()}}
@@ -465,7 +479,11 @@ Read\+Led\+State behavior\+:~\newline
 \item returns RED if LED is on and red~\newline
 
 \item see led\+\_\+state in \mbox{\hyperlink{StatusCodes_8h}{Status\+Codes.\+h}}
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_a223d486351108244d6138b2c74196a99}\label{VisCmd_8h_a223d486351108244d6138b2c74196a99}} 
+\end{DoxyItemize}
+
+Definition at line 56 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_a223d486351108244d6138b2c74196a99}\label{VisCmd_8h_a223d486351108244d6138b2c74196a99}} 
 \index{VisCmd.h@{VisCmd.h}!ReplyCommandInvalid@{ReplyCommandInvalid}}
 \index{ReplyCommandInvalid@{ReplyCommandInvalid}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{ReplyCommandInvalid()}{ReplyCommandInvalid()}}
@@ -478,7 +496,11 @@ Reply\+Command\+Invalid behavior\+:~\newline
 
 \item sends byte INVALID CMD~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}\label{VisCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}} 
+\end{DoxyItemize}
+
+Definition at line 550 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}\label{VisCmd_8h_a4d2ad66702cccf469e05c42e38033c9b}} 
 \index{VisCmd.h@{VisCmd.h}!SetExposure@{SetExposure}}
 \index{SetExposure@{SetExposure}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{SetExposure()}{SetExposure()}}
@@ -499,7 +521,11 @@ Set\+Exposure behavior\+:~\newline
 
 \item sends OK~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}\label{VisCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}} 
+\end{DoxyItemize}
+
+Definition at line 289 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}\label{VisCmd_8h_ac67c9f0e658e0ea8b47b9b166fb03a83}} 
 \index{VisCmd.h@{VisCmd.h}!SetSensorConfig@{SetSensorConfig}}
 \index{SetSensorConfig@{SetSensorConfig}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{SetSensorConfig()}{SetSensorConfig()}}
@@ -526,7 +552,11 @@ Set\+Sensor\+Config behavior\+:~\newline
 
 \item the OK is sent after LIS is programmed with new config~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{VisCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}\label{VisCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}} 
+\end{DoxyItemize}
+
+Definition at line 503 of file Vis\+Cmd.\+h.
+
+\mbox{\Hypertarget{VisCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}\label{VisCmd_8h_a7e576b6610e3660a10f3768a6cf8ce80}} 
 \index{VisCmd.h@{VisCmd.h}!SetSensorLED@{SetSensorLED}}
 \index{SetSensorLED@{SetSensorLED}!VisCmd.h@{VisCmd.h}}
 \doxysubsubsection{\texorpdfstring{SetSensorLED()}{SetSensorLED()}}
@@ -552,3 +582,6 @@ Set\+Sensor\+LED behavior\+:~\newline
 \item sends OK if num and setting are valid~\newline
 
 \end{DoxyItemize}
+
+Definition at line 203 of file Vis\+Cmd.\+h.
+

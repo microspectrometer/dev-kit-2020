@@ -112,8 +112,7 @@ uspi\+\_\+bit {\bfseries Uart\+Spi\+\_\+\+RXC0}
 
 
 \doxysubsection{Detailed Description}
-\doxysubsection*{API}
-
+\hypertarget{UartSpi_8h_autotoc_md12}{}\doxysubsection{API}\label{UartSpi_8h_autotoc_md12}
 void \mbox{\hyperlink{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}{Uart\+Spi\+Init(void)}};~\newline
  void Start\+Adc\+Conversion(void);~\newline
  
@@ -125,7 +124,11 @@ void \mbox{\hyperlink{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}{Uart\+Spi\+I
 \doxysubsubsection{\texorpdfstring{CfgSpiToTransferMsbFirst()}{CfgSpiToTransferMsbFirst()}}
 {\footnotesize\ttfamily void Cfg\+Spi\+To\+Transfer\+Msb\+First (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Transfer MSB first\mbox{\Hypertarget{UartSpi_8h_af03c5322e52a68ecb14ab4d6ae337ba2}\label{UartSpi_8h_af03c5322e52a68ecb14ab4d6ae337ba2}} 
+Transfer MSB first
+
+Definition at line 117 of file Uart\+Spi.\+h.
+
+\mbox{\Hypertarget{UartSpi_8h_af03c5322e52a68ecb14ab4d6ae337ba2}\label{UartSpi_8h_af03c5322e52a68ecb14ab4d6ae337ba2}} 
 \index{UartSpi.h@{UartSpi.h}!GiveSpiControlOverMisoAndMosiPins@{GiveSpiControlOverMisoAndMosiPins}}
 \index{GiveSpiControlOverMisoAndMosiPins@{GiveSpiControlOverMisoAndMosiPins}!UartSpi.h@{UartSpi.h}}
 \doxysubsubsection{\texorpdfstring{GiveSpiControlOverMisoAndMosiPins()}{GiveSpiControlOverMisoAndMosiPins()}}
@@ -141,7 +144,11 @@ Override normal port operation for SPI MOSI/\+MISO\+:
 \begin{DoxyItemize}
 \item the UART Rx pin becomes the SPI MISO
 \end{DoxyItemize}
-\end{DoxyItemize}\mbox{\Hypertarget{UartSpi_8h_ae8027c5bb232f7040f6e46734962654d}\label{UartSpi_8h_ae8027c5bb232f7040f6e46734962654d}} 
+\end{DoxyItemize}
+
+Definition at line 127 of file Uart\+Spi.\+h.
+
+\mbox{\Hypertarget{UartSpi_8h_ae8027c5bb232f7040f6e46734962654d}\label{UartSpi_8h_ae8027c5bb232f7040f6e46734962654d}} 
 \index{UartSpi.h@{UartSpi.h}!RunSpiAt5Mhz@{RunSpiAt5Mhz}}
 \index{RunSpiAt5Mhz@{RunSpiAt5Mhz}!UartSpi.h@{UartSpi.h}}
 \doxysubsubsection{\texorpdfstring{RunSpiAt5Mhz()}{RunSpiAt5Mhz()}}
@@ -152,7 +159,11 @@ Configure USART to clock ADC SCK at {\ttfamily fosc/2 = 5MHz}
 \item {\ttfamily fosc = 10MHz} (10MHz external oscillator)
 \item {\bfseries{baudrate}} in bits per second {\ttfamily = fosc/(2$\ast$(UBBR0+1))}
 \item set {\ttfamily UBBR0=0} for {\bfseries{baudrate}} {\ttfamily = fosc/2}
-\end{DoxyItemize}\mbox{\Hypertarget{UartSpi_8h_a5de8d6a60b4e8258d700ae8e96276a3d}\label{UartSpi_8h_a5de8d6a60b4e8258d700ae8e96276a3d}} 
+\end{DoxyItemize}
+
+Definition at line 37 of file Uart\+Spi.\+h.
+
+\mbox{\Hypertarget{UartSpi_8h_a5de8d6a60b4e8258d700ae8e96276a3d}\label{UartSpi_8h_a5de8d6a60b4e8258d700ae8e96276a3d}} 
 \index{UartSpi.h@{UartSpi.h}!SetAdcConvAsOutput@{SetAdcConvAsOutput}}
 \index{SetAdcConvAsOutput@{SetAdcConvAsOutput}!UartSpi.h@{UartSpi.h}}
 \doxysubsubsection{\texorpdfstring{SetAdcConvAsOutput()}{SetAdcConvAsOutput()}}
@@ -163,13 +174,21 @@ Adc\+Conv is a general purpose i/o pin.
 \item configure as an output
 \item controls start of conversion
 \item controls start of readout
-\end{DoxyItemize}\mbox{\Hypertarget{UartSpi_8h_adc59a41741f0b376c5e490bdec9e2372}\label{UartSpi_8h_adc59a41741f0b376c5e490bdec9e2372}} 
+\end{DoxyItemize}
+
+Definition at line 63 of file Uart\+Spi.\+h.
+
+\mbox{\Hypertarget{UartSpi_8h_adc59a41741f0b376c5e490bdec9e2372}\label{UartSpi_8h_adc59a41741f0b376c5e490bdec9e2372}} 
 \index{UartSpi.h@{UartSpi.h}!SetSckAsOutput@{SetSckAsOutput}}
 \index{SetSckAsOutput@{SetSckAsOutput}!UartSpi.h@{UartSpi.h}}
 \doxysubsubsection{\texorpdfstring{SetSckAsOutput()}{SetSckAsOutput()}}
 {\footnotesize\ttfamily void Set\+Sck\+As\+Output (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Cfg XCK as an output. CPOL=1 makes the clock idle high.\mbox{\Hypertarget{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}\label{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}} 
+Cfg XCK as an output. CPOL=1 makes the clock idle high.
+
+Definition at line 50 of file Uart\+Spi.\+h.
+
+\mbox{\Hypertarget{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}\label{UartSpi_8h_a524c34eaa315ce6f980aff426f2f4584}} 
 \index{UartSpi.h@{UartSpi.h}!UartSpiInit@{UartSpiInit}}
 \index{UartSpiInit@{UartSpiInit}!UartSpi.h@{UartSpi.h}}
 \doxysubsubsection{\texorpdfstring{UartSpiInit()}{UartSpiInit()}}
@@ -194,7 +213,11 @@ Uart\+Spi\+Init behavior\+:~\newline
 
 \item gives SPI control over Miso and Mosi pin behavior~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{UartSpi_8h_ab9bcab91233ca05fc00c4bf197da50ea}\label{UartSpi_8h_ab9bcab91233ca05fc00c4bf197da50ea}} 
+\end{DoxyItemize}
+
+Definition at line 164 of file Uart\+Spi.\+h.
+
+\mbox{\Hypertarget{UartSpi_8h_ab9bcab91233ca05fc00c4bf197da50ea}\label{UartSpi_8h_ab9bcab91233ca05fc00c4bf197da50ea}} 
 \index{UartSpi.h@{UartSpi.h}!UseSpiDataModeCpol1CPha1@{UseSpiDataModeCpol1CPha1}}
 \index{UseSpiDataModeCpol1CPha1@{UseSpiDataModeCpol1CPha1}!UartSpi.h@{UartSpi.h}}
 \doxysubsubsection{\texorpdfstring{UseSpiDataModeCpol1CPha1()}{UseSpiDataModeCpol1CPha1()}}
@@ -206,3 +229,6 @@ Use SPI data mode\+: CPOL=1, CPHA=1
 \item load data on falling clock edge
 \item sample data on rising clock edge
 \end{DoxyItemize}
+
+Definition at line 96 of file Uart\+Spi.\+h.
+

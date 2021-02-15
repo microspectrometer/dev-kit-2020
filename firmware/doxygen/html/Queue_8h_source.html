@@ -13,8 +13,6 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="custom.css" rel="stylesheet" type="text/css"/>
-<link href="custom_dark_theme.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -22,11 +20,12 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="Chromation_colored.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">firmware
-   &#160;<span id="projectnumber">v0</span>
+   &#160;<span id="projectnumber">v0.1.2</span>
    </div>
-   <div id="projectbrief">Protocol compatible with Python package microspeclib</div>
+   <div id="projectbrief">Chromation Spectrometer Dev-Kit</div>
   </td>
  </tr>
  </tbody>
@@ -187,18 +186,18 @@ $(function() {
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;}</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// _QUEUE_H</span></div>
-<div class="ttc" id="aQueue_8c_html_a3b625b654b66fd3690458918e4209a0b"><div class="ttname"><a href="Queue_8c.html#a3b625b654b66fd3690458918e4209a0b">QueuePop</a></div><div class="ttdeci">uint8_t QueuePop(volatile Queue_s *SpiFifo)</div><div class="ttdef"><b>Definition:</b> Queue.h:139</div></div>
-<div class="ttc" id="aQueue_8c_html_a3e2b69629566525b07f0edd4cbe2af30"><div class="ttname"><a href="Queue_8c.html#a3e2b69629566525b07f0edd4cbe2af30">QueueLength</a></div><div class="ttdeci">uint16_t QueueLength(volatile Queue_s *pq)</div><div class="ttdef"><b>Definition:</b> Queue.h:76</div></div>
-<div class="ttc" id="aQueue_8c_html_aae356a36c569e92e4f57b40b82185cbe"><div class="ttname"><a href="Queue_8c.html#aae356a36c569e92e4f57b40b82185cbe">QueueIsFull</a></div><div class="ttdeci">bool QueueIsFull(volatile Queue_s *SpiFifo)</div><div class="ttdef"><b>Definition:</b> Queue.h:86</div></div>
-<div class="ttc" id="aQueue_8c_html_ada96851f81ecdeed864129d24c30d532"><div class="ttname"><a href="Queue_8c.html#ada96851f81ecdeed864129d24c30d532">QueuePush</a></div><div class="ttdeci">void QueuePush(volatile Queue_s *SpiFifo, uint8_t data_to_push)</div><div class="ttdef"><b>Definition:</b> Queue.h:122</div></div>
-<div class="ttc" id="aQueue_8c_html_ae7d11124f03c1d988d92ccc528f45b65"><div class="ttname"><a href="Queue_8c.html#ae7d11124f03c1d988d92ccc528f45b65">QueueInit</a></div><div class="ttdeci">volatile Queue_s * QueueInit(volatile uint8_t *buffer, uint16_t const buffer_size_in_bytes)</div><div class="ttdef"><b>Definition:</b> Queue.h:51</div></div>
-<div class="ttc" id="aQueue_8c_html_af8605b772c004ae79effd4ae2d51d159"><div class="ttname"><a href="Queue_8c.html#af8605b772c004ae79effd4ae2d51d159">QueueIsEmpty</a></div><div class="ttdeci">bool QueueIsEmpty(volatile Queue_s *SpiFifo)</div><div class="ttdef"><b>Definition:</b> Queue.h:95</div></div>
-<div class="ttc" id="astructQueue__s_html"><div class="ttname"><a href="structQueue__s.html">Queue_s</a></div><div class="ttdoc">Queue uses a byte array as a circular buffer.</div><div class="ttdef"><b>Definition:</b> Queue.h:27</div></div>
-<div class="ttc" id="astructQueue__s_html_a4f592eaa34c4c85ce91a1194ced6aaf7"><div class="ttname"><a href="structQueue__s.html#a4f592eaa34c4c85ce91a1194ced6aaf7">Queue_s::max_length</a></div><div class="ttdeci">volatile uint8_t max_length</div><div class="ttdoc">max_length is the maximum number of bytes the queue can hold</div><div class="ttdef"><b>Definition:</b> Queue.h:47</div></div>
-<div class="ttc" id="astructQueue__s_html_a85a9337969541758708911bd9df7a479"><div class="ttname"><a href="structQueue__s.html#a85a9337969541758708911bd9df7a479">Queue_s::tail</a></div><div class="ttdeci">volatile uint8_t tail</div><div class="ttdoc">tail advances after a byte is popped from the queue</div><div class="ttdef"><b>Definition:</b> Queue.h:41</div></div>
-<div class="ttc" id="astructQueue__s_html_a97872eec1c37e9bdc4e59e1e924aff09"><div class="ttname"><a href="structQueue__s.html#a97872eec1c37e9bdc4e59e1e924aff09">Queue_s::length</a></div><div class="ttdeci">volatile uint8_t length</div><div class="ttdoc">length is the number of unread bytes in the queue</div><div class="ttdef"><b>Definition:</b> Queue.h:43</div></div>
-<div class="ttc" id="astructQueue__s_html_ac3342d21c8c45818eca36ef882ceabae"><div class="ttname"><a href="structQueue__s.html#ac3342d21c8c45818eca36ef882ceabae">Queue_s::buffer</a></div><div class="ttdeci">volatile uint8_t * buffer</div><div class="ttdoc">buffer is the address of the queue's FIFO buffer</div><div class="ttdef"><b>Definition:</b> Queue.h:33</div></div>
-<div class="ttc" id="astructQueue__s_html_ae789d6c9c2eabe81864f900b2640316f"><div class="ttname"><a href="structQueue__s.html#ae789d6c9c2eabe81864f900b2640316f">Queue_s::head</a></div><div class="ttdeci">volatile uint8_t head</div><div class="ttdoc">head advances after a byte is pushed onto the queue</div><div class="ttdef"><b>Definition:</b> Queue.h:37</div></div>
+<div class="ttc" id="aQueue_8c_html_a3b625b654b66fd3690458918e4209a0b"><div class="ttname"><a href="Queue_8c.html#a3b625b654b66fd3690458918e4209a0b">QueuePop</a></div><div class="ttdeci">uint8_t QueuePop(volatile Queue_s *SpiFifo)</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00139">Queue.h:139</a></div></div>
+<div class="ttc" id="aQueue_8c_html_a3e2b69629566525b07f0edd4cbe2af30"><div class="ttname"><a href="Queue_8c.html#a3e2b69629566525b07f0edd4cbe2af30">QueueLength</a></div><div class="ttdeci">uint16_t QueueLength(volatile Queue_s *pq)</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00076">Queue.h:76</a></div></div>
+<div class="ttc" id="aQueue_8c_html_aae356a36c569e92e4f57b40b82185cbe"><div class="ttname"><a href="Queue_8c.html#aae356a36c569e92e4f57b40b82185cbe">QueueIsFull</a></div><div class="ttdeci">bool QueueIsFull(volatile Queue_s *SpiFifo)</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00086">Queue.h:86</a></div></div>
+<div class="ttc" id="aQueue_8c_html_ada96851f81ecdeed864129d24c30d532"><div class="ttname"><a href="Queue_8c.html#ada96851f81ecdeed864129d24c30d532">QueuePush</a></div><div class="ttdeci">void QueuePush(volatile Queue_s *SpiFifo, uint8_t data_to_push)</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00122">Queue.h:122</a></div></div>
+<div class="ttc" id="aQueue_8c_html_ae7d11124f03c1d988d92ccc528f45b65"><div class="ttname"><a href="Queue_8c.html#ae7d11124f03c1d988d92ccc528f45b65">QueueInit</a></div><div class="ttdeci">volatile Queue_s * QueueInit(volatile uint8_t *buffer, uint16_t const buffer_size_in_bytes)</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00051">Queue.h:51</a></div></div>
+<div class="ttc" id="aQueue_8c_html_af8605b772c004ae79effd4ae2d51d159"><div class="ttname"><a href="Queue_8c.html#af8605b772c004ae79effd4ae2d51d159">QueueIsEmpty</a></div><div class="ttdeci">bool QueueIsEmpty(volatile Queue_s *SpiFifo)</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00095">Queue.h:95</a></div></div>
+<div class="ttc" id="astructQueue__s_html"><div class="ttname"><a href="structQueue__s.html">Queue_s</a></div><div class="ttdoc">Queue uses a byte array as a circular buffer.</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00027">Queue.h:27</a></div></div>
+<div class="ttc" id="astructQueue__s_html_a4f592eaa34c4c85ce91a1194ced6aaf7"><div class="ttname"><a href="structQueue__s.html#a4f592eaa34c4c85ce91a1194ced6aaf7">Queue_s::max_length</a></div><div class="ttdeci">volatile uint8_t max_length</div><div class="ttdoc">max_length is the maximum number of bytes the queue can hold</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00047">Queue.h:47</a></div></div>
+<div class="ttc" id="astructQueue__s_html_a85a9337969541758708911bd9df7a479"><div class="ttname"><a href="structQueue__s.html#a85a9337969541758708911bd9df7a479">Queue_s::tail</a></div><div class="ttdeci">volatile uint8_t tail</div><div class="ttdoc">tail advances after a byte is popped from the queue</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00041">Queue.h:41</a></div></div>
+<div class="ttc" id="astructQueue__s_html_a97872eec1c37e9bdc4e59e1e924aff09"><div class="ttname"><a href="structQueue__s.html#a97872eec1c37e9bdc4e59e1e924aff09">Queue_s::length</a></div><div class="ttdeci">volatile uint8_t length</div><div class="ttdoc">length is the number of unread bytes in the queue</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00043">Queue.h:43</a></div></div>
+<div class="ttc" id="astructQueue__s_html_ac3342d21c8c45818eca36ef882ceabae"><div class="ttname"><a href="structQueue__s.html#ac3342d21c8c45818eca36ef882ceabae">Queue_s::buffer</a></div><div class="ttdeci">volatile uint8_t * buffer</div><div class="ttdoc">buffer is the address of the queue's FIFO buffer</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00033">Queue.h:33</a></div></div>
+<div class="ttc" id="astructQueue__s_html_ae789d6c9c2eabe81864f900b2640316f"><div class="ttname"><a href="structQueue__s.html#ae789d6c9c2eabe81864f900b2640316f">Queue_s::head</a></div><div class="ttdeci">volatile uint8_t head</div><div class="ttdoc">head advances after a byte is pushed onto the queue</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00037">Queue.h:37</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

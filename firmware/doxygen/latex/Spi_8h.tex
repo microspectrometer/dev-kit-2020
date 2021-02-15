@@ -121,10 +121,7 @@ spi\+\_\+bit {\bfseries Spi\+\_\+\+Interrupt\+Flag}
 \item {\ttfamily vis-\/spi-\/out} {\bfseries{drives Data Ready LOW}} to signal ready for transmission.
 \item {\ttfamily vis-\/spi-\/out} {\bfseries{drives Data Ready HIGH}} when transmission is done.
 \item for {\itshape multi-\/byte transmissions}, {\bfseries{Data Ready}} is driven {\bfseries{LOW before each byte}} and {\bfseries{HIGH after each byte}}.
-\end{DoxyItemize}
-
-\doxysubsection*{API}
-
+\end{DoxyItemize}\hypertarget{Spi_8h_autotoc_md9}{}\doxysubsection{API}\label{Spi_8h_autotoc_md9}
 uint8\+\_\+t Read\+Spi\+Status\+Register(void);~\newline
  uint8\+\_\+t Read\+Spi\+Data\+Register(void);~\newline
  void \mbox{\hyperlink{Spi_8h_aed96203cc269b893b63bca5950d21771}{Clear\+Spi\+Interrupt\+Flag(void)}};~\newline
@@ -137,7 +134,11 @@ uint8\+\_\+t Read\+Spi\+Status\+Register(void);~\newline
 \doxysubsubsection{\texorpdfstring{\_EnableSpiModule()}{\_EnableSpiModule()}}
 {\footnotesize\ttfamily void \+\_\+\+Enable\+Spi\+Module (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Set SPE bit in SPCR (SPI Control Register) to enable SPI. This bit must be set to enable any SPI operations.\mbox{\Hypertarget{Spi_8h_ac49dafccb5a49148ea7b150634c0116a}\label{Spi_8h_ac49dafccb5a49148ea7b150634c0116a}} 
+Set SPE bit in SPCR (SPI Control Register) to enable SPI. This bit must be set to enable any SPI operations.
+
+Definition at line 75 of file Spi.\+h.
+
+\mbox{\Hypertarget{Spi_8h_ac49dafccb5a49148ea7b150634c0116a}\label{Spi_8h_ac49dafccb5a49148ea7b150634c0116a}} 
 \index{Spi.h@{Spi.h}!\_SpiTransferIsDone@{\_SpiTransferIsDone}}
 \index{\_SpiTransferIsDone@{\_SpiTransferIsDone}!Spi.h@{Spi.h}}
 \doxysubsubsection{\texorpdfstring{\_SpiTransferIsDone()}{\_SpiTransferIsDone()}}
@@ -150,7 +151,11 @@ Set SPE bit in SPCR (SPI Control Register) to enable SPI. This bit must be set t
 
 \item returns false if the SPI Interrupt Flag is clear~\newline
 
-\end{DoxyItemize}\mbox{\Hypertarget{Spi_8h_aed96203cc269b893b63bca5950d21771}\label{Spi_8h_aed96203cc269b893b63bca5950d21771}} 
+\end{DoxyItemize}
+
+Definition at line 88 of file Spi.\+h.
+
+\mbox{\Hypertarget{Spi_8h_aed96203cc269b893b63bca5950d21771}\label{Spi_8h_aed96203cc269b893b63bca5950d21771}} 
 \index{Spi.h@{Spi.h}!ClearSpiInterruptFlag@{ClearSpiInterruptFlag}}
 \index{ClearSpiInterruptFlag@{ClearSpiInterruptFlag}!Spi.h@{Spi.h}}
 \doxysubsubsection{\texorpdfstring{ClearSpiInterruptFlag()}{ClearSpiInterruptFlag()}}
@@ -167,6 +172,10 @@ Clear\+Spi\+Interrupt\+Flag behavior\+:~\newline
 
 \end{DoxyItemize}
 
+Definition at line 116 of file Spi.\+h.
+
+
+
 \doxysubsection{Variable Documentation}
 \mbox{\Hypertarget{Spi_8h_a82096f50267fe9862f6b981f5fa39385}\label{Spi_8h_a82096f50267fe9862f6b981f5fa39385}} 
 \index{Spi.h@{Spi.h}!Spi\_SPDR@{Spi\_SPDR}}
@@ -179,3 +188,6 @@ Clear\+Spi\+Interrupt\+Flag behavior\+:~\newline
 SPI Data Register. 
 
 SPI Data Register. 
+
+Definition at line 26 of file Spi\+Slave-\/\+Hardware\+Fake.\+h.
+
