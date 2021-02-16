@@ -1,14 +1,51 @@
 \label{index_md_doxygen_mainpage}%
 \Hypertarget{index_md_doxygen_mainpage}%
 \hypertarget{index_autotoc_md0}{}\doxysection{How to use the firmware documentation}\label{index_autotoc_md0}
-All the useful firmware information is under \href{files.html}{\texttt{ Files}}.\hypertarget{index_autotoc_md1}{}\doxysection{Related dev-\/kit documentation}\label{index_autotoc_md1}
+All the useful firmware information is under \href{files.html}{\texttt{ Files}}. This browses the source code.
+
+
+\begin{DoxyItemize}
+\item click a folder to open
+\begin{DoxyItemize}
+\item click the file {\itshape icon} to view its {\bfseries{source code}}
+\item or click a file {\itshape name} (if it\textquotesingle{}s a hyperlink) to view its {\bfseries{documentation}}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{index_autotoc_md1}{}\doxysubsection{Firmware organization}\label{index_autotoc_md1}
+The firmware is divided into folders\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{├── lib  <-\/-\/-\/-\/-\/-\/-\/-\/-\/ reusable code}
+\DoxyCodeLine{│   ├── src}
+\DoxyCodeLine{│   └── test}
+\DoxyCodeLine{├── usb-\/bridge <-\/-\/-\/ code specific to this circuit board}
+\DoxyCodeLine{│   ├── src}
+\DoxyCodeLine{│   └── test}
+\DoxyCodeLine{└── vis-\/spi-\/out <-\/-\/ code specific to this circuit board}
+\DoxyCodeLine{    ├── src}
+\DoxyCodeLine{    └── test}
+
+\end{DoxyCode}
+
+
+Each folder has {\ttfamily src} (source code) and {\ttfamily test} (unit tests).\hypertarget{index_autotoc_md2}{}\doxysubsection{Library functions break with C convention}\label{index_autotoc_md2}
+The first thing C programmers will notice is that the {\ttfamily lib} source code does not follow convention\+:
+
+
+\begin{DoxyItemize}
+\item most functions in the {\ttfamily lib} folder are {\ttfamily inline}
+\item the function bodies are in the {\ttfamily .h} files
+\item the function signatures are in the {\ttfamily .c} files
+\end{DoxyItemize}
+
+This is for \href{index.html\#autotoc_md10}{\texttt{ performance reasons}}.\hypertarget{index_autotoc_md3}{}\doxysection{Related dev-\/kit documentation}\label{index_autotoc_md3}
 The firmware runs on the Chromation dev-\/kit. Documentation for the dev-\/kit is here\+:
 
 \href{https://microspectrometer.github.io/dev-kit-2020/}{\texttt{ https\+://microspectrometer.\+github.\+io/dev-\/kit-\/2020/}}
 
 All dev-\/kit hardware and firmware files are open-\/source and are available from the Git\+Hub repository\+:
 
-\href{https://github.com/microspectrometer/dev-kit-2020}{\texttt{ https\+://github.\+com/microspectrometer/dev-\/kit-\/2020}}\hypertarget{index_autotoc_md2}{}\doxysection{Chromation dev-\/kit hardware}\label{index_autotoc_md2}
+\href{https://github.com/microspectrometer/dev-kit-2020}{\texttt{ https\+://github.\+com/microspectrometer/dev-\/kit-\/2020}}\hypertarget{index_autotoc_md4}{}\doxysection{Chromation dev-\/kit hardware}\label{index_autotoc_md4}
 The dev-\/kit has two ATmega328 microcontrollers and a spectrometer chip.
 
 The firmware is for the Flash memory in those two microcontrollers\+:
@@ -27,7 +64,7 @@ Jump to the {\ttfamily main()} {\ttfamily .c} file for the two microcontrollers\
 \item \href{vis-spi-out_8c_source.html}{\texttt{ vis-\/spi-\/out/src/vis-\/spi-\/out.\+c}}
 \end{DoxyItemize}
 
-There is no firmware for the spectrometer chip itself, but the chip does have programmable registers.\hypertarget{index_autotoc_md3}{}\doxysubsection{Spectrometer chip programmable registers}\label{index_autotoc_md3}
+There is no firmware for the spectrometer chip itself, but the chip does have programmable registers.\hypertarget{index_autotoc_md5}{}\doxysubsection{Spectrometer chip programmable registers}\label{index_autotoc_md5}
 The programmable registers are part of the LIS-\/770i, the CMOS image sensor used in the spectrometer chip. These registers initialize in an unknown state and must be written to after the spectrometer chip is powered on.
 
 All registers are programmed at once by sending the LIS-\/770i a 28-\/bit word. The value of this 28-\/bit word determines\+:
@@ -49,15 +86,15 @@ The \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} Python API i
 \begin{DoxyItemize}
 \item the recommended value for pixel binning is based on the optical design of the spectrometer
 \item the recommended 1x gain is based on the dev-\/kit\textquotesingle{}s analog front-\/end (i.\+e., the choice of ADC and ADC reference voltage) -- given this design, increasing the gain reduces dynamic range without improving SNR
-\end{DoxyItemize}\hypertarget{index_autotoc_md4}{}\doxysection{Serial communication and the Python API}\label{index_autotoc_md4}
-\hypertarget{index_autotoc_md5}{}\doxysubsection{Protocol is in a JSON file}\label{index_autotoc_md5}
+\end{DoxyItemize}\hypertarget{index_autotoc_md6}{}\doxysection{Serial communication and the Python API}\label{index_autotoc_md6}
+\hypertarget{index_autotoc_md7}{}\doxysubsection{Protocol is in a JSON file}\label{index_autotoc_md7}
 The serial communication protocol is defined in the JSON file \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}}\+:
 
 
 \begin{DoxyItemize}
 \item The firmware follows the \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}} serial communication protocol.
 \item Py\+PI project \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} defines a USB interface to the dev-\/kit. This interface is a {\ttfamily class} that is auto-\/generated from \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}}.
-\end{DoxyItemize}\hypertarget{index_autotoc_md6}{}\doxysubsection{Develop and test}\label{index_autotoc_md6}
+\end{DoxyItemize}\hypertarget{index_autotoc_md8}{}\doxysubsection{Develop and test}\label{index_autotoc_md8}
 Install Python and the \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} package to develop and test the firmware\+:
 
 
@@ -67,7 +104,115 @@ Install Python and the \href{https://pypi.org/project/microspec/}{\texttt{ micro
 \end{DoxyCode}
 
 
-The Python REPL is an easy way to quickly test commands. Details are in the \href{https://microspec-api.readthedocs.io/en/latest/microspec.commands.html}{\texttt{ documentation}}. The \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} package also provides a command-\/line utility to send commands without opening a Python REPL. This is useful when running single dev-\/kit commands from a text editor like Vim or Emacs.
 
-To quickly check that the firmware and Python API are in complete agreement about the serial communication protocol, run \href{https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspeclib/system-tests.py}{\texttt{ system-\/tests.\+py}}. This script runs all the serial commands and checks for the expected responses from the dev-\/kit. The script is organized into classes, one class per serial command. The methods in each class are the different scenarios for testing the serial command (the different arguments the command might be called with).\hypertarget{index_autotoc_md7}{}\doxysubsection{Protocol example}\label{index_autotoc_md7}
-TODO\+: Add an example with the {\ttfamily usb-\/bridge} and {\ttfamily vis-\/spi-\/out} firmware that corresponds to one of the commands in the JSON file, and how the resulting call-\/and-\/response looks from Python. 
+\begin{DoxyItemize}
+\item REPL
+\begin{DoxyItemize}
+\item The Python REPL is an easy way to quickly test commands. Details are in the \href{https://microspec-api.readthedocs.io/en/latest/microspec.commands.html}{\texttt{ documentation}}.
+\end{DoxyItemize}
+\item command-\/line
+\begin{DoxyItemize}
+\item The \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} package also provides a command-\/line utility to send commands without opening a Python REPL. This is useful when running single dev-\/kit commands from a text editor like Vim or Emacs that can execute shell commands.
+\end{DoxyItemize}
+\item system tests
+\begin{DoxyItemize}
+\item Run \href{https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspeclib/system-tests.py}{\texttt{ system-\/tests.\+py}} to quickly check that the firmware and Python API are in complete agreement about the serial communication protocol.
+\item This script runs all the serial commands and checks for the expected responses from the dev-\/kit.
+\item The script is organized into classes, one class per serial command. Each class method tests different arguments to the serial command.
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{index_autotoc_md9}{}\doxysubsection{Protocol example}\label{index_autotoc_md9}
+TODO\+: Add an example with the {\ttfamily usb-\/bridge} and {\ttfamily vis-\/spi-\/out} firmware that corresponds to one of the commands in the JSON file, and how the resulting call-\/and-\/response looks from Python.\hypertarget{index_autotoc_md10}{}\doxysection{Why so much inline}\label{index_autotoc_md10}
+The library code started out in the conventional way\+:
+
+
+\begin{DoxyItemize}
+\item functions defined in {\ttfamily .c} files
+\item function signatures declared in {\ttfamily .h} files
+\item functions broken into smaller functions for testability and function pointers everywhere to create seams for {\bfseries{function faking}} in unit tests (redirecting the definition of the \char`\"{}production\char`\"{} code to a \char`\"{}stub\char`\"{} or \char`\"{}mock\char`\"{} version for test code)
+\end{DoxyItemize}
+
+The code was \char`\"{}clean\char`\"{} -- no macros, lots of seams. And it had almost 100\% test coverage.
+
+Unfortunately, this style of programming is not compatible with producing optimal assembly instructions for the ATmega328. It results in system-\/breaking speed penalties.
+
+The ATmega328 microcontroller clock is only 10MHz\+: {\itshape 10 cycles worth of instructions takes a microsecond}. At this clock speed, {\bfseries{inefficient assembly code}} causes noticeable slow-\/downs and makes critical timing impossible, resulting in bad behavior that is sometimes obvious and sometimes subtle.
+
+The avr-\/gcc compiler was generating inefficient assembly code for three reasons\+:
+
+
+\begin{DoxyEnumerate}
+\item lots of call overhead because one function was broken into several functions for readability and unit-\/testability and an extra layer of indirection from function pointers that create the seams for unit-\/testability
+\item slow instructions used instead of faster instructions because register addresses are unknown at compile time because code was spread across multiple compilation units for reusability and unit-\/testability
+\item ISR overhead\+: too much time spent saving and restoring state on every interrupt because the ISR had too much code
+\end{DoxyEnumerate}
+
+The last item is \char`\"{}easy\char`\"{} to fix\+: modify the ISR code, count cycles in the generated assembly, repeat until the time consumed by the ISR is acceptable.
+
+But the first two items are not easy to fix. One approach is to take the carefully segregated code base and mush it back together\+:
+
+
+\begin{DoxyItemize}
+\item put all the code in one C file
+\item eliminate all the function pointers
+\item throw away most of the unit tests
+\end{DoxyItemize}
+
+Compared with that, a small break with convention is OK.
+
+To use the fast instructions, the compiler must know register addresses at compile-\/time. Object files generated without these values are forced to use the much slower, generic load and store instructions.
+
+The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the {\ttfamily lib} code.
+
+{\itshape This also explains why the code is full of comments like this\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ClearBit(UartSpi\_port, UartSpi\_AdcConv);}
+\DoxyCodeLine{\textcolor{comment}{// -\/-\/-\/Expected Assembly-\/-\/-\/}}
+\DoxyCodeLine{\textcolor{comment}{// cbi  0x0b, 2 ; 11}}
+
+\end{DoxyCode}
+
+
+{\itshape In more complicated cases, there are several lines of assembly. Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change.}\hypertarget{index_autotoc_md11}{}\doxysubsection{Example of conventional C yielding inefficient assembly}\label{index_autotoc_md11}
+The \href{ReadWriteBits_8h_source.html}{\texttt{ Read\+Write\+Bits}} library defines bit manipulation functions (for readability and testability). In the conventional approach, this source file is compiled without knowing the register addresses that client code will pass to its functions. But the register address determines which instructions are allowed! Without knowing the address, the compiler has to use the most generic instruction.
+
+The bit manipulation function might be passed an I/O register in the range {\ttfamily 0x00 -\/ 0x1F}. These registers allow {\itshape fast} instructions like {\ttfamily sbi}, {\ttfamily cbi}, etc.
+
+Or the bit manipulation function might be called on an I/O register in the range {\ttfamily 0x00 -\/ 0x3F}. In this range the bit manipulation has to be done with entire bytes using instructions {\ttfamily in} and {\ttfamily out}.
+
+Or the bit manipulation might be performed on dataspace, {\ttfamily 0x20 -\/ 0x5F}, or extended I/O space, {\ttfamily 0x60 -\/ 0x\+FF} in SRAM, in which case instructions like {\ttfamily ld} and {\ttfamily st} are used.
+
+Again, the compiler does not know what register address the function is called with, so it has to use the generic {\ttfamily ld} and {\ttfamily st} instructions. The result is that calls to the bit manipulation library take a massive speed penalty.\hypertarget{index_autotoc_md12}{}\doxysubsection{Example of inline for efficient assembly}\label{index_autotoc_md12}
+To avoid this, the {\ttfamily inline} copies the bit manipulation source code into all the places it is called. Now the code is part of the compilation unit that has the register addresses and the compiler knows if it can use the faster instructions.
+
+In order for the compiler to {\ttfamily inline}, the function body must be visible in the compilation unit, therefore the function body goes in the header.
+
+The result is a glaring break with C convention. Most (all?) of the library functions are defined in {\ttfamily .h} files, with the function signatures declared in the {\ttfamily .c} file.\hypertarget{index_autotoc_md13}{}\doxysubsection{Macro USE\+\_\+\+FAKES}\label{index_autotoc_md13}
+The only practical drawback to this approach is that the code gets marked up with test macros to handle function faking\+:
+
+
+\begin{DoxyItemize}
+\item I want to write a unit test for a function
+\item but the function calls other functions that interact with hardware
+\end{DoxyItemize}
+
+In this scenario, the definition for the function-\/under-\/test gets bracketed with {\ttfamily \#ifdef USE\+\_\+\+FAKES} statements to {\ttfamily \#define} and {\ttfamily \#undef} the fakes like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#ifdef USE\_FAKES}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define LisExpose LisExpose\_fake}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define LisReadout LisReadout\_fake}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{uint16\_t \mbox{\hyperlink{VisCmd_8h_ad331578ce39d75860495a587a2a1e45e}{AutoExpose}}(\textcolor{keywordtype}{void})}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    ...}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#ifdef USE\_FAKES}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#undef LisExpose}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#undef LisReadout}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
+ 

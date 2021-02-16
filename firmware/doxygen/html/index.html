@@ -69,14 +69,22 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
-<ul><li class="level1"><a href="#autotoc_md0">How to use the firmware documentation</a></li>
-<li class="level1"><a href="#autotoc_md1">Related dev-kit documentation</a></li>
-<li class="level1"><a href="#autotoc_md2">Chromation dev-kit hardware</a><ul><li class="level2"><a href="#autotoc_md3">Spectrometer chip programmable registers</a></li>
+<ul><li class="level1"><a href="#autotoc_md0">How to use the firmware documentation</a><ul><li class="level2"><a href="#autotoc_md1">Firmware organization</a></li>
+<li class="level2"><a href="#autotoc_md2">Library functions break with C convention</a></li>
 </ul>
 </li>
-<li class="level1"><a href="#autotoc_md4">Serial communication and the Python API</a><ul><li class="level2"><a href="#autotoc_md5">Protocol is in a JSON file</a></li>
-<li class="level2"><a href="#autotoc_md6">Develop and test</a></li>
-<li class="level2"><a href="#autotoc_md7">Protocol example</a></li>
+<li class="level1"><a href="#autotoc_md3">Related dev-kit documentation</a></li>
+<li class="level1"><a href="#autotoc_md4">Chromation dev-kit hardware</a><ul><li class="level2"><a href="#autotoc_md5">Spectrometer chip programmable registers</a></li>
+</ul>
+</li>
+<li class="level1"><a href="#autotoc_md6">Serial communication and the Python API</a><ul><li class="level2"><a href="#autotoc_md7">Protocol is in a JSON file</a></li>
+<li class="level2"><a href="#autotoc_md8">Develop and test</a></li>
+<li class="level2"><a href="#autotoc_md9">Protocol example</a></li>
+</ul>
+</li>
+<li class="level1"><a href="#autotoc_md10">Why so much inline</a><ul><li class="level2"><a href="#autotoc_md11">Example of conventional C yielding inefficient assembly</a></li>
+<li class="level2"><a href="#autotoc_md12">Example of inline for efficient assembly</a></li>
+<li class="level2"><a href="#autotoc_md13">Macro USE_FAKES</a></li>
 </ul>
 </li>
 </ul>
@@ -84,14 +92,43 @@ $(function() {
 <div class="textblock"><p><a class="anchor" id="md_doxygen_mainpage"></a></p>
 <h1><a class="anchor" id="autotoc_md0"></a>
 How to use the firmware documentation</h1>
-<p>All the useful firmware information is under <a href="files.html">Files</a>.</p>
-<h1><a class="anchor" id="autotoc_md1"></a>
+<p>All the useful firmware information is under <a href="files.html">Files</a>. This browses the source code.</p>
+<ul>
+<li>click a folder to open<ul>
+<li>click the file <em>icon</em> to view its <b>source code</b></li>
+<li>or click a file <em>name</em> (if it's a hyperlink) to view its <b>documentation</b></li>
+</ul>
+</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md1"></a>
+Firmware organization</h2>
+<p>The firmware is divided into folders:</p>
+<div class="fragment"><div class="line">├── lib  &lt;--------- reusable code</div>
+<div class="line">│   ├── src</div>
+<div class="line">│   └── test</div>
+<div class="line">├── usb-bridge &lt;--- code specific to this circuit board</div>
+<div class="line">│   ├── src</div>
+<div class="line">│   └── test</div>
+<div class="line">└── vis-spi-out &lt;-- code specific to this circuit board</div>
+<div class="line">    ├── src</div>
+<div class="line">    └── test</div>
+</div><!-- fragment --><p>Each folder has <code>src</code> (source code) and <code>test</code> (unit tests).</p>
+<h2><a class="anchor" id="autotoc_md2"></a>
+Library functions break with C convention</h2>
+<p>The first thing C programmers will notice is that the <code>lib</code> source code does not follow convention:</p>
+<ul>
+<li>most functions in the <code>lib</code> folder are <code>inline</code></li>
+<li>the function bodies are in the <code>.h</code> files</li>
+<li>the function signatures are in the <code>.c</code> files</li>
+</ul>
+<p>This is for <a href="index.html#autotoc_md10">performance reasons</a>.</p>
+<h1><a class="anchor" id="autotoc_md3"></a>
 Related dev-kit documentation</h1>
 <p>The firmware runs on the Chromation dev-kit. Documentation for the dev-kit is here:</p>
 <p><a href="https://microspectrometer.github.io/dev-kit-2020/">https://microspectrometer.github.io/dev-kit-2020/</a></p>
 <p>All dev-kit hardware and firmware files are open-source and are available from the GitHub repository:</p>
 <p><a href="https://github.com/microspectrometer/dev-kit-2020">https://github.com/microspectrometer/dev-kit-2020</a></p>
-<h1><a class="anchor" id="autotoc_md2"></a>
+<h1><a class="anchor" id="autotoc_md4"></a>
 Chromation dev-kit hardware</h1>
 <p>The dev-kit has two ATmega328 microcontrollers and a spectrometer chip.</p>
 <p>The firmware is for the Flash memory in those two microcontrollers:</p>
@@ -105,7 +142,7 @@ Chromation dev-kit hardware</h1>
 <li><a href="vis-spi-out_8c_source.html">vis-spi-out/src/vis-spi-out.c</a></li>
 </ul>
 <p>There is no firmware for the spectrometer chip itself, but the chip does have programmable registers.</p>
-<h2><a class="anchor" id="autotoc_md3"></a>
+<h2><a class="anchor" id="autotoc_md5"></a>
 Spectrometer chip programmable registers</h2>
 <p>The programmable registers are part of the LIS-770i, the CMOS image sensor used in the spectrometer chip. These registers initialize in an unknown state and must be written to after the spectrometer chip is powered on.</p>
 <p>All registers are programmed at once by sending the LIS-770i a 28-bit word. The value of this 28-bit word determines:</p>
@@ -121,25 +158,104 @@ Spectrometer chip programmable registers</h2>
 <li>the recommended value for pixel binning is based on the optical design of the spectrometer</li>
 <li>the recommended 1x gain is based on the dev-kit's analog front-end (i.e., the choice of ADC and ADC reference voltage) &ndash; given this design, increasing the gain reduces dynamic range without improving SNR</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md6"></a>
 Serial communication and the Python API</h1>
-<h2><a class="anchor" id="autotoc_md5"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Protocol is in a JSON file</h2>
 <p>The serial communication protocol is defined in the JSON file <a href="https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json">microspec.json</a>:</p>
 <ul>
 <li>The firmware follows the <a href="https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json">microspec.json</a> serial communication protocol.</li>
 <li>PyPI project <a href="https://pypi.org/project/microspec/">microspec</a> defines a USB interface to the dev-kit. This interface is a <code>class</code> that is auto-generated from <a href="https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json">microspec.json</a>.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md8"></a>
 Develop and test</h2>
 <p>Install Python and the <a href="https://pypi.org/project/microspec/">microspec</a> package to develop and test the firmware:</p>
 <div class="fragment"><div class="line">$ pip install microspec</div>
-</div><!-- fragment --><p>The Python REPL is an easy way to quickly test commands. Details are in the <a href="https://microspec-api.readthedocs.io/en/latest/microspec.commands.html">documentation</a>. The <a href="https://pypi.org/project/microspec/">microspec</a> package also provides a command-line utility to send commands without opening a Python REPL. This is useful when running single dev-kit commands from a text editor like Vim or Emacs.</p>
-<p>To quickly check that the firmware and Python API are in complete agreement about the serial communication protocol, run <a href="https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspeclib/system-tests.py">system-tests.py</a>. This script runs all the serial commands and checks for the expected responses from the dev-kit. The script is organized into classes, one class per serial command. The methods in each class are the different scenarios for testing the serial command (the different arguments the command might be called with).</p>
-<h2><a class="anchor" id="autotoc_md7"></a>
+</div><!-- fragment --><ul>
+<li>REPL<ul>
+<li>The Python REPL is an easy way to quickly test commands. Details are in the <a href="https://microspec-api.readthedocs.io/en/latest/microspec.commands.html">documentation</a>.</li>
+</ul>
+</li>
+<li>command-line<ul>
+<li>The <a href="https://pypi.org/project/microspec/">microspec</a> package also provides a command-line utility to send commands without opening a Python REPL. This is useful when running single dev-kit commands from a text editor like Vim or Emacs that can execute shell commands.</li>
+</ul>
+</li>
+<li>system tests<ul>
+<li>Run <a href="https://github.com/microspectrometer/dev-kit-2020/blob/master/python/microspeclib/system-tests.py">system-tests.py</a> to quickly check that the firmware and Python API are in complete agreement about the serial communication protocol.</li>
+<li>This script runs all the serial commands and checks for the expected responses from the dev-kit.</li>
+<li>The script is organized into classes, one class per serial command. Each class method tests different arguments to the serial command.</li>
+</ul>
+</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Protocol example</h2>
-<p>TODO: Add an example with the <code>usb-bridge</code> and <code>vis-spi-out</code> firmware that corresponds to one of the commands in the JSON file, and how the resulting call-and-response looks from Python. </p>
-</div></div><!-- PageDoc -->
+<p>TODO: Add an example with the <code>usb-bridge</code> and <code>vis-spi-out</code> firmware that corresponds to one of the commands in the JSON file, and how the resulting call-and-response looks from Python.</p>
+<h1><a class="anchor" id="autotoc_md10"></a>
+Why so much inline</h1>
+<p>The library code started out in the conventional way:</p>
+<ul>
+<li>functions defined in <code>.c</code> files</li>
+<li>function signatures declared in <code>.h</code> files</li>
+<li>functions broken into smaller functions for testability and function pointers everywhere to create seams for <b>function faking</b> in unit tests (redirecting the definition of the "production" code to a "stub" or "mock" version for test code)</li>
+</ul>
+<p>The code was "clean" &ndash; no macros, lots of seams. And it had almost 100% test coverage.</p>
+<p>Unfortunately, this style of programming is not compatible with producing optimal assembly instructions for the ATmega328. It results in system-breaking speed penalties.</p>
+<p>The ATmega328 microcontroller clock is only 10MHz: <em>10 cycles worth of instructions takes a microsecond</em>. At this clock speed, <b>inefficient assembly code</b> causes noticeable slow-downs and makes critical timing impossible, resulting in bad behavior that is sometimes obvious and sometimes subtle.</p>
+<p>The avr-gcc compiler was generating inefficient assembly code for three reasons:</p>
+<ol type="1">
+<li>lots of call overhead because one function was broken into several functions for readability and unit-testability and an extra layer of indirection from function pointers that create the seams for unit-testability</li>
+<li>slow instructions used instead of faster instructions because register addresses are unknown at compile time because code was spread across multiple compilation units for reusability and unit-testability</li>
+<li>ISR overhead: too much time spent saving and restoring state on every interrupt because the ISR had too much code</li>
+</ol>
+<p>The last item is "easy" to fix: modify the ISR code, count cycles in the generated assembly, repeat until the time consumed by the ISR is acceptable.</p>
+<p>But the first two items are not easy to fix. One approach is to take the carefully segregated code base and mush it back together:</p>
+<ul>
+<li>put all the code in one C file</li>
+<li>eliminate all the function pointers</li>
+<li>throw away most of the unit tests</li>
+</ul>
+<p>Compared with that, a small break with convention is OK.</p>
+<p>To use the fast instructions, the compiler must know register addresses at compile-time. Object files generated without these values are forced to use the much slower, generic load and store instructions.</p>
+<p>The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the <code>lib</code> code.</p>
+<p><em>This also explains why the code is full of comments like this:</em></p>
+<div class="fragment"><div class="line">ClearBit(UartSpi_port, UartSpi_AdcConv);</div>
+<div class="line"><span class="comment">// ---Expected Assembly---</span></div>
+<div class="line"><span class="comment">// cbi  0x0b, 2 ; 11</span></div>
+</div><!-- fragment --><p><em>In more complicated cases, there are several lines of assembly. Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change.</em></p>
+<h2><a class="anchor" id="autotoc_md11"></a>
+Example of conventional C yielding inefficient assembly</h2>
+<p>The <a href="ReadWriteBits_8h_source.html">ReadWriteBits</a> library defines bit manipulation functions (for readability and testability). In the conventional approach, this source file is compiled without knowing the register addresses that client code will pass to its functions. But the register address determines which instructions are allowed! Without knowing the address, the compiler has to use the most generic instruction.</p>
+<p>The bit manipulation function might be passed an I/O register in the range <code>0x00 - 0x1F</code>. These registers allow <em>fast</em> instructions like <code>sbi</code>, <code>cbi</code>, etc.</p>
+<p>Or the bit manipulation function might be called on an I/O register in the range <code>0x00 - 0x3F</code>. In this range the bit manipulation has to be done with entire bytes using instructions <code>in</code> and <code>out</code>.</p>
+<p>Or the bit manipulation might be performed on dataspace, <code>0x20 - 0x5F</code>, or extended I/O space, <code>0x60 - 0xFF</code> in SRAM, in which case instructions like <code>ld</code> and <code>st</code> are used.</p>
+<p>Again, the compiler does not know what register address the function is called with, so it has to use the generic <code>ld</code> and <code>st</code> instructions. The result is that calls to the bit manipulation library take a massive speed penalty.</p>
+<h2><a class="anchor" id="autotoc_md12"></a>
+Example of inline for efficient assembly</h2>
+<p>To avoid this, the <code>inline</code> copies the bit manipulation source code into all the places it is called. Now the code is part of the compilation unit that has the register addresses and the compiler knows if it can use the faster instructions.</p>
+<p>In order for the compiler to <code>inline</code>, the function body must be visible in the compilation unit, therefore the function body goes in the header.</p>
+<p>The result is a glaring break with C convention. Most (all?) of the library functions are defined in <code>.h</code> files, with the function signatures declared in the <code>.c</code> file.</p>
+<h2><a class="anchor" id="autotoc_md13"></a>
+Macro USE_FAKES</h2>
+<p>The only practical drawback to this approach is that the code gets marked up with test macros to handle function faking:</p>
+<ul>
+<li>I want to write a unit test for a function</li>
+<li>but the function calls other functions that interact with hardware</li>
+</ul>
+<p>In this scenario, the definition for the function-under-test gets bracketed with <code>#ifdef USE_FAKES</code> statements to <code>#define</code> and <code>#undef</code> the fakes like this:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#ifdef USE_FAKES</span></div>
+<div class="line"><span class="preprocessor">#define LisExpose LisExpose_fake</span></div>
+<div class="line"><span class="preprocessor">#define LisReadout LisReadout_fake</span></div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line">uint16_t <a class="code" href="VisCmd_8h.html#ad331578ce39d75860495a587a2a1e45e">AutoExpose</a>(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+<div class="line"><span class="preprocessor">#ifdef USE_FAKES</span></div>
+<div class="line"><span class="preprocessor">#undef LisExpose</span></div>
+<div class="line"><span class="preprocessor">#undef LisReadout</span></div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aVisCmd_8h_html_ad331578ce39d75860495a587a2a1e45e"><div class="ttname"><a href="VisCmd_8h.html#ad331578ce39d75860495a587a2a1e45e">AutoExpose</a></div><div class="ttdeci">uint16_t AutoExpose(void)</div><div class="ttdef"><b>Definition:</b> <a href="VisCmd_8c_source.html#l00073">VisCmd.c:73</a></div></div>
+</div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
