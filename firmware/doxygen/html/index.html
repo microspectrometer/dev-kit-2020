@@ -82,8 +82,8 @@ $(function() {
 <li class="level2"><a href="#autotoc_md9">Protocol example</a></li>
 </ul>
 </li>
-<li class="level1"><a href="#autotoc_md10">Why so much inline</a><ul><li class="level2"><a href="#autotoc_md11">Example of conventional C yielding inefficient assembly</a></li>
-<li class="level2"><a href="#autotoc_md12">Example of inline for efficient assembly</a></li>
+<li class="level1"><a href="#autotoc_md10">Why so much inline</a><ul><li class="level2"><a href="#autotoc_md11">Conventional C yields inefficient assembly</a></li>
+<li class="level2"><a href="#autotoc_md12">Inlining yields efficient assembly</a></li>
 <li class="level2"><a href="#autotoc_md13">Macro USE_FAKES</a></li>
 </ul>
 </li>
@@ -216,27 +216,31 @@ Why so much inline</h1>
 </ul>
 <p>Compared with that, a small break with convention is OK.</p>
 <p>To use the fast instructions, the compiler must know register addresses at compile-time. Object files generated without these values are forced to use the much slower, generic load and store instructions.</p>
-<p>The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the <code>lib</code> code.</p>
-<p><em>This also explains why the code is full of comments like this:</em></p>
+<p>How do I know what instructions should be used? I manually look up the address of the register and figure it out. I also wrote some shortcuts to cut and paste disassembly into the code.</p>
+<p><em>That explains why the code is full of comments like this:</em></p>
 <div class="fragment"><div class="line">ClearBit(UartSpi_port, UartSpi_AdcConv);</div>
 <div class="line"><span class="comment">// ---Expected Assembly---</span></div>
 <div class="line"><span class="comment">// cbi  0x0b, 2 ; 11</span></div>
-</div><!-- fragment --><p><em>In more complicated cases, there are several lines of assembly. Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change.</em></p>
+</div><!-- fragment --><p><em>In more complicated cases, there are several lines of assembly.</em></p>
+<p>Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change. This is how I determined the correct steps to make <code>inline</code> actually inline the code.</p>
 <h2><a class="anchor" id="autotoc_md11"></a>
-Example of conventional C yielding inefficient assembly</h2>
+Conventional C yields inefficient assembly</h2>
+<p><em>The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the <code>lib</code> code.</em></p>
 <p>The <a href="ReadWriteBits_8h_source.html">ReadWriteBits</a> library defines bit manipulation functions (for readability and testability). In the conventional approach, this source file is compiled without knowing the register addresses that client code will pass to its functions. But the register address determines which instructions are allowed! Without knowing the address, the compiler has to use the most generic instruction.</p>
 <p>The bit manipulation function might be passed an I/O register in the range <code>0x00 - 0x1F</code>. These registers allow <em>fast</em> instructions like <code>sbi</code>, <code>cbi</code>, etc.</p>
-<p>Or the bit manipulation function might be called on an I/O register in the range <code>0x00 - 0x3F</code>. In this range the bit manipulation has to be done with entire bytes using instructions <code>in</code> and <code>out</code>.</p>
-<p>Or the bit manipulation might be performed on dataspace, <code>0x20 - 0x5F</code>, or extended I/O space, <code>0x60 - 0xFF</code> in SRAM, in which case instructions like <code>ld</code> and <code>st</code> are used.</p>
+<p>Or the bit manipulation function might be called on an I/O register in the range <code>0x20 - 0x3F</code>. In this range the bit manipulation has to be done with entire bytes using instructions <code>in</code> and <code>out</code>.</p>
+<p>Or the bit manipulation might be performed on dataspace, <code>0x40 - 0x5F</code>, or extended I/O space, <code>0x60 - 0xFF</code> in SRAM, in which case instructions like <code>ld</code> and <code>st</code> are used.</p>
 <p>Again, the compiler does not know what register address the function is called with, so it has to use the generic <code>ld</code> and <code>st</code> instructions. The result is that calls to the bit manipulation library take a massive speed penalty.</p>
 <h2><a class="anchor" id="autotoc_md12"></a>
-Example of inline for efficient assembly</h2>
-<p>To avoid this, the <code>inline</code> copies the bit manipulation source code into all the places it is called. Now the code is part of the compilation unit that has the register addresses and the compiler knows if it can use the faster instructions.</p>
+Inlining yields efficient assembly</h2>
+<p>To avoid this, the <code>inline</code> copies the bit manipulation source code into all the places it is called.</p>
+<p>Now the code is part of the compilation unit that has the register addresses and the compiler knows if it can use the faster instructions. In addition to using faster instructions, the function call overhead is eliminated. And the code still retains its readability and reusability.</p>
 <p>In order for the compiler to <code>inline</code>, the function body must be visible in the compilation unit, therefore the function body goes in the header.</p>
 <p>The result is a glaring break with C convention. Most (all?) of the library functions are defined in <code>.h</code> files, with the function signatures declared in the <code>.c</code> file.</p>
 <h2><a class="anchor" id="autotoc_md13"></a>
 Macro USE_FAKES</h2>
-<p>The only practical drawback to this approach is that the code gets marked up with test macros to handle function faking:</p>
+<p>The only practical drawback to this approach is that it is incompatible with using function pointers to replace functions with fakes for unit tests.</p>
+<p>Instead of function pointers, the code gets marked up with test macros to handle the function faking. This comes up when:</p>
 <ul>
 <li>I want to write a unit test for a function</li>
 <li>but the function calls other functions that interact with hardware</li>

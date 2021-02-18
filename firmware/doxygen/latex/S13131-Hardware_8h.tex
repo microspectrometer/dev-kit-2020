@@ -1,0 +1,36 @@
+\hypertarget{S13131-Hardware_8h}{}\doxysection{vis-\/spi-\/out/src/\+S13131-\/\+Hardware.h File Reference}
+\label{S13131-Hardware_8h}\index{vis-\/spi-\/out/src/S13131-\/Hardware.h@{vis-\/spi-\/out/src/S13131-\/Hardware.h}}
+
+
+S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-\/512 CMOS image sesnsor.  
+
+
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$avr/io.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}S13131.\+h\char`\"{}}\newline
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_ab66e27c0ecd2ee5ea0c5b3ff9eea057a}\label{S13131-Hardware_8h_ab66e27c0ecd2ee5ea0c5b3ff9eea057a}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+ddr1} = \&DDRD
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_ae26f2fbc703c5fc71c645b88bcd461b1}\label{S13131-Hardware_8h_ae26f2fbc703c5fc71c645b88bcd461b1}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+port1} = \&PORTD
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a1b96670d5bb19e20c43770bc9c4f26d3}\label{S13131-Hardware_8h_a1b96670d5bb19e20c43770bc9c4f26d3}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+pin1} = \&PIND
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_aa35c2a3c5e68bdf827054ae724703e1e}\label{S13131-Hardware_8h_aa35c2a3c5e68bdf827054ae724703e1e}} 
+s13131\+\_\+pin {\bfseries S13131\+\_\+\+Clk} = PD5
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a476655f401e683f0a013a9b5de38cfb8}\label{S13131-Hardware_8h_a476655f401e683f0a013a9b5de38cfb8}} 
+s13131\+\_\+pin {\bfseries S13131\+\_\+\+St} = PD6
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_ac3ec3460562a532e06163ad0680a008a}\label{S13131-Hardware_8h_ac3ec3460562a532e06163ad0680a008a}} 
+s13131\+\_\+pin {\bfseries S13131\+\_\+\+Eos} = PD7
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-\/512 CMOS image sesnsor. 
+

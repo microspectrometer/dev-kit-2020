@@ -161,9 +161,9 @@ Compared with that, a small break with convention is OK.
 
 To use the fast instructions, the compiler must know register addresses at compile-\/time. Object files generated without these values are forced to use the much slower, generic load and store instructions.
 
-The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the {\ttfamily lib} code.
+How do I know what instructions should be used? I manually look up the address of the register and figure it out. I also wrote some shortcuts to cut and paste disassembly into the code.
 
-{\itshape This also explains why the code is full of comments like this\+:}
+{\itshape That explains why the code is full of comments like this\+:}
 
 
 \begin{DoxyCode}{0}
@@ -174,22 +174,30 @@ The simplest example is the bit manipulation functions discussed below. The same
 \end{DoxyCode}
 
 
-{\itshape In more complicated cases, there are several lines of assembly. Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change.}\hypertarget{index_autotoc_md11}{}\doxysubsection{Example of conventional C yielding inefficient assembly}\label{index_autotoc_md11}
+{\itshape In more complicated cases, there are several lines of assembly.}
+
+Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change. This is how I determined the correct steps to make {\ttfamily inline} actually inline the code.\hypertarget{index_autotoc_md11}{}\doxysubsection{Conventional C yields inefficient assembly}\label{index_autotoc_md11}
+{\itshape The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the {\ttfamily lib} code.}
+
 The \href{ReadWriteBits_8h_source.html}{\texttt{ Read\+Write\+Bits}} library defines bit manipulation functions (for readability and testability). In the conventional approach, this source file is compiled without knowing the register addresses that client code will pass to its functions. But the register address determines which instructions are allowed! Without knowing the address, the compiler has to use the most generic instruction.
 
 The bit manipulation function might be passed an I/O register in the range {\ttfamily 0x00 -\/ 0x1F}. These registers allow {\itshape fast} instructions like {\ttfamily sbi}, {\ttfamily cbi}, etc.
 
-Or the bit manipulation function might be called on an I/O register in the range {\ttfamily 0x00 -\/ 0x3F}. In this range the bit manipulation has to be done with entire bytes using instructions {\ttfamily in} and {\ttfamily out}.
+Or the bit manipulation function might be called on an I/O register in the range {\ttfamily 0x20 -\/ 0x3F}. In this range the bit manipulation has to be done with entire bytes using instructions {\ttfamily in} and {\ttfamily out}.
 
-Or the bit manipulation might be performed on dataspace, {\ttfamily 0x20 -\/ 0x5F}, or extended I/O space, {\ttfamily 0x60 -\/ 0x\+FF} in SRAM, in which case instructions like {\ttfamily ld} and {\ttfamily st} are used.
+Or the bit manipulation might be performed on dataspace, {\ttfamily 0x40 -\/ 0x5F}, or extended I/O space, {\ttfamily 0x60 -\/ 0x\+FF} in SRAM, in which case instructions like {\ttfamily ld} and {\ttfamily st} are used.
 
-Again, the compiler does not know what register address the function is called with, so it has to use the generic {\ttfamily ld} and {\ttfamily st} instructions. The result is that calls to the bit manipulation library take a massive speed penalty.\hypertarget{index_autotoc_md12}{}\doxysubsection{Example of inline for efficient assembly}\label{index_autotoc_md12}
-To avoid this, the {\ttfamily inline} copies the bit manipulation source code into all the places it is called. Now the code is part of the compilation unit that has the register addresses and the compiler knows if it can use the faster instructions.
+Again, the compiler does not know what register address the function is called with, so it has to use the generic {\ttfamily ld} and {\ttfamily st} instructions. The result is that calls to the bit manipulation library take a massive speed penalty.\hypertarget{index_autotoc_md12}{}\doxysubsection{Inlining yields efficient assembly}\label{index_autotoc_md12}
+To avoid this, the {\ttfamily inline} copies the bit manipulation source code into all the places it is called.
+
+Now the code is part of the compilation unit that has the register addresses and the compiler knows if it can use the faster instructions. In addition to using faster instructions, the function call overhead is eliminated. And the code still retains its readability and reusability.
 
 In order for the compiler to {\ttfamily inline}, the function body must be visible in the compilation unit, therefore the function body goes in the header.
 
 The result is a glaring break with C convention. Most (all?) of the library functions are defined in {\ttfamily .h} files, with the function signatures declared in the {\ttfamily .c} file.\hypertarget{index_autotoc_md13}{}\doxysubsection{Macro USE\+\_\+\+FAKES}\label{index_autotoc_md13}
-The only practical drawback to this approach is that the code gets marked up with test macros to handle function faking\+:
+The only practical drawback to this approach is that it is incompatible with using function pointers to replace functions with fakes for unit tests.
+
+Instead of function pointers, the code gets marked up with test macros to handle the function faking. This comes up when\+:
 
 
 \begin{DoxyItemize}

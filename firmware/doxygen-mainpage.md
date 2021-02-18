@@ -214,10 +214,11 @@ addresses at compile-time. Object files generated without these
 values are forced to use the much slower, generic load and store
 instructions.
 
-The simplest example is the bit manipulation functions discussed
-below. The same reasoning applies to all the `lib` code.
+How do I know what instructions should be used? I manually look
+up the address of the register and figure it out. I also wrote
+some shortcuts to cut and paste disassembly into the code.
 
-*This also explains why the code is full of comments like this:*
+*That explains why the code is full of comments like this:*
 
 ```c
      ClearBit(UartSpi_port, UartSpi_AdcConv);
@@ -225,12 +226,17 @@ below. The same reasoning applies to all the `lib` code.
      // cbi  0x0b, 2 ; 11
 ```
 
-*In more complicated cases, there are several lines of assembly.
+*In more complicated cases, there are several lines of assembly.*
+
 Pasting the disassembly into the code helped me check that the
 compiler was still using the right instructions after a code
-change.*
+change. This is how I determined the correct steps to make
+`inline` actually inline the code.
 
-## Example of conventional C yielding inefficient assembly
+## Conventional C yields inefficient assembly
+
+*The simplest example is the bit manipulation functions discussed
+below. The same reasoning applies to all the `lib` code.*
 
 The [ReadWriteBits](ReadWriteBits_8h_source.html) library defines
 bit manipulation functions (for readability and testability). In
@@ -245,12 +251,12 @@ the range `0x00 - 0x1F`. These registers allow *fast*
 instructions like `sbi`, `cbi`, etc.
 
 Or the bit manipulation function might be called on an I/O
-register in the range `0x00 - 0x3F`. In this range the bit
+register in the range `0x20 - 0x3F`. In this range the bit
 manipulation has to be done with entire bytes using instructions
 `in` and `out`.
 
 Or the bit manipulation might be performed on dataspace,
-`0x20 - 0x5F`, or extended I/O space, `0x60 - 0xFF` in SRAM, in
+`0x40 - 0x5F`, or extended I/O space, `0x60 - 0xFF` in SRAM, in
 which case instructions like `ld` and `st` are used.
 
 Again, the compiler does not know what register address the
@@ -258,12 +264,16 @@ function is called with, so it has to use the generic `ld` and
 `st` instructions. The result is that calls to the bit
 manipulation library take a massive speed penalty.
 
-## Example of inline for efficient assembly
+## Inlining yields efficient assembly
 
 To avoid this, the `inline` copies the bit manipulation source
-code into all the places it is called. Now the code is part of
-the compilation unit that has the register addresses and the
-compiler knows if it can use the faster instructions.
+code into all the places it is called.
+
+Now the code is part of the compilation unit that has the
+register addresses and the compiler knows if it can use the
+faster instructions. In addition to using faster instructions,
+the function call overhead is eliminated. And the code still
+retains its readability and reusability.
 
 In order for the compiler to `inline`, the function body must be
 visible in the compilation unit, therefore the function body goes
@@ -275,8 +285,12 @@ function signatures declared in the `.c` file.
 
 ## Macro USE_FAKES
 
-The only practical drawback to this approach is that the code
-gets marked up with test macros to handle function faking:
+The only practical drawback to this approach is that it is
+incompatible with using function pointers to replace functions
+with fakes for unit tests.
+
+Instead of function pointers, the code gets marked up with test
+macros to handle the function faking. This comes up when:
 
 - I want to write a unit test for a function
 - but the function calls other functions that interact with
