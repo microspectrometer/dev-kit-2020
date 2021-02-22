@@ -1,10 +1,6 @@
 # Name the PCB to program with this firmware.
 board-name := vis-spi-out
 
-# TODO(mike): does this need to go in common.mk for usb-bridge?
-# Name which sensor is attached to the vis-spi-out PCB
-# sensor ?= LIS
-
 # Name libs in vis-spi-out/src.
 applib := Example VisCmd AutoExpose
 
@@ -37,5 +33,6 @@ help:
 	@echo --- Vendor Dependency Path ---
 	@echo atmega328_lib: "$(atmega328_lib)"
 
+include ../sensor.mk
 include ../uservars.mk
 include ../common.mk

@@ -12,10 +12,6 @@ help-flash:
 	@cat ../help-flash.man | less
 # }}}
 
-# TODO(mike): does this need to go in common.mk for usb-bridge?
-# Name which sensor is attached to the vis-spi-out PCB
-sensor ?= LIS
-
 
 # {{{ Build Targets
 # .md is the unit test output
