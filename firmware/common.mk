@@ -12,9 +12,14 @@ help-flash:
 	@cat ../help-flash.man | less
 # }}}
 
+# TODO(mike): does this need to go in common.mk for usb-bridge?
+# Name which sensor is attached to the vis-spi-out PCB
+sensor ?= LIS
+
+
 # {{{ Build Targets
 # .md is the unit test output
-# Vim: ;mktgc
+# Vim: ;mktgc -- make -w unit-test compiler=gcc
 unit-test: build/TestSuite-results.md
 
 # .elf is the executable to download to flash
@@ -127,6 +132,7 @@ lib_faked_o := $(addprefix ../lib/build/,${lib_faked_o})
 # Build Recipes {{{
 # $ make clean {{{
 # Clean all builds when switching build targets.
+# If not, expect linker error: "error adding symbols: file in wrong format"
 # Vim ;mca - clean all builds
 .PHONY: clean
 clean:
@@ -254,33 +260,36 @@ reset:
 # Vim ;mpv -- paste variables into buffer
 .PHONY: print-vars
 print-vars:
-	echo hwlib:
-	echo - ${hwlib}
-	echo
-	echo nohwlib:
-	echo - ${nohwlib}
-	echo
-	echo Hardware:
-	echo - ${Hardware}
-	echo
-	echo HardwareFakes:
-	echo - ${HardwareFakes}
-	echo
-	echo lib_o:
-	echo - ${lib_o}
-	echo
-	echo lib_faked_o:
-	echo - ${lib_faked_o}
-	echo
-	echo lib_headers:
-	echo - ${lib_headers}
-	echo
-	echo IncludeAvrHeaders:
-	echo - ${IncludeAvrHeaders}
-	echo
-	echo IncludeFakeAvrHeaders:
-	echo - ${IncludeFakeAvrHeaders}
-	echo
+	@echo sensor:
+	@echo - ${sensor}
+	@echo
+	@echo hwlib:
+	@echo - ${hwlib}
+	@echo
+	@echo nohwlib:
+	@echo - ${nohwlib}
+	@echo
+	@echo Hardware:
+	@echo - ${Hardware}
+	@echo
+	@echo HardwareFakes:
+	@echo - ${HardwareFakes}
+	@echo
+	@echo lib_o:
+	@echo - ${lib_o}
+	@echo
+	@echo lib_faked_o:
+	@echo - ${lib_faked_o}
+	@echo
+	@echo lib_headers:
+	@echo - ${lib_headers}
+	@echo
+	@echo IncludeAvrHeaders:
+	@echo - ${IncludeAvrHeaders}
+	@echo
+	@echo IncludeFakeAvrHeaders:
+	@echo - ${IncludeFakeAvrHeaders}
+	@echo
 #}}}
 
 # vim:set fdm=marker:

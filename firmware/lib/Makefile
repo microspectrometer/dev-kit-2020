@@ -14,7 +14,7 @@ help:
 
 # =====[ Build targets ]=====
 # ---"unit-test" runs on PC with Cygwin---{{{
-# Vim ;mktgc builds unit-test target using gcc
+# Vim ;mktgc -- make -w unit-test compiler=gcc
 unit-test: build/TestSuite-results.md
 # Vim opens .md opens in new bottom window
 # }}}
