@@ -7,7 +7,12 @@
 /* #include "SpiMaster-HardwareFake.h" */
 #include "Spi-HardwareFake.h"
 #include "UartSpi-HardwareFake.h"
+/* #ifdef LIS */
 #include "Lis-HardwareFake.h"
+/* #endif */
+#ifdef S13131
+#include "S13131-HardwareFake.h"
+#endif
 #include "Usb-HardwareFake.h"
 
 #endif // _HARDWAREFAKE_H

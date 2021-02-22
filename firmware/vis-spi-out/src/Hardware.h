@@ -11,7 +11,12 @@
 // add those definitions here ("-Hardware.h")
 // for inclusion in the main() translation unit
 #include "BiColorLed-Hardware.h"
+/* #ifdef LIS */
 #include "Lis-Hardware.h"
+/* #endif */
+#ifdef S13131
+#include "S13131-Hardware.h"
+#endif
 /* #include "SpiSlave-Hardware.h" */
 #include "Spi-Hardware.h"
 #include "UartSpi-Hardware.h"
