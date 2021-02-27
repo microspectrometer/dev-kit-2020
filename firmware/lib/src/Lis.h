@@ -391,7 +391,7 @@ inline void _Write28bitLisConfig(uint8_t const *config)
  * - multiply exposure by 20e-6 seconds to get exposure time in seconds
  *   - one clock tick is 20e-6 seconds because the LIS-770i is clocked at 50kHz
  * */
-uint16_t exposure_ticks;
+extern uint16_t exposure_ticks;
 /** LIS-770i maximum number of pixels
  * - with binning *off* there are at most 784 pixels
  * - this includes the 13 optically dark and one dummy pixel

@@ -29,3 +29,5 @@ bool LisConfigIsValid(
     uint8_t active_rows);
 void LisWriteConfig(void);
 void LisExpose(void);
+uint16_t exposure_ticks;
+
