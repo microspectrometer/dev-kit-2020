@@ -1,38 +1,101 @@
-# Name the PCB to program with this firmware.
-board-name := vis-spi-out
+unit-test: build/test_runner.md
+# Print the variables in this Makefile{{{
+print-vars:
+	@echo unit test files:
+	@echo "    "$(tests)
+	@echo
+	@echo vis-spi-out object files:
+	@echo "    "$(vis-spi-out_o)
+	@echo
+	@echo mock-c object files:
+	@echo "    "$(mock-c_o)
+	@echo
+	@echo lib object files:
+	@echo "    "$(lib_o)
+	@echo
+	@echo unit test CFLAGS:
+	@echo "    "$(CFLAGS_for_tests)
+	@echo
+	@echo unit test LFLAGS:
+	@echo "    "$(LFLAGS_for_tests)
+# }}}
+# Tests{{{
+tests := test/test_AutoExpose.c \
+		test/test_example.c \
+		test/test_VisCmd.c
+# }}}
+# Object files{{{
+vis-spi-out_o := build/AutoExpose.o \
+				build/Example.o \
+				build/VisCmd.o
+mock-c_o := ../mock-c/build/unity.o \
+			../mock-c/build/Mock.o \
+			../mock-c/build/ReturnValues.o \
+			../mock-c/build/RecordedArg.o \
+			../mock-c/build/RecordedCall.o
+lib_o := ../lib/build/BiColorLed.o \
+		../lib/build/UartSpi.o \
+		../lib/build/Flag.o \
+		../lib/build/ReadWriteBits.o \
+		../lib/build/StatusCode.o \
+		../lib/build/Queue.o \
+		../lib/build/Lis_faked.o \
+		../lib/build/Spi_faked.o \
+		../lib/build/SpiSlave_faked.o
+# }}}
+# Compiler/Linker FLAGS for unit tests{{{
+CFLAGS_for_tests = -include../lib/test/FakeAvr/interrupt.h \
+					-include../lib/test/FakeAvr/io.h \
+					-includestdbool.h \
+				-DUSE_FAKES \
+				-Isrc -I../lib/src \
+				-Itest -I../lib/test  -I../mock-c/code \
+				-I/usr/include/glib-2.0 \
+				-I/usr/lib/glib-2.0/include \
+				-g -Wall -Wextra -pedantic -Winline
+LFLAGS_for_tests := -lglib-2.0 -lintl
+# }}}
+# {{{ Build Recipes
+build/test_runner.md: build/test_runner.exe
+	$< > $@
+build/test_runner.exe: test/test_runner.c test/test_example.c\
+					build/Example.o \
+					$(mock-c_o)
+	gcc $^ -o $@ $(CFLAGS_for_tests) $(LFLAGS_for_tests)
+build/real_test_runner.exe: test/test_runner.c $(tests) \
+					$(vis-spi-out_o) \
+					$(mock-c_o) \
+					$(lib_o)
+	gcc $(CFLAGS_for_tests) $^ -o $@ $(LFLAGS_for_tests)
+build/%.o: src/%.c src/%.h
+	gcc -c $< -o $@ $(CFLAGS_for_tests)
+../mock-c/build/%.o: ../mock-c/code/%.c ../mock-c/code/%.h ../mock-c/code/unity_internals.h
+	gcc -c $< -o $@ $(CFLAGS_for_tests)
+../lib/build/%.o: ../lib/src/%.c ../lib/src/%.h
+	gcc -c $< -o $@ $(CFLAGS_for_tests)
+../lib/build/%_faked.o: ../lib/test/%_faked.c ../lib/test/%_faked.h
+	gcc -c $< -o $@ $(CFLAGS_for_tests)
 
-# Name libs in vis-spi-out/src.
-applib := Example VisCmd AutoExpose
+.PHONY: clean
+clean:
+	rm -f build/*.o
+	rm -f ../lib/build/*.o
 
-# Name HARDWARE libs in lib/src.
-hwlib := BiColorLed Spi UartSpi Lis Flag
+.PHONY: lib-tags
+lib-tags:
+	gcc -M $(CFLAGS_for_tests) test/test_runner.c | \
+		sed -e 's/[\\ ]/\n/g' | \
+		sed -e '/^ *$$/d' | \
+		sed -e '/\.o:/d'  | \
+		sed -e '/\.c$$/d' \
+		> lib-tags.txt
+	ctags -f $@ --c-kinds=+p -L lib-tags.txt
+	rm lib-tags.txt
 
-# Name NON-hardware libs in lib/src.
-nohwlib := ReadWriteBits StatusCode Queue SpiSlave
-
-# Name libs that USE_FAKES in tests
-lib_faked := Spi SpiSlave Lis
-
-help:
-	@echo
-	@echo
-	@echo
-	@echo "----------------"
-	@echo "|     HELP     |"
-	@echo "----------------"
-	@echo
-	@echo "Sensor Interface PCB name: $(board-name)"
-	@echo
-	@echo Setup:
-	@echo "  Power-on the AtmelICE."
-	@echo "  Orient PCB with 6-pin programming header on the RIGHT."
-	@echo "  (Slide white switch LEFT, black switch LEFT)"
-	@echo
-	@cat ../help-board-common.man
-	@echo
-	@echo --- Vendor Dependency Path ---
-	@echo atmega328_lib: "$(atmega328_lib)"
-
-include ../sensor.mk
-include ../uservars.mk
-include ../common.mk
+.PHONY: what-is-__FILE__
+what-is-__FILE__: build/what-is-__FILE__.exe
+	$<
+build/what-is-__FILE__.exe: what-is-__FILE__.c
+	gcc $< -o $@
+# }}}
+# vim:set fdm=marker:
