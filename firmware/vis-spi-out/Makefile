@@ -15,14 +15,15 @@ mock-c_o := ../mock-c/build/unity.o \
 			../mock-c/build/RecordedArg.o \
 			../mock-c/build/RecordedCall.o
 lib_o := ../lib/build/BiColorLed.o \
-		../lib/build/UartSpi.o \
-		../lib/build/Flag.o \
 		../lib/build/ReadWriteBits.o \
 		../lib/build/StatusCode.o \
 		../lib/build/Queue.o \
-		../lib/build/Lis_faked.o \
+		../lib/build/Spi.o \
+		../lib/build/SpiSlave.o \
+		../lib/build/Lis.o \
 		../lib/build/Spi_faked.o \
-		../lib/build/SpiSlave_faked.o
+		../lib/build/SpiSlave_faked.o \
+		../lib/build/Lis_faked.o
 # }}}
 # Compiler/Linker FLAGS for unit tests{{{
 CFLAGS_for_tests = -include../lib/test/FakeAvr/interrupt.h \
@@ -66,11 +67,18 @@ print-vars:
 build/test_runner.md: build/test_runner.exe
 	$< > $@
 build/test_runner.exe: test/test_runner.c test/test_example.c test/test_VisCmd.c \
-					build/Example.o \
-					build/VisCmd.o \
+					$(vis-spi-out_o) \
 					$(mock-c_o) \
 					../lib/build/BiColorLed.o \
-					../lib/build/Queue.o
+					../lib/build/ReadWriteBits.o \
+					../lib/build/StatusCode.o \
+					../lib/build/Queue.o \
+					../lib/build/Spi.o \
+					../lib/build/SpiSlave.o \
+					../lib/build/Lis.o \
+					../lib/build/Spi_faked.o \
+					../lib/build/SpiSlave_faked.o \
+					../lib/build/Lis_faked.o
 	gcc $^ -o $@ $(CFLAGS_for_tests) $(LFLAGS_for_tests)
 build/real_test_runner.exe: test/test_runner.c $(tests) \
 					$(vis-spi-out_o) \

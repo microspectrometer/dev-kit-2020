@@ -1,19 +1,22 @@
-#include <unity.h>
-#include "test_example.h"
-#include "test_VisCmd.h"
-// Python-to-Firmware communication status codes
-#include "StatusCodes.h"
-// SENSOR configuration
-#ifdef LIS
+// Pick a sensor
+#ifdef LIS // <------------- $ make sensor=LIS
 #include "LisConfigs.h"
 #endif
-#ifdef S13131
+#ifdef S13131 // <---------- $ make sensor=S13131
 #include "S13131Configs.h"
 #endif
+
+#include <unity.h>
+#include <Mock.h>
+#include "test_example.h"
+#include "test_VisCmd.h"
+#include "StatusCodes.h" // Python-to-Firmware communication status codes
+#include "HardwareFake.h" // Fake hardware (registers, pins)
 
 void (*setUp)(void); void (*tearDown)(void);
 void EmptySetUp(void){}
 void EmptyTearDown(void){}
+Mock_s *mock; // Tests record mocked calls and call args here
 bool Yep=true, Nope=false; // Yep/Nope := tests on/off
 
 void test_example(bool run_test)
