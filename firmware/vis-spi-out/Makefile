@@ -1,24 +1,5 @@
+sensor ?= LIS
 unit-test: build/test_runner.md
-# Print the variables in this Makefile{{{
-print-vars:
-	@echo unit test files:
-	@echo "    "$(tests)
-	@echo
-	@echo vis-spi-out object files:
-	@echo "    "$(vis-spi-out_o)
-	@echo
-	@echo mock-c object files:
-	@echo "    "$(mock-c_o)
-	@echo
-	@echo lib object files:
-	@echo "    "$(lib_o)
-	@echo
-	@echo unit test CFLAGS:
-	@echo "    "$(CFLAGS_for_tests)
-	@echo
-	@echo unit test LFLAGS:
-	@echo "    "$(LFLAGS_for_tests)
-# }}}
 # Tests{{{
 tests := test/test_AutoExpose.c \
 		test/test_example.c \
@@ -47,6 +28,7 @@ lib_o := ../lib/build/BiColorLed.o \
 CFLAGS_for_tests = -include../lib/test/FakeAvr/interrupt.h \
 					-include../lib/test/FakeAvr/io.h \
 					-includestdbool.h \
+				-D$(sensor) \
 				-DUSE_FAKES \
 				-Isrc -I../lib/src \
 				-Itest -I../lib/test  -I../mock-c/code \
@@ -55,12 +37,40 @@ CFLAGS_for_tests = -include../lib/test/FakeAvr/interrupt.h \
 				-g -Wall -Wextra -pedantic -Winline
 LFLAGS_for_tests := -lglib-2.0 -lintl
 # }}}
-# {{{ Build Recipes
+# make print-vars -- Print the variables in this Makefile{{{
+print-vars:
+	@echo sensor: $(sensor)
+	@echo
+	@echo unit test files:
+	@echo "    "$(tests)
+	@echo
+	@echo unit test files:
+	@echo "    "$(tests)
+	@echo
+	@echo vis-spi-out object files:
+	@echo "    "$(vis-spi-out_o)
+	@echo
+	@echo mock-c object files:
+	@echo "    "$(mock-c_o)
+	@echo
+	@echo lib object files:
+	@echo "    "$(lib_o)
+	@echo
+	@echo unit test CFLAGS:
+	@echo "    "$(CFLAGS_for_tests)
+	@echo
+	@echo unit test LFLAGS:
+	@echo "    "$(LFLAGS_for_tests)
+# }}}
+# {{{ Recipes
 build/test_runner.md: build/test_runner.exe
 	$< > $@
-build/test_runner.exe: test/test_runner.c test/test_example.c\
+build/test_runner.exe: test/test_runner.c test/test_example.c test/test_VisCmd.c \
 					build/Example.o \
-					$(mock-c_o)
+					build/VisCmd.o \
+					$(mock-c_o) \
+					../lib/build/BiColorLed.o \
+					../lib/build/Queue.o
 	gcc $^ -o $@ $(CFLAGS_for_tests) $(LFLAGS_for_tests)
 build/real_test_runner.exe: test/test_runner.c $(tests) \
 					$(vis-spi-out_o) \
