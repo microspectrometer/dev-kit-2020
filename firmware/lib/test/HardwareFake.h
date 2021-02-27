@@ -7,9 +7,9 @@
 /* #include "SpiMaster-HardwareFake.h" */
 #include "Spi-HardwareFake.h"
 #include "UartSpi-HardwareFake.h"
-/* #ifdef LIS */
+#ifdef LIS
 #include "Lis-HardwareFake.h"
-/* #endif */
+#endif
 #ifdef S13131
 #include "S13131-HardwareFake.h"
 #endif

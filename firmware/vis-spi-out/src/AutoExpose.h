@@ -48,27 +48,27 @@
 #include <stdbool.h>
 
 //! maximum number of tries before AutoExpose() gives up
-uint8_t max_tries;
+extern uint8_t max_tries;
 
 //! AutoExpose() ignores pixels below `start_pixel`.
-uint16_t start_pixel;
+extern uint16_t start_pixel;
 
 //! AutoExpose() ignores pixels above `stop_pixel`.
-uint16_t stop_pixel;
+extern uint16_t stop_pixel;
 
 //! target peak counts for AutoExpose().
-uint16_t target;
+extern uint16_t target;
 
 //! `target` ± `target_tolerance` is the target peak counts range for AutoExpose().
-uint16_t target_tolerance;
+extern uint16_t target_tolerance;
 
 //! `max_dark` is a conservative estimate on the largest dark offset
-uint16_t max_dark;
+extern uint16_t max_dark;
 
 /** `min_exposure` is 100 microseconds (five 20µs-cycles)\n 
  * This is a safe lower limit to avoid dead frames.
  * */
-uint16_t min_exposure;
+extern uint16_t min_exposure;
 
 /** `max_exposure` is 1.31 seconds (65535 20µs-cycles)\n 
  * This is the 16-bit limit, UINT16_MAX, but it is also a
@@ -81,7 +81,7 @@ uint16_t min_exposure;
  *   `cycles` in the JSON file from size:2 to size:4.
  * .
  * */
-uint16_t max_exposure;
+extern uint16_t max_exposure;
 
 inline uint16_t _MinPeak(uint16_t target, uint16_t target_tolerance)
 {

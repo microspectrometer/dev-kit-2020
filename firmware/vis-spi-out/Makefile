@@ -1,9 +1,9 @@
 sensor ?= LIS
 unit-test: build/test_runner.md
 # Tests{{{
-tests := test/test_AutoExpose.c \
-		test/test_example.c \
+tests := test/test_example.c \
 		test/test_VisCmd.c
+# test/test_AutoExpose.c
 # }}}
 # Object files{{{
 vis-spi-out_o := build/AutoExpose.o \
@@ -66,25 +66,12 @@ print-vars:
 # {{{ Recipes
 build/test_runner.md: build/test_runner.exe
 	$< > $@
-build/test_runner.exe: test/test_runner.c test/test_example.c test/test_VisCmd.c \
-					$(vis-spi-out_o) \
-					$(mock-c_o) \
-					../lib/build/BiColorLed.o \
-					../lib/build/ReadWriteBits.o \
-					../lib/build/StatusCode.o \
-					../lib/build/Queue.o \
-					../lib/build/Spi.o \
-					../lib/build/SpiSlave.o \
-					../lib/build/Lis.o \
-					../lib/build/Spi_faked.o \
-					../lib/build/SpiSlave_faked.o \
-					../lib/build/Lis_faked.o
-	gcc $^ -o $@ $(CFLAGS_for_tests) $(LFLAGS_for_tests)
-build/real_test_runner.exe: test/test_runner.c $(tests) \
+# build/test_runner.exe: test/test_runner.c test/test_example.c test/test_VisCmd.c
+build/test_runner.exe: test/test_runner.c $(tests) \
 					$(vis-spi-out_o) \
 					$(mock-c_o) \
 					$(lib_o)
-	gcc $(CFLAGS_for_tests) $^ -o $@ $(LFLAGS_for_tests)
+	gcc $^ -o $@ $(CFLAGS_for_tests) $(LFLAGS_for_tests)
 build/%.o: src/%.c src/%.h
 	gcc -c $< -o $@ $(CFLAGS_for_tests)
 ../mock-c/build/%.o: ../mock-c/code/%.c ../mock-c/code/%.h ../mock-c/code/unity_internals.h
