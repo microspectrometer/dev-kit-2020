@@ -236,7 +236,7 @@ change. This is how I determined the correct steps to make
 ## Conventional C yields inefficient assembly
 
 *The simplest example is the bit manipulation functions discussed
-below. The same reasoning applies to all the `lib` code.*
+below. The same reasoning applies to all the library code.*
 
 The [ReadWriteBits](ReadWriteBits_8h_source.html) library defines
 bit manipulation functions (for readability and testability). In
