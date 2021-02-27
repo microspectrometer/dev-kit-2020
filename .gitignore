@@ -2,11 +2,13 @@
 *.sw?
 __pycache__
 *.o
+*.exe
 *.map
 *.log
 *.avra
 cscope.out
 tags
+lib-tags
 *.b#?
 *.l#?
 *.s#?
