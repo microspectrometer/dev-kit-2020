@@ -225,7 +225,7 @@ Why so much inline</h1>
 <p>Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change. This is how I determined the correct steps to make <code>inline</code> actually inline the code.</p>
 <h2><a class="anchor" id="autotoc_md11"></a>
 Conventional C yields inefficient assembly</h2>
-<p><em>The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the <code>lib</code> code.</em></p>
+<p><em>The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the library code.</em></p>
 <p>The <a href="ReadWriteBits_8h_source.html">ReadWriteBits</a> library defines bit manipulation functions (for readability and testability). In the conventional approach, this source file is compiled without knowing the register addresses that client code will pass to its functions. But the register address determines which instructions are allowed! Without knowing the address, the compiler has to use the most generic instruction.</p>
 <p>The bit manipulation function might be passed an I/O register in the range <code>0x00 - 0x1F</code>. These registers allow <em>fast</em> instructions like <code>sbi</code>, <code>cbi</code>, etc.</p>
 <p>Or the bit manipulation function might be called on an I/O register in the range <code>0x20 - 0x3F</code>. In this range the bit manipulation has to be done with entire bytes using instructions <code>in</code> and <code>out</code>.</p>

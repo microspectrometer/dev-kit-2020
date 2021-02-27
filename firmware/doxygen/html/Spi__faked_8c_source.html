@@ -78,10 +78,10 @@ $(function() {
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;Spi_faked.h&quot;</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Spi_8h.html">Spi.h</a>&quot;</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">/* =====[ Mock _SpiTransferIsDone() ]===== */</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">static</span> RecordedCall * Record__SpiTransferIsDone(<span class="keywordtype">void</span>)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">static</span> <a class="code" href="structRecordedCall.html">RecordedCall</a> * Record__SpiTransferIsDone(<span class="keywordtype">void</span>)</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{ <span class="comment">// Define **what is recorded** when fake is called.</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">char</span> <span class="keyword">const</span> *call_name = <span class="stringliteral">&quot;_SpiTransferIsDone&quot;</span>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    RecordedCall *record_of_this_call = RecordedCall_new(call_name);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="structRecordedCall.html">RecordedCall</a> *record_of_this_call = RecordedCall_new(call_name);</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">return</span> record_of_this_call;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
 <div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="Spi__faked_8c.html#a81d029e41869a7ff06b4b7513b6a764e">   48</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="Spi__faked_8c.html#a81d029e41869a7ff06b4b7513b6a764e">_SpiTransferIsDone_fake</a>(<span class="keywordtype">void</span>)</div>
@@ -92,10 +92,10 @@ $(function() {
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">/* =====[ Mock ClearSpiInterruptFlag() ]===== */</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">static</span> RecordedCall * Record_ClearSpiInterruptFlag(<span class="keywordtype">void</span>)</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">static</span> <a class="code" href="structRecordedCall.html">RecordedCall</a> * Record_ClearSpiInterruptFlag(<span class="keywordtype">void</span>)</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;{ <span class="comment">// Define **what is recorded** when fake is called.</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">char</span> <span class="keyword">const</span> *call_name = <span class="stringliteral">&quot;ClearSpiInterruptFlag&quot;</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    RecordedCall *record_of_this_call = RecordedCall_new(call_name);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="structRecordedCall.html">RecordedCall</a> *record_of_this_call = RecordedCall_new(call_name);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordflow">return</span> record_of_this_call;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
 <div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="Spi__faked_8c.html#ac31e89e7b46858b01aef220725ee772d">   70</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="Spi__faked_8c.html#ac31e89e7b46858b01aef220725ee772d">ClearSpiInterruptFlag_fake</a>(<span class="keywordtype">void</span>)</div>
@@ -107,6 +107,7 @@ $(function() {
 <div class="ttc" id="aSpi_8h_html"><div class="ttname"><a href="Spi_8h.html">Spi.h</a></div><div class="ttdoc">Spi.h declares SPI hardware types and variables common to the SPI Master and SPI Slave.</div></div>
 <div class="ttc" id="aSpi__faked_8c_html_a81d029e41869a7ff06b4b7513b6a764e"><div class="ttname"><a href="Spi__faked_8c.html#a81d029e41869a7ff06b4b7513b6a764e">_SpiTransferIsDone_fake</a></div><div class="ttdeci">bool _SpiTransferIsDone_fake(void)</div><div class="ttdef"><b>Definition:</b> <a href="Spi__faked_8c_source.html#l00048">Spi_faked.c:48</a></div></div>
 <div class="ttc" id="aSpi__faked_8c_html_ac31e89e7b46858b01aef220725ee772d"><div class="ttname"><a href="Spi__faked_8c.html#ac31e89e7b46858b01aef220725ee772d">ClearSpiInterruptFlag_fake</a></div><div class="ttdeci">void ClearSpiInterruptFlag_fake(void)</div><div class="ttdef"><b>Definition:</b> <a href="Spi__faked_8c_source.html#l00070">Spi_faked.c:70</a></div></div>
+<div class="ttc" id="astructRecordedCall_html"><div class="ttname"><a href="structRecordedCall.html">RecordedCall</a></div><div class="ttdef"><b>Definition:</b> <a href="RecordedCall_8h_source.html#l00008">RecordedCall.h:8</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

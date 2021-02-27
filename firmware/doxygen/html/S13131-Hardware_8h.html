@@ -75,7 +75,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-512 CMOS image sesnsor.  
+<p>S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-512 CMOS image sensor.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;avr/io.h&gt;</code><br />
@@ -85,15 +85,30 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ab66e27c0ecd2ee5ea0c5b3ff9eea057a"><td class="memItemLeft" align="right" valign="top"><a id="ab66e27c0ecd2ee5ea0c5b3ff9eea057a"></a>
-s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_ddr1</b> = &amp;DDRD</td></tr>
-<tr class="separator:ab66e27c0ecd2ee5ea0c5b3ff9eea057a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae26f2fbc703c5fc71c645b88bcd461b1"><td class="memItemLeft" align="right" valign="top"><a id="ae26f2fbc703c5fc71c645b88bcd461b1"></a>
-s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_port1</b> = &amp;PORTD</td></tr>
-<tr class="separator:ae26f2fbc703c5fc71c645b88bcd461b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b96670d5bb19e20c43770bc9c4f26d3"><td class="memItemLeft" align="right" valign="top"><a id="a1b96670d5bb19e20c43770bc9c4f26d3"></a>
-s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_pin1</b> = &amp;PIND</td></tr>
-<tr class="separator:a1b96670d5bb19e20c43770bc9c4f26d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1fb025cb43969639a27502f3ec7bc3d"><td class="memItemLeft" align="right" valign="top"><a id="ac1fb025cb43969639a27502f3ec7bc3d"></a>
+s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_ddr</b> = &amp;DDRD</td></tr>
+<tr class="separator:ac1fb025cb43969639a27502f3ec7bc3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1a5aa0f97cb92842b9baf458bd4623d"><td class="memItemLeft" align="right" valign="top"><a id="aa1a5aa0f97cb92842b9baf458bd4623d"></a>
+s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_port</b> = &amp;PORTD</td></tr>
+<tr class="separator:aa1a5aa0f97cb92842b9baf458bd4623d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69011331785646675fa0920d825793d3"><td class="memItemLeft" align="right" valign="top"><a id="a69011331785646675fa0920d825793d3"></a>
+s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_pin</b> = &amp;PIND</td></tr>
+<tr class="separator:a69011331785646675fa0920d825793d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adac9c1e0788d3d8255295bae8d4aed52"><td class="memItemLeft" align="right" valign="top"><a id="adac9c1e0788d3d8255295bae8d4aed52"></a>
+s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_TCCR0A</b> = &amp;TCCR0A</td></tr>
+<tr class="separator:adac9c1e0788d3d8255295bae8d4aed52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8984e497ff455d578fa26b6f84832c83"><td class="memItemLeft" align="right" valign="top"><a id="a8984e497ff455d578fa26b6f84832c83"></a>
+s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_TCCR0B</b> = &amp;TCCR0B</td></tr>
+<tr class="separator:a8984e497ff455d578fa26b6f84832c83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab424f7bca56a0476bcb40c611c4868c3"><td class="memItemLeft" align="right" valign="top"><a id="ab424f7bca56a0476bcb40c611c4868c3"></a>
+s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_TIFR0</b> = &amp;TIFR0</td></tr>
+<tr class="separator:ab424f7bca56a0476bcb40c611c4868c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e69f4e5c9d14b91f299016b19d08a37"><td class="memItemLeft" align="right" valign="top"><a id="a0e69f4e5c9d14b91f299016b19d08a37"></a>
+s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_OCR0A</b> = &amp;OCR0A</td></tr>
+<tr class="separator:a0e69f4e5c9d14b91f299016b19d08a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca706d4745bb6869a897ee625f9e65e3"><td class="memItemLeft" align="right" valign="top"><a id="aca706d4745bb6869a897ee625f9e65e3"></a>
+s13131_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_OCR0B</b> = &amp;OCR0B</td></tr>
+<tr class="separator:aca706d4745bb6869a897ee625f9e65e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa35c2a3c5e68bdf827054ae724703e1e"><td class="memItemLeft" align="right" valign="top"><a id="aa35c2a3c5e68bdf827054ae724703e1e"></a>
 s13131_pin&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_Clk</b> = PD5</td></tr>
 <tr class="separator:aa35c2a3c5e68bdf827054ae724703e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,9 +118,39 @@ s13131_pin&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_St</b> =
 <tr class="memitem:ac3ec3460562a532e06163ad0680a008a"><td class="memItemLeft" align="right" valign="top"><a id="ac3ec3460562a532e06163ad0680a008a"></a>
 s13131_pin&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_Eos</b> = PD7</td></tr>
 <tr class="separator:ac3ec3460562a532e06163ad0680a008a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e3e91cf78daa43e5f970eb53471072f"><td class="memItemLeft" align="right" valign="top"><a id="a3e3e91cf78daa43e5f970eb53471072f"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_WGM00</b> = WGM00</td></tr>
+<tr class="separator:a3e3e91cf78daa43e5f970eb53471072f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17f6afe3f6ce9d34497e44aff745b49c"><td class="memItemLeft" align="right" valign="top"><a id="a17f6afe3f6ce9d34497e44aff745b49c"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_WGM01</b> = WGM01</td></tr>
+<tr class="separator:a17f6afe3f6ce9d34497e44aff745b49c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa867bc4a6745dacee87bbbcad0a858e9"><td class="memItemLeft" align="right" valign="top"><a id="aa867bc4a6745dacee87bbbcad0a858e9"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_WGM02</b> = WGM02</td></tr>
+<tr class="separator:aa867bc4a6745dacee87bbbcad0a858e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91710d17ed27ad01bcae71bba8e1ab59"><td class="memItemLeft" align="right" valign="top"><a id="a91710d17ed27ad01bcae71bba8e1ab59"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_CS00</b> = CS00</td></tr>
+<tr class="separator:a91710d17ed27ad01bcae71bba8e1ab59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5cd6aa75c6e972aeaee253815f6c6d3"><td class="memItemLeft" align="right" valign="top"><a id="aa5cd6aa75c6e972aeaee253815f6c6d3"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_CS01</b> = CS01</td></tr>
+<tr class="separator:aa5cd6aa75c6e972aeaee253815f6c6d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae840db8e398d39d0127914d118ba089a"><td class="memItemLeft" align="right" valign="top"><a id="ae840db8e398d39d0127914d118ba089a"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_CS02</b> = CS02</td></tr>
+<tr class="separator:ae840db8e398d39d0127914d118ba089a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af46221024197676f0cb387cbc71dca66"><td class="memItemLeft" align="right" valign="top"><a id="af46221024197676f0cb387cbc71dca66"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_COM0B0</b> = COM0B0</td></tr>
+<tr class="separator:af46221024197676f0cb387cbc71dca66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a725e64a7af4ab9bdc16f7ad844a8a56e"><td class="memItemLeft" align="right" valign="top"><a id="a725e64a7af4ab9bdc16f7ad844a8a56e"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_COM0B1</b> = COM0B1</td></tr>
+<tr class="separator:a725e64a7af4ab9bdc16f7ad844a8a56e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1aeaa5e7f8f8c7af6f891cf126836f59"><td class="memItemLeft" align="right" valign="top"><a id="a1aeaa5e7f8f8c7af6f891cf126836f59"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_OCF0A</b> = OCF0A</td></tr>
+<tr class="separator:a1aeaa5e7f8f8c7af6f891cf126836f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62f92576a14c7c04eb7d82342bb79925"><td class="memItemLeft" align="right" valign="top"><a id="a62f92576a14c7c04eb7d82342bb79925"></a>
+s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_OCF0B</b> = OCF0B</td></tr>
+<tr class="separator:a62f92576a14c7c04eb7d82342bb79925"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-512 CMOS image sesnsor. </p>
+<div class="textblock"><p>S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-512 CMOS image sensor. </p>
 
 <p class="definition">Definition in file <a class="el" href="S13131-Hardware_8h_source.html">S13131-Hardware.h</a>.</p>
 </div></div><!-- contents -->

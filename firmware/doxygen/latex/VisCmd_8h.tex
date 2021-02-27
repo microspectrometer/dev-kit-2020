@@ -66,7 +66,7 @@ uint8\+\_\+t \mbox{\hyperlink{VisCmd_8h_aa0b58e2e3aa5a94e743e302ea7737e82}{frame
 
 
 \doxysubsection{Detailed Description}
-\hypertarget{VisCmd_8h_autotoc_md35}{}\doxysubsection{API for vis-\/spi-\/out.\+c}\label{VisCmd_8h_autotoc_md35}
+\hypertarget{VisCmd_8h_autotoc_md90}{}\doxysubsection{API for vis-\/spi-\/out.\+c}\label{VisCmd_8h_autotoc_md90}
 
 \begin{DoxyItemize}
 \item \mbox{\hyperlink{VisCmd_8h_ac2b6a4bbe89e22076102bc8a65c69ecd}{Null\+Command()}}
@@ -135,7 +135,7 @@ Auto\+Expose behavior\+:~\newline
 
 \item gives up if it iterates for max tries~\newline
 
-\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md27}{}\doxysubsection{Auto\+Expose uses a \char`\"{}\+Take Back Half\char`\"{} algorithm}\label{VisCmd.c_autotoc_md27}
+\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md82}{}\doxysubsection{Auto\+Expose uses a \char`\"{}\+Take Back Half\char`\"{} algorithm}\label{VisCmd.c_autotoc_md82}
 Find an exposure time that gets a peak within +/-\/5\% of the target peak value. On each iteration, multiply exposure time, either by\+:
 \begin{DoxyItemize}
 \item {\ttfamily 10}, if peak is {\itshape below} the {\bfseries{dark background}}
@@ -165,7 +165,7 @@ Find an exposure time that gets a peak within +/-\/5\% of the target peak value.
 \item or the peak fails to land in the ±5\% tolerance after 10 iterations.
 \end{DoxyItemize}
 
-The {\bfseries{large}} tolerance, {\bfseries{±5\%}}, makes the algorithm fast. It usually settles within a few iterations.\hypertarget{VisCmd.c_autotoc_md28}{}\doxysubsubsection{target range}\label{VisCmd.c_autotoc_md28}
+The {\bfseries{large}} tolerance, {\bfseries{±5\%}}, makes the algorithm fast. It usually settles within a few iterations.\hypertarget{VisCmd.c_autotoc_md83}{}\doxysubsubsection{target range}\label{VisCmd.c_autotoc_md83}
 The range of target values is configured by setting {\ttfamily target} and {\ttfamily target\+\_\+tolerance}. The recommended values are\+:
 \begin{DoxyItemize}
 \item {\ttfamily target}\+: {\bfseries{46420}} counts
@@ -192,7 +192,7 @@ The range of target values is configured by setting {\ttfamily target} and {\ttf
 \item gain {\bfseries{1x}}
 \item {\bfseries{all rows}} active
 \end{DoxyItemize}
-\end{DoxyItemize}This target range, {\bfseries{\mbox{[} 43143 \+: 49697 \mbox{]}}}, represents 10\% of the full-\/scale reading, {\bfseries{65535}}.\hypertarget{VisCmd.c_autotoc_md29}{}\doxysubsubsection{max\+\_\+dark}\label{VisCmd.c_autotoc_md29}
+\end{DoxyItemize}This target range, {\bfseries{\mbox{[} 43143 \+: 49697 \mbox{]}}}, represents 10\% of the full-\/scale reading, {\bfseries{65535}}.\hypertarget{VisCmd.c_autotoc_md84}{}\doxysubsubsection{max\+\_\+dark}\label{VisCmd.c_autotoc_md84}
 Signal below {\ttfamily max\+\_\+dark} is considered {\bfseries{no signal}} because it is {\itshape indistinguishable} from the dark background.
 \begin{DoxyItemize}
 \item use {\bfseries{4500}} counts for {\ttfamily max\+\_\+dark}
@@ -215,14 +215,14 @@ Signal below {\ttfamily max\+\_\+dark} is considered {\bfseries{no signal}} beca
 \item trims the output offset voltage of the LIS-\/770i
 \end{DoxyItemize}
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md30}{}\doxysubsection{Algorithm Setup}\label{VisCmd.c_autotoc_md30}
-\hypertarget{VisCmd.c_autotoc_md31}{}\doxysubsubsection{Initial state}\label{VisCmd.c_autotoc_md31}
-Auto\+Expose is not done\hypertarget{VisCmd.c_autotoc_md32}{}\doxysubsubsection{Method to get peak value}\label{VisCmd.c_autotoc_md32}
+\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md85}{}\doxysubsection{Algorithm Setup}\label{VisCmd.c_autotoc_md85}
+\hypertarget{VisCmd.c_autotoc_md86}{}\doxysubsubsection{Initial state}\label{VisCmd.c_autotoc_md86}
+Auto\+Expose is not done\hypertarget{VisCmd.c_autotoc_md87}{}\doxysubsubsection{Method to get peak value}\label{VisCmd.c_autotoc_md87}
 
 \begin{DoxyItemize}
 \item expose the LIS-\/770i and readout one frame of data
 \item return the peak value in the frame
-\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md33}{}\doxysubsubsection{Method to clamp exposure time}\label{VisCmd.c_autotoc_md33}
+\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md88}{}\doxysubsubsection{Method to clamp exposure time}\label{VisCmd.c_autotoc_md88}
 Exposure time is stored in 16-\/bit global {\ttfamily exposure\+\_\+ticks}.
 
 Clamp adjustments to {\ttfamily exposure\+\_\+ticks} between {\bfseries{1}} and {\bfseries{65535}}.
@@ -238,7 +238,7 @@ When multiplying {\ttfamily exposure\+\_\+ticks} by\+:
 \item {\bfseries{÷2}} is a bit-\/shift, so result is {\bfseries{integer truncated}}
 \item if result $<$ 1, clamp {\ttfamily exposure\+\_\+ticks} at 1
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md34}{}\doxysubsection{Algorithm}\label{VisCmd.c_autotoc_md34}
+\end{DoxyItemize}\hypertarget{VisCmd.c_autotoc_md89}{}\doxysubsection{Algorithm}\label{VisCmd.c_autotoc_md89}
 while {\bfseries{Auto\+Expose is not done}}\+:
 \begin{DoxyItemize}
 \item expose LIS-\/770i
@@ -336,7 +336,7 @@ Definition at line 276 of file Vis\+Cmd.\+h.
 \doxysubsubsection{\texorpdfstring{GetPeak()}{GetPeak()}}
 {\footnotesize\ttfamily uint16\+\_\+t Get\+Peak (\begin{DoxyParamCaption}\item[{uint16\+\_\+t const}]{\+\_\+start\+\_\+pixel,  }\item[{uint16\+\_\+t const}]{\+\_\+stop\+\_\+pixel }\end{DoxyParamCaption})}
 
-\hypertarget{VisCmd.c_autotoc_md26}{}\doxysubsection{Algorithm}\label{VisCmd.c_autotoc_md26}
+\hypertarget{VisCmd.c_autotoc_md81}{}\doxysubsection{Algorithm}\label{VisCmd.c_autotoc_md81}
 
 \begin{DoxyItemize}
 \item {\ttfamily peak} starts at 0

@@ -85,7 +85,7 @@ $(function() {
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="LisConfigs_8h.html">LisConfigs.h</a>&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">// ---Test Framework requires runner to define setup/teardown/mock pointers---</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;void (*setUp)(void); void (*tearDown)(void);</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;Mock_s *mock; <span class="comment">// record calls/args to mocked-out libs</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<a class="code" href="structMock__s.html">Mock_s</a> *mock; <span class="comment">// record calls/args to mocked-out libs</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">// ---Define an empty setup/teardown for pointing to---</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keywordtype">void</span> NothingToSetUp(<span class="keywordtype">void</span>){}</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keywordtype">void</span> NothingToTearDown(<span class="keywordtype">void</span>){}</div>
@@ -751,6 +751,7 @@ $(function() {
 <div class="ttc" id="aLisConfigs_8h_html"><div class="ttname"><a href="LisConfigs_8h.html">LisConfigs.h</a></div><div class="ttdoc">See LisConfig.h for context.</div></div>
 <div class="ttc" id="aSpiSlave-HardwareFake_8h_html_a7a843d0582334c868f71c363b2aff63c"><div class="ttname"><a href="SpiSlave-HardwareFake_8h.html#a7a843d0582334c868f71c363b2aff63c">Spi_SPSR</a></div><div class="ttdeci">spi_ptr Spi_SPSR</div><div class="ttdoc">SPI Status Register.</div><div class="ttdef"><b>Definition:</b> <a href="SpiSlave-HardwareFake_8h_source.html#l00027">SpiSlave-HardwareFake.h:27</a></div></div>
 <div class="ttc" id="aStatusCodes_8h_html"><div class="ttname"><a href="StatusCodes_8h.html">StatusCodes.h</a></div><div class="ttdoc">See StatusCode.h for context.</div></div>
+<div class="ttc" id="astructMock__s_html"><div class="ttname"><a href="structMock__s.html">Mock_s</a></div><div class="ttdef"><b>Definition:</b> <a href="Mock_8c_source.html#l00005">Mock.c:5</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

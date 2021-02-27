@@ -87,12 +87,12 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a7e0a5de44d0f452158db53327d61241b"><td class="memItemLeft" align="right" valign="top"><a id="a7e0a5de44d0f452158db53327d61241b"></a>
-static RecordedCall *&#160;</td><td class="memItemRight" valign="bottom"><b>Record__SpiTransferIsDone</b> (void)</td></tr>
+static <a class="el" href="structRecordedCall.html">RecordedCall</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>Record__SpiTransferIsDone</b> (void)</td></tr>
 <tr class="separator:a7e0a5de44d0f452158db53327d61241b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81d029e41869a7ff06b4b7513b6a764e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spi__faked_8c.html#a81d029e41869a7ff06b4b7513b6a764e">_SpiTransferIsDone_fake</a> (void)</td></tr>
 <tr class="separator:a81d029e41869a7ff06b4b7513b6a764e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac461b8a4869f329acff3e6eba9eab1eb"><td class="memItemLeft" align="right" valign="top"><a id="ac461b8a4869f329acff3e6eba9eab1eb"></a>
-static RecordedCall *&#160;</td><td class="memItemRight" valign="bottom"><b>Record_ClearSpiInterruptFlag</b> (void)</td></tr>
+static <a class="el" href="structRecordedCall.html">RecordedCall</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>Record_ClearSpiInterruptFlag</b> (void)</td></tr>
 <tr class="separator:ac461b8a4869f329acff3e6eba9eab1eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac31e89e7b46858b01aef220725ee772d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spi__faked_8c.html#ac31e89e7b46858b01aef220725ee772d">ClearSpiInterruptFlag_fake</a> (void)</td></tr>
 <tr class="separator:ac31e89e7b46858b01aef220725ee772d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -106,9 +106,10 @@ static RecordedCall *&#160;</td><td class="memItemRight" valign="bottom"><b>Reco
 </li>
 <li><b>args passed</b> by those calls.<br  />
  <code>TestSuite.exe</code> seg faults if any test accesses <code>mock</code> without defining <code>mock</code>.<br  />
- <code>Mock.h</code> declares <code>mock</code>:<br  />
- <div class="fragment"><div class="line"><span class="keyword">extern</span> Mock_s mock;</div>
-</div><!-- fragment --> <code>mock</code> is a global that is defined in <code>test_runner</code>: <div class="fragment"><div class="line">Mock_s *mock;</div>
+ <code><a class="el" href="Mock_8h_source.html">Mock.h</a></code> declares <code>mock</code>:<br  />
+ <div class="fragment"><div class="line"><span class="keyword">extern</span> <a class="code" href="structMock__s.html">Mock_s</a> mock;</div>
+<div class="ttc" id="astructMock__s_html"><div class="ttname"><a href="structMock__s.html">Mock_s</a></div><div class="ttdef"><b>Definition:</b> <a href="Mock_8c_source.html#l00005">Mock.c:5</a></div></div>
+</div><!-- fragment --> <code>mock</code> is a global that is defined in <code>test_runner</code>: <div class="fragment"><div class="line"><a class="code" href="structMock__s.html">Mock_s</a> *mock;</div>
 </div><!-- fragment --> The memory for <code>mock</code> is allocated and deallocated in the setup/teardown for each test that calls the <code>faked</code> call.<br  />
  Create/destroy <code>mock</code> for an entire test suite by pointing <code>setUp</code> and <code>tearDown</code> in the <code>test_runner</code>:<br  />
  <div class="fragment"><div class="line">setUp = SetUp_Mock; tearDown = TearDown_Mock;</div>

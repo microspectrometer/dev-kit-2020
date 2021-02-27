@@ -1,6 +1,27 @@
 
+\begin{DoxyItemize}
+\item look at {\ttfamily how-\/to-\/add-\/a-\/new-\/sensor.\+md}
+\begin{DoxyItemize}
+\item up to implementing what I describe in \char`\"{}\+A macro is defined by sensor=\char`\"{}
+\item but ;mktgc is failing with linker error
+\begin{DoxyItemize}
+\item this was broken before I branched
+\item really? i left his project with a broken unit-\/test build?
+\item yes -- and even worse, I left no todo or task mentioning this broken state
+\end{DoxyItemize}
+\item OK, looks like I need to walk through this by hand
+\item see cleaned up error messages here\+:
+\begin{DoxyItemize}
+\item temp-\/linker-\/error-\/mktgc-\/in-\/lib-\/folder.\+md
+\item temp-\/linker-\/error-\/mktgc-\/in-\/vis-\/spi-\/out-\/folder.\+md
+\end{DoxyItemize}
+\item need to walk-\/through what ;mktgc does to figure out wtf is going on
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+
 \begin{DoxyCode}{0}
-\DoxyCodeLine{vim -\/S \string~/csp-\/overflow.vim}
+\DoxyCodeLine{;s1}
 
 \end{DoxyCode}
 
@@ -18,6 +39,13 @@
 \DoxyCodeLine{git checkout master}
 \DoxyCodeLine{git merge S13131}
 \DoxyCodeLine{git branch -\/d S13131}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{vim -\/S \string~/csp-\/overflow.vim}
 
 \end{DoxyCode}
  

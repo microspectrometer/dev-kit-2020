@@ -89,7 +89,7 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">// ---Test Framework requires runner to define setup/teardown/mock pointers---</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;void (*setUp)(void); void (*tearDown)(void);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;Mock_s *mock; <span class="comment">// record calls/args to mocked-out libs</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<a class="code" href="structMock__s.html">Mock_s</a> *mock; <span class="comment">// record calls/args to mocked-out libs</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">// ---Define an empty setup/teardown for pointing to---</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span> NothingToSetUp(<span class="keywordtype">void</span>){}</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keywordtype">void</span> NothingToTearDown(<span class="keywordtype">void</span>){}</div>
@@ -315,13 +315,15 @@ $(function() {
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="keywordtype">int</span> main(<span class="keywordtype">void</span>)</div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;{</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    UNITY_BEGIN();</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    Example_tests(Nope);</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    AutoExpose_tests(Yep);</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    VisCmd_tests(Nope);</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="keywordflow">return</span> UNITY_END();</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;}</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    Example_tests(Yep);</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="comment">/* AutoExpose_tests(Yep); */</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    AutoExpose_tests(Nope);</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    VisCmd_tests(Nope);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    <span class="keywordflow">return</span> UNITY_END();</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;}</div>
 <div class="ttc" id="aLisConfigs_8h_html"><div class="ttname"><a href="LisConfigs_8h.html">LisConfigs.h</a></div><div class="ttdoc">See LisConfig.h for context.</div></div>
 <div class="ttc" id="aStatusCodes_8h_html"><div class="ttname"><a href="StatusCodes_8h.html">StatusCodes.h</a></div><div class="ttdoc">See StatusCode.h for context.</div></div>
+<div class="ttc" id="astructMock__s_html"><div class="ttname"><a href="structMock__s.html">Mock_s</a></div><div class="ttdef"><b>Definition:</b> <a href="Mock_8c_source.html#l00005">Mock.c:5</a></div></div>
 <div class="ttc" id="astructQueue__s_html"><div class="ttname"><a href="structQueue__s.html">Queue_s</a></div><div class="ttdoc">Queue uses a byte array as a circular buffer.</div><div class="ttdef"><b>Definition:</b> <a href="Queue_8h_source.html#l00027">Queue.h:27</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['meeting_20with_20sean_202020_2d06_2d27_349',['Meeting with Sean 2020-06-27',['../md_todo.html',1,'']]]
+  ['how_2dto_2dadd_2da_2dnew_2dsensor_366',['how-to-add-a-new-sensor',['../md_how_to_add_a_new_sensor.html',1,'']]]
 ];

@@ -1,0 +1,424 @@
+for build/\+Lis.\+o, build/test\+\_\+\+Lis.\+o, and build/\+Lis\+\_\+faked.\+o\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/lib/src/Lis.h|394|}
+\DoxyCodeLine{multiple definition of `exposure\_ticks';}
+\DoxyCodeLine{build/test\_runner.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/lib/src/Lis.h:394: first defined here}
+
+\end{DoxyCode}
+\hypertarget{md_temp_linker_error__build_unit_tests_autotoc_md69}{}\doxysection{;mktgc in vis-\/spi-\/out folder}\label{md_temp_linker_error__build_unit_tests_autotoc_md69}
+for ../lib/build/\+Lis.o, build/test\+\_\+\+Vis\+Cmd.\+o, build/test\+\_\+\+Auto\+Expose.\+o, build/\+Vis\+Cmd.\+o, ../lib/build/\+Lis\+\_\+faked.o
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{../lib/src/Lis.h|394|}
+\DoxyCodeLine{multiple definition of `exposure\_ticks';}
+\DoxyCodeLine{build/test\_runner.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/../lib/src/Lis.h:394: first defined here}
+
+\end{DoxyCode}
+\hypertarget{md_temp_linker_error__build_unit_tests_autotoc_md70}{}\doxysection{Problem happens when linking}\label{md_temp_linker_error__build_unit_tests_autotoc_md70}
+The problem is not in generating {\ttfamily test\+\_\+runner.\+o}. It is in linking {\ttfamily test\+\_\+runner.\+o} to make {\ttfamily Test\+Suite.\+exe}.
+
+{\itshape Here is the recipe\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{build/TestSuite.exe: build/test\_runner.o \$\{unittest\_o\} \(\backslash\)}
+\DoxyCodeLine{\$\{lib\_o\} \$\{test\_app\_o\} \$\{app\_o\} \$\{lib\_faked\_o\}}
+\DoxyCodeLine{    \$\{compiler\} \$(CFLAGS) \$\string^ -\/o \$@ \$(LFLAGS)}
+
+\end{DoxyCode}
+
+
+{\itshape See what it expands to using {\ttfamily -\/n -\/B}\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make -\/n -\/B build/TestSuite.exe compiler=gcc}
+
+\end{DoxyCode}
+
+
+First object files are made.
+
+{\itshape For example, {\ttfamily Lis.\+o} and {\ttfamily Lis\+\_\+faked.\+o}\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{gcc ... -\/c ../lib/src/Lis.c -\/o ../lib/build/Lis.o}
+\DoxyCodeLine{gcc ... -\/c ../lib/test/Lis\_faked.c -\/o ../lib/build/Lis\_faked.o}
+
+\end{DoxyCode}
+
+
+{\itshape I\textquotesingle{}m abbreviating the output with {\ttfamily ...} and only showing the relevant bits.}
+
+And then all the object files are linked with {\ttfamily test\+\_\+runner.\+o} to make {\ttfamily Test\+Suite.\+exe}.
+
+{\itshape For example, {\ttfamily Lis.\+o} and {\ttfamily Lis\+\_\+faked.\+o} get linked with {\ttfamily test\+\_\+runner.\+o}\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{gcc ... build/test\_runner.o ... ../lib/build/Lis.o ... ../lib/build/Lis\_faked.o}
+\DoxyCodeLine{-\/o build/TestSuite.exe ...}
+
+\end{DoxyCode}
+
+
+Compare this with how the {\ttfamily .elf} is built.
+
+{\itshape Expand the recipe with {\ttfamily -\/n -\/B}\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make -\/n -\/B build/vis-\/spi-\/out.elf}
+\DoxyCodeLine{}
+\DoxyCodeLine{avr-\/gcc ... build/vis-\/spi-\/out.o ... ../lib/build/Lis.o ...}
+\DoxyCodeLine{-\/o build/vis-\/spi-\/out.elf ...}
+
+\end{DoxyCode}
+
+
+I suspect linking {\ttfamily Lis.\+o} and {\ttfamily Lis\+\_\+faked.\+o} is never supposed to happen. {\ttfamily Lis.\+o} probably contain hardware values since there is not other {\ttfamily Lis} file being linked to make the {\ttfamily .elf}. And {\ttfamily Lis\+\_\+faked.\+o} probably contains fake hardware values. Hardware values are defined twice, hence the linker error.
+
+Now take a closer look at {\ttfamily Lis} and {\ttfamily Lis\+\_\+faked}.
+
+
+\begin{DoxyItemize}
+\item {\ttfamily \mbox{\hyperlink{Lis_8h}{lib/src/\+Lis.\+h}}} defines {\ttfamily exposure\+\_\+ticks}
+\item {\ttfamily DUSE\+\_\+\+FAKES} defines macro {\ttfamily USE\+\_\+\+FAKES}
+\begin{DoxyItemize}
+\item it doesn\textquotesingle{}t define it to be anything in particular
+\item the \char`\"{}definition\char`\"{} is just to make {\ttfamily \#ifdef USE\+\_\+\+FAKES} true
+\end{DoxyItemize}
+\item {\ttfamily \mbox{\hyperlink{Lis_8h}{Lis.\+h}}} includes {\ttfamily \mbox{\hyperlink{Lis__faked_8h_source}{Lis\+\_\+faked.\+h}}}, that\textquotesingle{}s OK
+\item Compare {\ttfamily \mbox{\hyperlink{Lis_8c_source}{Lis.\+c}}} and {\ttfamily \mbox{\hyperlink{Lis__faked_8c}{Lis\+\_\+faked.\+c}}}
+\begin{DoxyItemize}
+\item {\ttfamily \mbox{\hyperlink{Lis_8c_source}{Lis.\+c}}} includes {\ttfamily \mbox{\hyperlink{Lis_8h}{Lis.\+h}}}, of course
+\item {\ttfamily \mbox{\hyperlink{Lis__faked_8c}{Lis\+\_\+faked.\+c}}} includes {\ttfamily \mbox{\hyperlink{Lis_8h}{Lis.\+h}}}
+\item there\textquotesingle{}s the problem
+\item it\textquotesingle{}s OK for them to both include {\ttfamily \mbox{\hyperlink{Lis_8h}{Lis.\+h}}} if they are both in the same compilation unit -- in that scenario, {\ttfamily \mbox{\hyperlink{Lis_8h}{Lis.\+h}}} is only included once
+\item but if they are compiled separately and then linked, they each have their own definition of variables defined in {\ttfamily \mbox{\hyperlink{Lis_8h}{Lis.\+h}}}, variables like {\ttfamily exposure\+\_\+ticks}
+\end{DoxyItemize}
+\item So now the question is why am I linking {\ttfamily Lis.\+o} and {\ttfamily Lis\+\_\+faked.\+o} to build the unit tests?
+\end{DoxyItemize}
+
+Here\textquotesingle{}s the {\ttfamily Test\+Suite.\+exe} recipe again\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{build/TestSuite.exe: build/test\_runner.o \$\{unittest\_o\} \(\backslash\)}
+\DoxyCodeLine{\$\{lib\_o\} \$\{test\_app\_o\} \$\{app\_o\} \$\{lib\_faked\_o\}}
+\DoxyCodeLine{    \$\{compiler\} \$(CFLAGS) \$\string^ -\/o \$@ \$(LFLAGS)}
+
+\end{DoxyCode}
+
+
+Probably {\ttfamily lib\+\_\+o} and {\ttfamily lib\+\_\+faked\+\_\+o} are in conflict. {\ttfamily lib\+\_\+o} probably contains {\ttfamily Lis.\+o} and {\ttfamily lib\+\_\+faked\+\_\+o} probably contains {\ttfamily Lis\+\_\+faked.\+o}. But I can\textquotesingle{}t just get rid of {\ttfamily lib\+\_\+o} because it probably contains libs that are not faked.
+
+{\itshape Run {\ttfamily \+:make print-\/vars} to see the libs in variables {\ttfamily lib\+\_\+o} and {\ttfamily lib\+\_\+faked\+\_\+o}. Mark any libs that appear in both as {\ttfamily CONFLICT}}\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+\DoxyCodeLine{lib\_o:}
+\DoxyCodeLine{-\/ ../lib/build/BiColorLed.o}
+\DoxyCodeLine{-\/ ../lib/build/Spi.o <-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/ CONFLICT}
+\DoxyCodeLine{-\/ ../lib/build/UartSpi.o}
+\DoxyCodeLine{-\/ ../lib/build/Lis.o <-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/ CONFLICT}
+\DoxyCodeLine{-\/ ../lib/build/Flag.o}
+\DoxyCodeLine{-\/ ../lib/build/ReadWriteBits.o}
+\DoxyCodeLine{-\/ ../lib/build/StatusCode.o}
+\DoxyCodeLine{-\/ ../lib/build/Queue.o}
+\DoxyCodeLine{-\/ ../lib/build/SpiSlave.o <-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/ CONFLICT}
+\DoxyCodeLine{}
+\DoxyCodeLine{lib\_faked\_o:}
+\DoxyCodeLine{-\/ ../lib/build/Spi\_faked.o}
+\DoxyCodeLine{-\/ ../lib/build/SpiSlave\_faked.o}
+\DoxyCodeLine{-\/ ../lib/build/Lis\_faked.o}
+\DoxyCodeLine{}
+\DoxyCodeLine{...}
+
+\end{DoxyCode}
+
+
+It is not as simple as removing these conflicts.
+
+I hard-\/coded {\ttfamily lib\+\_\+o} like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{build/TestSuite.exe: build/test\_runner.o \$\{unittest\_o\} \(\backslash\)}
+\DoxyCodeLine{../lib/build/BiColorLed.o ../lib/build/UartSpi.o ../lib/build/Flag.o ../lib/build/ReadWriteBits.o ../lib/build/StatusCode.o ../lib/build/Queue.o \(\backslash\)}
+\DoxyCodeLine{\$\{test\_app\_o\} \(\backslash\)}
+\DoxyCodeLine{\$\{app\_o\} \(\backslash\)}
+\DoxyCodeLine{\$\{lib\_faked\_o\}}
+\DoxyCodeLine{    \$\{compiler\} \$(CFLAGS) \$\string^ -\/o \$@ \$(LFLAGS)}
+
+\end{DoxyCode}
+
+
+And that removes the conflicts\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{gcc ... \(\backslash\)}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_runner.o ... \(\backslash\)}
+\DoxyCodeLine{}
+\DoxyCodeLine{../lib/build/BiColorLed.o ../lib/build/UartSpi.o ../lib/build/Flag.o ../lib/build/ReadWriteBits.o ../lib/build/StatusCode.o ../lib/build/Queue.o \(\backslash\)}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_Example.o build/test\_VisCmd.o build/test\_AutoExpose.o \(\backslash\)}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/Example.o build/VisCmd.o build/AutoExpose.o \(\backslash\)}
+\DoxyCodeLine{}
+\DoxyCodeLine{../lib/build/Spi\_faked.o ../lib/build/SpiSlave\_faked.o ../lib/build/Lis\_faked.o \(\backslash\)}
+\DoxyCodeLine{}
+\DoxyCodeLine{-\/o build/TestSuite.exe ...}
+
+\end{DoxyCode}
+
+
+But I still get linker errors\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{gcc ... build/test\_runner.o}
+\DoxyCodeLine{...}
+\DoxyCodeLine{../lib/build/BiColorLed.o}
+\DoxyCodeLine{../lib/build/UartSpi.o}
+\DoxyCodeLine{../lib/build/Flag.o}
+\DoxyCodeLine{../lib/build/ReadWriteBits.o}
+\DoxyCodeLine{../lib/build/StatusCode.o}
+\DoxyCodeLine{../lib/build/Queue.o}
+\DoxyCodeLine{build/test\_Example.o}
+\DoxyCodeLine{build/test\_VisCmd.o}
+\DoxyCodeLine{build/test\_AutoExpose.o}
+\DoxyCodeLine{build/Example.o}
+\DoxyCodeLine{build/VisCmd.o}
+\DoxyCodeLine{buil <-\/-\/-\/ (quickfix list cannot handle this many characters)}
+
+\end{DoxyCode}
+
+
+The errors start here. There are \char`\"{}multiple definition\char`\"{} errors and \char`\"{}undefined reference\char`\"{} errors.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{build/test\_VisCmd.o:../lib/src/Lis.h|394| multiple definition of `exposure\_ticks';}
+\DoxyCodeLine{build/test\_runner.o:../lib/src/Lis.h:394: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|51| multiple definition of `max\_tries';}
+\DoxyCodeLine{build/test\_VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h:51: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|54| multiple definition of `start\_pixel';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:54: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|57| multiple definition of `stop\_pixel';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:57: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|60| multiple definition of `target';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:60: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|63| multiple definition of `target\_tolerance';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:63: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|66| multiple definition of `max\_dark';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:66: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|71| multiple definition of `min\_exposure';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:71: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|84| multiple definition of `max\_exposure';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:84: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/../lib/src/Lis.h|394| multiple definition of `exposure\_ticks';}
+\DoxyCodeLine{build/test\_runner.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/../lib/src/Lis.h:394: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/test\_AutoExpose.o:vis-\/spi-\/out/src/VisCmd.h|40| multiple definition of `frame';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h:40: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/../lib/src/Lis.h|394| multiple definition of `exposure\_ticks';}
+\DoxyCodeLine{build/test\_runner.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/../lib/src/Lis.h:394: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h|51| multiple definition of `max\_tries';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:51: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h|54| multiple definition of `start\_pixel';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:54: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h|57| multiple definition of `stop\_pixel';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:57: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h|60| multiple definition of `target';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:60: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h|63| multiple definition of `target\_tolerance';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:63: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h|66| multiple definition of `max\_dark';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:66: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h|71| multiple definition of `min\_exposure';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:71: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/AutoExpose.h|84| multiple definition of `max\_exposure';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:84: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o:vis-\/spi-\/out/src/VisCmd.h|40| multiple definition of `frame';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h:40: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|51| multiple definition of `max\_tries';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:51: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|54| multiple definition of `start\_pixel';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:54: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|57| multiple definition of `stop\_pixel';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:57: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|60| multiple definition of `target';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:60: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|63| multiple definition of `target\_tolerance';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:63: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|66| multiple definition of `max\_dark';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:66: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|71| multiple definition of `min\_exposure';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:71: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/AutoExpose.o:vis-\/spi-\/out/src/AutoExpose.h|84| multiple definition of `max\_exposure';}
+\DoxyCodeLine{build/test\_VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/AutoExpose.h:84: first defined here}
+\DoxyCodeLine{}
+\DoxyCodeLine{../lib/build/Lis\_faked.o:vis-\/spi-\/out/../lib/src/Lis.h|394| multiple definition of `exposure\_ticks';}
+\DoxyCodeLine{build/test\_runner.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/../lib/src/Lis.h:394: first defined here}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{build/VisCmd.o: in function `GetSensorLED':}
+\DoxyCodeLine{src/VisCmd.h|192| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|192| (.text+0x1b9): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|193| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|193| (.text+0x1ce): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|198| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|198| (.text+0x1e4): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|199| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|199| (.text+0x1f8): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{/usr/lib/gcc/x86\_64-\/pc-\/cygwin/10/../../../../x86\_64-\/pc-\/cygwin/bin/ld: build/VisCmd.o: in function `SetSensorLED':}
+\DoxyCodeLine{src/VisCmd.h|231| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|231| (.text+0x285): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{build/VisCmd.o:/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|236| more undefined references to `SpiSlaveTxByte' follow}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o: in function `SetSensorLED':}
+\DoxyCodeLine{src/VisCmd.h|236| (.text+0x2b0): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|257| (.text+0x34a): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o: in function `GetSensorConfig':}
+\DoxyCodeLine{src/VisCmd.h|270| (.text+0x36d): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|271| (.text+0x381): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|272| (.text+0x395): relocation truncated to fit: R\_X86\_64\_PC32 against undefined symbol `SpiSlaveTxByte'}
+\DoxyCodeLine{src/VisCmd.h|273| (.text+0x3a9): additional relocation overflows omitted from the output}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o: in function `GetExposure':}
+\DoxyCodeLine{src/VisCmd.h|285| undefined reference to `MSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|285| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|286| undefined reference to `LSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|286| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o: in function `SetExposure':}
+\DoxyCodeLine{src/VisCmd.h|316| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o: in function `AutoExposure':}
+\DoxyCodeLine{src/VisCmd.h|390| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|393| undefined reference to `MSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|393| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|394| undefined reference to `LSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|394| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o: in function `GetAutoExposeConfig':}
+\DoxyCodeLine{src/VisCmd.h|399| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|400| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|401| undefined reference to `MSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|401| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|402| undefined reference to `LSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|402| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|403| undefined reference to `MSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|403| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|404| undefined reference to `LSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|404| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|405| undefined reference to `MSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|405| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|406| undefined reference to `LSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|406| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|407| undefined reference to `MSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|407| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|408| undefined reference to `LSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|408| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|409| undefined reference to `MSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|409| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|410| undefined reference to `LSB'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|410| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{}
+\DoxyCodeLine{build/VisCmd.o: in function `SetAutoExposeConfig':}
+\DoxyCodeLine{src/VisCmd.h|474| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{/home/mike/chromation/dev-\/kit-\/2020/firmware/vis-\/spi-\/out/src/VisCmd.h|487| undefined reference to `SpiSlaveTxByte'}
+\DoxyCodeLine{build/VisCmd.o: in function `SetSensorConfig':}
+\DoxyCodeLine{src/VisCmd.h|523| undefined reference to `LisConfigIsValid'}
+
+\end{DoxyCode}
+
+
+So there are other conflicts.
+
+The multiple definition errors involve variables defined in {\ttfamily Lis} being claimed by these four object files\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily build/\+Vis\+Cmd.\+o}
+\item {\ttfamily build/\+Auto\+Expose.\+o}
+\item {\ttfamily build/test\+\_\+\+Vis\+Cmd.\+o}
+\item {\ttfamily build/test\+\_\+\+Auto\+Expose.\+o}
+\end{DoxyItemize}
+
+Look at the variables again\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{lib\_o:}
+\DoxyCodeLine{-\/ ../lib/build/BiColorLed.o}
+\DoxyCodeLine{-\/ ../lib/build/Spi.o}
+\DoxyCodeLine{-\/ ../lib/build/UartSpi.o}
+\DoxyCodeLine{-\/ ../lib/build/Lis.o}
+\DoxyCodeLine{-\/ ../lib/build/Flag.o}
+\DoxyCodeLine{-\/ ../lib/build/ReadWriteBits.o}
+\DoxyCodeLine{-\/ ../lib/build/StatusCode.o}
+\DoxyCodeLine{-\/ ../lib/build/Queue.o}
+\DoxyCodeLine{-\/ ../lib/build/SpiSlave.o}
+\DoxyCodeLine{}
+\DoxyCodeLine{lib\_faked\_o:}
+\DoxyCodeLine{-\/ ../lib/build/Spi\_faked.o}
+\DoxyCodeLine{-\/ ../lib/build/SpiSlave\_faked.o}
+\DoxyCodeLine{-\/ ../lib/build/Lis\_faked.o}
+\DoxyCodeLine{}
+\DoxyCodeLine{test\_app\_o:}
+\DoxyCodeLine{-\/ build/test\_Example.o}
+\DoxyCodeLine{-\/ build/test\_VisCmd.o}
+\DoxyCodeLine{-\/ build/test\_AutoExpose.o}
+\DoxyCodeLine{}
+\DoxyCodeLine{app\_o:}
+\DoxyCodeLine{-\/ build/Example.o}
+\DoxyCodeLine{-\/ build/VisCmd.o}
+\DoxyCodeLine{-\/ build/AutoExpose.o}
+
+\end{DoxyCode}
+
+
+Ignore {\ttfamily Example}. It\textquotesingle{}s basically empty.
+
+Every lib in {\ttfamily test\+\_\+app\+\_\+o} and {\ttfamily app\+\_\+o} is problematic. 

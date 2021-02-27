@@ -1,0 +1,277 @@
+Steps to add a new sensor to the dev-\/kit codebase.
+
+{\itshape Instead of maintaining separate projects for the LIS and S13131, there is a single firmware folder. When make is invoked, the optional {\ttfamily sensor=} argument controls which version of the firmware is built.}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md14}{}\doxysection{Hardware changes}\label{md_how_to_add_a_new_sensor_autotoc_md14}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md15}{}\doxysubsection{Match the ZIF pins}\label{md_how_to_add_a_new_sensor_autotoc_md15}
+Designing the sensor breakout board, map the ZIF pins to match as close as possible.
+
+{\itshape If the sensors are very different, the {\ttfamily vis-\/spi-\/out} board needs to change as well.}
+
+We are lucky with the LIS-\/770i and S13131-\/512. They have very similar functionality in the analog and digital pins. No change is required to the {\ttfamily vis-\/spi-\/out} PCB.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md16}{}\doxysubsection{Signals on LIS-\/770i and S13131}\label{md_how_to_add_a_new_sensor_autotoc_md16}
+For the six signals that have perfect matches, I route the six S13131 signals to those same six ZIF pins\+:
+
+
+\begin{DoxyItemize}
+\item Power and Ground are the same
+\item VIDEO is the same
+\item CLK is the same
+\item RST on LIS-\/770i is ST on S13131
+\item SYNC on LIS-\/770i is EOS on S13131
+\end{DoxyItemize}
+
+For the remainder, we just get lucky\+:
+
+
+\begin{DoxyItemize}
+\item analog pins\+:
+\begin{DoxyItemize}
+\item The VREF pin is particular to the LIS-\/770i, but the {\ttfamily vis-\/spi-\/out} analog front end expects a VREF, so I make my own VREF on the S13131 breakout board.
+\item The Vcp pin on S13131 does not connect to the ZIF.
+\end{DoxyItemize}
+\item digital pins\+:
+\begin{DoxyItemize}
+\item The PIXSELECT pin is particular to the LIS-\/770i, so this ZIF pin is left as NC (not-\/connected) on the S13131 breakout board.
+\item the TRIG pin on S13131 does not help us because it is just CLK inverse; the same microcontroller that generates CLK also does readout, so it\textquotesingle{}s simpler to look at CLK internally than it is to trigger off of the TRIG signal
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md17}{}\doxysection{Firmware changes}\label{md_how_to_add_a_new_sensor_autotoc_md17}
+In the following I use the generic {\ttfamily sensor} in place of the actual sensor.
+
+{\itshape For the S13131 work, {\ttfamily sensor} is {\ttfamily S13131}.}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md18}{}\doxysubsection{lib/src/sensor.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md18}
+Define {\ttfamily sensor\+\_\+} types for registers addresses, pin numbers, and bit numbers.
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// sensor\_ ──────────────────────┐}}
+\DoxyCodeLine{\textcolor{comment}{//                               ↓}}
+\DoxyCodeLine{\textcolor{keyword}{typedef} uint8\_t \textcolor{keyword}{volatile} * \textcolor{keyword}{const} s13131\_ptr; \textcolor{comment}{// reg address type}}
+
+\end{DoxyCode}
+
+
+TODO(mike)\+: {\ttfamily \+\_\+ptr} is a poor choice of name, change this to {\ttfamily \+\_\+reg}
+
+Name the registers, pins, and bit numbers. Declare registers, pins, and bit numbers as {\ttfamily extern}.
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{extern} s13131\_ptr S13131\_ddr;}
+
+\end{DoxyCode}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md19}{}\doxysubsection{vis-\/spi-\/out/src/sensor-\/\+Hardware.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md19}
+$\ast${\ttfamily vis-\/spi-\/out} is the PCB design. This is where the hardware is. The hardware definitions, therefore, happen here.$\ast$
+
+{\ttfamily \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}} uses the sensor lib by including {\ttfamily Hardware.\+h}.
+
+{\itshape Sensor-\/related hardware values need to be defined in the compilation unit with {\ttfamily \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}}.}
+
+Include the {\ttfamily sensor-\/\+Hardware.\+h} file in {\ttfamily \mbox{\hyperlink{vis-spi-out_2src_2Hardware_8h}{vis-\/spi-\/out/src/\+Hardware.\+h}}}.
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// vis-\/spi-\/out/src/Hardware.h}}
+\DoxyCodeLine{\textcolor{preprocessor}{\# include "{}\mbox{\hyperlink{S13131-Hardware_8h}{S13131-\/Hardware.h}}"{}}}
+
+\end{DoxyCode}
+
+
+In {\ttfamily \mbox{\hyperlink{S13131-Hardware_8h}{S13131-\/\+Hardware.\+h}}}\+:
+
+
+\begin{DoxyItemize}
+\item assign registers, pins, and bits to actual hardware I/O values defined in AVR header {\ttfamily iom328p.\+h}
+\begin{DoxyItemize}
+\item use types defined in {\ttfamily lib/src/sensor.\+h}
+\item use register, pin, and bit names declared in {\ttfamily lib/src/sensor.\+h}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{s13131\_ptr S13131\_ddr    = \&DDRD;}
+
+\end{DoxyCode}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md20}{}\doxysubsection{lib/test/sensor-\/\+Hardware\+Fake.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md20}
+$\ast${\ttfamily lib/test/} is a test environment that fakes testing on the actual PCB. For testing purposes, this is where the hardware is. The hardware definitions, therefore, happen here.$\ast$
+
+{\itshape The hardware definitions are fake. The I/O register addresses are assigned to arbitrary addresses by the operating system. The read/write behavior of data in these fake I/O registers is the same, but the registers don\textquotesingle{}t do anything (e.\+g., the fake DDRD register doesn\textquotesingle{}t control the data-\/direction of an actual pin). The fake registers are just dummy memory on the computer running the test.}
+
+{\ttfamily test\+\_\+runner.\+c} includes fakes for the hardware values by including {\ttfamily \mbox{\hyperlink{HardwareFake_8h_source}{lib/test/\+Hardware\+Fake.\+h}}}
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// vis-\/spi-\/out/test/test\_runner.c}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}HardwareFake.h"{}}}
+
+\end{DoxyCode}
+
+
+Include {\ttfamily lib/test/sensor-\/\+Hardware\+Fake.\+h} in {\ttfamily \mbox{\hyperlink{HardwareFake_8h_source}{lib/test/\+Hardware\+Fake.\+h}}}
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// lib/test/HardwareFake.h}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}S13131-\/HardwareFake.h"{}}}
+
+\end{DoxyCode}
+
+
+In {\ttfamily lib/test/sensor-\/\+Hardware\+Fake.\+h}\+:
+
+
+\begin{DoxyItemize}
+\item allocate static memory for fake versions of the hardware registers
+\item assign registers to these fakes
+\item assign pins and bits to fake hardware i/o values
+\end{DoxyItemize}
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{static} uint8\_t \textcolor{keyword}{volatile} fake\_ddr;}
+\DoxyCodeLine{s13131\_ptr S13131\_ddr = \&fake\_ddr;}
+\DoxyCodeLine{s13131\_pin S13131\_Clk = 5; \textcolor{comment}{// PWM}}
+
+\end{DoxyCode}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md21}{}\doxysubsection{lib/test/\+Hardware\+Fake.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md21}
+Include {\ttfamily sensor-\/\+Hardware\+Fake.\+h}.
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}S13131-\/HardwareFake.h"{}}}
+
+\end{DoxyCode}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md22}{}\doxysection{Build changes}\label{md_how_to_add_a_new_sensor_autotoc_md22}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md23}{}\doxysubsection{Review of the Makefile flow}\label{md_how_to_add_a_new_sensor_autotoc_md23}
+There are three Makefiles at the top-\/level\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily uservars.\+mk} sets paths to pre-\/compiled dependencies from Microchip (formerly Atmel)
+\begin{DoxyItemize}
+\item this is pulled out into its own file to make it clear where the user has to go to set this path
+\end{DoxyItemize}
+\item {\ttfamily common.\+mk} has all the actual build recipes
+\item {\ttfamily Makefile} is just a bunch of help docs
+\end{DoxyItemize}
+
+The \char`\"{}entry-\/point\char`\"{} for {\ttfamily make} happens in the sub-\/folders for the two PCBs\+: {\ttfamily firmware/vis-\/spi-\/out/} and {\ttfamily firmware/usb-\/bridge/}.
+
+Users enter either {\ttfamily vis-\/spi-\/out} or {\ttfamily usb-\/bridge} (depending on which firmware they are building) and run the {\ttfamily Makefile} {\bfseries{in that folder}}.
+
+The {\ttfamily vis-\/spi-\/out/\+Makefile} and {\ttfamily usb-\/bridge/\+Makefile}\+:
+
+
+\begin{DoxyItemize}
+\item set a bunch of build variables used in {\ttfamily common.\+mk}
+\item end with {\ttfamily include ../common.mk}
+\begin{DoxyItemize}
+\item the make target (e.\+g., build for AVR, build unit tests for the host computer, program the flash memory, etc.) finds its recipe in {\ttfamily ../common.mk}
+\begin{DoxyItemize}
+\item e.\+g., {\ttfamily make flash} has recipe {\ttfamily flash\+:} in {\ttfamily ../common.mk}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+The point of this setup is that {\ttfamily ../common.mk} runs with the definitions from the board\textquotesingle{}s {\ttfamily Makefile}. For example, {\ttfamily vis-\/spi-\/out/\+Makefile} sets {\ttfamily \$(board-\/name)} equal to {\ttfamily vis-\/spi-\/out}.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md24}{}\doxysubsection{make sensor=}\label{md_how_to_add_a_new_sensor_autotoc_md24}
+The {\ttfamily vis-\/spi-\/out/\+Makefile} set a variable named {\ttfamily sensor}.
+
+Identify the {\ttfamily sensor} when invoking make\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make print-\/vars sensor=S13131}
+\DoxyCodeLine{}
+\DoxyCodeLine{sensor:}
+\DoxyCodeLine{-\/ S13131}
+\DoxyCodeLine{...}
+
+\end{DoxyCode}
+
+
+If {\ttfamily sensor} is left out, the default value is {\ttfamily sensor=LIS}\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make print-\/vars}
+\DoxyCodeLine{}
+\DoxyCodeLine{sensor:}
+\DoxyCodeLine{-\/ LIS}
+\DoxyCodeLine{...}
+
+\end{DoxyCode}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md25}{}\doxysubsection{Default value for sensor}\label{md_how_to_add_a_new_sensor_autotoc_md25}
+Set {\ttfamily LIS} as the default sensor in {\ttfamily vis-\/spi-\/out/\+Makefile}\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\# Name which sensor is attached to the vis-\/spi-\/out PCB}
+\DoxyCodeLine{sensor ?= LIS}
+
+\end{DoxyCode}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md26}{}\doxysubsection{A macro is defined by sensor=}\label{md_how_to_add_a_new_sensor_autotoc_md26}
+Modify the build recipes to use {\ttfamily sensor} to define a macro\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/D\$(sensor)}
+
+\end{DoxyCode}
+
+
+{\itshape Example\+:}
+
+If {\ttfamily sensor} is {\ttfamily LIS}, then the above line becomes\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/DLIS}
+
+\end{DoxyCode}
+
+
+That gets used in a recipe like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{build/\$\{board-\/name\}.o: src/\$\{board-\/name\}.c src/Hardware.h \$\{Hardware\} \$\{lib\_headers\} ../lib/src/StatusCode.h ../lib/src/StatusCodes.h ../lib/src/LisConfig.h ../lib/src/LisConfigs.h}
+\DoxyCodeLine{    \$\{compiler\} -\/D\$(sensor) \$(CFLAGS) -\/c \$< -\/o \$@}
+\DoxyCodeLine{                 ↑}
+\DoxyCodeLine{                 |}
+\DoxyCodeLine{-\/DLIS ───────────┘}
+
+\end{DoxyCode}
+
+
+Now the macro {\ttfamily LIS} is \char`\"{}defined\char`\"{} when the compiler parses the source code.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md27}{}\doxysubsection{Source code is bracketed with ifdef sensor macros}\label{md_how_to_add_a_new_sensor_autotoc_md27}
+Source code checks if the {\ttfamily } macro is defined to decide which code to include.
+
+{\itshape Example\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// vis-\/spi-\/out/src/Hardware.h}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#ifdef LIS}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{Lis-Hardware_8h}{Lis-\/Hardware.h}}"{}}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#ifdef S13131}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{S13131-Hardware_8h}{S13131-\/Hardware.h}}"{}}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
+
+
+If the build is invoked with {\ttfamily make flash sensor=S13131} then the build ignores the LIS-\/770i code and uses the S13131 code. 

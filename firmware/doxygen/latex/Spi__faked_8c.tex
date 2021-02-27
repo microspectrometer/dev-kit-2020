@@ -13,12 +13,12 @@
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{Spi__faked_8c_a7e0a5de44d0f452158db53327d61241b}\label{Spi__faked_8c_a7e0a5de44d0f452158db53327d61241b}} 
-static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Spi\+Transfer\+Is\+Done} (void)
+static \mbox{\hyperlink{structRecordedCall}{Recorded\+Call}} $\ast$ {\bfseries Record\+\_\+\+\_\+\+Spi\+Transfer\+Is\+Done} (void)
 \item 
 bool \mbox{\hyperlink{Spi__faked_8c_a81d029e41869a7ff06b4b7513b6a764e}{\+\_\+\+Spi\+Transfer\+Is\+Done\+\_\+fake}} (void)
 \item 
 \mbox{\Hypertarget{Spi__faked_8c_ac461b8a4869f329acff3e6eba9eab1eb}\label{Spi__faked_8c_ac461b8a4869f329acff3e6eba9eab1eb}} 
-static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Clear\+Spi\+Interrupt\+Flag} (void)
+static \mbox{\hyperlink{structRecordedCall}{Recorded\+Call}} $\ast$ {\bfseries Record\+\_\+\+Clear\+Spi\+Interrupt\+Flag} (void)
 \item 
 void \mbox{\hyperlink{Spi__faked_8c_ac31e89e7b46858b01aef220725ee772d}{Clear\+Spi\+Interrupt\+Flag\+\_\+fake}} (void)
 \end{DoxyCompactItemize}
@@ -35,15 +35,15 @@ void \mbox{\hyperlink{Spi__faked_8c_ac31e89e7b46858b01aef220725ee772d}{Clear\+Sp
 
 \item {\bfseries{args passed}} by those calls.~\newline
  {\ttfamily Test\+Suite.\+exe} seg faults if any test accesses {\ttfamily mock} without defining {\ttfamily mock}.~\newline
- {\ttfamily Mock.\+h} declares {\ttfamily mock}\+:~\newline
+ {\ttfamily \mbox{\hyperlink{Mock_8h_source}{Mock.\+h}}} declares {\ttfamily mock}\+:~\newline
  
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{extern} Mock\_s mock;}
+\DoxyCodeLine{\textcolor{keyword}{extern} \mbox{\hyperlink{structMock__s}{Mock\_s}} mock;}
 
 \end{DoxyCode}
  {\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{Mock\_s *mock;}
+\DoxyCodeLine{\mbox{\hyperlink{structMock__s}{Mock\_s}} *mock;}
 
 \end{DoxyCode}
  The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline

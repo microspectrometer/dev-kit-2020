@@ -13,22 +13,22 @@
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{SpiSlave__faked_8c_aaccbe3a0a42ad461b51a291038368557}\label{SpiSlave__faked_8c_aaccbe3a0a42ad461b51a291038368557}} 
-static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Spi\+Slave\+Tx\+Byte} (uint8\+\_\+t arg1)
+static \mbox{\hyperlink{structRecordedCall}{Recorded\+Call}} $\ast$ {\bfseries Record\+\_\+\+Spi\+Slave\+Tx\+Byte} (uint8\+\_\+t arg1)
 \item 
 void \mbox{\hyperlink{SpiSlave__faked_8c_a47cd2a2905123ae156084344b93ac3b0}{Spi\+Slave\+Tx\+Byte\+\_\+fake}} (uint8\+\_\+t input\+\_\+byte)
 \item 
 \mbox{\Hypertarget{SpiSlave__faked_8c_ad75a0a1b8b9d86ad493346188e994557}\label{SpiSlave__faked_8c_ad75a0a1b8b9d86ad493346188e994557}} 
-static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Enable\+Spi\+Interrupt} (void)
+static \mbox{\hyperlink{structRecordedCall}{Recorded\+Call}} $\ast$ {\bfseries Record\+\_\+\+Enable\+Spi\+Interrupt} (void)
 \item 
 void \mbox{\hyperlink{SpiSlave__faked_8c_ad4d1732c8cc238effddc7c894677739c}{Enable\+Spi\+Interrupt\+\_\+fake}} (void)
 \item 
 \mbox{\Hypertarget{SpiSlave__faked_8c_a7235d3496ae4d4467a27feceb268666e}\label{SpiSlave__faked_8c_a7235d3496ae4d4467a27feceb268666e}} 
-static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+\_\+\+Signal\+Data\+Ready} (void)
+static \mbox{\hyperlink{structRecordedCall}{Recorded\+Call}} $\ast$ {\bfseries Record\+\_\+\+\_\+\+Signal\+Data\+Ready} (void)
 \item 
 void \mbox{\hyperlink{SpiSlave__faked_8c_a14d1d211c05c75c9d55525aaa940d0c4}{\+\_\+\+Signal\+Data\+Ready\+\_\+fake}} (void)
 \item 
 \mbox{\Hypertarget{SpiSlave__faked_8c_a6b112867a687adca297c82f1b1eae398}\label{SpiSlave__faked_8c_a6b112867a687adca297c82f1b1eae398}} 
-static Recorded\+Call $\ast$ {\bfseries Record\+\_\+\+Disable\+Spi\+Interrupt} (void)
+static \mbox{\hyperlink{structRecordedCall}{Recorded\+Call}} $\ast$ {\bfseries Record\+\_\+\+Disable\+Spi\+Interrupt} (void)
 \item 
 void \mbox{\hyperlink{SpiSlave__faked_8c_ad636d7aed5753d29fd10d470918976a7}{Disable\+Spi\+Interrupt\+\_\+fake}} (void)
 \end{DoxyCompactItemize}
@@ -45,15 +45,15 @@ void \mbox{\hyperlink{SpiSlave__faked_8c_ad636d7aed5753d29fd10d470918976a7}{Disa
 
 \item {\bfseries{args passed}} by those calls.~\newline
  {\ttfamily Test\+Suite.\+exe} seg faults if any test accesses {\ttfamily mock} without defining {\ttfamily mock}.~\newline
- {\ttfamily Mock.\+h} declares {\ttfamily mock}\+:~\newline
+ {\ttfamily \mbox{\hyperlink{Mock_8h_source}{Mock.\+h}}} declares {\ttfamily mock}\+:~\newline
  
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{extern} Mock\_s mock;}
+\DoxyCodeLine{\textcolor{keyword}{extern} \mbox{\hyperlink{structMock__s}{Mock\_s}} mock;}
 
 \end{DoxyCode}
  {\ttfamily mock} is a global that is defined in {\ttfamily test\+\_\+runner}\+: 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{Mock\_s *mock;}
+\DoxyCodeLine{\mbox{\hyperlink{structMock__s}{Mock\_s}} *mock;}
 
 \end{DoxyCode}
  The memory for {\ttfamily mock} is allocated and deallocated in the setup/teardown for each test that calls the {\ttfamily faked} call.~\newline

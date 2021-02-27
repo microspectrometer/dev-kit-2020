@@ -82,15 +82,21 @@ $(function() {
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">// add those definitions here (&quot;-Hardware.h&quot;)</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">// for inclusion in the main() translation unit</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;BiColorLed-Hardware.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Lis-Hardware_8h.html">Lis-Hardware.h</a>&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">/* #include &quot;SpiSlave-Hardware.h&quot; */</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;Spi-Hardware.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="UartSpi-Hardware_8h.html">UartSpi-Hardware.h</a>&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Flag-Hardware_8h.html">Flag-Hardware.h</a>&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// _HARDWARE_H</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">/* #ifdef LIS */</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Lis-Hardware_8h.html">Lis-Hardware.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">/* #endif */</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#ifdef S13131</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="S13131-Hardware_8h.html">S13131-Hardware.h</a>&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">/* #include &quot;SpiSlave-Hardware.h&quot; */</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;Spi-Hardware.h&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="UartSpi-Hardware_8h.html">UartSpi-Hardware.h</a>&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Flag-Hardware_8h.html">Flag-Hardware.h</a>&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// _HARDWARE_H</span></div>
 <div class="ttc" id="aFlag-Hardware_8h_html"><div class="ttname"><a href="Flag-Hardware_8h.html">Flag-Hardware.h</a></div><div class="ttdoc">Flag uses AVR GPIOR registers for direct-bit access to flags.</div></div>
 <div class="ttc" id="aLis-Hardware_8h_html"><div class="ttname"><a href="Lis-Hardware_8h.html">Lis-Hardware.h</a></div><div class="ttdoc">Lis uses general purpose I/O pins and a PWM pin to communicate with the Dynamax LIS-770i linear photo...</div></div>
+<div class="ttc" id="aS13131-Hardware_8h_html"><div class="ttname"><a href="S13131-Hardware_8h.html">S13131-Hardware.h</a></div><div class="ttdoc">S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-512 CMOS i...</div></div>
 <div class="ttc" id="aUartSpi-Hardware_8h_html"><div class="ttname"><a href="UartSpi-Hardware_8h.html">UartSpi-Hardware.h</a></div><div class="ttdoc">UartSpi uses internal UART module in SPI Master Mode.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

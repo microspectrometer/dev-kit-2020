@@ -2,7 +2,7 @@
 \label{S13131-Hardware_8h}\index{vis-\/spi-\/out/src/S13131-\/Hardware.h@{vis-\/spi-\/out/src/S13131-\/Hardware.h}}
 
 
-S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-\/512 CMOS image sesnsor.  
+S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-\/512 CMOS image sensor.  
 
 
 {\ttfamily \#include $<$stdint.\+h$>$}\newline
@@ -11,14 +11,29 @@ S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamam
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{S13131-Hardware_8h_ab66e27c0ecd2ee5ea0c5b3ff9eea057a}\label{S13131-Hardware_8h_ab66e27c0ecd2ee5ea0c5b3ff9eea057a}} 
-s13131\+\_\+ptr {\bfseries S13131\+\_\+ddr1} = \&DDRD
+\mbox{\Hypertarget{S13131-Hardware_8h_ac1fb025cb43969639a27502f3ec7bc3d}\label{S13131-Hardware_8h_ac1fb025cb43969639a27502f3ec7bc3d}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+ddr} = \&DDRD
 \item 
-\mbox{\Hypertarget{S13131-Hardware_8h_ae26f2fbc703c5fc71c645b88bcd461b1}\label{S13131-Hardware_8h_ae26f2fbc703c5fc71c645b88bcd461b1}} 
-s13131\+\_\+ptr {\bfseries S13131\+\_\+port1} = \&PORTD
+\mbox{\Hypertarget{S13131-Hardware_8h_aa1a5aa0f97cb92842b9baf458bd4623d}\label{S13131-Hardware_8h_aa1a5aa0f97cb92842b9baf458bd4623d}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+port} = \&PORTD
 \item 
-\mbox{\Hypertarget{S13131-Hardware_8h_a1b96670d5bb19e20c43770bc9c4f26d3}\label{S13131-Hardware_8h_a1b96670d5bb19e20c43770bc9c4f26d3}} 
-s13131\+\_\+ptr {\bfseries S13131\+\_\+pin1} = \&PIND
+\mbox{\Hypertarget{S13131-Hardware_8h_a69011331785646675fa0920d825793d3}\label{S13131-Hardware_8h_a69011331785646675fa0920d825793d3}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+pin} = \&PIND
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_adac9c1e0788d3d8255295bae8d4aed52}\label{S13131-Hardware_8h_adac9c1e0788d3d8255295bae8d4aed52}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+TCCR0A} = \&TCCR0A
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a8984e497ff455d578fa26b6f84832c83}\label{S13131-Hardware_8h_a8984e497ff455d578fa26b6f84832c83}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+TCCR0B} = \&TCCR0B
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_ab424f7bca56a0476bcb40c611c4868c3}\label{S13131-Hardware_8h_ab424f7bca56a0476bcb40c611c4868c3}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+TIFR0} = \&TIFR0
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a0e69f4e5c9d14b91f299016b19d08a37}\label{S13131-Hardware_8h_a0e69f4e5c9d14b91f299016b19d08a37}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+OCR0A} = \&OCR0A
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_aca706d4745bb6869a897ee625f9e65e3}\label{S13131-Hardware_8h_aca706d4745bb6869a897ee625f9e65e3}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+OCR0B} = \&OCR0B
 \item 
 \mbox{\Hypertarget{S13131-Hardware_8h_aa35c2a3c5e68bdf827054ae724703e1e}\label{S13131-Hardware_8h_aa35c2a3c5e68bdf827054ae724703e1e}} 
 s13131\+\_\+pin {\bfseries S13131\+\_\+\+Clk} = PD5
@@ -28,9 +43,39 @@ s13131\+\_\+pin {\bfseries S13131\+\_\+\+St} = PD6
 \item 
 \mbox{\Hypertarget{S13131-Hardware_8h_ac3ec3460562a532e06163ad0680a008a}\label{S13131-Hardware_8h_ac3ec3460562a532e06163ad0680a008a}} 
 s13131\+\_\+pin {\bfseries S13131\+\_\+\+Eos} = PD7
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a3e3e91cf78daa43e5f970eb53471072f}\label{S13131-Hardware_8h_a3e3e91cf78daa43e5f970eb53471072f}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+WGM00} = WGM00
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a17f6afe3f6ce9d34497e44aff745b49c}\label{S13131-Hardware_8h_a17f6afe3f6ce9d34497e44aff745b49c}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+WGM01} = WGM01
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_aa867bc4a6745dacee87bbbcad0a858e9}\label{S13131-Hardware_8h_aa867bc4a6745dacee87bbbcad0a858e9}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+WGM02} = WGM02
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a91710d17ed27ad01bcae71bba8e1ab59}\label{S13131-Hardware_8h_a91710d17ed27ad01bcae71bba8e1ab59}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+CS00} = CS00
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_aa5cd6aa75c6e972aeaee253815f6c6d3}\label{S13131-Hardware_8h_aa5cd6aa75c6e972aeaee253815f6c6d3}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+CS01} = CS01
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_ae840db8e398d39d0127914d118ba089a}\label{S13131-Hardware_8h_ae840db8e398d39d0127914d118ba089a}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+CS02} = CS02
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_af46221024197676f0cb387cbc71dca66}\label{S13131-Hardware_8h_af46221024197676f0cb387cbc71dca66}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+COM0\+B0} = COM0\+B0
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a725e64a7af4ab9bdc16f7ad844a8a56e}\label{S13131-Hardware_8h_a725e64a7af4ab9bdc16f7ad844a8a56e}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+COM0\+B1} = COM0\+B1
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a1aeaa5e7f8f8c7af6f891cf126836f59}\label{S13131-Hardware_8h_a1aeaa5e7f8f8c7af6f891cf126836f59}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+OCF0A} = OCF0A
+\item 
+\mbox{\Hypertarget{S13131-Hardware_8h_a62f92576a14c7c04eb7d82342bb79925}\label{S13131-Hardware_8h_a62f92576a14c7c04eb7d82342bb79925}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+OCF0B} = OCF0B
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-\/512 CMOS image sesnsor. 
+S13131 uses general purpose I/O pins and a PWM pin to communicate with the Hamamatu S13131-\/512 CMOS image sensor. 
 

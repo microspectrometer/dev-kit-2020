@@ -1,0 +1,98 @@
+Look at expanded recipes. Break lines for readability.\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md71}{}\doxysection{When avr-\/gcc builds target $<$tt$>$test\+\_\+runner.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md71}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make -\/n -\/B build/test\_runner.o}
+\DoxyCodeLine{}
+\DoxyCodeLine{avr-\/gcc}
+\DoxyCodeLine{-\/Isrc}
+\DoxyCodeLine{-\/I../lib/src}
+\DoxyCodeLine{-\/includeavr/interrupt.h}
+\DoxyCodeLine{-\/includeavr/io.h}
+\DoxyCodeLine{-\/g -\/Wall -\/Wextra -\/pedantic -\/Winline -\/Wno-\/pointer-\/sign -\/O3}
+\DoxyCodeLine{-\/ffunction-\/sections -\/fdata-\/sections -\/fshort-\/enums -\/mmcu=atmega328p}
+\DoxyCodeLine{-\/c test/test\_runner.c -\/o build/test\_runner.o}
+
+\end{DoxyCode}
+\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md72}{}\doxysection{When avr-\/gcc builds target $<$tt$>$vis-\/spi-\/out.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md72}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make -\/n -\/B build/vis-\/spi-\/out.o}
+\DoxyCodeLine{}
+\DoxyCodeLine{avr-\/gcc}
+\DoxyCodeLine{-\/Isrc}
+\DoxyCodeLine{-\/I../lib/src}
+\DoxyCodeLine{-\/includeavr/interrupt.h}
+\DoxyCodeLine{-\/includeavr/io.h}
+\DoxyCodeLine{-\/g -\/Wall -\/Wextra -\/pedantic -\/Winline -\/Wno-\/pointer-\/sign -\/O3}
+\DoxyCodeLine{-\/ffunction-\/sections -\/fdata-\/sections -\/fshort-\/enums -\/mmcu=atmega328p}
+\DoxyCodeLine{-\/c src/vis-\/spi-\/out.c -\/o build/vis-\/spi-\/out.o}
+
+\end{DoxyCode}
+\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md73}{}\doxysection{When gcc builds target $<$tt$>$test\+\_\+runner.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md73}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ make -\/n -\/B build/test\_runner.o compiler=gcc}
+\DoxyCodeLine{}
+\DoxyCodeLine{gcc}
+\DoxyCodeLine{-\/I/usr/include/glib-\/2.0 -\/I/usr/lib/glib-\/2.0/include}
+\DoxyCodeLine{-\/DUSE\_FAKES}
+\DoxyCodeLine{-\/I/cygdrive/c/chromation-\/dropbox/Dropbox/c/TddFramework/mock-\/c/include}
+\DoxyCodeLine{-\/I/cygdrive/c/chromation-\/dropbox/Dropbox/c/TddFramework/mock-\/c/test/unity}
+\DoxyCodeLine{}
+\DoxyCodeLine{-\/Isrc}
+\DoxyCodeLine{-\/I../lib/src}
+\DoxyCodeLine{-\/Itest}
+\DoxyCodeLine{-\/I../lib/test}
+\DoxyCodeLine{-\/include../lib/test/FakeAvr/interrupt.h}
+\DoxyCodeLine{-\/include../lib/test/FakeAvr/io.h}
+\DoxyCodeLine{-\/g -\/Wall -\/Wextra -\/pedantic -\/Winline}
+\DoxyCodeLine{-\/c test/test\_runner.c -\/o build/test\_runner.o}
+
+\end{DoxyCode}
+\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md74}{}\doxysubsection{-\/\+I flags are not the problem}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md74}
+
+\begin{DoxyItemize}
+\item what does the {\ttfamily -\/I} flag do exactly?
+\begin{DoxyItemize}
+\item {\ttfamily -\/-\/include-\/dir}
+\item include directories to search
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\itshape From the docs\+:}
+
+\begin{quote}
+\textquotesingle{}-\/I DIR\textquotesingle{}
+
+\textquotesingle{}--include-\/dir=DIR\textquotesingle{} \begin{DoxyVerb} Specifies a directory DIR to search for included
+ makefiles.  *Note Including Other Makefiles: Include.
+
+ If several '-I' options are used to specify several
+ directories, the directories are searched in the order
+ specified.
+\end{DoxyVerb}
+ \end{quote}
+Yep, documentation sucks. {\ttfamily -\/I} is used for including directories to find source files, not makefiles.
+
+All the {\ttfamily -\/I} flags come from my {\ttfamily CFLAGS} variable. I have a conditional that defines {\ttfamily CFLAGS} based on the compiler\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily CFLAGS\+\_\+for\+\_\+avr}
+\item {\ttfamily CFLAGS\+\_\+for\+\_\+tests}
+\end{DoxyItemize}
+
+{\itshape That is why/how the compiler flags are different for unit-\/tests and avr builds. The different {\ttfamily -\/I} flags are intentional.}\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md75}{}\doxysubsection{Move this make trivia to my C tutorial}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md75}
+
+\begin{DoxyItemize}
+\item {\ttfamily =} is recursively expanded variable
+\begin{DoxyItemize}
+\item e.\+g., this is an error\+:
+\item {\ttfamily CFLAGS =  -\/O}
+\end{DoxyItemize}
+\item {\ttfamily \+:=} is simply expanded variable
+\begin{DoxyItemize}
+\item e.\+g., change {\ttfamily =} to {\ttfamily \+:=} and now this is OK\+:
+\item {\ttfamily CFLAGS \+:=  -\/O} 
+\end{DoxyItemize}
+\end{DoxyItemize}

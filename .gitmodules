@@ -1,0 +1,3 @@
+[submodule "firmware/mock-c"]
+	path = firmware/mock-c
+	url = https://github.com/sustainablelab/mock-c.git
