@@ -1,0 +1,51 @@
+# Name the PCB to program with this firmware.
+board-name := vis-spi-out
+
+# "Libs" are source files that come in .c, .h pairs
+# For example, `Example.h` and `Example.c` form a "lib".
+# For example, `vis-spi-out/src/Hardware.h` is not a lib because there is no
+# `Hardware.c` file.
+#
+# TODO(sustainablelab): "Lib" is a bad name. Name these compilation units
+# instead because that's the real reason they are grouped like this.
+
+# ---Application Libs---
+# Name libs in vis-spi-out/src
+applib := Example VisCmd AutoExpose
+
+# ---General Libs where application supplies HARDWARE definitions---
+# Name libs (files that come in .c,.h pairs) in lib/src where
+# vis-spi-out/src HAS a `-Hardware.h` file.
+hwlib := BiColorLed Spi UartSpi Lis Flag
+
+# ---General Libs where HARDWARE definitions happen at compile time---
+# Name libs (.h files) in libs in lib/src where
+# vis-spi-out/src does NOT HAVE a `-Hardware.h` file.
+nohwlib := ReadWriteBits StatusCode Queue SpiSlave
+
+# Name libs that USE_FAKES in tests
+lib_faked := Spi SpiSlave Lis
+
+help:
+	@echo
+	@echo
+	@echo
+	@echo "----------------"
+	@echo "|     HELP     |"
+	@echo "----------------"
+	@echo
+	@echo "Sensor Interface PCB name: $(board-name)"
+	@echo
+	@echo Setup:
+	@echo "  Power-on the AtmelICE."
+	@echo "  Orient PCB with 6-pin programming header on the RIGHT."
+	@echo "  (Slide white switch LEFT, black switch LEFT)"
+	@echo
+	@cat ../help-board-common.man
+	@echo
+	@echo --- Vendor Dependency Path ---
+	@echo atmega328_lib: "$(atmega328_lib)"
+
+include ../sensor.mk
+include ../uservars.mk
+include ../common.mk

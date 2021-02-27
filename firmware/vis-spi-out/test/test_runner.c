@@ -241,8 +241,9 @@ void VisCmd_tests(bool run_test)
 int main(void)
 {
     UNITY_BEGIN();
-    Example_tests(Nope);
-    AutoExpose_tests(Yep);
+    Example_tests(Yep);
+    /* AutoExpose_tests(Yep); */
+    AutoExpose_tests(Nope);
     VisCmd_tests(Nope);
     return UNITY_END();
 }

@@ -104,7 +104,7 @@ endif
 # }}}
 
 #{{{ Lib Object Files and Prerequisites
-# applib, hwlib, and nohwlib are defined in ${board-name}/Makefile
+# applib, hwlib, nohwlib, and lib_faked are defined in ${board-name}/Makefile
 test_app := $(addprefix test_,${applib})
 test_app_o := $(addsuffix .o,${test_app})
 test_app_o := $(addprefix build/,${test_app_o})
@@ -150,8 +150,11 @@ clean:
 # Vim ;mktgc - make tests with gcc
 build/TestSuite-results.md: build/TestSuite.exe
 	$^ > $@
+# ${lib_o} ${test_app_o} ${app_o} ${lib_faked_o} # replaced with
+# explicit lib_o values minus the ones already in lib_faked_o
 build/TestSuite.exe: build/test_runner.o ${unittest_o} \
-${lib_o} ${test_app_o} ${app_o} ${lib_faked_o}
+../lib/build/BiColorLed.o ../lib/build/UartSpi.o ../lib/build/Flag.o ../lib/build/ReadWriteBits.o ../lib/build/StatusCode.o ../lib/build/Queue.o \
+${test_app_o} ${app_o} ${lib_faked_o}
 	${compiler} $(CFLAGS) $^ -o $@ $(LFLAGS)
 # test-runner rebuilds if fake hardware definitions change
 build/test_runner.o: test/test_runner.c ../lib/test/HardwareFake.h ${HardwareFakes} ${lib_headers} ../lib/src/StatusCode.h ../lib/src/StatusCodes.h ../lib/src/LisConfig.h ../lib/src/LisConfigs.h
@@ -276,6 +279,12 @@ print-vars:
 	@echo
 	@echo lib_faked_o:
 	@echo - ${lib_faked_o}
+	@echo
+	@echo test_app_o:
+	@echo - ${test_app_o}
+	@echo
+	@echo app_o:
+	@echo - ${app_o}
 	@echo
 	@echo lib_headers:
 	@echo - ${lib_headers}
