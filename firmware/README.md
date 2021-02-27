@@ -3,9 +3,25 @@
 `firmware` consists of C source files and build scripts. The
 build scripts are for two targets:
 
-- the microcontroller target -- this outputs AVR assembly `.elf`
-- the unit-test target -- this outputs an executable that runs
-  from a command line on the development computer
+- the microcontroller target
+    - generates AVR assembly `.elf`
+    - loads the `.elf` in the AVR target Flash memory
+- the unit-test target
+    - generates a test runner executable that runs on the
+      development computer
+    - the test runner prints test results
+
+The unit tests require **mock-c**. Folder `firmware/mock-c/`
+starts out empty when you clone `dev-kit-2020`. To build the unit
+tests, get **mock-c** by cloning the Git submodules:
+
+```
+git submodule init
+git submodule update
+```
+
+**mock-c** requires installing **GLib**. Installation
+instructions are in the **mock-c** README.md.
 
 ## Firmware documentation
 
