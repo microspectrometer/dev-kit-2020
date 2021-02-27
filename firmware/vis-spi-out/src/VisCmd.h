@@ -34,7 +34,7 @@
 #include <util/delay_basic.h> // use _delay_loop_1 to count µs
 #endif
 
-extern volatile Queue_s * SpiFifo; // definition in `main()` translation unit
+extern volatile Queue_s * SpiFifo; // definition in translation unit using SpiFifo
 
 //! One frame of pixel data is, at most, 1568 bytes.
 uint8_t frame[2*MAX_NUM_PIXELS];

@@ -5,7 +5,7 @@
 
 /* ---Global Queue--- */
 #include "Queue.h"          // VisCmd accesses the Spi Rx Buffer
-extern volatile Queue_s * SpiFifo;
+volatile Queue_s * SpiFifo; // extern in VisCmd.h
 #define max_length_of_queue 5 // bytes
 
 /* =====[ Test Helpers ]===== */
