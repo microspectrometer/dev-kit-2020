@@ -12,7 +12,6 @@
  * - AutoExposure()
  * - GetAutoExposeConfig()
  * - SetAutoExposeConfig()
- * - ReplyCommandInvalid()
  * */
 #ifndef _VISCMD_H
 #define _VISCMD_H
@@ -37,7 +36,7 @@
 extern volatile Queue_s * SpiFifo; // definition in translation unit using SpiFifo
 
 //! One frame of pixel data is, at most, 1568 bytes.
-uint8_t frame[2*MAX_NUM_PIXELS];
+extern uint8_t frame[];
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */
@@ -538,25 +537,6 @@ inline void SetSensorConfig(void)
 #ifdef USE_FAKES
 #undef SpiSlaveTxByte
 #undef LisWriteConfig
-#endif
-
-/* ------------------------------------ */
-/* | ---When command is unknown...--- | */
-/* ------------------------------------ */
-
-#ifdef USE_FAKES
-#define SpiSlaveTxByte SpiSlaveTxByte_fake
-#endif
-inline void ReplyCommandInvalid(void)
-{
-    /** ReplyCommandInvalid behavior:\n 
-      * - transmits one byte over SPI\n 
-      * - sends byte INVALID CMD\n 
-      * */
-    SpiSlaveTxByte(INVALID_CMD);
-}
-#ifdef USE_FAKES
-#undef SpiSlaveTxByte
 #endif
 
 #endif // _VISCMD_H

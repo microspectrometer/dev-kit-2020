@@ -1,8 +1,8 @@
 #include "VisCmd.h"
+uint8_t frame[2*MAX_NUM_PIXELS];
 /* ------------------ */
 /* | ---Commands--- | */
 /* ------------------ */
-void ReplyCommandInvalid(void);
 void NullCommand(void);
 void GetSensorLED(void);
 void SetSensorLED(void);

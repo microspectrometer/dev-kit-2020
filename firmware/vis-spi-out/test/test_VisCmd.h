@@ -13,10 +13,6 @@ void LisReadout_LOOP_save_MSB_to_frame_buffer(void);
 void LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout(void);
 void LisReadout_LOOP_save_LSB_to_frame_buffer(void);
 
-/* =====[ ReplyCommandInvalid ]===== */
-void ReplyCommandInvalid_transmits_one_byte_over_SPI(void);
-void ReplyCommandInvalid_sends_byte_INVALID_CMD(void);
-
 /* =====[ SetSensorConfig ]===== */
 void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void);
 void SetSensorConfig_does_not_update_config_globals_if_config_is_invalid(void);

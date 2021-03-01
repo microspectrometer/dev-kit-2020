@@ -9,6 +9,20 @@ volatile Queue_s * SpiFifo; // extern in VisCmd.h
 #define max_length_of_queue 5 // bytes
 
 /* =====[ Test Helpers ]===== */
+static void _SilentAssertCall(uint16_t num, char const * name)
+{
+    //! Assert call number **num** is named **name**.
+    // Put num and name in the message displayed if test fails
+    GString *message = g_string_new(NULL);
+    g_string_append_printf(message, "`%s` is not call %d", name, num);
+    // Perform the test
+    TEST_ASSERT_TRUE_MESSAGE(
+        SilentAssertCall(mock, num, name),
+        message->str
+        );
+    // Free memory used by GString
+    g_string_free(message, true);
+}
 static void _AssertCall(uint16_t num, char const * name)
 {
     //! Assert call number **num** is named **name**.
@@ -132,26 +146,6 @@ void LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout(void)
 void LisReadout_LOOP_save_LSB_to_frame_buffer(void)
 {
     TEST_PASS();
-}
-
-/* =====[ ReplyCommandInvalid ]===== */
-void ReplyCommandInvalid_transmits_one_byte_over_SPI(void)
-{
-    /* =====[ Operate ]===== */
-    ReplyCommandInvalid();
-    /* =====[ Test ]===== */
-    _AssertCall(1, "SpiSlaveTxByte");
-    _test_call_count_is(1);
-}
-void ReplyCommandInvalid_sends_byte_INVALID_CMD(void)
-{
-    /* =====[ Operate ]===== */
-    ReplyCommandInvalid();
-    /* =====[ Test ]===== */
-    // Expect call: SpiSlaveTxByte(INVALID_CMD)
-    uint16_t call_n = 1;
-    _AssertCall(call_n, "SpiSlaveTxByte");
-    _AssertArgByteVal(call_n, 1, INVALID_CMD);
 }
 
 /* =====[ GetSensorLED ]===== */

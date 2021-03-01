@@ -1,3 +1,4 @@
+# TODO(sustainablelab): Don't forget -O3 (correctly optimized assembly) when I add the .elf recipe
 sensor ?= LIS
 unit-test: build/test_runner.md
 # Tests{{{
