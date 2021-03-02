@@ -69,6 +69,77 @@ void test_VisCmd(bool run_test)
         RUN_TEST(LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout);
         RUN_TEST(LisReadout_LOOP_save_LSB_to_frame_buffer);
 
+        puts("## VisCmd.GetSensorLED");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
+        RUN_TEST(GetSensorLED_waits_for_byte_led_num);
+        RUN_TEST(GetSensorLED_reads_byte_led_num);
+        RUN_TEST(GetSensorLED_sends_OK_and_LED_SETTING_if_led_num_is_valid);
+        RUN_TEST(GetSensorLED_sends_ERROR_and_pads_second_byte_if_led_num_is_invalid);
+
+        puts("## VisCmd.SetSensorLED");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
+        RUN_TEST(SetSensorLED_waits_for_byte_led_num);
+        RUN_TEST(SetSensorLED_reads_byte_led_num);
+        RUN_TEST(SetSensorLED_waits_for_byte_led_setting);
+        RUN_TEST(SetSensorLED_reads_byte_led_setting);
+        RUN_TEST(SetSensorLED_sends_ERROR_if_led_num_is_invalid);
+        RUN_TEST(SetSensorLED_sends_ERROR_if_led_setting_is_invalid);
+        RUN_TEST(SetSensorLED_applies_LED_setting_if_valid);
+        RUN_TEST(SetSensorLED_sends_OK_if_num_and_setting_are_valid);
+
+        puts("## VisCmd.GetSensorConfig");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
+        RUN_TEST(GetSensorConfig_sends_OK);
+        RUN_TEST(GetSensorConfig_sends_binning);
+        RUN_TEST(GetSensorConfig_sends_gain);
+        RUN_TEST(GetSensorConfig_sends_row_bitmap);
+
+        puts("## VisCmd.SetSensorConfig");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
+        RUN_TEST(SetSensorConfig_receives_three_bytes_of_config_from_Bridge);
+        RUN_TEST(SetSensorConfig_does_not_update_config_globals_if_config_is_invalid);
+        RUN_TEST(SetSensorConfig_replies_ERROR_if_binning_is_invalid);
+        RUN_TEST(SetSensorConfig_replies_ERROR_if_gain_is_invalid);
+        RUN_TEST(SetSensorConfig_replies_ERROR_if_active_rows_is_invalid);
+        RUN_TEST(SetSensorConfig_does_not_program_LIS_770i_if_config_is_invalid);
+        RUN_TEST(SetSensorConfig_writes_valid_config_to_LIS_770i_programmable_setup_register);
+        RUN_TEST(SetSensorConfig_replies_OK_if_all_config_values_are_valid);
+        RUN_TEST(SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config);
+
+        puts("## VisCmd.GetExposure");
+        setUp = EmptySetUp;
+        tearDown = EmptyTearDown;
+        RUN_TEST(GetExposure_sends_OK);
+        RUN_TEST(GetExposure_sends_MSB_of_exposure_ticks);
+        RUN_TEST(GetExposure_sends_LSB_of_exposure_ticks);
+
+        puts("## VisCmd.SetExposure");
+        setUp = EmptySetUp;
+        tearDown = EmptyTearDown;
+        RUN_TEST(SetExposure_waits_for_byte_exposure_MSB);
+        RUN_TEST(SetExposure_reads_byte_exposure_MSB);
+        RUN_TEST(SetExposure_waits_for_byte_exposure_LSB);
+        RUN_TEST(SetExposure_reads_byte_exposure_LSB);
+        RUN_TEST(SetExposure_updates_global_exposure_ticks);
+        RUN_TEST(SetExposure_sends_OK);
+
+        puts("## VisCmd.CaptureFrame");
+        setUp = EmptySetUp;
+        tearDown = EmptyTearDown;
+        RUN_TEST(CaptureFrame_sends_OK);
+        RUN_TEST(CaptureFrame_checks_binning_to_determine_number_of_pixels_in_frame);
+        RUN_TEST(CaptureFrame_sends_num_pixels_MSB);
+        RUN_TEST(CaptureFrame_sends_num_pixels_LSB);
+        RUN_TEST(CaptureFrame_exposes_the_pixels);
+        RUN_TEST(CaptureFrame_does_readout_of_num_pixels_into_the_frame_buffer);
+        RUN_TEST(CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer);
+
+
+
         puts("## VisCmd.GetPeak");
         setUp = EmptySetUp;
         tearDown = EmptyTearDown;
