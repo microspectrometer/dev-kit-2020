@@ -1,20 +1,51 @@
 # test VisCmd
 ## VisCmd.LedNumIsValid
-test/test_runner.c:53:LedNumIsValid_returns_TRUE_if_led_num_is_0:PASS
-test/test_runner.c:54:LedNumIsValid_returns_TRUE_if_led_num_is_1:PASS
-test/test_runner.c:55:LedNumIsValid_returns_FALSE_if_led_num_is_not_0_or_1:PASS
+test/test_runner.c:54:LedNumIsValid_returns_TRUE_if_led_num_is_0:PASS
+test/test_runner.c:55:LedNumIsValid_returns_TRUE_if_led_num_is_1:PASS
+test/test_runner.c:56:LedNumIsValid_returns_FALSE_if_led_num_is_not_0_or_1:PASS
 ## VisCmd.LisReadout
-test/test_runner.c:60:LisReadout_waits_for_Lis_Sync_to_go_HIGH_then_go_LOW:PASS
-test/test_runner.c:61:LisReadout_reads_one_pixel_on_each_rising_edge_of_Lis_Clk:PASS
-test/test_runner.c:62:LisReadout_LOOP_wait_for_the_rising_edge_of_Lis_Clk:PASS
-test/test_runner.c:63:LisReadout_LOOP_start_the_ADC_conversion:PASS
-test/test_runner.c:64:LisReadout_LOOP_wait_for_45_cycles_of_10MHz_clock:PASS
-test/test_runner.c:65:LisReadout_LOOP_start_ADC_readout:PASS
-test/test_runner.c:66:LisReadout_LOOP_wait_for_most_significant_byte_ADC_readout:PASS
-test/test_runner.c:67:LisReadout_LOOP_save_MSB_to_frame_buffer:PASS
-test/test_runner.c:68:LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout:PASS
-test/test_runner.c:69:LisReadout_LOOP_save_LSB_to_frame_buffer:PASS
+test/test_runner.c:61:LisReadout_waits_for_Lis_Sync_to_go_HIGH_then_go_LOW:PASS
+test/test_runner.c:62:LisReadout_reads_one_pixel_on_each_rising_edge_of_Lis_Clk:PASS
+test/test_runner.c:63:LisReadout_LOOP_wait_for_the_rising_edge_of_Lis_Clk:PASS
+test/test_runner.c:64:LisReadout_LOOP_start_the_ADC_conversion:PASS
+test/test_runner.c:65:LisReadout_LOOP_wait_for_45_cycles_of_10MHz_clock:PASS
+test/test_runner.c:66:LisReadout_LOOP_start_ADC_readout:PASS
+test/test_runner.c:67:LisReadout_LOOP_wait_for_most_significant_byte_ADC_readout:PASS
+test/test_runner.c:68:LisReadout_LOOP_save_MSB_to_frame_buffer:PASS
+test/test_runner.c:69:LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout:PASS
+test/test_runner.c:70:LisReadout_LOOP_save_LSB_to_frame_buffer:PASS
+## VisCmd.GetPeak
+test/test_runner.c:561:GetPeak_is_visible:FAIL: Implement test.
+## VisCmd.AutoExpose
+test/test_runner.c:80:AutoExpose_turns_led1_red_to_indicate_starting:PASS
+test/test_runner.c:81:AutoExpose_sets_min_peak_at_target_minus_tolerance:PASS
+test/test_runner.c:82:AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_GREATER_THAN_target:PASS
+test/test_runner.c:83:AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_LESS_THAN_max_dark:PASS
+test/test_runner.c:84:AutoExpose_sets_max_peak_at_target_plus_tolerance:PASS
+test/test_runner.c:85:AutoExpose_clamps_max_peak_at_65535_counts_if_target_plus_tolerance_is_LESS_THAN_target:PASS
+test/test_runner.c:86:AutoExpose_loops_until_done:PASS
+
+- Call 1 is named LisExpose? Yes.
+
+test/test_runner.c:87:AutoExpose_exposes_the_LIS_770i_pixels:PASS
+
+- Call 2 is named LisReadout? Yes.
+
+test/test_runner.c:88:AutoExpose_reads_pixel_counts_into_global_frame_buffer:PASS
+test/test_runner.c:89:AutoExpose_finds_frame_peak_in_range_start_pixel_to_stop_pixel:PASS
+test/test_runner.c:90:AutoExpose_is_done_if_peak_less_than_max_dark_AND_exposure_at_max:PASS
+test/test_runner.c:91:AutoExpose_scales_exposure_by_10_if_peak_less_than_max_dark:PASS
+test/test_runner.c:92:AutoExpose_clamps_exposure_at_max_exposure_if_10_x_exposure_is_GREATER_THAN_max_exposure:PASS
+test/test_runner.c:93:AutoExpose_scales_exposure_by_half_if_peak_ABOVE_max_peak:PASS
+test/test_runner.c:94:AutoExpose_clamps_exposure_at_min_exposure_if_half_exposure_is_LESS_THAN_min_exposure:PASS
+test/test_runner.c:95:AutoExpose_is_done_if_peak_BELOW_min_peak_and_exposure_at_max_exposure:PASS
+test/test_runner.c:96:AutoExpose_scales_exposure_by_target_div_peak_if_peak_BELOW_min_peak_and_exposure_not_at_max:PASS
+test/test_runner.c:97:AutoExpose_clamps_exposure_at_max_exposure_if_gain_is_GREATER_THAN_max_exposure:PASS
+test/test_runner.c:98:AutoExpose_is_done_if_peak_is_in_the_target_range:PASS
+test/test_runner.c:99:AutoExpose_turns_led1_green_to_indicate_it_hit_the_target_range:PASS
+test/test_runner.c:100:AutoExpose_gives_up_if_it_iterates_for_max_tries:PASS
+# test AutoExpose
 
 -----------------------
-13 Tests 0 Failures 0 Ignored 
-OK
+35 Tests 1 Failures 0 Ignored 
+FAIL

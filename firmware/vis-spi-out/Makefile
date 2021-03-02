@@ -3,8 +3,8 @@ sensor ?= LIS
 unit-test: build/test_runner.md
 # Tests{{{
 tests := test/test_example.c \
-		test/test_VisCmd.c
-# test/test_AutoExpose.c
+		test/test_VisCmd.c \
+		test/test_AutoExpose.c
 # }}}
 # Object files{{{
 vis-spi-out_o := build/AutoExpose.o \
