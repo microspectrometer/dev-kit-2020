@@ -67,7 +67,6 @@ print-vars:
 # {{{ Recipes
 build/test_runner.md: build/test_runner.exe
 	$< > $@
-# build/test_runner.exe: test/test_runner.c test/test_example.c test/test_VisCmd.c
 build/test_runner.exe: test/test_runner.c $(tests) \
 					$(vis-spi-out_o) \
 					$(mock-c_o) \

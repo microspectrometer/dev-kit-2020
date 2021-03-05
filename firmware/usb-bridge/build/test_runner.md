@@ -1,0 +1,123 @@
+# UsbCmd tests
+## ReadLedState
+test/test_runner.c:21:ReadLedState_returns_OFF_if_LED_is_off:PASS
+test/test_runner.c:22:ReadLedState_returns_GREEN_if_LED_is_on_and_green:PASS
+test/test_runner.c:23:ReadLedState_returns_RED_if_LED_is_on_and_red:PASS
+## GetBridgeLED
+test/test_runner.c:26:GetBridgeLED_waits_for_byte_led_num:PASS
+test/test_runner.c:27:GetBridgeLED_reads_byte_led_num:PASS
+test/test_runner.c:28:GetBridgeLED_writes_two_bytes_to_USB_host:PASS
+test/test_runner.c:29:GetBridgeLED_writes_OK_and_LED_STATE_if_led_num_is_valid:PASS
+test/test_runner.c:30:GetBridgeLED_writes_ERROR_and_pads_second_byte_if_led_num_is_invalid:PASS
+## SetBridgeLED
+test/test_runner.c:33:SetBridgeLED_waits_for_byte_led_num:PASS
+test/test_runner.c:34:SetBridgeLED_reads_byte_led_num:PASS
+test/test_runner.c:35:SetBridgeLED_waits_for_byte_led_setting:PASS
+test/test_runner.c:36:SetBridgeLED_reads_byte_led_setting:PASS
+test/test_runner.c:37:SetBridgeLED_applies_led_setting_and_writes_OK_if_parameters_are_valid:PASS
+test/test_runner.c:38:SetBridgeLED_writes_ERROR_if_led_num_is_invalid:PASS
+test/test_runner.c:39:SetBridgeLED_writes_ERROR_if_led_setting_is_invalid:PASS
+## GetSensorLED
+test/test_runner.c:42:GetSensorLED_waits_for_byte_led_num:PASS
+test/test_runner.c:43:GetSensorLED_reads_byte_led_num:PASS
+test/test_runner.c:44:GetSensorLED_sends_command_to_sensor:PASS
+test/test_runner.c:45:GetSensorLED_sends_led_num_to_sensor:PASS
+test/test_runner.c:46:GetSensorLED_writes_OK_to_indicate_it_sent_the_command_to_the_sensor:PASS
+test/test_runner.c:47:GetSensorLED_waits_for_sensor_to_signal_STATUS_data_ready:PASS
+test/test_runner.c:48:GetSensorLED_reads_status_from_sensor:PASS
+test/test_runner.c:49:GetSensorLED_waits_for_sensor_to_signal_LED_SETTING_data_ready:PASS
+test/test_runner.c:50:GetSensorLED_reads_led_setting_from_sensor:PASS
+test/test_runner.c:51:GetSensorLED_writes_sensor_status:PASS
+test/test_runner.c:52:GetSensorLED_writes_sensor_led_setting:PASS
+## SetSensorLED
+test/test_runner.c:55:SetSensorLED_waits_for_byte_led_num:PASS
+test/test_runner.c:56:SetSensorLED_reads_byte_led_num:PASS
+test/test_runner.c:57:SetSensorLED_waits_for_byte_led_setting:PASS
+test/test_runner.c:58:SetSensorLED_reads_byte_led_setting:PASS
+test/test_runner.c:59:SetSensorLED_sends_command_to_sensor:PASS
+test/test_runner.c:60:SetSensorLED_sends_led_num_to_sensor:PASS
+test/test_runner.c:61:SetSensorLED_sends_led_setting_to_sensor:PASS
+test/test_runner.c:62:SetSensorLED_writes_OK_to_indicate_it_sent_the_command_to_the_sensor:PASS
+test/test_runner.c:63:SetSensorLED_waits_for_sensor_to_signal_STATUS_data_ready:PASS
+test/test_runner.c:64:SetSensorLED_reads_status_from_sensor:PASS
+test/test_runner.c:65:SetSensorLED_writes_sensor_status:PASS
+## GetSensorConfig
+test/test_runner.c:68:GetSensorConfig_sends_command_to_sensor:PASS
+test/test_runner.c:69:GetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor:PASS
+test/test_runner.c:70:GetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready:PASS
+test/test_runner.c:71:GetSensorConfig_reads_status_from_sensor:PASS
+test/test_runner.c:72:GetSensorConfig_waits_for_sensor_to_signal_BINNING_data_ready:PASS
+test/test_runner.c:73:GetSensorConfig_reads_binning_from_sensor:PASS
+test/test_runner.c:74:GetSensorConfig_waits_for_sensor_to_signal_GAIN_data_ready:PASS
+test/test_runner.c:75:GetSensorConfig_reads_gain_from_sensor:PASS
+test/test_runner.c:76:GetSensorConfig_waits_for_sensor_to_signal_ROW_BITMAP_data_ready:PASS
+test/test_runner.c:77:GetSensorConfig_reads_row_bitmap_from_sensor:PASS
+test/test_runner.c:78:GetSensorConfig_writes_sensor_status:PASS
+test/test_runner.c:79:GetSensorConfig_writes_sensor_binning:PASS
+test/test_runner.c:80:GetSensorConfig_writes_sensor_gain:PASS
+test/test_runner.c:81:GetSensorConfig_writes_sensor_row_bitmap:PASS
+## SetSensorConfig
+test/test_runner.c:84:SetSensorConfig_waits_for_byte_binning:PASS
+test/test_runner.c:85:SetSensorConfig_reads_byte_binning:PASS
+test/test_runner.c:86:SetSensorConfig_waits_for_byte_gain:PASS
+test/test_runner.c:87:SetSensorConfig_reads_byte_gain:PASS
+test/test_runner.c:88:SetSensorConfig_waits_for_byte_row_bitmap:PASS
+test/test_runner.c:89:SetSensorConfig_reads_byte_row_bitmap:PASS
+test/test_runner.c:90:SetSensorConfig_sends_command_to_sensor:PASS
+test/test_runner.c:91:SetSensorConfig_sends_binning_to_sensor:PASS
+test/test_runner.c:92:SetSensorConfig_sends_gain_to_sensor:PASS
+test/test_runner.c:93:SetSensorConfig_sends_row_bitmap_to_sensor:PASS
+test/test_runner.c:94:SetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor:PASS
+test/test_runner.c:95:SetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready:PASS
+test/test_runner.c:96:SetSensorConfig_reads_status_from_sensor:PASS
+test/test_runner.c:97:SetSensorConfig_writes_sensor_status:PASS
+## GetExposure
+test/test_runner.c:100:GetExposure_sends_command_to_sensor:PASS
+test/test_runner.c:101:GetExposure_writes_OK_to_indicate_it_sent_the_command_to_the_sensor:PASS
+test/test_runner.c:102:GetExposure_waits_for_sensor_to_signal_STATUS_data_ready:PASS
+test/test_runner.c:103:GetExposure_reads_status_from_sensor:PASS
+test/test_runner.c:104:GetExposure_waits_for_sensor_to_signal_EXPOSURE_MSB_data_ready:PASS
+test/test_runner.c:105:GetExposure_reads_exposure_MSB_from_sensor:PASS
+test/test_runner.c:106:GetExposure_waits_for_sensor_to_signal_EXPOSURE_LSB_data_ready:PASS
+test/test_runner.c:107:GetExposure_reads_exposure_LSB_from_sensor:PASS
+test/test_runner.c:108:GetExposure_writes_sensor_status:PASS
+test/test_runner.c:109:GetExposure_writes_exposure_MSB:PASS
+test/test_runner.c:110:GetExposure_writes_exposure_LSB:PASS
+## SetExposure
+test/test_runner.c:113:SetExposure_waits_for_byte_exposure_MSB:PASS
+test/test_runner.c:114:SetExposure_reads_byte_exposure_MSB:PASS
+test/test_runner.c:115:SetExposure_waits_for_byte_exposure_LSB:PASS
+test/test_runner.c:116:SetExposure_reads_byte_exposure_LSB:PASS
+test/test_runner.c:117:SetExposure_sends_command_to_sensor:PASS
+test/test_runner.c:118:SetExposure_sends_exposure_MSB_to_sensor:PASS
+test/test_runner.c:119:SetExposure_sends_exposure_LSB_to_sensor:PASS
+test/test_runner.c:120:SetExposure_writes_OK_to_indicate_it_sent_the_command_to_the_sensor:PASS
+test/test_runner.c:121:SetExposure_waits_for_sensor_to_signal_STATUS_data_ready:PASS
+test/test_runner.c:122:SetExposure_reads_status_from_sensor:PASS
+test/test_runner.c:123:SetExposure_writes_sensor_status:PASS
+## CaptureFrame
+test/test_runner.c:126:CaptureFrame_sends_command_to_sensor:PASS
+test/test_runner.c:127:CaptureFrame_writes_OK_to_indicate_it_sent_the_command_to_the_sensor:PASS
+test/test_runner.c:128:CaptureFrame_waits_for_sensor_to_signal_STATUS_data_ready:PASS
+test/test_runner.c:129:CaptureFrame_reads_status_from_sensor:PASS
+test/test_runner.c:130:CaptureFrame_waits_for_sensor_to_signal_NUM_PIXELS_MSB_data_ready:PASS
+test/test_runner.c:131:CaptureFrame_reads_num_pixels_MSB_from_sensor:PASS
+test/test_runner.c:132:CaptureFrame_waits_for_sensor_to_signal_NUM_PIXELS_LSB_data_ready:PASS
+test/test_runner.c:133:CaptureFrame_reads_num_pixels_LSB_from_sensor:PASS
+test/test_runner.c:134:CaptureFrame_writes_sensor_status:PASS
+test/test_runner.c:135:CaptureFrame_writes_num_pixels_MSB:PASS
+test/test_runner.c:136:CaptureFrame_writes_num_pixels_LSB:PASS
+test/test_runner.c:137:CaptureFrame_returns_if_status_is_not_OK:PASS
+test/test_runner.c:138:CaptureFrame_waits_for_the_next_byte_of_frame_data:PASS
+test/test_runner.c:139:CaptureFrame_writes_the_next_byte_of_frame_data:PASS
+test/test_runner.c:140:CaptureFrame_loops_wait_for_byte_then_write_byte_for_a_total_nbytes_of_2x_num_pixels:PASS
+## AutoExposure
+FAIL: Implement Test
+## GetAutoExposeConfig
+FAIL: Implement Test
+## SetAutoExposeConfig
+FAIL: Implement Test
+
+-----------------------
+102 Tests 0 Failures 0 Ignored 
+OK
