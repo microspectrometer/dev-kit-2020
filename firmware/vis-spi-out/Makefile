@@ -178,7 +178,7 @@ build/test/%.o: src/%.c src/%.h
 	gcc -c $< -o $@ $(CFLAGS_for_tests)
 ../lib/build/test/%_faked.o: ../lib/test/%_faked.c ../lib/test/%_faked.h
 	gcc -c $< -o $@ $(CFLAGS_for_tests)
-
+# }}}
 .PHONY: clean
 clean:
 	rm -f build/test/*.o
@@ -202,5 +202,5 @@ what-is-__FILE__: build/what-is-__FILE__.exe
 	$<
 build/what-is-__FILE__.exe: what-is-__FILE__.c
 	gcc $< -o $@
-# }}}
+
 # vim:set fdm=marker:
