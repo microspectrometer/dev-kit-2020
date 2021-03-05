@@ -9,20 +9,6 @@ volatile Queue_s * SpiFifo; // extern in VisCmd.h
 #define max_length_of_queue 5 // bytes
 
 /* =====[ Test Helpers ]===== */
-static void _SilentAssertCall(uint16_t num, char const * name)
-{
-    //! Assert call number **num** is named **name**.
-    // Put num and name in the message displayed if test fails
-    GString *message = g_string_new(NULL);
-    g_string_append_printf(message, "`%s` is not call %d", name, num);
-    // Perform the test
-    TEST_ASSERT_TRUE_MESSAGE(
-        SilentAssertCall(mock, num, name),
-        message->str
-        );
-    // Free memory used by GString
-    g_string_free(message, true);
-}
 static void _AssertCall(uint16_t num, char const * name)
 {
     //! Assert call number **num** is named **name**.

@@ -3,7 +3,6 @@
 #include "LisConfigs.h"
 #endif
 #ifdef S13131 // <---------- $ make sensor=S13131
-#include "S13131Configs.h"
 #endif
 
 #include <unity.h>

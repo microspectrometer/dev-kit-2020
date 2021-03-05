@@ -121,7 +121,7 @@ test/test_runner.c:137:CaptureFrame_exposes_the_pixels:PASS
 test/test_runner.c:138:CaptureFrame_does_readout_of_num_pixels_into_the_frame_buffer:PASS
 test/test_runner.c:139:CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer:PASS
 ## VisCmd.GetPeak
-test/test_runner.c:561:GetPeak_is_visible:FAIL: Implement test.
+test/test_runner.c:547:GetPeak_is_visible:FAIL: Implement test.
 ## VisCmd.AutoExpose
 test/test_runner.c:151:AutoExpose_turns_led1_red_to_indicate_starting:PASS
 test/test_runner.c:152:AutoExpose_sets_min_peak_at_target_minus_tolerance:PASS

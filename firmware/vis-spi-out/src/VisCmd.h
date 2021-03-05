@@ -15,12 +15,18 @@
  * */
 #ifndef _VISCMD_H
 #define _VISCMD_H
+// Pick a sensor
+#ifdef LIS // <------------- $ make sensor=LIS
+#include "Lis.h"
+#include "LisConfig.h"
+#endif
+#ifdef S13131 // <---------- $ make sensor=S13131
+#include "S13131.h"
+#endif
 #include <stdint.h>
 #include <stdbool.h>
 #include "SpiSlave.h"
 #include "StatusCode.h"
-#include "Lis.h"
-#include "LisConfig.h"
 #include "Queue.h"
 #include "BiColorLed.h"
 #include "UartSpi.h"

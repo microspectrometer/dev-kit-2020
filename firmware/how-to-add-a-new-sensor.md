@@ -169,6 +169,67 @@ Include `sensor-HardwareFake.h`.
 #include "S13131-HardwareFake.h"
 ```
 
+## LisConfigs.h
+
+The LIS-770i has a header to define the user-programmable values
+for its internal registers. The Configs define the allowed
+values. Manually check this list matches the values in the JSON
+file.
+
+The S13131 has no configurable registers, so there is no Configs
+file.
+
+The vis-spi-out application for the LIS and the test runner for
+LIS unit tests include the LisConfigs header.
+
+*Examples:*
+
+```c
+// vis-spi-out/src/vis-spi-out.c
+#include "LisConfigs.h"
+
+// vis-spi-out/test/test_runner.c
+#include "LisConfigs.h"
+
+// lib/test/test_runner.c
+#include "LisConfigs.h"
+```
+
+LisConfigs includes "LisConfig.h" (note no "s"). This file
+defines LIS CONFIG datatypes and declares all the variable names
+that are defined in "LisConfigs.h".
+
+Why two files?
+
+The compilation unit with `main()` includes `LisConfigs.h`.
+
+Files that might end up outside the `main` compilation unit avoid
+a multiple definition linker error by including `LisConfig.h`
+*instead of* `LisConfigs.h`. This is just to make the code
+testable. For the final AVR elf, make sure that any file that
+includes `LisConfig.h` is in the same compilation unit as the
+`main` C file.
+
+For example, `LisConfigs.h` defines:
+
+- `BINNING_ON=0x01`
+- `GAIN_1X=0x01`
+- `ALL_ROWS_ACTIVE=0x1F`
+
+And when files that only include `LisConfig.h` are in the `main`
+compilation unit, the assembly is correct like this:
+
+```avra
+    binning = BINNING_ON;
+     1cc:	81 e0       	ldi	r24, 0x01	; 1
+     1ce:	80 93 1a 01 	sts	0x011A, r24	; 0x80011a <binning>
+    gain = GAIN_1X;
+     1d2:	80 93 34 01 	sts	0x0134, r24	; 0x800134 <gain>
+    active_rows = ALL_ROWS_ACTIVE;
+     1d6:	8f e1       	ldi	r24, 0x1F	; 31
+     1d8:	80 93 33 01 	sts	0x0133, r24	; 0x800133 <active_rows>
+```
+
 # Build changes
 
 ## Review of the Makefile flow

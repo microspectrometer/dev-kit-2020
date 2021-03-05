@@ -1,23 +1,22 @@
 /** \file */
-// app libs
-#include "Example.h"
-// prj libs
+// Pick a sensor
+#ifdef LIS // <------------- $ make sensor=LIS
+#include "LisConfigs.h"
+#endif
+#ifdef S13131 // <---------- $ make sensor=S13131
+#endif
+
+#include "Hardware.h" // Hardware i/o definitions
+#include "StatusCodes.h" // Python-to-Firmware communication status codes
 #include "BiColorLed.h"
 #include "Spi.h"
 #include "SpiSlave.h"
 #include "UartSpi.h"
 #include "Lis.h"
-// #include "Cmd.h" - old typedefs from jump table days
 #include <stdlib.h> // defines NULL
-// hardware i/o definitions
-#include "Hardware.h"
-// SPI communication queue
-#include "Queue.h"
-// Python-to-Firmware communication status codes
-#include "StatusCodes.h"
+#include "Queue.h" // SPI communication queue
+
 #include "VisCmd.h"
-// LIS-770i configuration
-#include "LisConfigs.h"
 
 //! Allocate static memory for the SPI Rx Queue.
 volatile Queue_s * SpiFifo;
