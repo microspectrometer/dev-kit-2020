@@ -55,6 +55,9 @@ void UsbTxbufferIsFull_returns_false_if_pin_MIOSIO0_is_LOW(void);
 void UsbReadByte_selects_the_FT221X(void);
 void UsbReadByte_drives_databus_with_read_command(void);
 void UsbReadByte_signals_FT221X_to_sample_the_databus(void);
+void UsbReadByte_reads_the_byte_if_data_transfer_status_is_OK(void);
+void UsbReadByte_unselects_the_FT221X(void);
+void UsbReadByte_returns_either_FtOK_if_pbyte_has_the_read_data_or_FtError_if_Usb_receive_buffer_was_empty(void);
 
 /* =====[ UsbWriteByte ]===== */
 

@@ -234,6 +234,9 @@ void FtUnselectFT221X_drives_FtChipSelect_HIGH(void)
 /* =====[ FtBusTurnaround ]===== */
 void FtBusTurnaround_clocks_one_cycle_to_signal_data_drive_then_data_sample(void)
 {
+    puts("Drive clock to signal Data-Drive then Data-Sample:\n");
+    puts("- FtDrive: rising edge");
+    puts("- FtSample: falling edge");
     /* =====[ Operate ]===== */
     FtBusTurnaround();
     /* PrintAllCalls(mock); */
@@ -241,13 +244,13 @@ void FtBusTurnaround_clocks_one_cycle_to_signal_data_drive_then_data_sample(void
     uint16_t call_n; uint8_t direction;
     //
     call_n = 1;
-    _AssertCall(call_n, "_FtClockDatabus");
+    SilentAssertCall(mock, call_n, "_FtClockDatabus");
     //
     direction = FtDrive;
     _AssertArg(call_n, 1, &direction);
     //
     call_n++;
-    _AssertCall(call_n, "_FtClockDatabus");
+    SilentAssertCall(mock, call_n, "_FtClockDatabus");
     //
     direction = FtSample;
     _AssertArg(call_n, 1, &direction);
@@ -276,13 +279,13 @@ void FtRead_clocks_one_byte_out_of_the_FT221X(void)
     uint16_t call_n; uint8_t direction;
     //
     call_n = 1;
-    _AssertCall(call_n, "_FtClockDatabus");
+    SilentAssertCall(mock, call_n, "_FtClockDatabus");
     //
     direction = FtDrive;
     _AssertArg(call_n, 1, &direction);
     //
     call_n = 2;
-    _AssertCall(call_n, "_FtClockDatabus");
+    SilentAssertCall(mock, call_n, "_FtClockDatabus");
     //
     direction = FtSample;
     _AssertArg(call_n, 1, &direction);
@@ -295,7 +298,7 @@ void FtRead_stores_the_byte_at_address_pbyte(void)
     FtRead(pbyte);
     /* =====[ Test ]===== */
     uint16_t call_n = 3;
-    _AssertCall(call_n, "_FtReadDatabus");
+    SilentAssertCall(mock, call_n, "_FtReadDatabus");
     //
     _AssertArg(call_n, 1, &pbyte);
     // See test of _FtReadDatabus to confirm byte==*FtData_pin.
@@ -311,7 +314,7 @@ void FtWrite_signals_to_drive_data_onto_the_databus(void)
     uint16_t call_n; uint8_t direction;
     //
     call_n = 1;
-    _AssertCall(call_n, "_FtClockDatabus");
+    SilentAssertCall(mock, call_n, "_FtClockDatabus");
     //
     direction = FtDrive;
     _AssertArg(call_n, 1, &direction);
@@ -322,7 +325,7 @@ void FtWrite_sets_microcontroller_databus_pins_as_outputs(void)
     FtWrite(0xab);
     /* =====[ Test ]===== */
     uint16_t call_n = 2;
-    _AssertCall(call_n, "_FtDatabusPinDirection");
+    SilentAssertCall(mock, call_n, "_FtDatabusPinDirection");
     uint8_t pin_direction = FtOut;
     _AssertArg(call_n, 1, &pin_direction);
 }
@@ -333,7 +336,7 @@ void FtWrite_outputs_byte_on_databus_pins(void)
     FtWrite(byte);
     /* =====[ Test ]===== */
     uint16_t call_n = 3;
-    _AssertCall(call_n, "_FtWriteDatabus");
+    SilentAssertCall(mock, call_n, "_FtWriteDatabus");
     _AssertArg(call_n, 1, &byte);
 }
 void FtWrite_signals_FT221X_to_sample_the_databus(void)
@@ -344,7 +347,7 @@ void FtWrite_signals_FT221X_to_sample_the_databus(void)
     uint16_t call_n; uint8_t direction;
     //
     call_n = 4;
-    _AssertCall(call_n, "_FtClockDatabus");
+    SilentAssertCall(mock, call_n, "_FtClockDatabus");
     //
     direction = FtSample;
     _AssertArg(call_n, 1, &direction);
@@ -355,7 +358,7 @@ void FtWrite_sets_microcontroller_databus_pins_as_inputs(void)
     FtWrite(0xab);
     /* =====[ Test ]===== */
     uint16_t call_n = 5;
-    _AssertCall(call_n, "_FtDatabusPinDirection");
+    SilentAssertCall(mock, call_n, "_FtDatabusPinDirection");
     uint8_t pin_direction = FtIn;
     _AssertArg(call_n, 1, &pin_direction);
 }
@@ -397,29 +400,67 @@ void UsbTxbufferIsFull_returns_false_if_pin_MIOSIO0_is_LOW(void)
 /* =====[ UsbReadByte ]===== */
 void UsbReadByte_selects_the_FT221X(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
-}
-void UsbReadByte_drives_databus_with_read_command(void)
-{
     /* =====[ Operate ]===== */
     uint8_t byte = 0; uint8_t * pbyte = &byte;
     UsbReadByte(pbyte);
     /* =====[ Test ]===== */
-    uint16_t call_n = 1;
-    _AssertCall(call_n++, "_FtClockDatabusDrive");
-    _AssertCall(call_n, "_FtWriteDatabus");
+    uint16_t call_n = 0;
+    _AssertCall(++call_n, "FtSelectFT221X");
+}
+void UsbReadByte_drives_databus_with_read_command(void)
+{
+    puts("\n*Read command is* `0xc6`");
+    /* =====[ Operate ]===== */
+    uint8_t byte = 0; uint8_t * pbyte = &byte;
+    UsbReadByte(pbyte);
+    /* =====[ Test ]===== */
+    uint16_t call_n = 0;
+    SilentAssertCall(mock, ++call_n, "FtSelectFT221X");
+    SilentAssertCall(mock, ++call_n, "FtWrite");
     uint8_t read_cmd = FtReadCmd;
     _AssertArg(call_n, 1, &read_cmd);
 }
 void UsbReadByte_signals_FT221X_to_sample_the_databus(void)
 {
-    TEST_FAIL_MESSAGE("Implement test.");
-
     /* =====[ Operate ]===== */
     uint8_t byte = 0; uint8_t * pbyte = &byte;
     UsbReadByte(pbyte);
     /* =====[ Test ]===== */
-    /* _AssertCall(3, "_FtClockDatabusSample"); */
+    uint16_t call_n = 0;
+    SilentAssertCall(mock, ++call_n, "FtSelectFT221X");
+    SilentAssertCall(mock, ++call_n, "FtWrite");
+    _AssertCall(++call_n, "FtBusTurnaround");
+}
+void UsbReadByte_reads_the_byte_if_data_transfer_status_is_OK(void)
+{
+    /* =====[ Operate ]===== */
+    uint8_t byte = 0; uint8_t * pbyte = &byte;
+    UsbReadByte(pbyte);
+    /* =====[ Test ]===== */
+    uint16_t call_n = 0;
+    SilentAssertCall(mock, ++call_n, "FtSelectFT221X");
+    SilentAssertCall(mock, ++call_n, "FtWrite");
+    SilentAssertCall(mock, ++call_n, "FtBusTurnaround");
+    _AssertCall(++call_n, "FtIsOk");
+    TEST_FAIL_MESSAGE("Implement Test");
+    // TODO(sustainablelab): Test read is called only if FtIsOk() returns OK
+}
+void UsbReadByte_unselects_the_FT221X(void)
+{
+    /* =====[ Operate ]===== */
+    uint8_t byte = 0; uint8_t * pbyte = &byte;
+    UsbReadByte(pbyte);
+    /* =====[ Test ]===== */
+    uint16_t call_n = 0;
+    SilentAssertCall(mock, ++call_n, "FtSelectFT221X");
+    SilentAssertCall(mock, ++call_n, "FtWrite");
+    SilentAssertCall(mock, ++call_n, "FtBusTurnaround");
+    SilentAssertCall(mock, ++call_n, "FtIsOk");
+    _AssertCall(++call_n, "FtUnselectFT221X");
+}
+void UsbReadByte_returns_either_FtOK_if_pbyte_has_the_read_data_or_FtError_if_Usb_receive_buffer_was_empty(void)
+{
+    TEST_FAIL_MESSAGE("Implement Test");
 }
 
 /* =====[ UsbWriteByte ]===== */

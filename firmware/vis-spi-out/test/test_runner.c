@@ -8,11 +8,12 @@
 
 #include <unity.h>
 #include <Mock.h>
+#include "HardwareFake.h" // Fake hardware (registers, pins)
+#include "StatusCodes.h" // Python-to-Firmware communication status codes
+
 #include "test_example.h"
 #include "test_VisCmd.h"
 #include "test_AutoExpose.h"
-#include "StatusCodes.h" // Python-to-Firmware communication status codes
-#include "HardwareFake.h" // Fake hardware (registers, pins)
 
 void (*setUp)(void);
 void EmptySetUp(void) {

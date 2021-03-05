@@ -76,7 +76,7 @@ void EnableSpiInterrupt_clears_SPI_interrupt_flag(void)
         AssertCall(mock, call_n, "ClearSpiInterruptFlag")
         );
 }
-void EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt(void)
+void EnableSpiInterrupt_enables_interrupt_SPI_Transfer_Complete(void)
 {
     /* =====[ Setup ]===== */
     ClearBit(Spi_SPCR, Spi_InterruptEnable);
@@ -193,7 +193,8 @@ void SpiSlaveInit_enables_SPI_interrupt(void)
 void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
 {
     /* =====[ Setup ]===== */
-    uint8_t input_buffer[] = {0xA0, 0xB1, 0xC2};
+    uint8_t input_buffer[] = {0xa0, 0xb1, 0xc2};
+    puts("Transmit these bytes: {0xa0, 0xb1, 0xc2}");
     uint16_t nbytes = (uint16_t)sizeof(input_buffer);
     /* printf("sizeof(input_buffer)=%zu\n",sizeof(input_buffer)); */
     /* printf("nbytes=%d\n",nbytes); */
@@ -206,7 +207,7 @@ void SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster(void)
     while (call_n <= nbytes)
     {
         TEST_ASSERT_TRUE(
-            AssertCall(mock, call_n, "SpiSlaveTxByte")
+            SilentAssertCall(mock, call_n, "SpiSlaveTxByte")
             );
         TEST_ASSERT_TRUE(
             AssertArg(mock, call_n++, arg_n, p_argval++)

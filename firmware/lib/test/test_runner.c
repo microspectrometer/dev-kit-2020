@@ -1,194 +1,171 @@
-// Vim: use ;mktgc to build and run unit tests with compiler=gcc
-// ---Unit Test Framework---
-#include "unity.h"
-#include "Mock.h"
-// ---Fake all hardware---
-#include "HardwareFake.h"
-
-// Python-to-Firmware communication status codes
-#include "StatusCodes.h"
-// LIS-770i configuration
+// Pick a sensor
+#ifdef LIS // <------------- $ make sensor=LIS
 #include "LisConfigs.h"
-// ---Test Framework requires runner to define setup/teardown/mock pointers---
-void (*setUp)(void); void (*tearDown)(void);
-Mock_s *mock; // record calls/args to mocked-out libs
-// ---Define an empty setup/teardown for pointing to---
-void NothingToSetUp(void){}
-void NothingToTearDown(void){}
-/* ---Define a setup/teardown for writing call history--- */
-void SetUp_Mock(void) { mock = Mock_new(); }
-void TearDown_Mock(void) { Mock_destroy(mock); mock = NULL; }
+#include "test_Lis.h"
+#endif
+#ifdef S13131 // <---------- $ make sensor=S13131
+#include "S13131Configs.h"
+#endif
 
-// ---Lists of tests---
+#include <unity.h>
+#include <mock.h>
+#include "HardwareFake.h" // Fake hardware (registers, pins)
+#include "StatusCodes.h" // Python-to-Firmware communication status codes
+
 #include "test_BiColorLed.h"
 #include "test_ReadWriteBits.h"
-#include "test_Queue.h"
-#include "test_UartSpi.h"
-#include "test_Lis.h"
-#include "test_StatusCode.h"
-#include "test_Usb.h"
 #include "test_Flag.h"
 #include "test_Spi.h"
 #include "test_SpiSlave.h"
 #include "test_SpiMaster.h"
-// ---Define a setup/teardown for SpiMasterXfrByte---
-void SetUp_SpiMasterXfrByte(void){ SetBit(Spi_SPSR, Spi_InterruptFlag); }
-void TearDown_SpiMasterXfrByte(void){ ClearBit(Spi_SPSR, Spi_InterruptFlag); }
+#include "test_Queue.h"
+#include "test_UartSpi.h"
+#include "test_Usb.h"
+#include "test_StatusCode.h"
 
-/* ---Turn test suites on and off--- */
-bool Yep=true, Nope=false;
+void (*setUp)(void);
+void (*tearDown)(void);
+void EmptySetup(void) {
+}
+void EmptyTeardown(void) {
+}
+Mock_s *mock;
+void SetUp_Mock(void){
+    mock = Mock_new();
+}
+void TearDown_Mock(void){
+    Mock_destroy(mock);
+    mock = NULL;
+}
+bool Yep = true;
+bool Nope = false;
 
-void BiColorLed_tests(bool run_test)
+void test_BiColorLed(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("# BiColorLed tests");
+
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
+
+        puts("## BiColorLedOn");
         RUN_TEST(BiColorLedOn_sets_bit_in_ddr);
+        puts("## BiColorLedOff");
         RUN_TEST(BiColorLedOff_clears_bit_in_ddr);
+        puts("## BiColorLedGreen");
         RUN_TEST(BiColorLedGreen_clears_bit_in_port);
+        puts("## BiColorLedRed");
         RUN_TEST(BiColorLedRed_sets_bit_in_port);
+
     }
 }
 
-void ReadWriteBits_tests(bool run_test)
+void test_ReadWriteBits(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("# ReadWriteBits tests");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
+        puts("## SetBit");
         RUN_TEST(SetBit_sets_bit_in_register);
+        puts("## ClearBit");
         RUN_TEST(ClearBit_clears_bit_in_register);
+        puts("## BitIsSet");
         RUN_TEST(BitIsSet_returns_true_if_bit_is_set);
         RUN_TEST(BitIsSet_returns_false_if_bit_is_clear);
+        puts("## BitIsClear");
         RUN_TEST(BitIsClear_returns_true_if_bit_is_clear);
         RUN_TEST(BitIsClear_returns_false_if_bit_is_set);
     }
 }
 
-void Flag_tests(bool run_test)
+void test_Spi(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
-        RUN_TEST(test_Flag);
-    }
-}
+        puts("# Spi tests");
 
-/* =====[ Spi_tests ]===== */
-void Run_ClearSpiInterruptFlag_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("## ClearSpiInterruptFlag");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(ClearSpiInterruptFlag_first_reads_SPI_status_register);
         RUN_TEST(ClearSpiInterruptFlag_then_reads_SPI_data_register);
-    }
-}
-void Run__SpiTransferIsDone_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## _SpiTransferIsDone");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(SpiTransferIsDone_returns_true_if_the_SPI_Interrupt_Flag_is_set);
         RUN_TEST(SpiTransferIsDone_returns_false_if_the_SPI_Interrupt_Flag_is_clear);
     }
 }
-void Spi_tests(bool run_test)
-{
-    if (run_test)
-    {
-        Run_ClearSpiInterruptFlag_tests(Yep);
-        Run__SpiTransferIsDone_tests(Yep);
-    }
-}
 
-/* =====[ SpiSlave_tests ]===== */
-void Check_SpiSlave_plumbing_for_fakes(bool run_test)
+void test_SpiSlave(bool run_test)
 {
     if (run_test)
     {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
-        RUN_TEST(SpiSlave_faked_calls_are_still_available_for_testing);
-    }
-}
-void Run__SignalDataReady_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("# SpiSlave tests");
+
+        puts("## _SignalDataReady");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(SignalDataReady_drives_DataReady_LOW);
-    }
-}
-void Run_DisableSpiInterrupt_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## DisableSpiInterrupt");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(DisableSpiInterrupt_clears_the_SPI_Interrupt_Enable_bit);
-    }
-}
-void Run_EnableSpiInterrupt_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## EnableSpiInterrupt");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(EnableSpiInterrupt_clears_SPI_interrupt_flag);
-        RUN_TEST(EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt);
+        RUN_TEST(EnableSpiInterrupt_enables_interrupt_SPI_Transfer_Complete);
         RUN_TEST(EnableSpiInterrupt_consumes_6_cycles);
-    }
-}
-void Run_SpiSlaveInit_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## SpiSlaveInit");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(SpiSlaveInit_makes_DataReady_an_output_pin);
         RUN_TEST(SpiSlaveInit_idles_DataReady_high);
         RUN_TEST(SpiSlaveInit_makes_Miso_an_output_pin);
         RUN_TEST(SpiSlaveInit_enables_SPI);
         RUN_TEST(SpiSlaveInit_enables_SPI_interrupt);
-    }
-}
-void Run_SpiSlaveTxByte_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## SpiSlaveTxByte");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(SpiSlaveTxByte_loads_SPI_data_register_with_input_byte);
         RUN_TEST(SpiSlaveTxByte_disables_SPI_ISR_before_signaling_data_ready);
         RUN_TEST(SpiSlaveTxByte_drives_DataReady_LOW_to_signal_data_is_ready);
         RUN_TEST(SpiSlaveTxByte_waits_until_SPI_transfer_is_done);
         RUN_TEST(SpiSlaveTxByte_drives_DataReady_HIGH_immediately_after_SPI_transfer_finishes);
         RUN_TEST(SpiSlaveTxByte_enables_SPI_ISR_after_transfer);
-    }
-}
-void Run_SpiSlaveTx_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## SpiSlaveTx");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(SpiSlaveTx_sends_nbytes_of_input_buffer_to_SpiMaster);
     }
 }
-void SpiSlave_tests(bool run_test)
-{
-    if (run_test)
-    {
-        Check_SpiSlave_plumbing_for_fakes(Yep);
-        Run_DisableSpiInterrupt_tests(Yep);
-        Run_EnableSpiInterrupt_tests(Yep);
-        Run_SpiSlaveInit_tests(Yep);
-        Run__SignalDataReady_tests(Yep);
-        Run_SpiSlaveTxByte_tests(Yep);
-        Run_SpiSlaveTx_tests(Yep);
-    }
-}
 
-/* =====[ SpiMaster_tests ]===== */
-void Run_SpiMasterInit_tests(bool run_test)
+void SetUp_SpiMasterXfrByte(void) {
+    SetBit(Spi_SPSR, Spi_InterruptFlag);
+}
+void TearDown_SpiMasterXfrByte(void) {
+    ClearBit(Spi_SPSR, Spi_InterruptFlag);
+}
+void test_SpiMaster(bool run_test)
 {
     if (run_test)
     {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("# SpiMaster tests");
+
+        puts("## SpiMasterInit");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(SpiMasterInit_idles_SlaveSelect_high);
         RUN_TEST(SpiMasterInit_makes_SlaveSelect_an_output);
         RUN_TEST(SpiMasterInit_makes_Miso_an_input);
@@ -201,13 +178,10 @@ void Run_SpiMasterInit_tests(bool run_test)
         RUN_TEST(SpiMasterInit_sets_SPI_Clock_to_10MHz_ext_osc_divided_by_8);
         RUN_TEST(SpiMasterInit_enables_the_SPI_hardware_module);
         RUN_TEST(SpiMasterInit_clears_SPI_interrupt_flag);
-    }
-}
-void Run_SpiMasterXfrByte_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_SpiMasterXfrByte; tearDown = TearDown_SpiMasterXfrByte;
+
+        puts("## SpiMasterXfrByte");
+        setUp = SetUp_SpiMasterXfrByte;
+        tearDown = TearDown_SpiMasterXfrByte;
         RUN_TEST(SpiMasterXfrByte_selects_the_SPI_slave);
         RUN_TEST(SpiMasterXfrByte_loads_SPI_data_reg_with_the_byte_to_send);
         RUN_TEST(SpiMasterXfrByte_waits_until_the_transfer_is_done_by_reading_the_SPI_Interrupt_Flag);
@@ -216,98 +190,70 @@ void Run_SpiMasterXfrByte_tests(bool run_test)
         RUN_TEST(SpiMasterXfrByte_returns_the_byte_in_the_SPI_data_reg);
     }
 }
-void SpiMaster_tests(bool run_test)
-{
-    if (run_test)
-    {
-        Run_SpiMasterInit_tests(Yep);
-        Run_SpiMasterXfrByte_tests(Yep);
-    }
-}
 
-/* =====[ Queue_tests ]===== */
-void Run_QueueInit_tests(bool run_test)
+void test_Queue(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("# Queue tests");
+
+        puts("## QueueInit");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(QueueInit_returns_a_pointer_to_a_Queue_struct);
         RUN_TEST(QueueInit_memory_for_Queue_struct_is_allocated_in_Queue_object_file);
         RUN_TEST(QueueInit_assigns_input_buffer_as_Queue_buffer);
         RUN_TEST(QueueInit_size_input_is_the_maximum_Queue_length);
         RUN_TEST(QueueInit_initializes_Queue_with_length_0);
-    }
-}
-void Run_QueueLength_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## QueueLength");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(QueueLength_increments_after_a_push);
         RUN_TEST(QueueLength_does_not_increase_beyond_max_length);
         RUN_TEST(QueueLength_decrements_after_a_pop);
         RUN_TEST(QueueLength_does_not_decrease_below_zero);
-    }
-}
-void Run_QueuePush_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## QueuePush");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(QueuePush_writes_byte_to_Queue_buffer);
         RUN_TEST(QueuePush_writes_next_byte_to_address_after_previous_write);
         RUN_TEST(QueuePush_does_not_write_byte_if_Queue_is_full);
         RUN_TEST(QueuePush_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_full);
-    }
-}
-void Run_QueuePop_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## QueuePop");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(QueuePop_removes_oldest_byte_from_Queue);
         RUN_TEST(QueuePop_returns_oldest_byte);
         RUN_TEST(QueuePop_does_not_remove_any_bytes_if_Queue_is_empty);
         RUN_TEST(QueuePop_returns_0_if_Queue_is_empty);
         RUN_TEST(QueuePop_hits_end_of_buffer_and_wraps_around_if_Queue_is_not_empty);
-    }
-}
-void Run_QueueIsFull_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## QueueIsFull");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(QueueIsFull_returns_true_if_Queue_is_full);
         RUN_TEST(QueueIsFull_returns_false_if_Queue_is_not_full);
-    }
-}
-void Run_QueueIsEmpty_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## QueueIsEmpty");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(QueueIsEmpty_returns_true_if_Queue_is_empty);
         RUN_TEST(QueueIsEmpty_returns_false_if_Queue_is_not_empty);
     }
 }
-void Queue_tests(bool run_test)
-{
-    if (run_test)
-    {
-        Run_QueueInit_tests(Yep);
-        Run_QueueLength_tests(Yep);
-        Run_QueuePush_tests(Yep);
-        Run_QueuePop_tests(Yep);
-        Run_QueueIsFull_tests(Yep);
-        Run_QueueIsEmpty_tests(Yep);
-    }
-}
 
-void UartSpi_tests(bool run_test)
+void test_UartSpi(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("# UartSpi tests");
+
+        puts("## UartSpiInit");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(UartSpiInit_clocks_SPI_bus_at_5MHz);
         RUN_TEST(UartSpiInit_sets_Sck_as_an_output);
         RUN_TEST(UartSpiInit_sets_AdcConv_to_idle_low);
@@ -318,20 +264,26 @@ void UartSpi_tests(bool run_test)
         RUN_TEST(UartSpiInit_gives_SPI_control_over_Miso_and_Mosi_pin_behavior);
     }
 }
-void Run_MSB_LSB_tests(bool run_test)
+
+void test_Lis(bool run_test)
 {
     if (run_test)
     {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("# Lis tests");
+
+        puts("## MSB");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(MSB_returns_most_significant_bit_of_16bit_input);
+
+        puts("## LSB");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(LSB_returns_least_significant_bit_of_16bit_input);
-    }
-}
-void Run_LisInit_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## LisInit");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(LisInit_sets_PixSelect_as_an_output);
         RUN_TEST(LisInit_idles_PixSelect_low);
         RUN_TEST(LisInit_sets_Rst_as_an_output);
@@ -344,24 +296,18 @@ void Run_LisInit_tests(bool run_test)
         RUN_TEST(LisInit_sets_PWM_frequency_at_50kHz);
         RUN_TEST(LisInit_sets_PWM_duty_cycle_to_50_percent);
         RUN_TEST(LisInit_outputs_the_PWM_clock_on_pin_Clk);
-    }
-}
-void Run_LisConfigIsValid_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## LisConfigIsValid");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(LisConfigIsValid_returns_false_if_binning_is_invalid);
         RUN_TEST(LisConfigIsValid_returns_false_if_gain_is_invalid);
         RUN_TEST(LisConfigIsValid_returns_false_if_active_rows_is_invalid);
         RUN_TEST(LisConfigIsValid_returns_true_if_config_is_valid);
-    }
-}
-void Run__ConfigAs28bits_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## _ConfigAs28bits");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(ConfigAs28bits_writes_config_as_little_endian_ie_binning_is_config_byte0_bit0);
         RUN_TEST(ConfigAs28bits_sets_config_byte0_bit0_if_BINNING_ON);
         RUN_TEST(ConfigAs28bits_clears_config_byte0_bit0_if_BINNING_OFF);
@@ -375,302 +321,188 @@ void Run__ConfigAs28bits_tests(bool run_test)
         RUN_TEST(ConfigAs28bits_b5b10b15b20b25_set_if_ROW_3_ACTIVE);
         RUN_TEST(ConfigAs28bits_b6b11b16b21b26_set_if_ROW_4_ACTIVE);
         RUN_TEST(ConfigAs28bits_b7b12b17b22b27_set_if_ROW_5_ACTIVE);
-    }
-}
-void Run__WaitForLisClkLow_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## _WaitForLisClkLow");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(WaitForLisClkLow_clears_flag_PwmTimerMatchesOCF0B);
         RUN_TEST(WaitForLisClkLow_waits_until_flag_PwmTimerMatchesOCF0B_is_set);
-    }
-}
-void Run__WaitForLisClkHigh_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## _WaitForLisClkHigh");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(WaitForLisClkHigh_clears_flag_PwmTimerMatchesOCF0A);
         RUN_TEST(WaitForLisClkHigh_waits_until_flag_PwmTimerMatchesOCF0A_is_set);
-    }
-}
-void Run__EnterLisProgrammingMode_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## _EnterLisProgrammingMode");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(EnterLisProgrammingMode_waits_for_LisClk_LOW);
         RUN_TEST(EnterLisProgrammingMode_asserts_LisPixSelect_to_program_Lis);
-    }
-}
-void Run__WriteLisConfigBit_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## _WriteLisConfigBit");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(WriteLisConfigBit_outputs_bit_on_LisRst);
         RUN_TEST(WriteLisConfigBit_waits_for_LisClk_HIGH);
         RUN_TEST(WriteLisConfigBit_waits_for_LisClk_LOW);
-    }
-}
-void Run__Write28bitLisConfig_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## _Write28bitLisConfig");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(Write28bitLisConfig_writes_28bits_starting_at_byte0_bit0_and_ending_at_byte3_bit3);
-    }
-}
-void Run__ExitLisProgrammingMode_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## _ExitLisProgrammingMode");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(ExitLisProgrammingMode_outputs_LOW_on_pin_LisRst);
         RUN_TEST(ExitLisProgrammingMode_outputs_LOW_on_pin_LisPixSelect);
-    }
-}
-void Run_LisWriteConfig_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## LisWriteConfig");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(LisWriteConfig_converts_config_to_28bit_sequence);
         RUN_TEST(LisWriteConfig_enters_LIS_programming_mode);
         RUN_TEST(LisWriteConfig_writes_28bits_to_LIS_setup_register);
         RUN_TEST(LisWriteConfig_exits_LIS_programming_mode);
-    }
-}
-void Run_LisExpose_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## LisExpose");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(LisExpose_waits_for_the_falling_edge_of_Lis_Clk);
         RUN_TEST(LisExpose_starts_exposure_by_driving_Lis_Rst_HIGH);
         RUN_TEST(LisExpose_counts_falling_edges_of_Lis_Clk_until_count_equals_exposure_ticks);
         RUN_TEST(LisExpose_stops_exposure_by_driving_Lis_Rst_LOW);
     }
 }
-void Lis_tests(bool run_test)
+
+void test_Usb(bool run_test)
 {
     if (run_test)
     {
-        Run_MSB_LSB_tests(Yep);
-        Run_LisInit_tests(Yep);
-        Run_LisConfigIsValid_tests(Yep);
-        Run__ConfigAs28bits_tests(Yep);
-        Run__WaitForLisClkLow_tests(Yep);
-        Run__WaitForLisClkHigh_tests(Yep);
-        Run__EnterLisProgrammingMode_tests(Yep);
-        Run__WriteLisConfigBit_tests(Yep);
-        Run__Write28bitLisConfig_tests(Yep);
-        Run__ExitLisProgrammingMode_tests(Yep);
-        Run_LisWriteConfig_tests(Yep);
-        Run_LisExpose_tests(Yep);
-    }
-}
+        puts("# Usb tests");
 
-/* =====[ test libs for usb-bridge ]===== */
-
-/* =====[ Usb_tests ]===== */
-// ---Run_Usb_Private_Ft_tests---
-void Run__FtClockDatabus_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("## _FtClockDatabus");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(FtClockDatabus_drives_FtClock_HIGH_if_direction_is_FtDrive);
         RUN_TEST(FtClockDatabus_drives_FtClock_LOW_if_direction_is_FtSample);
-    }
-}
-void Run__FtReadDatabus_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## _FtReadDatabus");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(FtReadDatabus_copies_databus_pin_values_to_address_pbyte);
-    }
-}
-void Run__FtWriteDatabus_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## _FtWriteDatabus");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(FtWriteDatabus_outputs_byte_on_databus_pins);
-    }
-}
-void Run__FtDatabusPinDirection(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## _FtDatabusPinDirection");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(FtDatabusPinDirection_makes_databus_pins_outputs_if_direction_is_FtOut);
         RUN_TEST(FtDatabusPinDirection_makes_databus_pins_inputs_if_direction_is_FtIn);
-    }
-}
-void Run_Usb_Private_Ft_tests(bool run_test)
-{
-    if (run_test)
-    {
-        Run__FtClockDatabus_tests(Yep);
-        Run__FtReadDatabus_tests(Yep);
-        Run__FtWriteDatabus_tests(Yep);
-        Run__FtDatabusPinDirection(Yep);
-    }
-}
-// ---Run_Usb_Ft_tests---
-void Run_FtSelectFT221X_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## FtSelectFT221X");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(FtSelectFT221X_drives_FtChipSelect_LOW);
-    }
-}
-void Run_FtUnselectFT221X_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## FtUnselectFT221X");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(FtUnselectFT221X_drives_FtChipSelect_HIGH);
-    }
-}
-void Run_FtBusTurnaround_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## FtBusTurnaround");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(FtBusTurnaround_clocks_one_cycle_to_signal_data_drive_then_data_sample);
-    }
-}
-void Run_FtIsOk_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## FtIsOk");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(FtIsOk_returns_true_if_FtMiso_is_LOW);
         RUN_TEST(FtIsOk_returns_false_if_FtMiso_is_HIGH);
-    }
-}
-void Run_FtRead_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## FtRead");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(FtRead_clocks_one_byte_out_of_the_FT221X);
         RUN_TEST(FtRead_stores_the_byte_at_address_pbyte);
-    }
-}
-void Run_FtWrite_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## FtWrite");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(FtWrite_signals_to_drive_data_onto_the_databus);
         RUN_TEST(FtWrite_sets_microcontroller_databus_pins_as_outputs);
         RUN_TEST(FtWrite_outputs_byte_on_databus_pins);
         RUN_TEST(FtWrite_signals_FT221X_to_sample_the_databus);
         RUN_TEST(FtWrite_sets_microcontroller_databus_pins_as_inputs);
-    }
-}
-void Run_Usb_Ft_tests(bool run_test)
-{
-    if (run_test)
-    {
-        Run_FtSelectFT221X_tests(Yep);
-        Run_FtUnselectFT221X_tests(Yep);
-        Run_FtBusTurnaround_tests(Yep);
-        Run_FtIsOk_tests(Yep);
-        Run_FtRead_tests(Yep);
-        Run_FtWrite_tests(Yep);
-    }
-}
-// ---Run_Usb_API_tests---
-void Run_UsbRxbufferIsEmpty_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## UsbRxbufferIsEmpty");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(UsbRxbufferIsEmpty_returns_true_if_pin_FT1248_MISO_is_HIGH);
         RUN_TEST(UsbRxbufferIsEmpty_returns_false_if_pin_FT1248_MISO_is_LOW);
-    }
-}
-void Run_UsbTxbufferIsFull_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+
+        puts("## UsbTxbufferIsFull");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(UsbTxbufferIsFull_returns_true_if_pin_MIOSIO0_is_HIGH);
         RUN_TEST(UsbTxbufferIsFull_returns_false_if_pin_MIOSIO0_is_LOW);
-    }
-}
-void Run_UsbReadByte_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
+
+        puts("## UsbReadByte");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
         RUN_TEST(UsbReadByte_selects_the_FT221X);
         RUN_TEST(UsbReadByte_drives_databus_with_read_command);
         RUN_TEST(UsbReadByte_signals_FT221X_to_sample_the_databus);
+        RUN_TEST(UsbReadByte_reads_the_byte_if_data_transfer_status_is_OK);
+        RUN_TEST(UsbReadByte_unselects_the_FT221X);
+        RUN_TEST(UsbReadByte_returns_either_FtOK_if_pbyte_has_the_read_data_or_FtError_if_Usb_receive_buffer_was_empty);
+
+        puts("## UsbWriteByte");
+        // TODO(sustainablelab): write tests
+        puts("FAIL: Implement Test");
+
     }
 }
-void Run_UsbWriteByte_tests(bool run_test)
+
+void test_StatusCode(bool run_test)
 {
     if (run_test)
     {
-        setUp = SetUp_Mock; tearDown = TearDown_Mock;
-    }
-}
-void Run_Usb_API_tests(bool run_test)
-{
-    if (run_test)
-    {
-        Run_UsbRxbufferIsEmpty_tests(Yep);
-        Run_UsbTxbufferIsFull_tests(Yep);
-        Run_UsbReadByte_tests(Yep);
-        Run_UsbWriteByte_tests(Yep);
-    }
-}
-void StatusCode_tests(bool run_test)
-{
-    if (run_test)
-    {
-        setUp = NothingToSetUp; tearDown = NothingToTearDown;
+        puts("# StatusCode tests");
+
+        puts("## led_setting_is_valid");
+        setUp = EmptySetup;
+        tearDown = EmptyTeardown;
         RUN_TEST(led_setting_is_valid_returns_TRUE_if_setting_is_OFF);
         RUN_TEST(led_setting_is_valid_returns_TRUE_if_setting_is_GREEN);
         RUN_TEST(led_setting_is_valid_returns_TRUE_if_setting_is_RED);
         RUN_TEST(led_setting_is_valid_returns_FALSE_if_setting_is_any_other_value);
-    }
-}
 
-void Usb_tests(bool run_test)
-{
-    if (run_test)
-    {
-        Run_Usb_Private_Ft_tests(Yep);
-        Run_Usb_Ft_tests(Yep);
-        Run_Usb_API_tests(Yep);
     }
 }
 
 int main()
 {
     UNITY_BEGIN();
-    BiColorLed_tests(Yep);
-    ReadWriteBits_tests(Yep);
-    Queue_tests(Yep);
-    UartSpi_tests(Yep);
-    Lis_tests(Yep);
-    Flag_tests(Yep);
-    Spi_tests(Yep);
-    SpiSlave_tests(Yep);
-    SpiMaster_tests(Yep);
-    StatusCode_tests(Yep);
-    /* =====[ test libs for usb-bridge (what is this?) ]===== */
-    Usb_tests(Nope); // TODO: clean this up -- delete it?
-    /* =====[ New tests ]===== */
-    setUp = NothingToSetUp; tearDown = NothingToTearDown;
+    test_BiColorLed(Yep);
+    test_ReadWriteBits(Yep);
+    puts("# Flag test");
+    setUp = EmptySetup;
+    tearDown = EmptyTeardown;
+    RUN_TEST(test_Flag);
+    test_Spi(Yep);
+    test_SpiSlave(Yep);
+    test_SpiMaster(Yep);
+    test_Queue(Yep);
+    test_UartSpi(Yep);
+    test_Lis(Yep);
+    test_Usb(Yep);
+    test_StatusCode(Yep);
+
     return UNITY_END();
 }

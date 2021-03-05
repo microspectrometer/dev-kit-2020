@@ -28,7 +28,7 @@ void SpiSlaveTxByte_waits_until_SPI_transfer_is_done(void);
 void SpiSlaveTxByte_drives_DataReady_HIGH_immediately_after_SPI_transfer_finishes(void);
 void SpiSlaveTxByte_enables_SPI_ISR_after_transfer(void);
 void EnableSpiInterrupt_clears_SPI_interrupt_flag(void);
-void EnableSpiInterrupt_enables_SPI_transfer_complete_interrupt(void);
+void EnableSpiInterrupt_enables_interrupt_SPI_Transfer_Complete(void);
 void EnableSpiInterrupt_consumes_6_cycles(void);
 
 #endif // _TEST_SPISLAVE_H
