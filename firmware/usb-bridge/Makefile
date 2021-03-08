@@ -1,4 +1,5 @@
 sensor ?= LIS
+# sensor ?= S13131
 avr-elf: build/usb-bridge.elf build/usb-bridge.avra
 unit-test: build/test_runner.md
 

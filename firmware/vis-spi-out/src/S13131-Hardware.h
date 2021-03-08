@@ -19,9 +19,9 @@ s13131_ptr S13131_OCR0A  = &OCR0A;  // PWM period: fcpu/OCR0A
 s13131_ptr S13131_OCR0B  = &OCR0B;  // PWM duty cycle: OCR0B/OCR0A
 
 // ---Pins---
-s13131_pin S13131_Clk = PD5; // PWM
-s13131_pin S13131_St  = PD6; // Start
-s13131_pin S13131_Eos = PD7; // End of scan
+s13131_pin S13131_Clk = PD5; // PWM (ZIF pin 4 - LIS_CLK)
+s13131_pin S13131_St  = PD6; // Start (ZIF pin 5 - LIS_RST)
+s13131_pin S13131_Eos = PD7; // End of scan (ZIF pin 6 - LIS_SYNC)
 
 // ---Bits---
 s13131_bit S13131_WGM00  = WGM00;  // PWM

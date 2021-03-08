@@ -4,6 +4,11 @@
 #include "AutoExpose.h"
 #include "VisCmd.h" // AutoExpose() defined here
 
+#ifndef MAX_NUM_PIXELS
+#ifdef S13131
+#define MAX_NUM_PIXELS 512
+#endif
+#endif
 /* =====[ Test Helpers ]===== */
 static void _AssertCall(uint16_t num, char const * name)
 {
@@ -96,20 +101,31 @@ void AutoExpose_loops_until_done(void)
 {
     TEST_PASS();
 }
-void AutoExpose_exposes_the_LIS_770i_pixels(void)
+void AutoExpose_exposes_the_pixels(void)
 {
     /* =====[ Operate ]===== */
     AutoExpose();
     /* =====[ Test ]===== */
+#ifdef LIS
     _AssertCall(1, "LisExpose");
+#endif
+#ifdef S13131
+    _AssertCall(1, "S13131Expose");
+#endif
 }
 void AutoExpose_reads_pixel_counts_into_global_frame_buffer(void)
 {
     /* =====[ Operate ]===== */
     AutoExpose();
     /* =====[ Test ]===== */
+#ifdef LIS
     _AssertCall(2, "LisReadout");
+#endif
+#ifdef S13131
+    _AssertCall(2, "S13131Readout");
+#endif
 }
+
 void AutoExpose_finds_frame_peak_in_range_start_pixel_to_stop_pixel(void)
 {
     /* =====[ Setup ]===== */

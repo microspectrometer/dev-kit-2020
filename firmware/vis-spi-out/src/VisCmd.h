@@ -4,8 +4,8 @@
  * - NullCommand()
  * - GetSensorLED()
  * - SetSensorLED()
- * - GetSensorConfig()
- * - SetSensorConfig()
+ * - GetSensorConfig() (ifdef LIS)
+ * - SetSensorConfig() (ifdef LIS)
  * - GetExposure()
  * - SetExposure()
  * - CaptureFrame()
@@ -90,6 +90,7 @@ inline bool AutoExposeConfigIsValid(
     // Check stop_pixel is not less than start_pixel
     if (new_stop_pixel < new_start_pixel) return false;
 
+#ifdef LIS
     // Check start_pixel and stop_pixel are in range
     if (binning == BINNING_ON)
     {
@@ -101,12 +102,16 @@ inline bool AutoExposeConfigIsValid(
         if ((new_start_pixel < 14) || (new_start_pixel > 784)) return false;
         if ((new_stop_pixel < 14) || (new_stop_pixel > 784)) return false;
     }
+#endif
+#ifdef S13131
+    // TODO(sustainablelab): Check pixels are in range
+#endif
 
     // Config is valid
     return true;
 }
 
-
+#ifdef LIS
 // "static" because it calls static _delay_loop_1
 static inline void LisReadout(uint16_t num_pixels)
 {
@@ -165,6 +170,74 @@ static inline void LisReadout(uint16_t num_pixels)
         *(pframe++) = *UartSpi_UDR0;
     }
 }
+#endif
+#ifdef S13131
+// "static" because it calls static _delay_loop_1
+static inline void S13131Readout(void)
+{
+    /** S13131Readout behavior:\n 
+      * - reads one pixel on each falling edge of S13131_Clk:\n 
+      *     - start the ADC conversion\n 
+      *     - wait for 45 cycles of 10MHz clock\n 
+      *     - start ADC readout\n 
+      *     - wait for most significant byte of ADC readout\n 
+      *     - save MSB to frame buffer\n 
+      *     - wait for least significant byte of ADC readout\n 
+      *     - save LSB to frame buffer\n 
+      * */
+
+    // Store 16-bit ADC readings in `frame`.
+    uint8_t *pframe = frame;
+
+    // STATE: Just finished S13131Expose()
+    // STATE: ST has been LOW for 13 falling edges of CLK
+    // STATE: Readout starts with pixel 1 on the very next falling-edge of CLK
+
+    // ---This For Loop---
+    //   p_count                                (falling edge count)
+    //   0  < 512: Wait for CLK falling-edge // (f_count 13 -> 14)
+    //             Read the pixel: p_count 0 -> 1
+    //   1  < 512: Wait for CLK falling-edge // (f_count 14 -> 15)
+    //             Read the pixel: p_count 1 -> 2
+    //     ...
+    // 511  < 512: Wait for CLK falling-edge // (f_count 524 -> 525)
+    //             Read the pixel: p_count 511 -> 512
+    // All 512 pixels are now stored! Yay!
+    // 512 !< 512: Exit loop
+
+    for(uint16_t p_count = 0; p_count < 512; p_count++)
+    {
+        WaitForS13131ClkLow();
+
+        // Read Pixel
+        StartAdcConversion();
+
+        /* --------------------------------------------------- */
+        /* | wait at least 4.66µs for conversion to complete | */
+        /* --------------------------------------------------- */
+        // use _delay_loop_1 to count 45 ticks of the 10MHz osc
+        // each loop iteration is 3 ticks
+#ifndef USE_FAKES
+        _delay_loop_1(15); // 15 * 3 = 45 -> 4.5µs plus overhead
+#endif
+
+        // start 16-bit ADC readout
+        StartAdcReadout();
+
+        // wait for MSB of ADC readout
+        while (BitIsClear(UartSpi_UCSR0A, UartSpi_RXC0));
+
+        // save MSB to frame buffer
+        *(pframe++) = *UartSpi_UDR0;
+
+        // wait for LSB of ADC readout
+        while (BitIsClear(UartSpi_UCSR0A, UartSpi_RXC0));
+
+        // save LSB to frame buffer
+        *(pframe++) = *UartSpi_UDR0;
+    }
+}
+#endif
 
 uint16_t GetPeak(uint16_t const, uint16_t const);
 uint16_t AutoExpose(void);
@@ -263,6 +336,7 @@ inline void SetSensorLED(void)
     }
 }
 
+#ifdef LIS
 inline void GetSensorConfig(void)
 {
     /** GetSensorConfig behavior:\n 
@@ -277,6 +351,13 @@ inline void GetSensorConfig(void)
     SpiSlaveTxByte(gain);
     SpiSlaveTxByte(active_rows);
 }
+#endif
+#ifdef S13131
+inline void GetSensorConfig(void)
+{
+    // TODO(sustainablelab): How to handle this LIS-only command?
+}
+#endif
 
 inline void GetExposure(void)
 {
@@ -337,10 +418,15 @@ static inline void CaptureFrame(void)
     // send OK
     SpiSlaveTxByte(OK);
 
+#ifdef LIS
     // determine number of pixels
     uint16_t num_pixels;
     if (binning == BINNING_OFF) num_pixels = MAX_NUM_PIXELS;
     else num_pixels = MAX_NUM_PIXELS/2;
+#endif
+#ifdef S13131
+    const uint16_t num_pixels = 512;
+#endif
 
     // send num_pixels
     SpiSlaveTxByte(MSB(num_pixels));
@@ -350,12 +436,20 @@ static inline void CaptureFrame(void)
     /* | READ FRAME | */
     /* -------------- */
 
+#ifdef LIS
     // expose the LIS-770i pixels
     LisExpose();
 
     // readout the LIS-770i pixels into global frame buffer
     LisReadout(num_pixels);
+#endif // LIS
+#ifdef S13131
+    // expose the S13131-512 pixels
+    S13131Expose();
 
+    // readout the S13131-512 pixels into global frame buffer
+    S13131Readout();
+#endif
     /* --------------- */
     /* | WRITE FRAME | */
     /* --------------- */
@@ -501,6 +595,7 @@ inline void SetAutoExposeConfig(void)
 #include "SpiSlave_faked.h" // declare fakes
 #endif
 
+#ifdef LIS
 #ifdef USE_FAKES
 #define SpiSlaveTxByte SpiSlaveTxByte_fake
 #define LisWriteConfig LisWriteConfig_fake
@@ -543,6 +638,10 @@ inline void SetSensorConfig(void)
 #ifdef USE_FAKES
 #undef SpiSlaveTxByte
 #undef LisWriteConfig
+#endif
+#endif // ifdef LIS
+#ifdef S13131
+// invalid command
 #endif
 
 #endif // _VISCMD_H

@@ -203,6 +203,7 @@ void SetSensorLED_sends_OK_if_num_and_setting_are_valid(void)
     TEST_PASS();
 }
 
+#ifdef LIS
 /* =====[ GetSensorConfig ]===== */
 void GetSensorConfig_sends_OK(void)
 {
@@ -454,7 +455,7 @@ void SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config(void
     _AssertCall(call_n, "SpiSlaveTxByte");
     _AssertArgByteVal(call_n, 1, OK);
 }
-
+#endif
 /* =====[ GetExposure ]===== */
 void GetExposure_sends_OK(void)
 {

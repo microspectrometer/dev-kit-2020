@@ -1,5 +1,11 @@
 #include "VisCmd.h"
+#ifdef LIS
 uint8_t frame[2*MAX_NUM_PIXELS];
+#endif
+#ifdef S13131
+// always 512 pixels
+uint8_t frame[2*512];
+#endif
 /* ------------------ */
 /* | ---Commands--- | */
 /* ------------------ */
@@ -23,6 +29,7 @@ uint8_t ReadLedState(bicolorled_num);
 bool AutoExposeConfigIsValid(uint8_t, uint16_t, uint16_t, uint16_t);
 
 void LisReadout(uint16_t num_pixels);
+void S13131Readout(void);
 
 uint16_t GetPeak(uint16_t const _start_pixel, uint16_t const _stop_pixel)
 {
@@ -69,6 +76,8 @@ uint16_t GetPeak(uint16_t const _start_pixel, uint16_t const _stop_pixel)
 #ifdef USE_FAKES
 #define LisExpose LisExpose_fake
 #define LisReadout LisReadout_fake
+#define S13131Expose S13131Expose_fake
+#define S13131Readout S13131Readout_fake
 #endif
 uint16_t AutoExpose(void)
 {
@@ -242,10 +251,14 @@ uint16_t AutoExpose(void)
     uint16_t peak=0;
 
     // determine number of pixels to readout
+#ifdef LIS
     uint16_t num_pixels;
     if (binning == BINNING_OFF) num_pixels = MAX_NUM_PIXELS;
     else num_pixels = MAX_NUM_PIXELS/2;
-
+#endif
+#ifdef S13131
+// always 512 pixels
+#endif
     /* -------------------- */
     /* | AutoExpose SETUP | */
     /* -------------------- */
@@ -269,11 +282,20 @@ uint16_t AutoExpose(void)
         /* | READ FRAME | */
         /* -------------- */
 
+#ifdef LIS
         // expose the LIS-770i pixels
         LisExpose();
 
         // readout the LIS-770i pixels into global frame buffer
         LisReadout(num_pixels);
+#endif // LIS
+#ifdef S13131
+        // expose the S13131-512 pixels
+        S13131Expose();
+
+        // readout the S13131-512 pixels into global frame buffer
+        S13131Readout();
+#endif
 
         // find peak in range start_pixel : stop_pixel
         peak = GetPeak(start_pixel, stop_pixel);
@@ -355,6 +377,8 @@ uint16_t AutoExpose(void)
 #ifdef USE_FAKES
 #undef LisExpose
 #undef LisReadout
+#undef S13131Expose
+#undef S13131Readout
 #endif
 
 

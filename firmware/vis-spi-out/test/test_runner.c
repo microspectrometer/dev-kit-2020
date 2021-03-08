@@ -89,6 +89,7 @@ void test_VisCmd(bool run_test)
         RUN_TEST(SetSensorLED_applies_LED_setting_if_valid);
         RUN_TEST(SetSensorLED_sends_OK_if_num_and_setting_are_valid);
 
+#ifdef LIS
         puts("## VisCmd.GetSensorConfig");
         setUp = SetUp_Mock;
         tearDown = TearDown_Mock;
@@ -109,6 +110,7 @@ void test_VisCmd(bool run_test)
         RUN_TEST(SetSensorConfig_writes_valid_config_to_LIS_770i_programmable_setup_register);
         RUN_TEST(SetSensorConfig_replies_OK_if_all_config_values_are_valid);
         RUN_TEST(SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config);
+#endif
 
         puts("## VisCmd.GetExposure");
         setUp = EmptySetUp;
@@ -155,7 +157,7 @@ void test_VisCmd(bool run_test)
         RUN_TEST(AutoExpose_sets_max_peak_at_target_plus_tolerance);
         RUN_TEST(AutoExpose_clamps_max_peak_at_65535_counts_if_target_plus_tolerance_is_LESS_THAN_target);
         RUN_TEST(AutoExpose_loops_until_done);
-        RUN_TEST(AutoExpose_exposes_the_LIS_770i_pixels);
+        RUN_TEST(AutoExpose_exposes_the_pixels);
         RUN_TEST(AutoExpose_reads_pixel_counts_into_global_frame_buffer);
         RUN_TEST(AutoExpose_finds_frame_peak_in_range_start_pixel_to_stop_pixel);
         RUN_TEST(AutoExpose_is_done_if_peak_less_than_max_dark_AND_exposure_at_max);

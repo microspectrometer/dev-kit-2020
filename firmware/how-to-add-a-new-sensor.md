@@ -15,11 +15,13 @@ close as possible.
 *If the sensors are very different, the `vis-spi-out` board needs
 to change as well.*
 
+### S13131-512 signals are similar to the LIS-770i
+
 We are lucky with the LIS-770i and S13131-512. They have very
 similar functionality in the analog and digital pins. No change
 is required to the `vis-spi-out` PCB.
 
-## Signals on LIS-770i and S13131
+### Six signals on LIS-770i have perfect matches on S13131
 
 For the six signals that have perfect matches, I route the six
 S13131 signals to those same six ZIF pins:
@@ -30,14 +32,17 @@ S13131 signals to those same six ZIF pins:
 - RST on LIS-770i is ST on S13131
 - SYNC on LIS-770i is EOS on S13131
 
+### Remaining signals that don't match are not needed
+
 For the remainder, we just get lucky:
 
 - analog pins:
     - The VREF pin is particular to the LIS-770i, but the
       `vis-spi-out` analog front end expects a VREF, so I make my
       own VREF on the S13131 breakout board.
-    - The Vcp pin on S13131 does not connect to the ZIF.
-
+    - The Vcp pin on S13131 just needs an external capacitor for
+      the internal voltage boost circuit. Vcp does not connect to
+      the ZIF.
 - digital pins:
     - The PIXSELECT pin is particular to the LIS-770i, so this
       ZIF pin is left as NC (not-connected) on the S13131
@@ -46,6 +51,202 @@ For the remainder, we just get lucky:
       CLK inverse; the same microcontroller that generates CLK
       also does readout, so it's simpler to look at CLK
       internally than it is to trigger off of the TRIG signal
+
+## Describe exposure
+
+Look at the datasheet and describe the relationship between the
+CLK signal and the microcontroller output that controls exposure
+time.
+
+### S13131 exposure signals
+
+- ST idles LOW
+- ST goes HIGH to start exposure
+    - Bring ST HIGH some time prior to a CLK rising edge (easiest
+      is to bring ST HIGH just after a CLK falling edge)
+    - Integration time officially starts on the 3rd CLK rising
+      edge with ST HIGH
+        - the time period from that 3rd rising edge to the 4th
+          rising edge marks the first cycle of exposure time
+- ST goes LOW to end exposure
+    - Bring ST LOW some time prior to a CLK rising edge (against,
+      easiest is to do this just after a CLK falling edge)
+    - Integration time officially stops on the 9th CLK rising
+      edge with ST LOW
+
+This implies that the **minimum** integration time is **9
+clocks**. At 50kHz, each clock is 20µs, so **minimum**
+integration time is 180µs.
+
+Example showing minimum exposure time:
+
+```
+     ┌─── Count all rising edges of CLK starting with first ST HIGH
+     │ ┌─ Count rising edges of CLK where ST is LOW
+     ↓ ↓
+    (x,y)
+   Exposure clocks -------> 1,0   2,0   3,0   4,1   5,2   6,3   7,4   8,5   9,6   10,7  11,8  12,9
+           ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐
+    CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │
+         ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └
+                             ↑           ↑     ↑  ↑                                            ↑
+        ST HIGH clocked-in: ─┘           │     │  │                                            │
+                        exposure START: ─┘     │  │                            exposure STOP: ─┘
+                           ST LOW clocked-in: ─┘  │                   on 9th CLK rising-edge
+                                                  │                              with ST LOW
+                           ┌─────────────────┐    │
+    ST       IDLE LOW      │                 │    ↓
+         ──────────────────┘                 └─────────────────────────────────────────────────────
+                           ↑                 ↑
+                           │                 │
+       Wait for CLK LOW    │                 │ 
+         to pull ST HIGH: ─┘                 │
+                          Wait for CLK LOW   │
+                            to pull ST LOW: ─┘
+```
+
+In general, integration time is:
+
+- The number of full clocks where ST is HIGH (ignoring high
+  time prior to the third CLK rising edge that clocks in ST
+  HIGH and ignoring high time after the last CLK rising edge
+  that clocks in ST HIGH)
+- Plus, nine clock cycles
+- -> Integration time is **ST HIGH plus six clocks**
+- -> Minimum **ST HIGH** time is two clocks (three rising edges)
+- -> Minimum integration time is nine clocks (nine rising
+  edges)
+
+
+## Describe readout
+
+Look at the datasheet and describe the relationship between:
+
+- the CLK signal and the microcontroller I/O involved in readout
+- the CLK signal and the VIDEO signal:
+    - want to know when the microcontroller should trigger a
+      conversion on the ADC
+    - want to know when the first pixel is ready for readout
+    - want to know when readout of all pixels is done
+
+### S13131 readout signals
+
+#### Use CLK instead of TRIG
+
+- TRIG makes sense in a logic circuit (high-speed application)
+- TRIG is just extra work in a program (that's us)
+    - microcontroller generates CLK
+    - microcontroller can detect and respond to a CLK falling
+      edge by polling
+    - this is much faster than using a pin interrupt to catch
+      rising edges of TRIG (because of ISR overhead)
+
+#### Sample a pixel
+
+- Sample pixel voltage on the falling edge of CLK
+    - Sample on rising edges of TRIG
+    - TRIG is the inverse of CLK
+- CLK falling edge marks VIDEO valid
+    - VIDEO is guaranteed to be stable at this point
+- VIDEO shifts to next pixel on CLK rising edge
+    - CLK rising edge marks VIDEO invalid
+
+#### Start readout
+
+- Define TRIG rising edge 1:
+    - Count 1 is the first TRIG rising edge with ST LOW
+- Sample first pixel on TRIG rising edge 14
+- Translate this to CLK falling edges:
+    - Start counting CLK falling edges with ST LOW (after ST LOW
+      has been "clocked in" with a CLK rising edge)
+    - Sample first pixel on 14th CLK falling edge
+
+## Describe relationship between exposure and readout 
+
+For example, on the LIS and S13131, readout must start when the
+exposure finishes. In other words, there is no option to expose
+and then wait some arbitrary time before reading out the pixel
+data. The internal logic in the detector is designed to
+immediately clock out the pixel voltages some fixed number of
+clocks after exposure ends.
+
+### S13131 relationship between exposure and readout
+
+Exposure ends on the 9th CLK rising edge with ST LOW. Sample
+first pixel on the 14th CLK falling edge with ST LOW.
+
+Therefore, readout always starts 13.5 clocks after ST LOW.
+
+### Example expose and readout
+
+Here is an example showing ST HIGH for 3 clocks (4 CLK rising
+edges). This corresponds to an integration time of 10 clocks (200
+µs).
+
+```
+   Pixel count ---------------------------------------------------------------------------------------------------------------------> 001---002-││511---512---
+                                                                                                                                      ┌──┌──┌──┌││┌──┌──┌──┌──
+                                                                                                                                      ↓  │--│  ││││  │--│  │--
+14th TRIG rising-edge (CLK falling-edge) with ST LOW: ────────────────────────────────────────────────────────────────────────────────┐  │--│  ││││  │--│  │--
+First TRIG rising-edge (CLK falling-edge) with ST LOW: ─┐                                                                             │  │--│  ││││  │--│  │--
+                                                        ↓                                                                             ↓  │--│  ││││  │--│  │--
+   Clocks waiting for readout to start ---------------> 1     2     3     4     5     6     7     8     9     10    11    12    13    14 │--│  ││││  │--│  │--
+   Exposure clocks --------> 1,0   2,0   3,0   4,0   5,1   6,2   7,3   8,4   9,5   10,6  11,7  12,8  13,9     ↓     ↓     ↓     ↓     ↓  ↓  ↓  ↓││↓  ↓  ↓  ↓  
+           ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌││┐  ┌──┐  ┌──
+    CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  ││││  │  │  │  
+         ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘││└──┘  └──┘  
+                             ↑           ↑           ↑  ↑                                            ↑
+        ST HIGH clocked-in: ─┘           │           │  │                                            │
+                        exposure START: ─┘           │  │                            exposure STOP: ─┘
+                                 ST LOW clocked-in: ─┘  │                   on 9th CLK rising-edge
+                                                        │                              with ST LOW
+                           ┌───────────────────────┐    │
+    ST       IDLE LOW      │                       │    ↓
+         ──────────────────┘                       └────────────────────────────────────────────────────────
+                           ↑                       ↑
+                           │                       │
+       Wait for CLK LOW    │    Wait for CLK LOW   │
+         to pull ST HIGH: ─┘      to pull ST LOW: ─┘
+```
+
+**Always wait for CLK LOW as the cue to change ST.**
+
+It doesn't *really* matter if ST changes states just after a CLK
+LOW or a CLK HIGH. But it's more robust to code transitioning
+just after a CLK LOW.
+
+This guarantees ST does not change until well-past the minimum
+hold time after CLK goes HIGH. The CLK frequency has to increase
+a lot before that gets dicy. There is no danger of CLK going too
+fast given the speed limit imposed by the ADC conversion rate.
+
+(Transitioning ST just after CLK goes HIGH, on the other hand,
+ties the code to the MCU clock frequency -- now I'd have to look
+closely at the number of MCU clock cycles consumed between
+detecting CLK HIGH and changing ST to make sure I'm not changing
+ST too soon.)
+
+- "Pixel count"
+    - indicates when pixels are ready for sampling
+    - `number` indicates VIDEO is valid
+        - number is the literal pixel number being sampled by the ADC
+        - sample-and-hold begins on the clock falling edge
+    - `---` indicates VIDEO is invalid:
+        - ADC needs to finish sampling previous pixel by this time
+        - ADC is not sampling next pixel yet
+        - invalid period begins on the clock rising edge
+- "Exposure clocks"
+    - counts the number of CLK rising edges
+    - two numbers separated by a comma:
+        - first number counts rising clock edges with `ST` HIGH
+            - on 3rd edge, integration time starts
+        - second number counts rising clock edges with `ST` LOW
+            - on 9th edge, integration time ends
+
+- "Clocks waiting for readout to start"
+    - counts the number of CLK falling edges
+
+
 
 # Firmware changes
 

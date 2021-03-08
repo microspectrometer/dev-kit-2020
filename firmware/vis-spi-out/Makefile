@@ -1,6 +1,9 @@
-sensor ?= LIS
-avr-elf: build/vis-spi-out.elf build/vis-spi-out.avra
+# sensor ?= LIS
+sensor ?= S13131
+.PHONY: view-in-terminal
 unit-test: build/test_runner.md
+avr-elf: build/vis-spi-out.elf build/vis-spi-out.avra
+S13131-elf: view-in-terminal
 # Tests{{{
 tests := test/test_example.c \
 		test/test_VisCmd.c \
@@ -22,19 +25,36 @@ lib_o-test := ../lib/build/test/BiColorLed.o \
 			../lib/build/test/ReadWriteBits.o \
 			../lib/build/test/StatusCode.o \
 			../lib/build/test/Queue.o \
+			../lib/build/test/UartSpi.o \
 			../lib/build/test/Spi.o \
 			../lib/build/test/SpiSlave.o \
-			../lib/build/test/Lis.o \
 			../lib/build/test/Spi_faked.o \
-			../lib/build/test/SpiSlave_faked.o \
-			../lib/build/test/Lis_faked.o
+			../lib/build/test/SpiSlave_faked.o
+
+ifeq ($(sensor),LIS)
+	sensor_o-test := ../lib/build/test/Lis.o \
+				../lib/build/test/Lis_faked.o
+endif
+ifeq ($(sensor),S13131)
+	sensor_o-test := ../lib/build/test/S13131.o \
+				../lib/build/test/S13131_faked.o
+endif
+
 lib_o-avr := ../lib/build/avr/BiColorLed.o \
 			../lib/build/avr/ReadWriteBits.o \
 			../lib/build/avr/StatusCode.o \
 			../lib/build/avr/Queue.o \
+			../lib/build/avr/UartSpi.o \
 			../lib/build/avr/Spi.o \
-			../lib/build/avr/SpiSlave.o \
-			../lib/build/avr/Lis.o
+			../lib/build/avr/SpiSlave.o
+
+ifeq ($(sensor),LIS)
+	sensor_o-avr := ../lib/build/avr/Lis.o
+endif
+ifeq ($(sensor),S13131)
+	sensor_o-avr := ../lib/build/avr/S13131.o
+endif
+
 # }}}
 # Compiler/Linker FLAGS for AVR{{{
 CFLAGS_for_AVR := -includeavr/interrupt.h -includeavr/io.h -mmcu=atmega328p \
@@ -83,6 +103,12 @@ print-vars:
 	@echo
 	@echo lib object files for AVR:
 	@echo "    "$(lib_o-avr)
+	@echo
+	@echo sensor object files for tests:
+	@echo "    "$(sensor_o-test)
+	@echo
+	@echo sensor object files for AVR:
+	@echo "    "$(sensor_o-avr)
 	@echo
 	@echo unit test CFLAGS:
 	@echo "    "$(CFLAGS_for_tests)
@@ -149,13 +175,17 @@ reset:
 # }}}
 # }}}
 # {{{ AVR ELF and Assembly Recipes
+view-in-terminal: ../lib/src/S13131.c
+	avr-gcc $< -S -o - -includeavr/interrupt.h -Isrc -I../lib/src -O3 -includeavr/io.h -mmcu=atmega328p -D$(sensor) 
 build/vis-spi-out.avra: build/vis-spi-out.elf
 	avr-objdump -h -S $^ > $@
 build/vis-spi-out.elf: src/vis-spi-out.c \
 						$(vis-spi-out_o-avr) \
-						$(lib_o-avr)
+						$(lib_o-avr) \
+						$(sensor_o-avr)
 	avr-gcc $^ -o $@ $(CFLAGS_for_AVR) $(LFLAGS_for_AVR)
 	avr-size $@
+	@echo This firmware is for spectrometers using the $(sensor).
 build/avr/%.o: src/%.c src/%.h src/Hardware.h src/BiColorLed-Hardware.h src/UartSpi-Hardware.h src/Lis-Hardware.h src/S13131-Hardware.h
 	avr-gcc -c $< -o $@ $(CFLAGS_for_AVR)
 ../lib/build/avr/%.o: ../lib/src/%.c ../lib/src/%.h ../lib/src/StatusCodes.h ../lib/src/LisConfigs.h
@@ -168,7 +198,8 @@ build/test_runner.md: build/test_runner.exe
 build/test_runner.exe: test/test_runner.c $(tests) \
 					$(vis-spi-out_o-test) \
 					$(mock-c_o) \
-					$(lib_o-test)
+					$(lib_o-test) \
+					$(sensor_o-test)
 	gcc $^ -o $@ $(CFLAGS_for_tests) $(LFLAGS_for_tests)
 build/test/%.o: src/%.c src/%.h
 	gcc -c $< -o $@ $(CFLAGS_for_tests)

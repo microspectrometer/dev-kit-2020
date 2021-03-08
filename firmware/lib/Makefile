@@ -1,4 +1,5 @@
 sensor ?= LIS
+# sensor ?= S13131
 build/test_runner.md: build/test_runner.exe
 	$< > $@
 

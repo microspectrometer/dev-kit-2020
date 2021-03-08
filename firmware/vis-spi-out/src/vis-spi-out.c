@@ -12,7 +12,12 @@
 #include "Spi.h"
 #include "SpiSlave.h"
 #include "UartSpi.h"
+#ifdef LIS
 #include "Lis.h"
+#endif
+#ifdef S13131
+#include "S13131.h"
+#endif
 #include <stdlib.h> // defines NULL
 #include "Queue.h" // SPI communication queue
 
@@ -59,8 +64,11 @@ void loop(void)
         case  0: NullCommand(); break;
         case  3: GetSensorLED(); break;
         case  4: SetSensorLED(); break;
+        // TODO(sustainablelab): Do I need to change usb-bridge also?
+#ifdef LIS
         case  7: GetSensorConfig(); break;
         case  8: SetSensorConfig(); break;
+#endif
         case  9: GetExposure(); break;
         case 10: SetExposure(); break;
         case 11: CaptureFrame(); break;
@@ -147,9 +155,14 @@ void setup_DetectorReadout(void)
      * */
     // Talk to ADC with SPI interface using UART SPIM
     UartSpiInit();
+#ifdef LIS
     // Power up the LIS-770i and drive with a 50kHz clock
     LisInit();
-
+#endif
+#ifdef S13131
+    S13131PinSetup();
+    S13131StartClocking();
+#endif
     // Initialize exposure time to 1 millisecond
     exposure_ticks = 50; // 50 ticks = (1.0e-3 s)/(20.0e-6 s/tick)
     // ---Expected Assembly---
@@ -158,6 +171,7 @@ void setup_DetectorReadout(void)
     // sts	0x011D, r25	; 0x80011d <exposure_ticks+0x1>
     // 1c8:	sts	0x011C, r24	; 0x80011c <exposure_ticks>
 
+#ifdef LIS
     // Initialize LIS-770i configuration globals
     binning = BINNING_ON;
     gain = GAIN_1X;
@@ -171,16 +185,25 @@ void setup_DetectorReadout(void)
 
     // Program LIS-770i with above configuration
     LisWriteConfig();
-
+#endif
+#ifdef S13131
+    // No configuration
+#endif
     /* ------------------------------- */
     /* | Initialize AutoExposeConfig | */
     /* ------------------------------- */
     // Initialize default auto-expose maximum number of tries
     max_tries = 12;
+#ifdef LIS
     // Initialize default auto-expose pixel range to all 392 pixels.
     // Recommend user application trims pixel range to match wavelength map.
     start_pixel = 7; // first 6 pixels are optically meaningless
     stop_pixel = 392;
+#endif
+#ifdef S13131
+    start_pixel = 1;
+    stop_pixel = 512;
+#endif
     // Initialize default auto-expose target peak range to 46420 ± 3277 counts
     target = 46420;
     target_tolerance = 3277;
@@ -189,8 +212,14 @@ void setup_DetectorReadout(void)
     // SetAutoExposeConfig guarantees target is not below max_dark.
     max_dark = 4500;
     // Hard-code minimum exposure time used by auto-expose.
+#ifdef LIS
     // keep lower limit well-away from 1 cycle
     min_exposure = 5; // cycles
+#endif
+#ifdef S13131
+    // 9 is the minimum set by the internal S13131-512 logic
+    min_exposure = 9; // cycles
+#endif
     // Initialize default auto-expose maximum exposure time to try.
     // upper limit is 1.3s, but 200ms is a practical default limit
     max_exposure = 10000; // cycles
