@@ -55,6 +55,7 @@ void test_VisCmd(bool run_test)
         RUN_TEST(LedNumIsValid_returns_TRUE_if_led_num_is_1);
         RUN_TEST(LedNumIsValid_returns_FALSE_if_led_num_is_not_0_or_1);
 
+#ifdef LIS
         puts("## VisCmd.LisReadout");
         setUp = EmptySetUp;
         tearDown = EmptyTearDown;
@@ -68,6 +69,24 @@ void test_VisCmd(bool run_test)
         RUN_TEST(LisReadout_LOOP_save_MSB_to_frame_buffer);
         RUN_TEST(LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout);
         RUN_TEST(LisReadout_LOOP_save_LSB_to_frame_buffer);
+#endif
+#ifdef S13131
+        puts("## VisCmd.S13131Readout");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
+        RUN_TEST(S13131Readout_must_be_called_immediately_after_S13131Expose);
+        RUN_TEST(S13131Readout_stores_pixel_values_in_a_global_array_named_frame);
+        RUN_TEST(S13131Readout_reads_one_pixel_on_each_falling_edge_of_CLK);
+        RUN_TEST(S13131Readout_LOOP_wait_for_a_CLK_falling_edge);
+        RUN_TEST(S13131Readout_LOOP_start_the_ADC_conversion);
+        RUN_TEST(S13131Readout_LOOP_wait_for_45_cycles_of_10MHz_clock);
+        RUN_TEST(S13131Readout_LOOP_start_ADC_readout);
+        RUN_TEST(S13131Readout_LOOP_wait_for_most_significant_byte_ADC_readout);
+        RUN_TEST(S13131Readout_LOOP_save_MSB_to_frame_buffer);
+        RUN_TEST(S13131Readout_LOOP_wait_for_least_significant_byte_ADC_readout);
+        RUN_TEST(S13131Readout_LOOP_save_LSB_to_frame_buffer);
+
+#endif
 
         puts("## VisCmd.GetSensorLED");
         setUp = SetUp_Mock;
@@ -111,6 +130,10 @@ void test_VisCmd(bool run_test)
         RUN_TEST(SetSensorConfig_replies_OK_if_all_config_values_are_valid);
         RUN_TEST(SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config);
 #endif
+#ifdef S13131
+        // S13131 has nothing to configure
+#endif
+
 
         puts("## VisCmd.GetExposure");
         setUp = EmptySetUp;
@@ -145,7 +168,18 @@ void test_VisCmd(bool run_test)
         puts("## VisCmd.GetPeak");
         setUp = EmptySetUp;
         tearDown = EmptyTearDown;
-        RUN_TEST(GetPeak_is_visible);
+        RUN_TEST(GetPeak_finds_the_peak_between_start_pixel_and_stop_pixel_inclusive);
+        RUN_TEST(GetPeak_ignores_peaks_at_pixels_before_start_pixel_and_after_stop_pixel);
+
+
+    }
+}
+
+void test_AutoExpose(bool run_test)
+{
+    if (run_test)
+    {
+        puts("# test AutoExpose");
 
         puts("## VisCmd.AutoExpose");
         setUp = SetUp_Mock;
@@ -175,20 +209,12 @@ void test_VisCmd(bool run_test)
     }
 }
 
-void test_AutoExpose(bool run_test)
-{
-    if (run_test)
-    {
-        puts("# test AutoExpose");
-
-    }
-}
-
 int main(void)
 {
     UNITY_BEGIN();
     test_example(Nope);
     test_VisCmd(Yep);
     test_AutoExpose(Yep);
+    puts("# Results");
     return UNITY_END();
 }

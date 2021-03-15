@@ -33,10 +33,23 @@
 #include "AutoExpose.h"
 
 /* ------------------------------------------------------- */
+/* | Only use these headers when building unit tests     | */
+/* ------------------------------------------------------- */
+#ifdef USE_FAKES
+#include "SpiSlave_faked.h" // declare fakes
+#include "UartSpi_faked.h" // declare fakes
+#endif
+
+/* ------------------------------------------------------- */
 /* | Only use these headers when building for AVR target | */
 /* ------------------------------------------------------- */
 #ifndef USE_FAKES
 #include <util/delay_basic.h> // use _delay_loop_1 to count µs
+#endif
+
+#ifdef USE_FAKES
+#define WaitForS13131ClkLow WaitForS13131ClkLow_fake
+#define StartAdcConversion StartAdcConversion_fake
 #endif
 
 extern volatile Queue_s * SpiFifo; // definition in translation unit using SpiFifo
@@ -174,26 +187,35 @@ static inline void LisReadout(uint16_t num_pixels)
 #ifdef S13131
 // "static" because it calls static _delay_loop_1
 static inline void S13131Readout(void)
-{
+{ //TODO(sustainablelab): Use EOS
     /** S13131Readout behavior:\n 
-      * - reads one pixel on each falling edge of S13131_Clk:\n 
+      * - must be called immediately after S13131Expose\n 
+      * - stores pixel values in a global array named frame\n 
+      * - reads one pixel on each falling edge of CLK:\n 
+      *     - wait for a CLK falling edge\n 
+      *     - start the ADC conversion\n 
+      * */
+    /** S13131Readout behavior:\n 
+      * - must be called immediately after S13131Expose\n 
+      * - stores pixel values in a global array named frame\n 
+      * - reads one pixel on each falling edge of CLK:\n 
+      *     - wait for a CLK falling edge\n 
       *     - start the ADC conversion\n 
       *     - wait for 45 cycles of 10MHz clock\n 
       *     - start ADC readout\n 
-      *     - wait for most significant byte of ADC readout\n 
+      *     - wait for most significant byte ADC readout\n 
       *     - save MSB to frame buffer\n 
-      *     - wait for least significant byte of ADC readout\n 
+      *     - wait for least significant byte ADC readout\n 
       *     - save LSB to frame buffer\n 
       * */
 
     // Store 16-bit ADC readings in `frame`.
     uint8_t *pframe = frame;
 
-    // STATE: Just finished S13131Expose()
-    // STATE: ST has been LOW for 13 falling edges of CLK
+    // STATE: ST has been LOW for 13 falling edges of CLK (expose just finished)
     // STATE: Readout starts with pixel 1 on the very next falling-edge of CLK
 
-    // ---This For Loop---
+    // ---For loop: expected behavior---
     //   p_count                                (falling edge count)
     //   0  < 512: Wait for CLK falling-edge // (f_count 13 -> 14)
     //             Read the pixel: p_count 0 -> 1
@@ -425,7 +447,7 @@ static inline void CaptureFrame(void)
     else num_pixels = MAX_NUM_PIXELS/2;
 #endif
 #ifdef S13131
-    const uint16_t num_pixels = 512;
+    const uint16_t num_pixels = MAX_NUM_PIXELS;
 #endif
 
     // send num_pixels
@@ -590,10 +612,6 @@ inline void SetAutoExposeConfig(void)
 /* ---------------------- */
 /* | ---Commands :) --- | */ // (these HAVE proper unit tests)
 /* ---------------------- */
-
-#ifdef USE_FAKES
-#include "SpiSlave_faked.h" // declare fakes
-#endif
 
 #ifdef LIS
 #ifdef USE_FAKES

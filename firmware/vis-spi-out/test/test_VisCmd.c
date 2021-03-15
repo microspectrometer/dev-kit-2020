@@ -92,6 +92,7 @@ static void _test_call_count_is(uint16_t num)
     g_string_free(msg, true);
 }
 
+#ifdef LIS
 /* =====[ LisReadout ]===== */
 void LisReadout_waits_for_Lis_Sync_to_go_HIGH_then_go_LOW(void)
 {
@@ -133,6 +134,67 @@ void LisReadout_LOOP_save_LSB_to_frame_buffer(void)
 {
     TEST_PASS();
 }
+#endif // ifdef LIS
+
+#ifdef S13131
+void S13131Readout_must_be_called_immediately_after_S13131Expose(void)
+{
+    TEST_PASS();
+}
+void S13131Readout_stores_pixel_values_in_a_global_array_named_frame(void)
+{
+    TEST_PASS();
+}
+void S13131Readout_reads_one_pixel_on_each_falling_edge_of_CLK(void)
+{
+    TEST_PASS();
+}
+void S13131Readout_LOOP_wait_for_a_CLK_falling_edge(void)
+{
+    /* =====[ Setup ]===== */
+    // Fake that next byte from ADC is always ready for readout
+    SetBit(UartSpi_UCSR0A, UartSpi_RXC0);
+    /* =====[ Operate ]===== */
+    S13131Readout();
+    /* =====[ Test ]===== */
+    _AssertCall(1, "WaitForS13131ClkLow");
+}
+void S13131Readout_LOOP_start_the_ADC_conversion(void)
+{
+    /* =====[ Setup ]===== */
+    // Fake that next byte from ADC is always ready for readout
+    SetBit(UartSpi_UCSR0A, UartSpi_RXC0);
+    /* =====[ Operate ]===== */
+    S13131Readout();
+    /* =====[ Test ]===== */
+    _AssertCall(2, "StartAdcConversion");
+}
+void S13131Readout_LOOP_wait_for_45_cycles_of_10MHz_clock(void)
+{
+    TEST_PASS();
+}
+
+void S13131Readout_LOOP_start_ADC_readout(void)
+{
+    TEST_PASS();
+}
+void S13131Readout_LOOP_wait_for_most_significant_byte_ADC_readout(void)
+{
+    TEST_PASS();
+}
+void S13131Readout_LOOP_save_MSB_to_frame_buffer(void)
+{
+    TEST_PASS();
+}
+void S13131Readout_LOOP_wait_for_least_significant_byte_ADC_readout(void)
+{
+    TEST_PASS();
+}
+void S13131Readout_LOOP_save_LSB_to_frame_buffer(void)
+{
+    TEST_PASS();
+}
+#endif // ifdef S13131
 
 /* =====[ GetSensorLED ]===== */
 void GetSensorLED_waits_for_byte_led_num(void)
@@ -541,16 +603,108 @@ void CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer(void)
     TEST_PASS();
 }
 
-// GetPeak(start_pixel, stop_pixel) -> peak_counts
-void GetPeak_is_visible(void)
+static uint8_t zero_frame[2*MAX_NUM_PIXELS];
+struct pixel_byte_indices
 {
-    /* uint16_t val = GetPeak(7, 200); */
-    TEST_FAIL_MESSAGE("Implement test.");
+    uint16_t MSB;
+    uint16_t LSB;
+};
+static struct pixel_byte_indices byte_indices_of_pixel(uint16_t pixel_number)
+{ //! Return frame byte indices of the given pixel number
+    // ---pixel number is byte_index/2 + 1---
+    //             byte_index ──┬──────────────┐
+    // byte: 0,1  | pixel 1 -> (0/2)+1 = 0+1, (1/2)+1 = 0+1
+    // byte: 2,3  | pixel 2 -> (2/2)+1 = 1+1, (3/2)+1 = 1+1
+    // byte: 4,5  | pixel 3 -> (4/2)+1 = 2+1, (5/2)+1 = 2+1
+    // byte: 6,7  | pixel 4 -> (6/2)+1 = 3+1, (7/2)+1 = 3+1
+    // ...
+    // byte: 510  | pixel 256 -> (510/2)+1 = 256 (MSB)
+    // byte: 511  | pixel 256 -> (511/2)+1 = 256 (LSB)
+    // byte: 512  | pixel 257 -> (512/2)+1 = 257 (MSB)
+    // ...
+    // byte: 1022 | pixel 512 -> (1022/2)+1 = 512 (MSB)
+    // byte: 1023 | pixel 512 -> (1023/2)+1 = 512 (LSB)
+    /* return (pixel_number-1)*2; // MSB */
+    struct pixel_byte_indices pixel;
+    pixel.MSB = (pixel_number-1)*2; // frame index of MSB
+    pixel.LSB = 1 + pixel.MSB; // frame index of LSB
+    return pixel;
 }
 
-// AutoExpose(start_pixel, stop_pixel)
-void AutoExpose_is_visible(void)
+// GetPeak(start_pixel, stop_pixel) -> peak_counts
+void GetPeak_finds_the_peak_between_start_pixel_and_stop_pixel_inclusive(void)
 {
-    /* AutoExpose(256, 256); */
-    TEST_FAIL_MESSAGE("Implement test.");
+    /* =====[ Setup ]===== */
+    uint16_t _start_pixel = 1;
+    uint16_t _stop_pixel = MAX_NUM_PIXELS;
+    // Empty the global frame buffer.
+    const uint16_t sizeof_frame = 2*MAX_NUM_PIXELS;
+    for (uint16_t byte_index=0; byte_index < sizeof_frame; byte_index++)
+    {
+        frame[byte_index] = 0;
+    }
+    //  Assert that it's empty before doing the actual test
+    TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(
+            zero_frame, // expected
+            frame, // actual
+            sizeof_frame, // num_elements
+            "Cannot run test: setup failed to empty the frame."
+            );
+    // Test 0: Check I can get the byte indices for a given pixel number.
+    struct pixel_byte_indices pixel256 = byte_indices_of_pixel(256);
+    //
+    //
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(
+            510, pixel256.MSB,
+            "Cannot run test: byte_indices_of_pixel().MSB does not do what you think!"
+            );
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(
+            511, pixel256.LSB,
+            "Cannot run test: byte_indices_of_pixel().LSB does not do what you think!"
+            );
+    /* =====[ Test and Operate ]===== */
+    // Test 1: Put a peak somehwere in the middle.
+    struct pixel_byte_indices pixel123 = byte_indices_of_pixel(123);
+    frame[pixel123.MSB] = 0xab;
+    frame[pixel123.LSB] = 0xcd;
+    TEST_ASSERT_EQUAL_UINT16(0xabcd, GetPeak(_start_pixel,_stop_pixel));
+    // Test 2: Put a peak at the start pixel
+    struct pixel_byte_indices pixelstart = byte_indices_of_pixel(_start_pixel);
+    frame[pixelstart.MSB] = 0xab;
+    frame[pixelstart.LSB] = 1 + 0xcd;
+    TEST_ASSERT_EQUAL_UINT16(1 + 0xabcd, GetPeak(_start_pixel,_stop_pixel));
+    // Test 2: Put a peak at the stop pixel
+    struct pixel_byte_indices pixelstop = byte_indices_of_pixel(_stop_pixel);
+    frame[pixelstop.MSB] = 0xab;
+    frame[pixelstop.LSB] = 2 + 0xcd;
+    TEST_ASSERT_EQUAL_UINT16(2 + 0xabcd, GetPeak(_start_pixel,_stop_pixel));
+}
+void GetPeak_ignores_peaks_at_pixels_before_start_pixel_and_after_stop_pixel(void)
+{
+    /* =====[ Setup ]===== */
+    // Put pixels 1 and MAX_NUM_PIXELS out of range
+    uint16_t _start_pixel = 2;
+    uint16_t _stop_pixel = MAX_NUM_PIXELS-1;
+    // Empty the global frame buffer.
+    const uint16_t sizeof_frame = 2*MAX_NUM_PIXELS;
+    for (uint16_t byte_index=0; byte_index < sizeof_frame; byte_index++)
+    {
+        frame[byte_index] = 0;
+    }
+    // Test 1: Put a peak at pixel 1
+    struct pixel_byte_indices pixel1 = byte_indices_of_pixel(1);
+    frame[pixel1.MSB] = 0x12;
+    frame[pixel1.LSB] = 0x34;
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(0, GetPeak(_start_pixel,_stop_pixel),
+            "Peak detected at pixel before start pixel."
+            );
+    // Test 2: Put a peak at pixel MAX_NUM_PIXELS
+    frame[pixel1.MSB] = 0;
+    frame[pixel1.LSB] = 0;
+    struct pixel_byte_indices pixelMAX = byte_indices_of_pixel(MAX_NUM_PIXELS);
+    frame[pixelMAX.MSB] = 0x12;
+    frame[pixelMAX.LSB] = 0x35;
+    TEST_ASSERT_EQUAL_UINT16_MESSAGE(0, GetPeak(_start_pixel,_stop_pixel),
+            "Peak detected at pixel after stop pixel."
+            );
 }
