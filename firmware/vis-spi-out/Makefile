@@ -1,9 +1,13 @@
-# sensor ?= LIS
-sensor ?= S13131
-.PHONY: view-in-terminal
+avr-elf: clean build/vis-spi-out.elf build/vis-spi-out.avra sensor.txt.sha1
 unit-test: build/test_runner.md
-avr-elf: build/vis-spi-out.elf build/vis-spi-out.avra
+.PHONY: view-in-terminal
 S13131-elf: view-in-terminal
+
+sensor ?= LIS
+# sensor ?= S13131
+check-sensor-hash: sensor.txt.sha1
+	sha1sum.exe -c sensor.txt.sha1
+
 # Tests{{{
 tests := test/test_example.c \
 		test/test_VisCmd.c \
@@ -26,6 +30,7 @@ lib_o-test := ../lib/build/test/BiColorLed.o \
 			../lib/build/test/StatusCode.o \
 			../lib/build/test/Queue.o \
 			../lib/build/test/UartSpi.o \
+			../lib/build/test/UartSpi_faked.o \
 			../lib/build/test/Spi.o \
 			../lib/build/test/SpiSlave.o \
 			../lib/build/test/Spi_faked.o \
@@ -76,7 +81,9 @@ CFLAGS_for_tests := -include../lib/test/FakeAvr/interrupt.h \
 				-Itest -I../lib/test  -I../mock-c/code \
 				-I/usr/include/glib-2.0 \
 				-I/usr/lib/glib-2.0/include \
-				-g -Wall -Wextra -pedantic -Winline
+				-g
+				# -g -Wall -Wextra -pedantic -Winline
+
 LFLAGS_for_tests := -lglib-2.0 -lintl
 # }}}
 # make print-vars -- Print the variables in this Makefile{{{
@@ -177,6 +184,13 @@ reset:
 # {{{ AVR ELF and Assembly Recipes
 view-in-terminal: ../lib/src/S13131.c
 	avr-gcc $< -S -o - -includeavr/interrupt.h -Isrc -I../lib/src -O3 -includeavr/io.h -mmcu=atmega328p -D$(sensor) 
+
+sensor.txt.sha1:
+	@echo This firmware is for spectrometers using the $(sensor).
+	@echo Identify sensor by the first six characters of the SHA-1 hash.
+	echo $(sensor) > sensor.txt
+	sha1sum.exe sensor.txt > sensor.txt.sha1
+	@echo "If you need to check the SHA-1: make check-sensor-hash"
 build/vis-spi-out.avra: build/vis-spi-out.elf
 	avr-objdump -h -S $^ > $@
 build/vis-spi-out.elf: src/vis-spi-out.c \
@@ -185,7 +199,7 @@ build/vis-spi-out.elf: src/vis-spi-out.c \
 						$(sensor_o-avr)
 	avr-gcc $^ -o $@ $(CFLAGS_for_AVR) $(LFLAGS_for_AVR)
 	avr-size $@
-	@echo This firmware is for spectrometers using the $(sensor).
+
 build/avr/%.o: src/%.c src/%.h src/Hardware.h src/BiColorLed-Hardware.h src/UartSpi-Hardware.h src/Lis-Hardware.h src/S13131-Hardware.h
 	avr-gcc -c $< -o $@ $(CFLAGS_for_AVR)
 ../lib/build/avr/%.o: ../lib/src/%.c ../lib/src/%.h ../lib/src/StatusCodes.h ../lib/src/LisConfigs.h
@@ -216,6 +230,8 @@ clean:
 	rm -f ../lib/build/test/*.o
 	rm -f build/avr/*.o
 	rm -f ../lib/build/avr/*.o
+	rm -f sensor.txt.sha1
+	rm -f sensor.txt
 
 .PHONY: lib-tags
 lib-tags:
