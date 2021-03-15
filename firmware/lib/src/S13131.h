@@ -24,6 +24,8 @@
  *   - exposure_ticks is set to 9 if SetExposure attempts a value < 9
  * */
 extern uint16_t exposure_ticks;
+//! S13131-512 has 512 pixels
+#define MAX_NUM_PIXELS 512
 
 // TODO(sustainablelab): eliminate redundant MSB/LSB definitions in S13131.h and LIS.h
 inline uint8_t MSB(uint16_t msb_lsb)
