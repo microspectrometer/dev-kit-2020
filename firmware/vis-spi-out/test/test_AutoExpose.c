@@ -4,11 +4,6 @@
 #include "AutoExpose.h"
 #include "VisCmd.h" // AutoExpose() defined here
 
-#ifndef MAX_NUM_PIXELS
-#ifdef S13131
-#define MAX_NUM_PIXELS 512
-#endif
-#endif
 /* =====[ Test Helpers ]===== */
 static void _AssertCall(uint16_t num, char const * name)
 {
@@ -130,6 +125,7 @@ void AutoExpose_finds_frame_peak_in_range_start_pixel_to_stop_pixel(void)
 {
     /* =====[ Setup ]===== */
     // mock a frame with a peak
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -162,6 +158,7 @@ void AutoExpose_is_done_if_peak_less_than_max_dark_AND_exposure_at_max(void)
     max_dark = 0x1194; // 4500 in hexadecimal
     TEST_ASSERT_EQUAL_UINT16(max_dark,4500);
     // fake frame of data with peak less than max_dark
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -197,6 +194,7 @@ void AutoExpose_scales_exposure_by_10_if_peak_less_than_max_dark(void)
     max_dark = 0x1194; // 4500 in hexadecimal
     TEST_ASSERT_EQUAL_UINT16(max_dark,4500);
     // fake frame of data with peak less than max_dark
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -239,6 +237,7 @@ void AutoExpose_clamps_exposure_at_max_exposure_if_10_x_exposure_is_GREATER_THAN
     max_dark = 0x1194; // 4500 in hexadecimal
     TEST_ASSERT_EQUAL_UINT16(max_dark,4500);
     // fake frame of data with peak less than max_dark
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -284,6 +283,7 @@ void AutoExpose_scales_exposure_by_half_if_peak_ABOVE_max_peak(void)
     // Set typical max_dark
     max_dark = 4500;
     // fake frame of data with peak ABOVE max_peak
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -331,6 +331,7 @@ void AutoExpose_clamps_exposure_at_min_exposure_if_half_exposure_is_LESS_THAN_mi
     // Set typical max_dark
     max_dark = 4500;
     // fake frame of data with peak
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -380,6 +381,7 @@ void AutoExpose_is_done_if_peak_BELOW_min_peak_and_exposure_at_max_exposure(void
     max_dark = 0x1194; // 4500 in hexadecimal
     TEST_ASSERT_EQUAL_UINT16(max_dark,4500);
     // fake frame of data with peak
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -420,6 +422,7 @@ void AutoExpose_scales_exposure_by_target_div_peak_if_peak_BELOW_min_peak_and_ex
     max_dark = 0x1194; // 4500 in hexadecimal
     TEST_ASSERT_EQUAL_UINT16(max_dark,4500);
     // fake frame of data with peak
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -477,6 +480,7 @@ void AutoExpose_clamps_exposure_at_max_exposure_if_gain_is_GREATER_THAN_max_expo
     // ---------------------------------------------
 
     // fake frame of data with peak at max_dark
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -527,6 +531,7 @@ void AutoExpose_is_done_if_peak_is_in_the_target_range(void)
     TEST_ASSERT_EQUAL_UINT16(target, peak);
 
     // fake frame of data with peak in target range
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
@@ -575,6 +580,7 @@ void AutoExpose_gives_up_if_it_iterates_for_max_tries(void)
     TEST_ASSERT_EQUAL_UINT16(min_peak-1, peak);
 
     // fake frame of data with peak
+    // TODO(sustainablelab): Why /2? Should be *2.
     for (uint16_t byte_index; byte_index++ < MAX_NUM_PIXELS/2;)
     {
         frame[byte_index] = 0;
