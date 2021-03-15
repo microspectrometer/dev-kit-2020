@@ -23,3 +23,14 @@ void S13131Expose_fake(void)
 {
     RecordActualCall(mock, Record_S13131Expose());
 }
+
+static RecordedCall * Record_WaitForS13131ClkLow(void)
+{
+    char const *call_name = "WaitForS13131ClkLow";
+    RecordedCall *record_of_this_call = RecordedCall_new(call_name);
+    return record_of_this_call;
+}
+void WaitForS13131ClkLow_fake(void)
+{
+    RecordActualCall(mock, Record_WaitForS13131ClkLow());
+}
