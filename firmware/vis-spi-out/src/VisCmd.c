@@ -1,11 +1,5 @@
 #include "VisCmd.h"
-#ifdef LIS
 uint8_t frame[2*MAX_NUM_PIXELS];
-#endif
-#ifdef S13131
-// always 512 pixels
-uint8_t frame[2*512];
-#endif
 /* ------------------ */
 /* | ---Commands--- | */
 /* ------------------ */
@@ -33,6 +27,10 @@ void S13131Readout(void);
 
 uint16_t GetPeak(uint16_t const _start_pixel, uint16_t const _stop_pixel)
 {
+    /** GetPeak behavior:\n 
+      * - finds the peak between start pixel and stop pixel inclusive\n 
+      * - ignores peaks at pixels before start pixel and after stop pixel\n 
+      * */
     /** # Algorithm
      *
      * - `peak` starts at 0
@@ -257,7 +255,7 @@ uint16_t AutoExpose(void)
     else num_pixels = MAX_NUM_PIXELS/2;
 #endif
 #ifdef S13131
-// always 512 pixels
+// always 512 pixels, don't need a num_pixels variable
 #endif
     /* -------------------- */
     /* | AutoExpose SETUP | */
