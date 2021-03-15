@@ -126,8 +126,41 @@ Look at the datasheet and describe the relationship between:
 - the CLK signal and the VIDEO signal:
     - want to know when the microcontroller should trigger a
       conversion on the ADC
+    - want to know if we have enough time to do the ADC
+      conversion before the next pixel is ready
     - want to know when the first pixel is ready for readout
     - want to know when readout of all pixels is done
+
+### ADC conversion
+
+- ADC pin CONV goes high for about 4.5µs
+    - I think this is the time for the sample and hold
+    - target time is 4.66µs
+    - a blocking delay loop delays for a total of 45 10MHz ticks
+    - that is 4.5µs
+    - plus there's some small overhead for the loop
+- ADC pin CONV goes low to enable SDO to shift out bits
+    - I think the successive approximation happens as the bits
+      are being shifted out
+- two dummy bytes are written to the UART SPI module to clock out
+  the 16 bits of the ADC reading
+
+So the whole ADC sample-convert-and-readout is:
+
+- about 5µs for sample-and-hold
+- plus 16 clocks of the 5MHz UART SPI clock for convert and readout
+
+5MHz is a 0.2µs period, so 16 periods is 3.2µs. The total time
+then is about 8.2µs.
+
+Since CLK is 50kHz, one clock period is 20µs, so the time from
+the CLK falling edge to the next CLK rising edge is 10µs. And
+even if the ADC conversion took longer, it would be OK because
+nothing sensitive is happening on the CLK rising edge. As long as
+the SPI clock stops (i.e., the ADC readout is done) by the next
+CLK falling edge (and it definitely is), then there is no issue
+with the readout of the previous pixel interfering with the
+sampling of the next pixel.
 
 ### S13131 readout signals
 
@@ -160,6 +193,22 @@ Look at the datasheet and describe the relationship between:
     - Start counting CLK falling edges with ST LOW (after ST LOW
       has been "clocked in" with a CLK rising edge)
     - Sample first pixel on 14th CLK falling edge
+
+#### Finish readout EOS tabled
+
+The microcontroller has no problem counting from 1 to 512 to tell
+when the pixel readout finishes. And there is no concern that the
+S13131 might clock out some other number of pixels.
+
+The main reason to check an End-of-scan signal is to verify that
+the microcontroller starts its pixel count at the correct clock
+edge.
+
+Eventually, I will check EOS and code CaptureFrame to send an
+error message if the EOS signal came at an unexpected clock edge.
+But I table that functionality for now. So EOS is wired up and
+set up in firmware as an input pin, but I'm not doing anything
+with it.
 
 ## Describe relationship between exposure and readout 
 
