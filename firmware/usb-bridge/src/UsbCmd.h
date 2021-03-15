@@ -266,20 +266,32 @@ inline void GetSensorConfig(void)
     // read status
     uint8_t status = SpiMasterXfrByte(PADDING);
 
-    // wait for data ready LOW: sensor ready to send BINNING
-    while( BitIsSet(Spi_PortInput, Spi_DataReady));
-    // read binning
-    uint8_t binning = SpiMasterXfrByte(PADDING);
+    // TODO(sustainablelab): Add status check and junk bytes to unit tests and docstring.
 
-    // wait for data ready LOW: sensor ready to send GAIN
-    while( BitIsSet(Spi_PortInput, Spi_DataReady));
-    // read gain
-    uint8_t gain = SpiMasterXfrByte(PADDING);
+    // Return junk PADDING if vis-spi-out status is ERROR.
+    uint8_t binning = PADDING;
+    uint8_t gain = PADDING;
+    uint8_t row_bitmap = PADDING;
 
-    // wait for data ready LOW: sensor ready to send ROW_BITMAP
-    while( BitIsSet(Spi_PortInput, Spi_DataReady));
-    // read row_bitmap
-    uint8_t row_bitmap = SpiMasterXfrByte(PADDING);
+    // Proceed with getting the LIS config if status is OK.
+    if (status == OK)
+    {
+        // wait for data ready LOW: sensor ready to send BINNING
+        while( BitIsSet(Spi_PortInput, Spi_DataReady));
+        // read binning
+        binning = SpiMasterXfrByte(PADDING);
+
+        // wait for data ready LOW: sensor ready to send GAIN
+        while( BitIsSet(Spi_PortInput, Spi_DataReady));
+        // read gain
+        gain = SpiMasterXfrByte(PADDING);
+
+        // wait for data ready LOW: sensor ready to send ROW_BITMAP
+        while( BitIsSet(Spi_PortInput, Spi_DataReady));
+        // read row_bitmap
+        row_bitmap = SpiMasterXfrByte(PADDING);
+
+    }
 
     // write response from sensor
     UsbWriteByte(status);
@@ -335,23 +347,51 @@ inline void SetSensorConfig(void)
     uint8_t row_bitmap = 0xFF;
     UsbReadByte(&row_bitmap);
 
+    // TODO(sustainablelab): Add tests/doc for new logic here
+    // 1. usb-bridge confirms vis-spi-out recognizes this
+    // command. If so, proceed as usual.
+    // Status returned to host will indicate OK if config is
+    // loaded or ERROR if config was invalid.
+    // 2. if vis-spi-out did not recognize this command,
+    // usb-bridge does not send vis-spi-out anymore bytes.
+    // Status returned to host is ERROR.
+    //
+    // Case 2 always results in ERROR. Case 1 might also result
+    // in ERROR. So host has two possible causes of failure:
+    // 1) config invalid (case 1)
+    // 2) detector is not LIS-770i (case 2)
+
     // send command to sensor
     SpiMasterXfrByte(cmd);
-    SpiMasterXfrByte(binning);
-    SpiMasterXfrByte(gain);
-    SpiMasterXfrByte(row_bitmap);
-
-    // write OK to indicate command sent to sensor
-    UsbWriteByte(OK);
 
     // wait for data ready LOW: sensor ready to send STATUS
     while( BitIsSet(Spi_PortInput, Spi_DataReady));
     // read status
     uint8_t status = SpiMasterXfrByte(PADDING);
 
+    // Proceed with sending the LIS config if status is OK.
+    if (status == OK)
+    {
+        SpiMasterXfrByte(binning);
+        SpiMasterXfrByte(gain);
+        SpiMasterXfrByte(row_bitmap);
+
+        // vis-spi-out responds OK after loading new config.
+        // vis-spi-out responds ERROR if config is invalid.
+
+        // wait for data ready LOW: sensor ready to send STATUS
+        while( BitIsSet(Spi_PortInput, Spi_DataReady));
+        // read status
+        status = SpiMasterXfrByte(PADDING);
+    }
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
     // write response
     UsbWriteByte(status);
 }
+
 inline void GetExposure(void)
 {
     /** GetExposure behavior:\n 

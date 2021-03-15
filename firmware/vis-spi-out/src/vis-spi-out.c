@@ -61,10 +61,10 @@ void loop(void)
     BiColorLedOff(led_0);
     switch(QueuePop(SpiFifo))
     {
+        default: SpiSlaveTxByte(ERROR); break;
         case  0: NullCommand(); break;
         case  3: GetSensorLED(); break;
         case  4: SetSensorLED(); break;
-        // TODO(sustainablelab): Do I need to change usb-bridge also?
 #ifdef LIS
         case  7: GetSensorConfig(); break;
         case  8: SetSensorConfig(); break;

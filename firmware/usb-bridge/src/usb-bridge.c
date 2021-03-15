@@ -73,8 +73,8 @@ void loop(void)
         /* // Null turns status LED green. */
         /* case  0: NullCommand();      BiColorLedGreen(status_led); break; */
 
-        // Do nothing if the cmd is not recognized.
-        default: ; break;
+        // Write ERROR if the cmd is not recognized.
+        default: UsbWriteByte(ERROR); break;
         case  0: NullCommand();  break;
         case  1: GetBridgeLED(); break;
         case  2: SetBridgeLED(); break;

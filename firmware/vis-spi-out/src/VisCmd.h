@@ -631,6 +631,10 @@ inline void SetSensorConfig(void)
       * - replies OK if all config values are valid\n 
       * - the OK is sent after LIS is programmed with new config\n 
       * */
+
+    // Send OK (OK for usb-bridge to send the config)
+    SpiSlaveTxByte(OK);
+
     // Get config values
     while (QueueIsEmpty(SpiFifo)); // 5 cycles
     uint8_t new_binning = QueuePop(SpiFifo);
