@@ -14,6 +14,7 @@
  * - AutoExposure()
  * - GetAutoExposeConfig()
  * - SetAutoExposeConfig()
+ * - GetSensorHash()
  * */
 #ifndef _USBCMD_H
 #define _USBCMD_H
@@ -777,6 +778,53 @@ inline void SetAutoExposeConfig(void)
 
     /* // indicate DONE */
     /* BiColorLedGreen(status_led); */
+}
+
+// TODO(slab): unit test
+inline void GetSensorHash(void)
+{
+    uint8_t const cmd = 15; // command is GetSensorHash
+
+    // send command to sensor
+    SpiMasterXfrByte(cmd);
+
+    // write OK to indicate command sent to sensor
+    UsbWriteByte(OK);
+
+    // wait for data ready LOW: sensor ready to send STATUS
+    while( BitIsSet(Spi_PortInput, Spi_DataReady));
+    // read status
+    uint8_t status = SpiMasterXfrByte(PADDING);
+
+    // Return junk PADDING if vis-spi-out status is ERROR.
+    uint8_t first_byte = PADDING;
+    uint8_t second_byte = PADDING;
+    uint8_t third_byte = PADDING;
+
+    // Proceed with getting the hash if status is OK.
+    if (status == OK)
+    {
+        // wait for data ready LOW: sensor ready to send byte
+        while( BitIsSet(Spi_PortInput, Spi_DataReady));
+        // read byte
+        first_byte = SpiMasterXfrByte(PADDING);
+
+        // wait for data ready LOW: sensor ready to send byte
+        while( BitIsSet(Spi_PortInput, Spi_DataReady));
+        // read byte
+        second_byte = SpiMasterXfrByte(PADDING);
+
+        // wait for data ready LOW: sensor ready to send byte
+        while( BitIsSet(Spi_PortInput, Spi_DataReady));
+        // read byte
+        third_byte = SpiMasterXfrByte(PADDING);
+    }
+
+    // write response from sensor
+    UsbWriteByte(status);
+    UsbWriteByte(first_byte);
+    UsbWriteByte(second_byte);
+    UsbWriteByte(third_byte);
 }
 
 #endif // _USBCMD_H

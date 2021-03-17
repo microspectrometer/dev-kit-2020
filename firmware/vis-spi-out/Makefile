@@ -1,10 +1,21 @@
 avr-elf: clean build/vis-spi-out.elf build/vis-spi-out.avra sensor.txt.sha1
 unit-test: build/test_runner.md
+.PHONY: get-commit
+get-commit:
+	git log --format="%h" -n1
 .PHONY: view-in-terminal
 S13131-elf: view-in-terminal
 
 sensor ?= LIS
 # sensor ?= S13131
+
+ifeq ($(sensor),LIS)
+	sensor-hash := 0x351ea9
+endif
+ifeq ($(sensor),S13131)
+	sensor-hash := 0x91d318
+endif
+
 check-sensor-hash: sensor.txt.sha1
 	sha1sum.exe -c sensor.txt.sha1
 
@@ -63,7 +74,7 @@ endif
 # }}}
 # Compiler/Linker FLAGS for AVR{{{
 CFLAGS_for_AVR := -includeavr/interrupt.h -includeavr/io.h -mmcu=atmega328p \
-					-D$(sensor) \
+					-D$(sensor)=$(sensor-hash) \
 					-Isrc -I../lib/src \
 					-O3 -ffunction-sections -fdata-sections -fshort-enums \
 					-g -Wall -Wextra -pedantic -Winline -Wno-pointer-sign
@@ -75,14 +86,14 @@ LFLAGS_for_AVR := $(shrink_the_elf) $(output_a_map)
 CFLAGS_for_tests := -include../lib/test/FakeAvr/interrupt.h \
 					-include../lib/test/FakeAvr/io.h \
 					-includestdbool.h \
-				-D$(sensor) \
-				-DUSE_FAKES \
-				-Isrc -I../lib/src \
-				-Itest -I../lib/test  -I../mock-c/code \
-				-I/usr/include/glib-2.0 \
-				-I/usr/lib/glib-2.0/include \
-				-g
-				# -g -Wall -Wextra -pedantic -Winline
+					-D$(sensor)=$(sensor-hash) \
+					-DUSE_FAKES \
+					-Isrc -I../lib/src \
+					-Itest -I../lib/test  -I../mock-c/code \
+					-I/usr/include/glib-2.0 \
+					-I/usr/lib/glib-2.0/include \
+					-g
+					# -g -Wall -Wextra -pedantic -Winline
 
 LFLAGS_for_tests := -lglib-2.0 -lintl
 # }}}

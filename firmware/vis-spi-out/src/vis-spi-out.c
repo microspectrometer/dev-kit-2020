@@ -75,6 +75,7 @@ void loop(void)
         case 12: AutoExposure(); break;
         case 13: GetAutoExposeConfig(); break;
         case 14: SetAutoExposeConfig(); break;
+        case 15: GetSensorHash(); break;
         /* default: ReplyCommandInvalid(); break; */
         // ---Expected Assembly---
         // Context:

@@ -14,6 +14,7 @@ void CaptureFrame(void);
 void AutoExposure(void);
 void GetAutoExposeConfig(void);
 void SetAutoExposeConfig(void);
+void GetSensorHash(void);
 
 /* ---------------------------------------- */
 /* | ---Command helpers (not commands)--- | */

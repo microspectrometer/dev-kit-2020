@@ -171,7 +171,11 @@ void test_VisCmd(bool run_test)
         RUN_TEST(GetPeak_finds_the_peak_between_start_pixel_and_stop_pixel_inclusive);
         RUN_TEST(GetPeak_ignores_peaks_at_pixels_before_start_pixel_and_after_stop_pixel);
 
-
+        puts("## VisCmd.GetSensorHash");
+        setUp = SetUp_Mock;
+        tearDown = TearDown_Mock;
+        RUN_TEST(GetSensorHash_hash_sends_OK);
+        RUN_TEST(GetSensorHash_sends_first_three_bytes_of_SHA1_hash_of_sensor);
     }
 }
 

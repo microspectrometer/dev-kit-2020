@@ -666,4 +666,28 @@ inline void SetSensorConfig(void)
 // invalid command
 #endif
 
+#ifdef USE_FAKES
+#define SpiSlaveTxByte SpiSlaveTxByte_fake
+#endif
+#ifdef LIS
+#define SENSOR LIS
+#endif
+#ifdef S13131
+#define SENSOR S13131
+#endif
+inline void GetSensorHash(void)
+{
+    SpiSlaveTxByte(OK);
+    uint8_t first_byte  = SENSOR >> 16;
+    uint8_t second_byte = (SENSOR >> 8) & 0xff;
+    uint8_t third_byte  = SENSOR & 0xff;
+    SpiSlaveTxByte(first_byte);
+    SpiSlaveTxByte(second_byte);
+    SpiSlaveTxByte(third_byte);
+}
+#ifdef USE_FAKES
+#undef SpiSlaveTxByte
+#undef SENSOR
+#endif
+
 #endif // _VISCMD_H

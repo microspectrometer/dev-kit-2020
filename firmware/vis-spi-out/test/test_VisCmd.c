@@ -351,7 +351,7 @@ static void _print_list_of_invalid_config_values(
       * Print nothing if config is valid.
       * */
     // Prepare message listing invalid bytes, if any.
-    GString *msg = g_string_new("INVALID: ");
+    GString *msg = g_string_new("Invalid config value in this test: ");
     if (!_binning_is_valid(binning)) g_string_append_printf(msg, "binning ");
     if (!_gain_is_valid(gain)) g_string_append_printf(msg, "gain ");
     if (!_active_rows_is_valid(active_rows)) g_string_append_printf(msg, "active_rows");
@@ -375,6 +375,7 @@ static void put_config_in_Queue(
     uint8_t gain,
     uint8_t active_rows)
 {
+    printf("\n`put_config_in_Queue`...\n");
     // Flag `INVALID` values
     _print_list_of_invalid_config_values(binning, gain, active_rows);
     // List config values used in test
@@ -409,6 +410,7 @@ void SetSensorConfig_does_not_update_config_globals_if_config_is_invalid(void)
 }
 void SetSensorConfig_replies_ERROR_if_binning_is_invalid(void)
 {
+    printf("\nTesting `SetSensorConfig_replies_ERROR_if_binning_is_invalid...`\n");
     /* =====[ Setup ]===== */
     // Fake sending an invalid value for binning
     put_config_in_Queue(
@@ -419,13 +421,14 @@ void SetSensorConfig_replies_ERROR_if_binning_is_invalid(void)
     /* =====[ Operate ]===== */
     SetSensorConfig();
     /* =====[ Test ]===== */
-    uint16_t call_n = 1;
-    _AssertCall(call_n, "SpiSlaveTxByte");
+    uint16_t call_n = 2;
+    SilentAssertCall(mock, call_n, "SpiSlaveTxByte");
     _AssertArgByteVal(call_n, 1, ERROR);
 }
 void SetSensorConfig_replies_ERROR_if_gain_is_invalid(void)
 {
     /* =====[ Setup ]===== */
+    printf("\nTesting `SetSensorConfig_replies_ERROR_if_gain_is_invalid`...\n");
     // Fake sending an invalid value for gain
     put_config_in_Queue(
         BINNING_OFF,
@@ -435,12 +438,13 @@ void SetSensorConfig_replies_ERROR_if_gain_is_invalid(void)
     /* =====[ Operate ]===== */
     SetSensorConfig();
     /* =====[ Test ]===== */
-    uint16_t call_n = 1;
+    uint16_t call_n = 2;
     _AssertCall(call_n, "SpiSlaveTxByte");
     _AssertArgByteVal(call_n, 1, ERROR);
 }
 void SetSensorConfig_replies_ERROR_if_active_rows_is_invalid(void)
 {
+    printf("\nTesting `SetSensorConfig_replies_ERROR_if_active_rows_is_invalid`...\n");
     /* =====[ Setup ]===== */
     // Fake sending an invalid value for active_rows
     put_config_in_Queue(
@@ -451,7 +455,7 @@ void SetSensorConfig_replies_ERROR_if_active_rows_is_invalid(void)
     /* =====[ Operate ]===== */
     SetSensorConfig();
     /* =====[ Test ]===== */
-    uint16_t call_n = 1;
+    uint16_t call_n = 2;
     _AssertCall(call_n, "SpiSlaveTxByte");
     _AssertArgByteVal(call_n, 1, ERROR);
 }
@@ -468,10 +472,10 @@ void SetSensorConfig_does_not_program_LIS_770i_if_config_is_invalid(void)
     SetSensorConfig();
     /* =====[ Test ]===== */
     // Assert that the function exits after reporting error.
-    uint16_t call_n = 1;
+    uint16_t call_n = 2;
     _AssertCall(call_n, "SpiSlaveTxByte");
     _AssertArgByteVal(call_n, 1, ERROR);
-    _test_call_count_is(1);
+    _test_call_count_is(2);
 }
 static void _put_valid_config_in_Queue(void)
 {
@@ -492,7 +496,8 @@ void SetSensorConfig_writes_valid_config_to_LIS_770i_programmable_setup_register
     /* =====[ Operate ]===== */
     SetSensorConfig();
     /* =====[ Test ]===== */
-    _AssertCall(1, "LisWriteConfig");
+    PrintAllCalls(mock);
+    _AssertCall(2, "LisWriteConfig");
 }
 void SetSensorConfig_replies_OK_if_all_config_values_are_valid(void)
 {
@@ -501,7 +506,7 @@ void SetSensorConfig_replies_OK_if_all_config_values_are_valid(void)
     /* =====[ Operate ]===== */
     SetSensorConfig();
     /* =====[ Test ]===== */
-    uint16_t call_n = 2;
+    uint16_t call_n = 3;
     _AssertCall(call_n, "SpiSlaveTxByte");
     _AssertArgByteVal(call_n, 1, OK);
 }
@@ -512,7 +517,7 @@ void SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config(void
     /* =====[ Operate ]===== */
     SetSensorConfig();
     /* =====[ Test ]===== */
-    uint16_t call_n = 1;
+    uint16_t call_n = 2;
     _AssertCall(call_n++, "LisWriteConfig");
     _AssertCall(call_n, "SpiSlaveTxByte");
     _AssertArgByteVal(call_n, 1, OK);
@@ -708,3 +713,52 @@ void GetPeak_ignores_peaks_at_pixels_before_start_pixel_and_after_stop_pixel(voi
             "Peak detected at pixel after stop pixel."
             );
 }
+
+void GetSensorHash_hash_sends_OK(void)
+{
+    /* =====[ Operate ]===== */
+    GetSensorHash();
+    /* =====[ Test ]===== */
+    uint8_t call_n = 1; uint8_t arg_n = 1; uint8_t byte = OK;
+    _AssertCall(call_n, "SpiSlaveTxByte");
+    _AssertArg(call_n, arg_n, &byte);
+}
+void GetSensorHash_sends_first_three_bytes_of_SHA1_hash_of_sensor(void)
+{
+#ifdef LIS
+    printf("This is the LIS hash: 0x%x\n", LIS);
+    /* =====[ Operate ]===== */
+    GetSensorHash();
+    /* =====[ Test ]===== */
+    uint8_t arg_n = 1;
+    uint8_t first_byte  = 0x35;
+    uint8_t second_byte = 0x1e;
+    uint8_t third_byte  = 0xa9;
+    uint8_t call_n = 2;
+    _AssertCall(call_n, "SpiSlaveTxByte");
+    _AssertArg(call_n++, arg_n, &first_byte);
+    _AssertCall(call_n, "SpiSlaveTxByte");
+    _AssertArg(call_n++, arg_n, &second_byte);
+    _AssertCall(call_n, "SpiSlaveTxByte");
+    _AssertArg(call_n, arg_n, &third_byte);
+#endif
+#ifdef S13131
+    printf("This is the S13131 hash: 0x%x\n", S13131);
+    /* =====[ Operate ]===== */
+    GetSensorHash();
+    /* =====[ Test ]===== */
+    uint8_t arg_n = 1;
+    uint8_t first_byte  = 0x91;
+    uint8_t second_byte = 0xd3;
+    uint8_t third_byte  = 0x18;
+    uint8_t call_n = 2;
+    _AssertCall(call_n, "SpiSlaveTxByte");
+    _AssertArg(call_n++, arg_n, &first_byte);
+    _AssertCall(call_n, "SpiSlaveTxByte");
+    _AssertArg(call_n++, arg_n, &second_byte);
+    _AssertCall(call_n, "SpiSlaveTxByte");
+    _AssertArg(call_n, arg_n, &third_byte);
+#endif
+}
+
+
