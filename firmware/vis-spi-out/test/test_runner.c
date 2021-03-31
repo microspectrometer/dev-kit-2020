@@ -120,6 +120,7 @@ void test_VisCmd(bool run_test)
         puts("## VisCmd.SetSensorConfig");
         setUp = SetUp_Mock;
         tearDown = TearDown_Mock;
+        RUN_TEST(SetSensorConfig_replies_OK_to_confirm_it_recognized_this_command);
         RUN_TEST(SetSensorConfig_receives_three_bytes_of_config_from_Bridge);
         RUN_TEST(SetSensorConfig_does_not_update_config_globals_if_config_is_invalid);
         RUN_TEST(SetSensorConfig_replies_ERROR_if_binning_is_invalid);

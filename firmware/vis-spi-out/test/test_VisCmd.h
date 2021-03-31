@@ -15,6 +15,7 @@ void LisReadout_LOOP_wait_for_least_significant_byte_ADC_readout(void);
 void LisReadout_LOOP_save_LSB_to_frame_buffer(void);
 
 // SetSensorConfig
+void SetSensorConfig_replies_OK_to_confirm_it_recognized_this_command(void);
 void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void);
 void SetSensorConfig_does_not_update_config_globals_if_config_is_invalid(void);
 void SetSensorConfig_replies_ERROR_if_binning_is_invalid(void);

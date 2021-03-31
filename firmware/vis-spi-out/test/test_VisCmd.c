@@ -287,6 +287,31 @@ void GetSensorConfig_sends_row_bitmap(void)
 }
 
 /* =====[ SetSensorConfig ]===== */
+void SetSensorConfig_replies_OK_to_confirm_it_recognized_this_command(void)
+{
+    printf("\nTesting `SetSensorConfig_replies_OK_to_confirm_it_recognized_this_command...`\n");
+    /* =====[ Setup ]===== */
+    // Gotta initialize variables and buffer memory in the SPI Rx
+    // Queue.
+    volatile uint8_t spi_rx_buffer[max_length_of_queue];
+    SpiFifo = QueueInit(spi_rx_buffer, max_length_of_queue);
+    // Gotta queue up some fake bytes so SetSensorConfig doesn't
+    // hang on an empty queue.
+    QueuePush(SpiFifo, 0xFF);
+    QueuePush(SpiFifo, 0xFF);
+    QueuePush(SpiFifo, 0xFF);
+    // Alternatively, put_config_in_Queue() does all the above
+    // for me, but I wanted to spell it out the memory management
+    // issues for future me troubleshooting segfault core dumps.
+
+    /* =====[ Operate ]===== */
+    SetSensorConfig();
+
+    /* =====[ Test ]===== */
+    uint16_t call_n = 1;
+    SilentAssertCall(mock, call_n, "SpiSlaveTxByte");
+    _AssertArgByteVal(call_n, 1, OK);
+}
 void SetSensorConfig_receives_three_bytes_of_config_from_Bridge(void)
 {
     /** Test config bytes are received by checking if function
