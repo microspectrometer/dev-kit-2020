@@ -1,12 +1,17 @@
 Steps to add a new sensor to the dev-\/kit codebase.
 
-{\itshape Instead of maintaining separate projects for the LIS and S13131, there is a single firmware folder. When make is invoked, the optional {\ttfamily sensor=} argument controls which version of the firmware is built.}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md14}{}\doxysection{Hardware changes}\label{md_how_to_add_a_new_sensor_autotoc_md14}
-\hypertarget{md_how_to_add_a_new_sensor_autotoc_md15}{}\doxysubsection{Match the ZIF pins}\label{md_how_to_add_a_new_sensor_autotoc_md15}
+{\itshape Instead of maintaining separate projects for the LIS and S13131, there is a single firmware folder. When make is invoked, the optional {\ttfamily sensor=} argument controls which version of the firmware is built.}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md18}{}\doxysection{Hardware changes}\label{md_how_to_add_a_new_sensor_autotoc_md18}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md19}{}\doxysubsection{Match the ZIF pins}\label{md_how_to_add_a_new_sensor_autotoc_md19}
 Designing the sensor breakout board, map the ZIF pins to match as close as possible.
 
 {\itshape If the sensors are very different, the {\ttfamily vis-\/spi-\/out} board needs to change as well.}
 
-We are lucky with the LIS-\/770i and S13131-\/512. They have very similar functionality in the analog and digital pins. No change is required to the {\ttfamily vis-\/spi-\/out} PCB.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md16}{}\doxysubsection{Signals on LIS-\/770i and S13131}\label{md_how_to_add_a_new_sensor_autotoc_md16}
+\doxysubsubsection*{S13131-\/512 signals are similar to the LIS-\/770i}
+
+We are lucky with the LIS-\/770i and S13131-\/512. They have very similar functionality in the analog and digital pins. No change is required to the {\ttfamily vis-\/spi-\/out} PCB.
+
+\doxysubsubsection*{Six signals on LIS-\/770i have perfect matches on S13131}
+
 For the six signals that have perfect matches, I route the six S13131 signals to those same six ZIF pins\+:
 
 
@@ -18,6 +23,8 @@ For the six signals that have perfect matches, I route the six S13131 signals to
 \item SYNC on LIS-\/770i is EOS on S13131
 \end{DoxyItemize}
 
+\doxysubsubsection*{Remaining signals that don\textquotesingle{}t match are not needed}
+
 For the remainder, we just get lucky\+:
 
 
@@ -25,17 +32,269 @@ For the remainder, we just get lucky\+:
 \item analog pins\+:
 \begin{DoxyItemize}
 \item The VREF pin is particular to the LIS-\/770i, but the {\ttfamily vis-\/spi-\/out} analog front end expects a VREF, so I make my own VREF on the S13131 breakout board.
-\item The Vcp pin on S13131 does not connect to the ZIF.
+\item The Vcp pin on S13131 just needs an external capacitor for the internal voltage boost circuit. Vcp does not connect to the ZIF.
 \end{DoxyItemize}
 \item digital pins\+:
 \begin{DoxyItemize}
 \item The PIXSELECT pin is particular to the LIS-\/770i, so this ZIF pin is left as NC (not-\/connected) on the S13131 breakout board.
 \item the TRIG pin on S13131 does not help us because it is just CLK inverse; the same microcontroller that generates CLK also does readout, so it\textquotesingle{}s simpler to look at CLK internally than it is to trigger off of the TRIG signal
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md17}{}\doxysection{Firmware changes}\label{md_how_to_add_a_new_sensor_autotoc_md17}
+\end{DoxyItemize}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md20}{}\doxysubsection{Describe exposure}\label{md_how_to_add_a_new_sensor_autotoc_md20}
+Look at the datasheet and describe the relationship between the CLK signal and the microcontroller output that controls exposure time.
+
+\doxysubsubsection*{S13131 exposure signals}
+
+
+\begin{DoxyItemize}
+\item ST idles LOW
+\item ST goes HIGH to start exposure
+\begin{DoxyItemize}
+\item Bring ST HIGH some time prior to a CLK rising edge (easiest is to bring ST HIGH just after a CLK falling edge)
+\item Integration time officially starts on the 3rd CLK rising edge with ST HIGH
+\begin{DoxyItemize}
+\item the time period from that 3rd rising edge to the 4th rising edge marks the first cycle of exposure time
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item ST goes LOW to end exposure
+\begin{DoxyItemize}
+\item Bring ST LOW some time prior to a CLK rising edge (against, easiest is to do this just after a CLK falling edge)
+\item Integration time officially stops on the 9th CLK rising edge with ST LOW
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+This implies that the {\bfseries{minimum}} integration time is {\bfseries{9 clocks}}. At 50k\+Hz, each clock is 20µs, so {\bfseries{minimum}} integration time is 180µs.
+
+Example showing minimum exposure time\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{  ┌─── Count all rising edges of CLK starting with first ST HIGH}
+\DoxyCodeLine{  │ ┌─ Count rising edges of CLK where ST is LOW}
+\DoxyCodeLine{  ↓ ↓}
+\DoxyCodeLine{ (x,y)}
+\DoxyCodeLine{Exposure clocks -\/-\/-\/-\/-\/-\/-\/> 1,0   2,0   3,0   4,1   5,2   6,3   7,4   8,5   9,6   10,7  11,8  12,9}
+\DoxyCodeLine{        ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐}
+\DoxyCodeLine{ CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │}
+\DoxyCodeLine{      ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └}
+\DoxyCodeLine{                          ↑           ↑     ↑  ↑                                            ↑}
+\DoxyCodeLine{     ST HIGH clocked-\/in: ─┘           │     │  │                                            │}
+\DoxyCodeLine{                     exposure START: ─┘     │  │                            exposure STOP: ─┘}
+\DoxyCodeLine{                        ST LOW clocked-\/in: ─┘  │                   on 9th CLK rising-\/edge}
+\DoxyCodeLine{                                               │                              with ST LOW}
+\DoxyCodeLine{                        ┌─────────────────┐    │}
+\DoxyCodeLine{ ST       IDLE LOW      │                 │    ↓}
+\DoxyCodeLine{      ──────────────────┘                 └─────────────────────────────────────────────────────}
+\DoxyCodeLine{                        ↑                 ↑}
+\DoxyCodeLine{                        │                 │}
+\DoxyCodeLine{    Wait for CLK LOW    │                 │ }
+\DoxyCodeLine{      to pull ST HIGH: ─┘                 │}
+\DoxyCodeLine{                       Wait for CLK LOW   │}
+\DoxyCodeLine{                         to pull ST LOW: ─┘}
+
+\end{DoxyCode}
+
+
+In general, integration time is\+:
+
+
+\begin{DoxyItemize}
+\item The number of full clocks where ST is HIGH (ignoring high time prior to the third CLK rising edge that clocks in ST HIGH and ignoring high time after the last CLK rising edge that clocks in ST HIGH)
+\item Plus, nine clock cycles
+\item -\/$>$ Integration time is {\bfseries{ST HIGH plus six clocks}}
+\item -\/$>$ Minimum {\bfseries{ST HIGH}} time is two clocks (three rising edges)
+\item -\/$>$ Minimum integration time is nine clocks (nine rising edges)
+\end{DoxyItemize}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md21}{}\doxysubsection{Describe readout}\label{md_how_to_add_a_new_sensor_autotoc_md21}
+Look at the datasheet and describe the relationship between\+:
+
+
+\begin{DoxyItemize}
+\item the CLK signal and the microcontroller I/O involved in readout
+\item the CLK signal and the VIDEO signal\+:
+\begin{DoxyItemize}
+\item want to know when the microcontroller should trigger a conversion on the ADC
+\item want to know if we have enough time to do the ADC conversion before the next pixel is ready
+\item want to know when the first pixel is ready for readout
+\item want to know when readout of all pixels is done
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsubsection*{ADC conversion}
+
+
+\begin{DoxyItemize}
+\item ADC pin CONV goes high for about 4.\+5µs
+\begin{DoxyItemize}
+\item I think this is the time for the sample and hold
+\item target time is 4.\+66µs
+\item a blocking delay loop delays for a total of 45 10MHz ticks
+\item that is 4.\+5µs
+\item plus there\textquotesingle{}s some small overhead for the loop
+\end{DoxyItemize}
+\item ADC pin CONV goes low to enable SDO to shift out bits
+\begin{DoxyItemize}
+\item I think the successive approximation happens as the bits are being shifted out
+\end{DoxyItemize}
+\item two dummy bytes are written to the UART SPI module to clock out the 16 bits of the ADC reading
+\end{DoxyItemize}
+
+So the whole ADC sample-\/convert-\/and-\/readout is\+:
+
+
+\begin{DoxyItemize}
+\item about 5µs for sample-\/and-\/hold
+\item plus 16 clocks of the 5MHz UART SPI clock for convert and readout
+\end{DoxyItemize}
+
+5MHz is a 0.\+2µs period, so 16 periods is 3.\+2µs. The total time then is about 8.\+2µs.
+
+Since CLK is 50k\+Hz, one clock period is 20µs, so the time from the CLK falling edge to the next CLK rising edge is 10µs. And even if the ADC conversion took longer, it would be OK because nothing sensitive is happening on the CLK rising edge. As long as the SPI clock stops (i.\+e., the ADC readout is done) by the next CLK falling edge (and it definitely is), then there is no issue with the readout of the previous pixel interfering with the sampling of the next pixel.
+
+\doxysubsubsection*{S13131 readout signals}
+
+\doxyparagraph*{Use CLK instead of TRIG}
+
+
+\begin{DoxyItemize}
+\item TRIG makes sense in a logic circuit (high-\/speed application)
+\item TRIG is just extra work in a program (that\textquotesingle{}s us)
+\begin{DoxyItemize}
+\item microcontroller generates CLK
+\item microcontroller can detect and respond to a CLK falling edge by polling
+\item this is much faster than using a pin interrupt to catch rising edges of TRIG (because of ISR overhead)
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxyparagraph*{Sample a pixel}
+
+
+\begin{DoxyItemize}
+\item Sample pixel voltage on the falling edge of CLK
+\begin{DoxyItemize}
+\item Sample on rising edges of TRIG
+\item TRIG is the inverse of CLK
+\end{DoxyItemize}
+\item CLK falling edge marks VIDEO valid
+\begin{DoxyItemize}
+\item VIDEO is guaranteed to be stable at this point
+\end{DoxyItemize}
+\item VIDEO shifts to next pixel on CLK rising edge
+\begin{DoxyItemize}
+\item CLK rising edge marks VIDEO invalid
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxyparagraph*{Start readout}
+
+
+\begin{DoxyItemize}
+\item Define TRIG rising edge 1\+:
+\begin{DoxyItemize}
+\item Count 1 is the first TRIG rising edge with ST LOW
+\end{DoxyItemize}
+\item Sample first pixel on TRIG rising edge 14
+\item Translate this to CLK falling edges\+:
+\begin{DoxyItemize}
+\item Start counting CLK falling edges with ST LOW (after ST LOW has been \char`\"{}clocked in\char`\"{} with a CLK rising edge)
+\item Sample first pixel on 14th CLK falling edge
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxyparagraph*{Finish readout EOS tabled}
+
+The microcontroller has no problem counting from 1 to 512 to tell when the pixel readout finishes. And there is no concern that the S13131 might clock out some other number of pixels.
+
+The main reason to check an End-\/of-\/scan signal is to verify that the microcontroller starts its pixel count at the correct clock edge.
+
+Eventually, I will check EOS and code Capture\+Frame to send an error message if the EOS signal came at an unexpected clock edge. But I table that functionality for now. So EOS is wired up and set up in firmware as an input pin, but I\textquotesingle{}m not doing anything with it.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md22}{}\doxysubsection{Describe relationship between exposure and readout}\label{md_how_to_add_a_new_sensor_autotoc_md22}
+For example, on the LIS and S13131, readout must start when the exposure finishes. In other words, there is no option to expose and then wait some arbitrary time before reading out the pixel data. The internal logic in the detector is designed to immediately clock out the pixel voltages some fixed number of clocks after exposure ends.
+
+\doxysubsubsection*{S13131 relationship between exposure and readout}
+
+Exposure ends on the 9th CLK rising edge with ST LOW. Sample first pixel on the 14th CLK falling edge with ST LOW.
+
+Therefore, readout always starts 13.\+5 clocks after ST LOW.
+
+\doxysubsubsection*{Example expose and readout}
+
+Here is an example showing ST HIGH for 3 clocks (4 CLK rising edges). This corresponds to an integration time of 10 clocks (200 µs).
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{   Pixel count -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/> 001-\/-\/-\/002-\/││511-\/-\/-\/512-\/-\/-\/}
+\DoxyCodeLine{                                                                                                                                      ┌──┌──┌──┌││┌──┌──┌──┌──}
+\DoxyCodeLine{                                                                                                                                      ↓  │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{14th TRIG rising-\/edge (CLK falling-\/edge) with ST LOW: ────────────────────────────────────────────────────────────────────────────────┐  │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{First TRIG rising-\/edge (CLK falling-\/edge) with ST LOW: ─┐                                                                             │  │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{                                                        ↓                                                                             ↓  │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{   Clocks waiting for readout to start -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/> 1     2     3     4     5     6     7     8     9     10    11    12    13    14 │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{   Exposure clocks -\/-\/-\/-\/-\/-\/-\/-\/> 1,0   2,0   3,0   4,0   5,1   6,2   7,3   8,4   9,5   10,6  11,7  12,8  13,9     ↓     ↓     ↓     ↓     ↓  ↓  ↓  ↓││↓  ↓  ↓  ↓  }
+\DoxyCodeLine{           ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌││┐  ┌──┐  ┌──}
+\DoxyCodeLine{    CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  ││││  │  │  │  }
+\DoxyCodeLine{         ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘││└──┘  └──┘  }
+\DoxyCodeLine{                             ↑           ↑           ↑  ↑                                            ↑}
+\DoxyCodeLine{        ST HIGH clocked-\/in: ─┘           │           │  │                                            │}
+\DoxyCodeLine{                        exposure START: ─┘           │  │                            exposure STOP: ─┘}
+\DoxyCodeLine{                                 ST LOW clocked-\/in: ─┘  │                   on 9th CLK rising-\/edge}
+\DoxyCodeLine{                                                        │                              with ST LOW}
+\DoxyCodeLine{                           ┌───────────────────────┐    │}
+\DoxyCodeLine{    ST       IDLE LOW      │                       │    ↓}
+\DoxyCodeLine{         ──────────────────┘                       └────────────────────────────────────────────────────────}
+\DoxyCodeLine{                           ↑                       ↑}
+\DoxyCodeLine{                           │                       │}
+\DoxyCodeLine{       Wait for CLK LOW    │    Wait for CLK LOW   │}
+\DoxyCodeLine{         to pull ST HIGH: ─┘      to pull ST LOW: ─┘}
+
+\end{DoxyCode}
+
+
+{\bfseries{Always wait for CLK LOW as the cue to change ST.}}
+
+It doesn\textquotesingle{}t {\itshape really} matter if ST changes states just after a CLK LOW or a CLK HIGH. But it\textquotesingle{}s more robust to code transitioning just after a CLK LOW.
+
+This guarantees ST does not change until well-\/past the minimum hold time after CLK goes HIGH. The CLK frequency has to increase a lot before that gets dicy. There is no danger of CLK going too fast given the speed limit imposed by the ADC conversion rate.
+
+(Transitioning ST just after CLK goes HIGH, on the other hand, ties the code to the MCU clock frequency -- now I\textquotesingle{}d have to look closely at the number of MCU clock cycles consumed between detecting CLK HIGH and changing ST to make sure I\textquotesingle{}m not changing ST too soon.)
+
+
+\begin{DoxyItemize}
+\item \char`\"{}\+Pixel count\char`\"{}
+\begin{DoxyItemize}
+\item indicates when pixels are ready for sampling
+\item {\ttfamily number} indicates VIDEO is valid
+\begin{DoxyItemize}
+\item number is the literal pixel number being sampled by the ADC
+\item sample-\/and-\/hold begins on the clock falling edge
+\end{DoxyItemize}
+\item {\ttfamily -\/-\/-\/} indicates VIDEO is invalid\+:
+\begin{DoxyItemize}
+\item ADC needs to finish sampling previous pixel by this time
+\item ADC is not sampling next pixel yet
+\item invalid period begins on the clock rising edge
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item \char`\"{}\+Exposure clocks\char`\"{}
+\begin{DoxyItemize}
+\item counts the number of CLK rising edges
+\item two numbers separated by a comma\+:
+\begin{DoxyItemize}
+\item first number counts rising clock edges with {\ttfamily ST} HIGH
+\begin{DoxyItemize}
+\item on 3rd edge, integration time starts
+\end{DoxyItemize}
+\item second number counts rising clock edges with {\ttfamily ST} LOW
+\begin{DoxyItemize}
+\item on 9th edge, integration time ends
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item \char`\"{}\+Clocks waiting for readout to start\char`\"{}
+\begin{DoxyItemize}
+\item counts the number of CLK falling edges
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md23}{}\doxysection{Firmware changes}\label{md_how_to_add_a_new_sensor_autotoc_md23}
 In the following I use the generic {\ttfamily sensor} in place of the actual sensor.
 
-{\itshape For the S13131 work, {\ttfamily sensor} is {\ttfamily S13131}.}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md18}{}\doxysubsection{lib/src/sensor.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md18}
+{\itshape For the S13131 work, {\ttfamily sensor} is {\ttfamily S13131}.}\hypertarget{md_how_to_add_a_new_sensor_autotoc_md24}{}\doxysubsection{lib/src/sensor.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md24}
 Define {\ttfamily sensor\+\_\+} types for registers addresses, pin numbers, and bit numbers.
 
 {\itshape Example\+:}
@@ -60,7 +319,7 @@ Name the registers, pins, and bit numbers. Declare registers, pins, and bit numb
 \DoxyCodeLine{\textcolor{keyword}{extern} s13131\_ptr S13131\_ddr;}
 
 \end{DoxyCode}
-\hypertarget{md_how_to_add_a_new_sensor_autotoc_md19}{}\doxysubsection{vis-\/spi-\/out/src/sensor-\/\+Hardware.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md19}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md25}{}\doxysubsection{vis-\/spi-\/out/src/sensor-\/\+Hardware.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md25}
 $\ast${\ttfamily vis-\/spi-\/out} is the PCB design. This is where the hardware is. The hardware definitions, therefore, happen here.$\ast$
 
 {\ttfamily \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}} uses the sensor lib by including {\ttfamily Hardware.\+h}.
@@ -97,7 +356,7 @@ In {\ttfamily \mbox{\hyperlink{S13131-Hardware_8h}{S13131-\/\+Hardware.\+h}}}\+:
 \DoxyCodeLine{s13131\_ptr S13131\_ddr    = \&DDRD;}
 
 \end{DoxyCode}
-\hypertarget{md_how_to_add_a_new_sensor_autotoc_md20}{}\doxysubsection{lib/test/sensor-\/\+Hardware\+Fake.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md20}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md26}{}\doxysubsection{lib/test/sensor-\/\+Hardware\+Fake.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md26}
 $\ast${\ttfamily lib/test/} is a test environment that fakes testing on the actual PCB. For testing purposes, this is where the hardware is. The hardware definitions, therefore, happen here.$\ast$
 
 {\itshape The hardware definitions are fake. The I/O register addresses are assigned to arbitrary addresses by the operating system. The read/write behavior of data in these fake I/O registers is the same, but the registers don\textquotesingle{}t do anything (e.\+g., the fake DDRD register doesn\textquotesingle{}t control the data-\/direction of an actual pin). The fake registers are just dummy memory on the computer running the test.}
@@ -144,7 +403,7 @@ In {\ttfamily lib/test/sensor-\/\+Hardware\+Fake.\+h}\+:
 \DoxyCodeLine{s13131\_pin S13131\_Clk = 5; \textcolor{comment}{// PWM}}
 
 \end{DoxyCode}
-\hypertarget{md_how_to_add_a_new_sensor_autotoc_md21}{}\doxysubsection{lib/test/\+Hardware\+Fake.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md21}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md27}{}\doxysubsection{lib/test/\+Hardware\+Fake.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md27}
 Include {\ttfamily sensor-\/\+Hardware\+Fake.\+h}.
 
 {\itshape Example\+:}
@@ -154,8 +413,62 @@ Include {\ttfamily sensor-\/\+Hardware\+Fake.\+h}.
 \DoxyCodeLine{\textcolor{preprocessor}{\#include "{}S13131-\/HardwareFake.h"{}}}
 
 \end{DoxyCode}
-\hypertarget{md_how_to_add_a_new_sensor_autotoc_md22}{}\doxysection{Build changes}\label{md_how_to_add_a_new_sensor_autotoc_md22}
-\hypertarget{md_how_to_add_a_new_sensor_autotoc_md23}{}\doxysubsection{Review of the Makefile flow}\label{md_how_to_add_a_new_sensor_autotoc_md23}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md28}{}\doxysubsection{Lis\+Configs.\+h}\label{md_how_to_add_a_new_sensor_autotoc_md28}
+The LIS-\/770i has a header to define the user-\/programmable values for its internal registers. The Configs define the allowed values. Manually check this list matches the values in the JSON file.
+
+The S13131 has no configurable registers, so there is no Configs file.
+
+The vis-\/spi-\/out application for the LIS and the test runner for LIS unit tests include the Lis\+Configs header.
+
+{\itshape Examples\+:}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// vis-\/spi-\/out/src/vis-\/spi-\/out.c}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{LisConfigs_8h}{LisConfigs.h}}"{}}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// vis-\/spi-\/out/test/test\_runner.c}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{LisConfigs_8h}{LisConfigs.h}}"{}}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// lib/test/test\_runner.c}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{LisConfigs_8h}{LisConfigs.h}}"{}}}
+
+\end{DoxyCode}
+
+
+Lis\+Configs includes \char`\"{}\+Lis\+Config.\+h\char`\"{} (note no \char`\"{}s\char`\"{}). This file defines LIS CONFIG datatypes and declares all the variable names that are defined in \char`\"{}\+Lis\+Configs.\+h\char`\"{}.
+
+Why two files?
+
+The compilation unit with {\ttfamily main()} includes {\ttfamily \mbox{\hyperlink{LisConfigs_8h}{Lis\+Configs.\+h}}}.
+
+Files that might end up outside the {\ttfamily main} compilation unit avoid a multiple definition linker error by including {\ttfamily \mbox{\hyperlink{LisConfig_8h}{Lis\+Config.\+h}}} {\itshape instead of} {\ttfamily \mbox{\hyperlink{LisConfigs_8h}{Lis\+Configs.\+h}}}. This is just to make the code testable. For the final AVR elf, make sure that any file that includes {\ttfamily \mbox{\hyperlink{LisConfig_8h}{Lis\+Config.\+h}}} is in the same compilation unit as the {\ttfamily main} C file.
+
+For example, {\ttfamily \mbox{\hyperlink{LisConfigs_8h}{Lis\+Configs.\+h}}} defines\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily BINNING\+\_\+\+ON=0x01}
+\item {\ttfamily GAIN\+\_\+1X=0x01}
+\item {\ttfamily ALL\+\_\+\+ROWS\+\_\+\+ACTIVE=0x1F}
+\end{DoxyItemize}
+
+And when files that only include {\ttfamily \mbox{\hyperlink{LisConfig_8h}{Lis\+Config.\+h}}} are in the {\ttfamily main} compilation unit, the assembly is correct like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{binning = BINNING\_ON;}
+\DoxyCodeLine{ 1cc:   81 e0           ldi r24, 0x01   ; 1}
+\DoxyCodeLine{ 1ce:   80 93 1a 01     sts 0x011A, r24 ; 0x80011a <binning>}
+\DoxyCodeLine{gain = GAIN\_1X;}
+\DoxyCodeLine{ 1d2:   80 93 34 01     sts 0x0134, r24 ; 0x800134 <gain>}
+\DoxyCodeLine{active\_rows = ALL\_ROWS\_ACTIVE;}
+\DoxyCodeLine{ 1d6:   8f e1           ldi r24, 0x1F   ; 31}
+\DoxyCodeLine{ 1d8:   80 93 33 01     sts 0x0133, r24 ; 0x800133 <active\_rows>}
+
+\end{DoxyCode}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md29}{}\doxysection{Build changes}\label{md_how_to_add_a_new_sensor_autotoc_md29}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md30}{}\doxysubsection{Review of the Makefile flow}\label{md_how_to_add_a_new_sensor_autotoc_md30}
 There are three Makefiles at the top-\/level\+:
 
 
@@ -186,7 +499,7 @@ The {\ttfamily vis-\/spi-\/out/\+Makefile} and {\ttfamily usb-\/bridge/\+Makefil
 \end{DoxyItemize}
 \end{DoxyItemize}
 
-The point of this setup is that {\ttfamily ../common.mk} runs with the definitions from the board\textquotesingle{}s {\ttfamily Makefile}. For example, {\ttfamily vis-\/spi-\/out/\+Makefile} sets {\ttfamily \$(board-\/name)} equal to {\ttfamily vis-\/spi-\/out}.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md24}{}\doxysubsection{make sensor=}\label{md_how_to_add_a_new_sensor_autotoc_md24}
+The point of this setup is that {\ttfamily ../common.mk} runs with the definitions from the board\textquotesingle{}s {\ttfamily Makefile}. For example, {\ttfamily vis-\/spi-\/out/\+Makefile} sets {\ttfamily \$(board-\/name)} equal to {\ttfamily vis-\/spi-\/out}.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md31}{}\doxysubsection{make sensor=}\label{md_how_to_add_a_new_sensor_autotoc_md31}
 The {\ttfamily vis-\/spi-\/out/\+Makefile} set a variable named {\ttfamily sensor}.
 
 Identify the {\ttfamily sensor} when invoking make\+:
@@ -213,7 +526,7 @@ If {\ttfamily sensor} is left out, the default value is {\ttfamily sensor=LIS}\+
 \DoxyCodeLine{...}
 
 \end{DoxyCode}
-\hypertarget{md_how_to_add_a_new_sensor_autotoc_md25}{}\doxysubsection{Default value for sensor}\label{md_how_to_add_a_new_sensor_autotoc_md25}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md32}{}\doxysubsection{Default value for sensor}\label{md_how_to_add_a_new_sensor_autotoc_md32}
 Set {\ttfamily LIS} as the default sensor in {\ttfamily vis-\/spi-\/out/\+Makefile}\+:
 
 
@@ -222,7 +535,7 @@ Set {\ttfamily LIS} as the default sensor in {\ttfamily vis-\/spi-\/out/\+Makefi
 \DoxyCodeLine{sensor ?= LIS}
 
 \end{DoxyCode}
-\hypertarget{md_how_to_add_a_new_sensor_autotoc_md26}{}\doxysubsection{A macro is defined by sensor=}\label{md_how_to_add_a_new_sensor_autotoc_md26}
+\hypertarget{md_how_to_add_a_new_sensor_autotoc_md33}{}\doxysubsection{A macro is defined by sensor=}\label{md_how_to_add_a_new_sensor_autotoc_md33}
 Modify the build recipes to use {\ttfamily sensor} to define a macro\+:
 
 
@@ -256,7 +569,7 @@ That gets used in a recipe like this\+:
 \end{DoxyCode}
 
 
-Now the macro {\ttfamily LIS} is \char`\"{}defined\char`\"{} when the compiler parses the source code.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md27}{}\doxysubsection{Source code is bracketed with ifdef sensor macros}\label{md_how_to_add_a_new_sensor_autotoc_md27}
+Now the macro {\ttfamily LIS} is \char`\"{}defined\char`\"{} when the compiler parses the source code.\hypertarget{md_how_to_add_a_new_sensor_autotoc_md34}{}\doxysubsection{Source code is bracketed with ifdef sensor macros}\label{md_how_to_add_a_new_sensor_autotoc_md34}
 Source code checks if the {\ttfamily } macro is defined to decide which code to include.
 
 {\itshape Example\+:}

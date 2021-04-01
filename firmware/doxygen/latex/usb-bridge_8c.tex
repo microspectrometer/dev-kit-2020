@@ -69,12 +69,8 @@ int {\bfseries main} ()
 \begin{DoxyItemize}
 \item {\itshape Load VCP}\+: {\ttfamily check}
 \end{DoxyItemize}
-\end{DoxyItemize}
-
-TODO\+:~\newline
-
-\begin{DoxyItemize}
-\item Is {\itshape Load VCP} checked by default on a fresh install? 
+\item {\itshape Load VCP} is {\bfseries{not}} checked by default for each {\ttfamily usb-\/bridge} connected to Windows for the first time.~\newline
+ Host software should remind the user to check this if opening communication fails. 
 \end{DoxyItemize}
 
 \doxysubsection{Function Documentation}
@@ -86,5 +82,5 @@ TODO\+:~\newline
 
 Initialize PCB indicator LED
 
-Definition at line 93 of file usb-\/bridge.\+c.
+Definition at line 96 of file usb-\/bridge.\+c.
 

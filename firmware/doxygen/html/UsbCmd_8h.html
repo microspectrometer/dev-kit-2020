@@ -115,9 +115,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>GetAutoExposeConfig</
 <tr class="memitem:af120fbef5bc5220fe4a80c23586c6dbe"><td class="memItemLeft" align="right" valign="top"><a id="af120fbef5bc5220fe4a80c23586c6dbe"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SetAutoExposeConfig</b> (void)</td></tr>
 <tr class="separator:af120fbef5bc5220fe4a80c23586c6dbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4316446918baedd5384d301288ac568c"><td class="memItemLeft" align="right" valign="top"><a id="a4316446918baedd5384d301288ac568c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>GetSensorHash</b> (void)</td></tr>
+<tr class="separator:a4316446918baedd5384d301288ac568c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h1><a class="anchor" id="autotoc_md76"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md161"></a>
 API for usb-bridge.c</h1>
 <ul>
 <li><a class="el" href="UsbCmd_8h.html#ac2b6a4bbe89e22076102bc8a65c69ecd">NullCommand()</a></li>
@@ -132,7 +135,8 @@ API for usb-bridge.c</h1>
 <li><a class="el" href="UsbCmd_8h.html#a01172b96bcd0b33c8f7046584b805b8e">CaptureFrame()</a></li>
 <li>AutoExposure()</li>
 <li>GetAutoExposeConfig()</li>
-<li>SetAutoExposeConfig() </li>
+<li>SetAutoExposeConfig()</li>
+<li>GetSensorHash() </li>
 </ul>
 
 <p class="definition">Definition in file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
@@ -194,7 +198,7 @@ API for usb-bridge.c</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00447">447</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00514">514</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -235,7 +239,7 @@ API for usb-bridge.c</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00052">52</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00053">53</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -288,7 +292,7 @@ API for usb-bridge.c</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00355">355</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00422">422</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -316,15 +320,22 @@ API for usb-bridge.c</h1>
 </table>
 </div><div class="memdoc">
 <p>Forward 1-byte sensor config command to sensor.<br  />
-Respond with five bytes:</p><ul>
+Respond with <b>five</b> bytes:</p><ul>
 <li>usb-bridge <b>status</b><ul>
 <li>send <code>OK</code> after sending all bytes to sensor</li>
 </ul>
 </li>
-<li>vis-spi-out <b>status</b></li>
+<li>vis-spi-out <b>status</b><br  />
+<ul>
+<li>If vis-spi-out <b>status</b> is ERROR, the next three bytes (<b>binning</b>, <b>gain</b>, and <b>row_bitmap</b>)<br  />
+ contain <em>garbage</em> and should be <b>ignored</b> by the host application.<br  />
+</li>
+</ul>
+</li>
 <li><b>binning</b></li>
 <li><b>gain</b></li>
-<li><b>row_bitmap</b></li>
+<li><b>row_bitmap</b> <br  />
+</li>
 </ul>
 <p>GetSensorConfig behavior:<br  />
 </p><ul>
@@ -336,6 +347,8 @@ Respond with five bytes:</p><ul>
 </li>
 <li>reads status from sensor<br  />
 </li>
+<li>proceed reading from sensor if status is OK:<br  />
+<ul>
 <li>waits for sensor to signal BINNING data ready<br  />
 </li>
 <li>reads binning from sensor<br  />
@@ -348,6 +361,8 @@ Respond with five bytes:</p><ul>
 </li>
 <li>reads row_bitmap from sensor<br  />
 </li>
+</ul>
+</li>
 <li>writes sensor status<br  />
 </li>
 <li>writes sensor binning<br  />
@@ -358,7 +373,7 @@ Respond with five bytes:</p><ul>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00228">228</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00229">229</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -420,7 +435,7 @@ Respond with three bytes:</p><ul>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00123">123</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00124">124</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -449,7 +464,7 @@ Respond with three bytes:</p><ul>
 </div><div class="memdoc">
 <p>Do nothing.</p>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00049">49</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00050">50</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -488,7 +503,7 @@ Respond with three bytes:</p><ul>
 </ul>
 <p><em>LED 0,</em> the <b>status_led</b>, <em>is the only indicator LED on the usb-bridge.</em></p>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00029">29</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00030">30</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -533,7 +548,7 @@ Respond with three bytes:</p><ul>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00081">81</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00082">82</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -586,7 +601,7 @@ Respond with three bytes:</p><ul>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00399">399</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00466">466</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -619,7 +634,58 @@ Respond with two bytes:</p><ul>
 <li>send <code>OK</code> after sending all bytes to sensor</li>
 </ul>
 </li>
-<li>vis-spi-out <b>status</b></li>
+<li>vis-spi-out <b>status</b><ul>
+<li>Status is OK if config is loaded.<br  />
+</li>
+<li>Status is ERROR if<br  />
+<ul>
+<li>the config is invalid<br  />
+</li>
+<li>or the <code>SetSensorConfig</code> command is unrecognized:<br  />
+<ul>
+<li><em>command <code>SetSensorConfig</code> is only defined for spectrometers using the LIS-770i</em><br  />
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>If the <code>vis-spi-out</code> <b>status</b> is ERROR, there are two possible causes.<br  />
+ But <b>status</b> does not include a message, it is either OK or ERROR.<br  />
+ The host application should, therefore, tell the user to troubleshoot both possible causes if <b>status</b> is ERROR.<br  />
+<br  />
+ Tell the user to:<br  />
+</p><ol type="1">
+<li>Check the connected spectrometer uses the LIS-770i:<br  />
+<ul>
+<li>call getSensorHash()<br  />
+</li>
+<li>expect hash is <code>0x351ea9</code><br  />
+</li>
+</ul>
+</li>
+<li>If the spectrometer <em>does</em> use the LIS-770i, check the <b>config is valid</b>:<br  />
+<ul>
+<li>valid config has <b>three bytes</b>:<br  />
+<ul>
+<li>[<code>BINNING</code>, <code>GAIN</code>, <code>ACTIVE_ROWS</code>]<br  />
+</li>
+</ul>
+</li>
+<li><code>BINNING</code> is <code>0x00</code> or <code>0x01</code><br  />
+</li>
+<li><code>GAIN</code> is <code>0x01</code>, <code>0x25</code>, <code>0x04</code>, or <code>0x05</code><br  />
+</li>
+<li>(<code>ACTIVE_ROWS</code> &amp; <code>0xE0</code>) == <code>0x00</code><br  />
+</li>
+</ul>
+</li>
+</ol>
+<p>In the following description of <code>SetSensorConfig</code> behavior:</p><ul>
+<li><em>write</em> and <em>read</em> refer to USB communication with the host application</li>
+<li><em>send</em> refers to communication with the sensor</li>
 </ul>
 <p>SetSensorConfig behavior:<br  />
 </p><ul>
@@ -631,29 +697,35 @@ Respond with two bytes:</p><ul>
 </li>
 <li>reads byte gain<br  />
 </li>
-<li>waits for byte row_bitmap<br  />
+<li>waits for byte row bitmap<br  />
 </li>
-<li>reads byte row_bitmap<br  />
+<li>reads byte row bitmap<br  />
 </li>
 <li>sends command to sensor<br  />
 </li>
+<li>waits for sensor to signal it recognizes the command<br  />
+</li>
+<li>proceeds with sending config if sensor status is OK<br  />
+<ul>
 <li>sends binning to sensor<br  />
 </li>
 <li>sends gain to sensor<br  />
 </li>
-<li>sends row_bitmap to sensor<br  />
-</li>
-<li>writes OK to indicate it sent the command to the sensor<br  />
+<li>sends row bitmap to sensor<br  />
 </li>
 <li>waits for sensor to signal STATUS data ready<br  />
 </li>
 <li>reads status from sensor<br  />
 </li>
+</ul>
+</li>
+<li>writes OK to indicate it sent the command to the sensor<br  />
+</li>
 <li>writes sensor status<br  />
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00290">290</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00307">307</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>
@@ -714,7 +786,7 @@ Respond with two bytes:</p><ul>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00174">174</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UsbCmd_8h_source.html#l00175">175</a> of file <a class="el" href="UsbCmd_8h_source.html">UsbCmd.h</a>.</p>
 
 </div>
 </div>

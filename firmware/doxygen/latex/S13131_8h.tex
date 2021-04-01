@@ -1,0 +1,195 @@
+\hypertarget{S13131_8h}{}\doxysection{lib/src/\+S13131.h File Reference}
+\label{S13131_8h}\index{lib/src/S13131.h@{lib/src/S13131.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$Read\+Write\+Bits.\+h$>$}\newline
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{S13131_8h_aebccd6b42d427ada3124a7a962e82f39}\label{S13131_8h_aebccd6b42d427ada3124a7a962e82f39}} 
+\#define \mbox{\hyperlink{S13131_8h_aebccd6b42d427ada3124a7a962e82f39}{MAX\+\_\+\+NUM\+\_\+\+PIXELS}}~512
+\begin{DoxyCompactList}\small\item\em S13131-\/512 has 512 pixels. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{S13131_8h_a87d0228f09594442028485d237680a36}\label{S13131_8h_a87d0228f09594442028485d237680a36}} 
+typedef uint8\+\_\+t volatile $\ast$const {\bfseries s13131\+\_\+ptr}
+\item 
+\mbox{\Hypertarget{S13131_8h_ace9ffa3fe9c4f13e5d505f2e0517d0f3}\label{S13131_8h_ace9ffa3fe9c4f13e5d505f2e0517d0f3}} 
+typedef uint8\+\_\+t const {\bfseries s13131\+\_\+pin}
+\item 
+\mbox{\Hypertarget{S13131_8h_a56939b6e0419e21e5e7de34115c6a131}\label{S13131_8h_a56939b6e0419e21e5e7de34115c6a131}} 
+typedef uint8\+\_\+t const {\bfseries s13131\+\_\+bit}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{S13131_8h_a2422f07f9c4038cbf6bd67c74f753662}{MSB}} (uint16\+\_\+t msb\+\_\+lsb)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{S13131_8h_ae21540775e7108af4e64e07cd4899232}{LSB}} (uint16\+\_\+t msb\+\_\+lsb)
+\item 
+\mbox{\Hypertarget{S13131_8h_aace8f1c0b7ac368012baa803f164633a}\label{S13131_8h_aace8f1c0b7ac368012baa803f164633a}} 
+void {\bfseries S13131\+Pin\+Setup} (void)
+\item 
+\mbox{\Hypertarget{S13131_8h_a63ecee6dae9f64bcc9dc4beda909a90e}\label{S13131_8h_a63ecee6dae9f64bcc9dc4beda909a90e}} 
+void {\bfseries S13131\+Start\+Clocking} (void)
+\item 
+\mbox{\Hypertarget{S13131_8h_afe557c2a17fb94877a0721ccd1baea72}\label{S13131_8h_afe557c2a17fb94877a0721ccd1baea72}} 
+void {\bfseries Wait\+For\+S13131\+Clk\+Low} (void)
+\item 
+\mbox{\Hypertarget{S13131_8h_a66db2d215939dde077e354b779f8f4e0}\label{S13131_8h_a66db2d215939dde077e354b779f8f4e0}} 
+void {\bfseries Wait\+For\+S13131\+Clk\+High} (void)
+\item 
+\mbox{\Hypertarget{S13131_8h_a29d6893460030931978cf4cae6ab5144}\label{S13131_8h_a29d6893460030931978cf4cae6ab5144}} 
+void {\bfseries S13131\+Expose} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+uint16\+\_\+t \mbox{\hyperlink{S13131_8h_aa40bb208afd06c3ca248325e44444bbe}{exposure\+\_\+ticks}}
+\begin{DoxyCompactList}\small\item\em S13131 exposure time. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{S13131_8h_ac1fb025cb43969639a27502f3ec7bc3d}\label{S13131_8h_ac1fb025cb43969639a27502f3ec7bc3d}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+ddr}
+\item 
+\mbox{\Hypertarget{S13131_8h_aa1a5aa0f97cb92842b9baf458bd4623d}\label{S13131_8h_aa1a5aa0f97cb92842b9baf458bd4623d}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+port}
+\item 
+\mbox{\Hypertarget{S13131_8h_a69011331785646675fa0920d825793d3}\label{S13131_8h_a69011331785646675fa0920d825793d3}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+pin}
+\item 
+\mbox{\Hypertarget{S13131_8h_adac9c1e0788d3d8255295bae8d4aed52}\label{S13131_8h_adac9c1e0788d3d8255295bae8d4aed52}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+TCCR0A}
+\item 
+\mbox{\Hypertarget{S13131_8h_a8984e497ff455d578fa26b6f84832c83}\label{S13131_8h_a8984e497ff455d578fa26b6f84832c83}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+TCCR0B}
+\item 
+\mbox{\Hypertarget{S13131_8h_ab424f7bca56a0476bcb40c611c4868c3}\label{S13131_8h_ab424f7bca56a0476bcb40c611c4868c3}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+TIFR0}
+\item 
+\mbox{\Hypertarget{S13131_8h_a0e69f4e5c9d14b91f299016b19d08a37}\label{S13131_8h_a0e69f4e5c9d14b91f299016b19d08a37}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+OCR0A}
+\item 
+\mbox{\Hypertarget{S13131_8h_aca706d4745bb6869a897ee625f9e65e3}\label{S13131_8h_aca706d4745bb6869a897ee625f9e65e3}} 
+s13131\+\_\+ptr {\bfseries S13131\+\_\+\+OCR0B}
+\item 
+\mbox{\Hypertarget{S13131_8h_aa35c2a3c5e68bdf827054ae724703e1e}\label{S13131_8h_aa35c2a3c5e68bdf827054ae724703e1e}} 
+s13131\+\_\+pin {\bfseries S13131\+\_\+\+Clk}
+\item 
+\mbox{\Hypertarget{S13131_8h_a476655f401e683f0a013a9b5de38cfb8}\label{S13131_8h_a476655f401e683f0a013a9b5de38cfb8}} 
+s13131\+\_\+pin {\bfseries S13131\+\_\+\+St}
+\item 
+\mbox{\Hypertarget{S13131_8h_ac3ec3460562a532e06163ad0680a008a}\label{S13131_8h_ac3ec3460562a532e06163ad0680a008a}} 
+s13131\+\_\+pin {\bfseries S13131\+\_\+\+Eos}
+\item 
+\mbox{\Hypertarget{S13131_8h_a3e3e91cf78daa43e5f970eb53471072f}\label{S13131_8h_a3e3e91cf78daa43e5f970eb53471072f}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+WGM00}
+\item 
+\mbox{\Hypertarget{S13131_8h_a17f6afe3f6ce9d34497e44aff745b49c}\label{S13131_8h_a17f6afe3f6ce9d34497e44aff745b49c}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+WGM01}
+\item 
+\mbox{\Hypertarget{S13131_8h_aa867bc4a6745dacee87bbbcad0a858e9}\label{S13131_8h_aa867bc4a6745dacee87bbbcad0a858e9}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+WGM02}
+\item 
+\mbox{\Hypertarget{S13131_8h_a91710d17ed27ad01bcae71bba8e1ab59}\label{S13131_8h_a91710d17ed27ad01bcae71bba8e1ab59}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+CS00}
+\item 
+\mbox{\Hypertarget{S13131_8h_aa5cd6aa75c6e972aeaee253815f6c6d3}\label{S13131_8h_aa5cd6aa75c6e972aeaee253815f6c6d3}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+CS01}
+\item 
+\mbox{\Hypertarget{S13131_8h_ae840db8e398d39d0127914d118ba089a}\label{S13131_8h_ae840db8e398d39d0127914d118ba089a}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+CS02}
+\item 
+\mbox{\Hypertarget{S13131_8h_af46221024197676f0cb387cbc71dca66}\label{S13131_8h_af46221024197676f0cb387cbc71dca66}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+COM0\+B0}
+\item 
+\mbox{\Hypertarget{S13131_8h_a725e64a7af4ab9bdc16f7ad844a8a56e}\label{S13131_8h_a725e64a7af4ab9bdc16f7ad844a8a56e}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+COM0\+B1}
+\item 
+\mbox{\Hypertarget{S13131_8h_a1aeaa5e7f8f8c7af6f891cf126836f59}\label{S13131_8h_a1aeaa5e7f8f8c7af6f891cf126836f59}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+OCF0A}
+\item 
+\mbox{\Hypertarget{S13131_8h_a62f92576a14c7c04eb7d82342bb79925}\label{S13131_8h_a62f92576a14c7c04eb7d82342bb79925}} 
+s13131\+\_\+bit {\bfseries S13131\+\_\+\+OCF0B}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\hypertarget{S13131_8h_autotoc_md101}{}\doxysubsection{API}\label{S13131_8h_autotoc_md101}
+void S13131\+Pin\+Setup(void);~\newline
+ void S13131\+Start\+Clocking(void);~\newline
+void S13131\+Expose(void);~\newline
+S13131\+Readout is defined in Vis\+Cmd~\newline
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{S13131_8h_ae21540775e7108af4e64e07cd4899232}\label{S13131_8h_ae21540775e7108af4e64e07cd4899232}} 
+\index{S13131.h@{S13131.h}!LSB@{LSB}}
+\index{LSB@{LSB}!S13131.h@{S13131.h}}
+\doxysubsubsection{\texorpdfstring{LSB()}{LSB()}}
+{\footnotesize\ttfamily uint8\+\_\+t LSB (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{msb\+\_\+lsb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+LSB behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns least significant bit of 16bit input~\newline
+
+\end{DoxyItemize}
+
+Definition at line 38 of file S13131.\+h.
+
+\mbox{\Hypertarget{S13131_8h_a2422f07f9c4038cbf6bd67c74f753662}\label{S13131_8h_a2422f07f9c4038cbf6bd67c74f753662}} 
+\index{S13131.h@{S13131.h}!MSB@{MSB}}
+\index{MSB@{MSB}!S13131.h@{S13131.h}}
+\doxysubsubsection{\texorpdfstring{MSB()}{MSB()}}
+{\footnotesize\ttfamily uint8\+\_\+t MSB (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{msb\+\_\+lsb }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+MSB behavior\+:~\newline
+
+\begin{DoxyItemize}
+\item returns most significant bit of 16bit input~\newline
+
+\end{DoxyItemize}
+
+Definition at line 31 of file S13131.\+h.
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{S13131_8h_aa40bb208afd06c3ca248325e44444bbe}\label{S13131_8h_aa40bb208afd06c3ca248325e44444bbe}} 
+\index{S13131.h@{S13131.h}!exposure\_ticks@{exposure\_ticks}}
+\index{exposure\_ticks@{exposure\_ticks}!S13131.h@{S13131.h}}
+\doxysubsubsection{\texorpdfstring{exposure\_ticks}{exposure\_ticks}}
+{\footnotesize\ttfamily uint16\+\_\+t exposure\+\_\+ticks\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+S13131 exposure time. 
+
+
+\begin{DoxyItemize}
+\item exposure is a 16-\/bit word
+\item exposure is in units of clock ticks
+\item multiply exposure by 20e-\/6 seconds to get exposure time in seconds
+\begin{DoxyItemize}
+\item one clock tick is 20e-\/6 seconds because the S13131 is clocked at 50k\+Hz
+\end{DoxyItemize}
+\item minimum allowed exposure time is 180e-\/6 seconds (exposure\+\_\+ticks = 9)
+\item exposure\+\_\+ticks is clamped at 9 ticks
+\begin{DoxyItemize}
+\item exposure\+\_\+ticks is set to 9 if Set\+Exposure attempts a value $<$ 9
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+S13131 exposure time.
+
+
+\begin{DoxyItemize}
+\item exposure is a 16-\/bit word
+\item exposure is in units of clock ticks
+\item multiply exposure by 20e-\/6 seconds to get exposure time in seconds
+\begin{DoxyItemize}
+\item one clock tick is 20e-\/6 seconds because the LIS-\/770i is clocked at 50k\+Hz 
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Definition at line 32 of file Lis.\+c.
+

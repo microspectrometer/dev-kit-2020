@@ -77,7 +77,7 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define _S13131_HARDWARE_H</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;avr/io.h&gt;</span> <span class="comment">// includes iom328p.h for hardware i/o values</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;S13131.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="S13131_8h.html">S13131.h</a>&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">// ---Registers---</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;s13131_ptr S13131_ddr    = &amp;DDRD;</div>
@@ -90,9 +90,9 @@ $(function() {
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;s13131_ptr S13131_OCR0B  = &amp;OCR0B;  <span class="comment">// PWM duty cycle: OCR0B/OCR0A</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">// ---Pins---</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;s13131_pin S13131_Clk = PD5; <span class="comment">// PWM</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;s13131_pin S13131_St  = PD6; <span class="comment">// Start</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;s13131_pin S13131_Eos = PD7; <span class="comment">// End of scan</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;s13131_pin S13131_Clk = PD5; <span class="comment">// PWM (ZIF pin 4 - LIS_CLK)</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;s13131_pin S13131_St  = PD6; <span class="comment">// Start (ZIF pin 5 - LIS_RST)</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;s13131_pin S13131_Eos = PD7; <span class="comment">// End of scan (ZIF pin 6 - LIS_SYNC)</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">// ---Bits---</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;s13131_bit S13131_WGM00  = WGM00;  <span class="comment">// PWM</span></div>
@@ -106,6 +106,7 @@ $(function() {
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;s13131_bit S13131_OCF0A  = OCF0A;  <span class="comment">// PWM</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;s13131_bit S13131_OCF0B  = OCF0B;  <span class="comment">// PWM</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// _S13131_HARDWARE_H</span></div>
+<div class="ttc" id="aS13131_8h_html"><div class="ttname"><a href="S13131_8h.html">S13131.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

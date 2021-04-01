@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>firmware: cheatsheet</title>
+<title>firmware: notes</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -65,11 +65,11 @@ $(function() {
 </div><!-- top -->
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">cheatsheet </div>  </div>
+<div class="title">notes </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><ul>
-<li>look at <code>how-to-add-a-new-sensor.md</code><ul>
+<li><p class="startli">look at <code>how-to-add-a-new-sensor.md</code></p><ul>
 <li>up to implementing what I describe in "A macro is defined by sensor="</li>
 <li>but ;mktgc is failing with linker error<ul>
 <li>this was broken before I branched</li>
@@ -84,9 +84,64 @@ $(function() {
 </ul>
 </li>
 <li>need to walk-through what ;mktgc does to figure out wtf is going on</li>
+<li>[ ] why is ../lib/test/FakeAvr/io.h empty?</li>
+<li>[x] why is VisCmd.ReplyCommandInvalid() never used in <a class="el" href="vis-spi-out_8c.html">vis-spi-out.c</a>?<ul>
+<li>I don't know.</li>
+<li>I pulled it and its test code out into <code>vis-spi-out/code-not-used/</code></li>
+<li>I also made sure these extracted code snippets compiled, just for the practice of it, so I made a .avra for the embedded code (which I checked for correct instructions) and a .asm for the test code (which I just glossed through out of curiosity)</li>
 </ul>
 </li>
+<li>[x] Discover the secrets to avr-gcc doing inline and picking the right operations correctly<ol type="1">
+<li><p class="startli">Flag -O3 is level 3 optimization</p><ul>
+<li>-O3 includes the -f flags for inlining</li>
+<li>here are those flags (don't need to add these to CFLAGS, they are part of -O3):</li>
 </ul>
+<p class="startli">```avr-gcc -finline-functions -finline-functions-called-once -findirect-inlining -finline-small-functions ```</p>
+</li>
+<li>-mmcu=atmega328p</li>
+<li>The compilation unit must:<ul>
+<li><code>#include "Hardware.h"</code></li>
+</ul>
+</li>
+<li>And of course the inline definition and the hardware definitions must be in the compilation unit</li>
+</ol>
+</li>
+<li><p class="startli">Make a dummy file that either:</p><ul>
+<li>calls the code to check the assembly for:</li>
+</ul>
+<p class="startli">```c #include "Lis.h" #include "Hardware.h" void entry_point(void) { <a class="el" href="Lis_8h.html#aa84aa8e7e4e6ac94a503d022fbd07bb4">LisInit()</a>; } ```</p><ul>
+<li>or if it's a function and the definition is inline in a header, then you can just do this:</li>
+</ul>
+<p class="startli">```c #include "Lis.h" #include "Hardware.h" void <a class="el" href="Lis_8h.html#aa84aa8e7e4e6ac94a503d022fbd07bb4">LisInit(void)</a>; ```</p>
+</li>
+<li>then compile like this (inspired by Matt Godbolt):</li>
+</ul>
+<p class="startli">```bash avr-gcc <a class="el" href="Lis-LisInit_8c_source.html">src/avra/Lis-LisInit.c</a> -S -O3 -o - -I../lib/src -Isrc -mmcu=atmega328p -DLIS ```</p><ul>
+<li><code>-S</code> says stop after generating the assembly</li>
+<li><code>-o -</code> says send the output (the assembly) to stdout</li>
+<li><code>-O3</code> says use optimization level 3: this gets me the desired assembly &ndash; fast instructions, inline functions</li>
+<li><code>-I</code> flags tell avr-gcc where to search for header files</li>
+<li><code>-mmcu=atmega328p</code> defines all the ATmega328P macros (registers, bit names, and function-like macros like cli())</li>
+<li>With the dummy file open in one Vim window, the terminal open in the adjent Vim window, I can now just search the terminal window for <code>entry_point</code> (my name for the dummy call that calls the code I want to see the assembly for), and then I can compare the assembly side-by-side with the C code.</li>
+<li>THIS IS REALLY FREAKING COOL</li>
+<li>I used to dig through the .avra dump from the .elf</li>
+<li>Now I can just pop a function in a C file and look at just the code I care about</li>
+<li>I'll eliminate the "expected assembly" from my code</li>
+<li>And instead have these <code>.avra</code> files for each function</li>
+<li>[ ] Modify my avra assembly analysis tool so I can pipe this -S assembly output to it and have it report the number of cycles</li>
+<li>The above Godbolt-style is looking at the assembly for an object file.</li>
+<li>The alternative is to generate a <code>.elf</code> and then use <code>avr-objdump</code> to generate the disassembly</li>
+<li>making a full .elf and then doing an obj-dump requires a main entry point</li>
+<li>The make .elf and then obj-dump approach works on the above dummy file example as well:</li>
+</ul>
+<p class="startli">```bash avr-gcc <a class="el" href="Lis-LisInit_8c_source.html">src/avra/Lis-LisInit.c</a> -o src/avra/Lis-LisInit.elf -O3 -I../lib/src -Isrc -mmcu=atmega328p avr-objdump.exe -S src/avra/Lis-LisInit.elf &gt; src/avra/Lis-LisInit.avra ```</p><ul>
+<li>when do I need to specify the <code>-B</code> flag? I've been able to get my disassembly and my .elf without this, but I have it in my old make recipe. I don't. I don't need it! I think this is only necessary if I don't have AtmelStudio installed. But I do. The avr-gcc is coming from my AtmelStudio installation, so it has everything it needs.</li>
+</ul>
+<p class="startli">```bash avr-gcc <a class="el" href="Lis-LisInit_8c_source.html">src/avra/Lis-LisInit.c</a> -S -O3 -o - -I../lib/src -Isrc -mmcu=atmega328p -B"/cygdrive/c/Program Files\ (x86)/Atmel/Studio/7.0/packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/" ```</p>
+</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md1"></a>
+cheatsheet</h1>
 <div class="fragment"><div class="line">;s1</div>
 </div><!-- fragment --><div class="fragment"><div class="line"> {I&#39;m}</div>
 <div class="line">git checkout -b S13131</div>
@@ -94,6 +149,50 @@ $(function() {
 <div class="line">git merge S13131</div>
 <div class="line">git branch -d S13131</div>
 </div><!-- fragment --><div class="fragment"><div class="line">vim -S ~/csp-overflow.vim</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md2"></a>
+Send commands to dev-kit from within Vim</h1>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Activate microspec venv for protocol development</h2>
+<p>Setup a virtual environment that installs <code>microspec</code> in <b>editable</b> mode:</p>
+<div class="fragment"><div class="line">PS C:\Users\mike&gt; python -m venv microspecdev</div>
+<div class="line">PS C:\Users\mike&gt; .\microspecdev\Scripts\activate </div>
+<div class="line">(microspecdev) PS C:\Users\mike&gt; python -m pip install -U pip</div>
+<div class="line">(microspecdev) PS C:\Users\mike&gt; pip install -e C:\cygwin64\home\mike\.local\lib\python3.7\site-packages\microspec\</div>
+</div><!-- fragment --><p><em>Now changes to the JSON protocol are picked up without having to reinstall the package with pip</em>.</p>
+<ul>
+<li>Note: changing JSON globals will not magically change the firmware!<ul>
+<li>e.g, if I change JSON StatusError from 0x01 to 0xFF, the firmware still uses 0x01 to respond with an error</li>
+</ul>
+</li>
+</ul>
+<p>Active this venv <em>before</em> launching bash:</p>
+<div class="fragment"><div class="line">&gt; .\micropsecdev\Scripts\activate</div>
+<div class="line">(microspecdev) &gt; bash</div>
+</div><!-- fragment --><h3>quick tests using ptpython</h3>
+<p>Open a terminal and run <code>ptpython.exe</code> to use the full <code>microspec</code> API.</p>
+<h3>even quicker tests using microspec-cmdline</h3>
+<p>Send commands from within Vim via <code>microspec-cmdline.exe</code>:</p>
+<ul>
+<li><code>;pt&lt;Space&gt;</code> to start a command</li>
+<li>or <code>;pt</code> followed by the command id</li>
+</ul>
+<p><em>Example</em>: <code>;pt2</code> sends <code>SetBridgeLED</code></p>
+<div class="fragment"><div class="line">$ microspec-cmdline.exe SetBridgeLED led_num=0 led_setting=0</div>
+</div><!-- fragment --><p>Here's the full set of shortcuts:</p>
+<div class="fragment"><div class="line">nnoremap &lt;leader&gt;pt&lt;Space&gt; :!microspec-cmdline.exe </div>
+<div class="line">nnoremap &lt;leader&gt;pt0 :!microspec-cmdline.exe Null</div>
+<div class="line">nnoremap &lt;leader&gt;pt1 :!microspec-cmdline.exe GetBridgeLED led_num=0</div>
+<div class="line">nnoremap &lt;leader&gt;pt2 :!microspec-cmdline.exe SetBridgeLED led_num=0 led_setting=0</div>
+<div class="line">nnoremap &lt;leader&gt;pt3 :!microspec-cmdline.exe GetSensorLED led_num=0</div>
+<div class="line">nnoremap &lt;leader&gt;pt4 :!microspec-cmdline.exe SetSensorLED led_num=0 led_setting=1</div>
+<div class="line">nnoremap &lt;leader&gt;pt7 :!microspec-cmdline.exe GetSensorConfig</div>
+<div class="line">nnoremap &lt;leader&gt;pt8 :!microspec-cmdline.exe SetSensorConfig binning=1 gain=1 row_bitmap=31</div>
+<div class="line">nnoremap &lt;leader&gt;pt9 :!microspec-cmdline.exe GetExposure</div>
+<div class="line">nnoremap &lt;leader&gt;pt10 :!microspec-cmdline.exe SetExposure cycles=500</div>
+<div class="line">nnoremap &lt;leader&gt;pt11 :!microspec-cmdline.exe CaptureFrame</div>
+<div class="line">nnoremap &lt;leader&gt;pt12 :!microspec-cmdline.exe AutoExposure</div>
+<div class="line">nnoremap &lt;leader&gt;pt13 :!microspec-cmdline.exe GetAutoExposeConfig</div>
+<div class="line">nnoremap &lt;leader&gt;pt14 :!microspec-cmdline.exe SetAutoExposeConfig max_tries=12 start_pixel=7 stop_pixel=392 target=46420 target_tolerance=3277 max_exposure=10000</div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

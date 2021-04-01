@@ -1,6 +1,6 @@
 \label{index_md_doxygen_mainpage}%
 \Hypertarget{index_md_doxygen_mainpage}%
-\hypertarget{index_autotoc_md0}{}\doxysection{How to use the firmware documentation}\label{index_autotoc_md0}
+\hypertarget{index_autotoc_md4}{}\doxysection{How to use the firmware documentation}\label{index_autotoc_md4}
 All the useful firmware information is under \href{files.html}{\texttt{ Files}}. This browses the source code.
 
 
@@ -10,7 +10,7 @@ All the useful firmware information is under \href{files.html}{\texttt{ Files}}.
 \item click the file {\itshape icon} to view its {\bfseries{source code}}
 \item or click a file {\itshape name} (if it\textquotesingle{}s a hyperlink) to view its {\bfseries{documentation}}
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{index_autotoc_md1}{}\doxysubsection{Firmware organization}\label{index_autotoc_md1}
+\end{DoxyItemize}\hypertarget{index_autotoc_md5}{}\doxysubsection{Firmware organization}\label{index_autotoc_md5}
 The firmware is divided into folders\+:
 
 
@@ -28,7 +28,7 @@ The firmware is divided into folders\+:
 \end{DoxyCode}
 
 
-Each folder has {\ttfamily src} (source code) and {\ttfamily test} (unit tests).\hypertarget{index_autotoc_md2}{}\doxysubsection{Library functions break with C convention}\label{index_autotoc_md2}
+Each folder has {\ttfamily src} (source code) and {\ttfamily test} (unit tests).\hypertarget{index_autotoc_md6}{}\doxysubsection{Library functions break with C convention}\label{index_autotoc_md6}
 The first thing C programmers will notice is that the {\ttfamily lib} source code does not follow convention\+:
 
 
@@ -38,14 +38,14 @@ The first thing C programmers will notice is that the {\ttfamily lib} source cod
 \item the function signatures are in the {\ttfamily .c} files
 \end{DoxyItemize}
 
-This is for \href{index.html\#autotoc_md10}{\texttt{ performance reasons}}.\hypertarget{index_autotoc_md3}{}\doxysection{Related dev-\/kit documentation}\label{index_autotoc_md3}
+This is for \href{index.html\#autotoc_md10}{\texttt{ performance reasons}}.\hypertarget{index_autotoc_md7}{}\doxysection{Related dev-\/kit documentation}\label{index_autotoc_md7}
 The firmware runs on the Chromation dev-\/kit. Documentation for the dev-\/kit is here\+:
 
 \href{https://microspectrometer.github.io/dev-kit-2020/}{\texttt{ https\+://microspectrometer.\+github.\+io/dev-\/kit-\/2020/}}
 
 All dev-\/kit hardware and firmware files are open-\/source and are available from the Git\+Hub repository\+:
 
-\href{https://github.com/microspectrometer/dev-kit-2020}{\texttt{ https\+://github.\+com/microspectrometer/dev-\/kit-\/2020}}\hypertarget{index_autotoc_md4}{}\doxysection{Chromation dev-\/kit hardware}\label{index_autotoc_md4}
+\href{https://github.com/microspectrometer/dev-kit-2020}{\texttt{ https\+://github.\+com/microspectrometer/dev-\/kit-\/2020}}\hypertarget{index_autotoc_md8}{}\doxysection{Chromation dev-\/kit hardware}\label{index_autotoc_md8}
 The dev-\/kit has two ATmega328 microcontrollers and a spectrometer chip.
 
 The firmware is for the Flash memory in those two microcontrollers\+:
@@ -64,7 +64,7 @@ Jump to the {\ttfamily main()} {\ttfamily .c} file for the two microcontrollers\
 \item \href{vis-spi-out_8c_source.html}{\texttt{ vis-\/spi-\/out/src/vis-\/spi-\/out.\+c}}
 \end{DoxyItemize}
 
-There is no firmware for the spectrometer chip itself, but the chip does have programmable registers.\hypertarget{index_autotoc_md5}{}\doxysubsection{Spectrometer chip programmable registers}\label{index_autotoc_md5}
+There is no firmware for the spectrometer chip itself, but the chip does have programmable registers.\hypertarget{index_autotoc_md9}{}\doxysubsection{Spectrometer chip programmable registers}\label{index_autotoc_md9}
 The programmable registers are part of the LIS-\/770i, the CMOS image sensor used in the spectrometer chip. These registers initialize in an unknown state and must be written to after the spectrometer chip is powered on.
 
 All registers are programmed at once by sending the LIS-\/770i a 28-\/bit word. The value of this 28-\/bit word determines\+:
@@ -86,15 +86,15 @@ The \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} Python API i
 \begin{DoxyItemize}
 \item the recommended value for pixel binning is based on the optical design of the spectrometer
 \item the recommended 1x gain is based on the dev-\/kit\textquotesingle{}s analog front-\/end (i.\+e., the choice of ADC and ADC reference voltage) -- given this design, increasing the gain reduces dynamic range without improving SNR
-\end{DoxyItemize}\hypertarget{index_autotoc_md6}{}\doxysection{Serial communication and the Python API}\label{index_autotoc_md6}
-\hypertarget{index_autotoc_md7}{}\doxysubsection{Protocol is in a JSON file}\label{index_autotoc_md7}
+\end{DoxyItemize}\hypertarget{index_autotoc_md10}{}\doxysection{Serial communication and the Python API}\label{index_autotoc_md10}
+\hypertarget{index_autotoc_md11}{}\doxysubsection{Protocol is in a JSON file}\label{index_autotoc_md11}
 The serial communication protocol is defined in the JSON file \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}}\+:
 
 
 \begin{DoxyItemize}
 \item The firmware follows the \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}} serial communication protocol.
 \item Py\+PI project \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} defines a USB interface to the dev-\/kit. This interface is a {\ttfamily class} that is auto-\/generated from \href{https://github.com/microspectrometer/microspec/blob/master/cfg/microspec.json}{\texttt{ microspec.\+json}}.
-\end{DoxyItemize}\hypertarget{index_autotoc_md8}{}\doxysubsection{Develop and test}\label{index_autotoc_md8}
+\end{DoxyItemize}\hypertarget{index_autotoc_md12}{}\doxysubsection{Develop and test}\label{index_autotoc_md12}
 Install Python and the \href{https://pypi.org/project/microspec/}{\texttt{ microspec}} package to develop and test the firmware\+:
 
 
@@ -120,8 +120,8 @@ Install Python and the \href{https://pypi.org/project/microspec/}{\texttt{ micro
 \item This script runs all the serial commands and checks for the expected responses from the dev-\/kit.
 \item The script is organized into classes, one class per serial command. Each class method tests different arguments to the serial command.
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{index_autotoc_md9}{}\doxysubsection{Protocol example}\label{index_autotoc_md9}
-TODO\+: Add an example with the {\ttfamily usb-\/bridge} and {\ttfamily vis-\/spi-\/out} firmware that corresponds to one of the commands in the JSON file, and how the resulting call-\/and-\/response looks from Python.\hypertarget{index_autotoc_md10}{}\doxysection{Why so much inline}\label{index_autotoc_md10}
+\end{DoxyItemize}\hypertarget{index_autotoc_md13}{}\doxysubsection{Protocol example}\label{index_autotoc_md13}
+TODO\+: Add an example with the {\ttfamily usb-\/bridge} and {\ttfamily vis-\/spi-\/out} firmware that corresponds to one of the commands in the JSON file, and how the resulting call-\/and-\/response looks from Python.\hypertarget{index_autotoc_md14}{}\doxysection{Why so much inline}\label{index_autotoc_md14}
 The library code started out in the conventional way\+:
 
 
@@ -176,7 +176,7 @@ How do I know what instructions should be used? I manually look up the address o
 
 {\itshape In more complicated cases, there are several lines of assembly.}
 
-Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change. This is how I determined the correct steps to make {\ttfamily inline} actually inline the code.\hypertarget{index_autotoc_md11}{}\doxysubsection{Conventional C yields inefficient assembly}\label{index_autotoc_md11}
+Pasting the disassembly into the code helped me check that the compiler was still using the right instructions after a code change. This is how I determined the correct steps to make {\ttfamily inline} actually inline the code.\hypertarget{index_autotoc_md15}{}\doxysubsection{Conventional C yields inefficient assembly}\label{index_autotoc_md15}
 {\itshape The simplest example is the bit manipulation functions discussed below. The same reasoning applies to all the library code.}
 
 The \href{ReadWriteBits_8h_source.html}{\texttt{ Read\+Write\+Bits}} library defines bit manipulation functions (for readability and testability). In the conventional approach, this source file is compiled without knowing the register addresses that client code will pass to its functions. But the register address determines which instructions are allowed! Without knowing the address, the compiler has to use the most generic instruction.
@@ -187,14 +187,14 @@ Or the bit manipulation function might be called on an I/O register in the range
 
 Or the bit manipulation might be performed on dataspace, {\ttfamily 0x40 -\/ 0x5F}, or extended I/O space, {\ttfamily 0x60 -\/ 0x\+FF} in SRAM, in which case instructions like {\ttfamily ld} and {\ttfamily st} are used.
 
-Again, the compiler does not know what register address the function is called with, so it has to use the generic {\ttfamily ld} and {\ttfamily st} instructions. The result is that calls to the bit manipulation library take a massive speed penalty.\hypertarget{index_autotoc_md12}{}\doxysubsection{Inlining yields efficient assembly}\label{index_autotoc_md12}
+Again, the compiler does not know what register address the function is called with, so it has to use the generic {\ttfamily ld} and {\ttfamily st} instructions. The result is that calls to the bit manipulation library take a massive speed penalty.\hypertarget{index_autotoc_md16}{}\doxysubsection{Inlining yields efficient assembly}\label{index_autotoc_md16}
 To avoid this, the {\ttfamily inline} copies the bit manipulation source code into all the places it is called.
 
 Now the code is part of the compilation unit that has the register addresses and the compiler knows if it can use the faster instructions. In addition to using faster instructions, the function call overhead is eliminated. And the code still retains its readability and reusability.
 
 In order for the compiler to {\ttfamily inline}, the function body must be visible in the compilation unit, therefore the function body goes in the header.
 
-The result is a glaring break with C convention. Most (all?) of the library functions are defined in {\ttfamily .h} files, with the function signatures declared in the {\ttfamily .c} file.\hypertarget{index_autotoc_md13}{}\doxysubsection{Macro USE\+\_\+\+FAKES}\label{index_autotoc_md13}
+The result is a glaring break with C convention. Most (all?) of the library functions are defined in {\ttfamily .h} files, with the function signatures declared in the {\ttfamily .c} file.\hypertarget{index_autotoc_md17}{}\doxysubsection{Macro USE\+\_\+\+FAKES}\label{index_autotoc_md17}
 The only practical drawback to this approach is that it is incompatible with using function pointers to replace functions with fakes for unit tests.
 
 Instead of function pointers, the code gets marked up with test macros to handle the function faking. This comes up when\+:

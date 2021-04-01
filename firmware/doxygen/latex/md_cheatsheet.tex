@@ -16,9 +16,70 @@
 \item temp-\/linker-\/error-\/mktgc-\/in-\/vis-\/spi-\/out-\/folder.\+md
 \end{DoxyItemize}
 \item need to walk-\/through what ;mktgc does to figure out wtf is going on
+\item \mbox{[} \mbox{]} why is ../lib/test/\+Fake\+Avr/io.h empty?
+\item \mbox{[}x\mbox{]} why is Vis\+Cmd.\+Reply\+Command\+Invalid() never used in \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}?
+\begin{DoxyItemize}
+\item I don\textquotesingle{}t know.
+\item I pulled it and its test code out into {\ttfamily vis-\/spi-\/out/code-\/not-\/used/}
+\item I also made sure these extracted code snippets compiled, just for the practice of it, so I made a .avra for the embedded code (which I checked for correct instructions) and a .asm for the test code (which I just glossed through out of curiosity)
 \end{DoxyItemize}
+\item \mbox{[}x\mbox{]} Discover the secrets to avr-\/gcc doing inline and picking the right operations correctly
+\begin{DoxyEnumerate}
+\item Flag -\/O3 is level 3 optimization
+\begin{DoxyItemize}
+\item -\/O3 includes the -\/f flags for inlining
+\item here are those flags (don\textquotesingle{}t need to add these to CFLAGS, they are part of -\/O3)\+:
 \end{DoxyItemize}
 
+\`{}\`{}\`{}avr-\/gcc -\/finline-\/functions -\/finline-\/functions-\/called-\/once -\/findirect-\/inlining -\/finline-\/small-\/functions \`{}\`{}\`{}
+\item -\/mmcu=atmega328p
+\item The compilation unit must\+:
+\begin{DoxyItemize}
+\item {\ttfamily \#include \char`\"{}\+Hardware.\+h\char`\"{}}
+\end{DoxyItemize}
+\item And of course the inline definition and the hardware definitions must be in the compilation unit
+\end{DoxyEnumerate}
+\item Make a dummy file that either\+:
+\begin{DoxyItemize}
+\item calls the code to check the assembly for\+:
+\end{DoxyItemize}
+
+\`{}\`{}\`{}c \#include \char`\"{}\+Lis.\+h\char`\"{} \#include \char`\"{}\+Hardware.\+h\char`\"{} void entry\+\_\+point(void) \{ \mbox{\hyperlink{Lis_8h_aa84aa8e7e4e6ac94a503d022fbd07bb4}{Lis\+Init()}}; \} \`{}\`{}\`{}
+\begin{DoxyItemize}
+\item or if it\textquotesingle{}s a function and the definition is inline in a header, then you can just do this\+:
+\end{DoxyItemize}
+
+\`{}\`{}\`{}c \#include \char`\"{}\+Lis.\+h\char`\"{} \#include \char`\"{}\+Hardware.\+h\char`\"{} void \mbox{\hyperlink{Lis_8h_aa84aa8e7e4e6ac94a503d022fbd07bb4}{Lis\+Init(void)}}; \`{}\`{}\`{}
+\item then compile like this (inspired by Matt Godbolt)\+:
+\end{DoxyItemize}
+
+\`{}\`{}\`{}bash avr-\/gcc \mbox{\hyperlink{Lis-LisInit_8c_source}{src/avra/\+Lis-\/\+Lis\+Init.\+c}} -\/S -\/O3 -\/o -\/ -\/I../lib/src -\/Isrc -\/mmcu=atmega328p -\/DLIS \`{}\`{}\`{}
+\begin{DoxyItemize}
+\item {\ttfamily -\/S} says stop after generating the assembly
+\item {\ttfamily -\/o -\/} says send the output (the assembly) to stdout
+\item {\ttfamily -\/O3} says use optimization level 3\+: this gets me the desired assembly -- fast instructions, inline functions
+\item {\ttfamily -\/I} flags tell avr-\/gcc where to search for header files
+\item {\ttfamily -\/mmcu=atmega328p} defines all the ATmega328P macros (registers, bit names, and function-\/like macros like cli())
+\item With the dummy file open in one Vim window, the terminal open in the adjent Vim window, I can now just search the terminal window for {\ttfamily entry\+\_\+point} (my name for the dummy call that calls the code I want to see the assembly for), and then I can compare the assembly side-\/by-\/side with the C code.
+\item THIS IS REALLY FREAKING COOL
+\item I used to dig through the .avra dump from the .elf
+\item Now I can just pop a function in a C file and look at just the code I care about
+\item I\textquotesingle{}ll eliminate the \char`\"{}expected assembly\char`\"{} from my code
+\item And instead have these {\ttfamily .avra} files for each function
+\item \mbox{[} \mbox{]} Modify my avra assembly analysis tool so I can pipe this -\/S assembly output to it and have it report the number of cycles
+\item The above Godbolt-\/style is looking at the assembly for an object file.
+\item The alternative is to generate a {\ttfamily .elf} and then use {\ttfamily avr-\/objdump} to generate the disassembly
+\item making a full .elf and then doing an obj-\/dump requires a main entry point
+\item The make .elf and then obj-\/dump approach works on the above dummy file example as well\+:
+\end{DoxyItemize}
+
+\`{}\`{}\`{}bash avr-\/gcc \mbox{\hyperlink{Lis-LisInit_8c_source}{src/avra/\+Lis-\/\+Lis\+Init.\+c}} -\/o src/avra/\+Lis-\/\+Lis\+Init.\+elf -\/O3 -\/I../lib/src -\/Isrc -\/mmcu=atmega328p avr-\/objdump.\+exe -\/S src/avra/\+Lis-\/\+Lis\+Init.\+elf $>$ src/avra/\+Lis-\/\+Lis\+Init.\+avra \`{}\`{}\`{}
+\begin{DoxyItemize}
+\item when do I need to specify the {\ttfamily -\/B} flag? I\textquotesingle{}ve been able to get my disassembly and my .elf without this, but I have it in my old make recipe. I don\textquotesingle{}t. I don\textquotesingle{}t need it! I think this is only necessary if I don\textquotesingle{}t have Atmel\+Studio installed. But I do. The avr-\/gcc is coming from my Atmel\+Studio installation, so it has everything it needs.
+\end{DoxyItemize}
+
+\`{}\`{}\`{}bash avr-\/gcc \mbox{\hyperlink{Lis-LisInit_8c_source}{src/avra/\+Lis-\/\+Lis\+Init.\+c}} -\/S -\/O3 -\/o -\/ -\/I../lib/src -\/Isrc -\/mmcu=atmega328p -\/B\char`\"{}/cygdrive/c/\+Program Files\textbackslash{} (x86)/\+Atmel/\+Studio/7.\+0/packs/atmel/\+ATmega\+\_\+\+DFP/1.\+3.\+300/gcc/dev/atmega328p/\char`\"{} \`{}\`{}\`{}
+\end{DoxyItemize}\hypertarget{md_cheatsheet_autotoc_md1}{}\doxysection{cheatsheet}\label{md_cheatsheet_autotoc_md1}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{;s1}
@@ -46,6 +107,83 @@
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{vim -\/S \string~/csp-\/overflow.vim}
+
+\end{DoxyCode}
+\hypertarget{md_cheatsheet_autotoc_md2}{}\doxysection{Send commands to dev-\/kit from within Vim}\label{md_cheatsheet_autotoc_md2}
+\hypertarget{md_cheatsheet_autotoc_md3}{}\doxysubsection{Activate microspec venv for protocol development}\label{md_cheatsheet_autotoc_md3}
+Setup a virtual environment that installs {\ttfamily microspec} in {\bfseries{editable}} mode\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{PS C:\(\backslash\)Users\(\backslash\)mike> python -\/m venv microspecdev}
+\DoxyCodeLine{PS C:\(\backslash\)Users\(\backslash\)mike> .\(\backslash\)microspecdev\(\backslash\)Scripts\(\backslash\)activate }
+\DoxyCodeLine{(microspecdev) PS C:\(\backslash\)Users\(\backslash\)mike> python -\/m pip install -\/U pip}
+\DoxyCodeLine{(microspecdev) PS C:\(\backslash\)Users\(\backslash\)mike> pip install -\/e C:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec\(\backslash\)}
+
+\end{DoxyCode}
+
+
+{\itshape Now changes to the JSON protocol are picked up without having to reinstall the package with pip}.
+
+
+\begin{DoxyItemize}
+\item Note\+: changing JSON globals will not magically change the firmware!
+\begin{DoxyItemize}
+\item e.\+g, if I change JSON Status\+Error from 0x01 to 0x\+FF, the firmware still uses 0x01 to respond with an error
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Active this venv {\itshape before} launching bash\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> .\(\backslash\)micropsecdev\(\backslash\)Scripts\(\backslash\)activate}
+\DoxyCodeLine{(microspecdev) > bash}
+
+\end{DoxyCode}
+
+
+\doxysubsubsection*{quick tests using ptpython}
+
+Open a terminal and run {\ttfamily ptpython.\+exe} to use the full {\ttfamily microspec} API.
+
+\doxysubsubsection*{even quicker tests using microspec-\/cmdline}
+
+Send commands from within Vim via {\ttfamily microspec-\/cmdline.\+exe}\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily ;pt$<$Space$>$} to start a command
+\item or {\ttfamily ;pt} followed by the command id
+\end{DoxyItemize}
+
+{\itshape Example}\+: {\ttfamily ;pt2} sends {\ttfamily Set\+Bridge\+LED}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ microspec-\/cmdline.exe SetBridgeLED led\_num=0 led\_setting=0}
+
+\end{DoxyCode}
+
+
+Here\textquotesingle{}s the full set of shortcuts\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nnoremap <leader>pt<Space> :!microspec-\/cmdline.exe }
+\DoxyCodeLine{nnoremap <leader>pt0 :!microspec-\/cmdline.exe Null}
+\DoxyCodeLine{nnoremap <leader>pt1 :!microspec-\/cmdline.exe GetBridgeLED led\_num=0}
+\DoxyCodeLine{nnoremap <leader>pt2 :!microspec-\/cmdline.exe SetBridgeLED led\_num=0 led\_setting=0}
+\DoxyCodeLine{nnoremap <leader>pt3 :!microspec-\/cmdline.exe GetSensorLED led\_num=0}
+\DoxyCodeLine{nnoremap <leader>pt4 :!microspec-\/cmdline.exe SetSensorLED led\_num=0 led\_setting=1}
+\DoxyCodeLine{nnoremap <leader>pt7 :!microspec-\/cmdline.exe GetSensorConfig}
+\DoxyCodeLine{nnoremap <leader>pt8 :!microspec-\/cmdline.exe SetSensorConfig binning=1 gain=1 row\_bitmap=31}
+\DoxyCodeLine{nnoremap <leader>pt9 :!microspec-\/cmdline.exe GetExposure}
+\DoxyCodeLine{nnoremap <leader>pt10 :!microspec-\/cmdline.exe SetExposure cycles=500}
+\DoxyCodeLine{nnoremap <leader>pt11 :!microspec-\/cmdline.exe CaptureFrame}
+\DoxyCodeLine{nnoremap <leader>pt12 :!microspec-\/cmdline.exe AutoExposure}
+\DoxyCodeLine{nnoremap <leader>pt13 :!microspec-\/cmdline.exe GetAutoExposeConfig}
+\DoxyCodeLine{nnoremap <leader>pt14 :!microspec-\/cmdline.exe SetAutoExposeConfig max\_tries=12 start\_pixel=7 stop\_pixel=392 target=46420 target\_tolerance=3277 max\_exposure=10000}
 
 \end{DoxyCode}
  

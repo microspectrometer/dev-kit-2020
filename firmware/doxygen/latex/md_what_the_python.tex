@@ -1,0 +1,266 @@
+\hypertarget{md_what_the_python_autotoc_md208}{}\doxysection{Context}\label{md_what_the_python_autotoc_md208}
+I add sensor S13131 to the firmware by creating builds dependent on the definition of compiler flag {\ttfamily sensor}\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily sensor=LIS} defines macro {\ttfamily LIS}
+\item {\ttfamily sensor=S13131} defines macro {\ttfamily S13131}
+\end{DoxyItemize}
+
+I must use different {\ttfamily vis-\/spi-\/out} builds for S13131 and LIS. The {\ttfamily vis-\/spi-\/out} code is full of macro conditionals to decide which version of the code to build.
+
+I want to use the same {\ttfamily usb-\/bridge} build, regardless of the sensor. The motivation is to avoid having to re-\/flash the {\ttfamily usb-\/bridge} when switching sensors. The usb-\/bridge has {\itshape nothing to do} with the sensor, so in theory this should be no problem.
+
+Can I do this?\hypertarget{md_what_the_python_autotoc_md209}{}\doxysection{Issue}\label{md_what_the_python_autotoc_md209}
+The issue is that there are two commands, Get\+Sensor\+Config and Set\+Sensor\+Config which do not apply to S13131.
+
+I handle this on {\ttfamily vis-\/spi-\/out} by a macro that conditionally includes these commands only if the compiler defines {\ttfamily LIS}. Therefore, when {\ttfamily sensor=S13131}, the compiler omits these commands from the switch-\/case block. So the response to an unknown command is the switch block\textquotesingle{}s default case. {\ttfamily \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}}} has no default case in the switch block, so {\ttfamily vis-\/spi-\/out} does nothing if it receives an unknown command ID.
+
+{\itshape TODO\+: {\ttfamily \mbox{\hyperlink{usb-bridge_8c}{usb-\/bridge.\+c}}} has a default cause that just says {\ttfamily break} -- so I have the same behavior expressed two different ways, which is not cool. Either do the same in {\ttfamily vis-\/spi-\/out} or erase the {\ttfamily default} case in {\ttfamily usb-\/bridge}.}\hypertarget{md_what_the_python_autotoc_md210}{}\doxysection{Question}\label{md_what_the_python_autotoc_md210}
+{\ttfamily \mbox{\hyperlink{usb-bridge_8c}{usb-\/bridge.\+c}}} also does {\itshape nothing} if it receives an unknown command ID.
+
+{\bfseries{How does {\ttfamily microspeclib} magically determine the command is invalid?}}\hypertarget{md_what_the_python_autotoc_md211}{}\doxysection{Answer}\label{md_what_the_python_autotoc_md211}
+My bad\+: I only changed the command ID in the \char`\"{}command\char`\"{} protocol. I forgot to change the command ID in the \char`\"{}bridge\char`\"{} protocol.
+
+{\ttfamily microspeclib} was catching this before sending any command out.
+
+Once I fixed that, then the unknown command simply timeouts.\hypertarget{md_what_the_python_autotoc_md212}{}\doxysubsection{Experiment}\label{md_what_the_python_autotoc_md212}
+Here is my experiment\+:
+
+
+\begin{DoxyItemize}
+\item I change the command ID of the Set\+Bridge\+LED command\+:
+\begin{DoxyItemize}
+\item {\itshape was\+:} protocol.\+command.\+2
+\item {\itshape change to\+:} protocol.\+command.\+22
+\end{DoxyItemize}
+\item Try sending the Set\+Bridge\+LED command\+:
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{>>> kit = usp.Devkit()}
+\DoxyCodeLine{>>> kit.setBridgeLED(led\_setting=1)}
+\DoxyCodeLine{2021-\/03-\/11 17:17:43,649:stream.py:receiveReply:100: Command ID not recognized: 22}
+\DoxyCodeLine{...}
+
+\end{DoxyCode}
+
+
+That line, \char`\"{}\+Command ID not recognized\char`\"{} prints over and over about 150 times (the exact amount varies). But it starts printing this instantly, so it has nothing to do with the timeout.
+
+As the next section shows, {\ttfamily microspeclib} determines this is an invalid command before sending {\itshape anything} to the devkit, so my experiment is flawed. I naively changed the command ID only in the {\ttfamily protocol.\+command}. My mistake is that I did not also change the command ID in {\ttfamily protocol.\+bridge}.
+
+\doxysubsubsection*{Follow the chain}
+
+Start by finding the file that throws the error message.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{:find stream.py}
+
+\end{DoxyCode}
+
+
+Here it is\+: {\ttfamily microspec/src/microspeclib/internal/stream.\+py}
+
+Now look up the definition of {\ttfamily receive\+Reply}.
+
+{\ttfamily receive\+Reply()} takes {\ttfamily command\+\_\+id} (22) and attempts to create a {\ttfamily bridge\+\_\+klass} and a {\ttfamily sensor\+\_\+klass} to interpret the firmware response\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\# internal/stream.py:receiveReply}
+\DoxyCodeLine{    def receiveReply(self, command\_id):}
+\DoxyCodeLine{        ...}
+\DoxyCodeLine{        bridge\_klass = getBridgeReplyByID(command\_id)}
+\DoxyCodeLine{        ...}
+\DoxyCodeLine{        if not bridge\_klass:}
+\DoxyCodeLine{          log.error("{}Command ID not recognized: \%s"{}, command\_id)}
+\DoxyCodeLine{          return None}
+
+\end{DoxyCode}
+
+
+I am clearly following the branch shown above.
+
+TODO(sustainablelab)\+: Handle {\ttfamily None} reply in {\ttfamily microspec.\+commands.\+py}. Put in a useful message, like\+:
+
+\begin{quote}
+Reply is None, but expected blah. See microspec.\+json. Maybe blah command command ID in protocol \char`\"{}command\char`\"{} does not match blah command command ID in protocol \char`\"{}bridge\char`\"{}. \end{quote}
+This is the response I get now\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{  File "{}<stdin>"{}, line 1, in <module>}
+\DoxyCodeLine{  File "{}c:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec\(\backslash\)src\(\backslash\)microspec\(\backslash\)commands}
+\DoxyCodeLine{.py"{}, line 327, in setBridgeLED}
+\DoxyCodeLine{    status = status\_dict.get(\_reply.status)}
+\DoxyCodeLine{AttributeError: 'NoneType' object has no attribute 'status'}
+\DoxyCodeLine{}
+\DoxyCodeLine{'NoneType' object has no attribute 'status'}
+
+\end{DoxyCode}
+
+
+{\ttfamily get\+Bridge\+Reply\+By\+ID} is defined in {\ttfamily datatypes/bridge.\+py}. It looks up the command ID using\+: {\ttfamily CHROMASPEC\+\_\+\+SERIAL\+\_\+\+ID.\+get()}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\# datatypes/bridge.py:getBridgeReplyByID}
+\DoxyCodeLine{    def getBridgeReplyByID(cid):}
+\DoxyCodeLine{        ...}
+\DoxyCodeLine{        com = CHROMASPEC\_SERIAL\_ID.get(cid)}
+\DoxyCodeLine{        ...}
+\DoxyCodeLine{        return com}
+
+\end{DoxyCode}
+
+
+$\ast${\ttfamily get()} is a Python built-\/in method for dictionaries. It returns the value for a given key. So the command ID (22) is being used as the key for the dictionary. And the value is stored in {\ttfamily com}. When {\ttfamily get} uses a missing key, it returns {\ttfamily None} instead of raising a {\ttfamily Key\+Error}.$\ast$
+
+That dictionary, {\ttfamily CHROMASPEC\+\_\+\+SERIAL\+\_\+\+ID}, is defined by {\ttfamily enclass\+Json\+File()}\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\# datatypes/bridge.py}
+\DoxyCodeLine{CHROMASPEC\_SERIAL\_ID, CHROMASPEC\_SERIAL\_NAME = enclassJsonFile("{}microspec.json"{}, "{}bridge"{})}
+
+\end{DoxyCode}
+
+
+{\ttfamily enclass\+Json\+File()} opens {\ttfamily microspec.\+json} and looks up the {\ttfamily protocol}. Default is {\ttfamily protocol=\char`\"{}command\char`\"{}}. In the above example {\ttfamily protocol=\char`\"{}bridge\char`\"{}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\# internal/jsonparse.py:enclassJsonFile}
+\DoxyCodeLine{def enclassJsonFile(filename, protocol="{}command"{}):}
+\DoxyCodeLine{  log.info("{}filename=\%s protocol=\%s"{}, filename, protocol)}
+\DoxyCodeLine{  with open(findConfig(filename)) as f:}
+\DoxyCodeLine{    j      = json.load(f)}
+\DoxyCodeLine{    p      = j["{}protocol"{}][protocol]}
+\DoxyCodeLine{    byID   = \{\}}
+\DoxyCodeLine{    byName = \{\}}
+\DoxyCodeLine{    log.debug("{}raw json=\%s"{}, j)}
+\DoxyCodeLine{    log.debug("{}raw json protocol section=\%s"{}, p)}
+\DoxyCodeLine{    for k, v in p.items():}
+\DoxyCodeLine{      log.debug("{}k=\%s v=\%s"{}, k, v)}
+\DoxyCodeLine{      c = cfactory(protocol, int(k), protocol.capitalize()+p[k]["{}name"{}], }
+\DoxyCodeLine{                   p[k]["{}variables"{}], p[k]["{}sizes"{}], p[k].get("{}repeat"{},None))}
+\DoxyCodeLine{      byID[c.command\_id] = c}
+\DoxyCodeLine{      byName[c.name] = c}
+\DoxyCodeLine{  log.info("{}return \%s, \%s"{}, byID, byName)}
+\DoxyCodeLine{  return byID, byName}
+
+\end{DoxyCode}
+
+
+The important player above is {\ttfamily cfactory}. This is a shortened name for {\ttfamily Micro\+Spec\+Payload\+Class\+Factory}\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\# internal/payload.py:MicroSpecPayloadClassFactory}
+\DoxyCodeLine{def MicroSpecPayloadClassFactory(protocol, command\_id, name, variables, sizes, repeat=None):}
+\DoxyCodeLine{  log.info("{}protocol=\%s command\_id=\%d name=\%s variables=\%s sizes=\%s repeat=\%s"{}, }
+\DoxyCodeLine{           protocol, command\_id, name, variables, sizes, repeat)}
+
+\end{DoxyCode}
+\hypertarget{md_what_the_python_autotoc_md213}{}\doxysection{Simple timeout is no good}\label{md_what_the_python_autotoc_md213}
+A timeout to an unrecognized command is problematic when the unrecognized command contains arguments and those arguments alias to other commands.
+
+For example, I send {\ttfamily kit.\+set\+Bridge\+LED(led\+\_\+setting=usp.\+GREEN)}. This sends {\ttfamily kit.\+set\+Bridge\+LED(led\+\_\+num=0, led\+\_\+setting=1)} which translates to three bytes\+: {\ttfamily \{0x02,0x00,0x01\}}.
+
+If I change the command ID from to 2 to 22 (0x16), I\textquotesingle{}m sending\+: {\ttfamily \{0x16,0x00,0x01\}}. The first byte is unrecognized, but {\ttfamily microspeclib} sends all three.
+
+The Python UI timeouts.
+
+Meanwhile, the firmware on {\ttfamily usb-\/bridge}\+:
+
+
+\begin{DoxyItemize}
+\item ignores {\ttfamily 0x16}
+\item treats {\ttfamily 0x00} as {\ttfamily Null}
+\item treats {\ttfamily 0x01} as the {\ttfamily Get\+Bridge\+LED} command
+\end{DoxyItemize}
+
+Now {\ttfamily usb-\/bridge} is waiting for {\ttfamily led\+\_\+num}.
+
+Now I send {\ttfamily kit.\+get\+Bridge\+LED()} which sends {\ttfamily kit.\+get\+Bridge\+LED(0)} which sends {\ttfamily \{0x01, 0x00\}}.
+
+So {\ttfamily usb-\/bridge}\+:
+
+
+\begin{DoxyItemize}
+\item treats {\ttfamily 0x01} as the led number
+\begin{DoxyItemize}
+\item there is no LED 1, only LED 0 on the bridge, so {\ttfamily usb-\/bridge} returns an ERROR
+\end{DoxyItemize}
+\item treats {\ttfamily 0x00} as the {\ttfamily Null} command
+\begin{DoxyItemize}
+\item there is no response to the {\ttfamily Null} command, so no other bytes are sent back
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+This is what the UI shows for that whole sequence\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{>>> kit.setBridgeLED(led\_setting=1)}
+\DoxyCodeLine{Traceback (most recent call last):}
+\DoxyCodeLine{  File "{}<stdin>"{}, line 1, in <module>}
+\DoxyCodeLine{  File "{}c:\(\backslash\)cygwin64\(\backslash\)home\(\backslash\)mike\(\backslash\).local\(\backslash\)lib\(\backslash\)python3.7\(\backslash\)site-\/packages\(\backslash\)microspec\(\backslash\)src\(\backslash\)microspec\(\backslash\)commands}
+\DoxyCodeLine{.py"{}, line 327, in setBridgeLED}
+\DoxyCodeLine{    status = status\_dict.get(\_reply.status)}
+\DoxyCodeLine{AttributeError: 'NoneType' object has no attribute 'status'}
+\DoxyCodeLine{}
+\DoxyCodeLine{'NoneType' object has no attribute 'status'}
+\DoxyCodeLine{}
+\DoxyCodeLine{>>> kit.getBridgeLED()}
+\DoxyCodeLine{getBridgeLED\_response(status='ERROR', led\_setting=None)}
+
+\end{DoxyCode}
+
+
+The bottom line is the firmware gets into a weird state if it simply ignores unrecognized commands that have arguments. There is nothing to be done about that. The Python host has already sent all those arguments.
+
+The thing to fix here is that the Python host needs to {\itshape know} when the firmware is in a weird state. If the host knows, then it can kick the firmware back into a good state with {\ttfamily kit.\+flush()}.
+
+If the host assumes a timeout is a weird state, then the host can send {\ttfamily kit.\+null()} to flush the serial line. A {\ttfamily null} is needed for each expected argument.
+
+This is doable, the trouble is 1) recognizing the timeout and 2) waiting long enough for all the responses to come back before flushing the serial line (otherwise there are old responses from the dev-\/kit sitting in the read buffer).
+
+The question is do I just code dummy responses to Get\+Sensor\+Config/\+Set\+Sensor\+Config and call it a day, or do I deal with the fact we never coded dealing with invalid commands.
+
+This is where the Python class factory magic sucks. If I was adding a new command, that\textquotesingle{}s fine. That\textquotesingle{}s great. That\textquotesingle{}s when this is wonderful. But instead I\textquotesingle{}m adding a core functionality that was left out, so I really have to understand what Sean did.
+
+Actually, looking at {\itshape my own documentation} it looks like we abandoned the idea of an {\ttfamily INVALID\+\_\+\+COMMAND} code and instead decided to return an {\ttfamily ERROR} code if the command is not recognized.
+
+So I all I have to do is return ERROR if the command is not recognized?
+
+OK, so I added this to usb-\/bridge. It added 2 bytes to the .elf. Fantastic.
+
+And now, as expected, the host doesn\textquotesingle{}t have to wait for a timeout. An invalid command immediately gets an ERROR. But a flush() doesn\textquotesingle{}t fix the problem. The null sent with flush acts as the argument to the misinterpreted command (the argument to the invalid command that gets interpreted as a command).
+
+This is the price I pay for not having a proper packet structure for the data.
+
+Maybe after an ERROR, I should have the firmware ignore any further received bytes until a Null is sent? The problem with this scheme is that an argument could very well have the same value as the Null command.
+
+Best thing I can come up with is to have Python respond to an ERROR by sending kit.\+null() N times, where N is the largest number of arguments we have. Follow this by {\ttfamily kit.\+serial.\+read\+\_\+until()}. That waits until bytes are available, until a timeout occurs, or until a newline is received.
+
+So one thing I could do is add a \char`\"{}packet over\char`\"{} byte. Then {\ttfamily read\+\_\+until()} could have something to look for.
+
+Nah, that will have weird corner case bugs.
+
+Better to write my own version of {\ttfamily read\+\_\+until}().
+
+hardcode timeout to 0.\+1s using the Timeout class in serialutil.\+py
+
+In micropsec.\+commands add this\+:
+
+if response to a command is ERROR, send N null commands, then do a {\ttfamily read\+\_\+until\+\_\+timeout} that just reads the read buffer until the timer expires.
+
+Hah, so I set this up, then realized I didn\textquotesingle{}t need it. I left it in the microspec.\+commands code, but I just don\textquotesingle{}t call it yet. Instead, I implemented what I specifically need now\+:
+
+{\ttfamily usb-\/bridge} checks if {\ttfamily vis-\/spi-\/out} returns ERROR to get\+Sensor\+Config. In this case {\ttfamily usb-\/bridge} returns PADDING for the other bytes, and {\ttfamily microspec} issues a warning that the dev-\/kit firmware didn\textquotesingle{}t recognize the command, probably because there\textquotesingle{}s a different detector in the kit.
+
+\mbox{[} \mbox{]} Apply this same fix to Set\+Sensor\+Config. 

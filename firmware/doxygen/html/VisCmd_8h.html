@@ -79,8 +79,6 @@ $(function() {
 <code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="SpiSlave_8h_source.html">SpiSlave.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="StatusCode_8h_source.html">StatusCode.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Lis_8h_source.html">Lis.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LisConfig_8h_source.html">LisConfig.h</a>&quot;</code><br />
 <code>#include &quot;Queue.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="BiColorLed_8h_source.html">BiColorLed.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UartSpi_8h_source.html">UartSpi.h</a>&quot;</code><br />
@@ -98,8 +96,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a8b405f55baef221a1cc4c767b384d451"><td class="memItemLeft" align="right" valign="top"><a id="a8b405f55baef221a1cc4c767b384d451"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>AutoExposeConfigIsValid</b> (uint8_t new_max_tries, uint16_t new_start_pixel, uint16_t new_stop_pixel, uint16_t new_target)</td></tr>
 <tr class="separator:a8b405f55baef221a1cc4c767b384d451"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aada5013dffe7417b0ed6754fabe7464f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#aada5013dffe7417b0ed6754fabe7464f">LisReadout</a> (uint16_t num_pixels)</td></tr>
-<tr class="separator:aada5013dffe7417b0ed6754fabe7464f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa49202fc0999c3a3f06da7787f30565"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#aaa49202fc0999c3a3f06da7787f30565">GetPeak</a> (uint16_t const, uint16_t const)</td></tr>
 <tr class="separator:aaa49202fc0999c3a3f06da7787f30565"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad331578ce39d75860495a587a2a1e45e"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#ad331578ce39d75860495a587a2a1e45e">AutoExpose</a> (void)</td></tr>
@@ -110,8 +106,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>AutoExposeConfigIsVal
 <tr class="separator:a374617629eb104d96d1b5008aa9af582"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e576b6610e3660a10f3768a6cf8ce80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#a7e576b6610e3660a10f3768a6cf8ce80">SetSensorLED</a> (void)</td></tr>
 <tr class="separator:a7e576b6610e3660a10f3768a6cf8ce80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28364aa58a96dc236db7b616e100154e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#a28364aa58a96dc236db7b616e100154e">GetSensorConfig</a> (void)</td></tr>
-<tr class="separator:a28364aa58a96dc236db7b616e100154e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeaf4ba863d52c28b92d04846ecaf9586"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#aeaf4ba863d52c28b92d04846ecaf9586">GetExposure</a> (void)</td></tr>
 <tr class="separator:aeaf4ba863d52c28b92d04846ecaf9586"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d2ad66702cccf469e05c42e38033c9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#a4d2ad66702cccf469e05c42e38033c9b">SetExposure</a> (void)</td></tr>
@@ -127,10 +121,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>GetAutoExposeConfig</
 <tr class="memitem:af120fbef5bc5220fe4a80c23586c6dbe"><td class="memItemLeft" align="right" valign="top"><a id="af120fbef5bc5220fe4a80c23586c6dbe"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SetAutoExposeConfig</b> (void)</td></tr>
 <tr class="separator:af120fbef5bc5220fe4a80c23586c6dbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac67c9f0e658e0ea8b47b9b166fb03a83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#ac67c9f0e658e0ea8b47b9b166fb03a83">SetSensorConfig</a> (void)</td></tr>
-<tr class="separator:ac67c9f0e658e0ea8b47b9b166fb03a83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a223d486351108244d6138b2c74196a99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#a223d486351108244d6138b2c74196a99">ReplyCommandInvalid</a> (void)</td></tr>
-<tr class="separator:a223d486351108244d6138b2c74196a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4316446918baedd5384d301288ac568c"><td class="memItemLeft" align="right" valign="top"><a id="a4316446918baedd5384d301288ac568c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>GetSensorHash</b> (void)</td></tr>
+<tr class="separator:a4316446918baedd5384d301288ac568c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -138,27 +131,26 @@ Variables</h2></td></tr>
 volatile <a class="el" href="structQueue__s.html">Queue_s</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#a11dee3bbd2941b72086166ebabdedd91">SpiFifo</a></td></tr>
 <tr class="memdesc:a11dee3bbd2941b72086166ebabdedd91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate static memory for the SPI Rx Queue. <br /></td></tr>
 <tr class="separator:a11dee3bbd2941b72086166ebabdedd91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0b58e2e3aa5a94e743e302ea7737e82"><td class="memItemLeft" align="right" valign="top"><a id="aa0b58e2e3aa5a94e743e302ea7737e82"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#aa0b58e2e3aa5a94e743e302ea7737e82">frame</a> [2 *<a class="el" href="Lis_8h.html#aebccd6b42d427ada3124a7a962e82f39">MAX_NUM_PIXELS</a>]</td></tr>
-<tr class="memdesc:aa0b58e2e3aa5a94e743e302ea7737e82"><td class="mdescLeft">&#160;</td><td class="mdescRight">One frame of pixel data is, at most, 1568 bytes. <br /></td></tr>
-<tr class="separator:aa0b58e2e3aa5a94e743e302ea7737e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a086de4b9bc145ce2ea3a4940380f954d"><td class="memItemLeft" align="right" valign="top"><a id="a086de4b9bc145ce2ea3a4940380f954d"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="VisCmd_8h.html#a086de4b9bc145ce2ea3a4940380f954d">frame</a> []</td></tr>
+<tr class="memdesc:a086de4b9bc145ce2ea3a4940380f954d"><td class="mdescLeft">&#160;</td><td class="mdescRight">One frame of pixel data is, at most, 1568 bytes. <br /></td></tr>
+<tr class="separator:a086de4b9bc145ce2ea3a4940380f954d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h1><a class="anchor" id="autotoc_md90"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md206"></a>
 API for vis-spi-out.c</h1>
 <ul>
 <li><a class="el" href="VisCmd_8h.html#ac2b6a4bbe89e22076102bc8a65c69ecd">NullCommand()</a></li>
 <li><a class="el" href="VisCmd_8h.html#a374617629eb104d96d1b5008aa9af582">GetSensorLED()</a></li>
 <li><a class="el" href="VisCmd_8h.html#a7e576b6610e3660a10f3768a6cf8ce80">SetSensorLED()</a></li>
-<li><a class="el" href="VisCmd_8h.html#a28364aa58a96dc236db7b616e100154e">GetSensorConfig()</a></li>
-<li><a class="el" href="VisCmd_8h.html#ac67c9f0e658e0ea8b47b9b166fb03a83">SetSensorConfig()</a></li>
+<li><a class="el" href="UsbCmd_8h.html#a28364aa58a96dc236db7b616e100154e">GetSensorConfig()</a> (ifdef LIS)</li>
+<li><a class="el" href="UsbCmd_8h.html#ac67c9f0e658e0ea8b47b9b166fb03a83">SetSensorConfig()</a> (ifdef LIS)</li>
 <li><a class="el" href="VisCmd_8h.html#aeaf4ba863d52c28b92d04846ecaf9586">GetExposure()</a></li>
 <li><a class="el" href="VisCmd_8h.html#a4d2ad66702cccf469e05c42e38033c9b">SetExposure()</a></li>
 <li><a class="el" href="VisCmd_8h.html#ae68a7e94e1584ce65d3ef0d22f432f57">CaptureFrame()</a></li>
 <li>AutoExposure()</li>
 <li>GetAutoExposeConfig()</li>
-<li>SetAutoExposeConfig()</li>
-<li><a class="el" href="VisCmd_8h.html#a223d486351108244d6138b2c74196a99">ReplyCommandInvalid()</a> </li>
+<li>SetAutoExposeConfig() </li>
 </ul>
 
 <p class="definition">Definition in file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
@@ -223,7 +215,7 @@ API for vis-spi-out.c</h1>
 <li>gives up if it iterates for max tries<br  />
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md82"></a>
+<h1><a class="anchor" id="autotoc_md198"></a>
 AutoExpose uses a "Take Back Half" algorithm</h1>
 <p>Find an exposure time that gets a peak within +/-5% of the target peak value. On each iteration, multiply exposure time, either by:</p><ul>
 <li><code>10</code>, if peak is <em>below</em> the <b>dark background</b></li>
@@ -253,7 +245,7 @@ AutoExpose uses a "Take Back Half" algorithm</h1>
 <li>or the peak fails to land in the ±5% tolerance after 10 iterations.</li>
 </ul>
 <p>The <b>large</b> tolerance, <b>±5%</b>, makes the algorithm fast. It usually settles within a few iterations.</p>
-<h2><a class="anchor" id="autotoc_md83"></a>
+<h2><a class="anchor" id="autotoc_md199"></a>
 target range</h2>
 <p>The range of target values is configured by setting <code>target</code> and <code>target_tolerance</code>. The recommended values are:</p><ul>
 <li><code>target</code>: <b>46420</b> counts</li>
@@ -282,7 +274,7 @@ target range</h2>
 </li>
 </ul>
 <p>This target range, <b>[ 43143 : 49697 ]</b>, represents 10% of the full-scale reading, <b>65535</b>.</p>
-<h2><a class="anchor" id="autotoc_md84"></a>
+<h2><a class="anchor" id="autotoc_md200"></a>
 max_dark</h2>
 <p>Signal below <code>max_dark</code> is considered <b>no signal</b> because it is <em>indistinguishable</em> from the dark background.</p><ul>
 <li>use <b>4500</b> counts for <code>max_dark</code><ul>
@@ -306,18 +298,18 @@ max_dark</h2>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md85"></a>
+<h1><a class="anchor" id="autotoc_md201"></a>
 Algorithm Setup</h1>
-<h2><a class="anchor" id="autotoc_md86"></a>
+<h2><a class="anchor" id="autotoc_md202"></a>
 Initial state</h2>
 <p>AutoExpose is not done</p>
-<h2><a class="anchor" id="autotoc_md87"></a>
+<h2><a class="anchor" id="autotoc_md203"></a>
 Method to get peak value</h2>
 <ul>
 <li>expose the LIS-770i and readout one frame of data</li>
 <li>return the peak value in the frame</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md88"></a>
+<h2><a class="anchor" id="autotoc_md204"></a>
 Method to clamp exposure time</h2>
 <p>Exposure time is stored in 16-bit global <code>exposure_ticks</code>.</p>
 <p>Clamp adjustments to <code>exposure_ticks</code> between <b>1</b> and <b>65535</b>.</p>
@@ -332,7 +324,7 @@ Method to clamp exposure time</h2>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md89"></a>
+<h1><a class="anchor" id="autotoc_md205"></a>
 Algorithm</h1>
 <p>while <b>AutoExpose is not done</b>:</p><ul>
 <li>expose LIS-770i</li>
@@ -376,7 +368,7 @@ Algorithm</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8c_source.html#l00073">73</a> of file <a class="el" href="VisCmd_8c_source.html">VisCmd.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8c_source.html#l00081">81</a> of file <a class="el" href="VisCmd_8c_source.html">VisCmd.c</a>.</p>
 
 </div>
 </div>
@@ -421,7 +413,7 @@ Algorithm</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00320">320</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00423">423</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -458,7 +450,7 @@ Algorithm</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00276">276</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00379">379</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -487,7 +479,14 @@ Algorithm</h1>
         </tr>
       </table>
 </div><div class="memdoc">
-<h1><a class="anchor" id="autotoc_md81"></a>
+<p>GetPeak behavior:<br  />
+</p><ul>
+<li>finds the peak between start pixel and stop pixel inclusive<br  />
+</li>
+<li>ignores peaks at pixels before start pixel and after stop pixel<br  />
+</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md197"></a>
 Algorithm</h1>
 <ul>
 <li><code>peak</code> starts at 0</li>
@@ -507,46 +506,7 @@ Algorithm</h1>
 </ul>
 <p>byte_index example: v----&mdash; if _start_pixel is 7 pixel: 1 2 3 4 5 6 7 8 byte: 01 23 45 67 89 AB CD EF ^----&mdash; then byte_index is 12</p>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8c_source.html#l00027">27</a> of file <a class="el" href="VisCmd_8c_source.html">VisCmd.c</a>.</p>
-
-</div>
-</div>
-<a id="a28364aa58a96dc236db7b616e100154e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a28364aa58a96dc236db7b616e100154e">&#9670;&nbsp;</a></span>GetSensorConfig()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void GetSensorConfig </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>GetSensorConfig behavior:<br  />
-</p><ul>
-<li>sends OK<br  />
-</li>
-<li>sends binning<br  />
-</li>
-<li>sends gain<br  />
-</li>
-<li>sends row bitmap<br  />
-</li>
-</ul>
-
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00261">261</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8c_source.html#l00029">29</a> of file <a class="el" href="VisCmd_8c_source.html">VisCmd.c</a>.</p>
 
 </div>
 </div>
@@ -585,7 +545,7 @@ Algorithm</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00174">174</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00275">275</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -622,58 +582,7 @@ Algorithm</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00045">45</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
-
-</div>
-</div>
-<a id="aada5013dffe7417b0ed6754fabe7464f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aada5013dffe7417b0ed6754fabe7464f">&#9670;&nbsp;</a></span>LisReadout()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void LisReadout </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>num_pixels</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>LisReadout behavior:<br  />
-</p><ul>
-<li>waits for Lis_Sync to go HIGH then go LOW<br  />
-</li>
-<li>reads one pixel on each rising edge of Lis_Clk<br  />
-</li>
-<li>LOOP: wait for the rising edge of Lis_Clk<br  />
-</li>
-<li>LOOP: start the ADC conversion<br  />
-</li>
-<li>LOOP: wait for 45 cycles of 10MHz clock<br  />
-</li>
-<li>LOOP: start ADC readout<br  />
-</li>
-<li>LOOP: wait for most significant byte of ADC readout<br  />
-</li>
-<li>LOOP: save MSB to frame buffer<br  />
-</li>
-<li>LOOP: wait for least significant byte of ADC readout<br  />
-</li>
-<li>LOOP: save LSB to frame buffer<br  />
-</li>
-</ul>
-
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00106">106</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00063">63</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -702,7 +611,7 @@ Algorithm</h1>
 </div><div class="memdoc">
 <p>Do nothing.</p>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00170">170</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00271">271</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -740,42 +649,7 @@ Algorithm</h1>
 <li>see led_state in <a class="el" href="StatusCodes_8h.html" title="See StatusCode.h for context.">StatusCodes.h</a></li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00056">56</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
-
-</div>
-</div>
-<a id="a223d486351108244d6138b2c74196a99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a223d486351108244d6138b2c74196a99">&#9670;&nbsp;</a></span>ReplyCommandInvalid()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ReplyCommandInvalid </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>ReplyCommandInvalid behavior:<br  />
-</p><ul>
-<li>transmits one byte over SPI<br  />
-</li>
-<li>sends byte INVALID CMD<br  />
-</li>
-</ul>
-
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00550">550</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00074">74</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -818,56 +692,7 @@ Algorithm</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00289">289</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
-
-</div>
-</div>
-<a id="ac67c9f0e658e0ea8b47b9b166fb03a83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac67c9f0e658e0ea8b47b9b166fb03a83">&#9670;&nbsp;</a></span>SetSensorConfig()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void SetSensorConfig </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>SetSensorConfig behavior:<br  />
-</p><ul>
-<li>receives three bytes of config from Bridge<br  />
-</li>
-<li>does not update config globals if config is invalid<br  />
-</li>
-<li>replies ERROR if binning is invalid<br  />
-</li>
-<li>replies ERROR if gain is invalid<br  />
-</li>
-<li>replies ERROR if active rows is invalid<br  />
-</li>
-<li>does not program LIS 770i if config is invalid<br  />
-</li>
-<li>writes valid config to LIS 770i programmable setup register<br  />
-</li>
-<li>replies OK if all config values are valid<br  />
-</li>
-<li>the OK is sent after LIS is programmed with new config<br  />
-</li>
-</ul>
-
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00503">503</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00392">392</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>
@@ -914,7 +739,7 @@ Algorithm</h1>
 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00203">203</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="VisCmd_8h_source.html#l00304">304</a> of file <a class="el" href="VisCmd_8h_source.html">VisCmd.h</a>.</p>
 
 </div>
 </div>

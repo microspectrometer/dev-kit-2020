@@ -1,17 +1,14 @@
 \hypertarget{vis-spi-out_8c}{}\doxysection{vis-\/spi-\/out/src/vis-\/spi-\/out.c File Reference}
 \label{vis-spi-out_8c}\index{vis-\/spi-\/out/src/vis-\/spi-\/out.c@{vis-\/spi-\/out/src/vis-\/spi-\/out.c}}
-{\ttfamily \#include \char`\"{}Example.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Hardware.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Status\+Codes.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Bi\+Color\+Led.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Spi.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Spi\+Slave.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Uart\+Spi.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}Lis.\+h\char`\"{}}\newline
 {\ttfamily \#include $<$stdlib.\+h$>$}\newline
-{\ttfamily \#include \char`\"{}Hardware.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Queue.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}Status\+Codes.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Vis\+Cmd.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}Lis\+Configs.\+h\char`\"{}}\newline
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
@@ -67,7 +64,7 @@ Interrupt when a SPI transfer completes\+:~\newline
  {\bfseries{Interrupt enabled}} all other times.
 \end{DoxyItemize}
 
-Definition at line 90 of file vis-\/spi-\/out.\+c.
+Definition at line 98 of file vis-\/spi-\/out.\+c.
 
 \mbox{\Hypertarget{vis-spi-out_8c_a3a81de2c20ce0457d676ee6c034a1359}\label{vis-spi-out_8c_a3a81de2c20ce0457d676ee6c034a1359}} 
 \index{vis-\/spi-\/out.c@{vis-\/spi-\/out.c}!setup\_DetectorReadout@{setup\_DetectorReadout}}
@@ -100,7 +97,7 @@ Setup control of the {\bfseries{ADC}} and the {\bfseries{LIS-\/770i detector}}.
 \item Program LIS-\/770i with initial configuration.
 \end{DoxyItemize}
 
-Definition at line 129 of file vis-\/spi-\/out.\+c.
+Definition at line 137 of file vis-\/spi-\/out.\+c.
 
 \mbox{\Hypertarget{vis-spi-out_8c_afd0d45c1432ebadf293d37a9f43f775a}\label{vis-spi-out_8c_afd0d45c1432ebadf293d37a9f43f775a}} 
 \index{vis-\/spi-\/out.c@{vis-\/spi-\/out.c}!setup\_IndicatorLEDs@{setup\_IndicatorLEDs}}
@@ -110,7 +107,7 @@ Definition at line 129 of file vis-\/spi-\/out.\+c.
 
 Initialize PCB indicator LEDs
 
-Definition at line 101 of file vis-\/spi-\/out.\+c.
+Definition at line 109 of file vis-\/spi-\/out.\+c.
 
 \mbox{\Hypertarget{vis-spi-out_8c_a40b91105739a30ac20114a4d381e3644}\label{vis-spi-out_8c_a40b91105739a30ac20114a4d381e3644}} 
 \index{vis-\/spi-\/out.c@{vis-\/spi-\/out.c}!setup\_SpiCommunication@{setup\_SpiCommunication}}
@@ -142,5 +139,5 @@ Set up {\bfseries{SPI hardware module}} and a {\bfseries{FIFO}} to buffer bytes 
 \end{DoxyItemize}
 \end{DoxyItemize}
 
-Definition at line 109 of file vis-\/spi-\/out.\+c.
+Definition at line 117 of file vis-\/spi-\/out.\+c.
 

@@ -1,0 +1,90 @@
+Things I\textquotesingle{}m figuring out\+:
+
+
+\begin{DoxyItemize}
+\item gcc linker error {\ttfamily undefined reference} means the object file is missing
+\item Needed both the .o and the {\ttfamily \+\_\+faked.\+o}\+:
+\begin{DoxyItemize}
+\item Spi\+Slave.\+o and {\ttfamily Spi\+Slave\+\_\+faked.\+o}
+\item Lis.\+o and {\ttfamily Lis\+\_\+faked.\+o}
+\end{DoxyItemize}
+\item multiple inclusion of \mbox{\hyperlink{Lis_8h}{Lis.\+h}} in different translation units causes mutliple object files to get definitions which cause the multiple definition (linker) error
+\begin{DoxyItemize}
+\item Vis\+Cmd.\+o gets definition of {\ttfamily exposure\+\_\+ticks} from \mbox{\hyperlink{Lis_8h}{Lis.\+h}}
+\item Lis.\+o gets definition of {\ttfamily exposure\+\_\+ticks} from \mbox{\hyperlink{Lis_8h}{Lis.\+h}}
+\end{DoxyItemize}
+\item But how did \mbox{\hyperlink{vis-spi-out_8c}{vis-\/spi-\/out.\+c}} (build for AVR) solve this problem?
+\begin{DoxyItemize}
+\item The build recipe links Vis\+Cmd.\+o and Lis.\+o
+\item So it should have the same problem
+\item The only difference I see is that the build for the .elf already has a build for the main() object file and it\textquotesingle{}s just linking all of them, but that really shouldn\textquotesingle{}t matter
+\item Could this be some crazy bug I\textquotesingle{}ve been getting away with?
+\item \mbox{[}x\mbox{]} It seems I should have declared {\ttfamily exposure\+\_\+ticks} extern in \mbox{\hyperlink{Lis_8h}{Lis.\+h}}, and then moved \char`\"{}ownership for defining the symbol\char`\"{} to \mbox{\hyperlink{Lis_8c_source}{Lis.\+c}}, same for all the other multiple definition errors
+\begin{DoxyItemize}
+\item \mbox{[}x\mbox{]} do it for \mbox{\hyperlink{Lis_8h}{Lis.\+h}}\+: {\ttfamily exposure\+\_\+ticks}
+\item \mbox{[}x\mbox{]} do it for everything in \mbox{\hyperlink{AutoExpose_8h}{Auto\+Expose.\+h}}
+\item \mbox{[}x\mbox{]} do it for {\ttfamily frame} in \mbox{\hyperlink{VisCmd_8h}{Vis\+Cmd.\+h}}
+\begin{DoxyItemize}
+\item I made the declaration {\ttfamily frame\mbox{[}\mbox{]}}
+\item the size of the frame array is in \mbox{\hyperlink{VisCmd_8c_source}{Vis\+Cmd.\+c}}
+\item check I have a test that this size is picked up
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item First see if switching from mixed compile/link recipe to a link-\/only recipe fixes this problem.
+\begin{DoxyItemize}
+\item NO! It does not solve this problem. Good, that was what I expected.
+\end{DoxyItemize}
+\item I must implement it the way I described. It doesn\textquotesingle{}t make sense to me why separating the linking and compiling recipes would fix this. It didn\textquotesingle{}t fix it for gcc. But somehow avr-\/gcc is OK with this. I no longer trust that the AVR code is being built correctly. This might explain the auto exposure bug.
+\item Yep, that at least fixed the multiple defintion error!
+\item \mbox{[} \mbox{]} Very curious to see if that fixes the autoexpose bug too!
+\begin{DoxyItemize}
+\item probably not, file size didn\textquotesingle{}t change
+\end{DoxyItemize}
+\item Also, not cleaning the build almost prevented me from catching this, SO! I am using make -\/B for now.
+\item OK, cleaning done, tests are building, now I\textquotesingle{}m slowly bringing the tests back in.
+\item \mbox{[} \mbox{]} Move {\ttfamily \+\_\+\+Assert\+Call} into {\bfseries{mock-\/c}}
+\begin{DoxyItemize}
+\item defined in {\ttfamily \mbox{\hyperlink{test__VisCmd_8c_source}{test\+\_\+\+Vis\+Cmd.\+c}}}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+How do I change the recipe for a target based on the top-\/level target (what make was invoked with, or the default if nothing was invoked)
+
+Or, instead of doing that and mucking up my makefile, why not just throw the builds into different folders? Got myself a folder for test builds and a folder for AVR builds. Done.
+
+Why was I passing in a map file to build the elf? No, this flag outputs a map file, and that\textquotesingle{}s just for me to look at.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/Wl,-\/Map="{}build/vis-\/spi-\/out.map"{}}
+
+\end{DoxyCode}
+
+
+And why was I using --gc-\/sections?
+
+This cuts the program size down from 25690 bytes to 17284 bytes
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/Wl,-\/-\/gc-\/sections}
+
+\end{DoxyCode}
+
+
+This cuts the program size down from 17284 bytes to 8166 bytes 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/ffunction-\/sections -\/fdata-\/sections -\/fshort-\/enums}
+
+\end{DoxyCode}
+
+
+From the gcc documentation\+:
+
+\begin{quote}
+-\/ffunction-\/sections -\/fdata-\/sections Place each function or data item into its own section in the output file if the target supports arbitrary sections. The name of the function or the name of the data item determines the section\textquotesingle{}s name in the output file.
+
+Use these options on systems where the linker can perform optimizations to improve locality of reference in the instruction space. Most systems using the ELF object format have linkers with such optimizations. On AIX, the linker rearranges sections (CSECTs) based on the call graph. The performance impact varies.
+
+Together with a linker garbage collection (linker --gc-\/sections option) these options may lead to smaller statically-\/linked executables (after stripping). \end{quote}

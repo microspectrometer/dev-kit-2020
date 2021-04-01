@@ -1,0 +1,103 @@
+\hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md179}{}\doxysection{Vis\+Cmd.\+Led\+Num\+Is\+Valid}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md179}
+test/test\+\_\+runner.\+c\+:54\+:Led\+Num\+Is\+Valid\+\_\+returns\+\_\+\+TRUE\+\_\+if\+\_\+led\+\_\+num\+\_\+is\+\_\+0\+:PASS test/test\+\_\+runner.\+c\+:55\+:Led\+Num\+Is\+Valid\+\_\+returns\+\_\+\+TRUE\+\_\+if\+\_\+led\+\_\+num\+\_\+is\+\_\+1\+:PASS test/test\+\_\+runner.\+c\+:56\+:Led\+Num\+Is\+Valid\+\_\+returns\+\_\+\+FALSE\+\_\+if\+\_\+led\+\_\+num\+\_\+is\+\_\+not\+\_\+0\+\_\+or\+\_\+1\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md180}{}\doxysection{Vis\+Cmd.\+Lis\+Readout}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md180}
+test/test\+\_\+runner.\+c\+:62\+:Lis\+Readout\+\_\+waits\+\_\+for\+\_\+\+Lis\+\_\+\+Sync\+\_\+to\+\_\+go\+\_\+\+HIGH\+\_\+then\+\_\+go\+\_\+\+LOW\+:PASS test/test\+\_\+runner.\+c\+:63\+:Lis\+Readout\+\_\+reads\+\_\+one\+\_\+pixel\+\_\+on\+\_\+each\+\_\+rising\+\_\+edge\+\_\+of\+\_\+\+Lis\+\_\+\+Clk\+:PASS test/test\+\_\+runner.\+c\+:64\+:Lis\+Readout\+\_\+\+LOOP\+\_\+wait\+\_\+for\+\_\+the\+\_\+rising\+\_\+edge\+\_\+of\+\_\+\+Lis\+\_\+\+Clk\+:PASS test/test\+\_\+runner.\+c\+:65\+:Lis\+Readout\+\_\+\+LOOP\+\_\+start\+\_\+the\+\_\+\+ADC\+\_\+conversion\+:PASS test/test\+\_\+runner.\+c\+:66\+:Lis\+Readout\+\_\+\+LOOP\+\_\+wait\+\_\+for\+\_\+45\+\_\+cycles\+\_\+of\+\_\+10\+MHz\+\_\+clock\+:PASS test/test\+\_\+runner.\+c\+:67\+:Lis\+Readout\+\_\+\+LOOP\+\_\+start\+\_\+\+ADC\+\_\+readout\+:PASS test/test\+\_\+runner.\+c\+:68\+:Lis\+Readout\+\_\+\+LOOP\+\_\+wait\+\_\+for\+\_\+most\+\_\+significant\+\_\+byte\+\_\+\+ADC\+\_\+readout\+:PASS test/test\+\_\+runner.\+c\+:69\+:Lis\+Readout\+\_\+\+LOOP\+\_\+save\+\_\+\+MSB\+\_\+to\+\_\+frame\+\_\+buffer\+:PASS test/test\+\_\+runner.\+c\+:70\+:Lis\+Readout\+\_\+\+LOOP\+\_\+wait\+\_\+for\+\_\+least\+\_\+significant\+\_\+byte\+\_\+\+ADC\+\_\+readout\+:PASS test/test\+\_\+runner.\+c\+:71\+:Lis\+Readout\+\_\+\+LOOP\+\_\+save\+\_\+\+LSB\+\_\+to\+\_\+frame\+\_\+buffer\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md181}{}\doxysection{Vis\+Cmd.\+Get\+Sensor\+LED}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md181}
+test/test\+\_\+runner.\+c\+:94\+:Get\+Sensor\+LED\+\_\+waits\+\_\+for\+\_\+byte\+\_\+led\+\_\+num\+:PASS test/test\+\_\+runner.\+c\+:95\+:Get\+Sensor\+LED\+\_\+reads\+\_\+byte\+\_\+led\+\_\+num\+:PASS test/test\+\_\+runner.\+c\+:96\+:Get\+Sensor\+LED\+\_\+sends\+\_\+\+OK\+\_\+and\+\_\+\+LED\+\_\+\+SETTING\+\_\+if\+\_\+led\+\_\+num\+\_\+is\+\_\+valid\+:PASS test/test\+\_\+runner.\+c\+:97\+:Get\+Sensor\+LED\+\_\+sends\+\_\+\+ERROR\+\_\+and\+\_\+pads\+\_\+second\+\_\+byte\+\_\+if\+\_\+led\+\_\+num\+\_\+is\+\_\+invalid\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md182}{}\doxysection{Vis\+Cmd.\+Set\+Sensor\+LED}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md182}
+test/test\+\_\+runner.\+c\+:102\+:Set\+Sensor\+LED\+\_\+waits\+\_\+for\+\_\+byte\+\_\+led\+\_\+num\+:PASS test/test\+\_\+runner.\+c\+:103\+:Set\+Sensor\+LED\+\_\+reads\+\_\+byte\+\_\+led\+\_\+num\+:PASS test/test\+\_\+runner.\+c\+:104\+:Set\+Sensor\+LED\+\_\+waits\+\_\+for\+\_\+byte\+\_\+led\+\_\+setting\+:PASS test/test\+\_\+runner.\+c\+:105\+:Set\+Sensor\+LED\+\_\+reads\+\_\+byte\+\_\+led\+\_\+setting\+:PASS test/test\+\_\+runner.\+c\+:106\+:Set\+Sensor\+LED\+\_\+sends\+\_\+\+ERROR\+\_\+if\+\_\+led\+\_\+num\+\_\+is\+\_\+invalid\+:PASS test/test\+\_\+runner.\+c\+:107\+:Set\+Sensor\+LED\+\_\+sends\+\_\+\+ERROR\+\_\+if\+\_\+led\+\_\+setting\+\_\+is\+\_\+invalid\+:PASS test/test\+\_\+runner.\+c\+:108\+:Set\+Sensor\+LED\+\_\+applies\+\_\+\+LED\+\_\+setting\+\_\+if\+\_\+valid\+:PASS test/test\+\_\+runner.\+c\+:109\+:Set\+Sensor\+LED\+\_\+sends\+\_\+\+OK\+\_\+if\+\_\+num\+\_\+and\+\_\+setting\+\_\+are\+\_\+valid\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md183}{}\doxysection{Vis\+Cmd.\+Get\+Sensor\+Config}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md183}
+test/test\+\_\+runner.\+c\+:115\+:Get\+Sensor\+Config\+\_\+sends\+\_\+\+OK\+:PASS test/test\+\_\+runner.\+c\+:116\+:Get\+Sensor\+Config\+\_\+sends\+\_\+binning\+:PASS test/test\+\_\+runner.\+c\+:117\+:Get\+Sensor\+Config\+\_\+sends\+\_\+gain\+:PASS test/test\+\_\+runner.\+c\+:118\+:Get\+Sensor\+Config\+\_\+sends\+\_\+row\+\_\+bitmap\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md184}{}\doxysection{Vis\+Cmd.\+Set\+Sensor\+Config}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md184}
+test/test\+\_\+runner.\+c\+:123\+:Set\+Sensor\+Config\+\_\+receives\+\_\+three\+\_\+bytes\+\_\+of\+\_\+config\+\_\+from\+\_\+\+Bridge\+:PASS INVALID\+: binning binning == 100, gain == 5, active\+\_\+rows == 1 test/test\+\_\+runner.\+c\+:124\+:Set\+Sensor\+Config\+\_\+does\+\_\+not\+\_\+update\+\_\+config\+\_\+globals\+\_\+if\+\_\+config\+\_\+is\+\_\+invalid\+:PASS INVALID\+: binning binning == 100, gain == 5, active\+\_\+rows == 1
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Spi\+Slave\+Tx\+Byte? Yes.
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:125\+:Set\+Sensor\+Config\+\_\+replies\+\_\+\+ERROR\+\_\+if\+\_\+binning\+\_\+is\+\_\+invalid\+:PASS INVALID\+: gain binning == 0, gain == 105, active\+\_\+rows == 1
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Spi\+Slave\+Tx\+Byte? Yes.
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:126\+:Set\+Sensor\+Config\+\_\+replies\+\_\+\+ERROR\+\_\+if\+\_\+gain\+\_\+is\+\_\+invalid\+:PASS INVALID\+: active\+\_\+rows binning == 0, gain == 5, active\+\_\+rows == 255
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Spi\+Slave\+Tx\+Byte? Yes.
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:127\+:Set\+Sensor\+Config\+\_\+replies\+\_\+\+ERROR\+\_\+if\+\_\+active\+\_\+rows\+\_\+is\+\_\+invalid\+:PASS INVALID\+: binning gain active\+\_\+rows binning == 100, gain == 105, active\+\_\+rows == 255
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Spi\+Slave\+Tx\+Byte? Yes.
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:128\+:Set\+Sensor\+Config\+\_\+does\+\_\+not\+\_\+program\+\_\+\+LIS\+\_\+770i\+\_\+if\+\_\+config\+\_\+is\+\_\+invalid\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Lis\+Write\+Config? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:129\+:Set\+Sensor\+Config\+\_\+writes\+\_\+valid\+\_\+config\+\_\+to\+\_\+\+LIS\+\_\+770i\+\_\+programmable\+\_\+setup\+\_\+register\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 2 is named Spi\+Slave\+Tx\+Byte? Yes.
+\item Value passed to call 2, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:130\+:Set\+Sensor\+Config\+\_\+replies\+\_\+\+OK\+\_\+if\+\_\+all\+\_\+config\+\_\+values\+\_\+are\+\_\+valid\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Lis\+Write\+Config? Yes.
+\item Call 2 is named Spi\+Slave\+Tx\+Byte? Yes.
+\item Value passed to call 2, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:131\+:Set\+Sensor\+Config\+\_\+the\+\_\+\+OK\+\_\+is\+\_\+sent\+\_\+after\+\_\+\+LIS\+\_\+is\+\_\+programmed\+\_\+with\+\_\+new\+\_\+config\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md185}{}\doxysection{Vis\+Cmd.\+Get\+Exposure}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md185}
+test/test\+\_\+runner.\+c\+:141\+:Get\+Exposure\+\_\+sends\+\_\+\+OK\+:PASS test/test\+\_\+runner.\+c\+:142\+:Get\+Exposure\+\_\+sends\+\_\+\+MSB\+\_\+of\+\_\+exposure\+\_\+ticks\+:PASS test/test\+\_\+runner.\+c\+:143\+:Get\+Exposure\+\_\+sends\+\_\+\+LSB\+\_\+of\+\_\+exposure\+\_\+ticks\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md186}{}\doxysection{Vis\+Cmd.\+Set\+Exposure}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md186}
+test/test\+\_\+runner.\+c\+:148\+:Set\+Exposure\+\_\+waits\+\_\+for\+\_\+byte\+\_\+exposure\+\_\+\+MSB\+:PASS test/test\+\_\+runner.\+c\+:149\+:Set\+Exposure\+\_\+reads\+\_\+byte\+\_\+exposure\+\_\+\+MSB\+:PASS test/test\+\_\+runner.\+c\+:150\+:Set\+Exposure\+\_\+waits\+\_\+for\+\_\+byte\+\_\+exposure\+\_\+\+LSB\+:PASS test/test\+\_\+runner.\+c\+:151\+:Set\+Exposure\+\_\+reads\+\_\+byte\+\_\+exposure\+\_\+\+LSB\+:PASS test/test\+\_\+runner.\+c\+:152\+:Set\+Exposure\+\_\+updates\+\_\+global\+\_\+exposure\+\_\+ticks\+:PASS test/test\+\_\+runner.\+c\+:153\+:Set\+Exposure\+\_\+sends\+\_\+\+OK\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md187}{}\doxysection{Vis\+Cmd.\+Capture\+Frame}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md187}
+test/test\+\_\+runner.\+c\+:158\+:Capture\+Frame\+\_\+sends\+\_\+\+OK\+:PASS test/test\+\_\+runner.\+c\+:159\+:Capture\+Frame\+\_\+checks\+\_\+binning\+\_\+to\+\_\+determine\+\_\+number\+\_\+of\+\_\+pixels\+\_\+in\+\_\+frame\+:PASS test/test\+\_\+runner.\+c\+:160\+:Capture\+Frame\+\_\+sends\+\_\+num\+\_\+pixels\+\_\+\+MSB\+:PASS test/test\+\_\+runner.\+c\+:161\+:Capture\+Frame\+\_\+sends\+\_\+num\+\_\+pixels\+\_\+\+LSB\+:PASS test/test\+\_\+runner.\+c\+:162\+:Capture\+Frame\+\_\+exposes\+\_\+the\+\_\+pixels\+:PASS test/test\+\_\+runner.\+c\+:163\+:Capture\+Frame\+\_\+does\+\_\+readout\+\_\+of\+\_\+num\+\_\+pixels\+\_\+into\+\_\+the\+\_\+frame\+\_\+buffer\+:PASS test/test\+\_\+runner.\+c\+:164\+:Capture\+Frame\+\_\+sends\+\_\+the\+\_\+pixel\+\_\+readings\+\_\+stored\+\_\+in\+\_\+the\+\_\+frame\+\_\+buffer\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md188}{}\doxysection{Vis\+Cmd.\+Get\+Peak}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md188}
+test/test\+\_\+runner.\+c\+:171\+:Get\+Peak\+\_\+finds\+\_\+the\+\_\+peak\+\_\+between\+\_\+start\+\_\+pixel\+\_\+and\+\_\+stop\+\_\+pixel\+\_\+inclusive\+:PASS test/test\+\_\+runner.\+c\+:172\+:Get\+Peak\+\_\+ignores\+\_\+peaks\+\_\+at\+\_\+pixels\+\_\+before\+\_\+start\+\_\+pixel\+\_\+and\+\_\+after\+\_\+stop\+\_\+pixel\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md189}{}\doxysection{test Auto\+Expose}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md189}
+\hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md190}{}\doxysubsection{Vis\+Cmd.\+Auto\+Expose}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md190}
+test/test\+\_\+runner.\+c\+:187\+:Auto\+Expose\+\_\+turns\+\_\+led1\+\_\+red\+\_\+to\+\_\+indicate\+\_\+starting\+:PASS test/test\+\_\+runner.\+c\+:188\+:Auto\+Expose\+\_\+sets\+\_\+min\+\_\+peak\+\_\+at\+\_\+target\+\_\+minus\+\_\+tolerance\+:PASS test/test\+\_\+runner.\+c\+:189\+:Auto\+Expose\+\_\+clamps\+\_\+min\+\_\+peak\+\_\+at\+\_\+max\+\_\+dark\+\_\+if\+\_\+target\+\_\+minus\+\_\+tolerance\+\_\+is\+\_\+\+GREATER\+\_\+\+THAN\+\_\+target\+:PASS test/test\+\_\+runner.\+c\+:190\+:Auto\+Expose\+\_\+clamps\+\_\+min\+\_\+peak\+\_\+at\+\_\+max\+\_\+dark\+\_\+if\+\_\+target\+\_\+minus\+\_\+tolerance\+\_\+is\+\_\+\+LESS\+\_\+\+THAN\+\_\+max\+\_\+dark\+:PASS test/test\+\_\+runner.\+c\+:191\+:Auto\+Expose\+\_\+sets\+\_\+max\+\_\+peak\+\_\+at\+\_\+target\+\_\+plus\+\_\+tolerance\+:PASS test/test\+\_\+runner.\+c\+:192\+:Auto\+Expose\+\_\+clamps\+\_\+max\+\_\+peak\+\_\+at\+\_\+65535\+\_\+counts\+\_\+if\+\_\+target\+\_\+plus\+\_\+tolerance\+\_\+is\+\_\+\+LESS\+\_\+\+THAN\+\_\+target\+:PASS test/test\+\_\+runner.\+c\+:193\+:Auto\+Expose\+\_\+loops\+\_\+until\+\_\+done\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Lis\+Expose? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:194\+:Auto\+Expose\+\_\+exposes\+\_\+the\+\_\+pixels\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 2 is named Lis\+Readout? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:195\+:Auto\+Expose\+\_\+reads\+\_\+pixel\+\_\+counts\+\_\+into\+\_\+global\+\_\+frame\+\_\+buffer\+:PASS test/test\+\_\+runner.\+c\+:196\+:Auto\+Expose\+\_\+finds\+\_\+frame\+\_\+peak\+\_\+in\+\_\+range\+\_\+start\+\_\+pixel\+\_\+to\+\_\+stop\+\_\+pixel\+:PASS test/test\+\_\+runner.\+c\+:197\+:Auto\+Expose\+\_\+is\+\_\+done\+\_\+if\+\_\+peak\+\_\+less\+\_\+than\+\_\+max\+\_\+dark\+\_\+\+AND\+\_\+exposure\+\_\+at\+\_\+max\+:PASS test/test\+\_\+runner.\+c\+:198\+:Auto\+Expose\+\_\+scales\+\_\+exposure\+\_\+by\+\_\+10\+\_\+if\+\_\+peak\+\_\+less\+\_\+than\+\_\+max\+\_\+dark\+:PASS test/test\+\_\+runner.\+c\+:199\+:Auto\+Expose\+\_\+clamps\+\_\+exposure\+\_\+at\+\_\+max\+\_\+exposure\+\_\+if\+\_\+10\+\_\+x\+\_\+exposure\+\_\+is\+\_\+\+GREATER\+\_\+\+THAN\+\_\+max\+\_\+exposure\+:PASS test/test\+\_\+runner.\+c\+:200\+:Auto\+Expose\+\_\+scales\+\_\+exposure\+\_\+by\+\_\+half\+\_\+if\+\_\+peak\+\_\+\+ABOVE\+\_\+max\+\_\+peak\+:PASS test/test\+\_\+runner.\+c\+:201\+:Auto\+Expose\+\_\+clamps\+\_\+exposure\+\_\+at\+\_\+min\+\_\+exposure\+\_\+if\+\_\+half\+\_\+exposure\+\_\+is\+\_\+\+LESS\+\_\+\+THAN\+\_\+min\+\_\+exposure\+:PASS test/test\+\_\+runner.\+c\+:202\+:Auto\+Expose\+\_\+is\+\_\+done\+\_\+if\+\_\+peak\+\_\+\+BELOW\+\_\+min\+\_\+peak\+\_\+and\+\_\+exposure\+\_\+at\+\_\+max\+\_\+exposure\+:PASS test/test\+\_\+runner.\+c\+:203\+:Auto\+Expose\+\_\+scales\+\_\+exposure\+\_\+by\+\_\+target\+\_\+div\+\_\+peak\+\_\+if\+\_\+peak\+\_\+\+BELOW\+\_\+min\+\_\+peak\+\_\+and\+\_\+exposure\+\_\+not\+\_\+at\+\_\+max\+:PASS test/test\+\_\+runner.\+c\+:204\+:Auto\+Expose\+\_\+clamps\+\_\+exposure\+\_\+at\+\_\+max\+\_\+exposure\+\_\+if\+\_\+gain\+\_\+is\+\_\+\+GREATER\+\_\+\+THAN\+\_\+max\+\_\+exposure\+:PASS test/test\+\_\+runner.\+c\+:205\+:Auto\+Expose\+\_\+is\+\_\+done\+\_\+if\+\_\+peak\+\_\+is\+\_\+in\+\_\+the\+\_\+target\+\_\+range\+:PASS test/test\+\_\+runner.\+c\+:206\+:Auto\+Expose\+\_\+turns\+\_\+led1\+\_\+green\+\_\+to\+\_\+indicate\+\_\+it\+\_\+hit\+\_\+the\+\_\+target\+\_\+range\+:PASS test/test\+\_\+runner.\+c\+:207\+:Auto\+Expose\+\_\+gives\+\_\+up\+\_\+if\+\_\+it\+\_\+iterates\+\_\+for\+\_\+max\+\_\+tries\+:PASS \hypertarget{md_vis_spi_out_build_test_runner_LIS_autotoc_md191}{}\doxysection{Results}\label{md_vis_spi_out_build_test_runner_LIS_autotoc_md191}
+\DoxyHorRuler{0}
+ 77 Tests 0 Failures 0 Ignored OK 

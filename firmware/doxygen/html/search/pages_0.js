@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['_3bmktgc_20in_20lib_20folder_364',[';mktgc in lib folder',['../md_temp_linker_error__build_unit_tests.html',1,'']]]
+  ['bicolorled_20tests_368',['BiColorLed tests',['../md_lib_build_test_runner.html',1,'']]],
+  ['build_2dsize_2ddlis_2dvs_2dds13131_369',['build-size-DLIS-vs-DS13131',['../md_vis_spi_out_build_size_DLIS_vs_DS13131.html',1,'']]]
 ];

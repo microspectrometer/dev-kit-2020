@@ -69,10 +69,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Mock functions for C unit tests.</p>
-<h1><a class="anchor" id="autotoc_md45"></a>
+<h1><a class="anchor" id="autotoc_md118"></a>
 What are unit tests and what is a mock?</h1>
 <p>A unit test checks that a particular function does a particular thing under a particular condition. Mocks enable unit tests to say "here is a list of expected calls and the arguments they should be called with under this scenario, tell me if my code is producing the same list".</p>
-<h2><a class="anchor" id="autotoc_md46"></a>
+<h2><a class="anchor" id="autotoc_md119"></a>
 Table of Contents</h2>
 <ul>
 <li><a href="README.md#mock-c-repository-contents">mock-c repository contents</a></li>
@@ -81,16 +81,16 @@ Table of Contents</h2>
 <li><a href="README.md#about-mock-c">About mock-c</a></li>
 <li><a href="README.md#avoid-mocking-as-much-as-possible">Avoid mocking as much as possible</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md47"></a>
+<h1><a class="anchor" id="autotoc_md120"></a>
 mock-c repository contents</h1>
 <div class="fragment"><div class="line">.</div>
 <div class="line">├── build/</div>
 <div class="line">├── code/</div>
 <div class="line">└── tests/</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md48"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md121"></a>
 mock-c tests folder</h2>
 <p><code>tests/</code> contains the unit tests for testing <b>mock-c</b>. Ignore <code>tests/</code> unless you are changing <code>mock-c</code>.</p>
-<h2><a class="anchor" id="autotoc_md49"></a>
+<h2><a class="anchor" id="autotoc_md122"></a>
 mock-c code folder</h2>
 <p><code>code/</code> contains:</p>
 <ul>
@@ -121,10 +121,10 @@ mock-c code folder</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md50"></a>
+<h2><a class="anchor" id="autotoc_md123"></a>
 mock-c build folder</h2>
 <p><code>build/</code> contains the <b>mock-c</b> object files that unit tests are linked with. The object files are not in this repository; your project compiles them. And your project links with these object files when it builds its test runner application.</p>
-<h1><a class="anchor" id="autotoc_md51"></a>
+<h1><a class="anchor" id="autotoc_md124"></a>
 Integrating mock-c in your project</h1>
 <div class="fragment"><div class="line">$ cd my-project</div>
 <div class="line">$ git clone https://github.com/sustainablelab/mock-c.git</div>
@@ -154,7 +154,7 @@ Integrating mock-c in your project</h1>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md52"></a>
+<h2><a class="anchor" id="autotoc_md125"></a>
 Compiling mock-c</h2>
 <p>Your project's build script (<code>Makefile</code>) builds the <code>mock-c</code> object files like this:</p>
 <div class="fragment"><div class="line">CFLAGS := -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include</div>
@@ -199,7 +199,7 @@ Compiling mock-c</h2>
 <div class="fragment"><div class="line">CFLAGS := -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include</div>
 </div><!-- fragment --><p>The <code>-Ipath</code> flag tells the compiler where to search for header files, so the above tells the compiler where to find your computer's <code>glib</code> headers. I detail how to install <b>GLib</b> and how to determine these flags <a href="README.md#glib">later</a>. The <code>-Ipath</code> flags in the example above show the default POSIX install path for <b>GLib</b>.</p>
 <p>The <b>mock-c</b> source code has <code>#include &lt;glib.h&gt;</code>, but this repository does not include <b>GLib</b> source code and does not include pre-compiled <b>GLib</b> libraries. I treat <code>glib.h</code> as a system header, so these <code>-I</code> flags are necessary for the compiler to find the <b>GLib</b> headers on your system.</p>
-<h2><a class="anchor" id="autotoc_md53"></a>
+<h2><a class="anchor" id="autotoc_md126"></a>
 Linking mock-c</h2>
 <p>Unit test code will <code>#include &lt;mock-c.h&gt;</code>. Tell the compiler where to search for this header file:</p>
 <div class="fragment"><div class="line">-I../mock-c/code</div>
@@ -207,7 +207,7 @@ Linking mock-c</h2>
 <div class="fragment"><div class="line">-L../mock-c/build</div>
 </div><!-- fragment --><p>The <b>mock-c</b> object files refer to symbols in the <b>GLib</b> libraries. Tell the linker which libraries to search to find definitions of the <b>GLib</b> symbols:</p>
 <div class="fragment"><div class="line">-lglib-2.0 -lintl</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md54"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md127"></a>
 Example recipe for a unit test application</h2>
 <p>Putting that all together, here is my project's recipe for writing test results to a markdown file:</p>
 <div class="fragment"><div class="line">CFLAGS := -I../mock-c/code \</div>
@@ -226,13 +226,13 @@ Example recipe for a unit test application</h2>
 <div class="line"> </div>
 <div class="line">../mock-c/build/%.o: ../mock-c/code/%.c ../mock-c/code/%.h ../mock-c/code/unity_internals.h</div>
 <div class="line">    gcc -c $&lt; -o $@ $(CFLAGS)</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md55"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md128"></a>
 Example usage in a test</h1>
 <p>TODO(sustainablelab): Document how to use this thing</p>
-<h1><a class="anchor" id="autotoc_md56"></a>
+<h1><a class="anchor" id="autotoc_md129"></a>
 About mock-c</h1>
 <p><b>mock-c</b> is entirely in C, no C++. I'd like to make it dependency-free one day, but for now it requires <b>GLib</b>.</p>
-<h2><a class="anchor" id="autotoc_md57"></a>
+<h2><a class="anchor" id="autotoc_md130"></a>
 mock-c is built on top of these libraries</h2>
 <ul>
 <li><a href="https://github.com/ThrowTheSwitch/Unity">Unity Test</a> by ThrowTheSwitch<ul>
@@ -249,7 +249,7 @@ mock-c is built on top of these libraries</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md58"></a>
+<h2><a class="anchor" id="autotoc_md131"></a>
 Unity Test</h2>
 <p>Unity Test is just three source files:</p>
 <ul>
@@ -263,7 +263,7 @@ Unity Test</h2>
 <p>TODO(sustainablelab): Show my specific changes to Unity Test</p>
 <h3>Unity Test License</h3>
 <p>The original <a class="el" href="md_mock_c_LICENSE_Unity_Test.html">**Unity Test** license</a> is included in this repository, as required by the standard MIT license.</p>
-<h2><a class="anchor" id="autotoc_md59"></a>
+<h2><a class="anchor" id="autotoc_md132"></a>
 GLib</h2>
 <ol type="1">
 <li><p class="startli">Install <code>GLib</code>.</p>
@@ -325,7 +325,7 @@ GLib</h2>
 <div class="fragment"><div class="line">$ make</div>
 <div class="line">../build/test-glib-install.exe</div>
 <div class="line">Congratulations! GLib is installed.</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md60"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md133"></a>
 Building up the Makefile for unit tests</h2>
 <p><code>unity.o</code> builds quickly. If there are no other object files to link, then there is no need for conditional builds. So the Makefile would boil down to one recipe:</p>
 <div class="fragment"><div class="line">../build/test_runner.exe: test_runner.c ../code/unity.c ../code/unity.h ../code/unity_internals.h</div>
@@ -364,10 +364,10 @@ Building up the Makefile for unit tests</h2>
 <div class="line"> </div>
 <div class="line">../build/%.o: ../code/%.c ../code/%.h ../code/unity_internals.h</div>
 <div class="line">    gcc -c $&lt; -o $@ $(CFLAGS)</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md61"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md134"></a>
 More explanation about what this is</h1>
 <p>To "mock" a function is to stub it with a <b>fake</b> version that records when (in the call order) it was called and what arguments it was called with.</p>
-<h2><a class="anchor" id="autotoc_md62"></a>
+<h2><a class="anchor" id="autotoc_md135"></a>
 TDD terminology</h2>
 <p>TDD (Test Driven Development) is a rabbit-hole, so instead of expecting you to look this stuff up and reconcile contradictory definitions, I will just say what I mean when I use these words <em>stub</em>, <em>fake</em>, and <em>mock</em>:</p>
 <ul>
@@ -376,12 +376,12 @@ TDD terminology</h2>
 <li>A <em>mock</em> is where the fake functionality is to record how the function was called. And maybe it does other fake functionality too, like the return value thing. This kind of fake gets a special name simply because <b>it's more difficult to implement this particular fake functionality</b>.</li>
 </ul>
 <p>TLDR: Mocking is for the <em>small</em> subset of unit tests where the goal is to check whether the function under test is calling other functions and calling them with the correct arguments.</p>
-<h2><a class="anchor" id="autotoc_md63"></a>
+<h2><a class="anchor" id="autotoc_md136"></a>
 Reinventing wheels</h2>
 <p>How do you implement mocking? People do lots of complicated things to mock functions. Everything I found was too complicated for me to get it working. So I came up with my own way.</p>
 <p>The mocks record themselves in a global list setup by the test suite (the test suite is the application that calls all the unit tests). This global list is erased before each unit test.</p>
 <p>When the function under test calls fake functions, the fake function writes its name and its arguments to the global list. The test is to compare the expected list of calls against what was recorded in the global list and identify where something unexpected happened.</p>
-<h2><a class="anchor" id="autotoc_md64"></a>
+<h2><a class="anchor" id="autotoc_md137"></a>
 Avoid mocking as much as possible</h2>
 <p>In practice, the source code definition of the function under test gets bracketed with macros that rename functions with a <code>Fake</code> suffix. <b>Those macros add noise to the source code.</b></p>
 <p>It's possible to eliminate these macros using function pointers, and that is exactly how <b>mock-c</b> started out. But when speed matters, the function pointer approach adds extra operations to load the function. Speed matters in embedded systems. I think it's a mistake to sacrifice speed in support of 100% unit test coverage (i.e., if every function used a function pointer because every function was mocked because that's the only way to true 100% test coverage). Furthermore, in my particular case writing C for 8-bit AVR microcontrollers, the function pointer approach prevented <b>avr-gcc</b> from choosing the optimal assembly instructions.</p>

@@ -1,0 +1,551 @@
+\hypertarget{md_lib_build_test_runner_autotoc_md36}{}\doxysection{Bi\+Color\+Led\+On}\label{md_lib_build_test_runner_autotoc_md36}
+test/test\+\_\+runner.\+c\+:53\+:Bi\+Color\+Led\+On\+\_\+sets\+\_\+bit\+\_\+in\+\_\+ddr\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md37}{}\doxysection{Bi\+Color\+Led\+Off}\label{md_lib_build_test_runner_autotoc_md37}
+test/test\+\_\+runner.\+c\+:55\+:Bi\+Color\+Led\+Off\+\_\+clears\+\_\+bit\+\_\+in\+\_\+ddr\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md38}{}\doxysection{Bi\+Color\+Led\+Green}\label{md_lib_build_test_runner_autotoc_md38}
+test/test\+\_\+runner.\+c\+:57\+:Bi\+Color\+Led\+Green\+\_\+clears\+\_\+bit\+\_\+in\+\_\+port\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md39}{}\doxysection{Bi\+Color\+Led\+Red}\label{md_lib_build_test_runner_autotoc_md39}
+test/test\+\_\+runner.\+c\+:59\+:Bi\+Color\+Led\+Red\+\_\+sets\+\_\+bit\+\_\+in\+\_\+port\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md40}{}\doxysection{Read\+Write\+Bits tests}\label{md_lib_build_test_runner_autotoc_md40}
+\hypertarget{md_lib_build_test_runner_autotoc_md41}{}\doxysubsection{Set\+Bit}\label{md_lib_build_test_runner_autotoc_md41}
+test/test\+\_\+runner.\+c\+:72\+:Set\+Bit\+\_\+sets\+\_\+bit\+\_\+in\+\_\+register\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md42}{}\doxysubsection{Clear\+Bit}\label{md_lib_build_test_runner_autotoc_md42}
+test/test\+\_\+runner.\+c\+:74\+:Clear\+Bit\+\_\+clears\+\_\+bit\+\_\+in\+\_\+register\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md43}{}\doxysubsection{Bit\+Is\+Set}\label{md_lib_build_test_runner_autotoc_md43}
+test/test\+\_\+runner.\+c\+:76\+:Bit\+Is\+Set\+\_\+returns\+\_\+true\+\_\+if\+\_\+bit\+\_\+is\+\_\+set\+:PASS test/test\+\_\+runner.\+c\+:77\+:Bit\+Is\+Set\+\_\+returns\+\_\+false\+\_\+if\+\_\+bit\+\_\+is\+\_\+clear\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md44}{}\doxysubsection{Bit\+Is\+Clear}\label{md_lib_build_test_runner_autotoc_md44}
+test/test\+\_\+runner.\+c\+:79\+:Bit\+Is\+Clear\+\_\+returns\+\_\+true\+\_\+if\+\_\+bit\+\_\+is\+\_\+clear\+:PASS test/test\+\_\+runner.\+c\+:80\+:Bit\+Is\+Clear\+\_\+returns\+\_\+false\+\_\+if\+\_\+bit\+\_\+is\+\_\+set\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md45}{}\doxysection{Flag test}\label{md_lib_build_test_runner_autotoc_md45}
+test/test\+\_\+runner.\+c\+:497\+:test\+\_\+\+Flag\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md46}{}\doxysection{Spi tests}\label{md_lib_build_test_runner_autotoc_md46}
+\hypertarget{md_lib_build_test_runner_autotoc_md47}{}\doxysubsection{Clear\+Spi\+Interrupt\+Flag}\label{md_lib_build_test_runner_autotoc_md47}
+test/test\+\_\+runner.\+c\+:93\+:Clear\+Spi\+Interrupt\+Flag\+\_\+first\+\_\+reads\+\_\+\+SPI\+\_\+status\+\_\+register\+:PASS test/test\+\_\+runner.\+c\+:94\+:Clear\+Spi\+Interrupt\+Flag\+\_\+then\+\_\+reads\+\_\+\+SPI\+\_\+data\+\_\+register\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md48}{}\doxysubsection{\+\_\+\+Spi\+Transfer\+Is\+Done}\label{md_lib_build_test_runner_autotoc_md48}
+test/test\+\_\+runner.\+c\+:99\+:Spi\+Transfer\+Is\+Done\+\_\+returns\+\_\+true\+\_\+if\+\_\+the\+\_\+\+SPI\+\_\+\+Interrupt\+\_\+\+Flag\+\_\+is\+\_\+set\+:PASS test/test\+\_\+runner.\+c\+:100\+:Spi\+Transfer\+Is\+Done\+\_\+returns\+\_\+false\+\_\+if\+\_\+the\+\_\+\+SPI\+\_\+\+Interrupt\+\_\+\+Flag\+\_\+is\+\_\+clear\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md49}{}\doxysection{Spi\+Slave tests}\label{md_lib_build_test_runner_autotoc_md49}
+\hypertarget{md_lib_build_test_runner_autotoc_md50}{}\doxysubsection{\+\_\+\+Signal\+Data\+Ready}\label{md_lib_build_test_runner_autotoc_md50}
+test/test\+\_\+runner.\+c\+:113\+:Signal\+Data\+Ready\+\_\+drives\+\_\+\+Data\+Ready\+\_\+\+LOW\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md51}{}\doxysubsection{Disable\+Spi\+Interrupt}\label{md_lib_build_test_runner_autotoc_md51}
+test/test\+\_\+runner.\+c\+:118\+:Disable\+Spi\+Interrupt\+\_\+clears\+\_\+the\+\_\+\+SPI\+\_\+\+Interrupt\+\_\+\+Enable\+\_\+bit\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md52}{}\doxysubsection{Enable\+Spi\+Interrupt}\label{md_lib_build_test_runner_autotoc_md52}
+
+\begin{DoxyItemize}
+\item Call 1 is named Clear\+Spi\+Interrupt\+Flag? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:123\+:Enable\+Spi\+Interrupt\+\_\+clears\+\_\+\+SPI\+\_\+interrupt\+\_\+flag\+:PASS test/test\+\_\+runner.\+c\+:124\+:Enable\+Spi\+Interrupt\+\_\+enables\+\_\+interrupt\+\_\+\+SPI\+\_\+\+Transfer\+\_\+\+Complete\+:PASS test/test\+\_\+runner.\+c\+:125\+:Enable\+Spi\+Interrupt\+\_\+consumes\+\_\+6\+\_\+cycles\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md53}{}\doxysubsection{Spi\+Slave\+Init}\label{md_lib_build_test_runner_autotoc_md53}
+test/test\+\_\+runner.\+c\+:130\+:Spi\+Slave\+Init\+\_\+makes\+\_\+\+Data\+Ready\+\_\+an\+\_\+output\+\_\+pin\+:PASS test/test\+\_\+runner.\+c\+:131\+:Spi\+Slave\+Init\+\_\+idles\+\_\+\+Data\+Ready\+\_\+high\+:PASS test/test\+\_\+runner.\+c\+:132\+:Spi\+Slave\+Init\+\_\+makes\+\_\+\+Miso\+\_\+an\+\_\+output\+\_\+pin\+:PASS test/test\+\_\+runner.\+c\+:133\+:Spi\+Slave\+Init\+\_\+enables\+\_\+\+SPI\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Enable\+Spi\+Interrupt? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:134\+:Spi\+Slave\+Init\+\_\+enables\+\_\+\+SPI\+\_\+interrupt\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md54}{}\doxysubsection{Spi\+Slave\+Tx\+Byte}\label{md_lib_build_test_runner_autotoc_md54}
+test/test\+\_\+runner.\+c\+:139\+:Spi\+Slave\+Tx\+Byte\+\_\+loads\+\_\+\+SPI\+\_\+data\+\_\+register\+\_\+with\+\_\+input\+\_\+byte\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Disable\+Spi\+Interrupt? Yes.
+\item Call 2 is named \+\_\+\+Signal\+Data\+Ready? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:140\+:Spi\+Slave\+Tx\+Byte\+\_\+disables\+\_\+\+SPI\+\_\+\+ISR\+\_\+before\+\_\+signaling\+\_\+data\+\_\+ready\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 2 is named \+\_\+\+Signal\+Data\+Ready? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:141\+:Spi\+Slave\+Tx\+Byte\+\_\+drives\+\_\+\+Data\+Ready\+\_\+\+LOW\+\_\+to\+\_\+signal\+\_\+data\+\_\+is\+\_\+ready\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 3 is named \+\_\+\+Spi\+Transfer\+Is\+Done? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:142\+:Spi\+Slave\+Tx\+Byte\+\_\+waits\+\_\+until\+\_\+\+SPI\+\_\+transfer\+\_\+is\+\_\+done\+:PASS test/test\+\_\+runner.\+c\+:143\+:Spi\+Slave\+Tx\+Byte\+\_\+drives\+\_\+\+Data\+Ready\+\_\+\+HIGH\+\_\+immediately\+\_\+after\+\_\+\+SPI\+\_\+transfer\+\_\+finishes\+:PASS test/test\+\_\+runner.\+c\+:144\+:Spi\+Slave\+Tx\+Byte\+\_\+enables\+\_\+\+SPI\+\_\+\+ISR\+\_\+after\+\_\+transfer\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md55}{}\doxysubsection{Spi\+Slave\+Tx}\label{md_lib_build_test_runner_autotoc_md55}
+Transmit these bytes\+: \{0xa0, 0xb1, 0xc2\}
+
+
+\begin{DoxyItemize}
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xa0 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\item Value passed to call 2, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xb1 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\item Value passed to call 3, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xc2 is arg 1 to call Spi\+Slave\+Tx\+Byte.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:149\+:Spi\+Slave\+Tx\+\_\+sends\+\_\+nbytes\+\_\+of\+\_\+input\+\_\+buffer\+\_\+to\+\_\+\+Spi\+Master\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md56}{}\doxysection{Spi\+Master tests}\label{md_lib_build_test_runner_autotoc_md56}
+\hypertarget{md_lib_build_test_runner_autotoc_md57}{}\doxysubsection{Spi\+Master\+Init}\label{md_lib_build_test_runner_autotoc_md57}
+test/test\+\_\+runner.\+c\+:169\+:Spi\+Master\+Init\+\_\+idles\+\_\+\+Slave\+Select\+\_\+high\+:PASS test/test\+\_\+runner.\+c\+:170\+:Spi\+Master\+Init\+\_\+makes\+\_\+\+Slave\+Select\+\_\+an\+\_\+output\+:PASS test/test\+\_\+runner.\+c\+:171\+:Spi\+Master\+Init\+\_\+makes\+\_\+\+Miso\+\_\+an\+\_\+input\+:PASS test/test\+\_\+runner.\+c\+:172\+:Spi\+Master\+Init\+\_\+enables\+\_\+pullup\+\_\+on\+\_\+\+Miso\+:PASS test/test\+\_\+runner.\+c\+:173\+:Spi\+Master\+Init\+\_\+makes\+\_\+\+Data\+Ready\+\_\+an\+\_\+input\+:PASS test/test\+\_\+runner.\+c\+:174\+:Spi\+Master\+Init\+\_\+enables\+\_\+pullup\+\_\+on\+\_\+\+Data\+Ready\+:PASS test/test\+\_\+runner.\+c\+:175\+:Spi\+Master\+Init\+\_\+makes\+\_\+\+Mosi\+\_\+an\+\_\+output\+:PASS test/test\+\_\+runner.\+c\+:176\+:Spi\+Master\+Init\+\_\+makes\+\_\+\+Sck\+\_\+an\+\_\+output\+:PASS test/test\+\_\+runner.\+c\+:177\+:Spi\+Master\+Init\+\_\+makes\+\_\+this\+\_\+\+MCU\+\_\+the\+\_\+\+SPI\+\_\+\+Master\+:PASS test/test\+\_\+runner.\+c\+:178\+:Spi\+Master\+Init\+\_\+sets\+\_\+\+SPI\+\_\+\+Clock\+\_\+to\+\_\+10\+MHz\+\_\+ext\+\_\+osc\+\_\+divided\+\_\+by\+\_\+8\+:PASS test/test\+\_\+runner.\+c\+:179\+:Spi\+Master\+Init\+\_\+enables\+\_\+the\+\_\+\+SPI\+\_\+hardware\+\_\+module\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 1 is named Clear\+Spi\+Interrupt\+Flag? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:180\+:Spi\+Master\+Init\+\_\+clears\+\_\+\+SPI\+\_\+interrupt\+\_\+flag\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md58}{}\doxysubsection{Spi\+Master\+Xfr\+Byte}\label{md_lib_build_test_runner_autotoc_md58}
+test/test\+\_\+runner.\+c\+:185\+:Spi\+Master\+Xfr\+Byte\+\_\+selects\+\_\+the\+\_\+\+SPI\+\_\+slave\+:PASS test/test\+\_\+runner.\+c\+:186\+:Spi\+Master\+Xfr\+Byte\+\_\+loads\+\_\+\+SPI\+\_\+data\+\_\+reg\+\_\+with\+\_\+the\+\_\+byte\+\_\+to\+\_\+send\+:PASS test/test\+\_\+runner.\+c\+:187\+:Spi\+Master\+Xfr\+Byte\+\_\+waits\+\_\+until\+\_\+the\+\_\+transfer\+\_\+is\+\_\+done\+\_\+by\+\_\+reading\+\_\+the\+\_\+\+SPI\+\_\+\+Interrupt\+\_\+\+Flag\+:PASS test/test\+\_\+runner.\+c\+:188\+:Spi\+Master\+Xfr\+Byte\+\_\+unselects\+\_\+the\+\_\+\+SPI\+\_\+slave\+:PASS test/test\+\_\+runner.\+c\+:189\+:Spi\+Master\+Xfr\+Byte\+\_\+clears\+\_\+the\+\_\+\+SPI\+\_\+\+Interrupt\+\_\+\+Flag\+\_\+by\+\_\+reading\+\_\+the\+\_\+\+SPI\+\_\+data\+\_\+reg\+:PASS test/test\+\_\+runner.\+c\+:190\+:Spi\+Master\+Xfr\+Byte\+\_\+returns\+\_\+the\+\_\+byte\+\_\+in\+\_\+the\+\_\+\+SPI\+\_\+data\+\_\+reg\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md59}{}\doxysection{Queue tests}\label{md_lib_build_test_runner_autotoc_md59}
+\hypertarget{md_lib_build_test_runner_autotoc_md60}{}\doxysubsection{Queue\+Init}\label{md_lib_build_test_runner_autotoc_md60}
+test/test\+\_\+runner.\+c\+:203\+:Queue\+Init\+\_\+returns\+\_\+a\+\_\+pointer\+\_\+to\+\_\+a\+\_\+\+Queue\+\_\+struct\+:PASS test/test\+\_\+runner.\+c\+:204\+:Queue\+Init\+\_\+memory\+\_\+for\+\_\+\+Queue\+\_\+struct\+\_\+is\+\_\+allocated\+\_\+in\+\_\+\+Queue\+\_\+object\+\_\+file\+:PASS test/test\+\_\+runner.\+c\+:205\+:Queue\+Init\+\_\+assigns\+\_\+input\+\_\+buffer\+\_\+as\+\_\+\+Queue\+\_\+buffer\+:PASS test/test\+\_\+runner.\+c\+:206\+:Queue\+Init\+\_\+size\+\_\+input\+\_\+is\+\_\+the\+\_\+maximum\+\_\+\+Queue\+\_\+length\+:PASS test/test\+\_\+runner.\+c\+:207\+:Queue\+Init\+\_\+initializes\+\_\+\+Queue\+\_\+with\+\_\+length\+\_\+0\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md61}{}\doxysubsection{Queue\+Length}\label{md_lib_build_test_runner_autotoc_md61}
+test/test\+\_\+runner.\+c\+:212\+:Queue\+Length\+\_\+increments\+\_\+after\+\_\+a\+\_\+push\+:PASS test/test\+\_\+runner.\+c\+:213\+:Queue\+Length\+\_\+does\+\_\+not\+\_\+increase\+\_\+beyond\+\_\+max\+\_\+length\+:PASS test/test\+\_\+runner.\+c\+:214\+:Queue\+Length\+\_\+decrements\+\_\+after\+\_\+a\+\_\+pop\+:PASS test/test\+\_\+runner.\+c\+:215\+:Queue\+Length\+\_\+does\+\_\+not\+\_\+decrease\+\_\+below\+\_\+zero\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md62}{}\doxysubsection{Queue\+Push}\label{md_lib_build_test_runner_autotoc_md62}
+test/test\+\_\+runner.\+c\+:220\+:Queue\+Push\+\_\+writes\+\_\+byte\+\_\+to\+\_\+\+Queue\+\_\+buffer\+:PASS test/test\+\_\+runner.\+c\+:221\+:Queue\+Push\+\_\+writes\+\_\+next\+\_\+byte\+\_\+to\+\_\+address\+\_\+after\+\_\+previous\+\_\+write\+:PASS test/test\+\_\+runner.\+c\+:222\+:Queue\+Push\+\_\+does\+\_\+not\+\_\+write\+\_\+byte\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+full\+:PASS test/test\+\_\+runner.\+c\+:223\+:Queue\+Push\+\_\+hits\+\_\+end\+\_\+of\+\_\+buffer\+\_\+and\+\_\+wraps\+\_\+around\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+not\+\_\+full\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md63}{}\doxysubsection{Queue\+Pop}\label{md_lib_build_test_runner_autotoc_md63}
+test/test\+\_\+runner.\+c\+:228\+:Queue\+Pop\+\_\+removes\+\_\+oldest\+\_\+byte\+\_\+from\+\_\+\+Queue\+:PASS test/test\+\_\+runner.\+c\+:229\+:Queue\+Pop\+\_\+returns\+\_\+oldest\+\_\+byte\+:PASS test/test\+\_\+runner.\+c\+:230\+:Queue\+Pop\+\_\+does\+\_\+not\+\_\+remove\+\_\+any\+\_\+bytes\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+empty\+:PASS test/test\+\_\+runner.\+c\+:231\+:Queue\+Pop\+\_\+returns\+\_\+0\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+empty\+:PASS test/test\+\_\+runner.\+c\+:232\+:Queue\+Pop\+\_\+hits\+\_\+end\+\_\+of\+\_\+buffer\+\_\+and\+\_\+wraps\+\_\+around\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+not\+\_\+empty\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md64}{}\doxysubsection{Queue\+Is\+Full}\label{md_lib_build_test_runner_autotoc_md64}
+test/test\+\_\+runner.\+c\+:237\+:Queue\+Is\+Full\+\_\+returns\+\_\+true\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+full\+:PASS test/test\+\_\+runner.\+c\+:238\+:Queue\+Is\+Full\+\_\+returns\+\_\+false\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+not\+\_\+full\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md65}{}\doxysubsection{Queue\+Is\+Empty}\label{md_lib_build_test_runner_autotoc_md65}
+test/test\+\_\+runner.\+c\+:243\+:Queue\+Is\+Empty\+\_\+returns\+\_\+true\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+empty\+:PASS test/test\+\_\+runner.\+c\+:244\+:Queue\+Is\+Empty\+\_\+returns\+\_\+false\+\_\+if\+\_\+\+Queue\+\_\+is\+\_\+not\+\_\+empty\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md66}{}\doxysection{Uart\+Spi tests}\label{md_lib_build_test_runner_autotoc_md66}
+\hypertarget{md_lib_build_test_runner_autotoc_md67}{}\doxysubsection{Uart\+Spi\+Init}\label{md_lib_build_test_runner_autotoc_md67}
+test/test\+\_\+runner.\+c\+:257\+:Uart\+Spi\+Init\+\_\+clocks\+\_\+\+SPI\+\_\+bus\+\_\+at\+\_\+5\+MHz\+:PASS test/test\+\_\+runner.\+c\+:258\+:Uart\+Spi\+Init\+\_\+sets\+\_\+\+Sck\+\_\+as\+\_\+an\+\_\+output\+:PASS test/test\+\_\+runner.\+c\+:259\+:Uart\+Spi\+Init\+\_\+sets\+\_\+\+Adc\+Conv\+\_\+to\+\_\+idle\+\_\+low\+:PASS test/test\+\_\+runner.\+c\+:260\+:Uart\+Spi\+Init\+\_\+sets\+\_\+\+Adc\+Conv\+\_\+as\+\_\+an\+\_\+output\+:PASS test/test\+\_\+runner.\+c\+:261\+:Uart\+Spi\+Init\+\_\+enables\+\_\+the\+\_\+\+UART\+\_\+in\+\_\+\+Master\+\_\+\+SPI\+\_\+\+Mode\+:PASS test/test\+\_\+runner.\+c\+:262\+:Uart\+Spi\+Init\+\_\+uses\+\_\+\+SPI\+\_\+data\+\_\+mode\+\_\+\+CPOL\+\_\+1\+\_\+\+CPHA\+\_\+1\+:PASS test/test\+\_\+runner.\+c\+:263\+:Uart\+Spi\+Init\+\_\+cfgs\+\_\+\+SPI\+\_\+to\+\_\+transfer\+\_\+\+MSB\+\_\+first\+:PASS test/test\+\_\+runner.\+c\+:264\+:Uart\+Spi\+Init\+\_\+gives\+\_\+\+SPI\+\_\+control\+\_\+over\+\_\+\+Miso\+\_\+and\+\_\+\+Mosi\+\_\+pin\+\_\+behavior\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md68}{}\doxysection{Lis tests}\label{md_lib_build_test_runner_autotoc_md68}
+\hypertarget{md_lib_build_test_runner_autotoc_md69}{}\doxysubsection{MSB}\label{md_lib_build_test_runner_autotoc_md69}
+test/test\+\_\+runner.\+c\+:277\+:MSB\+\_\+returns\+\_\+most\+\_\+significant\+\_\+bit\+\_\+of\+\_\+16bit\+\_\+input\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md70}{}\doxysubsection{LSB}\label{md_lib_build_test_runner_autotoc_md70}
+test/test\+\_\+runner.\+c\+:282\+:LSB\+\_\+returns\+\_\+least\+\_\+significant\+\_\+bit\+\_\+of\+\_\+16bit\+\_\+input\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md71}{}\doxysubsection{Lis\+Init}\label{md_lib_build_test_runner_autotoc_md71}
+test/test\+\_\+runner.\+c\+:287\+:Lis\+Init\+\_\+sets\+\_\+\+Pix\+Select\+\_\+as\+\_\+an\+\_\+output\+:PASS test/test\+\_\+runner.\+c\+:288\+:Lis\+Init\+\_\+idles\+\_\+\+Pix\+Select\+\_\+low\+:PASS test/test\+\_\+runner.\+c\+:289\+:Lis\+Init\+\_\+sets\+\_\+\+Rst\+\_\+as\+\_\+an\+\_\+output\+:PASS test/test\+\_\+runner.\+c\+:290\+:Lis\+Init\+\_\+idles\+\_\+\+Rst\+\_\+low\+:PASS test/test\+\_\+runner.\+c\+:291\+:Lis\+Init\+\_\+sets\+\_\+\+Sync\+\_\+as\+\_\+an\+\_\+input\+:PASS test/test\+\_\+runner.\+c\+:292\+:Lis\+Init\+\_\+sets\+\_\+\+Clk\+\_\+as\+\_\+an\+\_\+output\+:PASS test/test\+\_\+runner.\+c\+:293\+:Lis\+Init\+\_\+resets\+\_\+\+PWM\+\_\+timer\+\_\+at\+\_\+top\+:PASS test/test\+\_\+runner.\+c\+:294\+:Lis\+Init\+\_\+\+PWM\+\_\+timer\+\_\+top\+\_\+is\+\_\+\+OCR0A\+:PASS test/test\+\_\+runner.\+c\+:295\+:Lis\+Init\+\_\+\+PWM\+\_\+timer\+\_\+is\+\_\+clocked\+\_\+by\+\_\+\+CPU\+\_\+with\+\_\+no\+\_\+prescaling\+:PASS test/test\+\_\+runner.\+c\+:296\+:Lis\+Init\+\_\+sets\+\_\+\+PWM\+\_\+frequency\+\_\+at\+\_\+50k\+Hz\+:PASS test/test\+\_\+runner.\+c\+:297\+:Lis\+Init\+\_\+sets\+\_\+\+PWM\+\_\+duty\+\_\+cycle\+\_\+to\+\_\+50\+\_\+percent\+:PASS test/test\+\_\+runner.\+c\+:298\+:Lis\+Init\+\_\+outputs\+\_\+the\+\_\+\+PWM\+\_\+clock\+\_\+on\+\_\+pin\+\_\+\+Clk\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md72}{}\doxysubsection{Lis\+Config\+Is\+Valid}\label{md_lib_build_test_runner_autotoc_md72}
+test/test\+\_\+runner.\+c\+:303\+:Lis\+Config\+Is\+Valid\+\_\+returns\+\_\+false\+\_\+if\+\_\+binning\+\_\+is\+\_\+invalid\+:PASS test/test\+\_\+runner.\+c\+:304\+:Lis\+Config\+Is\+Valid\+\_\+returns\+\_\+false\+\_\+if\+\_\+gain\+\_\+is\+\_\+invalid\+:PASS test/test\+\_\+runner.\+c\+:305\+:Lis\+Config\+Is\+Valid\+\_\+returns\+\_\+false\+\_\+if\+\_\+active\+\_\+rows\+\_\+is\+\_\+invalid\+:PASS test/test\+\_\+runner.\+c\+:306\+:Lis\+Config\+Is\+Valid\+\_\+returns\+\_\+true\+\_\+if\+\_\+config\+\_\+is\+\_\+valid\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md73}{}\doxysubsection{\+\_\+\+Config\+As28bits}\label{md_lib_build_test_runner_autotoc_md73}
+test/test\+\_\+runner.\+c\+:311\+:Config\+As28bits\+\_\+writes\+\_\+config\+\_\+as\+\_\+little\+\_\+endian\+\_\+ie\+\_\+binning\+\_\+is\+\_\+config\+\_\+byte0\+\_\+bit0\+:PASS test/test\+\_\+runner.\+c\+:312\+:Config\+As28bits\+\_\+sets\+\_\+config\+\_\+byte0\+\_\+bit0\+\_\+if\+\_\+\+BINNING\+\_\+\+ON\+:PASS test/test\+\_\+runner.\+c\+:313\+:Config\+As28bits\+\_\+clears\+\_\+config\+\_\+byte0\+\_\+bit0\+\_\+if\+\_\+\+BINNING\+\_\+\+OFF\+:PASS test/test\+\_\+runner.\+c\+:314\+:Config\+As28bits\+\_\+byte0\+\_\+bit1\+\_\+clear\+\_\+and\+\_\+bit2\+\_\+clear\+\_\+if\+\_\+\+GAIN\+\_\+1X\+:PASS test/test\+\_\+runner.\+c\+:315\+:Config\+As28bits\+\_\+byte0\+\_\+bit1\+\_\+clear\+\_\+and\+\_\+bit2\+\_\+set\+\_\+if\+\_\+\+GAIN\+\_\+2\+X5\+:PASS test/test\+\_\+runner.\+c\+:316\+:Config\+As28bits\+\_\+byte0\+\_\+bit1\+\_\+set\+\_\+and\+\_\+bit2\+\_\+clear\+\_\+if\+\_\+\+GAIN\+\_\+4X\+:PASS test/test\+\_\+runner.\+c\+:317\+:Config\+As28bits\+\_\+byte0\+\_\+bit1\+\_\+set\+\_\+and\+\_\+bit2\+\_\+set\+\_\+if\+\_\+\+GAIN\+\_\+5X\+:PASS test/test\+\_\+runner.\+c\+:318\+:Config\+As28bits\+\_\+bit3\+\_\+to\+\_\+bit27\+\_\+set\+\_\+if\+\_\+\+ALL\+\_\+\+ROWS\+\_\+\+ACTIVE\+:PASS test/test\+\_\+runner.\+c\+:319\+:Config\+As28bits\+\_\+b3b8b13b18b23\+\_\+set\+\_\+if\+\_\+\+ROW\+\_\+1\+\_\+\+ACTIVE\+:PASS test/test\+\_\+runner.\+c\+:320\+:Config\+As28bits\+\_\+b4b9b14b19b24\+\_\+set\+\_\+if\+\_\+\+ROW\+\_\+2\+\_\+\+ACTIVE\+:PASS test/test\+\_\+runner.\+c\+:321\+:Config\+As28bits\+\_\+b5b10b15b20b25\+\_\+set\+\_\+if\+\_\+\+ROW\+\_\+3\+\_\+\+ACTIVE\+:PASS test/test\+\_\+runner.\+c\+:322\+:Config\+As28bits\+\_\+b6b11b16b21b26\+\_\+set\+\_\+if\+\_\+\+ROW\+\_\+4\+\_\+\+ACTIVE\+:PASS test/test\+\_\+runner.\+c\+:323\+:Config\+As28bits\+\_\+b7b12b17b22b27\+\_\+set\+\_\+if\+\_\+\+ROW\+\_\+5\+\_\+\+ACTIVE\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md74}{}\doxysubsection{\+\_\+\+Wait\+For\+Lis\+Clk\+Low}\label{md_lib_build_test_runner_autotoc_md74}
+test/test\+\_\+runner.\+c\+:328\+:Wait\+For\+Lis\+Clk\+Low\+\_\+clears\+\_\+flag\+\_\+\+Pwm\+Timer\+Matches\+OCF0B\+:PASS test/test\+\_\+runner.\+c\+:329\+:Wait\+For\+Lis\+Clk\+Low\+\_\+waits\+\_\+until\+\_\+flag\+\_\+\+Pwm\+Timer\+Matches\+OCF0\+B\+\_\+is\+\_\+set\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md75}{}\doxysubsection{\+\_\+\+Wait\+For\+Lis\+Clk\+High}\label{md_lib_build_test_runner_autotoc_md75}
+test/test\+\_\+runner.\+c\+:334\+:Wait\+For\+Lis\+Clk\+High\+\_\+clears\+\_\+flag\+\_\+\+Pwm\+Timer\+Matches\+OCF0A\+:PASS test/test\+\_\+runner.\+c\+:335\+:Wait\+For\+Lis\+Clk\+High\+\_\+waits\+\_\+until\+\_\+flag\+\_\+\+Pwm\+Timer\+Matches\+OCF0\+A\+\_\+is\+\_\+set\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md76}{}\doxysubsection{\+\_\+\+Enter\+Lis\+Programming\+Mode}\label{md_lib_build_test_runner_autotoc_md76}
+
+\begin{DoxyItemize}
+\item Call 1 is named \+\_\+\+Wait\+For\+Lis\+Clk\+Low? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:340\+:Enter\+Lis\+Programming\+Mode\+\_\+waits\+\_\+for\+\_\+\+Lis\+Clk\+\_\+\+LOW\+:PASS test/test\+\_\+runner.\+c\+:341\+:Enter\+Lis\+Programming\+Mode\+\_\+asserts\+\_\+\+Lis\+Pix\+Select\+\_\+to\+\_\+program\+\_\+\+Lis\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md77}{}\doxysubsection{\+\_\+\+Write\+Lis\+Config\+Bit}\label{md_lib_build_test_runner_autotoc_md77}
+test/test\+\_\+runner.\+c\+:346\+:Write\+Lis\+Config\+Bit\+\_\+outputs\+\_\+bit\+\_\+on\+\_\+\+Lis\+Rst\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 1 is named \+\_\+\+Wait\+For\+Lis\+Clk\+High? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:347\+:Write\+Lis\+Config\+Bit\+\_\+waits\+\_\+for\+\_\+\+Lis\+Clk\+\_\+\+HIGH\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 2 is named \+\_\+\+Wait\+For\+Lis\+Clk\+Low? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:348\+:Write\+Lis\+Config\+Bit\+\_\+waits\+\_\+for\+\_\+\+Lis\+Clk\+\_\+\+LOW\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md78}{}\doxysubsection{\+\_\+\+Write28bit\+Lis\+Config}\label{md_lib_build_test_runner_autotoc_md78}
+
+\begin{DoxyItemize}
+\item Call 1 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xac is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 1, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 2 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 2, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xac is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 2, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 3 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 3, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xac is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 3, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x02 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 4 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 4, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xac is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 4, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x03 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 5 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 5, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xac is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 5, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x04 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 6 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 6, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xac is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 6, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x05 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 7 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 7, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xac is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 7, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x06 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 8 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 8, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xac is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 8, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x07 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 9 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 9, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xbd is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 9, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 10 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 10, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xbd is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 10, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 11 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 11, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xbd is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 11, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x02 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 12 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 12, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xbd is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 12, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x03 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 13 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 13, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xbd is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 13, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x04 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 14 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 14, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xbd is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 14, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x05 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 15 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 15, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xbd is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 15, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x06 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 16 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 16, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xbd is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 16, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x07 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 17 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 17, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xce is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 17, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 18 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 18, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xce is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 18, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 19 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 19, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xce is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 19, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x02 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 20 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 20, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xce is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 20, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x03 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 21 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 21, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xce is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 21, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x04 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 22 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 22, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xce is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 22, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x05 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 23 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 23, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xce is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 23, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x06 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 24 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 24, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xce is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 24, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x07 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 25 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 25, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xdf is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 25, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 26 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 26, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xdf is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 26, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 27 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 27, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xdf is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 27, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x02 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Call 28 is named \+\_\+\+Write\+Lis\+Config\+Bit? Yes.
+\item Value passed to call 28, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xdf is arg 1 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\item Value passed to call 28, arg 2?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x03 is arg 2 to call \+\_\+\+Write\+Lis\+Config\+Bit.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:353\+:Write28bit\+Lis\+Config\+\_\+writes\+\_\+28bits\+\_\+starting\+\_\+at\+\_\+byte0\+\_\+bit0\+\_\+and\+\_\+ending\+\_\+at\+\_\+byte3\+\_\+bit3\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md79}{}\doxysubsection{\+\_\+\+Exit\+Lis\+Programming\+Mode}\label{md_lib_build_test_runner_autotoc_md79}
+test/test\+\_\+runner.\+c\+:358\+:Exit\+Lis\+Programming\+Mode\+\_\+outputs\+\_\+\+LOW\+\_\+on\+\_\+pin\+\_\+\+Lis\+Rst\+:PASS test/test\+\_\+runner.\+c\+:359\+:Exit\+Lis\+Programming\+Mode\+\_\+outputs\+\_\+\+LOW\+\_\+on\+\_\+pin\+\_\+\+Lis\+Pix\+Select\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md80}{}\doxysubsection{Lis\+Write\+Config}\label{md_lib_build_test_runner_autotoc_md80}
+
+\begin{DoxyItemize}
+\item Call 1 is named \+\_\+\+Config\+As28bits? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:364\+:Lis\+Write\+Config\+\_\+converts\+\_\+config\+\_\+to\+\_\+28bit\+\_\+sequence\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 2 is named \+\_\+\+Enter\+Lis\+Programming\+Mode? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:365\+:Lis\+Write\+Config\+\_\+enters\+\_\+\+LIS\+\_\+programming\+\_\+mode\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 3 is named \+\_\+\+Write28bit\+Lis\+Config? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:366\+:Lis\+Write\+Config\+\_\+writes\+\_\+28bits\+\_\+to\+\_\+\+LIS\+\_\+setup\+\_\+register\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 4 is named \+\_\+\+Exit\+Lis\+Programming\+Mode? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:367\+:Lis\+Write\+Config\+\_\+exits\+\_\+\+LIS\+\_\+programming\+\_\+mode\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md81}{}\doxysubsection{Lis\+Expose}\label{md_lib_build_test_runner_autotoc_md81}
+test/test\+\_\+runner.\+c\+:372\+:Lis\+Expose\+\_\+waits\+\_\+for\+\_\+the\+\_\+falling\+\_\+edge\+\_\+of\+\_\+\+Lis\+\_\+\+Clk\+:PASS test/test\+\_\+runner.\+c\+:373\+:Lis\+Expose\+\_\+starts\+\_\+exposure\+\_\+by\+\_\+driving\+\_\+\+Lis\+\_\+\+Rst\+\_\+\+HIGH\+:PASS test/test\+\_\+runner.\+c\+:374\+:Lis\+Expose\+\_\+counts\+\_\+falling\+\_\+edges\+\_\+of\+\_\+\+Lis\+\_\+\+Clk\+\_\+until\+\_\+count\+\_\+equals\+\_\+exposure\+\_\+ticks\+:PASS test/test\+\_\+runner.\+c\+:375\+:Lis\+Expose\+\_\+stops\+\_\+exposure\+\_\+by\+\_\+driving\+\_\+\+Lis\+\_\+\+Rst\+\_\+\+LOW\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md82}{}\doxysection{Usb tests}\label{md_lib_build_test_runner_autotoc_md82}
+\hypertarget{md_lib_build_test_runner_autotoc_md83}{}\doxysubsection{\+\_\+\+Ft\+Clock\+Databus}\label{md_lib_build_test_runner_autotoc_md83}
+test/test\+\_\+runner.\+c\+:388\+:Ft\+Clock\+Databus\+\_\+drives\+\_\+\+Ft\+Clock\+\_\+\+HIGH\+\_\+if\+\_\+direction\+\_\+is\+\_\+\+Ft\+Drive\+:PASS test/test\+\_\+runner.\+c\+:389\+:Ft\+Clock\+Databus\+\_\+drives\+\_\+\+Ft\+Clock\+\_\+\+LOW\+\_\+if\+\_\+direction\+\_\+is\+\_\+\+Ft\+Sample\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md84}{}\doxysubsection{\+\_\+\+Ft\+Read\+Databus}\label{md_lib_build_test_runner_autotoc_md84}
+test/test\+\_\+runner.\+c\+:394\+:Ft\+Read\+Databus\+\_\+copies\+\_\+databus\+\_\+pin\+\_\+values\+\_\+to\+\_\+address\+\_\+pbyte\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md85}{}\doxysubsection{\+\_\+\+Ft\+Write\+Databus}\label{md_lib_build_test_runner_autotoc_md85}
+test/test\+\_\+runner.\+c\+:399\+:Ft\+Write\+Databus\+\_\+outputs\+\_\+byte\+\_\+on\+\_\+databus\+\_\+pins\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md86}{}\doxysubsection{\+\_\+\+Ft\+Databus\+Pin\+Direction}\label{md_lib_build_test_runner_autotoc_md86}
+test/test\+\_\+runner.\+c\+:404\+:Ft\+Databus\+Pin\+Direction\+\_\+makes\+\_\+databus\+\_\+pins\+\_\+outputs\+\_\+if\+\_\+direction\+\_\+is\+\_\+\+Ft\+Out\+:PASS test/test\+\_\+runner.\+c\+:405\+:Ft\+Databus\+Pin\+Direction\+\_\+makes\+\_\+databus\+\_\+pins\+\_\+inputs\+\_\+if\+\_\+direction\+\_\+is\+\_\+\+Ft\+In\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md87}{}\doxysubsection{Ft\+Select\+FT221X}\label{md_lib_build_test_runner_autotoc_md87}
+test/test\+\_\+runner.\+c\+:410\+:Ft\+Select\+FT221\+X\+\_\+drives\+\_\+\+Ft\+Chip\+Select\+\_\+\+LOW\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md88}{}\doxysubsection{Ft\+Unselect\+FT221X}\label{md_lib_build_test_runner_autotoc_md88}
+test/test\+\_\+runner.\+c\+:415\+:Ft\+Unselect\+FT221\+X\+\_\+drives\+\_\+\+Ft\+Chip\+Select\+\_\+\+HIGH\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md89}{}\doxysubsection{Ft\+Bus\+Turnaround}\label{md_lib_build_test_runner_autotoc_md89}
+Drive clock to signal Data-\/\+Drive then Data-\/\+Sample\+:
+
+
+\begin{DoxyItemize}
+\item Ft\+Drive\+: rising edge
+\item Ft\+Sample\+: falling edge
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 1 to call \+\_\+\+Ft\+Clock\+Databus.
+\end{DoxyItemize}
+\item Value passed to call 2, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 1 to call \+\_\+\+Ft\+Clock\+Databus.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:420\+:Ft\+Bus\+Turnaround\+\_\+clocks\+\_\+one\+\_\+cycle\+\_\+to\+\_\+signal\+\_\+data\+\_\+drive\+\_\+then\+\_\+data\+\_\+sample\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md90}{}\doxysubsection{Ft\+Is\+Ok}\label{md_lib_build_test_runner_autotoc_md90}
+test/test\+\_\+runner.\+c\+:425\+:Ft\+Is\+Ok\+\_\+returns\+\_\+true\+\_\+if\+\_\+\+Ft\+Miso\+\_\+is\+\_\+\+LOW\+:PASS test/test\+\_\+runner.\+c\+:426\+:Ft\+Is\+Ok\+\_\+returns\+\_\+false\+\_\+if\+\_\+\+Ft\+Miso\+\_\+is\+\_\+\+HIGH\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md91}{}\doxysubsection{Ft\+Read}\label{md_lib_build_test_runner_autotoc_md91}
+
+\begin{DoxyItemize}
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 1 to call \+\_\+\+Ft\+Clock\+Databus.
+\end{DoxyItemize}
+\item Value passed to call 2, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 1 to call \+\_\+\+Ft\+Clock\+Databus.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:431\+:Ft\+Read\+\_\+clocks\+\_\+one\+\_\+byte\+\_\+out\+\_\+of\+\_\+the\+\_\+\+FT221X\+:PASS
+
+
+\begin{DoxyItemize}
+\item Value passed to call 3, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xcd is arg 1 to call \+\_\+\+Ft\+Read\+Databus.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:432\+:Ft\+Read\+\_\+stores\+\_\+the\+\_\+byte\+\_\+at\+\_\+address\+\_\+pbyte\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md92}{}\doxysubsection{Ft\+Write}\label{md_lib_build_test_runner_autotoc_md92}
+
+\begin{DoxyItemize}
+\item Value passed to call 1, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0x01 is arg 1 to call \+\_\+\+Ft\+Clock\+Databus.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:437\+:Ft\+Write\+\_\+signals\+\_\+to\+\_\+drive\+\_\+data\+\_\+onto\+\_\+the\+\_\+databus\+:PASS
+
+
+\begin{DoxyItemize}
+\item Value passed to call 2, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xff is arg 1 to call \+\_\+\+Ft\+Databus\+Pin\+Direction.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:438\+:Ft\+Write\+\_\+sets\+\_\+microcontroller\+\_\+databus\+\_\+pins\+\_\+as\+\_\+outputs\+:PASS
+
+
+\begin{DoxyItemize}
+\item Value passed to call 3, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xab is arg 1 to call \+\_\+\+Ft\+Write\+Databus.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:439\+:Ft\+Write\+\_\+outputs\+\_\+byte\+\_\+on\+\_\+databus\+\_\+pins\+:PASS
+
+
+\begin{DoxyItemize}
+\item Value passed to call 4, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 1 to call \+\_\+\+Ft\+Clock\+Databus.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:440\+:Ft\+Write\+\_\+signals\+\_\+\+FT221\+X\+\_\+to\+\_\+sample\+\_\+the\+\_\+databus\+:PASS
+
+
+\begin{DoxyItemize}
+\item Value passed to call 5, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0000 is arg 1 to call \+\_\+\+Ft\+Databus\+Pin\+Direction.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:441\+:Ft\+Write\+\_\+sets\+\_\+microcontroller\+\_\+databus\+\_\+pins\+\_\+as\+\_\+inputs\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md93}{}\doxysubsection{Usb\+Rxbuffer\+Is\+Empty}\label{md_lib_build_test_runner_autotoc_md93}
+test/test\+\_\+runner.\+c\+:446\+:Usb\+Rxbuffer\+Is\+Empty\+\_\+returns\+\_\+true\+\_\+if\+\_\+pin\+\_\+\+FT1248\+\_\+\+MISO\+\_\+is\+\_\+\+HIGH\+:PASS test/test\+\_\+runner.\+c\+:447\+:Usb\+Rxbuffer\+Is\+Empty\+\_\+returns\+\_\+false\+\_\+if\+\_\+pin\+\_\+\+FT1248\+\_\+\+MISO\+\_\+is\+\_\+\+LOW\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md94}{}\doxysubsection{Usb\+Txbuffer\+Is\+Full}\label{md_lib_build_test_runner_autotoc_md94}
+test/test\+\_\+runner.\+c\+:452\+:Usb\+Txbuffer\+Is\+Full\+\_\+returns\+\_\+true\+\_\+if\+\_\+pin\+\_\+\+MIOSIO0\+\_\+is\+\_\+\+HIGH\+:PASS test/test\+\_\+runner.\+c\+:453\+:Usb\+Txbuffer\+Is\+Full\+\_\+returns\+\_\+false\+\_\+if\+\_\+pin\+\_\+\+MIOSIO0\+\_\+is\+\_\+\+LOW\+:PASS \hypertarget{md_lib_build_test_runner_autotoc_md95}{}\doxysubsection{Usb\+Read\+Byte}\label{md_lib_build_test_runner_autotoc_md95}
+
+\begin{DoxyItemize}
+\item Call 1 is named Ft\+Select\+FT221X? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:458\+:Usb\+Read\+Byte\+\_\+selects\+\_\+the\+\_\+\+FT221X\+:PASS
+
+{\itshape Read command is} {\ttfamily 0xc6}
+
+
+\begin{DoxyItemize}
+\item Value passed to call 2, arg 1?
+\begin{DoxyItemize}
+\item (uint8\+\_\+t)0xc6 is arg 1 to call Ft\+Write.
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:459\+:Usb\+Read\+Byte\+\_\+drives\+\_\+databus\+\_\+with\+\_\+read\+\_\+command\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 3 is named Ft\+Bus\+Turnaround? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:460\+:Usb\+Read\+Byte\+\_\+signals\+\_\+\+FT221\+X\+\_\+to\+\_\+sample\+\_\+the\+\_\+databus\+:PASS
+
+
+\begin{DoxyItemize}
+\item Call 4 is named Ft\+Is\+Ok? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:445\+:Usb\+Read\+Byte\+\_\+reads\+\_\+the\+\_\+byte\+\_\+if\+\_\+data\+\_\+transfer\+\_\+status\+\_\+is\+\_\+\+OK\+:\+FAIL\+: Implement Test
+
+
+\begin{DoxyItemize}
+\item Call 5 is named Ft\+Unselect\+FT221X? Yes.
+\end{DoxyItemize}
+
+test/test\+\_\+runner.\+c\+:462\+:Usb\+Read\+Byte\+\_\+unselects\+\_\+the\+\_\+\+FT221X\+:PASS test/test\+\_\+runner.\+c\+:463\+:Usb\+Read\+Byte\+\_\+returns\+\_\+either\+\_\+\+Ft\+OK\+\_\+if\+\_\+pbyte\+\_\+has\+\_\+the\+\_\+read\+\_\+data\+\_\+or\+\_\+\+Ft\+Error\+\_\+if\+\_\+\+Usb\+\_\+receive\+\_\+buffer\+\_\+was\+\_\+empty\+:\+FAIL\+: Implement Test \hypertarget{md_lib_build_test_runner_autotoc_md96}{}\doxysubsection{Usb\+Write\+Byte}\label{md_lib_build_test_runner_autotoc_md96}
+FAIL\+: Implement Test \hypertarget{md_lib_build_test_runner_autotoc_md97}{}\doxysection{Status\+Code tests}\label{md_lib_build_test_runner_autotoc_md97}
+\hypertarget{md_lib_build_test_runner_autotoc_md98}{}\doxysubsection{led\+\_\+setting\+\_\+is\+\_\+valid}\label{md_lib_build_test_runner_autotoc_md98}
+test/test\+\_\+runner.\+c\+:481\+:led\+\_\+setting\+\_\+is\+\_\+valid\+\_\+returns\+\_\+\+TRUE\+\_\+if\+\_\+setting\+\_\+is\+\_\+\+OFF\+:PASS test/test\+\_\+runner.\+c\+:482\+:led\+\_\+setting\+\_\+is\+\_\+valid\+\_\+returns\+\_\+\+TRUE\+\_\+if\+\_\+setting\+\_\+is\+\_\+\+GREEN\+:PASS test/test\+\_\+runner.\+c\+:483\+:led\+\_\+setting\+\_\+is\+\_\+valid\+\_\+returns\+\_\+\+TRUE\+\_\+if\+\_\+setting\+\_\+is\+\_\+\+RED\+:PASS test/test\+\_\+runner.\+c\+:484\+:led\+\_\+setting\+\_\+is\+\_\+valid\+\_\+returns\+\_\+\+FALSE\+\_\+if\+\_\+setting\+\_\+is\+\_\+any\+\_\+other\+\_\+value\+:PASS
+
+\DoxyHorRuler{0}
+ 163 Tests 2 Failures 0 Ignored FAIL 

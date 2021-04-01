@@ -42,9 +42,9 @@ uint16\+\_\+t \mbox{\hyperlink{AutoExpose_8h_a0b2c447b1d12e1c69a0fc2f166621c38}{
 
 
 \doxysubsection{Detailed Description}
-\hypertarget{AutoExpose_8h_autotoc_md77}{}\doxysubsection{Global Auto\+Expose config}\label{AutoExpose_8h_autotoc_md77}
-\hypertarget{AutoExpose_8h_autotoc_md78}{}\doxysubsubsection{Auto\+Expose maximum number of tries}\label{AutoExpose_8h_autotoc_md78}
-Auto\+Expose gives up if it cannot hit the target peak counts range after {\ttfamily max\+\_\+tries} attempts. Recommended value is {\bfseries{10}}. Use smaller numbers to speed up Auto\+Expose. Set the value to {\bfseries{1}} to manually trigger each iteration and get a sense of how many tries are necessary to hit the target range. The range of allowed values is 1 to 255.\hypertarget{AutoExpose_8h_autotoc_md79}{}\doxysubsubsection{Auto\+Expose pixel range}\label{AutoExpose_8h_autotoc_md79}
+\hypertarget{AutoExpose_8h_autotoc_md193}{}\doxysubsection{Global Auto\+Expose config}\label{AutoExpose_8h_autotoc_md193}
+\hypertarget{AutoExpose_8h_autotoc_md194}{}\doxysubsubsection{Auto\+Expose maximum number of tries}\label{AutoExpose_8h_autotoc_md194}
+Auto\+Expose gives up if it cannot hit the target peak counts range after {\ttfamily max\+\_\+tries} attempts. Recommended value is {\bfseries{10}}. Use smaller numbers to speed up Auto\+Expose. Set the value to {\bfseries{1}} to manually trigger each iteration and get a sense of how many tries are necessary to hit the target range. The range of allowed values is 1 to 255.\hypertarget{AutoExpose_8h_autotoc_md195}{}\doxysubsubsection{Auto\+Expose pixel range}\label{AutoExpose_8h_autotoc_md195}
 Recommended values for {\ttfamily start\+\_\+pixel} and {\ttfamily stop\+\_\+pixel} depend on the spectrometer pixel-\/to-\/wavelength map file\+:
 \begin{DoxyItemize}
 \item {\ttfamily start\+\_\+pixel}\+: smallest pixel number in the map file
@@ -55,7 +55,7 @@ Recommended values for {\ttfamily start\+\_\+pixel} and {\ttfamily stop\+\_\+pix
 \item {\ttfamily stop\+\_\+pixel = 392}
 \end{DoxyItemize}
 
-With binning on, the default pixel range is also the allowed range of values. Attempting to exceed this range, it is clamped at these boundaries. With binning off, the allowed range is {\ttfamily start\+\_\+pixel = 14}, {\ttfamily stop\+\_\+pixel = 784}.\hypertarget{AutoExpose_8h_autotoc_md80}{}\doxysubsubsection{Auto\+Expose target peak counts range}\label{AutoExpose_8h_autotoc_md80}
+With binning on, the default pixel range is also the allowed range of values. Attempting to exceed this range, it is clamped at these boundaries. With binning off, the allowed range is {\ttfamily start\+\_\+pixel = 14}, {\ttfamily stop\+\_\+pixel = 784}.\hypertarget{AutoExpose_8h_autotoc_md196}{}\doxysubsubsection{Auto\+Expose target peak counts range}\label{AutoExpose_8h_autotoc_md196}
 Recommended values for {\ttfamily target} and {\ttfamily target\+\_\+tolerance} are\+:
 \begin{DoxyItemize}
 \item {\ttfamily target}\+: {\bfseries{46420}} counts
@@ -67,7 +67,7 @@ Recommended values for {\ttfamily target} and {\ttfamily target\+\_\+tolerance} 
 \index{AutoExpose.h@{AutoExpose.h}!max\_exposure@{max\_exposure}}
 \index{max\_exposure@{max\_exposure}!AutoExpose.h@{AutoExpose.h}}
 \doxysubsubsection{\texorpdfstring{max\_exposure}{max\_exposure}}
-{\footnotesize\ttfamily uint16\+\_\+t max\+\_\+exposure}
+{\footnotesize\ttfamily uint16\+\_\+t max\+\_\+exposure\hspace{0.3cm}{\ttfamily [extern]}}
 
 
 
@@ -82,5 +82,5 @@ Recommended values for {\ttfamily target} and {\ttfamily target\+\_\+tolerance} 
 \item update the Python API by changing all occurrences of {\ttfamily cycles} in the JSON file from size\+:2 to size\+:4.
 \end{DoxyItemize}
 
-Definition at line 84 of file Auto\+Expose.\+h.
+Definition at line 12 of file Auto\+Expose.\+c.
 

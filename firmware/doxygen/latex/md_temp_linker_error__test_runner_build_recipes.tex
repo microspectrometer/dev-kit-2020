@@ -1,4 +1,4 @@
-Look at expanded recipes. Break lines for readability.\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md71}{}\doxysection{When avr-\/gcc builds target $<$tt$>$test\+\_\+runner.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md71}
+Look at expanded recipes. Break lines for readability.\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md141}{}\doxysection{When avr-\/gcc builds target $<$tt$>$test\+\_\+runner.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md141}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\$ make -\/n -\/B build/test\_runner.o}
@@ -13,7 +13,7 @@ Look at expanded recipes. Break lines for readability.\hypertarget{md_temp_linke
 \DoxyCodeLine{-\/c test/test\_runner.c -\/o build/test\_runner.o}
 
 \end{DoxyCode}
-\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md72}{}\doxysection{When avr-\/gcc builds target $<$tt$>$vis-\/spi-\/out.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md72}
+\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md142}{}\doxysection{When avr-\/gcc builds target $<$tt$>$vis-\/spi-\/out.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md142}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\$ make -\/n -\/B build/vis-\/spi-\/out.o}
@@ -28,7 +28,7 @@ Look at expanded recipes. Break lines for readability.\hypertarget{md_temp_linke
 \DoxyCodeLine{-\/c src/vis-\/spi-\/out.c -\/o build/vis-\/spi-\/out.o}
 
 \end{DoxyCode}
-\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md73}{}\doxysection{When gcc builds target $<$tt$>$test\+\_\+runner.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md73}
+\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md143}{}\doxysection{When gcc builds target $<$tt$>$test\+\_\+runner.\+o$<$/tt$>$\+:}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md143}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\$ make -\/n -\/B build/test\_runner.o compiler=gcc}
@@ -49,7 +49,7 @@ Look at expanded recipes. Break lines for readability.\hypertarget{md_temp_linke
 \DoxyCodeLine{-\/c test/test\_runner.c -\/o build/test\_runner.o}
 
 \end{DoxyCode}
-\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md74}{}\doxysubsection{-\/\+I flags are not the problem}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md74}
+\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md144}{}\doxysubsection{-\/\+I flags are not the problem}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md144}
 
 \begin{DoxyItemize}
 \item what does the {\ttfamily -\/I} flag do exactly?
@@ -82,7 +82,7 @@ All the {\ttfamily -\/I} flags come from my {\ttfamily CFLAGS} variable. I have 
 \item {\ttfamily CFLAGS\+\_\+for\+\_\+tests}
 \end{DoxyItemize}
 
-{\itshape That is why/how the compiler flags are different for unit-\/tests and avr builds. The different {\ttfamily -\/I} flags are intentional.}\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md75}{}\doxysubsection{Move this make trivia to my C tutorial}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md75}
+{\itshape That is why/how the compiler flags are different for unit-\/tests and avr builds. The different {\ttfamily -\/I} flags are intentional.}\hypertarget{md_temp_linker_error__test_runner_build_recipes_autotoc_md145}{}\doxysubsection{Move this make trivia to my C tutorial}\label{md_temp_linker_error__test_runner_build_recipes_autotoc_md145}
 
 \begin{DoxyItemize}
 \item {\ttfamily =} is recursively expanded variable
