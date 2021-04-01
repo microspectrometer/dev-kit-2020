@@ -1,5 +1,3 @@
-sensor ?= LIS
-# sensor ?= S13131
 avr-elf: build/usb-bridge.elf build/usb-bridge.avra
 unit-test: build/test_runner.md
 
@@ -28,7 +26,6 @@ lib_o-avr := ../lib/build/avr/ReadWriteBits.o \
 # }}}
 # Compiler/Linker FLAGS for AVR{{{
 CFLAGS_for_AVR := -includeavr/interrupt.h -includeavr/io.h -mmcu=atmega328p \
-					-D$(sensor) \
 					-Isrc -I../lib/src \
 					-O3 -ffunction-sections -fdata-sections -fshort-enums \
 					-g -Wall -Wextra -pedantic -Winline -Wno-pointer-sign

@@ -19,8 +19,10 @@
   * - Go to the *Advanced* tab
   *   - *Load VCP*: `check`
   *
-  * TODO:\n 
-  * - Is *Load VCP* checked by default on a fresh install?
+  * - *Load VCP* is **not** checked by default for each
+  *   `usb-bridge` connected to Windows for the first time.\n
+  *   Host software should remind the user to check this if
+  *   opening communication fails.
   * */
 // app libs
 #include "Example.h"

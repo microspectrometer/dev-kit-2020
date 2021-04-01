@@ -117,7 +117,8 @@ inline bool AutoExposeConfigIsValid(
     }
 #endif
 #ifdef S13131
-    // TODO(sustainablelab): Check pixels are in range
+        if ((new_start_pixel < 1) || (new_start_pixel > 512)) return false;
+        if ((new_stop_pixel < 1) || (new_stop_pixel > 512)) return false;
 #endif
 
     // Config is valid
@@ -374,12 +375,6 @@ inline void GetSensorConfig(void)
     SpiSlaveTxByte(active_rows);
 }
 #endif
-#ifdef S13131
-inline void GetSensorConfig(void)
-{
-    // TODO(sustainablelab): How to handle this LIS-only command?
-}
-#endif
 
 inline void GetExposure(void)
 {
@@ -621,6 +616,7 @@ inline void SetAutoExposeConfig(void)
 inline void SetSensorConfig(void)
 {
     /** SetSensorConfig behavior:\n 
+      * - replies OK to confirm it recognized this command\n 
       * - receives three bytes of config from Bridge\n 
       * - does not update config globals if config is invalid\n 
       * - replies ERROR if binning is invalid\n 

@@ -69,6 +69,7 @@ void test_UsbCmd(void)
     RUN_TEST(GetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor);
     RUN_TEST(GetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready);
     RUN_TEST(GetSensorConfig_reads_status_from_sensor);
+    RUN_TEST(GetSensorConfig_proceeds_reading_from_sensor_if_status_is_OK);
     RUN_TEST(GetSensorConfig_waits_for_sensor_to_signal_BINNING_data_ready);
     RUN_TEST(GetSensorConfig_reads_binning_from_sensor);
     RUN_TEST(GetSensorConfig_waits_for_sensor_to_signal_GAIN_data_ready);
@@ -88,12 +89,14 @@ void test_UsbCmd(void)
     RUN_TEST(SetSensorConfig_waits_for_byte_row_bitmap);
     RUN_TEST(SetSensorConfig_reads_byte_row_bitmap);
     RUN_TEST(SetSensorConfig_sends_command_to_sensor);
+    RUN_TEST(SetSensorConfig_waits_for_sensor_to_signal_it_recognizes_the_command);
+    RUN_TEST(SetSensorConfig_proceeds_with_sending_config_if_sensor_status_is_OK);
     RUN_TEST(SetSensorConfig_sends_binning_to_sensor);
     RUN_TEST(SetSensorConfig_sends_gain_to_sensor);
     RUN_TEST(SetSensorConfig_sends_row_bitmap_to_sensor);
-    RUN_TEST(SetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor);
     RUN_TEST(SetSensorConfig_waits_for_sensor_to_signal_STATUS_data_ready);
     RUN_TEST(SetSensorConfig_reads_status_from_sensor);
+    RUN_TEST(SetSensorConfig_writes_OK_to_indicate_it_sent_the_command_to_the_sensor);
     RUN_TEST(SetSensorConfig_writes_sensor_status);
 
     puts("## GetExposure");

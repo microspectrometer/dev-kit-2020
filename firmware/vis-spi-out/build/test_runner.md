@@ -34,12 +34,19 @@ test/test_runner.c:116:GetSensorConfig_sends_binning:PASS
 test/test_runner.c:117:GetSensorConfig_sends_gain:PASS
 test/test_runner.c:118:GetSensorConfig_sends_row_bitmap:PASS
 ## VisCmd.SetSensorConfig
-test/test_runner.c:123:SetSensorConfig_receives_three_bytes_of_config_from_Bridge:PASS
+
+Testing `SetSensorConfig_replies_OK_to_confirm_it_recognized_this_command...`
+
+- Value passed to call 1, arg 1? 
+    - (uint8_t)0000 is arg 1 to call SpiSlaveTxByte.
+
+test/test_runner.c:123:SetSensorConfig_replies_OK_to_confirm_it_recognized_this_command:PASS
+test/test_runner.c:124:SetSensorConfig_receives_three_bytes_of_config_from_Bridge:PASS
 
 `put_config_in_Queue`...
 Invalid config value in this test: binning 
 binning == 100, gain == 5, active_rows == 1
-test/test_runner.c:124:SetSensorConfig_does_not_update_config_globals_if_config_is_invalid:PASS
+test/test_runner.c:125:SetSensorConfig_does_not_update_config_globals_if_config_is_invalid:PASS
 
 Testing `SetSensorConfig_replies_ERROR_if_binning_is_invalid...`
 
@@ -50,7 +57,7 @@ binning == 100, gain == 5, active_rows == 1
 - Value passed to call 2, arg 1? 
     - (uint8_t)0x01 is arg 1 to call SpiSlaveTxByte.
 
-test/test_runner.c:125:SetSensorConfig_replies_ERROR_if_binning_is_invalid:PASS
+test/test_runner.c:126:SetSensorConfig_replies_ERROR_if_binning_is_invalid:PASS
 
 Testing `SetSensorConfig_replies_ERROR_if_gain_is_invalid`...
 
@@ -64,7 +71,7 @@ binning == 0, gain == 105, active_rows == 1
 - Value passed to call 2, arg 1? 
     - (uint8_t)0x01 is arg 1 to call SpiSlaveTxByte.
 
-test/test_runner.c:126:SetSensorConfig_replies_ERROR_if_gain_is_invalid:PASS
+test/test_runner.c:127:SetSensorConfig_replies_ERROR_if_gain_is_invalid:PASS
 
 Testing `SetSensorConfig_replies_ERROR_if_active_rows_is_invalid`...
 
@@ -78,7 +85,7 @@ binning == 0, gain == 5, active_rows == 255
 - Value passed to call 2, arg 1? 
     - (uint8_t)0x01 is arg 1 to call SpiSlaveTxByte.
 
-test/test_runner.c:127:SetSensorConfig_replies_ERROR_if_active_rows_is_invalid:PASS
+test/test_runner.c:128:SetSensorConfig_replies_ERROR_if_active_rows_is_invalid:PASS
 
 `put_config_in_Queue`...
 Invalid config value in this test: binning gain active_rows
@@ -90,7 +97,7 @@ binning == 100, gain == 105, active_rows == 255
 - Value passed to call 2, arg 1? 
     - (uint8_t)0x01 is arg 1 to call SpiSlaveTxByte.
 
-test/test_runner.c:128:SetSensorConfig_does_not_program_LIS_770i_if_config_is_invalid:PASS
+test/test_runner.c:129:SetSensorConfig_does_not_program_LIS_770i_if_config_is_invalid:PASS
 
 - Expected 0 calls:
 - Received 3 calls:
@@ -100,7 +107,7 @@ test/test_runner.c:128:SetSensorConfig_does_not_program_LIS_770i_if_config_is_in
 
 - Call 2 is named LisWriteConfig? Yes.
 
-test/test_runner.c:129:SetSensorConfig_writes_valid_config_to_LIS_770i_programmable_setup_register:PASS
+test/test_runner.c:130:SetSensorConfig_writes_valid_config_to_LIS_770i_programmable_setup_register:PASS
 
 - Call 3 is named SpiSlaveTxByte? Yes.
 
@@ -108,7 +115,7 @@ test/test_runner.c:129:SetSensorConfig_writes_valid_config_to_LIS_770i_programma
 - Value passed to call 3, arg 1? 
     - (uint8_t)0000 is arg 1 to call SpiSlaveTxByte.
 
-test/test_runner.c:130:SetSensorConfig_replies_OK_if_all_config_values_are_valid:PASS
+test/test_runner.c:131:SetSensorConfig_replies_OK_if_all_config_values_are_valid:PASS
 
 - Call 2 is named LisWriteConfig? Yes.
 
@@ -119,29 +126,29 @@ test/test_runner.c:130:SetSensorConfig_replies_OK_if_all_config_values_are_valid
 - Value passed to call 3, arg 1? 
     - (uint8_t)0000 is arg 1 to call SpiSlaveTxByte.
 
-test/test_runner.c:131:SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config:PASS
+test/test_runner.c:132:SetSensorConfig_the_OK_is_sent_after_LIS_is_programmed_with_new_config:PASS
 ## VisCmd.GetExposure
-test/test_runner.c:141:GetExposure_sends_OK:PASS
-test/test_runner.c:142:GetExposure_sends_MSB_of_exposure_ticks:PASS
-test/test_runner.c:143:GetExposure_sends_LSB_of_exposure_ticks:PASS
+test/test_runner.c:142:GetExposure_sends_OK:PASS
+test/test_runner.c:143:GetExposure_sends_MSB_of_exposure_ticks:PASS
+test/test_runner.c:144:GetExposure_sends_LSB_of_exposure_ticks:PASS
 ## VisCmd.SetExposure
-test/test_runner.c:148:SetExposure_waits_for_byte_exposure_MSB:PASS
-test/test_runner.c:149:SetExposure_reads_byte_exposure_MSB:PASS
-test/test_runner.c:150:SetExposure_waits_for_byte_exposure_LSB:PASS
-test/test_runner.c:151:SetExposure_reads_byte_exposure_LSB:PASS
-test/test_runner.c:152:SetExposure_updates_global_exposure_ticks:PASS
-test/test_runner.c:153:SetExposure_sends_OK:PASS
+test/test_runner.c:149:SetExposure_waits_for_byte_exposure_MSB:PASS
+test/test_runner.c:150:SetExposure_reads_byte_exposure_MSB:PASS
+test/test_runner.c:151:SetExposure_waits_for_byte_exposure_LSB:PASS
+test/test_runner.c:152:SetExposure_reads_byte_exposure_LSB:PASS
+test/test_runner.c:153:SetExposure_updates_global_exposure_ticks:PASS
+test/test_runner.c:154:SetExposure_sends_OK:PASS
 ## VisCmd.CaptureFrame
-test/test_runner.c:158:CaptureFrame_sends_OK:PASS
-test/test_runner.c:159:CaptureFrame_checks_binning_to_determine_number_of_pixels_in_frame:PASS
-test/test_runner.c:160:CaptureFrame_sends_num_pixels_MSB:PASS
-test/test_runner.c:161:CaptureFrame_sends_num_pixels_LSB:PASS
-test/test_runner.c:162:CaptureFrame_exposes_the_pixels:PASS
-test/test_runner.c:163:CaptureFrame_does_readout_of_num_pixels_into_the_frame_buffer:PASS
-test/test_runner.c:164:CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer:PASS
+test/test_runner.c:159:CaptureFrame_sends_OK:PASS
+test/test_runner.c:160:CaptureFrame_checks_binning_to_determine_number_of_pixels_in_frame:PASS
+test/test_runner.c:161:CaptureFrame_sends_num_pixels_MSB:PASS
+test/test_runner.c:162:CaptureFrame_sends_num_pixels_LSB:PASS
+test/test_runner.c:163:CaptureFrame_exposes_the_pixels:PASS
+test/test_runner.c:164:CaptureFrame_does_readout_of_num_pixels_into_the_frame_buffer:PASS
+test/test_runner.c:165:CaptureFrame_sends_the_pixel_readings_stored_in_the_frame_buffer:PASS
 ## VisCmd.GetPeak
-test/test_runner.c:171:GetPeak_finds_the_peak_between_start_pixel_and_stop_pixel_inclusive:PASS
-test/test_runner.c:172:GetPeak_ignores_peaks_at_pixels_before_start_pixel_and_after_stop_pixel:PASS
+test/test_runner.c:172:GetPeak_finds_the_peak_between_start_pixel_and_stop_pixel_inclusive:PASS
+test/test_runner.c:173:GetPeak_ignores_peaks_at_pixels_before_start_pixel_and_after_stop_pixel:PASS
 ## VisCmd.GetSensorHash
 
 - Call 1 is named SpiSlaveTxByte? Yes.
@@ -150,7 +157,7 @@ test/test_runner.c:172:GetPeak_ignores_peaks_at_pixels_before_start_pixel_and_af
 - Value passed to call 1, arg 1? 
     - (uint8_t)0000 is arg 1 to call SpiSlaveTxByte.
 
-test/test_runner.c:177:GetSensorHash_hash_sends_OK:PASS
+test/test_runner.c:178:GetSensorHash_hash_sends_OK:PASS
 This is the LIS hash: 0x351ea9
 
 - Call 2 is named SpiSlaveTxByte? Yes.
@@ -173,38 +180,38 @@ This is the LIS hash: 0x351ea9
 - Value passed to call 4, arg 1? 
     - (uint8_t)0xa9 is arg 1 to call SpiSlaveTxByte.
 
-test/test_runner.c:178:GetSensorHash_sends_first_three_bytes_of_SHA1_hash_of_sensor:PASS
+test/test_runner.c:179:GetSensorHash_sends_first_three_bytes_of_SHA1_hash_of_sensor:PASS
 # test AutoExpose
 ## VisCmd.AutoExpose
-test/test_runner.c:191:AutoExpose_turns_led1_red_to_indicate_starting:PASS
-test/test_runner.c:192:AutoExpose_sets_min_peak_at_target_minus_tolerance:PASS
-test/test_runner.c:193:AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_GREATER_THAN_target:PASS
-test/test_runner.c:194:AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_LESS_THAN_max_dark:PASS
-test/test_runner.c:195:AutoExpose_sets_max_peak_at_target_plus_tolerance:PASS
-test/test_runner.c:196:AutoExpose_clamps_max_peak_at_65535_counts_if_target_plus_tolerance_is_LESS_THAN_target:PASS
-test/test_runner.c:197:AutoExpose_loops_until_done:PASS
+test/test_runner.c:192:AutoExpose_turns_led1_red_to_indicate_starting:PASS
+test/test_runner.c:193:AutoExpose_sets_min_peak_at_target_minus_tolerance:PASS
+test/test_runner.c:194:AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_GREATER_THAN_target:PASS
+test/test_runner.c:195:AutoExpose_clamps_min_peak_at_max_dark_if_target_minus_tolerance_is_LESS_THAN_max_dark:PASS
+test/test_runner.c:196:AutoExpose_sets_max_peak_at_target_plus_tolerance:PASS
+test/test_runner.c:197:AutoExpose_clamps_max_peak_at_65535_counts_if_target_plus_tolerance_is_LESS_THAN_target:PASS
+test/test_runner.c:198:AutoExpose_loops_until_done:PASS
 
 - Call 1 is named LisExpose? Yes.
 
-test/test_runner.c:198:AutoExpose_exposes_the_pixels:PASS
+test/test_runner.c:199:AutoExpose_exposes_the_pixels:PASS
 
 - Call 2 is named LisReadout? Yes.
 
-test/test_runner.c:199:AutoExpose_reads_pixel_counts_into_global_frame_buffer:PASS
-test/test_runner.c:200:AutoExpose_finds_frame_peak_in_range_start_pixel_to_stop_pixel:PASS
-test/test_runner.c:201:AutoExpose_is_done_if_peak_less_than_max_dark_AND_exposure_at_max:PASS
-test/test_runner.c:202:AutoExpose_scales_exposure_by_10_if_peak_less_than_max_dark:PASS
-test/test_runner.c:203:AutoExpose_clamps_exposure_at_max_exposure_if_10_x_exposure_is_GREATER_THAN_max_exposure:PASS
-test/test_runner.c:204:AutoExpose_scales_exposure_by_half_if_peak_ABOVE_max_peak:PASS
-test/test_runner.c:205:AutoExpose_clamps_exposure_at_min_exposure_if_half_exposure_is_LESS_THAN_min_exposure:PASS
-test/test_runner.c:206:AutoExpose_is_done_if_peak_BELOW_min_peak_and_exposure_at_max_exposure:PASS
-test/test_runner.c:207:AutoExpose_scales_exposure_by_target_div_peak_if_peak_BELOW_min_peak_and_exposure_not_at_max:PASS
-test/test_runner.c:208:AutoExpose_clamps_exposure_at_max_exposure_if_gain_is_GREATER_THAN_max_exposure:PASS
-test/test_runner.c:209:AutoExpose_is_done_if_peak_is_in_the_target_range:PASS
-test/test_runner.c:210:AutoExpose_turns_led1_green_to_indicate_it_hit_the_target_range:PASS
-test/test_runner.c:211:AutoExpose_gives_up_if_it_iterates_for_max_tries:PASS
+test/test_runner.c:200:AutoExpose_reads_pixel_counts_into_global_frame_buffer:PASS
+test/test_runner.c:201:AutoExpose_finds_frame_peak_in_range_start_pixel_to_stop_pixel:PASS
+test/test_runner.c:202:AutoExpose_is_done_if_peak_less_than_max_dark_AND_exposure_at_max:PASS
+test/test_runner.c:203:AutoExpose_scales_exposure_by_10_if_peak_less_than_max_dark:PASS
+test/test_runner.c:204:AutoExpose_clamps_exposure_at_max_exposure_if_10_x_exposure_is_GREATER_THAN_max_exposure:PASS
+test/test_runner.c:205:AutoExpose_scales_exposure_by_half_if_peak_ABOVE_max_peak:PASS
+test/test_runner.c:206:AutoExpose_clamps_exposure_at_min_exposure_if_half_exposure_is_LESS_THAN_min_exposure:PASS
+test/test_runner.c:207:AutoExpose_is_done_if_peak_BELOW_min_peak_and_exposure_at_max_exposure:PASS
+test/test_runner.c:208:AutoExpose_scales_exposure_by_target_div_peak_if_peak_BELOW_min_peak_and_exposure_not_at_max:PASS
+test/test_runner.c:209:AutoExpose_clamps_exposure_at_max_exposure_if_gain_is_GREATER_THAN_max_exposure:PASS
+test/test_runner.c:210:AutoExpose_is_done_if_peak_is_in_the_target_range:PASS
+test/test_runner.c:211:AutoExpose_turns_led1_green_to_indicate_it_hit_the_target_range:PASS
+test/test_runner.c:212:AutoExpose_gives_up_if_it_iterates_for_max_tries:PASS
 # Results
 
 -----------------------
-79 Tests 0 Failures 0 Ignored 
+80 Tests 0 Failures 0 Ignored 
 OK

@@ -229,25 +229,29 @@ inline void SetSensorLED(void)
 inline void GetSensorConfig(void)
 {
     /** Forward 1-byte sensor config command to sensor.\n
-     * Respond with five bytes:
+     * Respond with **five** bytes:
      * - usb-bridge **status**
      *   - send `OK` after sending all bytes to sensor
-     * - vis-spi-out **status**
+     * - vis-spi-out **status**\n
+     *   - If vis-spi-out **status** is ERROR, the next three bytes (**binning**, **gain**, and **row_bitmap**)\n
+     *     contain *garbage* and should be **ignored** by the host application.\n 
      * - **binning**
      * - **gain**
      * - **row_bitmap**
+     * \n
      */
     /** GetSensorConfig behavior:\n 
       * - sends command to sensor\n 
       * - writes OK to indicate it sent the command to the sensor\n 
       * - waits for sensor to signal STATUS data ready\n 
       * - reads status from sensor\n 
-      * - waits for sensor to signal BINNING data ready\n 
-      * - reads binning from sensor\n 
-      * - waits for sensor to signal GAIN data ready\n 
-      * - reads gain from sensor\n 
-      * - waits for sensor to signal ROW_BITMAP data ready\n 
-      * - reads row_bitmap from sensor\n 
+      * - proceed reading from sensor if status is OK:\n 
+      *   - waits for sensor to signal BINNING data ready\n 
+      *   - reads binning from sensor\n 
+      *   - waits for sensor to signal GAIN data ready\n 
+      *   - reads gain from sensor\n 
+      *   - waits for sensor to signal ROW_BITMAP data ready\n 
+      *   - reads row_bitmap from sensor\n 
       * - writes sensor status\n 
       * - writes sensor binning\n 
       * - writes sensor gain\n 
@@ -307,21 +311,54 @@ inline void SetSensorConfig(void)
      * - usb-bridge **status**
      *   - send `OK` after sending all bytes to sensor
      * - vis-spi-out **status**
+     *   - Status is OK if config is loaded.\n 
+     *   - Status is ERROR if\n 
+     *     - the config is invalid\n 
+     *     - or the `SetSensorConfig` command is unrecognized:\n 
+     *       - *command `SetSensorConfig` is only defined for
+     *         spectrometers using the LIS-770i*\n 
+     * 
      */
+    /** If the `vis-spi-out` **status** is ERROR, there are
+     * two possible causes.\n 
+     * But **status** does not include a message, it is either
+     * OK or ERROR.\n 
+     * The host application should, therefore, tell the user to
+     * troubleshoot both possible causes if **status** is ERROR.\n
+     * \n 
+     * Tell the user to:\n 
+     *   1. Check the connected spectrometer uses the LIS-770i:\n 
+     *      - call getSensorHash()\n 
+     *      - expect hash is `0x351ea9`\n 
+     *   2. If the spectrometer *does* use the LIS-770i, check
+     *      the **config is valid**:\n 
+     *      - valid config has **three bytes**:\n 
+     *        - [`BINNING`, `GAIN`, `ACTIVE_ROWS`]\n 
+     *      - `BINNING` is `0x00` or `0x01`\n 
+     *      - `GAIN` is `0x01`, `0x25`, `0x04`, or `0x05`\n 
+     *      - (`ACTIVE_ROWS` & `0xE0`) == `0x00`\n 
+     *
+     * In the following description of `SetSensorConfig` behavior:
+     * - *write* and *read* refer to USB communication with the
+     *   host application
+     * - *send* refers to communication with the sensor
+     * */
     /** SetSensorConfig behavior:\n 
       * - waits for byte binning\n 
       * - reads byte binning\n 
       * - waits for byte gain\n 
       * - reads byte gain\n 
-      * - waits for byte row_bitmap\n 
-      * - reads byte row_bitmap\n 
+      * - waits for byte row bitmap\n 
+      * - reads byte row bitmap\n 
       * - sends command to sensor\n 
-      * - sends binning to sensor\n 
-      * - sends gain to sensor\n 
-      * - sends row_bitmap to sensor\n 
+      * - waits for sensor to signal it recognizes the command\n 
+      * - proceeds with sending config if sensor status is OK\n 
+      *   - sends binning to sensor\n 
+      *   - sends gain to sensor\n 
+      *   - sends row bitmap to sensor\n 
+      *   - waits for sensor to signal STATUS data ready\n 
+      *   - reads status from sensor\n 
       * - writes OK to indicate it sent the command to the sensor\n 
-      * - waits for sensor to signal STATUS data ready\n 
-      * - reads status from sensor\n 
       * - writes sensor status\n 
       * */
 
@@ -348,22 +385,10 @@ inline void SetSensorConfig(void)
     uint8_t row_bitmap = 0xFF;
     UsbReadByte(&row_bitmap);
 
-    // TODO(sustainablelab): Add tests/doc for new logic here
-    // 1. usb-bridge confirms vis-spi-out recognizes this
-    // command. If so, proceed as usual.
-    // Status returned to host will indicate OK if config is
-    // loaded or ERROR if config was invalid.
-    // 2. if vis-spi-out did not recognize this command,
-    // usb-bridge does not send vis-spi-out anymore bytes.
-    // Status returned to host is ERROR.
-    //
-    // Case 2 always results in ERROR. Case 1 might also result
-    // in ERROR. So host has two possible causes of failure:
-    // 1) config invalid (case 1)
-    // 2) detector is not LIS-770i (case 2)
-
     // send command to sensor
     SpiMasterXfrByte(cmd);
+
+    // Check sensor recognizes command before sending args!
 
     // wait for data ready LOW: sensor ready to send STATUS
     while( BitIsSet(Spi_PortInput, Spi_DataReady));
@@ -391,6 +416,7 @@ inline void SetSensorConfig(void)
 
     // write response
     UsbWriteByte(status);
+
 }
 
 inline void GetExposure(void)
