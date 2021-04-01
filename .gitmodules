@@ -1,3 +1,6 @@
 [submodule "firmware/mock-c"]
 	path = firmware/mock-c
 	url = https://github.com/sustainablelab/mock-c.git
+[submodule "firmware/kits"]
+	path = firmware/kits
+	url = https://github.com/microspectrometer/kits.git
