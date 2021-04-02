@@ -1,4 +1,4 @@
-avr-elf: build/usb-bridge.elf build/usb-bridge.avra
+avr-elf: clean build/usb-bridge.elf build/usb-bridge.avra
 unit-test: build/test_runner.md
 
 # Object files{{{

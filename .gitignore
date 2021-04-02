@@ -5,7 +5,6 @@ __pycache__
 *.exe
 *.map
 *.log
-*.avra
 cscope.out
 tags
 lib-tags

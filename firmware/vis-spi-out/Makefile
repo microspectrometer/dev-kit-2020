@@ -6,8 +6,8 @@ get-commit:
 .PHONY: view-in-terminal
 S13131-elf: view-in-terminal
 
-# sensor ?= LIS
-sensor ?= S13131
+sensor ?= LIS
+# sensor ?= S13131
 
 ifeq ($(sensor),LIS)
 	sensor-hash := 0x351ea9
