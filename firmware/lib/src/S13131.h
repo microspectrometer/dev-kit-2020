@@ -190,6 +190,89 @@ inline void WaitForS13131ClkHigh(void)
 
 inline void S13131Expose(void)
 {
+    /** Exposure signals:
+     * - ST idles LOW
+     * - ST goes HIGH to start exposure
+     *     - Bring ST HIGH some time prior to a CLK rising edge (easiest
+     *       is to bring ST HIGH just after a CLK falling edge)
+     *     - Integration time officially starts on the 3rd CLK rising
+     *       edge with ST HIGH
+     *         - the time period from that 3rd rising edge to the 4th
+     *           rising edge marks the first cycle of exposure time
+     * - ST goes LOW to end exposure
+     *     - Bring ST LOW some time prior to a CLK rising edge (again,
+     *       easiest is to do this just after a CLK falling edge)
+     *     - Integration time officially stops on the 9th CLK rising
+     *       edge with ST LOW
+     * */
+    /** This implies that the **minimum** integration time is **9
+     * clocks**. At 50kHz, each clock is 20µs, so **minimum**
+     * integration time is 180µs.
+     * */
+    /** Example: minimum exposure time
+     *
+     * ```
+     *      ┌─── Count all rising edges of CLK starting with first ST HIGH
+     *      │ ┌─ Count rising edges of CLK where ST is LOW
+     *      ↓ ↓
+     *     (x,y)
+     *    Exposure clocks -------> 1,0   2,0   3,0   4,1   5,2   6,3   7,4   8,5   9,6   10,7  11,8  12,9
+     *            ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐
+     *     CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │
+     *          ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └
+     *                              ↑           ↑     ↑  ↑                                            ↑
+     *         ST HIGH clocked-in: ─┘           │     │  │                                            │
+     *                         exposure START: ─┘     │  │                            exposure STOP: ─┘
+     *                            ST LOW clocked-in: ─┘  │                   on 9th CLK rising-edge
+     *                                                   │                              with ST LOW
+     *                            ┌─────────────────┐    │
+     *     ST       IDLE LOW      │                 │    ↓
+     *          ──────────────────┘                 └─────────────────────────────────────────────────────
+     *                            ↑                 ↑
+     *                            │                 │
+     *        Wait for CLK LOW    │                 │ 
+     *          to pull ST HIGH: ─┘                 │
+     *                           Wait for CLK LOW   │
+     *                             to pull ST LOW: ─┘
+     * ```
+     * */
+    /** Relationship between exposure and readout:
+     *
+     * - exposure ends on the 9th CLK rising edge with ST LOW
+     * - sample first pixel on the 14th CLK falling edge with ST LOW
+     *
+     * Therefore, readout always starts 13.5 clocks after ST LOW.
+     * */
+    /** Example: ST HIGH for 3 clocks (4 CLK rising edges)\n 
+     * This corresponds to an integration time of 10 clocks (200 µs)
+     *
+     * ```
+     *    Pixel count ---------------------------------------------------------------------------------------------------------------------> 001---002-││511---512---
+     *                                                                                                                                       ┌──┌──┌──┌││┌──┌──┌──┌──
+     *                                                                                                                                       ↓  │--│  ││││  │--│  │--
+     * 14th TRIG rising-edge (CLK falling-edge) with ST LOW: ────────────────────────────────────────────────────────────────────────────────┐  │--│  ││││  │--│  │--
+     * First TRIG rising-edge (CLK falling-edge) with ST LOW: ─┐                                                                             │  │--│  ││││  │--│  │--
+     *                                                         ↓                                                                             ↓  │--│  ││││  │--│  │--
+     *    Clocks waiting for readout to start ---------------> 1     2     3     4     5     6     7     8     9     10    11    12    13    14 │--│  ││││  │--│  │--
+     *    Exposure clocks --------> 1,0   2,0   3,0   4,0   5,1   6,2   7,3   8,4   9,5   10,6  11,7  12,8  13,9     ↓     ↓     ↓     ↓     ↓  ↓  ↓  ↓││↓  ↓  ↓  ↓  
+     *            ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌││┐  ┌──┐  ┌──
+     *     CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  ││││  │  │  │  
+     *          ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘││└──┘  └──┘  
+     *                              ↑           ↑           ↑  ↑                                            ↑
+     *         ST HIGH clocked-in: ─┘           │           │  │                                            │
+     *                         exposure START: ─┘           │  │                            exposure STOP: ─┘
+     *                                  ST LOW clocked-in: ─┘  │                   on 9th CLK rising-edge
+     *                                                         │                              with ST LOW
+     *                            ┌───────────────────────┐    │
+     *     ST       IDLE LOW      │                       │    ↓
+     *          ──────────────────┘                       └────────────────────────────────────────────────────────
+     *                            ↑                       ↑
+     *                            │                       │
+     *        Wait for CLK LOW    │    Wait for CLK LOW   │
+     *          to pull ST HIGH: ─┘      to pull ST LOW: ─┘
+     * ```
+     * */
+
     // Expose S13131.
     // Exposure time is set by global variable exposure_ticks.
 
@@ -237,8 +320,15 @@ inline void S13131Expose(void)
     WaitForS13131ClkHigh(); // (1st of the 9 rising edges)
 
     // Start the falling-edge count-down to pixel readout.
-    // Exit this count-down just after the 13th clock falling edge.
-    for(uint16_t f_count = 0; f_count < (14-1); f_count++)
+    // Exit this count-down just after the 12th clock falling edge.
+    // NOT THE 13th EDGE!
+    /* for(uint16_t f_count = 0; f_count < (14-1); f_count++) */
+    // @NOTE(slab): count to 12, not 13!  ┌──┘ This is an
+    //              empirical fix, based  │ the frame data. 
+    //              At 13, last pixel is  │ always LOW.
+    //              At 11, first pixel is │ always LOW.
+    //         ---> 12 counts is correct. ↓ Not 13!
+    for(uint16_t f_count = 0; f_count < (13-1); f_count++) //
     {
         // Loop enters *just after* 5th rising edge.
         WaitForS13131ClkLow();

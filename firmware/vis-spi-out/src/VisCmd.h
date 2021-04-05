@@ -259,6 +259,11 @@ static inline void S13131Readout(void)
         // save LSB to frame buffer
         *(pframe++) = *UartSpi_UDR0;
     }
+    // PASS: Last pixel in plot is last 16-bit value in array.
+    // Test: hard-code last value as 30 000 counts.
+    /* pframe--; pframe--; */
+    /* *(pframe++) = 0x75; */
+    /* *(pframe++) = 0x30; */
 }
 #endif
 
