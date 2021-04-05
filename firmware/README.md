@@ -1,3 +1,8 @@
+## Table of Contents
+- [Chromation dev-kit firmware](README.md#chromation-dev-kit-firmware)
+- [Dev-kit Flash memory programming](README.md#dev-kit-flash-memory-programming)
+- [Dev-kit programming setup](README.md#dev-kit-programming-setup)
+
 # Chromation dev-kit firmware
 
 `firmware` consists of C source files and build scripts. The
@@ -153,6 +158,9 @@ First time setup of a dev kit requires:
 - two `make` commands for each microcontroller.
     - `$ make fuses`
     - `$ make flash`
+- *and on Windows* remember to enable `Load VCP` in the Device
+  Manager (necessary for USB communication with the kit using
+  Python package `pyserial`)
 
 Once a kit has been programmed, updating firmware is just
 the Flash:
