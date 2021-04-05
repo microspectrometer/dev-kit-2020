@@ -39,8 +39,7 @@ void {\bfseries Wait\+For\+S13131\+Clk\+Low} (void)
 \mbox{\Hypertarget{S13131_8h_a66db2d215939dde077e354b779f8f4e0}\label{S13131_8h_a66db2d215939dde077e354b779f8f4e0}} 
 void {\bfseries Wait\+For\+S13131\+Clk\+High} (void)
 \item 
-\mbox{\Hypertarget{S13131_8h_a29d6893460030931978cf4cae6ab5144}\label{S13131_8h_a29d6893460030931978cf4cae6ab5144}} 
-void {\bfseries S13131\+Expose} (void)
+void \mbox{\hyperlink{S13131_8h_a29d6893460030931978cf4cae6ab5144}{S13131\+Expose}} (void)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -116,7 +115,7 @@ s13131\+\_\+bit {\bfseries S13131\+\_\+\+OCF0B}
 \hypertarget{S13131_8h_autotoc_md101}{}\doxysubsection{API}\label{S13131_8h_autotoc_md101}
 void S13131\+Pin\+Setup(void);~\newline
  void S13131\+Start\+Clocking(void);~\newline
-void S13131\+Expose(void);~\newline
+void \mbox{\hyperlink{S13131_8h_a29d6893460030931978cf4cae6ab5144}{S13131\+Expose(void)}};~\newline
 S13131\+Readout is defined in Vis\+Cmd~\newline
 
 
@@ -150,6 +149,106 @@ MSB behavior\+:~\newline
 \end{DoxyItemize}
 
 Definition at line 31 of file S13131.\+h.
+
+\mbox{\Hypertarget{S13131_8h_a29d6893460030931978cf4cae6ab5144}\label{S13131_8h_a29d6893460030931978cf4cae6ab5144}} 
+\index{S13131.h@{S13131.h}!S13131Expose@{S13131Expose}}
+\index{S13131Expose@{S13131Expose}!S13131.h@{S13131.h}}
+\doxysubsubsection{\texorpdfstring{S13131Expose()}{S13131Expose()}}
+{\footnotesize\ttfamily void S13131\+Expose (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Exposure signals\+:
+\begin{DoxyItemize}
+\item ST idles LOW
+\item ST goes HIGH to start exposure
+\begin{DoxyItemize}
+\item Bring ST HIGH some time prior to a CLK rising edge (easiest is to bring ST HIGH just after a CLK falling edge)
+\item Integration time officially starts on the 3rd CLK rising edge with ST HIGH
+\begin{DoxyItemize}
+\item the time period from that 3rd rising edge to the 4th rising edge marks the first cycle of exposure time
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item ST goes LOW to end exposure
+\begin{DoxyItemize}
+\item Bring ST LOW some time prior to a CLK rising edge (against, easiest is to do this just after a CLK falling edge)
+\item Integration time officially stops on the 9th CLK rising edge with ST LOW
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+This implies that the {\bfseries{minimum}} integration time is {\bfseries{9 clocks}}. At 50k\+Hz, each clock is 20µs, so {\bfseries{minimum}} integration time is 180µs.
+
+Example\+: minimum exposure time
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{  ┌─── Count all rising edges of CLK starting with first ST HIGH}
+\DoxyCodeLine{  │ ┌─ Count rising edges of CLK where ST is LOW}
+\DoxyCodeLine{  ↓ ↓}
+\DoxyCodeLine{ (x,y)}
+\DoxyCodeLine{Exposure clocks -\/-\/-\/-\/-\/-\/-\/> 1,0   2,0   3,0   4,1   5,2   6,3   7,4   8,5   9,6   10,7  11,8  12,9}
+\DoxyCodeLine{        ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐}
+\DoxyCodeLine{ CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │}
+\DoxyCodeLine{      ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └}
+\DoxyCodeLine{                          ↑           ↑     ↑  ↑                                            ↑}
+\DoxyCodeLine{     ST HIGH clocked-\/in: ─┘           │     │  │                                            │}
+\DoxyCodeLine{                     exposure START: ─┘     │  │                            exposure STOP: ─┘}
+\DoxyCodeLine{                        ST LOW clocked-\/in: ─┘  │                   on 9th CLK rising-\/edge}
+\DoxyCodeLine{                                               │                              with ST LOW}
+\DoxyCodeLine{                        ┌─────────────────┐    │}
+\DoxyCodeLine{ ST       IDLE LOW      │                 │    ↓}
+\DoxyCodeLine{      ──────────────────┘                 └─────────────────────────────────────────────────────}
+\DoxyCodeLine{                        ↑                 ↑}
+\DoxyCodeLine{                        │                 │}
+\DoxyCodeLine{    Wait \textcolor{keywordflow}{for} CLK LOW    │                 │ }
+\DoxyCodeLine{      to pull ST HIGH: ─┘                 │}
+\DoxyCodeLine{                       Wait \textcolor{keywordflow}{for} CLK LOW   │}
+\DoxyCodeLine{                         to pull ST LOW: ─┘}
+
+\end{DoxyCode}
+
+
+Relationship between exposure and readout\+:
+
+
+\begin{DoxyItemize}
+\item exposure ends on the 9th CLK rising edge with ST LOW
+\item sample first pixel on the 14th CLK falling edge with ST LOW
+\end{DoxyItemize}
+
+Therefore, readout always starts 13.\+5 clocks after ST LOW.
+
+Example\+: ST HIGH for 3 clocks (4 CLK rising edges)~\newline
+ This corresponds to an integration time of 10 clocks (200 µs)
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{   Pixel count -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/> 001-\/-\/-\/002-\/││511-\/-\/-\/512-\/-\/-\/}
+\DoxyCodeLine{                                                                                                                                      ┌──┌──┌──┌││┌──┌──┌──┌──}
+\DoxyCodeLine{                                                                                                                                      ↓  │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{14th TRIG rising-\/edge (CLK falling-\/edge) with ST LOW: ────────────────────────────────────────────────────────────────────────────────┐  │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{First TRIG rising-\/edge (CLK falling-\/edge) with ST LOW: ─┐                                                                             │  │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{                                                        ↓                                                                             ↓  │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{   Clocks waiting \textcolor{keywordflow}{for} readout to start -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/> 1     2     3     4     5     6     7     8     9     10    11    12    13    14 │-\/-\/│  ││││  │-\/-\/│  │-\/-\/}
+\DoxyCodeLine{   Exposure clocks -\/-\/-\/-\/-\/-\/-\/-\/> 1,0   2,0   3,0   4,0   5,1   6,2   7,3   8,4   9,5   10,6  11,7  12,8  13,9     ↓     ↓     ↓     ↓     ↓  ↓  ↓  ↓││↓  ↓  ↓  ↓  }
+\DoxyCodeLine{           ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌││┐  ┌──┐  ┌──}
+\DoxyCodeLine{    CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  ││││  │  │  │  }
+\DoxyCodeLine{         ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘││└──┘  └──┘  }
+\DoxyCodeLine{                             ↑           ↑           ↑  ↑                                            ↑}
+\DoxyCodeLine{        ST HIGH clocked-\/in: ─┘           │           │  │                                            │}
+\DoxyCodeLine{                        exposure START: ─┘           │  │                            exposure STOP: ─┘}
+\DoxyCodeLine{                                 ST LOW clocked-\/in: ─┘  │                   on 9th CLK rising-\/edge}
+\DoxyCodeLine{                                                        │                              with ST LOW}
+\DoxyCodeLine{                           ┌───────────────────────┐    │}
+\DoxyCodeLine{    ST       IDLE LOW      │                       │    ↓}
+\DoxyCodeLine{         ──────────────────┘                       └────────────────────────────────────────────────────────}
+\DoxyCodeLine{                           ↑                       ↑}
+\DoxyCodeLine{                           │                       │}
+\DoxyCodeLine{       Wait \textcolor{keywordflow}{for} CLK LOW    │    Wait \textcolor{keywordflow}{for} CLK LOW   │}
+\DoxyCodeLine{         to pull ST HIGH: ─┘      to pull ST LOW: ─┘}
+
+\end{DoxyCode}
+
+
+Definition at line 191 of file S13131.\+h.
 
 
 

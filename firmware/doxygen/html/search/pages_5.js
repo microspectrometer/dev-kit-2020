@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['notes_375',['notes',['../md_cheatsheet.html',1,'']]]
+  ['notes_377',['notes',['../md_cheatsheet.html',1,'']]]
 ];

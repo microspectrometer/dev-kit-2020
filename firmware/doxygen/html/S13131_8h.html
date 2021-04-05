@@ -119,8 +119,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>WaitForS13131ClkLow</
 <tr class="memitem:a66db2d215939dde077e354b779f8f4e0"><td class="memItemLeft" align="right" valign="top"><a id="a66db2d215939dde077e354b779f8f4e0"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>WaitForS13131ClkHigh</b> (void)</td></tr>
 <tr class="separator:a66db2d215939dde077e354b779f8f4e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29d6893460030931978cf4cae6ab5144"><td class="memItemLeft" align="right" valign="top"><a id="a29d6893460030931978cf4cae6ab5144"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>S13131Expose</b> (void)</td></tr>
+<tr class="memitem:a29d6893460030931978cf4cae6ab5144"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="S13131_8h.html#a29d6893460030931978cf4cae6ab5144">S13131Expose</a> (void)</td></tr>
 <tr class="separator:a29d6893460030931978cf4cae6ab5144"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
@@ -197,7 +196,7 @@ s13131_bit&#160;</td><td class="memItemRight" valign="bottom"><b>S13131_OCF0B</b
 API</h1>
 <p>void S13131PinSetup(void);<br  />
  void S13131StartClocking(void);<br  />
-void S13131Expose(void);<br  />
+void <a class="el" href="S13131_8h.html#a29d6893460030931978cf4cae6ab5144">S13131Expose(void)</a>;<br  />
 S13131Readout is defined in VisCmd<br  />
 </p>
 
@@ -266,6 +265,105 @@ S13131Readout is defined in VisCmd<br  />
 </ul>
 
 <p class="definition">Definition at line <a class="el" href="S13131_8h_source.html#l00031">31</a> of file <a class="el" href="S13131_8h_source.html">S13131.h</a>.</p>
+
+</div>
+</div>
+<a id="a29d6893460030931978cf4cae6ab5144"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29d6893460030931978cf4cae6ab5144">&#9670;&nbsp;</a></span>S13131Expose()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void S13131Expose </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Exposure signals:</p><ul>
+<li>ST idles LOW</li>
+<li>ST goes HIGH to start exposure<ul>
+<li>Bring ST HIGH some time prior to a CLK rising edge (easiest is to bring ST HIGH just after a CLK falling edge)</li>
+<li>Integration time officially starts on the 3rd CLK rising edge with ST HIGH<ul>
+<li>the time period from that 3rd rising edge to the 4th rising edge marks the first cycle of exposure time</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ST goes LOW to end exposure<ul>
+<li>Bring ST LOW some time prior to a CLK rising edge (against, easiest is to do this just after a CLK falling edge)</li>
+<li>Integration time officially stops on the 9th CLK rising edge with ST LOW</li>
+</ul>
+</li>
+</ul>
+<p>This implies that the <b>minimum</b> integration time is <b>9 clocks</b>. At 50kHz, each clock is 20µs, so <b>minimum</b> integration time is 180µs.</p>
+<p>Example: minimum exposure time</p>
+<div class="fragment"><div class="line">  ┌─── Count all rising edges of CLK starting with first ST HIGH</div>
+<div class="line">  │ ┌─ Count rising edges of CLK where ST is LOW</div>
+<div class="line">  ↓ ↓</div>
+<div class="line"> (x,y)</div>
+<div class="line">Exposure clocks -------&gt; 1,0   2,0   3,0   4,1   5,2   6,3   7,4   8,5   9,6   10,7  11,8  12,9</div>
+<div class="line">        ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐</div>
+<div class="line"> CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │</div>
+<div class="line">      ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └</div>
+<div class="line">                          ↑           ↑     ↑  ↑                                            ↑</div>
+<div class="line">     ST HIGH clocked-in: ─┘           │     │  │                                            │</div>
+<div class="line">                     exposure START: ─┘     │  │                            exposure STOP: ─┘</div>
+<div class="line">                        ST LOW clocked-in: ─┘  │                   on 9th CLK rising-edge</div>
+<div class="line">                                               │                              with ST LOW</div>
+<div class="line">                        ┌─────────────────┐    │</div>
+<div class="line"> ST       IDLE LOW      │                 │    ↓</div>
+<div class="line">      ──────────────────┘                 └─────────────────────────────────────────────────────</div>
+<div class="line">                        ↑                 ↑</div>
+<div class="line">                        │                 │</div>
+<div class="line">    Wait <span class="keywordflow">for</span> CLK LOW    │                 │ </div>
+<div class="line">      to pull ST HIGH: ─┘                 │</div>
+<div class="line">                       Wait <span class="keywordflow">for</span> CLK LOW   │</div>
+<div class="line">                         to pull ST LOW: ─┘</div>
+</div><!-- fragment --><p>Relationship between exposure and readout:</p>
+<ul>
+<li>exposure ends on the 9th CLK rising edge with ST LOW</li>
+<li>sample first pixel on the 14th CLK falling edge with ST LOW</li>
+</ul>
+<p>Therefore, readout always starts 13.5 clocks after ST LOW.</p>
+<p>Example: ST HIGH for 3 clocks (4 CLK rising edges)<br  />
+ This corresponds to an integration time of 10 clocks (200 µs)</p>
+<div class="fragment"><div class="line">   Pixel count ---------------------------------------------------------------------------------------------------------------------&gt; 001---002-││511---512---</div>
+<div class="line">                                                                                                                                      ┌──┌──┌──┌││┌──┌──┌──┌──</div>
+<div class="line">                                                                                                                                      ↓  │--│  ││││  │--│  │--</div>
+<div class="line">14th TRIG rising-edge (CLK falling-edge) with ST LOW: ────────────────────────────────────────────────────────────────────────────────┐  │--│  ││││  │--│  │--</div>
+<div class="line">First TRIG rising-edge (CLK falling-edge) with ST LOW: ─┐                                                                             │  │--│  ││││  │--│  │--</div>
+<div class="line">                                                        ↓                                                                             ↓  │--│  ││││  │--│  │--</div>
+<div class="line">   Clocks waiting <span class="keywordflow">for</span> readout to start ---------------&gt; 1     2     3     4     5     6     7     8     9     10    11    12    13    14 │--│  ││││  │--│  │--</div>
+<div class="line">   Exposure clocks --------&gt; 1,0   2,0   3,0   4,0   5,1   6,2   7,3   8,4   9,5   10,6  11,7  12,8  13,9     ↓     ↓     ↓     ↓     ↓  ↓  ↓  ↓││↓  ↓  ↓  ↓  </div>
+<div class="line">           ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌──┐  ┌││┐  ┌──┐  ┌──</div>
+<div class="line">    CLK    │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  ││││  │  │  │  </div>
+<div class="line">         ──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘  └──┘││└──┘  └──┘  </div>
+<div class="line">                             ↑           ↑           ↑  ↑                                            ↑</div>
+<div class="line">        ST HIGH clocked-in: ─┘           │           │  │                                            │</div>
+<div class="line">                        exposure START: ─┘           │  │                            exposure STOP: ─┘</div>
+<div class="line">                                 ST LOW clocked-in: ─┘  │                   on 9th CLK rising-edge</div>
+<div class="line">                                                        │                              with ST LOW</div>
+<div class="line">                           ┌───────────────────────┐    │</div>
+<div class="line">    ST       IDLE LOW      │                       │    ↓</div>
+<div class="line">         ──────────────────┘                       └────────────────────────────────────────────────────────</div>
+<div class="line">                           ↑                       ↑</div>
+<div class="line">                           │                       │</div>
+<div class="line">       Wait <span class="keywordflow">for</span> CLK LOW    │    Wait <span class="keywordflow">for</span> CLK LOW   │</div>
+<div class="line">         to pull ST HIGH: ─┘      to pull ST LOW: ─┘</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="S13131_8h_source.html#l00191">191</a> of file <a class="el" href="S13131_8h_source.html">S13131.h</a>.</p>
 
 </div>
 </div>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['queue_5fs_194',['Queue_s',['../structQueue__s.html',1,'']]]
+  ['queue_5fs_195',['Queue_s',['../structQueue__s.html',1,'']]]
 ];
