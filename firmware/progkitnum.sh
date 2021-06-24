@@ -29,6 +29,8 @@ cd kits/$dashed_number/
 #"$ftdi" scan cycl '0'
 "$ftdi" scan prog 0 ftcfg.xml cycl 0
 cd ../..
-"$ftdi" scan
+# "$ftdi" scan
 echo \'make scan\' to check the serial number is $dashed_number.
+echo
+echo \'make troubleshoot-ftdi\' if you run into trouble.
 return 0

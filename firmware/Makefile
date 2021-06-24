@@ -49,6 +49,12 @@ help-ftdi:
 	@echo
 	@cat help-ftdi.man | less
 
+troubleshoot-ftdi:
+	@echo
+	@echo
+	@cat troubleshoot-ftdi.man | less
+
+
 kitnum: ftcfg.xml
 	@. ./kitnum.sh
 

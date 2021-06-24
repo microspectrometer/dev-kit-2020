@@ -1,0 +1,53 @@
+--------------------------
+|   TROUBLESHOOT-FTDI    |
+--------------------------
+
+---When this computer is seeing a new serial number---
+
+1. Please cycle power to the devkit.
+
+2. Windows users:
+   - open Device Manager
+   - right-click USB Serial Converter
+   - Properties -> Advanced
+   - check the box "Load VCP", then Apply
+
+   Windows users please cycle power to the devkit again.
+
+---When using an older serial number---
+
+The FTDI EEPROM is programmed with a utility named FT_PROG.
+FT_PROG used to allow longer serial numbers, so we used strings like this:
+
+    CHROMATION123456
+
+It no longer allows such long numbers.
+The recommended practice is two+six: two letters, then six alphanumeric
+characters. So now we use strings like this:
+
+    CH123456
+
+This has no impact on the LabVIEW GUI. (The LabVIEW GUI queries the "Product
+Description", not the serial number, because it has a D2XX driver).
+
+This issue only affects interfaces that rely on the serial number. These are
+interfaces that use pyserial, which uses the VCP driver instead of the D2XX
+driver. The Python interface, `microspec`, uses pyserial. Therefore, any GUIs
+using microspec (e.g., the pygame and Godot GUIs) rely on the serial number.
+
+If you accidentally try to program with the old style serial number, you will
+receive this message:
+
+    Exceeded Maximum Descriptor Length : The maximum number of characters for
+    the Serial Number is 15 for single channel devices and 14 for multi channel
+    devices.
+    Failed to program Device 0!"
+
+There are two ways to fix this problem.
+The safe way is to erase the folder for this kit in the kits/ folder
+and run 'make kitnum' again for this serial number.
+
+The quicker way is simply to open the kit's ftcfg.xml file and change CHROMATION
+to CH. But be careful doing this -- any accidental changes to other parts of
+this file may permanently corrupt the EEPROM.
+
