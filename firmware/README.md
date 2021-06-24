@@ -294,7 +294,7 @@ toolchain.
 
 Open tiddler **Use AtmelStudio**:
 
-![Screenshot of chromation-notebook TiddlyWiki](open-tiddler.PNG)
+![Screenshot of chromation-notebook TiddlyWiki](open-use-atmelstudio-tiddler.PNG)
 
 * type *Use AtmelStudio* in the search bar on the right
 * click on the link **Use AtmelStudio** in the search results
