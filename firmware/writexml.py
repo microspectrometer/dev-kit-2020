@@ -19,7 +19,7 @@ root = tree.getroot()
 # https://stackoverflow.com/questions/6523886/find-and-replace-values-in-xml-using-python
 
 root[3][1].text=f'ChromationSpect-{serial_number}'
-root[3][3].text=f'CHROMATION{fourdig}{twodig}'
+root[3][3].text=f'CH{fourdig}{twodig}'
 
 # Write to new file
 tree.write('newftcfg.xml')
