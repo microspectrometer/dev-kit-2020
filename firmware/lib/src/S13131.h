@@ -284,7 +284,7 @@ inline void S13131Expose(void)
     // -------------------------------------------------
 
     // Compensate for the 6 cycles S13131 adds to exposure set by ST
-    exposure_ticks -= 6;
+    uint16_t _exposure_ticks = exposure_ticks - 6;
 
     // ---ONLY TRANSITION ST AFTER A CLK FALLING EDGE---
 
@@ -292,8 +292,8 @@ inline void S13131Expose(void)
     WaitForS13131ClkLow();
     SetBit(S13131_port, S13131_St); // sbi 0xb,6
 
-    // Count CLK rising edges until count == exposure_ticks
-    for(uint16_t r_count = 0; r_count < exposure_ticks; r_count++)
+    // Count CLK rising edges until count == _exposure_ticks
+    for(uint16_t r_count = 0; r_count < _exposure_ticks; r_count++)
     {
         WaitForS13131ClkHigh();
 
@@ -305,11 +305,11 @@ inline void S13131Expose(void)
 
         // 3  < 4: Wait for CLK rising-edge (r_count 3->4)
         // ...
-        // Eventually r_count == exposure_ticks!
-        // -> r_count !< exposure_ticks: Exit loop
-        // Total of number of rising edges so far == r_count == exposure_ticks
+        // Eventually r_count == _exposure_ticks!
+        // -> r_count !< _exposure_ticks: Exit loop
+        // Total of number of rising edges so far == r_count == _exposure_ticks
         // Exposed for a total of (r_count - 3) clock cycles so far.
-        // Loop exits *just after* the rising edge where r_count == exposure_ticks.
+        // Loop exits *just after* the rising edge where r_count == _exposure_ticks.
     }
 
     WaitForS13131ClkLow();
