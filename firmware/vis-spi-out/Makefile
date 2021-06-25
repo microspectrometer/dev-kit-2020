@@ -1,3 +1,22 @@
+# Target "unit-test" requires GLib:
+# (admin) $ apt-cyg install libglib2.0-devel libglib2.0-doc
+#
+# Target "avr-elf" requires avr-gcc.exe is on Windows $env:PATH
+# > $avr8_path = "C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin"
+# > $env:PATH += $avr8_path
+# > $env:PATH += ";"
+#
+# Target "flash" requires atprogram.exe is on Windows $env:PATH
+# > $atbackend_path = "C:\Program Files (x86)\Atmel\Studio\7.0\atbackend"
+# > $env:PATH += $atbackend_path
+# > $env:PATH += ";"
+# Orient kit with the two slide switches in the UPPER LEFT corner.
+# Switch to ISP (programming):
+#   black switch - left
+#   white switch - left
+# Switch to SPI (communication):
+#   black switch - right
+
 avr-elf: clean build/vis-spi-out.elf build/vis-spi-out.avra sensor.txt.sha1
 unit-test: build/test_runner.md
 .PHONY: get-commit
