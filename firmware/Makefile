@@ -24,16 +24,6 @@ help-setup:
 	@echo "| HELP-SETUP |"
 	@echo "--------------"
 	@echo
-	@echo Makefiles:
-	@echo "  -----------------------------------------------------------------------------------"
-	@echo "  | Edit machine-dependent path for ATmega_DFP in dev-kit-2020/firmware/uservars.mk |"
-	@echo "  -----------------------------------------------------------------------------------"
-	@echo
-	@echo "  uservars.mk currently has ATmega_DFP path as:"
-	@echo "    $(ATmega_DFP)"
-	@echo "  and final path to vendor lib dependencies (atmega328_lib) as:"
-	@echo "    $(atmega328_lib)"
-	@echo
 	@cat help-setup.man
 
 help-build:
